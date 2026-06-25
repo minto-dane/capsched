@@ -10,8 +10,8 @@ The workspace is `/media/nia/scsiusb/dev/linux-cap`.
 The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched`.
 
 Upstream Linux has been fetched into sibling repository `linux/`. No
-implementation patch points are accepted yet. The next step is to read upstream
-code paths and write analysis notes before choosing patch points.
+implementation patch points are accepted yet. The first deep source-analysis
+pass has been written under `capsched-models/analysis/`.
 
 ## Recovery Path
 
@@ -21,7 +21,8 @@ Read in this order:
 2. `capsched/capsched-ai/handoff.md`
 3. `capsched/capsched-ai/design/compact.md`
 4. `capsched/capsched-ai/decisions/index.md`
-5. Any referenced ADRs or current plans
+5. `capsched/capsched-models/analysis/index.md`
+6. Any referenced ADRs or current plans
 
 Only read longer files when the current task requires them.
 
@@ -75,8 +76,16 @@ Implementation must keep capability types separated:
 
 ## Next Likely Action
 
-Read upstream Linux scheduler and lifecycle code, then write analysis notes
-before choosing patch points.
+Select the first formal semantic model. Current recommendation from the deep
+analysis is to start with runnable lease semantics:
+
+```text
+Task + TaskGeneration + DomainEpoch
++ RunCap + SchedContext + FrozenRunUse
++ runqueue state transitions
+```
+
+Do not implement Linux patches before the model-selection memo exists.
 
 Current Linux source state:
 

@@ -7,13 +7,16 @@ Updated: 2026-06-25
 | ID | Status | Title |
 | --- | --- | --- |
 | 0001 | Draft | Initial Linux Source Map |
+| 0002 | Draft | Scheduler Execution Spine |
+| 0003 | Draft | Task Lifecycle and Identity |
+| 0004 | Draft | Existing Resource Controls and Compatibility |
+| 0005 | Draft | Async Provenance Risk Map |
+| 0006 | Draft | Cluster Domain Capability Mapping |
+| 0007 | Draft | Capability Invariant Matrix |
 
 ## Planned Analysis Notes
 
-1. Scheduler runnable paths and runqueue data structures.
-2. Scheduler classes, cgroup CPU controller, cpuset, uclamp, RT, deadline, and
-   core scheduling interactions.
-3. Fork, clone, exec, and exit propagation points.
-4. Workqueue, task_work, kthread, timer, softirq, and io_uring provenance paths.
-5. LSM, cred, namespace, Landlock, and Linux capability policy inputs.
-6. sched_ext as policy exploration only, not security root.
+1. Deeper LSM, cred, namespace, Landlock, and Linux capability policy-input map.
+2. First formal model selection memo.
+3. TLA+ or equivalent skeleton for runnable lease semantics.
+4. Validation and benchmark plan after formal model selection.

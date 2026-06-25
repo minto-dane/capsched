@@ -7,6 +7,7 @@ Updated: 2026-06-25
 | ID | Status | Title |
 | --- | --- | --- |
 | 0001 | Active | Upstream Linux Analysis for CapSched L0 |
+| 0002 | Active | Deep Compatibility and Cluster-Capability Analysis |
 
 ## Likely Future Plan Records
 

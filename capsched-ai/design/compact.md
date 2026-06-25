@@ -13,7 +13,8 @@ boundaries at lower operational cost.
 Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `4edcdefd4083ae04b1a5656f4be6cd83ae919ef4`. No implementation patch points are
-decided yet.
+decided yet. A first deep source-analysis pass now exists in
+`capsched-models/analysis/0002` through `0007`.
 
 ## Core Architecture
 
@@ -109,8 +110,10 @@ into local node SchedContexts and endpoint capabilities.
 
 ## Near-Term Sequence
 
-1. Follow `capsched-models/plans/0001-upstream-analysis-plan.md`.
-2. Read real upstream code before deciding patch points.
-3. Create analysis notes mapping code paths to invariants.
-4. Draft formal semantic model before prototype implementation.
-5. Validate semantics with TLA+ or similar before claiming protection.
+1. Use `capsched-models/plans/0001-upstream-analysis-plan.md` and `0002` as
+   the analysis record.
+2. Read `capsched-models/analysis/0002` through `0007` before proposing patch
+   points.
+3. Draft the formal model-selection memo.
+4. Model runnable lease semantics first unless a stronger argument emerges.
+5. Validate semantics with TLA+ or similar before prototype implementation.

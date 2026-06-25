@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "upstream-analysis-started",
+    "current_phase": "upstream-analysis-deepened",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -45,9 +45,18 @@
   },
   "active_analysis": {
     "plan": "capsched/capsched-models/plans/0001-upstream-analysis-plan.md",
+    "deep_compatibility_plan": "capsched/capsched-models/plans/0002-deep-compatibility-analysis-plan.md",
     "initial_source_map": "capsched/capsched-models/analysis/0001-source-map.md",
+    "deep_notes": [
+      "capsched/capsched-models/analysis/0002-scheduler-execution-spine.md",
+      "capsched/capsched-models/analysis/0003-task-lifecycle-and-identity.md",
+      "capsched/capsched-models/analysis/0004-existing-resource-controls-and-compatibility.md",
+      "capsched/capsched-models/analysis/0005-async-provenance-risk-map.md",
+      "capsched/capsched-models/analysis/0006-cluster-domain-capability-mapping.md",
+      "capsched/capsched-models/analysis/0007-capability-invariant-matrix.md"
+    ],
     "started_on": "2026-06-25",
-    "current_focus": "scheduler execution spine before implementation patch point selection"
+    "current_focus": "deep compatibility, async provenance, and cluster-capability mapping before formal model selection"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -226,13 +235,15 @@
     {
       "id": "N-003",
       "text": "Read scheduler, fork/exec/exit, cgroup CPU, core scheduling, sched_ext, workqueue, and io_uring code before choosing patch points.",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_on": "2026-06-25",
       "blocked_by": []
     },
     {
       "id": "N-004",
       "text": "Create investigation notes that map actual upstream code paths to CapSched invariants.",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_on": "2026-06-25",
       "blocked_by": []
     },
     {
