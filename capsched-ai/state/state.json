@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "ready-for-upstream-fetch",
+    "current_phase": "upstream-fetched",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -29,10 +29,18 @@
       "linux_source_repo": "linux"
     },
     "linux_source": {
-      "status": "not_fetched",
-      "planned_directory": "linux",
-      "upstream_remote": null,
-      "upstream_commit": null
+      "status": "fetched",
+      "directory": "../linux",
+      "upstream_remote": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+      "upstream_remote_name": "upstream",
+      "upstream_branch": "master",
+      "upstream_ref": "upstream/master",
+      "upstream_commit": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+      "upstream_commit_date": "2026-06-25 14:09:26 -0700",
+      "upstream_commit_subject": "Merge tag 'bpf-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf",
+      "work_branch": "capsched-linux-l0",
+      "private_remote": null,
+      "fetched_on": "2026-06-25"
     }
   },
   "architecture_intent": {
@@ -204,16 +212,15 @@
     {
       "id": "N-002",
       "text": "Fetch current upstream Linux into sibling directory linux/ and record exact commit metadata.",
-      "status": "ready",
+      "status": "completed",
+      "completed_on": "2026-06-25",
       "blocked_by": []
     },
     {
       "id": "N-003",
       "text": "Read scheduler, fork/exec/exit, cgroup CPU, core scheduling, sched_ext, workqueue, and io_uring code before choosing patch points.",
-      "status": "pending",
-      "blocked_by": [
-        "N-002"
-      ]
+      "status": "ready",
+      "blocked_by": []
     },
     {
       "id": "N-004",

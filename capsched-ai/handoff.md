@@ -9,9 +9,9 @@ Read this first when resuming the project.
 The workspace is `/media/nia/scsiusb/dev/linux-cap`.
 The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched`.
 
-Upstream Linux has not been fetched yet. No implementation patch points are
-accepted. Durable state management is established. The workspace is ready for
-the upstream Linux fetch into sibling repository `linux/`.
+Upstream Linux has been fetched into sibling repository `linux/`. No
+implementation patch points are accepted yet. The next step is to read upstream
+code paths and write analysis notes before choosing patch points.
 
 ## Recovery Path
 
@@ -75,6 +75,15 @@ Implementation must keep capability types separated:
 
 ## Next Likely Action
 
-Fetch upstream Linux into sibling `linux/` repository and record the exact
-upstream remote, branch, commit, and date in
-`capsched/capsched-ai/state/state.json`.
+Read upstream Linux scheduler and lifecycle code, then write analysis notes
+before choosing patch points.
+
+Current Linux source state:
+
+```text
+repo: ../linux
+remote: upstream = https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+branch: capsched-linux-l0
+base: upstream/master
+commit: 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
+```
