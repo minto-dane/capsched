@@ -8,24 +8,24 @@
     "current_phase": "ready-for-upstream-fetch",
     "project_control": {
       "git_status": "initialized",
-      "repo_path": "/media/nia/scsiusb/dev/linux-cap",
+      "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
       "branch": "main",
-      "linux_ignored": true,
+      "linux_ignored": false,
       "initial_state_committed": true
     },
     "layout": {
-      "project_control_repo": "/media/nia/scsiusb/dev/linux-cap",
-      "ai": "capsched-ai",
-      "state_ledger": "capsched-ai/state",
-      "design": "capsched-ai/design",
-      "decisions": "capsched-ai/decisions",
-      "templates": "capsched-ai/templates",
-      "models_root": "capsched-models",
-      "analysis": "capsched-models/analysis",
-      "formal_models": "capsched-models/formal",
-      "validation": "capsched-models/validation",
-      "plans": "capsched-models/plans",
-      "implementation": "capsched-models/implementation",
+      "project_control_repo": "capsched",
+      "ai": "capsched/capsched-ai",
+      "state_ledger": "capsched/capsched-ai/state",
+      "design": "capsched/capsched-ai/design",
+      "decisions": "capsched/capsched-ai/decisions",
+      "templates": "capsched/capsched-ai/templates",
+      "models_root": "capsched/capsched-models",
+      "analysis": "capsched/capsched-models/analysis",
+      "formal_models": "capsched/capsched-models/formal",
+      "validation": "capsched/capsched-models/validation",
+      "plans": "capsched/capsched-models/plans",
+      "implementation": "capsched/capsched-models/implementation",
       "linux_source_repo": "linux"
     },
     "linux_source": {
@@ -196,14 +196,14 @@
   "next_actions": [
     {
       "id": "N-001",
-      "text": "Initialize Git at workspace root for project-control artifacts, with linux/ ignored as a separate upstream Linux repository.",
+      "text": "Initialize Git in capsched/ for project-control artifacts, with linux/ left unignored as a sibling Linux repository.",
       "status": "completed",
       "completed_on": "2026-06-25",
       "blocked_by": []
     },
     {
       "id": "N-002",
-      "text": "Fetch current upstream Linux into a separate source directory and record exact commit metadata.",
+      "text": "Fetch current upstream Linux into sibling directory linux/ and record exact commit metadata.",
       "status": "ready",
       "blocked_by": []
     },
@@ -233,14 +233,14 @@
     }
   ],
   "canonical_files": {
-    "state": "capsched-ai/state/state.json",
-    "ai_handoff": "capsched-ai/handoff.md",
-    "ai_protocol": "capsched-ai/operating-protocol.md",
-    "compact_context": "capsched-ai/design/compact.md",
-    "architecture_context": "capsched-ai/design/architecture.md",
-    "decision_index": "capsched-ai/decisions/index.md",
-    "model_index": "capsched-models/index.md",
-    "plan_index": "capsched-models/plans/index.md",
-    "event_log": "capsched-ai/state/events.jsonl"
+    "state": "capsched/capsched-ai/state/state.json",
+    "ai_handoff": "capsched/capsched-ai/handoff.md",
+    "ai_protocol": "capsched/capsched-ai/operating-protocol.md",
+    "compact_context": "capsched/capsched-ai/design/compact.md",
+    "architecture_context": "capsched/capsched-ai/design/architecture.md",
+    "decision_index": "capsched/capsched-ai/decisions/index.md",
+    "model_index": "capsched/capsched-models/index.md",
+    "plan_index": "capsched/capsched-models/plans/index.md",
+    "event_log": "capsched/capsched-ai/state/events.jsonl"
   }
 }

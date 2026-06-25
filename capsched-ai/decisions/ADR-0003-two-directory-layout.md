@@ -1,6 +1,6 @@
 # ADR-0003: Use Two Top-Level Directories for AI State and Modeling Work
 
-Status: Accepted
+Status: Superseded by ADR-0004
 
 Date: 2026-06-25
 
@@ -62,4 +62,3 @@ capsched-ai/state/state.json
 
 All model, analysis, validation, plan, and implementation artifacts should be
 placed under `capsched-models/`.
-

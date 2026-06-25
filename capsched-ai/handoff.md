@@ -7,19 +7,20 @@ Read this first when resuming the project.
 ## Current State
 
 The workspace is `/media/nia/scsiusb/dev/linux-cap`.
+The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched`.
 
 Upstream Linux has not been fetched yet. No implementation patch points are
 accepted. Durable state management is established. The workspace is ready for
-the upstream Linux fetch into the separate `linux/` repository.
+the upstream Linux fetch into sibling repository `linux/`.
 
 ## Recovery Path
 
 Read in this order:
 
-1. `capsched-ai/state/state.json`
-2. `capsched-ai/handoff.md`
-3. `capsched-ai/design/compact.md`
-4. `capsched-ai/decisions/index.md`
+1. `capsched/capsched-ai/state/state.json`
+2. `capsched/capsched-ai/handoff.md`
+3. `capsched/capsched-ai/design/compact.md`
+4. `capsched/capsched-ai/decisions/index.md`
 5. Any referenced ADRs or current plans
 
 Only read longer files when the current task requires them.
@@ -74,5 +75,6 @@ Implementation must keep capability types separated:
 
 ## Next Likely Action
 
-Fetch upstream Linux into a separate `linux/` repository and record the exact
-upstream remote, branch, commit, and date in `capsched-ai/state/state.json`.
+Fetch upstream Linux into sibling `linux/` repository and record the exact
+upstream remote, branch, commit, and date in
+`capsched/capsched-ai/state/state.json`.
