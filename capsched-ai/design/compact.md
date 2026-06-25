@@ -10,8 +10,10 @@ datacenter OS substrate where process-, service-, container-, tenant-, and
 cluster-cell-scale domains can receive isolation strength comparable to VM
 boundaries at lower operational cost.
 
-No upstream Linux source has been fetched yet. No implementation patch points
-are decided yet.
+Upstream Linux source has been fetched into sibling repository `linux/`.
+The current work branch is `capsched-linux-l0` at commit
+`4edcdefd4083ae04b1a5656f4be6cd83ae919ef4`. No implementation patch points are
+decided yet.
 
 ## Core Architecture
 
@@ -107,10 +109,8 @@ into local node SchedContexts and endpoint capabilities.
 
 ## Near-Term Sequence
 
-1. Fetch latest upstream Linux into a separate source directory.
-2. Record remote, branch, commit, and date in `state.json`.
-3. Read real upstream code before deciding patch points.
-4. Create investigation notes mapping code paths to invariants.
-5. Draft formal semantic model before prototype implementation.
-6. Validate semantics with TLA+ or similar before claiming protection.
-
+1. Follow `capsched-models/plans/0001-upstream-analysis-plan.md`.
+2. Read real upstream code before deciding patch points.
+3. Create analysis notes mapping code paths to invariants.
+4. Draft formal semantic model before prototype implementation.
+5. Validate semantics with TLA+ or similar before claiming protection.

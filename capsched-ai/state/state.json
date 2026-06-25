@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "upstream-fetched",
+    "current_phase": "upstream-analysis-started",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -42,6 +42,12 @@
       "private_remote": null,
       "fetched_on": "2026-06-25"
     }
+  },
+  "active_analysis": {
+    "plan": "capsched/capsched-models/plans/0001-upstream-analysis-plan.md",
+    "initial_source_map": "capsched/capsched-models/analysis/0001-source-map.md",
+    "started_on": "2026-06-25",
+    "current_focus": "scheduler execution spine before implementation patch point selection"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -183,7 +189,8 @@
     {
       "id": "Q-001",
       "text": "Which upstream Linux version and exact commit should be used as the base?",
-      "status": "open"
+      "status": "resolved",
+      "answer": "Use git.kernel.org torvalds/linux at commit 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4 on work branch capsched-linux-l0."
     },
     {
       "id": "Q-002",
@@ -219,16 +226,14 @@
     {
       "id": "N-003",
       "text": "Read scheduler, fork/exec/exit, cgroup CPU, core scheduling, sched_ext, workqueue, and io_uring code before choosing patch points.",
-      "status": "ready",
+      "status": "in_progress",
       "blocked_by": []
     },
     {
       "id": "N-004",
       "text": "Create investigation notes that map actual upstream code paths to CapSched invariants.",
-      "status": "pending",
-      "blocked_by": [
-        "N-003"
-      ]
+      "status": "in_progress",
+      "blocked_by": []
     },
     {
       "id": "N-005",
@@ -247,7 +252,9 @@
     "architecture_context": "capsched/capsched-ai/design/architecture.md",
     "decision_index": "capsched/capsched-ai/decisions/index.md",
     "model_index": "capsched/capsched-models/index.md",
+    "analysis_index": "capsched/capsched-models/analysis/index.md",
     "plan_index": "capsched/capsched-models/plans/index.md",
+    "active_analysis_plan": "capsched/capsched-models/plans/0001-upstream-analysis-plan.md",
     "event_log": "capsched/capsched-ai/state/events.jsonl"
   }
 }

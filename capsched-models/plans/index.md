@@ -2,13 +2,15 @@
 
 Updated: 2026-06-25
 
-No detailed plans are accepted yet.
+## Active Plans
 
-Likely plan records:
+| ID | Status | Title |
+| --- | --- | --- |
+| 0001 | Active | Upstream Linux Analysis for CapSched L0 |
 
-1. State-management and Git initialization plan.
-2. Upstream Linux fetch and base selection plan.
-3. Upstream code reading plan.
-4. First semantic model plan.
-5. L0 prototype implementation plan after investigations.
+## Likely Future Plan Records
 
+1. First semantic model plan.
+2. L0 prototype implementation plan after investigations.
+3. Validation plan for enqueue/pick/tick semantics.
+4. Validation plan for async provenance.
