@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-25",
+  "project": {
+    "name": "CapSched-Linux",
+    "workspace": "/media/nia/scsiusb/dev/linux-cap",
+    "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
+    "current_phase": "ready-for-upstream-fetch",
+    "project_control": {
+      "git_status": "initialized",
+      "repo_path": "/media/nia/scsiusb/dev/linux-cap",
+      "branch": "main",
+      "linux_ignored": true,
+      "initial_state_committed": true
+    },
+    "layout": {
+      "project_control_repo": "/media/nia/scsiusb/dev/linux-cap",
+      "ai": "capsched-ai",
+      "state_ledger": "capsched-ai/state",
+      "design": "capsched-ai/design",
+      "decisions": "capsched-ai/decisions",
+      "templates": "capsched-ai/templates",
+      "models_root": "capsched-models",
+      "analysis": "capsched-models/analysis",
+      "formal_models": "capsched-models/formal",
+      "validation": "capsched-models/validation",
+      "plans": "capsched-models/plans",
+      "implementation": "capsched-models/implementation",
+      "linux_source_repo": "linux"
+    },
+    "linux_source": {
+      "status": "not_fetched",
+      "planned_directory": "linux",
+      "upstream_remote": null,
+      "upstream_commit": null
+    }
+  },
+  "architecture_intent": {
+    "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
+    "production_track": "Monitor-backed CapSched-H: Linux-compatible domain-aware kernel plus small HyperTag Monitor enforcing non-forgeable DomainTag, epochs, MemoryView, IOMMU/queue ownership, and root CPU budgets.",
+    "datacenter_goal": "Provide process-to-container-granularity domains with isolation strength comparable to VM boundaries, while preserving lower cost and Linux ABI compatibility.",
+    "cluster_goal": "Support a cluster-wide capability/resource lease namespace without requiring one monolithic distributed kernel."
+  },
+  "core_concepts": {
+    "Domain": "Schedulable protection, ownership, audit, and resource context. May represent a process, service, container, tenant, or cluster cell.",
+    "DomainTag": "Active protection context selected at context switch; binds domain identity, epoch, capability root, MemoryView, object/device views, and side-channel policy.",
+    "RunCap": "Authority to submit a specific thread/task for runnable execution. It must not include kill, suspend, priority, budget, affinity, spawn, or mint authority.",
+    "SchedContext": "Independent CPU-time resource object containing budget, period, remaining runtime, allowed CPUs/NUMA, priority class, and co-tenancy constraints.",
+    "FrozenRunUse": "Execution lease frozen at enqueue after RunCap and SchedContext checks. Runqueues must not store raw capability handles as authority.",
+    "EndpointCap": "Resource-specific operation authority checked by resource endpoints such as VFS, socket, broker, device queue, or remote endpoint.",
+    "BudgetTicket": "Bounded donated budget for broker/service execution, preventing service confused deputy and DoS amplification.",
+    "HyperTagMonitor": "Small lower layer that enforces non-forgeable roots below Linux: domain registry, epochs, sealed run tokens, MemoryViews, IOMMU mappings, queue ownership, and root budgets."
+  },
+  "accepted_invariants": [
+    {
+      "id": "EXEC-001",
+      "text": "No RunCap, no enqueue."
+    },
+    {
+      "id": "EXEC-002",
+      "text": "No SchedContext, no execution."
+    },
+    {
+      "id": "EXEC-003",
+      "text": "No budget, no execution."
+    },
+    {
+      "id": "EXEC-004",
+      "text": "No FrozenRunUse, no runqueue entry."
+    },
+    {
+      "id": "EXEC-005",
+      "text": "No valid epoch and generation, no execution."
+    },
+    {
+      "id": "EXEC-006",
+      "text": "No DomainTag activation, no context switch across domains."
+    },
+    {
+      "id": "ASYNC-001",
+      "text": "No async work without caller provenance and frozen authority."
+    },
+    {
+      "id": "BROKER-001",
+      "text": "No caller budget, no broker/service execution on behalf of that caller."
+    },
+    {
+      "id": "BOUNDARY-001",
+      "text": "No raw pointer or mutable kernel object authority across Domain boundaries."
+    },
+    {
+      "id": "MONITOR-001",
+      "text": "Linux-only prototypes must not claim hypervisor-grade isolation."
+    }
+  ],
+  "design_boundaries": [
+    "Do not decide exact Linux patch points before reading current upstream code.",
+    "Do not make RunCap a universal capability.",
+    "Do not place VFS, BPF, GPU, or protocol-specific semantics inside the scheduler.",
+    "Do not use sched_ext as the production security boundary; it is useful for policy exploration.",
+    "Do not claim hypervisor replacement without monitor-enforced memory, CPU, IOMMU, queue, epoch, and domain roots.",
+    "Do not treat validation as pass/fail plumbing; validation must support semantic security claims."
+  ],
+  "planned_tracks": [
+    {
+      "id": "L0",
+      "name": "Linux-only performance prototype",
+      "scope": [
+        "task Domain pointer",
+        "RunCap",
+        "SchedContext",
+        "FrozenRunUse",
+        "enqueue/pick/tick enforcement",
+        "timer preemption",
+        "DomainTag switch instrumentation",
+        "benchmarks"
+      ],
+      "security_claim": "No hypervisor-grade isolation claim."
+    },
+    {
+      "id": "L1",
+      "name": "Domain provenance",
+      "scope": [
+        "fork/exec/exit",
+        "workqueue",
+        "task_work",
+        "io_uring workers",
+        "kernel threads",
+        "audit"
+      ]
+    },
+    {
+      "id": "L2",
+      "name": "Per-Domain kernel state",
+      "scope": [
+        "kernel stacks",
+        "slabs",
+        "async queues",
+        "page-cache overlays",
+        "network/service state"
+      ]
+    },
+    {
+      "id": "L3",
+      "name": "HyperTag Monitor",
+      "scope": [
+        "sealed RunToken",
+        "root CPU budgets",
+        "stage-2/EPT MemoryViews",
+        "epochs",
+        "page ownership"
+      ]
+    },
+    {
+      "id": "L4",
+      "name": "IOMMU and queue leases",
+      "scope": [
+        "VFIO/IOMMU integration",
+        "direct NIC/NVMe/GPU queues",
+        "driver/service Domains"
+      ]
+    },
+    {
+      "id": "L5",
+      "name": "Hypervisor-replacement evaluation",
+      "scope": [
+        "Domain-internal kernel exploit modeling",
+        "cross-Domain read/write attempts",
+        "monitor escape testing",
+        "KVM/Firecracker comparison"
+      ]
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-001",
+      "text": "Which upstream Linux version and exact commit should be used as the base?",
+      "status": "open"
+    },
+    {
+      "id": "Q-002",
+      "text": "What is the smallest L0 slice that can demonstrate RunCap/SchedContext/FrozenRunUse without destabilizing scheduler fast paths?",
+      "status": "open"
+    },
+    {
+      "id": "Q-003",
+      "text": "Which formal model should be written first: enqueue/pick/tick budget semantics, epoch revocation, or async provenance?",
+      "status": "open"
+    },
+    {
+      "id": "Q-004",
+      "text": "How should cluster-wide signed resource leases compile into local node SchedContexts and endpoint capabilities?",
+      "status": "open"
+    }
+  ],
+  "next_actions": [
+    {
+      "id": "N-001",
+      "text": "Initialize Git at workspace root for project-control artifacts, with linux/ ignored as a separate upstream Linux repository.",
+      "status": "completed",
+      "completed_on": "2026-06-25",
+      "blocked_by": []
+    },
+    {
+      "id": "N-002",
+      "text": "Fetch current upstream Linux into a separate source directory and record exact commit metadata.",
+      "status": "ready",
+      "blocked_by": []
+    },
+    {
+      "id": "N-003",
+      "text": "Read scheduler, fork/exec/exit, cgroup CPU, core scheduling, sched_ext, workqueue, and io_uring code before choosing patch points.",
+      "status": "pending",
+      "blocked_by": [
+        "N-002"
+      ]
+    },
+    {
+      "id": "N-004",
+      "text": "Create investigation notes that map actual upstream code paths to CapSched invariants.",
+      "status": "pending",
+      "blocked_by": [
+        "N-003"
+      ]
+    },
+    {
+      "id": "N-005",
+      "text": "Draft first formal semantic model before implementing prototype code.",
+      "status": "pending",
+      "blocked_by": [
+        "N-004"
+      ]
+    }
+  ],
+  "canonical_files": {
+    "state": "capsched-ai/state/state.json",
+    "ai_handoff": "capsched-ai/handoff.md",
+    "ai_protocol": "capsched-ai/operating-protocol.md",
+    "compact_context": "capsched-ai/design/compact.md",
+    "architecture_context": "capsched-ai/design/architecture.md",
+    "decision_index": "capsched-ai/decisions/index.md",
+    "model_index": "capsched-models/index.md",
+    "plan_index": "capsched-models/plans/index.md",
+    "event_log": "capsched-ai/state/events.jsonl"
+  }
+}

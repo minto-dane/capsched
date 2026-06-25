@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "capsched-ai-state.schema.json",
+  "title": "CapSched Project State",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "updated",
+    "project",
+    "architecture_intent",
+    "core_concepts",
+    "accepted_invariants",
+    "design_boundaries",
+    "planned_tracks",
+    "open_questions",
+    "next_actions",
+    "canonical_files"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "updated": {
+      "type": "string"
+    },
+    "project": {
+      "type": "object"
+    },
+    "architecture_intent": {
+      "type": "object"
+    },
+    "core_concepts": {
+      "type": "object"
+    },
+    "accepted_invariants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "design_boundaries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "planned_tracks": {
+      "type": "array"
+    },
+    "open_questions": {
+      "type": "array"
+    },
+    "next_actions": {
+      "type": "array"
+    },
+    "canonical_files": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

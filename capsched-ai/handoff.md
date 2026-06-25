@@ -1,0 +1,78 @@
+# AI Handoff
+
+Updated: 2026-06-25
+
+Read this first when resuming the project.
+
+## Current State
+
+The workspace is `/media/nia/scsiusb/dev/linux-cap`.
+
+Upstream Linux has not been fetched yet. No implementation patch points are
+accepted. Durable state management is established. The workspace is ready for
+the upstream Linux fetch into the separate `linux/` repository.
+
+## Recovery Path
+
+Read in this order:
+
+1. `capsched-ai/state/state.json`
+2. `capsched-ai/handoff.md`
+3. `capsched-ai/design/compact.md`
+4. `capsched-ai/decisions/index.md`
+5. Any referenced ADRs or current plans
+
+Only read longer files when the current task requires them.
+
+## Project Essence
+
+CapSched-Linux is a Linux scheduler and kernel architecture project. The
+long-term goal is not merely better containers. It is process-to-container-scale
+Domain isolation with VM-like protection strength and datacenter OS efficiency.
+
+The final architecture is:
+
+```text
+Domain-aware Linux kernel
++ typed capability/resource endpoints
++ per-Domain mutable kernel state
++ small HyperTag Monitor enforcing non-forgeable roots
+```
+
+The Linux-only L0 prototype is for integration, semantics, and performance. It
+must not claim hypervisor-grade isolation.
+
+## Design Memory
+
+Use this as the mental model:
+
+```text
+Capability = scheduled authority
+```
+
+Execution activates an authority context. The scheduler should activate
+`DomainTag + SchedContext + Thread` under a frozen execution lease.
+
+Implementation must keep capability types separated:
+
+- `RunCap`: enqueue/runnable submission only
+- `SchedContext`: CPU time/budget/period/placement/co-tenancy
+- `FrozenRunUse`: enqueue-time frozen execution lease
+- `DomainTag`: active protection context
+- `SpawnCap`: bounded creation authority
+- `ThreadControlCap`: suspend/resume/terminate/inspect
+- `SchedControlCap`: scheduling parameter changes
+- `EndpointCap`, `QueueCap`, `MemoryCap`: resource-specific endpoint authority
+- `BudgetTicket`: donated caller budget for broker/service execution
+
+## Do Not Do Yet
+
+- Do not choose exact Linux patch points before reading current upstream code.
+- Do not implement before writing investigation notes and a semantic model.
+- Do not merge Linux source and project state into one repository.
+- Do not claim security properties for Linux-only prototypes.
+
+## Next Likely Action
+
+Fetch upstream Linux into a separate `linux/` repository and record the exact
+upstream remote, branch, commit, and date in `capsched-ai/state/state.json`.

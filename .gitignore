@@ -1,0 +1,14 @@
+# Future upstream Linux checkout; it is its own Git repository.
+/linux/
+
+# Large generated or experimental artifacts should be recorded by manifest,
+# not committed directly unless intentionally small and reviewable.
+/artifacts/
+/build/
+/tmp/
+
+# Editor and OS noise.
+*~
+*.swp
+.DS_Store
+
