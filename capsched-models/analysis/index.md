@@ -22,9 +22,9 @@ Updated: 2026-06-26
 | 0014 | Draft | Scheduler Topology and Cluster Partition Map |
 | 0015 | Draft | Endpoint Async Linux Attachment Map |
 | 0016 | Draft | Device IOMMU and Queue Lease Map |
+| 0017 | Draft | MM Allocator and Page Cache Domain State Map |
 
 ## Planned Analysis Notes
 
-1. Deeper MM allocator, slab, and page-cache enforcement map.
-2. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
-3. Broker BudgetTicket and service Domain charging map.
+1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
+2. Broker BudgetTicket and service Domain charging map.

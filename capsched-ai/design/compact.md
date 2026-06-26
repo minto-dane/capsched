@@ -233,6 +233,19 @@ This is not a pass. The validation strategy now treats the full model as broad
 stress/regression evidence and uses smaller semantic models as proof roots.
 `ClusterShadowForgery` and `ClusterEpochRevoke` passed TLC.
 
+MM allocator/page-cache analysis now records:
+
+```text
+Linux page/folio/memcg/slab/page-cache metadata:
+  lifetime, accounting, reclaim, and performance substrate
+
+Production Domain memory authority:
+  monitor-owned PageOwner and MemoryView mappings
+```
+
+Therefore no L2 MM/page-cache/slab work should start before a MemoryOwnership
+model. memcg can mirror/account Domain budgets, but cannot be the security root.
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -275,6 +288,9 @@ production authority:
 
 future L4:
   model QueueLease before touching VFIO, iommufd, IOMMU, or drivers.
+
+future L2:
+  model MemoryOwnership before touching MM, slab, page cache, or reclaim paths.
 ```
 
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and

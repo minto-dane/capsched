@@ -48,6 +48,11 @@ result: VFIO/iommufd is a valuable Linux compatibility substrate, but its
 Linux-owned objects cannot be the production authority root. Future L4 device
 work should model typed QueueLease semantics first: queue tag, MemoryView IOMMU
 map, interrupt route, epoch, and rate/budget must revoke together.
+MM allocator/page-cache analysis has also been added. Key result: Linux
+`struct page`, folio, memcg, SLUB, page allocator, and page-cache metadata are
+valuable lifetime/accounting/reclaim substrates, but none is the production
+Domain memory authority root. Hypervisor-grade memory separation requires
+monitor-owned PageOwner and MemoryView mappings.
 
 ## Recovery Path
 
@@ -211,6 +216,7 @@ capsched/capsched-models/formal/0005-domain-monitor-activation-model/notes.md
 capsched/capsched-models/formal/0006-cluster-lease-compilation-model/notes.md
 capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md
 capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md
+capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md
 ```
 
 Stopped full integration run identity:
