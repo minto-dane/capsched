@@ -145,6 +145,22 @@ TLC summary:
   no invariant error found
 ```
 
+The Endpoint Async Provenance model also exists and passed TLC invariant
+checking in a tiny finite model:
+
+```text
+formal model:
+  capsched-models/formal/0003-endpoint-async-provenance-model/
+
+validation:
+  capsched-models/validation/0005-endpoint-async-tlc.md
+
+TLC summary:
+  291297 states generated
+  37392 distinct states
+  no invariant error found
+```
+
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
 `CONFIG_CAPSCHED=n/y` build validation passed under a systemd user service.
 
@@ -173,6 +189,8 @@ Socket and io_uring analysis sharpened a follow-on rule:
 RunCap is not EndpointCap.
 io_uring and socket operations need per-request or per-operation frozen
 endpoint authority after the runnable lease model.
+No FrozenEndpointUse, no async endpoint execution.
+Linux credential override must not change CapSched DomainTag.
 ```
 
 BPF and sched_ext analysis adds:

@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-06-25
+Updated: 2026-06-26
 
 ## Current Formal Records
 
@@ -8,14 +8,13 @@ Updated: 2026-06-25
 | --- | --- | --- |
 | 0001 | Draft | Model Selection |
 | 0002 | Checked | Runnable Lease Model |
+| 0003 | Checked | Endpoint Async Provenance Model |
 
 ## Planned
 
 1. Epoch/generation revocation model across runqueues and CPUs, if the first
    Runnable Lease model is too strict or too eager.
-2. Async provenance model for workqueue/io_uring/task_work confused deputy
-   prevention.
-3. Broker budget donation model with BudgetTicket and service authority
+2. Broker budget donation model with BudgetTicket and service authority
    intersection.
-4. Domain switch and monitor token model.
-5. Endpoint capability model for fd/file/socket/resource operations.
+3. Domain switch and monitor token model.
+4. Wider endpoint capability model for fd/file/socket/resource operations.

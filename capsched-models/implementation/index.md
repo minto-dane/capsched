@@ -1,8 +1,8 @@
 # Implementation Index
 
-Updated: 2026-06-25
+Updated: 2026-06-26
 
-No implementation patch points are accepted yet.
+No behavior-changing implementation patch points are accepted yet.
 
 Candidate implementation plans:
 
@@ -16,14 +16,23 @@ Candidate implementation plans:
   - Purpose: narrow the first patch to inert `CONFIG_CAPSCHED` build
     scaffolding with no task layout or scheduler behavior changes.
 
+Validated formal inputs:
+
+- `formal/0002-runnable-lease-model/`
+  - Status: checked with TLC.
+  - Pressure: `RunCap -> FrozenRunUse -> CPU execution`.
+- `formal/0003-endpoint-async-provenance-model/`
+  - Status: checked with TLC.
+  - Pressure: `EndpointCap -> FrozenEndpointUse -> async worker execution`.
+
 Known future branch names:
 
 - `capsched-linux-l0`: Linux-only prototype branch.
 - `capsched-linux-h`: monitor-backed research branch.
 
 The first selected slice is Slice 0A: inert build scaffolding. Linux source has
-been patched and committed. Build validation is pending because host dependency
-`flex` is missing.
+been patched, committed, and build-validated with `CONFIG_CAPSCHED=n` and
+`CONFIG_CAPSCHED=y`.
 
 Likely investigation targets, not decisions:
 

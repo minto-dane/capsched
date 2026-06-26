@@ -10,6 +10,7 @@ Updated: 2026-06-26
 | 0002 | Executed by systemd user runner | L0 Slice 0 Build Validation Plan |
 | 0003 | Partially blocked by missing host dependency | L0 Slice 0 Validation Attempt |
 | 0004 | Passed | L0 Slice 0 Systemd User Build Run |
+| 0005 | Passed for tiny finite model | Endpoint Async Provenance TLC Check |
 
 ## Principles
 

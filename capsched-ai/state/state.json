@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "l0-slice0-validated",
+    "current_phase": "endpoint-async-model-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -71,6 +71,9 @@
     "runnable_lease_model": "capsched/capsched-models/formal/0002-runnable-lease-model/README.md",
     "runnable_lease_tla": "capsched/capsched-models/formal/0002-runnable-lease-model/RunnableLease.tla",
     "runnable_lease_validation": "capsched/capsched-models/validation/0001-runnable-lease-tlc.md",
+    "endpoint_async_model": "capsched/capsched-models/formal/0003-endpoint-async-provenance-model/README.md",
+    "endpoint_async_tla": "capsched/capsched-models/formal/0003-endpoint-async-provenance-model/EndpointAsync.tla",
+    "endpoint_async_validation": "capsched/capsched-models/validation/0005-endpoint-async-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "l0_slice0_build_validation_plan": "capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md",
@@ -78,7 +81,7 @@
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
-    "current_focus": "Slice 0A is validated; next decision is whether to model EndpointCap/async provenance next or select an equally inert Slice 0B before any behavior-changing scheduler hook"
+    "current_focus": "Endpoint async provenance model is checked; next decision is whether to derive Linux attachment implications for io_uring/workqueue/socket wrappers or model broker BudgetTicket donation more deeply"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -128,6 +131,14 @@
     {
       "id": "BROKER-001",
       "text": "No caller budget, no broker/service execution on behalf of that caller."
+    },
+    {
+      "id": "ENDPOINT-001",
+      "text": "No FrozenEndpointUse, no async endpoint execution."
+    },
+    {
+      "id": "ENDPOINT-002",
+      "text": "Linux credential override must not change CapSched DomainTag or frozen endpoint authority."
     },
     {
       "id": "BOUNDARY-001",
@@ -295,10 +306,10 @@
     {
       "id": "N-007",
       "text": "Model EndpointCap and async provenance for socket and io_uring after the Runnable Lease model.",
-      "status": "pending",
-      "blocked_by": [
-        "N-006"
-      ]
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Endpoint Async Provenance TLA+ model was written and checked. TLC explored 291297 generated states and 37392 distinct states with no invariant errors. Validation record: capsched/capsched-models/validation/0005-endpoint-async-tlc.md.",
+      "blocked_by": []
     },
     {
       "id": "N-008",

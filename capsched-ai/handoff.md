@@ -16,13 +16,14 @@ The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
 partitions, and the first formal model selection. The first Runnable Lease TLA+
-model has been written and checked with TLC in a tiny finite model. A candidate
-Linux L0 Runnable Lease implementation plan now exists, derived from that model
-and the upstream scheduler maps. The first Linux patch slice has been narrowed
-to Slice 0A: inert `CONFIG_CAPSCHED` build scaffolding with no task layout or
-scheduler behavior changes. Slice 0A is now committed in the Linux repository.
-Build validation passed under a systemd user service using rootless local build
-tools extracted under `tools/apt-local/root`.
+model and the Endpoint Async Provenance model have both been written and checked
+with TLC in tiny finite models. A candidate Linux L0 Runnable Lease
+implementation plan now exists, derived from the first model and the upstream
+scheduler maps. The first Linux patch slice has been narrowed to Slice 0A:
+inert `CONFIG_CAPSCHED` build scaffolding with no task layout or scheduler
+behavior changes. Slice 0A is now committed in the Linux repository. Build
+validation passed under a systemd user service using rootless local build tools
+extracted under `tools/apt-local/root`.
 
 ## Recovery Path
 
@@ -89,8 +90,8 @@ Implementation must keep capability types separated:
 
 ## Next Likely Action
 
-The first formal semantic model has been selected and checked. Runnable lease
-semantics are modeled in:
+The first two formal semantic models have been selected and checked. Runnable
+lease semantics are modeled in:
 
 ```text
 capsched/capsched-models/formal/0002-runnable-lease-model/
@@ -102,9 +103,22 @@ TLC result:
 capsched/capsched-models/validation/0001-runnable-lease-tlc.md
 ```
 
-Do not jump to scheduler behavior patches. Slice 0A is validated; the next
-decision is whether to model EndpointCap/async provenance next or select an
-equally inert Slice 0B before any behavior-changing scheduler hook.
+Endpoint async provenance semantics are modeled in:
+
+```text
+capsched/capsched-models/formal/0003-endpoint-async-provenance-model/
+```
+
+TLC result:
+
+```text
+capsched/capsched-models/validation/0005-endpoint-async-tlc.md
+```
+
+Do not jump to scheduler behavior patches. Slice 0A is validated and the first
+async endpoint model is checked. The next decision is whether to derive concrete
+Linux attachment implications for `io_uring`, workqueue, socket, and task_work
+wrappers, or to model broker `BudgetTicket` donation more deeply.
 
 Current validation runner:
 
