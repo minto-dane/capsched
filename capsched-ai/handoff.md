@@ -21,8 +21,8 @@ Linux L0 Runnable Lease implementation plan now exists, derived from that model
 and the upstream scheduler maps. The first Linux patch slice has been narrowed
 to Slice 0A: inert `CONFIG_CAPSCHED` build scaffolding with no task layout or
 scheduler behavior changes. Slice 0A is now committed in the Linux repository.
-Build validation is running under a systemd user service using rootless local
-build tools extracted under `tools/apt-local/root`.
+Build validation passed under a systemd user service using rootless local build
+tools extracted under `tools/apt-local/root`.
 
 ## Recovery Path
 
@@ -102,23 +102,24 @@ TLC result:
 capsched/capsched-models/validation/0001-runnable-lease-tlc.md
 ```
 
-Do not jump to scheduler behavior patches. The next gate is inspecting the
-out-of-tree build validation for Slice 0A after the systemd user service exits.
+Do not jump to scheduler behavior patches. Slice 0A is validated; the next
+decision is whether to model EndpointCap/async provenance next or select an
+equally inert Slice 0B before any behavior-changing scheduler hook.
 
 Current validation runner:
 
 ```text
-unit: capsched-linux-n010-build.service
 script: /media/nia/scsiusb/dev/linux-cap/capsched/capsched-models/validation/run-l0-slice0-build-validation.sh
-latest known log: /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log
+log: /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log
+result: passed
 ```
 
-Useful checks:
+Validation evidence:
 
-```sh
-systemctl --user status capsched-linux-n010-build --no-pager
-journalctl --user -u capsched-linux-n010-build -f
-tail -f /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log
+```text
+baseline vmlinux built
+CONFIG_CAPSCHED=n vmlinux built with no capsched.o
+CONFIG_CAPSCHED=y vmlinux built with kernel/sched/capsched.o
 ```
 
 Candidate implementation plan:

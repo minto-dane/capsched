@@ -1,6 +1,6 @@
 # Validation 0004: L0 Slice 0 Systemd User Build Run
 
-Status: Running
+Status: Passed
 
 Date: 2026-06-26
 
@@ -138,23 +138,64 @@ Failed to add memory inotify watch descriptor ... No space left on device
 The service still entered `active (running)`. Treat those warnings as host
 environment noise unless the unit fails later with a related error.
 
-## Pending Evidence
+## Final Result
 
-Do not mark this validation passed until the service exits and the log is
-inspected for:
+The service completed:
 
 ```text
-baseline x86_64_defconfig completion
-baseline vmlinux build completion
-CONFIG_CAPSCHED=n olddefconfig and vmlinux completion
-CONFIG_CAPSCHED=y olddefconfig and vmlinux completion
-capsched object absence when CONFIG_CAPSCHED=n
-capsched object presence when CONFIG_CAPSCHED=y
-Linux source tree cleanliness
+[2026-06-25T21:41:49-04:00] CapSched L0 Slice 0 build validation completed
+```
+
+Run phases:
+
+```text
+21:14:58 EDT  validation started
+21:15:05 EDT  upstream baseline vmlinux build started
+21:18:31 EDT  Slice 0A CONFIG_CAPSCHED=n config started
+21:18:42 EDT  Slice 0A CONFIG_CAPSCHED=n vmlinux build started
+21:29:38 EDT  Slice 0A CONFIG_CAPSCHED=y config started
+21:29:47 EDT  Slice 0A CONFIG_CAPSCHED=y vmlinux build started
+21:41:49 EDT  validation completed
+```
+
+Built vmlinux outputs:
+
+```text
+/media/nia/scsiusb/dev/linux-cap/build/linux-l0-baseline-base-x86_64/vmlinux
+/media/nia/scsiusb/dev/linux-cap/build/linux-l0-capsched-off-x86_64/vmlinux
+/media/nia/scsiusb/dev/linux-cap/build/linux-l0-capsched-on-x86_64/vmlinux
+```
+
+CONFIG evidence:
+
+```text
+/media/nia/scsiusb/dev/linux-cap/build/linux-l0-capsched-on-x86_64/.config:177:CONFIG_CAPSCHED=y
+```
+
+`grep CONFIG_CAPSCHED` found no matching line in the
+`linux-l0-capsched-off-x86_64/.config` file, meaning the symbol is absent or
+disabled in that generated config.
+
+Object evidence:
+
+```text
+CONFIG_CAPSCHED=n:
+  no capsched object file found
+
+CONFIG_CAPSCHED=y:
+  /media/nia/scsiusb/dev/linux-cap/build/linux-l0-capsched-on-x86_64/kernel/sched/.capsched.o.cmd
+  /media/nia/scsiusb/dev/linux-cap/build/linux-l0-capsched-on-x86_64/kernel/sched/capsched.o
+```
+
+Repository cleanliness after the run:
+
+```text
+linux:    ## capsched-linux-l0
+capsched: ## main
 ```
 
 ## Interpretation
 
-This validation still does not prove any scheduler security invariant. It only
-checks that the no-behavior-change Slice 0A scaffolding is build-compatible when
-disabled and enabled.
+This validation passes for Slice 0A. It still does not prove any scheduler
+security invariant. It only checks that the no-behavior-change Slice 0A
+scaffolding is build-compatible when disabled and enabled.

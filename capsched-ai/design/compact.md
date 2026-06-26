@@ -145,17 +145,17 @@ TLC summary:
   no invariant error found
 ```
 
-The next gate is not Linux behavior changes yet. Complete and inspect the
-out-of-tree baseline and `CONFIG_CAPSCHED=n/y` build validation now running
-under a systemd user service.
+The next gate is not Linux behavior changes yet. The out-of-tree baseline and
+`CONFIG_CAPSCHED=n/y` build validation passed under a systemd user service.
 
 Current validation runner:
 
 ```text
-unit: capsched-linux-n010-build.service
 script: capsched-models/validation/run-l0-slice0-build-validation.sh
-latest known log:
+log:
   /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log
+result:
+  passed
 ```
 
 Candidate implementation plan:

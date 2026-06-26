@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "l0-slice0-validation",
+    "current_phase": "l0-slice0-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -41,7 +41,7 @@
       "work_branch": "capsched-linux-l0",
       "work_commit": "0b685979f27b3d42ee620ced5f707ee391a2a27f",
       "work_commit_subject": "sched/capsched: Add inert scaffolding",
-      "slice0a_status": "applied; build validation is running under systemd user service capsched-linux-n010-build.service using rootless local flex, bison, and libelf development files",
+      "slice0a_status": "applied and build-validated: upstream baseline, CONFIG_CAPSCHED=n, and CONFIG_CAPSCHED=y vmlinux builds completed successfully under systemd user runner",
       "private_remote": null,
       "fetched_on": "2026-06-25"
     }
@@ -78,7 +78,7 @@
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
-    "current_focus": "wait for and then inspect the systemd user Slice 0A build validation service; Linux Slice 0A is committed as 0b685979f27b3d42ee620ced5f707ee391a2a27f"
+    "current_focus": "Slice 0A is validated; next decision is whether to model EndpointCap/async provenance next or select an equally inert Slice 0B before any behavior-changing scheduler hook"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -319,8 +319,9 @@
     {
       "id": "N-010",
       "text": "Run the baseline out-of-tree Linux build and then apply/validate Slice 0A inert CONFIG_CAPSCHED scaffolding.",
-      "status": "running",
-      "partial_progress": "Slice 0A Linux commit 0b685979f27b3d42ee620ced5f707ee391a2a27f is applied. Rootless local flex, bison, and libelf development files are available under tools/apt-local/root. systemd user service capsched-linux-n010-build.service is running run-l0-slice0-build-validation.sh; latest known log path is /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log.",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Slice 0A Linux commit 0b685979f27b3d42ee620ced5f707ee391a2a27f is applied and validated. systemd user runner completed upstream baseline, CONFIG_CAPSCHED=n, and CONFIG_CAPSCHED=y vmlinux builds. CONFIG_CAPSCHED=n produced no capsched object; CONFIG_CAPSCHED=y produced kernel/sched/capsched.o. Log: /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log.",
       "blocked_by": []
     }
   ],

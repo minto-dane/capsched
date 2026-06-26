@@ -7,9 +7,9 @@ Updated: 2026-06-26
 | ID | Status | Title |
 | --- | --- | --- |
 | 0001 | Passed for tiny finite model | Runnable Lease TLC Check |
-| 0002 | Execution delegated to systemd user runner | L0 Slice 0 Build Validation Plan |
+| 0002 | Executed by systemd user runner | L0 Slice 0 Build Validation Plan |
 | 0003 | Partially blocked by missing host dependency | L0 Slice 0 Validation Attempt |
-| 0004 | Running | L0 Slice 0 Systemd User Build Run |
+| 0004 | Passed | L0 Slice 0 Systemd User Build Run |
 
 ## Principles
 
