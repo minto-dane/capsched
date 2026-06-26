@@ -67,6 +67,10 @@ Validated formal inputs:
   - Pressure: sealed shared bases may be shared, but mutable page-cache overlay
     state must be per-Domain and service-mediated; commits require provenance,
     tickets, current base version, and base-level serialization.
+- `formal/0011-queue-lease-model/`
+  - Status: checked with two TLC runs.
+  - Pressure: queue submit, DMA mapping, IRQ delivery, epoch, and budget are
+    one lease boundary; Linux shadow queue/IOMMU state is not authority.
 
 Known future branch names:
 

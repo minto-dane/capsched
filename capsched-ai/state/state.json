@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "page-cache-overlay-validated",
+    "current_phase": "queue-lease-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -109,6 +109,9 @@
     "page_cache_overlay_model": "capsched/capsched-models/formal/0010-page-cache-overlay-model/README.md",
     "page_cache_overlay_tla": "capsched/capsched-models/formal/0010-page-cache-overlay-model/PageCacheOverlay.tla",
     "page_cache_overlay_validation": "capsched/capsched-models/validation/0012-page-cache-overlay-tlc.md",
+    "queue_lease_model": "capsched/capsched-models/formal/0011-queue-lease-model/README.md",
+    "queue_lease_tla": "capsched/capsched-models/formal/0011-queue-lease-model/QueueLease.tla",
+    "queue_lease_validation": "capsched/capsched-models/validation/0013-queue-lease-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
@@ -120,7 +123,7 @@
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
-    "current_focus": "PageCacheOverlay was checked after a useful first counterexample: two overlays could enter committing for the same sealed base version, then one advanced the base while the other remained stale committing. The model now requires base-level commit serialization. TLC then completed with 7370677 generated states and 524808 distinct states with no invariant errors. DirectMapTLB is also checked. No Linux Slice 0B patch is accepted yet. Next: choose inert Slice 0B type-only scaffolding or QueueLease modeling before L4."
+    "current_focus": "QueueLease was checked with two TLC runs after strengthening IRQ aliasing. Queue submit, DMA mapping, IRQ delivery, epoch, and budget are modeled as one lease boundary; Linux shadow queue/IOMMU state is not authority. Each final run explored 97882849 generated states and 6465312 distinct states with no invariant errors. DirectMapTLB and PageCacheOverlay are also checked. No Linux Slice 0B patch is accepted yet. Next: choose inert Slice 0B type-only scaffolding, or defer Linux code again for a device-specific QueueLease endpoint model."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -274,6 +277,22 @@
     {
       "id": "DEVICE-003",
       "text": "Interrupt delivery must be owned by the same Domain/service endpoint as the leased queue."
+    },
+    {
+      "id": "DEVICE-004",
+      "text": "Linux shadow queue and IOMMU state must not create authority without a live monitor QueueTag, IOMMU map, and epoch."
+    },
+    {
+      "id": "DEVICE-005",
+      "text": "Queue revocation invalidates submit, completion delivery, IOMMU map, in-flight DMA, and IRQ route together."
+    },
+    {
+      "id": "DEVICE-006",
+      "text": "Queue rate or budget exhaustion prevents further doorbells even if Linux queue state says the queue is available."
+    },
+    {
+      "id": "DEVICE-007",
+      "text": "No IRQ route aliasing across non-free queues."
     }
   ],
   "design_boundaries": [
@@ -404,8 +423,8 @@
     {
       "id": "Q-009",
       "text": "Should device isolation begin from VFIO/iommufd device assignment or from typed queue leases?",
-      "status": "open",
-      "answer": "Analysis 0016 indicates VFIO/iommufd is a compatibility substrate, while the production data path should be typed QueueLease plus monitor-owned IOMMU map and interrupt route."
+      "status": "resolved",
+      "answer": "Begin from typed QueueLease semantics. Analysis 0016 says VFIO/iommufd is a compatibility substrate, while production authority is monitor-owned QueueTag, IOMMU map, IRQ route, epoch, and rate/budget. Formal 0011 QueueLease passed two TLC runs for the generic boundary; device-specific endpoint models remain future gates."
     },
     {
       "id": "Q-010",
@@ -578,7 +597,9 @@
     {
       "id": "N-017",
       "text": "Before any L4 device work, model QueueLease semantics for queue ownership, IOMMU mappings, interrupt routes, epochs, and rate budgets.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Added formal/0011 QueueLease. After strengthening IRQ aliasing, TLC completed two finite runs with different fingerprint indexes; each explored 97882849 generated states and 6465312 distinct states with no invariant errors. Validation record: capsched/capsched-models/validation/0013-queue-lease-tlc.md.",
       "blocked_by": [
         "N-018"
       ]
@@ -634,10 +655,21 @@
     {
       "id": "N-024",
       "text": "Choose the next gate after L2 memory-risk modeling: Slice 0B inert type-only scaffolding or QueueLease modeling before L4 device work.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Chose QueueLease modeling before returning to Linux code. Formal 0011 passed two TLC runs and validates the generic queue/IOMMU/IRQ/budget lease boundary.",
       "blocked_by": [
         "N-016",
         "N-023"
+      ]
+    },
+    {
+      "id": "N-025",
+      "text": "Choose the next gate after generic QueueLease validation: Slice 0B inert type-only scaffolding, or a device-specific QueueLease endpoint model for NIC, NVMe, GPU, or VFIO compatibility.",
+      "status": "pending",
+      "blocked_by": [
+        "N-017",
+        "N-024"
       ]
     }
   ],

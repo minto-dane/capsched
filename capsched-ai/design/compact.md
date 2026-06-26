@@ -299,6 +299,25 @@ TLC summary:
   no invariant error found after the serialization fix
 ```
 
+The generic QueueLease model then checked the L4 device/I/O boundary. It treats
+queue submit, DMA mapping, IRQ delivery, epoch, and budget as one lease
+boundary. Linux shadow queue and IOMMU state are explicitly modeled as
+forgeable non-authority state.
+
+```text
+formal model:
+  capsched-models/formal/0011-queue-lease-model/
+
+validation:
+  capsched-models/validation/0013-queue-lease-tlc.md
+
+TLC summary:
+  primary and second runs:
+    97882849 states generated
+    6465312 distinct states
+    no invariant error found
+```
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -340,7 +359,8 @@ production authority:
   queue epoch + rate/budget.
 
 future L4:
-  model QueueLease before touching VFIO, iommufd, IOMMU, or drivers.
+  generic QueueLease is checked; device-specific NIC/NVMe/GPU/VFIO endpoint
+  models remain before touching VFIO, iommufd, IOMMU, or drivers.
 
 future L2:
   direct-map/TLB revocation and page-cache overlay conflict semantics are
@@ -394,7 +414,7 @@ The gate has been updated for decomposed cluster authority validation; it is not
 an accepted Linux patch yet.
 
 Alternative next gates:
-  model QueueLease before L4 device work
+  model a device-specific QueueLease endpoint before L4 device work
 ```
 
 BPF and sched_ext analysis adds:

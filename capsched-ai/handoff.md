@@ -69,6 +69,11 @@ useful stale-commit counterexample: two overlays could commit against the same
 sealed base version, one could advance the base, and the other remained stale
 committing. The model now requires base-level commit serialization or an
 equivalent commit token. TLC then completed with no invariant errors.
+The generic QueueLease model has also been checked with two TLC runs after
+strengthening IRQ aliasing across non-free queues. Queue submit, DMA mapping,
+IRQ delivery, epoch, and budget are treated as one lease boundary; Linux shadow
+queue/IOMMU state is not authority. Both runs completed with no invariant
+errors.
 
 ## Recovery Path
 
@@ -218,9 +223,10 @@ completion, but remains limited to inert type-only scaffolding.
 Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
 checked, the Linux attachment map exists, and decomposed cluster authority,
-MemoryOwnership, DirectMapTLB, and PageCacheOverlay models are checked. The
-next decision is whether to choose Slice 0B type-only endpoint/broker/domain
-authority scaffolding or to model QueueLease before L4 device work.
+MemoryOwnership, DirectMapTLB, PageCacheOverlay, and QueueLease models are
+checked. The next decision is whether to choose Slice 0B type-only
+endpoint/broker/domain authority scaffolding or to model a device-specific
+QueueLease endpoint before L4 implementation work.
 
 Endpoint attachment records:
 
@@ -239,6 +245,8 @@ capsched/capsched-models/formal/0009-direct-map-tlb-model/notes.md
 capsched/capsched-models/validation/0011-direct-map-tlb-tlc.md
 capsched/capsched-models/formal/0010-page-cache-overlay-model/notes.md
 capsched/capsched-models/validation/0012-page-cache-overlay-tlc.md
+capsched/capsched-models/formal/0011-queue-lease-model/notes.md
+capsched/capsched-models/validation/0013-queue-lease-tlc.md
 ```
 
 Stopped full integration run identity:

@@ -16,11 +16,12 @@ Updated: 2026-06-26
 | 0008 | Checked via decomposed models | Memory Ownership Model |
 | 0009 | Checked after counterexample-driven fix | Direct Map and TLB Revocation Model |
 | 0010 | Checked after counterexample-driven fix | Page Cache Overlay Conflict Model |
+| 0011 | Checked with two TLC runs | Queue Lease and IOMMU Boundary Model |
 
 ## Planned
 
 1. Epoch/generation revocation model across runqueues and CPUs, if the first
    Runnable Lease model is too strict or too eager.
 2. Wider endpoint capability model for fd/file/socket/resource operations.
-3. QueueLease model for IOMMU mappings, queue ownership, interrupt routes,
-   epochs, and rate budgets before L4 device work.
+3. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
+   compatibility paths before L4 implementation work.

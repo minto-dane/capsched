@@ -1,6 +1,6 @@
 # Analysis 0016: Device IOMMU and Queue Lease Map
 
-Status: Draft
+Status: Updated after QueueLease validation
 
 Date: 2026-06-26
 
@@ -449,6 +449,9 @@ DEVICE-005:
 DEVICE-006:
   Queue rate/budget exhaustion prevents further submit even if Linux queue state
   says the queue is available.
+
+DEVICE-007:
+  No IRQ route aliasing across non-free queues.
 ```
 
 ## Existing Object Mapping
@@ -471,7 +474,7 @@ DEVICE-006:
 ## Linux Patch Implications
 
 Slice 0B must not touch VFIO, iommufd, IOMMU, or drivers. Those areas are L4
-and require a QueueLease model first.
+and require QueueLease validation plus device-specific endpoint modeling first.
 
 For future L4:
 
@@ -500,35 +503,35 @@ HyperTag Monitor:
   rate/budget ceiling
 ```
 
-## Next Formal Candidate
+## QueueLease Formal Model
 
-After the ClusterLease full TLC run completes, the next useful model candidate
-is:
-
-```text
-QueueLease:
-  Domain
-  ServiceDomain
-  Queue
-  QueueTag
-  MemoryView
-  IOMMUMap
-  InterruptRoute
-  Epoch
-  RateBudget
-  LinuxShadow
-```
-
-The adversary should be allowed to:
+The first generic QueueLease semantic model now exists:
 
 ```text
-forge Linux shadow queue state
-try to ring a queue without QueueTag
-try to DMA outside MemoryView
-try to keep completion/IRQ route after revocation
-try to use stale epoch
-try to spend queue budget twice
+capsched/capsched-models/formal/0011-queue-lease-model/
 ```
 
-The model should prove the invariants in this note before any device/IOMMU
-Linux patch is considered.
+Validation record:
+
+```text
+capsched/capsched-models/validation/0013-queue-lease-tlc.md
+```
+
+It models:
+
+```text
+Domain epoch
+QueueLease
+DMA buffer owner
+IOMMU map
+IRQ route
+submit budget
+Linux shadow queue owner
+Linux shadow IOMMU map
+```
+
+TLC completed two finite runs with no invariant errors after strengthening IRQ
+aliasing across non-free queues. This validates the generic lease boundary but
+does not authorize L4 implementation yet. Device-specific queue endpoint
+semantics for NIC, NVMe, GPU, VFIO compatibility, and IOMMU invalidation
+ordering remain separate gates.

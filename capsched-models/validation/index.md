@@ -18,6 +18,7 @@ Updated: 2026-06-26
 | 0010 | Passed for decomposed finite models | Memory Ownership TLC Check |
 | 0011 | Passed after counterexample-driven fix | Direct Map and TLB Revocation TLC Check |
 | 0012 | Passed after counterexample-driven fix | Page Cache Overlay Conflict TLC Check |
+| 0013 | Passed with two finite TLC runs | Queue Lease and IOMMU Boundary TLC Check |
 
 ## Principles
 
