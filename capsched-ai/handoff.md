@@ -12,7 +12,8 @@ The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched
 Upstream Linux has been fetched into sibling repository `linux/`. No
 implementation patch points are accepted yet. The source-analysis pass has been
 expanded through policy front-ends, mutable kernel state, dangerous surfaces,
-and the first formal model selection.
+network/socket endpoints, io_uring registered resources, and the first formal
+model selection.
 
 ## Recovery Path
 
@@ -90,6 +91,12 @@ Task + TaskGeneration + DomainEpoch
 Do not implement Linux patches before the model-selection memo exists.
 The memo now exists; the next gate is to write and check the actual Runnable
 Lease model.
+
+The runnable lease execution plan is:
+
+```text
+capsched/capsched-models/plans/0004-runnable-lease-model-execution-plan.md
+```
 
 Current Linux source state:
 

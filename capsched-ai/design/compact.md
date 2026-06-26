@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `4edcdefd4083ae04b1a5656f4be6cd83ae919ef4`. No implementation patch points are
 decided yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0010`.
+`capsched-models/analysis/0002` through `0012`.
 
 ## Core Architecture
 
@@ -123,4 +123,12 @@ Current first model target:
 ```text
 Task + TaskGeneration + ProcessGeneration + Domain + DomainEpoch
 + RunCap + SchedContext + FrozenRunUse + RunqueueState + CPU + Budget
+```
+
+Socket and io_uring analysis sharpened a follow-on rule:
+
+```text
+RunCap is not EndpointCap.
+io_uring and socket operations need per-request or per-operation frozen
+endpoint authority after the runnable lease model.
 ```

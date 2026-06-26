@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "upstream-analysis-expanded",
+    "current_phase": "formal-model-prep",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -56,10 +56,13 @@
       "capsched/capsched-models/analysis/0007-capability-invariant-matrix.md",
       "capsched/capsched-models/analysis/0008-policy-frontends-and-capability-issuance.md",
       "capsched/capsched-models/analysis/0009-mutable-kernel-state-boundary-map.md",
-      "capsched/capsched-models/analysis/0010-dangerous-surfaces-and-service-domains.md"
+      "capsched/capsched-models/analysis/0010-dangerous-surfaces-and-service-domains.md",
+      "capsched/capsched-models/analysis/0011-network-socket-endpoint-map.md",
+      "capsched/capsched-models/analysis/0012-io-uring-registered-resource-provenance.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
+    "runnable_lease_model_plan": "capsched/capsched-models/plans/0004-runnable-lease-model-execution-plan.md",
     "started_on": "2026-06-25",
     "current_focus": "runnable lease formal model before Linux prototype patch selection"
   },
@@ -254,18 +257,23 @@
     },
     {
       "id": "N-005",
-      "text": "Draft first formal semantic model before implementing prototype code.",
-      "status": "in_progress",
-      "blocked_by": [
-        "N-004"
-      ]
+      "text": "Select and scope the first formal semantic model before implementing prototype code.",
+      "status": "completed",
+      "completed_on": "2026-06-25",
+      "blocked_by": []
     },
     {
       "id": "N-006",
       "text": "Write and check the Runnable Lease formal model before selecting Linux L0 patch points.",
+      "status": "in_progress",
+      "blocked_by": []
+    },
+    {
+      "id": "N-007",
+      "text": "Model EndpointCap and async provenance for socket and io_uring after the Runnable Lease model.",
       "status": "pending",
       "blocked_by": [
-        "N-005"
+        "N-006"
       ]
     }
   ],

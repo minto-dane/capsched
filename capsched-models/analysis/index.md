@@ -16,10 +16,12 @@ Updated: 2026-06-25
 | 0008 | Draft | Policy Front-Ends and Capability Issuance |
 | 0009 | Draft | Mutable Kernel State Boundary Map |
 | 0010 | Draft | Dangerous Surfaces and Service Domains |
+| 0011 | Draft | Network Socket Endpoint Map |
+| 0012 | Draft | io_uring Registered Resource Provenance |
 
 ## Planned Analysis Notes
 
-1. Deeper network stack and socket endpoint map.
-2. Deeper io_uring registered-resource map.
-3. TLA+ or equivalent skeleton for runnable lease semantics.
-4. Validation and benchmark plan after formal model selection.
+1. TLA+ or equivalent skeleton for runnable lease semantics.
+2. Validation and benchmark plan after formal model selection.
+3. Deeper BPF attachment and verifier boundary map.
+4. Deeper device queue and IOMMU lease map.
