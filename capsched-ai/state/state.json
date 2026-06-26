@@ -94,6 +94,7 @@
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
+    "slice0b_readiness_gate": "capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md",
     "l0_slice0_build_validation_plan": "capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md",
     "l0_slice0_validation_attempt": "capsched/capsched-models/validation/0003-l0-slice0-validation-attempt.md",
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
@@ -435,6 +436,14 @@
       "status": "pending",
       "blocked_by": [
         "N-014"
+      ]
+    },
+    {
+      "id": "N-016",
+      "text": "After ClusterLease TLC completes, review the Slice 0B readiness gate before applying any Linux type-only authority scaffolding patch.",
+      "status": "pending",
+      "blocked_by": [
+        "N-015"
       ]
     }
   ],

@@ -20,6 +20,11 @@ Candidate implementation plans:
   - Purpose: derive endpoint/async attachment pressure from the checked
     Endpoint Async Provenance model and Linux io_uring/workqueue/socket source
     reading.
+- `0004-slice0b-readiness-gate.md`
+  - Status: draft gate, not an accepted Linux patch.
+  - Purpose: integrate the checked RunnableLease, EndpointAsync, BrokerBudget,
+    and DomainMonitor models plus the running ClusterLease model into the
+    acceptance criteria for a possible type-only Slice 0B patch.
 
 Validated formal inputs:
 
@@ -29,6 +34,18 @@ Validated formal inputs:
 - `formal/0003-endpoint-async-provenance-model/`
   - Status: checked with TLC.
   - Pressure: `EndpointCap -> FrozenEndpointUse -> async worker execution`.
+- `formal/0004-broker-budget-ticket-model/`
+  - Status: checked with TLC.
+  - Pressure: caller-reserved `BudgetTicket` plus frozen broker use is required
+    for service execution on caller behalf.
+- `formal/0005-domain-monitor-activation-model/`
+  - Status: checked with TLC.
+  - Pressure: Linux-visible DomainTag shadow state is not execution authority
+    without monitor-owned activation.
+- `formal/0006-cluster-lease-compilation-model/`
+  - Status: full integration TLC running under systemd.
+  - Pressure: cluster authority must compile into node-local authority before
+    local execution or endpoint use.
 
 Known future branch names:
 
@@ -57,8 +74,10 @@ Current patch recommendation, not yet executed:
 
 ```text
 Slice 0B:
-  type-only endpoint authority scaffolding in include/linux/capsched.h and
+  type-only authority scaffolding in include/linux/capsched.h and
   kernel/sched/capsched.c
   no Linux hot struct attachment
   no behavior change
+  wait for ClusterLease TLC completion unless cluster semantics are kept to
+  opaque placeholder names only
 ```

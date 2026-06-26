@@ -169,6 +169,17 @@ Current long-running TLC record:
 capsched/capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md
 ```
 
+The current Slice 0B readiness gate is:
+
+```text
+capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md
+```
+
+It says Slice 0B must remain type-only, no hot struct attachment, no behavior
+change, and no collapsed capability type. It also recommends waiting for the
+ClusterLease full TLC result unless cluster semantics are kept to opaque
+placeholder names only.
+
 Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
 checked, and the Linux attachment map exists. Cluster lease compilation is
@@ -184,6 +195,7 @@ capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md
 capsched/capsched-models/formal/0004-broker-budget-ticket-model/notes.md
 capsched/capsched-models/formal/0005-domain-monitor-activation-model/notes.md
 capsched/capsched-models/formal/0006-cluster-lease-compilation-model/notes.md
+capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md
 ```
 
 Cluster lease TLC service commands:

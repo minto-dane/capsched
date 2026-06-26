@@ -279,9 +279,12 @@ Current next decision:
 
 ```text
 Wait for ClusterLease full integration TLC completion.
-Then decide whether Slice 0B should be type-only endpoint/broker/domain
-authority scaffolding in capsched.h/capsched.c with no hot struct attachment and
-no behavior change.
+Then review:
+  capsched-models/implementation/0004-slice0b-readiness-gate.md
+
+Slice 0B, if accepted, should be type-only authority scaffolding in
+include/linux/capsched.h and kernel/sched/capsched.c with no hot struct
+attachment, no behavior change, no user ABI, and no collapsed capability type.
 ```
 
 BPF and sched_ext analysis adds:
