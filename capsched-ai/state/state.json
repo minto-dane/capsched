@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "broker-budget-ticket-model-validated",
+    "current_phase": "domain-monitor-activation-model-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -78,6 +78,9 @@
     "broker_budget_model": "capsched/capsched-models/formal/0004-broker-budget-ticket-model/README.md",
     "broker_budget_tla": "capsched/capsched-models/formal/0004-broker-budget-ticket-model/BrokerBudget.tla",
     "broker_budget_validation": "capsched/capsched-models/validation/0006-broker-budget-ticket-tlc.md",
+    "domain_monitor_model": "capsched/capsched-models/formal/0005-domain-monitor-activation-model/README.md",
+    "domain_monitor_tla": "capsched/capsched-models/formal/0005-domain-monitor-activation-model/DomainMonitor.tla",
+    "domain_monitor_validation": "capsched/capsched-models/validation/0007-domain-monitor-activation-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
@@ -86,7 +89,7 @@
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
-    "current_focus": "Broker BudgetTicket donation model is checked; next decision is whether to select Slice 0B type-only endpoint/broker authority scaffolding or model DomainTag/monitor activation before more Linux behavior changes"
+    "current_focus": "Domain Monitor Activation model is checked without weakening the hostile Linux shadow-tag assumption; next decision is Slice 0B type-only endpoint/broker/domain authority scaffolding or a cluster lease compilation model"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -160,6 +163,14 @@
     {
       "id": "MONITOR-001",
       "text": "Linux-only prototypes must not claim hypervisor-grade isolation."
+    },
+    {
+      "id": "MONITOR-002",
+      "text": "Mutable Linux DomainTag shadow state is not execution authority without monitor-owned activation."
+    },
+    {
+      "id": "MONITOR-003",
+      "text": "No monitor RunToken, no active DomainTag or MemoryView for execution."
     },
     {
       "id": "POLICY-001",
@@ -287,6 +298,11 @@
       "text": "Should Linux L0 caller epoch revocation for broker tickets forfeit unspent reserved caller budget, refund it, or make that policy endpoint-specific?",
       "status": "open",
       "answer": "The checked Broker BudgetTicket model uses strict caller-revoke forfeiture and service-revoke refund as a deliberately explicit baseline, not yet an accepted Linux policy."
+    },
+    {
+      "id": "Q-008",
+      "text": "Should the first Linux Slice 0B introduce type-only endpoint/broker/domain authority scaffolding, or should cluster lease compilation be modeled first?",
+      "status": "open"
     }
   ],
   "next_actions": [
@@ -385,9 +401,19 @@
     {
       "id": "N-013",
       "text": "Choose the next gate after Broker/BudgetTicket validation: Slice 0B type-only endpoint/broker authority scaffolding, or DomainTag/monitor activation modeling.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Chose DomainTag/monitor activation modeling before more Linux behavior changes. TLC primary and second runs each explored 82993249 generated states and 1916784 distinct states with no invariant errors. Validation record: capsched/capsched-models/validation/0007-domain-monitor-activation-tlc.md.",
       "blocked_by": [
         "N-012"
+      ]
+    },
+    {
+      "id": "N-014",
+      "text": "Choose the next gate after Domain Monitor Activation validation: Slice 0B type-only endpoint/broker/domain authority scaffolding, or a cluster lease compilation model.",
+      "status": "pending",
+      "blocked_by": [
+        "N-013"
       ]
     }
   ],

@@ -10,10 +10,11 @@ Updated: 2026-06-26
 | 0002 | Checked | Runnable Lease Model |
 | 0003 | Checked | Endpoint Async Provenance Model |
 | 0004 | Checked | Broker BudgetTicket Model |
+| 0005 | Checked | Domain Monitor Activation Model |
 
 ## Planned
 
 1. Epoch/generation revocation model across runqueues and CPUs, if the first
    Runnable Lease model is too strict or too eager.
-2. Domain switch and monitor token model.
-3. Wider endpoint capability model for fd/file/socket/resource operations.
+2. Wider endpoint capability model for fd/file/socket/resource operations.
+3. Cluster lease compilation model.

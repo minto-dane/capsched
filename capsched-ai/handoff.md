@@ -16,8 +16,9 @@ The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
 partitions, and the first formal model selection. The Runnable Lease,
-Endpoint Async Provenance, and Broker BudgetTicket TLA+ models have been written
-and checked with TLC in tiny finite models. A candidate Linux L0 Runnable Lease
+Endpoint Async Provenance, Broker BudgetTicket, and Domain Monitor Activation
+TLA+ models have been written and checked with TLC in tiny finite models. A
+candidate Linux L0 Runnable Lease
 implementation plan now exists, derived from the first model and the upstream
 scheduler maps. The first Linux patch slice has been narrowed to Slice 0A:
 inert `CONFIG_CAPSCHED` build scaffolding with no task layout or scheduler
@@ -33,6 +34,10 @@ The Broker BudgetTicket model has also been checked. Key result: service
 authority alone is insufficient; broker/service execution requires a live
 caller-reserved `BudgetTicket`, frozen caller endpoint authority, live caller and
 service epochs, and service-side budget.
+The Domain Monitor Activation model has also been checked without weakening the
+hostile Linux shadow-tag assumption. Key result: mutable Linux `linuxTag` state
+may be forged, but it cannot create active execution authority without a
+monitor-owned `runToken`, `activeDomain`, and `activeMemView`.
 
 ## Recovery Path
 
@@ -136,11 +141,23 @@ TLC result:
 capsched/capsched-models/validation/0006-broker-budget-ticket-tlc.md
 ```
 
+Domain monitor activation semantics are modeled in:
+
+```text
+capsched/capsched-models/formal/0005-domain-monitor-activation-model/
+```
+
+TLC result:
+
+```text
+capsched/capsched-models/validation/0007-domain-monitor-activation-tlc.md
+```
+
 Do not jump to scheduler behavior patches. Slice 0A is validated, the async
-endpoint model and broker budget model are checked, and the Linux attachment map
-exists. The next decision is whether to choose Slice 0B type-only
-endpoint/broker authority scaffolding or model DomainTag/monitor activation
-before more Linux behavior changes.
+endpoint model, broker budget model, and domain monitor activation model are
+checked, and the Linux attachment map exists. The next decision is whether to
+choose Slice 0B type-only endpoint/broker/domain authority scaffolding or model
+cluster lease compilation before more Linux behavior changes.
 
 Endpoint attachment records:
 
@@ -148,6 +165,7 @@ Endpoint attachment records:
 capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md
 capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md
 capsched/capsched-models/formal/0004-broker-budget-ticket-model/notes.md
+capsched/capsched-models/formal/0005-domain-monitor-activation-model/notes.md
 ```
 
 Current validation runner:

@@ -177,6 +177,27 @@ TLC summary:
   no invariant error found
 ```
 
+The Domain Monitor Activation model also exists and passed TLC invariant
+checking in a tiny finite model without weakening the hostile Linux shadow-tag
+assumption:
+
+```text
+formal model:
+  capsched-models/formal/0005-domain-monitor-activation-model/
+
+validation:
+  capsched-models/validation/0007-domain-monitor-activation-tlc.md
+
+TLC summary:
+  primary run:
+    82993249 states generated
+    1916784 distinct states
+    no invariant error found
+  second run:
+    same state graph size, 8 workers, different fingerprint index
+    no invariant error found
+```
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -237,11 +258,11 @@ Current next decision:
 
 ```text
 Either select Slice 0B:
-  type-only endpoint/broker authority scaffolding in capsched.h/capsched.c,
+  type-only endpoint/broker/domain authority scaffolding in capsched.h/capsched.c,
   no hot struct attachment,
   no behavior change
 
-Or model DomainTag/monitor activation before more Linux behavior changes.
+Or model cluster lease compilation before more Linux behavior changes.
 ```
 
 BPF and sched_ext analysis adds:

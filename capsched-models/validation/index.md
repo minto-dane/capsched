@@ -12,6 +12,7 @@ Updated: 2026-06-26
 | 0004 | Passed | L0 Slice 0 Systemd User Build Run |
 | 0005 | Passed for tiny finite model | Endpoint Async Provenance TLC Check |
 | 0006 | Passed for tiny finite model | Broker BudgetTicket TLC Check |
+| 0007 | Passed for tiny finite model | Domain Monitor Activation TLC Check |
 
 ## Principles
 

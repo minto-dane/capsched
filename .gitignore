@@ -4,6 +4,9 @@
 /build/
 /tmp/
 
+# TLA+ TLC generated state checkpoints.
+/capsched-models/formal/**/states/
+
 # Editor and OS noise.
 *~
 *.swp
