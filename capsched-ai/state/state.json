@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "endpoint-async-attachment-mapped",
+    "current_phase": "broker-budget-ticket-model-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -75,6 +75,9 @@
     "endpoint_async_model": "capsched/capsched-models/formal/0003-endpoint-async-provenance-model/README.md",
     "endpoint_async_tla": "capsched/capsched-models/formal/0003-endpoint-async-provenance-model/EndpointAsync.tla",
     "endpoint_async_validation": "capsched/capsched-models/validation/0005-endpoint-async-tlc.md",
+    "broker_budget_model": "capsched/capsched-models/formal/0004-broker-budget-ticket-model/README.md",
+    "broker_budget_tla": "capsched/capsched-models/formal/0004-broker-budget-ticket-model/BrokerBudget.tla",
+    "broker_budget_validation": "capsched/capsched-models/validation/0006-broker-budget-ticket-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
@@ -83,7 +86,7 @@
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
-    "current_focus": "Endpoint async Linux attachment map is recorded; next decision is whether to select Slice 0B type-only endpoint authority scaffolding or model broker BudgetTicket donation more deeply"
+    "current_focus": "Broker BudgetTicket donation model is checked; next decision is whether to select Slice 0B type-only endpoint/broker authority scaffolding or model DomainTag/monitor activation before more Linux behavior changes"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -133,6 +136,14 @@
     {
       "id": "BROKER-001",
       "text": "No caller budget, no broker/service execution on behalf of that caller."
+    },
+    {
+      "id": "BROKER-002",
+      "text": "Broker/service execution requires a live BudgetTicket reserved from caller budget."
+    },
+    {
+      "id": "BROKER-003",
+      "text": "Service authority alone must not execute caller work."
     },
     {
       "id": "ENDPOINT-001",
@@ -270,6 +281,12 @@
       "id": "Q-006",
       "text": "Should registered endpoint revocation use eager cancellation or lazy execute-time rejection in Linux L0?",
       "status": "open"
+    },
+    {
+      "id": "Q-007",
+      "text": "Should Linux L0 caller epoch revocation for broker tickets forfeit unspent reserved caller budget, refund it, or make that policy endpoint-specific?",
+      "status": "open",
+      "answer": "The checked Broker BudgetTicket model uses strict caller-revoke forfeiture and service-revoke refund as a deliberately explicit baseline, not yet an accepted Linux policy."
     }
   ],
   "next_actions": [
@@ -358,9 +375,19 @@
     {
       "id": "N-012",
       "text": "Choose the next gate: Slice 0B type-only endpoint authority scaffolding, or a deeper Broker/BudgetTicket formal model before more Linux code.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Chose the deeper Broker/BudgetTicket formal model before more Linux code. TLC explored 129777 generated states and 25008 distinct states with no invariant errors. Validation record: capsched/capsched-models/validation/0006-broker-budget-ticket-tlc.md.",
       "blocked_by": [
         "N-011"
+      ]
+    },
+    {
+      "id": "N-013",
+      "text": "Choose the next gate after Broker/BudgetTicket validation: Slice 0B type-only endpoint/broker authority scaffolding, or DomainTag/monitor activation modeling.",
+      "status": "pending",
+      "blocked_by": [
+        "N-012"
       ]
     }
   ],

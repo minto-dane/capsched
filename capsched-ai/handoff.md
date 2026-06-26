@@ -15,9 +15,9 @@ No behavior-changing scheduler patch points are accepted yet.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
-partitions, and the first formal model selection. The first Runnable Lease TLA+
-model and the Endpoint Async Provenance model have both been written and checked
-with TLC in tiny finite models. A candidate Linux L0 Runnable Lease
+partitions, and the first formal model selection. The Runnable Lease,
+Endpoint Async Provenance, and Broker BudgetTicket TLA+ models have been written
+and checked with TLC in tiny finite models. A candidate Linux L0 Runnable Lease
 implementation plan now exists, derived from the first model and the upstream
 scheduler maps. The first Linux patch slice has been narrowed to Slice 0A:
 inert `CONFIG_CAPSCHED` build scaffolding with no task layout or scheduler
@@ -29,6 +29,10 @@ points. Key result: `io_kiocb` and `io_rsrc_node` are natural io_uring carriers,
 generic workqueue/task_work need CapSched wrappers, and socket endpoint
 enforcement must not rely only on LSM hooks because some sendmmsg paths can
 reuse `sock_sendmsg_nosec()`.
+The Broker BudgetTicket model has also been checked. Key result: service
+authority alone is insufficient; broker/service execution requires a live
+caller-reserved `BudgetTicket`, frozen caller endpoint authority, live caller and
+service epochs, and service-side budget.
 
 ## Recovery Path
 
@@ -120,16 +124,30 @@ TLC result:
 capsched/capsched-models/validation/0005-endpoint-async-tlc.md
 ```
 
-Do not jump to scheduler behavior patches. Slice 0A is validated, the first
-async endpoint model is checked, and the Linux attachment map exists. The next
-decision is whether to choose Slice 0B type-only endpoint authority scaffolding
-or model broker `BudgetTicket` donation more deeply.
+Broker budget donation semantics are modeled in:
+
+```text
+capsched/capsched-models/formal/0004-broker-budget-ticket-model/
+```
+
+TLC result:
+
+```text
+capsched/capsched-models/validation/0006-broker-budget-ticket-tlc.md
+```
+
+Do not jump to scheduler behavior patches. Slice 0A is validated, the async
+endpoint model and broker budget model are checked, and the Linux attachment map
+exists. The next decision is whether to choose Slice 0B type-only
+endpoint/broker authority scaffolding or model DomainTag/monitor activation
+before more Linux behavior changes.
 
 Endpoint attachment records:
 
 ```text
 capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md
 capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md
+capsched/capsched-models/formal/0004-broker-budget-ticket-model/notes.md
 ```
 
 Current validation runner:

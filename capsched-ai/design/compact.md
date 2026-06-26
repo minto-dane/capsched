@@ -161,6 +161,22 @@ TLC summary:
   no invariant error found
 ```
 
+The Broker BudgetTicket model also exists and passed TLC invariant checking in a
+tiny finite model:
+
+```text
+formal model:
+  capsched-models/formal/0004-broker-budget-ticket-model/
+
+validation:
+  capsched-models/validation/0006-broker-budget-ticket-tlc.md
+
+TLC summary:
+  129777 states generated
+  25008 distinct states
+  no invariant error found
+```
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -221,11 +237,11 @@ Current next decision:
 
 ```text
 Either select Slice 0B:
-  type-only endpoint authority scaffolding in capsched.h/capsched.c,
+  type-only endpoint/broker authority scaffolding in capsched.h/capsched.c,
   no hot struct attachment,
   no behavior change
 
-Or model broker BudgetTicket donation more deeply before more Linux code.
+Or model DomainTag/monitor activation before more Linux behavior changes.
 ```
 
 BPF and sched_ext analysis adds:

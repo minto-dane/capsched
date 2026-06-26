@@ -1,6 +1,6 @@
 # CapSched Models and Engineering Work
 
-Updated: 2026-06-25
+Updated: 2026-06-26
 
 This directory contains the modeling and engineering work products for
 CapSched-Linux.
@@ -27,4 +27,3 @@ CapSched-Linux.
 
 AI handoff, state ledger, compact design memory, decisions, and templates live
 under `../capsched-ai/`.
-
