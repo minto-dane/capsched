@@ -24,6 +24,11 @@ inert `CONFIG_CAPSCHED` build scaffolding with no task layout or scheduler
 behavior changes. Slice 0A is now committed in the Linux repository. Build
 validation passed under a systemd user service using rootless local build tools
 extracted under `tools/apt-local/root`.
+The Endpoint Async model has been mapped back to concrete Linux attachment
+points. Key result: `io_kiocb` and `io_rsrc_node` are natural io_uring carriers,
+generic workqueue/task_work need CapSched wrappers, and socket endpoint
+enforcement must not rely only on LSM hooks because some sendmmsg paths can
+reuse `sock_sendmsg_nosec()`.
 
 ## Recovery Path
 
@@ -115,10 +120,17 @@ TLC result:
 capsched/capsched-models/validation/0005-endpoint-async-tlc.md
 ```
 
-Do not jump to scheduler behavior patches. Slice 0A is validated and the first
-async endpoint model is checked. The next decision is whether to derive concrete
-Linux attachment implications for `io_uring`, workqueue, socket, and task_work
-wrappers, or to model broker `BudgetTicket` donation more deeply.
+Do not jump to scheduler behavior patches. Slice 0A is validated, the first
+async endpoint model is checked, and the Linux attachment map exists. The next
+decision is whether to choose Slice 0B type-only endpoint authority scaffolding
+or model broker `BudgetTicket` donation more deeply.
+
+Endpoint attachment records:
+
+```text
+capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md
+capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md
+```
 
 Current validation runner:
 
@@ -141,6 +153,7 @@ Candidate implementation plan:
 ```text
 capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md
 capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md
+capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md
 capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md
 ```
 
@@ -149,6 +162,7 @@ Additional source-analysis anchors:
 ```text
 capsched/capsched-models/analysis/0013-bpf-programmable-policy-boundary.md
 capsched/capsched-models/analysis/0014-scheduler-topology-cluster-partition-map.md
+capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md
 ```
 
 Current Linux source state:

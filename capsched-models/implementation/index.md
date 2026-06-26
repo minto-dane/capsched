@@ -15,6 +15,11 @@ Candidate implementation plans:
     `0b685979f27b3d42ee620ced5f707ee391a2a27f`.
   - Purpose: narrow the first patch to inert `CONFIG_CAPSCHED` build
     scaffolding with no task layout or scheduler behavior changes.
+- `0003-endpoint-async-attachment-plan.md`
+  - Status: candidate plan, not accepted patch points.
+  - Purpose: derive endpoint/async attachment pressure from the checked
+    Endpoint Async Provenance model and Linux io_uring/workqueue/socket source
+    reading.
 
 Validated formal inputs:
 
@@ -47,3 +52,13 @@ Likely investigation targets, not decisions:
 - cgroup CPU and cpuset code
 - core scheduling code
 - LSM/security hooks
+
+Current patch recommendation, not yet executed:
+
+```text
+Slice 0B:
+  type-only endpoint authority scaffolding in include/linux/capsched.h and
+  kernel/sched/capsched.c
+  no Linux hot struct attachment
+  no behavior change
+```

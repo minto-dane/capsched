@@ -161,6 +161,30 @@ TLC summary:
   no invariant error found
 ```
 
+The Endpoint Async model has been mapped back to Linux source in:
+
+```text
+analysis:
+  capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md
+
+candidate plan:
+  capsched-models/implementation/0003-endpoint-async-attachment-plan.md
+```
+
+Key result:
+
+```text
+io_uring:
+  io_kiocb and io_rsrc_node are natural carriers.
+
+generic workqueue/task_work:
+  use CapSched wrappers for Domain-derived work, not raw work_struct or
+  callback_head authority.
+
+socket:
+  do not rely only on LSM hooks because sendmmsg can reuse sock_sendmsg_nosec().
+```
+
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
 `CONFIG_CAPSCHED=n/y` build validation passed under a systemd user service.
 
@@ -191,6 +215,17 @@ io_uring and socket operations need per-request or per-operation frozen
 endpoint authority after the runnable lease model.
 No FrozenEndpointUse, no async endpoint execution.
 Linux credential override must not change CapSched DomainTag.
+```
+
+Current next decision:
+
+```text
+Either select Slice 0B:
+  type-only endpoint authority scaffolding in capsched.h/capsched.c,
+  no hot struct attachment,
+  no behavior change
+
+Or model broker BudgetTicket donation more deeply before more Linux code.
 ```
 
 BPF and sched_ext analysis adds:

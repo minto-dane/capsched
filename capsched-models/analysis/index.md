@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-06-25
+Updated: 2026-06-26
 
 ## Current Analysis Notes
 
@@ -20,11 +20,11 @@ Updated: 2026-06-25
 | 0012 | Draft | io_uring Registered Resource Provenance |
 | 0013 | Draft | BPF Programmable Policy Boundary |
 | 0014 | Draft | Scheduler Topology and Cluster Partition Map |
+| 0015 | Draft | Endpoint Async Linux Attachment Map |
 
 ## Planned Analysis Notes
 
-1. TLA+ or equivalent skeleton for runnable lease semantics.
-2. Validation and benchmark plan after formal model selection.
-3. Deeper device queue and IOMMU lease map.
-4. Deeper MM allocator, slab, and page-cache enforcement map.
-5. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
+1. Deeper device queue and IOMMU lease map.
+2. Deeper MM allocator, slab, and page-cache enforcement map.
+3. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
+4. Broker BudgetTicket and service Domain charging map.

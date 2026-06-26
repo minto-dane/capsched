@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "endpoint-async-model-validated",
+    "current_phase": "endpoint-async-attachment-mapped",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -63,7 +63,8 @@
       "capsched/capsched-models/analysis/0011-network-socket-endpoint-map.md",
       "capsched/capsched-models/analysis/0012-io-uring-registered-resource-provenance.md",
       "capsched/capsched-models/analysis/0013-bpf-programmable-policy-boundary.md",
-      "capsched/capsched-models/analysis/0014-scheduler-topology-cluster-partition-map.md"
+      "capsched/capsched-models/analysis/0014-scheduler-topology-cluster-partition-map.md",
+      "capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -76,12 +77,13 @@
     "endpoint_async_validation": "capsched/capsched-models/validation/0005-endpoint-async-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
+    "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
     "l0_slice0_build_validation_plan": "capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md",
     "l0_slice0_validation_attempt": "capsched/capsched-models/validation/0003-l0-slice0-validation-attempt.md",
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
-    "current_focus": "Endpoint async provenance model is checked; next decision is whether to derive Linux attachment implications for io_uring/workqueue/socket wrappers or model broker BudgetTicket donation more deeply"
+    "current_focus": "Endpoint async Linux attachment map is recorded; next decision is whether to select Slice 0B type-only endpoint authority scaffolding or model broker BudgetTicket donation more deeply"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -258,6 +260,16 @@
       "id": "Q-004",
       "text": "How should cluster-wide signed resource leases compile into local node SchedContexts and endpoint capabilities?",
       "status": "open"
+    },
+    {
+      "id": "Q-005",
+      "text": "Should early io_uring endpoint provenance use direct CONFIG_CAPSCHED fields in io_kiocb/io_rsrc_node or side tables keyed by request/resource addresses?",
+      "status": "open"
+    },
+    {
+      "id": "Q-006",
+      "text": "Should registered endpoint revocation use eager cancellation or lazy execute-time rejection in Linux L0?",
+      "status": "open"
     }
   ],
   "next_actions": [
@@ -334,6 +346,22 @@
       "completed_on": "2026-06-26",
       "partial_progress": "Slice 0A Linux commit 0b685979f27b3d42ee620ced5f707ee391a2a27f is applied and validated. systemd user runner completed upstream baseline, CONFIG_CAPSCHED=n, and CONFIG_CAPSCHED=y vmlinux builds. CONFIG_CAPSCHED=n produced no capsched object; CONFIG_CAPSCHED=y produced kernel/sched/capsched.o. Log: /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log.",
       "blocked_by": []
+    },
+    {
+      "id": "N-011",
+      "text": "Map the checked Endpoint Async Provenance model back to concrete Linux io_uring, workqueue, task_work, socket, and LSM attachment points.",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Recorded analysis/0015 and implementation/0003. Key finding: io_kiocb and io_rsrc_node are natural io_uring carriers; generic workqueue and task_work need wrappers; socket endpoint checks cannot rely only on LSM hooks because sendmmsg can reuse sock_sendmsg_nosec.",
+      "blocked_by": []
+    },
+    {
+      "id": "N-012",
+      "text": "Choose the next gate: Slice 0B type-only endpoint authority scaffolding, or a deeper Broker/BudgetTicket formal model before more Linux code.",
+      "status": "pending",
+      "blocked_by": [
+        "N-011"
+      ]
     }
   ],
   "canonical_files": {
