@@ -64,7 +64,8 @@
       "capsched/capsched-models/analysis/0012-io-uring-registered-resource-provenance.md",
       "capsched/capsched-models/analysis/0013-bpf-programmable-policy-boundary.md",
       "capsched/capsched-models/analysis/0014-scheduler-topology-cluster-partition-map.md",
-      "capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md"
+      "capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md",
+      "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -100,7 +101,8 @@
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
-    "current_focus": "Cluster Lease full integration TLC run has been moved to systemd without weakening the model; await service completion before treating the cluster lease model as checked"
+    "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
+    "current_focus": "Cluster Lease full integration TLC is still running under systemd; while waiting, device/IOMMU/queue lease analysis has been added. Do not touch VFIO/IOMMU/drivers in Slice 0B; QueueLease should be modeled before future L4 device work."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -190,6 +192,18 @@
     {
       "id": "CLUSTER-001",
       "text": "CapSched CPU placement must refine existing affinity, cpuset, sched-domain, housekeeping, and hotplug constraints rather than bypass them."
+    },
+    {
+      "id": "DEVICE-001",
+      "text": "No QueueLease, no device queue doorbell or queue ownership transfer."
+    },
+    {
+      "id": "DEVICE-002",
+      "text": "No monitor-owned IOMMU mapping, no DMA into a Domain MemoryView."
+    },
+    {
+      "id": "DEVICE-003",
+      "text": "Interrupt delivery must be owned by the same Domain/service endpoint as the leased queue."
     }
   ],
   "design_boundaries": [
@@ -315,6 +329,12 @@
       "text": "Should the first Linux Slice 0B introduce type-only endpoint/broker/domain authority scaffolding, or should cluster lease compilation be modeled first?",
       "status": "resolved",
       "answer": "Model cluster lease compilation first. Full integration TLC is running under systemd; do not treat it as passed until the service completes."
+    },
+    {
+      "id": "Q-009",
+      "text": "Should device isolation begin from VFIO/iommufd device assignment or from typed queue leases?",
+      "status": "open",
+      "answer": "Analysis 0016 indicates VFIO/iommufd is a compatibility substrate, while the production data path should be typed QueueLease plus monitor-owned IOMMU map and interrupt route."
     }
   ],
   "next_actions": [
@@ -441,6 +461,14 @@
     {
       "id": "N-016",
       "text": "After ClusterLease TLC completes, review the Slice 0B readiness gate before applying any Linux type-only authority scaffolding patch.",
+      "status": "pending",
+      "blocked_by": [
+        "N-015"
+      ]
+    },
+    {
+      "id": "N-017",
+      "text": "After ClusterLease TLC completes and before any L4 device work, model QueueLease semantics for queue ownership, IOMMU mappings, interrupt routes, epochs, and rate budgets.",
       "status": "pending",
       "blocked_by": [
         "N-015"

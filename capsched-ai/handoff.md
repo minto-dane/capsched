@@ -42,6 +42,11 @@ Cluster Lease Compilation modeling has started. The full integration model was
 too large for chat-supervised TLC, so it is being run under a systemd user
 service without weakening the model. Do not mark it passed until the service
 completes and the validation record is updated.
+While that long TLC run is active, device/IOMMU/queue lease analysis has been
+added. Key result: VFIO/iommufd is a valuable Linux compatibility substrate, but
+its Linux-owned objects cannot be the production authority root. Future L4
+device work should model typed QueueLease semantics first: queue tag, MemoryView
+IOMMU map, interrupt route, epoch, and rate/budget must revoke together.
 
 ## Recovery Path
 
@@ -196,6 +201,7 @@ capsched/capsched-models/formal/0004-broker-budget-ticket-model/notes.md
 capsched/capsched-models/formal/0005-domain-monitor-activation-model/notes.md
 capsched/capsched-models/formal/0006-cluster-lease-compilation-model/notes.md
 capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md
+capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md
 ```
 
 Cluster lease TLC service commands:

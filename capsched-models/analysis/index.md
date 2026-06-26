@@ -21,10 +21,10 @@ Updated: 2026-06-26
 | 0013 | Draft | BPF Programmable Policy Boundary |
 | 0014 | Draft | Scheduler Topology and Cluster Partition Map |
 | 0015 | Draft | Endpoint Async Linux Attachment Map |
+| 0016 | Draft | Device IOMMU and Queue Lease Map |
 
 ## Planned Analysis Notes
 
-1. Deeper device queue and IOMMU lease map.
-2. Deeper MM allocator, slab, and page-cache enforcement map.
-3. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
-4. Broker BudgetTicket and service Domain charging map.
+1. Deeper MM allocator, slab, and page-cache enforcement map.
+2. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
+3. Broker BudgetTicket and service Domain charging map.

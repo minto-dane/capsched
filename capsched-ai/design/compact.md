@@ -243,6 +243,26 @@ socket:
   do not rely only on LSM hooks because sendmmsg can reuse sock_sendmsg_nosec().
 ```
 
+Device/IOMMU/queue lease analysis has been added in:
+
+```text
+capsched-models/analysis/0016-device-iommu-queue-lease-map.md
+```
+
+Key result:
+
+```text
+VFIO/iommufd:
+  good compatibility substrate and object vocabulary.
+
+production authority:
+  must be monitor-owned QueueTag + MemoryView/IOMMU map + interrupt route +
+  queue epoch + rate/budget.
+
+future L4:
+  model QueueLease before touching VFIO, iommufd, IOMMU, or drivers.
+```
+
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
 `CONFIG_CAPSCHED=n/y` build validation passed under a systemd user service.
 
