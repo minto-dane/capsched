@@ -10,8 +10,9 @@ The workspace is `/media/nia/scsiusb/dev/linux-cap`.
 The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched`.
 
 Upstream Linux has been fetched into sibling repository `linux/`. No
-implementation patch points are accepted yet. The first deep source-analysis
-pass has been written under `capsched-models/analysis/`.
+implementation patch points are accepted yet. The source-analysis pass has been
+expanded through policy front-ends, mutable kernel state, dangerous surfaces,
+and the first formal model selection.
 
 ## Recovery Path
 
@@ -77,7 +78,8 @@ Implementation must keep capability types separated:
 ## Next Likely Action
 
 Select the first formal semantic model. Current recommendation from the deep
-analysis is to start with runnable lease semantics:
+analysis is now recorded in `capsched-models/formal/0001-model-selection.md`.
+Start with runnable lease semantics:
 
 ```text
 Task + TaskGeneration + DomainEpoch
@@ -86,6 +88,8 @@ Task + TaskGeneration + DomainEpoch
 ```
 
 Do not implement Linux patches before the model-selection memo exists.
+The memo now exists; the next gate is to write and check the actual Runnable
+Lease model.
 
 Current Linux source state:
 

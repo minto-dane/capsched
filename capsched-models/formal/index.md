@@ -1,16 +1,20 @@
-# Model Index
+# Formal Models Index
 
 Updated: 2026-06-25
 
-No formal models have been created yet.
+## Current Formal Records
 
-Candidate first models:
+| ID | Status | Title |
+| --- | --- | --- |
+| 0001 | Draft | Model Selection |
 
-1. Enqueue/pick/tick semantics for RunCap, SchedContext, FrozenRunUse, budget
-   exhaustion, and periodic refill.
+## Planned
+
+1. Runnable lease model for RunCap, SchedContext, FrozenRunUse, budget
+   exhaustion, and generation/epoch validity.
 2. Epoch/generation revocation model across runqueues and CPUs.
 3. Async provenance model for workqueue/io_uring/task_work confused deputy
    prevention.
 4. Broker budget donation model with BudgetTicket and service authority
    intersection.
-
+5. Domain switch and monitor token model.

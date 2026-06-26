@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `4edcdefd4083ae04b1a5656f4be6cd83ae919ef4`. No implementation patch points are
 decided yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0007`.
+`capsched-models/analysis/0002` through `0010`.
 
 ## Core Architecture
 
@@ -115,5 +115,12 @@ into local node SchedContexts and endpoint capabilities.
 2. Read `capsched-models/analysis/0002` through `0007` before proposing patch
    points.
 3. Draft the formal model-selection memo.
-4. Model runnable lease semantics first unless a stronger argument emerges.
+4. Model runnable lease semantics first.
 5. Validate semantics with TLA+ or similar before prototype implementation.
+
+Current first model target:
+
+```text
+Task + TaskGeneration + ProcessGeneration + Domain + DomainEpoch
++ RunCap + SchedContext + FrozenRunUse + RunqueueState + CPU + Budget
+```
