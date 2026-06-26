@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-06-25",
+  "updated": "2026-06-26",
   "project": {
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "l0-implementation-planning",
+    "current_phase": "l0-slice0-validation",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -41,7 +41,7 @@
       "work_branch": "capsched-linux-l0",
       "work_commit": "0b685979f27b3d42ee620ced5f707ee391a2a27f",
       "work_commit_subject": "sched/capsched: Add inert scaffolding",
-      "slice0a_status": "applied; build validation pending because host flex dependency is missing",
+      "slice0a_status": "applied; build validation is running under systemd user service capsched-linux-n010-build.service using rootless local flex, bison, and libelf development files",
       "private_remote": null,
       "fetched_on": "2026-06-25"
     }
@@ -75,8 +75,10 @@
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "l0_slice0_build_validation_plan": "capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md",
     "l0_slice0_validation_attempt": "capsched/capsched-models/validation/0003-l0-slice0-validation-attempt.md",
+    "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
+    "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
-    "current_focus": "complete Slice 0A build validation after installing host build dependencies; Linux Slice 0A is committed as 0b685979f27b3d42ee620ced5f707ee391a2a27f"
+    "current_focus": "wait for and then inspect the systemd user Slice 0A build validation service; Linux Slice 0A is committed as 0b685979f27b3d42ee620ced5f707ee391a2a27f"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -233,7 +235,7 @@
       "id": "Q-002",
       "text": "What is the smallest L0 slice that can demonstrate RunCap/SchedContext/FrozenRunUse without destabilizing scheduler fast paths?",
       "status": "open",
-      "answer": "Must now be derived from the checked Runnable Lease model and upstream scheduler path maps. No patch slice accepted yet."
+      "answer": "Slice 0A was accepted only as inert CONFIG_CAPSCHED scaffolding. No behavior-changing RunCap/SchedContext/FrozenRunUse slice is accepted yet."
     },
     {
       "id": "Q-003",
@@ -317,11 +319,9 @@
     {
       "id": "N-010",
       "text": "Run the baseline out-of-tree Linux build and then apply/validate Slice 0A inert CONFIG_CAPSCHED scaffolding.",
-      "status": "pending",
-      "partial_progress": "Slice 0A Linux commit 0b685979f27b3d42ee620ced5f707ee391a2a27f is applied. Baseline and post-patch config builds are blocked by missing host command flex; sudo requires a password.",
-      "blocked_by": [
-        "N-009"
-      ]
+      "status": "running",
+      "partial_progress": "Slice 0A Linux commit 0b685979f27b3d42ee620ced5f707ee391a2a27f is applied. Rootless local flex, bison, and libelf development files are available under tools/apt-local/root. systemd user service capsched-linux-n010-build.service is running run-l0-slice0-build-validation.sh; latest known log path is /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log.",
+      "blocked_by": []
     }
   ],
   "canonical_files": {

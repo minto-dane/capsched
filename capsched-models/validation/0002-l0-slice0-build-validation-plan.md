@@ -1,8 +1,20 @@
 # Validation 0002: L0 Slice 0 Build Validation Plan
 
-Status: Draft plan, not yet executed
+Status: Execution delegated to systemd user runner
 
 Date: 2026-06-25
+
+Current runner:
+
+```text
+capsched-models/validation/run-l0-slice0-build-validation.sh
+```
+
+Current execution record:
+
+```text
+capsched-models/validation/0004-l0-slice0-systemd-build-run.md
+```
 
 Linux base:
 

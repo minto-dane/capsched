@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-06-25
+Updated: 2026-06-26
 
 Read this first when resuming the project.
 
@@ -9,8 +9,9 @@ Read this first when resuming the project.
 The workspace is `/media/nia/scsiusb/dev/linux-cap`.
 The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched`.
 
-Upstream Linux has been fetched into sibling repository `linux/`. No Linux
-source changes have been made. No implementation patch points are accepted yet.
+Upstream Linux has been fetched into sibling repository `linux/`. Slice 0A has
+been committed in that Linux repository as inert `CONFIG_CAPSCHED` scaffolding.
+No behavior-changing scheduler patch points are accepted yet.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
@@ -20,7 +21,8 @@ Linux L0 Runnable Lease implementation plan now exists, derived from that model
 and the upstream scheduler maps. The first Linux patch slice has been narrowed
 to Slice 0A: inert `CONFIG_CAPSCHED` build scaffolding with no task layout or
 scheduler behavior changes. Slice 0A is now committed in the Linux repository.
-Build validation is still pending because `flex` is missing on the host.
+Build validation is running under a systemd user service using rootless local
+build tools extracted under `tools/apt-local/root`.
 
 ## Recovery Path
 
@@ -100,9 +102,24 @@ TLC result:
 capsched/capsched-models/validation/0001-runnable-lease-tlc.md
 ```
 
-Do not jump to scheduler behavior patches. The next gate is completing the
-out-of-tree build validation for Slice 0A after installing the missing host
-build dependency `flex` and likely the normal kernel build dependencies.
+Do not jump to scheduler behavior patches. The next gate is inspecting the
+out-of-tree build validation for Slice 0A after the systemd user service exits.
+
+Current validation runner:
+
+```text
+unit: capsched-linux-n010-build.service
+script: /media/nia/scsiusb/dev/linux-cap/capsched/capsched-models/validation/run-l0-slice0-build-validation.sh
+latest known log: /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log
+```
+
+Useful checks:
+
+```sh
+systemctl --user status capsched-linux-n010-build --no-pager
+journalctl --user -u capsched-linux-n010-build -f
+tail -f /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log
+```
 
 Candidate implementation plan:
 

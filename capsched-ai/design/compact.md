@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-06-25
+Updated: 2026-06-26
 
 ## Project
 
@@ -12,8 +12,8 @@ boundaries at lower operational cost.
 
 Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
-`4edcdefd4083ae04b1a5656f4be6cd83ae919ef4`. No implementation patch points are
-decided yet. A first deep source-analysis pass now exists in
+`0b685979f27b3d42ee620ced5f707ee391a2a27f`. No behavior-changing implementation
+patch points are decided yet. A first deep source-analysis pass now exists in
 `capsched-models/analysis/0002` through `0014`. A candidate Linux L0
 Runnable Lease implementation plan has been derived from the checked model, but
 Linux source now contains the first Slice 0A commit. The first patch slice was
@@ -145,9 +145,18 @@ TLC summary:
   no invariant error found
 ```
 
-The next gate is not Linux behavior changes yet. Complete the out-of-tree
-baseline and `CONFIG_CAPSCHED=n/y` build validation after installing missing
-host build dependency `flex`.
+The next gate is not Linux behavior changes yet. Complete and inspect the
+out-of-tree baseline and `CONFIG_CAPSCHED=n/y` build validation now running
+under a systemd user service.
+
+Current validation runner:
+
+```text
+unit: capsched-linux-n010-build.service
+script: capsched-models/validation/run-l0-slice0-build-validation.sh
+latest known log:
+  /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log
+```
 
 Candidate implementation plan:
 
