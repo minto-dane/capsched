@@ -243,8 +243,22 @@ Production Domain memory authority:
   monitor-owned PageOwner and MemoryView mappings
 ```
 
-Therefore no L2 MM/page-cache/slab work should start before a MemoryOwnership
-model. memcg can mirror/account Domain budgets, but cannot be the security root.
+The first MemoryOwnership model set has now been checked via decomposition:
+
+```text
+PageOwnerMemoryView:
+  monitor PageOwner and MemoryView mapping rules
+
+SlabObjGen:
+  slab object generation and page-owner validation
+
+MemoryWorkProvenance:
+  reclaim/writeback/service memory work provenance and tickets
+```
+
+The broad integrated `MemoryOwnership.tla` run was stopped after growth and is
+not a pass. memcg can mirror/account Domain budgets, but cannot be the security
+root.
 
 The Endpoint Async model has been mapped back to Linux source in:
 
@@ -290,7 +304,8 @@ future L4:
   model QueueLease before touching VFIO, iommufd, IOMMU, or drivers.
 
 future L2:
-  model MemoryOwnership before touching MM, slab, page cache, or reclaim paths.
+  next model one of direct-map visibility, TLB shootdown ordering, or
+  page-cache overlay conflict semantics before touching MM implementation.
 ```
 
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and

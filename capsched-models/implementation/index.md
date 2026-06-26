@@ -51,6 +51,12 @@ Validated formal inputs:
   - Status: checked with TLC.
   - Pressure: forged local shadow claims are not authority, and stale cluster
     epochs cannot remain executable.
+- `formal/0008-memory-ownership-model/`
+  - Status: checked via decomposed TLC models; broad integration stress model
+    stopped before completion and is not a pass.
+  - Pressure: Linux page/slab/memcg/page-cache shadow metadata is not memory
+    authority; monitor-owned PageOwner, MemoryView, object generation, and
+    memory work provenance are required.
 
 Known future branch names:
 

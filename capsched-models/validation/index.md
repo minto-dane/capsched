@@ -15,6 +15,7 @@ Updated: 2026-06-26
 | 0007 | Passed for tiny finite model | Domain Monitor Activation TLC Check |
 | 0008 | Stopped before completion | Cluster Lease Full Integration Systemd TLC Run |
 | 0009 | Passed for decomposed finite models | Cluster Authority Decomposition TLC Check |
+| 0010 | Passed for decomposed finite models | Memory Ownership TLC Check |
 
 ## Principles
 

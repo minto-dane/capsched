@@ -324,11 +324,44 @@ Monitor-owned PageOwner and MemoryView are mandatory for hypervisor-grade
 memory isolation.
 ```
 
-## Next Formal Candidate
+## Initial Formal Model
 
-Write a `MemoryOwnership` model before any MM or page-cache patches.
+The first `MemoryOwnership` model set now exists:
 
-Minimum objects:
+```text
+capsched/capsched-models/formal/0008-memory-ownership-model/
+```
+
+It was checked through decomposed TLC models:
+
+```text
+PageOwnerMemoryView
+SlabObjGen
+MemoryWorkProvenance
+```
+
+Validation record:
+
+```text
+capsched/capsched-models/validation/0010-memory-ownership-tlc.md
+```
+
+The broad integrated model remains stress coverage and is not a pass.
+
+## Remaining Formal Candidates
+
+Before any real MM or page-cache patches, choose a narrower next model for one
+of:
+
+```text
+direct-map visibility
+TLB shootdown ordering
+page-cache overlay conflicts
+IOMMU/DMA MemoryView interaction
+```
+
+The initial model covered these minimum objects:
+
 
 ```text
 Domain
@@ -337,13 +370,13 @@ Page
 PageOwner
 MemoryView
 LinuxShadowPage
-SlabObjectGeneration
+SlabObjGen
 PageCacheEntry
 ServiceEndpoint
 ReclaimWork
 ```
 
-Minimum checks:
+And these minimum checks:
 
 ```text
 No PageOwner, no MemoryView mapping.
@@ -369,4 +402,3 @@ strong container:
 monitor-backed CapSched:
   hardware-enforced MemoryView makes the separation physically true
 ```
-

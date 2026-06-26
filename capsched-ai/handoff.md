@@ -53,6 +53,11 @@ MM allocator/page-cache analysis has also been added. Key result: Linux
 valuable lifetime/accounting/reclaim substrates, but none is the production
 Domain memory authority root. Hypervisor-grade memory separation requires
 monitor-owned PageOwner and MemoryView mappings.
+The first MemoryOwnership formal model set has been checked via decomposition:
+`PageOwnerMemoryView`, `SlabObjGen`, and `MemoryWorkProvenance` all passed TLC.
+The broad integrated model was stopped after growth and is not a pass. Remaining
+memory risks before real L2 MM work include direct-map visibility, TLB shootdown
+ordering, and page-cache overlay conflict semantics.
 
 ## Recovery Path
 
@@ -202,9 +207,10 @@ completion, but remains limited to inert type-only scaffolding.
 Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
 checked, the Linux attachment map exists, and decomposed cluster authority
-models are checked. The next decision is whether to choose Slice 0B type-only
-endpoint/broker/domain authority scaffolding, or to first model MemoryOwnership
-or QueueLease.
+models plus decomposed MemoryOwnership models are checked. The next decision is
+whether to choose Slice 0B type-only endpoint/broker/domain authority
+scaffolding, to model QueueLease before L4 device work, or to model one of the
+remaining L2 memory risks before touching MM paths.
 
 Endpoint attachment records:
 
@@ -217,6 +223,8 @@ capsched/capsched-models/formal/0006-cluster-lease-compilation-model/notes.md
 capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md
 capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md
 capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md
+capsched/capsched-models/formal/0008-memory-ownership-model/notes.md
+capsched/capsched-models/validation/0010-memory-ownership-tlc.md
 ```
 
 Stopped full integration run identity:

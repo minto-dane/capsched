@@ -97,6 +97,12 @@
     "cluster_shadow_forgery_tla": "capsched/capsched-models/formal/0007-cluster-authority-decomposition-model/ClusterShadowForgery.tla",
     "cluster_epoch_revoke_tla": "capsched/capsched-models/formal/0007-cluster-authority-decomposition-model/ClusterEpochRevoke.tla",
     "cluster_authority_decomposition_validation": "capsched/capsched-models/validation/0009-cluster-authority-decomposition-tlc.md",
+    "memory_ownership_model": "capsched/capsched-models/formal/0008-memory-ownership-model/README.md",
+    "memory_ownership_integration_tla": "capsched/capsched-models/formal/0008-memory-ownership-model/MemoryOwnership.tla",
+    "page_owner_memory_view_tla": "capsched/capsched-models/formal/0008-memory-ownership-model/PageOwnerMemoryView.tla",
+    "slab_object_generation_tla": "capsched/capsched-models/formal/0008-memory-ownership-model/SlabObjGen.tla",
+    "memory_work_provenance_tla": "capsched/capsched-models/formal/0008-memory-ownership-model/MemoryWorkProvenance.tla",
+    "memory_ownership_validation": "capsched/capsched-models/validation/0010-memory-ownership-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
@@ -108,7 +114,7 @@
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
-    "current_focus": "ClusterLease full integration TLC was stopped after state explosion without invariant errors and is not a pass. Cluster authority proof obligations were split; ShadowForgery and EpochRevoke decomposed models passed TLC. Slice 0B readiness gate was updated for this result, but no Linux Slice 0B patch is accepted yet. MM allocator/page-cache analysis now records that Linux page, slab, memcg, and page-cache metadata are useful substrate but not Domain memory authority. Next: choose inert Slice 0B type-only scaffolding, or first model MemoryOwnership/QueueLease before L2/L4 work."
+    "current_focus": "MemoryOwnership proof obligations were split after the broad integration model grew too large. PageOwnerMemoryView, SlabObjGen, and MemoryWorkProvenance all passed TLC. This supports the first MEM invariants: Linux page/slab/memcg/page-cache shadow metadata is not Domain memory authority; monitor PageOwner and MemoryView are required. No Linux Slice 0B patch is accepted yet. Next: choose inert Slice 0B type-only scaffolding, QueueLease modeling before L4, or a narrower direct-map/TLB/page-cache-overlay model before L2."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -542,8 +548,9 @@
     {
       "id": "N-019",
       "text": "Before any L2 per-Domain MM work, model MemoryOwnership semantics for page ownership, MemoryView mapping, slab object generation, page-cache overlays, and reclaim provenance.",
-      "status": "pending",
-      "partial_progress": "Analysis 0017 mapped upstream Linux MM, memcg, SLUB, allocator, and page-cache structures to the MemoryOwnership boundary. The formal model is still pending.",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Added formal/0008. The broad MemoryOwnership integration model was stopped after growth without invariant errors, then split into PageOwnerMemoryView, SlabObjGen, and MemoryWorkProvenance. All three decomposed models passed TLC. Validation record: capsched/capsched-models/validation/0010-memory-ownership-tlc.md.",
       "blocked_by": [
         "N-018"
       ]
@@ -564,6 +571,14 @@
       "partial_progress": "Added analysis/0017. Key result: Linux page, memcg, slab, and page-cache metadata are useful substrate but not non-forgeable Domain memory authority; MemoryOwnership should be modeled before L2 MM work.",
       "blocked_by": [
         "N-018"
+      ]
+    },
+    {
+      "id": "N-022",
+      "text": "Before any real L2 MM implementation, choose and model the next memory risk: direct-map visibility, TLB shootdown ordering, or page-cache overlay conflict semantics.",
+      "status": "pending",
+      "blocked_by": [
+        "N-019"
       ]
     }
   ],
