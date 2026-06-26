@@ -13,13 +13,15 @@ Updated: 2026-06-26
 | 0005 | Passed for tiny finite model | Endpoint Async Provenance TLC Check |
 | 0006 | Passed for tiny finite model | Broker BudgetTicket TLC Check |
 | 0007 | Passed for tiny finite model | Domain Monitor Activation TLC Check |
-| 0008 | Running under systemd user service | Cluster Lease Full Integration Systemd TLC Run |
+| 0008 | Stopped before completion | Cluster Lease Full Integration Systemd TLC Run |
+| 0009 | Passed for decomposed finite models | Cluster Authority Decomposition TLC Check |
 
 ## Principles
 
 Validation principles:
 
 - Validate semantic claims, not only whether tests pass.
+- Treat TLC as supporting evidence, not as the project objective.
 - Separate Linux-only prototype claims from monitor-backed protection claims.
 - Treat security invariants as explicit properties.
 - Record negative results and counterexamples.

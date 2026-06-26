@@ -1,6 +1,6 @@
 # Validation 0008: Cluster Lease Full Integration Systemd TLC Run
 
-Status: Running under systemd user service
+Status: Stopped before completion; no invariant error observed before stop
 
 Date: 2026-06-26
 
@@ -82,38 +82,62 @@ These interrupted runs are not pass results.
 
 ## Current Result
 
-Pending. Update this record after the systemd service completes.
+The systemd run was stopped by user request after running overnight. This is
+not a validation pass and not a validation failure. It is an interrupted broad
+integration stress run.
 
-## Current Run Snapshot
-
-Started service:
-
-```text
-unit: capsched-cluster-lease-full-tlc.service
-invocation ID: 82c3deeb88f142efbf66cab25d3f7fd4
-state: active/running
-main PID: 2291073
-```
-
-Current log:
+The last observed progress before stop was:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-20260626T034303Z.log
+Progress(7) at 2026-06-26 12:31:10:
+17127406139 states generated
+550525279 distinct states found
+512945750 states left on queue
 ```
 
-Current TLC metadir:
+The queue was still growing. The run was therefore not a good proof root for
+this phase.
+
+The stopped run left TLC state data under:
 
 ```text
 /media/nia/scsiusb/dev/linux-cap/build/tlc/cluster-lease-full-20260626T034303Z
 ```
 
-Initial progress observed after launch:
+The log remains:
 
 ```text
-Progress(5) at 2026-06-25 23:44:09:
-8424054 states generated
-2602170 distinct states found
-2584900 states left on queue
+/media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-20260626T034303Z.log
 ```
 
-This is a running snapshot only. It is not a validation pass result.
+## Interpretation
+
+This result does not weaken the security model. It means the full integration
+model combines too many interleavings to be the primary validation method.
+
+The project goal is secure and efficient CapSched design, not completing a
+single giant TLC run. The follow-up validation strategy is to split the proof
+obligations while preserving hostile assumptions:
+
+```text
+ClusterShadowForgery:
+  mutable local claims do not create execution or endpoint authority
+
+ClusterEpochRevoke:
+  stale epochs and revoked leases do not remain executable
+
+ClusterBudget:
+  budget conservation and underflow protection
+
+ClusterEndpoint:
+  endpoint attenuation and use require compiled local authority
+
+ClusterLease full:
+  broad stress/regression model, not the proof root
+```
+
+The follow-up decomposed validation record is:
+
+```text
+capsched/capsched-models/validation/0009-cluster-authority-decomposition-tlc.md
+```

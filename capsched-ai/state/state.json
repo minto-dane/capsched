@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "cluster-lease-full-tlc-running",
+    "current_phase": "cluster-authority-decomposition-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -92,6 +92,10 @@
     "cluster_lease_systemd_invocation": "82c3deeb88f142efbf66cab25d3f7fd4",
     "cluster_lease_systemd_log": "/media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-20260626T034303Z.log",
     "cluster_lease_systemd_metadir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/cluster-lease-full-20260626T034303Z",
+    "cluster_authority_decomposition_model": "capsched/capsched-models/formal/0007-cluster-authority-decomposition-model/README.md",
+    "cluster_shadow_forgery_tla": "capsched/capsched-models/formal/0007-cluster-authority-decomposition-model/ClusterShadowForgery.tla",
+    "cluster_epoch_revoke_tla": "capsched/capsched-models/formal/0007-cluster-authority-decomposition-model/ClusterEpochRevoke.tla",
+    "cluster_authority_decomposition_validation": "capsched/capsched-models/validation/0009-cluster-authority-decomposition-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
@@ -102,7 +106,7 @@
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
-    "current_focus": "Cluster Lease full integration TLC is still running under systemd; while waiting, device/IOMMU/queue lease analysis has been added. Do not touch VFIO/IOMMU/drivers in Slice 0B; QueueLease should be modeled before future L4 device work."
+    "current_focus": "ClusterLease full integration TLC was stopped after state explosion without invariant errors and is not a pass. Cluster authority proof obligations were split; ShadowForgery and EpochRevoke decomposed models passed TLC. TLC is supporting evidence, not the project objective. Next: review Slice 0B readiness with this result, then continue MemoryOwnership/QueueLease modeling before L2/L4 work."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -194,6 +198,14 @@
       "text": "CapSched CPU placement must refine existing affinity, cpuset, sched-domain, housekeeping, and hotplug constraints rather than bypass them."
     },
     {
+      "id": "CLUSTER-002",
+      "text": "No cluster lease, mutable local shadow, or cached claim is directly executable; node-local execution and endpoint use require compiled LocalContext authority."
+    },
+    {
+      "id": "CLUSTER-003",
+      "text": "No live lease epoch, no node-local execution."
+    },
+    {
       "id": "DEVICE-001",
       "text": "No QueueLease, no device queue doorbell or queue ownership transfer."
     },
@@ -212,7 +224,8 @@
     "Do not place VFS, BPF, GPU, or protocol-specific semantics inside the scheduler.",
     "Do not use sched_ext as the production security boundary; it is useful for policy exploration.",
     "Do not claim hypervisor replacement without monitor-enforced memory, CPU, IOMMU, queue, epoch, and domain roots.",
-    "Do not treat validation as pass/fail plumbing; validation must support semantic security claims."
+    "Do not treat validation as pass/fail plumbing; validation must support semantic security claims.",
+    "Do not treat TLC completion as the project objective; use TLC as one source of semantic evidence for the security and efficiency goals."
   ],
   "planned_tracks": [
     {
@@ -328,13 +341,19 @@
       "id": "Q-008",
       "text": "Should the first Linux Slice 0B introduce type-only endpoint/broker/domain authority scaffolding, or should cluster lease compilation be modeled first?",
       "status": "resolved",
-      "answer": "Model cluster lease compilation first. Full integration TLC is running under systemd; do not treat it as passed until the service completes."
+      "answer": "Model cluster lease compilation first, but do not gate progress on one giant full TLC run. The full ClusterLease systemd run was stopped after 17127406139 generated states, 550525279 distinct states, and no invariant error before interruption; decomposed ShadowForgery and EpochRevoke models then passed TLC."
     },
     {
       "id": "Q-009",
       "text": "Should device isolation begin from VFIO/iommufd device assignment or from typed queue leases?",
       "status": "open",
       "answer": "Analysis 0016 indicates VFIO/iommufd is a compatibility substrate, while the production data path should be typed QueueLease plus monitor-owned IOMMU map and interrupt route."
+    },
+    {
+      "id": "Q-010",
+      "text": "Should TLC completion be treated as a project goal or as auxiliary validation evidence?",
+      "status": "resolved",
+      "answer": "TLC is auxiliary evidence. The project goal is secure, efficient CapSched Domain separation. Large TLC runs should be split by semantic proof obligation rather than allowed to dominate design progress."
     }
   ],
   "next_actions": [
@@ -452,26 +471,46 @@
     },
     {
       "id": "N-015",
-      "text": "Monitor the systemd user ClusterLease full integration TLC run and update validation record after completion.",
-      "status": "pending",
+      "text": "Monitor the systemd user ClusterLease full integration TLC run and update validation record.",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Run was stopped by user request after 17127406139 generated states, 550525279 distinct states, and 512945750 states left on queue. No invariant error was observed before interruption, but this is not a pass. Validation record 0008 was updated and the proof root moved to decomposed models.",
       "blocked_by": [
         "N-014"
       ]
     },
     {
-      "id": "N-016",
-      "text": "After ClusterLease TLC completes, review the Slice 0B readiness gate before applying any Linux type-only authority scaffolding patch.",
-      "status": "pending",
+      "id": "N-018",
+      "text": "Split cluster authority validation into smaller proof obligations without weakening the security model.",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Added Formal 0007. ClusterShadowForgery passed TLC with 20646297 generated states and 1513736 distinct states. ClusterEpochRevoke passed TLC with 231929 generated states and 23688 distinct states. Validation record: capsched/capsched-models/validation/0009-cluster-authority-decomposition-tlc.md.",
       "blocked_by": [
         "N-015"
       ]
     },
     {
-      "id": "N-017",
-      "text": "After ClusterLease TLC completes and before any L4 device work, model QueueLease semantics for queue ownership, IOMMU mappings, interrupt routes, epochs, and rate budgets.",
+      "id": "N-016",
+      "text": "Review the Slice 0B readiness gate with the decomposed cluster authority validation before applying any Linux type-only authority scaffolding patch.",
       "status": "pending",
       "blocked_by": [
-        "N-015"
+        "N-018"
+      ]
+    },
+    {
+      "id": "N-017",
+      "text": "Before any L4 device work, model QueueLease semantics for queue ownership, IOMMU mappings, interrupt routes, epochs, and rate budgets.",
+      "status": "pending",
+      "blocked_by": [
+        "N-018"
+      ]
+    },
+    {
+      "id": "N-019",
+      "text": "Before any L2 per-Domain MM work, model MemoryOwnership semantics for page ownership, MemoryView mapping, slab object generation, page-cache overlays, and reclaim provenance.",
+      "status": "pending",
+      "blocked_by": [
+        "N-018"
       ]
     }
   ],

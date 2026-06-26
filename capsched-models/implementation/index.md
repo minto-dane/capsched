@@ -23,7 +23,7 @@ Candidate implementation plans:
 - `0004-slice0b-readiness-gate.md`
   - Status: draft gate, not an accepted Linux patch.
   - Purpose: integrate the checked RunnableLease, EndpointAsync, BrokerBudget,
-    and DomainMonitor models plus the running ClusterLease model into the
+    DomainMonitor, and decomposed cluster authority models into the
     acceptance criteria for a possible type-only Slice 0B patch.
 
 Validated formal inputs:
@@ -43,9 +43,14 @@ Validated formal inputs:
   - Pressure: Linux-visible DomainTag shadow state is not execution authority
     without monitor-owned activation.
 - `formal/0006-cluster-lease-compilation-model/`
-  - Status: full integration TLC running under systemd.
+  - Status: full integration stress TLC stopped before completion after state
+    explosion; not a pass.
   - Pressure: cluster authority must compile into node-local authority before
     local execution or endpoint use.
+- `formal/0007-cluster-authority-decomposition-model/`
+  - Status: checked with TLC.
+  - Pressure: forged local shadow claims are not authority, and stale cluster
+    epochs cannot remain executable.
 
 Known future branch names:
 
@@ -78,6 +83,6 @@ Slice 0B:
   kernel/sched/capsched.c
   no Linux hot struct attachment
   no behavior change
-  wait for ClusterLease TLC completion unless cluster semantics are kept to
-  opaque placeholder names only
+  review readiness gate with decomposed cluster authority validation before
+  applying any Linux patch
 ```

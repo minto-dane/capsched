@@ -198,7 +198,7 @@ TLC summary:
     no invariant error found
 ```
 
-Cluster Lease Compilation modeling has started:
+Cluster Lease Compilation modeling has been decomposed:
 
 ```text
 formal model:
@@ -213,11 +213,25 @@ auxiliary split models:
 
 current validation:
   capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md
+
+decomposed authority validation:
+  capsched-models/formal/0007-cluster-authority-decomposition-model/
+  capsched-models/validation/0009-cluster-authority-decomposition-tlc.md
 ```
 
-The full integration model is intentionally not weakened. It was moved to a
-systemd user service because interactive TLC reached large partial searches
-without completion. Do not treat it as passed until the service completes.
+The full integration model was intentionally not weakened, but its systemd TLC
+run was stopped after state explosion:
+
+```text
+17127406139 states generated
+550525279 distinct states
+512945750 states left on queue
+no invariant error observed before interruption
+```
+
+This is not a pass. The validation strategy now treats the full model as broad
+stress/regression evidence and uses smaller semantic models as proof roots.
+`ClusterShadowForgery` and `ClusterEpochRevoke` passed TLC.
 
 The Endpoint Async model has been mapped back to Linux source in:
 
@@ -298,9 +312,10 @@ Linux credential override must not change CapSched DomainTag.
 Current next decision:
 
 ```text
-Wait for ClusterLease full integration TLC completion.
-Then review:
+Review:
   capsched-models/implementation/0004-slice0b-readiness-gate.md
+using:
+  capsched-models/validation/0009-cluster-authority-decomposition-tlc.md
 
 Slice 0B, if accepted, should be type-only authority scaffolding in
 include/linux/capsched.h and kernel/sched/capsched.c with no hot struct

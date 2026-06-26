@@ -38,15 +38,16 @@ The Domain Monitor Activation model has also been checked without weakening the
 hostile Linux shadow-tag assumption. Key result: mutable Linux `linuxTag` state
 may be forged, but it cannot create active execution authority without a
 monitor-owned `runToken`, `activeDomain`, and `activeMemView`.
-Cluster Lease Compilation modeling has started. The full integration model was
-too large for chat-supervised TLC, so it is being run under a systemd user
-service without weakening the model. Do not mark it passed until the service
-completes and the validation record is updated.
-While that long TLC run is active, device/IOMMU/queue lease analysis has been
-added. Key result: VFIO/iommufd is a valuable Linux compatibility substrate, but
-its Linux-owned objects cannot be the production authority root. Future L4
-device work should model typed QueueLease semantics first: queue tag, MemoryView
-IOMMU map, interrupt route, epoch, and rate/budget must revoke together.
+Cluster Lease Compilation modeling has been decomposed. The full integration
+TLC run was stopped after state explosion with no invariant error observed, and
+is not a pass. The proof root moved to smaller semantic models:
+`ClusterShadowForgery` and `ClusterEpochRevoke` both passed TLC. This preserves
+the hostile assumptions while avoiding a giant integration run becoming the
+project objective. Device/IOMMU/queue lease analysis has also been added. Key
+result: VFIO/iommufd is a valuable Linux compatibility substrate, but its
+Linux-owned objects cannot be the production authority root. Future L4 device
+work should model typed QueueLease semantics first: queue tag, MemoryView IOMMU
+map, interrupt route, epoch, and rate/budget must revoke together.
 
 ## Recovery Path
 
@@ -168,10 +169,17 @@ Cluster lease compilation semantics are modeled in:
 capsched/capsched-models/formal/0006-cluster-lease-compilation-model/
 ```
 
-Current long-running TLC record:
+Full integration stress record:
 
 ```text
 capsched/capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md
+```
+
+Decomposed cluster authority validation:
+
+```text
+capsched/capsched-models/formal/0007-cluster-authority-decomposition-model/
+capsched/capsched-models/validation/0009-cluster-authority-decomposition-tlc.md
 ```
 
 The current Slice 0B readiness gate is:
@@ -181,16 +189,15 @@ capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md
 ```
 
 It says Slice 0B must remain type-only, no hot struct attachment, no behavior
-change, and no collapsed capability type. It also recommends waiting for the
-ClusterLease full TLC result unless cluster semantics are kept to opaque
-placeholder names only.
+change, and no collapsed capability type. Re-read it with the decomposed
+cluster authority validation in mind before applying more Linux patches.
 
 Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
-checked, and the Linux attachment map exists. Cluster lease compilation is
-currently under long-running TLC. The next decision after that service completes
-is whether to choose Slice 0B type-only endpoint/broker/domain authority
-scaffolding.
+checked, the Linux attachment map exists, and decomposed cluster authority
+models are checked. The next decision is whether to choose Slice 0B type-only
+endpoint/broker/domain authority scaffolding, or to first model MemoryOwnership
+or QueueLease.
 
 Endpoint attachment records:
 
@@ -204,21 +211,15 @@ capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md
 capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md
 ```
 
-Cluster lease TLC service commands:
-
-```text
-systemctl --user status capsched-cluster-lease-full-tlc --no-pager
-journalctl --user -u capsched-cluster-lease-full-tlc -f
-tail -f $(ls -t /media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-*.log | head -n 1)
-```
-
-Current run identity:
+Stopped full integration run identity:
 
 ```text
 unit: capsched-cluster-lease-full-tlc.service
 invocation ID: 82c3deeb88f142efbf66cab25d3f7fd4
 log: /media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-20260626T034303Z.log
 metadir: /media/nia/scsiusb/dev/linux-cap/build/tlc/cluster-lease-full-20260626T034303Z
+last observed: 17127406139 states generated, 550525279 distinct states,
+512945750 states left on queue, no invariant error before stop
 ```
 
 Current validation runner:
