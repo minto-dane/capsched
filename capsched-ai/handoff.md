@@ -63,8 +63,12 @@ useful stale-translation counterexample: a CPU could switch from one Domain to
 another while carrying an old TLB entry. The model now requires Domain
 activation to flush or retag translations, and page revoke cannot finish while
 MemoryView, direct-map, or TLB translations remain. TLC then completed with no
-invariant errors. Page-cache overlay conflict semantics remain a separate L2
-gate.
+invariant errors.
+The PageCacheOverlay model has also been checked. Its first TLC run found a
+useful stale-commit counterexample: two overlays could commit against the same
+sealed base version, one could advance the base, and the other remained stale
+committing. The model now requires base-level commit serialization or an
+equivalent commit token. TLC then completed with no invariant errors.
 
 ## Recovery Path
 
@@ -214,10 +218,9 @@ completion, but remains limited to inert type-only scaffolding.
 Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
 checked, the Linux attachment map exists, and decomposed cluster authority,
-MemoryOwnership, and DirectMapTLB models are checked. The next decision is
-whether to choose Slice 0B type-only endpoint/broker/domain authority
-scaffolding, to model QueueLease before L4 device work, or to model page-cache
-overlay conflict semantics before touching MM paths.
+MemoryOwnership, DirectMapTLB, and PageCacheOverlay models are checked. The
+next decision is whether to choose Slice 0B type-only endpoint/broker/domain
+authority scaffolding or to model QueueLease before L4 device work.
 
 Endpoint attachment records:
 
@@ -234,6 +237,8 @@ capsched/capsched-models/formal/0008-memory-ownership-model/notes.md
 capsched/capsched-models/validation/0010-memory-ownership-tlc.md
 capsched/capsched-models/formal/0009-direct-map-tlb-model/notes.md
 capsched/capsched-models/validation/0011-direct-map-tlb-tlc.md
+capsched/capsched-models/formal/0010-page-cache-overlay-model/notes.md
+capsched/capsched-models/validation/0012-page-cache-overlay-tlc.md
 ```
 
 Stopped full integration run identity:

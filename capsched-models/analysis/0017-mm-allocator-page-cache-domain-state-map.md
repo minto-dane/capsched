@@ -299,6 +299,26 @@ MEM-005:
 MEM-006:
   Reclaim, writeback, and service memory work must carry caller provenance and
   a BudgetTicket when acting for a caller.
+
+MEM-007:
+  No Domain activation may carry untagged stale TLB translations into another
+  Domain context.
+
+MEM-008:
+  No completed page revoke while MemoryView, direct-map, or TLB translations
+  for that page remain.
+
+MEM-009:
+  Linux-visible direct-map shadow claims must not create hardware translation
+  authority.
+
+MEM-010:
+  Mutable page-cache overlay state maps only into its owner Domain; sealed base
+  content is the shareable form.
+
+MEM-011:
+  No stale overlay commit: page-cache overlay writeback requires provenance,
+  ticket, current base version, and base-level serialization.
 ```
 
 ## Linux Patch Implications
@@ -350,15 +370,22 @@ The broad integrated model remains stress coverage and is not a pass.
 
 ## Remaining Formal Candidates
 
-Before any real MM or page-cache patches, choose a narrower next model for one
-of:
+Follow-on models have now covered three of these risks:
 
 ```text
-direct-map visibility
-TLB shootdown ordering
-page-cache overlay conflicts
-IOMMU/DMA MemoryView interaction
+MemoryOwnership:
+  PageOwner, MemoryView, slab generation, memory work provenance
+
+DirectMapTLB:
+  direct-map visibility and TLB revocation ordering
+
+PageCacheOverlay:
+  sealed base sharing, per-Domain mutable overlays, writeback conflicts
 ```
+
+The remaining separate memory/device-adjacent candidate is IOMMU/DMA
+MemoryView interaction, which belongs with QueueLease modeling before L4 device
+work.
 
 The initial model covered these minimum objects:
 

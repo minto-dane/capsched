@@ -17,6 +17,7 @@ Updated: 2026-06-26
 | 0009 | Passed for decomposed finite models | Cluster Authority Decomposition TLC Check |
 | 0010 | Passed for decomposed finite models | Memory Ownership TLC Check |
 | 0011 | Passed after counterexample-driven fix | Direct Map and TLB Revocation TLC Check |
+| 0012 | Passed after counterexample-driven fix | Page Cache Overlay Conflict TLC Check |
 
 ## Principles
 

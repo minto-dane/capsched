@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-map-tlb-validated",
+    "current_phase": "page-cache-overlay-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -106,6 +106,9 @@
     "direct_map_tlb_model": "capsched/capsched-models/formal/0009-direct-map-tlb-model/README.md",
     "direct_map_tlb_tla": "capsched/capsched-models/formal/0009-direct-map-tlb-model/DirectMapTLB.tla",
     "direct_map_tlb_validation": "capsched/capsched-models/validation/0011-direct-map-tlb-tlc.md",
+    "page_cache_overlay_model": "capsched/capsched-models/formal/0010-page-cache-overlay-model/README.md",
+    "page_cache_overlay_tla": "capsched/capsched-models/formal/0010-page-cache-overlay-model/PageCacheOverlay.tla",
+    "page_cache_overlay_validation": "capsched/capsched-models/validation/0012-page-cache-overlay-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
@@ -117,7 +120,7 @@
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
-    "current_focus": "DirectMapTLB was checked after a useful first counterexample: a CPU could switch Domains while carrying a stale TLB entry. The model now requires Domain activation to flush or retag translations, and page revoke cannot finish while MemoryView, direct-map, or TLB translations remain. TLC then completed with 8224001 generated states and 386784 distinct states with no invariant errors. No Linux Slice 0B patch is accepted yet. Next: choose inert Slice 0B type-only scaffolding, QueueLease modeling before L4, or page-cache overlay conflict modeling before L2."
+    "current_focus": "PageCacheOverlay was checked after a useful first counterexample: two overlays could enter committing for the same sealed base version, then one advanced the base while the other remained stale committing. The model now requires base-level commit serialization. TLC then completed with 7370677 generated states and 524808 distinct states with no invariant errors. DirectMapTLB is also checked. No Linux Slice 0B patch is accepted yet. Next: choose inert Slice 0B type-only scaffolding or QueueLease modeling before L4."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -251,6 +254,14 @@
     {
       "id": "MEM-009",
       "text": "Linux-visible direct-map shadow claims must not create hardware translation authority."
+    },
+    {
+      "id": "MEM-010",
+      "text": "Mutable page-cache overlay state maps only into its owner Domain; sealed base content is the shareable form."
+    },
+    {
+      "id": "MEM-011",
+      "text": "No stale overlay commit: page-cache overlay writeback requires provenance, ticket, current base version, and base-level serialization."
     },
     {
       "id": "DEVICE-001",
@@ -413,6 +424,12 @@
       "text": "Which remaining L2 memory risk should be modeled after MemoryOwnership?",
       "status": "resolved",
       "answer": "Direct-map visibility and TLB revocation were modeled first. The first DirectMapTLB run found a stale TLB-on-Domain-switch counterexample; after requiring Domain activation to flush or retag translations, TLC completed with no invariant errors. Page-cache overlay conflict semantics remain a separate L2 gate."
+    },
+    {
+      "id": "Q-013",
+      "text": "What page-cache overlay rule prevents stale Domain dirty state from overwriting a newer sealed base?",
+      "status": "resolved",
+      "answer": "PageCacheOverlay found that per-overlay commit is insufficient. Commit/writeback requires provenance, ticket, current base version, and base-level serialization or an equivalent commit token."
     }
   ],
   "next_actions": [
@@ -607,9 +624,20 @@
     {
       "id": "N-023",
       "text": "Before any real page-cache overlay implementation, model overlay conflict semantics for sealed shared bases, per-Domain mutable overlays, writeback, and service mediation.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Added formal/0010 PageCacheOverlay. The first run found two overlays could commit concurrently against the same sealed base version; one could advance the base while the other remained stale committing. The model was fixed by requiring base-level commit serialization. Final TLC explored 7370677 generated states and 524808 distinct states with no invariant errors. Validation record: capsched/capsched-models/validation/0012-page-cache-overlay-tlc.md.",
       "blocked_by": [
         "N-022"
+      ]
+    },
+    {
+      "id": "N-024",
+      "text": "Choose the next gate after L2 memory-risk modeling: Slice 0B inert type-only scaffolding or QueueLease modeling before L4 device work.",
+      "status": "pending",
+      "blocked_by": [
+        "N-016",
+        "N-023"
       ]
     }
   ],

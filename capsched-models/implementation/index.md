@@ -62,6 +62,11 @@ Validated formal inputs:
   - Pressure: monitor PageOwner and MemoryView are not enough if stale direct
     map or TLB translations survive; Domain activation must flush or retag
     translations, and page revoke cannot finish while translations remain.
+- `formal/0010-page-cache-overlay-model/`
+  - Status: checked with TLC after a counterexample-driven fix.
+  - Pressure: sealed shared bases may be shared, but mutable page-cache overlay
+    state must be per-Domain and service-mediated; commits require provenance,
+    tickets, current base version, and base-level serialization.
 
 Known future branch names:
 

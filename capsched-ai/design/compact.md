@@ -280,6 +280,25 @@ TLC summary:
   no invariant error found after the activation fix
 ```
 
+The PageCacheOverlay model then checked the remaining L2 page-cache conflict
+hazard. The first run found a real counterexample where two overlays entered
+`committing` for the same sealed base version; after one advanced the base, the
+other remained stale committing. The model now requires base-level commit
+serialization or an equivalent commit token.
+
+```text
+formal model:
+  capsched-models/formal/0010-page-cache-overlay-model/
+
+validation:
+  capsched-models/validation/0012-page-cache-overlay-tlc.md
+
+TLC summary:
+  7370677 states generated
+  524808 distinct states
+  no invariant error found after the serialization fix
+```
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -324,8 +343,8 @@ future L4:
   model QueueLease before touching VFIO, iommufd, IOMMU, or drivers.
 
 future L2:
-  direct-map/TLB revocation is checked; page-cache overlay conflict semantics
-  remains before touching page-cache overlay implementation.
+  direct-map/TLB revocation and page-cache overlay conflict semantics are
+  checked before touching L2 MM/page-cache implementation.
 ```
 
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
@@ -376,7 +395,6 @@ an accepted Linux patch yet.
 
 Alternative next gates:
   model QueueLease before L4 device work
-  model page-cache overlay conflict semantics before L2 page-cache work
 ```
 
 BPF and sched_ext analysis adds:
