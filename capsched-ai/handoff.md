@@ -14,7 +14,8 @@ implementation patch points are accepted yet. The source-analysis pass has been
 expanded through policy front-ends, mutable kernel state, dangerous surfaces,
 network/socket endpoints, io_uring registered resources, BPF programmable
 policy boundaries, scheduler topology/cluster partitions, and the first formal
-model selection.
+model selection. The first Runnable Lease TLA+ model has been written and
+checked with TLC in a tiny finite model.
 
 ## Recovery Path
 
@@ -81,25 +82,21 @@ Implementation must keep capability types separated:
 
 ## Next Likely Action
 
-Select the first formal semantic model. Current recommendation from the deep
-analysis is now recorded in `capsched-models/formal/0001-model-selection.md`.
-Start with runnable lease semantics:
+The first formal semantic model has been selected and checked. Runnable lease
+semantics are modeled in:
 
 ```text
-Task + TaskGeneration + DomainEpoch
-+ RunCap + SchedContext + FrozenRunUse
-+ runqueue state transitions
+capsched/capsched-models/formal/0002-runnable-lease-model/
 ```
 
-Do not implement Linux patches before the model-selection memo exists.
-The memo now exists; the next gate is to write and check the actual Runnable
-Lease model.
-
-The runnable lease execution plan is:
+TLC result:
 
 ```text
-capsched/capsched-models/plans/0004-runnable-lease-model-execution-plan.md
+capsched/capsched-models/validation/0001-runnable-lease-tlc.md
 ```
+
+Do not implement Linux patches yet. The next gate is deriving the Linux L0
+implementation plan from the checked state machine and the upstream source maps.
 
 Additional source-analysis anchors:
 

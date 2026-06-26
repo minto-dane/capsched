@@ -2,7 +2,13 @@
 
 Updated: 2026-06-25
 
-No validation artifacts have been created yet.
+## Current Validation Records
+
+| ID | Status | Title |
+| --- | --- | --- |
+| 0001 | Passed for tiny finite model | Runnable Lease TLC Check |
+
+## Principles
 
 Validation principles:
 
@@ -20,4 +26,3 @@ Candidate validators/verifiers:
 - LKDTM or targeted fault-injection style tests for boundary behavior.
 - syzkaller-style fuzzing after a minimal prototype exists.
 - perf/trace/bpftrace/ftrace for overhead and scheduling behavior evidence.
-

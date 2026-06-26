@@ -65,8 +65,11 @@
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
     "runnable_lease_model_plan": "capsched/capsched-models/plans/0004-runnable-lease-model-execution-plan.md",
+    "runnable_lease_model": "capsched/capsched-models/formal/0002-runnable-lease-model/README.md",
+    "runnable_lease_tla": "capsched/capsched-models/formal/0002-runnable-lease-model/RunnableLease.tla",
+    "runnable_lease_validation": "capsched/capsched-models/validation/0001-runnable-lease-tlc.md",
     "started_on": "2026-06-25",
-    "current_focus": "runnable lease formal model with BPF policy and cluster partition boundaries before Linux prototype patch selection"
+    "current_focus": "derive Linux L0 implementation plan from checked Runnable Lease model before patching Linux"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -222,7 +225,8 @@
     {
       "id": "Q-002",
       "text": "What is the smallest L0 slice that can demonstrate RunCap/SchedContext/FrozenRunUse without destabilizing scheduler fast paths?",
-      "status": "open"
+      "status": "open",
+      "answer": "Must now be derived from the checked Runnable Lease model and upstream scheduler path maps. No patch slice accepted yet."
     },
     {
       "id": "Q-003",
@@ -275,7 +279,8 @@
     {
       "id": "N-006",
       "text": "Write and check the Runnable Lease formal model before selecting Linux L0 patch points.",
-      "status": "in_progress",
+      "status": "completed",
+      "completed_on": "2026-06-25",
       "blocked_by": []
     },
     {
@@ -285,6 +290,12 @@
       "blocked_by": [
         "N-006"
       ]
+    },
+    {
+      "id": "N-008",
+      "text": "Derive the Linux L0 implementation plan from the checked Runnable Lease model and source-analysis maps before touching Linux code.",
+      "status": "pending",
+      "blocked_by": []
     }
   ],
   "canonical_files": {

@@ -1,6 +1,6 @@
 # Plan 0004: Runnable Lease Model Execution Plan
 
-Status: Draft
+Status: Completed
 
 Date: 2026-06-25
 
@@ -184,3 +184,20 @@ How is Domain activation represented if Monitor is absent in L0?
 
 Write the model next, then derive the L0 implementation plan from the model's
 state machine rather than from intuition about a single Linux hook.
+
+## Completion Result
+
+The first Runnable Lease model now exists at:
+
+```text
+capsched-models/formal/0002-runnable-lease-model/
+```
+
+TLC validation result:
+
+```text
+capsched-models/validation/0001-runnable-lease-tlc.md
+```
+
+The next step is to derive the Linux L0 implementation plan from the checked
+state machine, without yet patching Linux.

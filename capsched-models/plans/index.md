@@ -9,7 +9,7 @@ Updated: 2026-06-25
 | 0001 | Active | Upstream Linux Analysis for CapSched L0 |
 | 0002 | Active | Deep Compatibility and Cluster-Capability Analysis |
 | 0003 | Draft | Roadmap Toward Monitor-Backed CapSched |
-| 0004 | Draft | Runnable Lease Model Execution Plan |
+| 0004 | Completed | Runnable Lease Model Execution Plan |
 
 ## Likely Future Plan Records
 

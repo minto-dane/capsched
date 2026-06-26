@@ -125,6 +125,25 @@ Task + TaskGeneration + ProcessGeneration + Domain + DomainEpoch
 + RunCap + SchedContext + FrozenRunUse + RunqueueState + CPU + Budget
 ```
 
+The first TLA+ Runnable Lease model exists and passed TLC invariant checking in
+a tiny finite model:
+
+```text
+formal model:
+  capsched-models/formal/0002-runnable-lease-model/
+
+validation:
+  capsched-models/validation/0001-runnable-lease-tlc.md
+
+TLC summary:
+  227201 states generated
+  28450 distinct states
+  no invariant error found
+```
+
+The next gate is not Linux code yet. Derive the L0 implementation plan from the
+checked state machine and source-analysis maps.
+
 Socket and io_uring analysis sharpened a follow-on rule:
 
 ```text
