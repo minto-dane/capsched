@@ -194,6 +194,15 @@ journalctl --user -u capsched-cluster-lease-full-tlc -f
 tail -f $(ls -t /media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-*.log | head -n 1)
 ```
 
+Current run identity:
+
+```text
+unit: capsched-cluster-lease-full-tlc.service
+invocation ID: 82c3deeb88f142efbf66cab25d3f7fd4
+log: /media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-20260626T034303Z.log
+metadir: /media/nia/scsiusb/dev/linux-cap/build/tlc/cluster-lease-full-20260626T034303Z
+```
+
 Current validation runner:
 
 ```text

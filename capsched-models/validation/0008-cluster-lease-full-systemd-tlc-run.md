@@ -83,3 +83,37 @@ These interrupted runs are not pass results.
 ## Current Result
 
 Pending. Update this record after the systemd service completes.
+
+## Current Run Snapshot
+
+Started service:
+
+```text
+unit: capsched-cluster-lease-full-tlc.service
+invocation ID: 82c3deeb88f142efbf66cab25d3f7fd4
+state: active/running
+main PID: 2291073
+```
+
+Current log:
+
+```text
+/media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-20260626T034303Z.log
+```
+
+Current TLC metadir:
+
+```text
+/media/nia/scsiusb/dev/linux-cap/build/tlc/cluster-lease-full-20260626T034303Z
+```
+
+Initial progress observed after launch:
+
+```text
+Progress(5) at 2026-06-25 23:44:09:
+8424054 states generated
+2602170 distinct states found
+2584900 states left on queue
+```
+
+This is a running snapshot only. It is not a validation pass result.
