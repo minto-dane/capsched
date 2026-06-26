@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "cluster-authority-decomposition-validated",
+    "current_phase": "direct-map-tlb-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -103,6 +103,9 @@
     "slab_object_generation_tla": "capsched/capsched-models/formal/0008-memory-ownership-model/SlabObjGen.tla",
     "memory_work_provenance_tla": "capsched/capsched-models/formal/0008-memory-ownership-model/MemoryWorkProvenance.tla",
     "memory_ownership_validation": "capsched/capsched-models/validation/0010-memory-ownership-tlc.md",
+    "direct_map_tlb_model": "capsched/capsched-models/formal/0009-direct-map-tlb-model/README.md",
+    "direct_map_tlb_tla": "capsched/capsched-models/formal/0009-direct-map-tlb-model/DirectMapTLB.tla",
+    "direct_map_tlb_validation": "capsched/capsched-models/validation/0011-direct-map-tlb-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
@@ -114,7 +117,7 @@
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
-    "current_focus": "MemoryOwnership proof obligations were split after the broad integration model grew too large. PageOwnerMemoryView, SlabObjGen, and MemoryWorkProvenance all passed TLC. This supports the first MEM invariants: Linux page/slab/memcg/page-cache shadow metadata is not Domain memory authority; monitor PageOwner and MemoryView are required. No Linux Slice 0B patch is accepted yet. Next: choose inert Slice 0B type-only scaffolding, QueueLease modeling before L4, or a narrower direct-map/TLB/page-cache-overlay model before L2."
+    "current_focus": "DirectMapTLB was checked after a useful first counterexample: a CPU could switch Domains while carrying a stale TLB entry. The model now requires Domain activation to flush or retag translations, and page revoke cannot finish while MemoryView, direct-map, or TLB translations remain. TLC then completed with 8224001 generated states and 386784 distinct states with no invariant errors. No Linux Slice 0B patch is accepted yet. Next: choose inert Slice 0B type-only scaffolding, QueueLease modeling before L4, or page-cache overlay conflict modeling before L2."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -236,6 +239,18 @@
     {
       "id": "MEM-006",
       "text": "Reclaim, writeback, and service memory work must carry caller provenance and a BudgetTicket when acting for a caller."
+    },
+    {
+      "id": "MEM-007",
+      "text": "No Domain activation may carry untagged stale TLB translations into another Domain context."
+    },
+    {
+      "id": "MEM-008",
+      "text": "No completed page revoke while MemoryView, direct-map, or TLB translations for that page remain."
+    },
+    {
+      "id": "MEM-009",
+      "text": "Linux-visible direct-map shadow claims must not create hardware translation authority."
     },
     {
       "id": "DEVICE-001",
@@ -392,6 +407,12 @@
       "text": "Can Linux page metadata, memcg, or slab/page-cache state serve as the production Domain memory authority root?",
       "status": "resolved",
       "answer": "No. Analysis 0017 says these are valuable accounting, lifetime, reclaim, and compatibility substrates, but production memory authority requires monitor-owned PageOwner and MemoryView mappings."
+    },
+    {
+      "id": "Q-012",
+      "text": "Which remaining L2 memory risk should be modeled after MemoryOwnership?",
+      "status": "resolved",
+      "answer": "Direct-map visibility and TLB revocation were modeled first. The first DirectMapTLB run found a stale TLB-on-Domain-switch counterexample; after requiring Domain activation to flush or retag translations, TLC completed with no invariant errors. Page-cache overlay conflict semantics remain a separate L2 gate."
     }
   ],
   "next_actions": [
@@ -576,9 +597,19 @@
     {
       "id": "N-022",
       "text": "Before any real L2 MM implementation, choose and model the next memory risk: direct-map visibility, TLB shootdown ordering, or page-cache overlay conflict semantics.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Chose direct-map visibility and TLB shootdown ordering. Added formal/0009 DirectMapTLB. The first run found a stale TLB entry surviving Domain activation; the model was fixed by requiring activation to flush or retag translations. Final TLC explored 8224001 generated states and 386784 distinct states with no invariant errors. Validation record: capsched/capsched-models/validation/0011-direct-map-tlb-tlc.md.",
       "blocked_by": [
         "N-019"
+      ]
+    },
+    {
+      "id": "N-023",
+      "text": "Before any real page-cache overlay implementation, model overlay conflict semantics for sealed shared bases, per-Domain mutable overlays, writeback, and service mediation.",
+      "status": "pending",
+      "blocked_by": [
+        "N-022"
       ]
     }
   ],

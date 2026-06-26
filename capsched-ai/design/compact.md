@@ -260,6 +260,26 @@ The broad integrated `MemoryOwnership.tla` run was stopped after growth and is
 not a pass. memcg can mirror/account Domain budgets, but cannot be the security
 root.
 
+The DirectMapTLB model then checked the next memory hazard: stale direct-map or
+TLB translations can bypass a correct PageOwner story. The first run found a
+real counterexample where a CPU switched Domains while carrying an old TLB
+entry. The model now requires Domain activation to flush or retag translations,
+and page revoke cannot finish while MemoryView, direct-map, or TLB translations
+remain.
+
+```text
+formal model:
+  capsched-models/formal/0009-direct-map-tlb-model/
+
+validation:
+  capsched-models/validation/0011-direct-map-tlb-tlc.md
+
+TLC summary:
+  8224001 states generated
+  386784 distinct states
+  no invariant error found after the activation fix
+```
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -304,8 +324,8 @@ future L4:
   model QueueLease before touching VFIO, iommufd, IOMMU, or drivers.
 
 future L2:
-  next model one of direct-map visibility, TLB shootdown ordering, or
-  page-cache overlay conflict semantics before touching MM implementation.
+  direct-map/TLB revocation is checked; page-cache overlay conflict semantics
+  remains before touching page-cache overlay implementation.
 ```
 
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
@@ -353,6 +373,10 @@ include/linux/capsched.h and kernel/sched/capsched.c with no hot struct
 attachment, no behavior change, no user ABI, and no collapsed capability type.
 The gate has been updated for decomposed cluster authority validation; it is not
 an accepted Linux patch yet.
+
+Alternative next gates:
+  model QueueLease before L4 device work
+  model page-cache overlay conflict semantics before L2 page-cache work
 ```
 
 BPF and sched_ext analysis adds:

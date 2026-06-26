@@ -57,6 +57,11 @@ Validated formal inputs:
   - Pressure: Linux page/slab/memcg/page-cache shadow metadata is not memory
     authority; monitor-owned PageOwner, MemoryView, object generation, and
     memory work provenance are required.
+- `formal/0009-direct-map-tlb-model/`
+  - Status: checked with TLC after a counterexample-driven fix.
+  - Pressure: monitor PageOwner and MemoryView are not enough if stale direct
+    map or TLB translations survive; Domain activation must flush or retag
+    translations, and page revoke cannot finish while translations remain.
 
 Known future branch names:
 

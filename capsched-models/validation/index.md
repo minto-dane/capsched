@@ -16,6 +16,7 @@ Updated: 2026-06-26
 | 0008 | Stopped before completion | Cluster Lease Full Integration Systemd TLC Run |
 | 0009 | Passed for decomposed finite models | Cluster Authority Decomposition TLC Check |
 | 0010 | Passed for decomposed finite models | Memory Ownership TLC Check |
+| 0011 | Passed after counterexample-driven fix | Direct Map and TLB Revocation TLC Check |
 
 ## Principles
 
