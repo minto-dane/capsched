@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `4edcdefd4083ae04b1a5656f4be6cd83ae919ef4`. No implementation patch points are
 decided yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0012`.
+`capsched-models/analysis/0002` through `0014`.
 
 ## Core Architecture
 
@@ -131,4 +131,21 @@ Socket and io_uring analysis sharpened a follow-on rule:
 RunCap is not EndpointCap.
 io_uring and socket operations need per-request or per-operation frozen
 endpoint authority after the runnable lease model.
+```
+
+BPF and sched_ext analysis adds:
+
+```text
+BPF can be a policy and experimentation layer.
+BPF/sched_ext must not be the production root for No RunCap, no run.
+BPF tokens are useful analogies, but not DomainTag/epoch roots.
+```
+
+Topology and cluster analysis adds:
+
+```text
+CapSched CPU placement must refine Linux affinity, cpuset, sched-domain,
+root-domain, housekeeping, and hotplug constraints.
+Cluster leases should compile into local SchedContexts and EndpointCaps;
+do not build a shared mutable distributed kernel as the first architecture.
 ```

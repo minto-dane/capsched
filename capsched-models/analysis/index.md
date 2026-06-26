@@ -18,10 +18,13 @@ Updated: 2026-06-25
 | 0010 | Draft | Dangerous Surfaces and Service Domains |
 | 0011 | Draft | Network Socket Endpoint Map |
 | 0012 | Draft | io_uring Registered Resource Provenance |
+| 0013 | Draft | BPF Programmable Policy Boundary |
+| 0014 | Draft | Scheduler Topology and Cluster Partition Map |
 
 ## Planned Analysis Notes
 
 1. TLA+ or equivalent skeleton for runnable lease semantics.
 2. Validation and benchmark plan after formal model selection.
-3. Deeper BPF attachment and verifier boundary map.
-4. Deeper device queue and IOMMU lease map.
+3. Deeper device queue and IOMMU lease map.
+4. Deeper MM allocator, slab, and page-cache enforcement map.
+5. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.

@@ -58,13 +58,15 @@
       "capsched/capsched-models/analysis/0009-mutable-kernel-state-boundary-map.md",
       "capsched/capsched-models/analysis/0010-dangerous-surfaces-and-service-domains.md",
       "capsched/capsched-models/analysis/0011-network-socket-endpoint-map.md",
-      "capsched/capsched-models/analysis/0012-io-uring-registered-resource-provenance.md"
+      "capsched/capsched-models/analysis/0012-io-uring-registered-resource-provenance.md",
+      "capsched/capsched-models/analysis/0013-bpf-programmable-policy-boundary.md",
+      "capsched/capsched-models/analysis/0014-scheduler-topology-cluster-partition-map.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
     "runnable_lease_model_plan": "capsched/capsched-models/plans/0004-runnable-lease-model-execution-plan.md",
     "started_on": "2026-06-25",
-    "current_focus": "runnable lease formal model before Linux prototype patch selection"
+    "current_focus": "runnable lease formal model with BPF policy and cluster partition boundaries before Linux prototype patch selection"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -122,6 +124,14 @@
     {
       "id": "MONITOR-001",
       "text": "Linux-only prototypes must not claim hypervisor-grade isolation."
+    },
+    {
+      "id": "POLICY-001",
+      "text": "BPF and sched_ext may suggest or prototype policy, but must not be the production root for CapSched security invariants."
+    },
+    {
+      "id": "CLUSTER-001",
+      "text": "CapSched CPU placement must refine existing affinity, cpuset, sched-domain, housekeeping, and hotplug constraints rather than bypass them."
     }
   ],
   "design_boundaries": [

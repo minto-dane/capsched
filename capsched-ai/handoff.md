@@ -12,7 +12,8 @@ The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched
 Upstream Linux has been fetched into sibling repository `linux/`. No
 implementation patch points are accepted yet. The source-analysis pass has been
 expanded through policy front-ends, mutable kernel state, dangerous surfaces,
-network/socket endpoints, io_uring registered resources, and the first formal
+network/socket endpoints, io_uring registered resources, BPF programmable
+policy boundaries, scheduler topology/cluster partitions, and the first formal
 model selection.
 
 ## Recovery Path
@@ -75,6 +76,8 @@ Implementation must keep capability types separated:
 - Do not implement before writing investigation notes and a semantic model.
 - Do not merge Linux source and project state into one repository.
 - Do not claim security properties for Linux-only prototypes.
+- Do not treat BPF, sched_ext, cpuset, or sched domains as the production
+  security root. They are compatibility and policy substrates.
 
 ## Next Likely Action
 
@@ -96,6 +99,13 @@ The runnable lease execution plan is:
 
 ```text
 capsched/capsched-models/plans/0004-runnable-lease-model-execution-plan.md
+```
+
+Additional source-analysis anchors:
+
+```text
+capsched/capsched-models/analysis/0013-bpf-programmable-policy-boundary.md
+capsched/capsched-models/analysis/0014-scheduler-topology-cluster-partition-map.md
 ```
 
 Current Linux source state:
