@@ -17,7 +17,9 @@ resources, BPF programmable policy boundaries, scheduler topology/cluster
 partitions, and the first formal model selection. The first Runnable Lease TLA+
 model has been written and checked with TLC in a tiny finite model. A candidate
 Linux L0 Runnable Lease implementation plan now exists, derived from that model
-and the upstream scheduler maps.
+and the upstream scheduler maps. The first Linux patch slice has been narrowed
+to Slice 0A: inert `CONFIG_CAPSCHED` build scaffolding with no task layout or
+scheduler behavior changes. Linux source is still unmodified.
 
 ## Recovery Path
 
@@ -97,14 +99,16 @@ TLC result:
 capsched/capsched-models/validation/0001-runnable-lease-tlc.md
 ```
 
-Do not implement Linux patches yet. The next gate is reviewing the candidate
-Linux L0 implementation plan and explicitly choosing the first
-no-behavior-change patch slice.
+Do not jump to scheduler behavior patches. The next gate is either running the
+baseline out-of-tree Linux build or applying the selected Slice 0A inert
+scaffolding patch and validating it with the build plan.
 
 Candidate implementation plan:
 
 ```text
 capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md
+capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md
+capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md
 ```
 
 Additional source-analysis anchors:

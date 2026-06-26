@@ -16,7 +16,9 @@ The current work branch is `capsched-linux-l0` at commit
 decided yet. A first deep source-analysis pass now exists in
 `capsched-models/analysis/0002` through `0014`. A candidate Linux L0
 Runnable Lease implementation plan has been derived from the checked model, but
-the first Linux patch slice has not been selected.
+Linux source is still unmodified. The first patch slice has now been narrowed to
+Slice 0A: inert `CONFIG_CAPSCHED` build scaffolding with no task layout or
+scheduler behavior changes.
 
 ## Core Architecture
 
@@ -143,13 +145,16 @@ TLC summary:
   no invariant error found
 ```
 
-The next gate is not Linux behavior changes yet. Review the candidate L0
-implementation plan and choose the first no-behavior-change patch slice.
+The next gate is not Linux behavior changes yet. Run the baseline out-of-tree
+build and/or apply the selected Slice 0A inert scaffolding patch, then validate
+`CONFIG_CAPSCHED=n/y`.
 
 Candidate implementation plan:
 
 ```text
 capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md
+capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md
+capsched-models/validation/0002-l0-slice0-build-validation-plan.md
 ```
 
 Socket and io_uring analysis sharpened a follow-on rule:

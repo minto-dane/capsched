@@ -16,5 +16,5 @@ Updated: 2026-06-25
 1. Validation plan for enqueue/pick/tick semantics.
 2. Validation plan for async provenance.
 3. EndpointCap model execution plan.
-4. First no-behavior-change Linux patch slice plan after user review of
-   `implementation/0001-l0-runnable-lease-implementation-plan.md`.
+4. Linux Slice 0A implementation and baseline build execution after
+   `implementation/0002-l0-slice0-scaffolding-plan.md`.

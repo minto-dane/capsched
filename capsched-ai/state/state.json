@@ -69,8 +69,10 @@
     "runnable_lease_tla": "capsched/capsched-models/formal/0002-runnable-lease-model/RunnableLease.tla",
     "runnable_lease_validation": "capsched/capsched-models/validation/0001-runnable-lease-tlc.md",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
+    "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
+    "l0_slice0_build_validation_plan": "capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md",
     "started_on": "2026-06-25",
-    "current_focus": "review the candidate Linux L0 Runnable Lease implementation plan and choose the first no-behavior-change patch slice"
+    "current_focus": "execute or apply the selected Slice 0A inert CONFIG_CAPSCHED scaffolding plan; Linux source is still unmodified"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -302,9 +304,18 @@
     {
       "id": "N-009",
       "text": "Review the candidate Linux L0 Runnable Lease implementation plan and explicitly choose the first no-behavior-change Linux patch slice.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-25",
       "blocked_by": [
         "N-008"
+      ]
+    },
+    {
+      "id": "N-010",
+      "text": "Run the baseline out-of-tree Linux build and then apply/validate Slice 0A inert CONFIG_CAPSCHED scaffolding.",
+      "status": "pending",
+      "blocked_by": [
+        "N-009"
       ]
     }
   ],
@@ -318,6 +329,7 @@
     "model_index": "capsched/capsched-models/index.md",
     "analysis_index": "capsched/capsched-models/analysis/index.md",
     "implementation_index": "capsched/capsched-models/implementation/index.md",
+    "validation_index": "capsched/capsched-models/validation/index.md",
     "plan_index": "capsched/capsched-models/plans/index.md",
     "active_analysis_plan": "capsched/capsched-models/plans/0001-upstream-analysis-plan.md",
     "event_log": "capsched/capsched-ai/state/events.jsonl"
