@@ -13,7 +13,8 @@ Updated: 2026-06-25
 
 ## Likely Future Plan Records
 
-1. L0 prototype implementation plan after formal model.
-2. Validation plan for enqueue/pick/tick semantics.
-3. Validation plan for async provenance.
-4. EndpointCap model execution plan.
+1. Validation plan for enqueue/pick/tick semantics.
+2. Validation plan for async provenance.
+3. EndpointCap model execution plan.
+4. First no-behavior-change Linux patch slice plan after user review of
+   `implementation/0001-l0-runnable-lease-implementation-plan.md`.

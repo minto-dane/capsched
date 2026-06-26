@@ -14,7 +14,9 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `4edcdefd4083ae04b1a5656f4be6cd83ae919ef4`. No implementation patch points are
 decided yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0014`.
+`capsched-models/analysis/0002` through `0014`. A candidate Linux L0
+Runnable Lease implementation plan has been derived from the checked model, but
+the first Linux patch slice has not been selected.
 
 ## Core Architecture
 
@@ -141,8 +143,14 @@ TLC summary:
   no invariant error found
 ```
 
-The next gate is not Linux code yet. Derive the L0 implementation plan from the
-checked state machine and source-analysis maps.
+The next gate is not Linux behavior changes yet. Review the candidate L0
+implementation plan and choose the first no-behavior-change patch slice.
+
+Candidate implementation plan:
+
+```text
+capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md
+```
 
 Socket and io_uring analysis sharpened a follow-on rule:
 

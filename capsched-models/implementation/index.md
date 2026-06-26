@@ -2,15 +2,22 @@
 
 Updated: 2026-06-25
 
-No implementation plan is accepted yet.
+No implementation patch points are accepted yet.
+
+Candidate implementation plans:
+
+- `0001-l0-runnable-lease-implementation-plan.md`
+  - Status: candidate plan, not accepted patch points.
+  - Purpose: derive Linux L0 scaffolding and validation sequence from the
+    checked Runnable Lease TLA+ model and upstream source maps.
 
 Known future branch names:
 
 - `capsched-linux-l0`: Linux-only prototype branch.
 - `capsched-linux-h`: monitor-backed research branch.
 
-No patch points are accepted until upstream Linux source is fetched and relevant
-code paths are investigated.
+No patch points are accepted until the candidate L0 plan is reviewed and the
+first slice is explicitly selected.
 
 Likely investigation targets, not decisions:
 
@@ -25,4 +32,3 @@ Likely investigation targets, not decisions:
 - cgroup CPU and cpuset code
 - core scheduling code
 - LSM/security hooks
-

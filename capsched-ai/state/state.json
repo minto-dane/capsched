@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "formal-model-prep",
+    "current_phase": "l0-implementation-planning",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -68,8 +68,9 @@
     "runnable_lease_model": "capsched/capsched-models/formal/0002-runnable-lease-model/README.md",
     "runnable_lease_tla": "capsched/capsched-models/formal/0002-runnable-lease-model/RunnableLease.tla",
     "runnable_lease_validation": "capsched/capsched-models/validation/0001-runnable-lease-tlc.md",
+    "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "started_on": "2026-06-25",
-    "current_focus": "derive Linux L0 implementation plan from checked Runnable Lease model before patching Linux"
+    "current_focus": "review the candidate Linux L0 Runnable Lease implementation plan and choose the first no-behavior-change patch slice"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -294,8 +295,17 @@
     {
       "id": "N-008",
       "text": "Derive the Linux L0 implementation plan from the checked Runnable Lease model and source-analysis maps before touching Linux code.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-25",
       "blocked_by": []
+    },
+    {
+      "id": "N-009",
+      "text": "Review the candidate Linux L0 Runnable Lease implementation plan and explicitly choose the first no-behavior-change Linux patch slice.",
+      "status": "pending",
+      "blocked_by": [
+        "N-008"
+      ]
     }
   ],
   "canonical_files": {
@@ -307,6 +317,7 @@
     "decision_index": "capsched/capsched-ai/decisions/index.md",
     "model_index": "capsched/capsched-models/index.md",
     "analysis_index": "capsched/capsched-models/analysis/index.md",
+    "implementation_index": "capsched/capsched-models/implementation/index.md",
     "plan_index": "capsched/capsched-models/plans/index.md",
     "active_analysis_plan": "capsched/capsched-models/plans/0001-upstream-analysis-plan.md",
     "event_log": "capsched/capsched-ai/state/events.jsonl"

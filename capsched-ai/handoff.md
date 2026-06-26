@@ -9,13 +9,15 @@ Read this first when resuming the project.
 The workspace is `/media/nia/scsiusb/dev/linux-cap`.
 The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched`.
 
-Upstream Linux has been fetched into sibling repository `linux/`. No
-implementation patch points are accepted yet. The source-analysis pass has been
-expanded through policy front-ends, mutable kernel state, dangerous surfaces,
-network/socket endpoints, io_uring registered resources, BPF programmable
-policy boundaries, scheduler topology/cluster partitions, and the first formal
-model selection. The first Runnable Lease TLA+ model has been written and
-checked with TLC in a tiny finite model.
+Upstream Linux has been fetched into sibling repository `linux/`. No Linux
+source changes have been made. No implementation patch points are accepted yet.
+The source-analysis pass has been expanded through policy front-ends, mutable
+kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
+resources, BPF programmable policy boundaries, scheduler topology/cluster
+partitions, and the first formal model selection. The first Runnable Lease TLA+
+model has been written and checked with TLC in a tiny finite model. A candidate
+Linux L0 Runnable Lease implementation plan now exists, derived from that model
+and the upstream scheduler maps.
 
 ## Recovery Path
 
@@ -95,8 +97,15 @@ TLC result:
 capsched/capsched-models/validation/0001-runnable-lease-tlc.md
 ```
 
-Do not implement Linux patches yet. The next gate is deriving the Linux L0
-implementation plan from the checked state machine and the upstream source maps.
+Do not implement Linux patches yet. The next gate is reviewing the candidate
+Linux L0 implementation plan and explicitly choosing the first
+no-behavior-change patch slice.
+
+Candidate implementation plan:
+
+```text
+capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md
+```
 
 Additional source-analysis anchors:
 
