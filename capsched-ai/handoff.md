@@ -19,7 +19,8 @@ model has been written and checked with TLC in a tiny finite model. A candidate
 Linux L0 Runnable Lease implementation plan now exists, derived from that model
 and the upstream scheduler maps. The first Linux patch slice has been narrowed
 to Slice 0A: inert `CONFIG_CAPSCHED` build scaffolding with no task layout or
-scheduler behavior changes. Linux source is still unmodified.
+scheduler behavior changes. Slice 0A is now committed in the Linux repository.
+Build validation is still pending because `flex` is missing on the host.
 
 ## Recovery Path
 
@@ -99,9 +100,9 @@ TLC result:
 capsched/capsched-models/validation/0001-runnable-lease-tlc.md
 ```
 
-Do not jump to scheduler behavior patches. The next gate is either running the
-baseline out-of-tree Linux build or applying the selected Slice 0A inert
-scaffolding patch and validating it with the build plan.
+Do not jump to scheduler behavior patches. The next gate is completing the
+out-of-tree build validation for Slice 0A after installing the missing host
+build dependency `flex` and likely the normal kernel build dependencies.
 
 Candidate implementation plan:
 
@@ -124,6 +125,7 @@ Current Linux source state:
 repo: ../linux
 remote: upstream = https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 branch: capsched-linux-l0
-base: upstream/master
-commit: 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
+base: 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
+current commit: 0b685979f27b3d42ee620ced5f707ee391a2a27f
+current subject: sched/capsched: Add inert scaffolding
 ```

@@ -11,7 +11,8 @@ Candidate implementation plans:
   - Purpose: derive Linux L0 scaffolding and validation sequence from the
     checked Runnable Lease TLA+ model and upstream source maps.
 - `0002-l0-slice0-scaffolding-plan.md`
-  - Status: selected candidate for the first Linux patch slice.
+  - Status: applied to Linux as commit
+    `0b685979f27b3d42ee620ced5f707ee391a2a27f`.
   - Purpose: narrow the first patch to inert `CONFIG_CAPSCHED` build
     scaffolding with no task layout or scheduler behavior changes.
 
@@ -21,7 +22,8 @@ Known future branch names:
 - `capsched-linux-h`: monitor-backed research branch.
 
 The first selected slice is Slice 0A: inert build scaffolding. Linux source has
-not been patched yet.
+been patched and committed. Build validation is pending because host dependency
+`flex` is missing.
 
 Likely investigation targets, not decisions:
 

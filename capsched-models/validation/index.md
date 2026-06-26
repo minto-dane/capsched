@@ -8,6 +8,7 @@ Updated: 2026-06-25
 | --- | --- | --- |
 | 0001 | Passed for tiny finite model | Runnable Lease TLC Check |
 | 0002 | Draft plan, not yet executed | L0 Slice 0 Build Validation Plan |
+| 0003 | Partially blocked by missing host dependency | L0 Slice 0 Validation Attempt |
 
 ## Principles
 

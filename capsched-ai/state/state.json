@@ -39,6 +39,9 @@
       "upstream_commit_date": "2026-06-25 14:09:26 -0700",
       "upstream_commit_subject": "Merge tag 'bpf-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf",
       "work_branch": "capsched-linux-l0",
+      "work_commit": "0b685979f27b3d42ee620ced5f707ee391a2a27f",
+      "work_commit_subject": "sched/capsched: Add inert scaffolding",
+      "slice0a_status": "applied; build validation pending because host flex dependency is missing",
       "private_remote": null,
       "fetched_on": "2026-06-25"
     }
@@ -71,8 +74,9 @@
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "l0_slice0_build_validation_plan": "capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md",
+    "l0_slice0_validation_attempt": "capsched/capsched-models/validation/0003-l0-slice0-validation-attempt.md",
     "started_on": "2026-06-25",
-    "current_focus": "execute or apply the selected Slice 0A inert CONFIG_CAPSCHED scaffolding plan; Linux source is still unmodified"
+    "current_focus": "complete Slice 0A build validation after installing host build dependencies; Linux Slice 0A is committed as 0b685979f27b3d42ee620ced5f707ee391a2a27f"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -314,6 +318,7 @@
       "id": "N-010",
       "text": "Run the baseline out-of-tree Linux build and then apply/validate Slice 0A inert CONFIG_CAPSCHED scaffolding.",
       "status": "pending",
+      "partial_progress": "Slice 0A Linux commit 0b685979f27b3d42ee620ced5f707ee391a2a27f is applied. Baseline and post-patch config builds are blocked by missing host command flex; sudo requires a password.",
       "blocked_by": [
         "N-009"
       ]
