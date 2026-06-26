@@ -11,10 +11,12 @@ Updated: 2026-06-26
 | 0003 | Checked | Endpoint Async Provenance Model |
 | 0004 | Checked | Broker BudgetTicket Model |
 | 0005 | Checked | Domain Monitor Activation Model |
+| 0006 | Running full TLC integration check | Cluster Lease Compilation Model |
 
 ## Planned
 
 1. Epoch/generation revocation model across runqueues and CPUs, if the first
    Runnable Lease model is too strict or too eager.
 2. Wider endpoint capability model for fd/file/socket/resource operations.
-3. Cluster lease compilation model.
+3. Cluster lease auxiliary submodels, if the full integration model remains too
+   large for a single TLC run.

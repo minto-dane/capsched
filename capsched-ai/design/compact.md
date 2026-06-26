@@ -198,6 +198,27 @@ TLC summary:
     no invariant error found
 ```
 
+Cluster Lease Compilation modeling has started:
+
+```text
+formal model:
+  capsched-models/formal/0006-cluster-lease-compilation-model/
+
+full integration model:
+  ClusterLease.tla
+
+auxiliary split models:
+  ClusterBudget.tla
+  ClusterEndpoint.tla
+
+current validation:
+  capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md
+```
+
+The full integration model is intentionally not weakened. It was moved to a
+systemd user service because interactive TLC reached large partial searches
+without completion. Do not treat it as passed until the service completes.
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -257,12 +278,10 @@ Linux credential override must not change CapSched DomainTag.
 Current next decision:
 
 ```text
-Either select Slice 0B:
-  type-only endpoint/broker/domain authority scaffolding in capsched.h/capsched.c,
-  no hot struct attachment,
-  no behavior change
-
-Or model cluster lease compilation before more Linux behavior changes.
+Wait for ClusterLease full integration TLC completion.
+Then decide whether Slice 0B should be type-only endpoint/broker/domain
+authority scaffolding in capsched.h/capsched.c with no hot struct attachment and
+no behavior change.
 ```
 
 BPF and sched_ext analysis adds:

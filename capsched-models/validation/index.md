@@ -13,6 +13,7 @@ Updated: 2026-06-26
 | 0005 | Passed for tiny finite model | Endpoint Async Provenance TLC Check |
 | 0006 | Passed for tiny finite model | Broker BudgetTicket TLC Check |
 | 0007 | Passed for tiny finite model | Domain Monitor Activation TLC Check |
+| 0008 | Running under systemd user service | Cluster Lease Full Integration Systemd TLC Run |
 
 ## Principles
 

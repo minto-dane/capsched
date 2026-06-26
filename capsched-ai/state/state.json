@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "domain-monitor-activation-model-validated",
+    "current_phase": "cluster-lease-full-tlc-running",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -81,6 +81,12 @@
     "domain_monitor_model": "capsched/capsched-models/formal/0005-domain-monitor-activation-model/README.md",
     "domain_monitor_tla": "capsched/capsched-models/formal/0005-domain-monitor-activation-model/DomainMonitor.tla",
     "domain_monitor_validation": "capsched/capsched-models/validation/0007-domain-monitor-activation-tlc.md",
+    "cluster_lease_model": "capsched/capsched-models/formal/0006-cluster-lease-compilation-model/README.md",
+    "cluster_lease_tla": "capsched/capsched-models/formal/0006-cluster-lease-compilation-model/ClusterLease.tla",
+    "cluster_lease_budget_tla": "capsched/capsched-models/formal/0006-cluster-lease-compilation-model/ClusterBudget.tla",
+    "cluster_lease_endpoint_tla": "capsched/capsched-models/formal/0006-cluster-lease-compilation-model/ClusterEndpoint.tla",
+    "cluster_lease_systemd_validation": "capsched/capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md",
+    "cluster_lease_systemd_runner": "capsched/capsched-models/validation/run-cluster-lease-full-tlc.sh",
     "l0_runnable_lease_implementation_plan": "capsched/capsched-models/implementation/0001-l0-runnable-lease-implementation-plan.md",
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
@@ -89,7 +95,7 @@
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
-    "current_focus": "Domain Monitor Activation model is checked without weakening the hostile Linux shadow-tag assumption; next decision is Slice 0B type-only endpoint/broker/domain authority scaffolding or a cluster lease compilation model"
+    "current_focus": "Cluster Lease full integration TLC run has been moved to systemd without weakening the model; await service completion before treating the cluster lease model as checked"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -302,7 +308,8 @@
     {
       "id": "Q-008",
       "text": "Should the first Linux Slice 0B introduce type-only endpoint/broker/domain authority scaffolding, or should cluster lease compilation be modeled first?",
-      "status": "open"
+      "status": "resolved",
+      "answer": "Model cluster lease compilation first. Full integration TLC is running under systemd; do not treat it as passed until the service completes."
     }
   ],
   "next_actions": [
@@ -411,9 +418,19 @@
     {
       "id": "N-014",
       "text": "Choose the next gate after Domain Monitor Activation validation: Slice 0B type-only endpoint/broker/domain authority scaffolding, or a cluster lease compilation model.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Chose Cluster Lease Compilation modeling. Full ClusterLease integration model was too large for chat supervision and is being moved to a systemd user service without weakening the model.",
       "blocked_by": [
         "N-013"
+      ]
+    },
+    {
+      "id": "N-015",
+      "text": "Monitor the systemd user ClusterLease full integration TLC run and update validation record after completion.",
+      "status": "pending",
+      "blocked_by": [
+        "N-014"
       ]
     }
   ],

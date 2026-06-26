@@ -38,6 +38,10 @@ The Domain Monitor Activation model has also been checked without weakening the
 hostile Linux shadow-tag assumption. Key result: mutable Linux `linuxTag` state
 may be forged, but it cannot create active execution authority without a
 monitor-owned `runToken`, `activeDomain`, and `activeMemView`.
+Cluster Lease Compilation modeling has started. The full integration model was
+too large for chat-supervised TLC, so it is being run under a systemd user
+service without weakening the model. Do not mark it passed until the service
+completes and the validation record is updated.
 
 ## Recovery Path
 
@@ -153,11 +157,24 @@ TLC result:
 capsched/capsched-models/validation/0007-domain-monitor-activation-tlc.md
 ```
 
+Cluster lease compilation semantics are modeled in:
+
+```text
+capsched/capsched-models/formal/0006-cluster-lease-compilation-model/
+```
+
+Current long-running TLC record:
+
+```text
+capsched/capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md
+```
+
 Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
-checked, and the Linux attachment map exists. The next decision is whether to
-choose Slice 0B type-only endpoint/broker/domain authority scaffolding or model
-cluster lease compilation before more Linux behavior changes.
+checked, and the Linux attachment map exists. Cluster lease compilation is
+currently under long-running TLC. The next decision after that service completes
+is whether to choose Slice 0B type-only endpoint/broker/domain authority
+scaffolding.
 
 Endpoint attachment records:
 
@@ -166,6 +183,15 @@ capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md
 capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md
 capsched/capsched-models/formal/0004-broker-budget-ticket-model/notes.md
 capsched/capsched-models/formal/0005-domain-monitor-activation-model/notes.md
+capsched/capsched-models/formal/0006-cluster-lease-compilation-model/notes.md
+```
+
+Cluster lease TLC service commands:
+
+```text
+systemctl --user status capsched-cluster-lease-full-tlc --no-pager
+journalctl --user -u capsched-cluster-lease-full-tlc -f
+tail -f $(ls -t /media/nia/scsiusb/dev/linux-cap/build/logs/cluster-lease-full-*.log | head -n 1)
 ```
 
 Current validation runner:
