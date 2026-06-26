@@ -320,6 +320,8 @@ using:
 Slice 0B, if accepted, should be type-only authority scaffolding in
 include/linux/capsched.h and kernel/sched/capsched.c with no hot struct
 attachment, no behavior change, no user ABI, and no collapsed capability type.
+The gate has been updated for decomposed cluster authority validation; it is not
+an accepted Linux patch yet.
 ```
 
 BPF and sched_ext analysis adds:

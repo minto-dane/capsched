@@ -15,7 +15,7 @@ commit: 0b685979f27b3d42ee620ced5f707ee391a2a27f
 ## Purpose
 
 This note collects the implementation pressure from the checked formal models
-and the running ClusterLease integration model before choosing the next Linux
+and the decomposed cluster authority validation before choosing the next Linux
 patch.
 
 Slice 0A is already applied and build-validated as inert scaffolding. The next
@@ -51,16 +51,26 @@ DomainMonitor:
   monitor RunToken -> active DomainTag/MemoryView
 ```
 
-Running:
+Checked after decomposition:
 
 ```text
-ClusterLease:
-  ClusterLease -> node-local compiled context -> local execution/endpoint use
+ClusterShadowForgery:
+  forged local shadow claims do not create execution or endpoint authority
+
+ClusterEpochRevoke:
+  revoked or stale lease epochs do not remain executable
 ```
 
-The running ClusterLease model is not passed yet. Do not use it as validation
-evidence until `validation/0008` is updated after the systemd service
-completes.
+Stress only:
+
+```text
+ClusterLease full:
+  broad integration TLC was stopped after state explosion without invariant
+  errors observed before interruption
+```
+
+Use `validation/0009` as the current cluster authority evidence. Do not treat
+the stopped full run in `validation/0008` as a pass.
 
 ## Slice 0B Must Not Collapse Types
 
@@ -298,15 +308,17 @@ drivers/
 
 Before touching Linux for Slice 0B, confirm:
 
-1. `ClusterLease` full integration TLC is no longer running, or explicitly
-   record that Slice 0B excludes cluster semantics beyond opaque placeholder
-   names.
+1. `validation/0008` records the stopped full `ClusterLease` stress run as not
+   passed, and `validation/0009` records the decomposed cluster authority TLC
+   checks as passed.
 2. `CONFIG_CAPSCHED=n` must still avoid building `capsched.o`.
 3. `CONFIG_CAPSCHED=y` must still build without changing runtime behavior.
 4. No existing Linux code may call a CapSched validation or activation helper.
 5. No task, io_uring, workqueue, socket, file, mm, cgroup, or scheduler class
    structure may receive a CapSched field in Slice 0B.
 6. Documentation comments must explicitly deny Linux-only security claims.
+7. Any cluster names must remain opaque placeholders only; no cluster-local
+   compilation semantics may enter Linux code in Slice 0B.
 
 ## Validation Plan for Slice 0B
 
@@ -328,7 +340,8 @@ The patch should be reviewed against:
   EndpointAsync
   BrokerBudget
   DomainMonitor
-  ClusterLease status
+  ClusterShadowForgery
+  ClusterEpochRevoke
 ```
 
 Evidence required:
@@ -342,19 +355,23 @@ No Linux-only monitor/security claim.
 
 ## Recommendation
 
-Do not apply Slice 0B until either:
+Slice 0B can be considered ready for user review only as inert type scaffolding.
+It is not yet an accepted patch.
+
+The accepted shape must be:
 
 ```text
-ClusterLease full integration TLC completes
-```
-
-or:
-
-```text
-the user explicitly accepts that Slice 0B contains only non-cluster opaque
-type names and no cluster-local compilation semantics.
+opaque type names
+comments denying Linux-only security claims
+no cluster-local compilation semantics
+no authority checks
+no activation helpers
+no hot struct fields
 ```
 
 Once accepted, Slice 0B should be a small Linux commit that adds only typed
 names and comments. The first meaningful behavior should still wait for a later
 trace-only or diagnostic slice.
+
+Do not use Slice 0B to begin MM, page-cache, IOMMU, queue, or driver work.
+Those tracks need separate MemoryOwnership and QueueLease models first.

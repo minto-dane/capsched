@@ -106,7 +106,7 @@
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
-    "current_focus": "ClusterLease full integration TLC was stopped after state explosion without invariant errors and is not a pass. Cluster authority proof obligations were split; ShadowForgery and EpochRevoke decomposed models passed TLC. TLC is supporting evidence, not the project objective. Next: review Slice 0B readiness with this result, then continue MemoryOwnership/QueueLease modeling before L2/L4 work."
+    "current_focus": "ClusterLease full integration TLC was stopped after state explosion without invariant errors and is not a pass. Cluster authority proof obligations were split; ShadowForgery and EpochRevoke decomposed models passed TLC. Slice 0B readiness gate was updated for this result, but no Linux Slice 0B patch is accepted yet. TLC is supporting evidence, not the project objective. Next: choose whether to apply inert Slice 0B type-only scaffolding or first continue MemoryOwnership/QueueLease modeling before L2/L4 work."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -492,7 +492,9 @@
     {
       "id": "N-016",
       "text": "Review the Slice 0B readiness gate with the decomposed cluster authority validation before applying any Linux type-only authority scaffolding patch.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Updated implementation/0004 so Slice 0B is no longer blocked on full ClusterLease TLC completion, but remains limited to inert type scaffolding, opaque cluster names, no hot struct fields, no behavior, no user ABI, and no Linux-only security claims.",
       "blocked_by": [
         "N-018"
       ]
@@ -511,6 +513,14 @@
       "status": "pending",
       "blocked_by": [
         "N-018"
+      ]
+    },
+    {
+      "id": "N-020",
+      "text": "If the user accepts Slice 0B, apply only inert type scaffolding in include/linux/capsched.h and kernel/sched/capsched.c, then repeat CONFIG_CAPSCHED=n/y build validation.",
+      "status": "pending",
+      "blocked_by": [
+        "N-016"
       ]
     }
   ],

@@ -190,7 +190,9 @@ capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md
 
 It says Slice 0B must remain type-only, no hot struct attachment, no behavior
 change, and no collapsed capability type. Re-read it with the decomposed
-cluster authority validation in mind before applying more Linux patches.
+cluster authority validation in mind before applying more Linux patches. It has
+already been updated so Slice 0B is no longer blocked on full ClusterLease TLC
+completion, but remains limited to inert type-only scaffolding.
 
 Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
