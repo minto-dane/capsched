@@ -213,12 +213,24 @@ validation/0042:
   sound/soc
   result remains observation-only; no generic workqueue enforcement hook is
   justified yet
+
+analysis/0047 + validation/0043:
+  drivers/net source inventory runner executed successfully at
+  build/workqueue-origin-drivers-net-inventory/20260627T102701Z
+  callsite rows: 1440; family rows: 164; API rows: 10; hotspot rows: 40;
+  gap rows: 18
+  largest groups: wireless/intel, ethernet/intel, ethernet/mellanox,
+  ethernet/marvell, wireless/ath
+  API counts: queue_work 486, schedule_work 380, schedule_delayed_work 284,
+  queue_delayed_work 211, mod_delayed_work 57
+  key rule: drivers/net is a QueueLease/DeviceService hotspot; no net driver
+  hook is justified until callback/container/effect mapping is done
 ```
 
 Next work remains observation-only: refine eventfd kernel signal provenance,
 epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-execfd handoff, and deepen workqueue source inventory or build QEMU stack-trace
-observation before Linux behavior changes.
+execfd handoff, and source-map a representative net driver callback/container/
+effect path before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

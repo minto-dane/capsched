@@ -183,6 +183,21 @@ sound/soc.
 generic enforcement remains forbidden from this evidence alone.
 ```
 
+First drivers/net workqueue inventory:
+
+```text
+validation/0043 decomposed drivers/net from one bulk unknown:
+1440 callsites, 164 family/subfamily rows, 10 API rows, 40 hotspot rows.
+largest groups: wireless/intel, ethernet/intel, ethernet/mellanox,
+ethernet/marvell, wireless/ath.
+candidate distribution:
+  852 PerInvocation_or_ServiceOnly_or_ExplicitMerge
+  553 ExplicitMerge_or_ServiceOnly
+  20 InterruptDeferred
+  15 InterruptDeferred_or_ServiceOnly
+No net driver hook is justified yet; callback/container/effect mapping is next.
+```
+
 ## Threat Model
 
 The eventual threat model is intentionally hostile. An attacker may control all
@@ -268,6 +283,14 @@ validation/0042
   irq_work, bio rescue, task_work fput, and VFIO virqfd injection. Bulk gaps
   remain explicit and large; no generic workqueue enforcement follows from
   this result.
+
+analysis/0047 + validation/0043
+  drivers/net workqueue origin map:
+  drivers/net has been decomposed into family, API, hotspot, and candidate
+  taxonomy inventories. It is a QueueLease/DeviceService hotspot, not a generic
+  worker-authority problem. Network work mixes link maintenance, reset, stats,
+  firmware, PTP, TX/RX cleanup, BH handoff, and queue control; endpoint effect
+  and callback/container mapping are mandatory before enforcement.
 
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:

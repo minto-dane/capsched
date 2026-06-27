@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "workqueue-origin-source-inventory-executed",
+    "current_phase": "drivers-net-workqueue-origin-inventory-executed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -197,7 +197,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0040 executed the post-exec resource QEMU trace with qemu_status 0 and workload_ret 0. Observed classes: CLOEXEC, regular file, O_PATH, socket, anonymous fd creation, and timerfd. Partially observed classes: eventfd, epoll, and io_uring; execfd remains not observed. Analysis/0045 records that internal async redesign is accepted, but internal worker execution cannot become ambient caller authority. Analysis/0046 plus validation/0041 define the workqueue origin taxonomy and observation plan. Validation/0042 executed the first source inventory: 10 source-inferred seed classifications and 49 explicit gap rows. Largest unknown groups include drivers/net, drivers/gpu, drivers/scsi, drivers/usb, and sound/soc. Next steps remain observation-only: refine post-exec trace gaps, deepen workqueue source inventory, or build QEMU stack-trace observation before behavior-changing async or endpoint hooks.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0040 executed the post-exec resource QEMU trace with qemu_status 0 and workload_ret 0. Partially observed classes remain eventfd, epoll, and io_uring; execfd remains not observed. Analysis/0045 records that internal async redesign is accepted, but internal worker execution cannot become ambient caller authority. Analysis/0046 and validation/0041 define the workqueue origin taxonomy. Validation/0042 executed the first source inventory. Analysis/0047 and validation/0043 now decompose the largest unknown group, drivers/net: 1440 callsites, 164 family/subfamily rows, 10 API rows, 40 hotspot rows, and 18 gap rows. drivers/net is a QueueLease/DeviceService hotspot; no net driver hook is justified until callback/container/effect mapping is done. Next steps remain observation-only: refine post-exec trace gaps or source-map a representative net driver path such as usbnet, e1000e/igb, bonding, AMT, or ipw2200 before behavior-changing async or endpoint hooks.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -264,7 +264,10 @@
     "workqueue_origin_taxonomy_json": "capsched/capsched-models/analysis/workqueue-origin-taxonomy-v1.json",
     "workqueue_origin_observation_plan": "capsched/capsched-models/validation/0041-workqueue-origin-observation-plan.md",
     "workqueue_origin_source_inventory_runner": "capsched/capsched-models/validation/run-workqueue-origin-source-inventory.sh",
-    "workqueue_origin_source_inventory_result": "capsched/capsched-models/validation/0042-workqueue-origin-source-inventory-result.md"
+    "workqueue_origin_source_inventory_result": "capsched/capsched-models/validation/0042-workqueue-origin-source-inventory-result.md",
+    "drivers_net_workqueue_origin_map": "capsched/capsched-models/analysis/0047-drivers-net-workqueue-origin-map.md",
+    "drivers_net_workqueue_origin_runner": "capsched/capsched-models/validation/run-workqueue-origin-drivers-net-inventory.sh",
+    "drivers_net_workqueue_origin_result": "capsched/capsched-models/validation/0043-drivers-net-workqueue-origin-inventory-result.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1323,9 +1326,19 @@
     {
       "id": "N-065",
       "text": "Deepen workqueue origin evidence by source-mapping the largest unknown groups or building a QEMU trace runner with queue-site stack capture for selected taxonomy classes.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-064"
+      ],
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created and executed run-workqueue-origin-drivers-net-inventory.sh for the largest unknown group. Final run 20260627T102701Z emitted 1440 drivers/net callsite rows, 164 family/subfamily rows, 10 API rows, 40 hotspot rows, and 18 gap rows. Added analysis/0047 and validation/0043. The result decomposes drivers/net into candidate taxonomy projections but remains observation-only and does not justify generic or net-driver enforcement."
+    },
+    {
+      "id": "N-066",
+      "text": "Source-map one representative net driver path down to INIT_WORK/INIT_DELAYED_WORK callback, container object, endpoint effect, merge rule, and QueueLease relevance before any network async enforcement hook.",
+      "status": "pending",
+      "blocked_by": [
+        "N-065"
       ]
     }
   ],

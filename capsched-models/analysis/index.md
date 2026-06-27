@@ -52,13 +52,15 @@ Updated: 2026-06-27
 | 0044 | Draft trace-only coverage map | Post-Exec Resource Trace-Only Coverage Map |
 | 0045 | Draft design boundary | Workqueue Internal Redesign Boundary |
 | 0046 | Draft taxonomy | Workqueue Origin Taxonomy |
+| 0047 | Draft source-inventory map | drivers/net Workqueue Origin Map |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Workqueue origin source inventory and QEMU observation runner.
-4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+3. Representative net driver callback/container/effect mapping.
+4. Workqueue origin QEMU stack-trace observation runner.
+5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
 
