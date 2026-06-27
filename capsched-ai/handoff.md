@@ -124,6 +124,17 @@ authority model. The next implementation record should be a strict Slice 0C
 trace-only gate tied to `EXEC-001`, `COMPAT-001`, and assurance gate `G2`.
 It should not reject wakeups, enqueue, pick, or context switches.
 
+That Slice 0C gate is now:
+
+```text
+capsched/capsched-models/implementation/0006-slice0c-trace-observation-gate.md
+```
+
+Its current recommendation is still no Linux patch: prepare a no-code trace run
+plan first, using existing scheduler tracepoints and dynamic ftrace. A Linux
+patch is allowed only if existing tracing cannot answer the coverage question,
+and would require a new gate.
+
 ## Recovery Path
 
 Read in this order:
@@ -305,6 +316,7 @@ capsched/capsched-models/validation/0014-l0-slice0b-build-run.md
 capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md
 capsched/capsched-models/assurance/claims.json
 capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md
+capsched/capsched-models/implementation/0006-slice0c-trace-observation-gate.md
 ```
 
 Stopped full integration run identity:

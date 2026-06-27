@@ -181,6 +181,20 @@ Slice 0C trace-only implementation gate
   no behavior change
 ```
 
+The gate now exists:
+
+```text
+capsched-models/implementation/0006-slice0c-trace-observation-gate.md
+```
+
+Current recommendation:
+
+```text
+Do not patch Linux yet.
+Prepare a no-code trace run plan with existing scheduler tracepoints and
+dynamic ftrace first.
+```
+
 The first TLA+ Runnable Lease model exists and passed TLC invariant checking in
 a tiny finite model:
 

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "slice0c-source-coverage",
+    "current_phase": "slice0c-trace-observation-gate",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -122,6 +122,7 @@
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
     "slice0b_readiness_gate": "capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md",
     "l0_slice0b_type_scaffolding": "capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md",
+    "slice0c_trace_observation_gate": "capsched/capsched-models/implementation/0006-slice0c-trace-observation-gate.md",
     "assurance_case_index": "capsched/capsched-models/assurance/index.md",
     "assurance_case_tree": "capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md",
     "assurance_claims_json": "capsched/capsched-models/assurance/claims.json",
@@ -135,7 +136,7 @@
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
     "protection_claim_evidence_map": "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
     "wakeup_enqueue_runnable_coverage": "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. The assurance-case foundation exists in capsched-models/assurance/. After that gate, the safer next Linux-facing choice was source coverage rather than immediate trace patching: analysis/0019 maps try_to_wake_up, ttwu_runnable, remote wakelist, wake_up_new_task, move_queued_task, affinity changes, pick_next_task, __schedule, sched_class contracts, and sched_ext enqueue custody. Next: draft a strict Slice 0C trace-only implementation gate tied to EXEC-001, COMPAT-001, and G2, with no behavior changes."
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. The assurance-case foundation exists in capsched-models/assurance/. Analysis/0019 maps wakeup/enqueue/runnable-state coverage. Implementation/0006 defines Slice 0C as a strict trace-only observation gate tied to EXEC-001, COMPAT-001, and G2, and recommends no Linux patch yet: first prepare a no-code trace run plan using existing scheduler tracepoints and dynamic ftrace."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -721,9 +722,19 @@
     {
       "id": "N-029",
       "text": "Draft a strict Slice 0C trace-only implementation gate using analysis/0019 and assurance claims EXEC-001, COMPAT-001, and G2.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Created implementation/0006. It recommends no Linux patch yet, preferring a no-code observation pass using existing scheduler tracepoints and dynamic ftrace. If a patch is later needed, it must remain CONFIG_CAPSCHED-gated internal observation only with no user ABI, no public tracepoint ABI, no task_struct authority fields, and no behavior changes.",
       "blocked_by": [
         "N-028"
+      ]
+    },
+    {
+      "id": "N-030",
+      "text": "Prepare a no-code Slice 0C trace run plan using existing scheduler tracepoints and dynamic ftrace before any Linux patch.",
+      "status": "pending",
+      "blocked_by": [
+        "N-029"
       ]
     }
   ],

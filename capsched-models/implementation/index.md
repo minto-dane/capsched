@@ -30,6 +30,10 @@ Candidate implementation plans:
     `7cf0b1e415bcead8a2079c8be94a9d41aad7d462`.
   - Purpose: add type-only authority names in `include/linux/capsched.h` and
     inert documentation in `kernel/sched/capsched.c` with no behavior change.
+- `0006-slice0c-trace-observation-gate.md`
+  - Status: proposed gate, no Linux patch approved yet.
+  - Purpose: define a strict trace-only observation gate tied to assurance
+    claims `EXEC-001`, `COMPAT-001`, and gate `G2`, using analysis `0019`.
 
 Validated formal inputs:
 
@@ -103,7 +107,6 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  assurance-case subclaim tree
-  then either Slice 0C trace-only observation or a narrower wakeup/enqueue
-  coverage analysis
+  no-code trace run plan using existing scheduler tracepoints and dynamic
+  ftrace before any Slice 0C Linux patch
 ```
