@@ -1,0 +1,346 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-27",
+  "status": "draft_observation_only_no_enforcement",
+  "purpose": "Machine-readable event and tag contract for observation-only QueueLease and descriptor ledger analysis.",
+  "source_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+  "global_rules": {
+    "observation_only": true,
+    "authority_claim": false,
+    "linux_mutable": true,
+    "monitor_verified": false,
+    "missing_event_policy": "coverage_gap_not_fail_open",
+    "disabled_path_policy": [
+      "no_behavior_change",
+      "no_allocation",
+      "no_string_formatting",
+      "no_sleeping",
+      "no_global_serialization"
+    ],
+    "hard_rejects": [
+      "generic_workqueue_as_queue_authority",
+      "pending_work_struct_carrier_overwrite",
+      "worker_current_task_as_caller",
+      "last_caller_pays_for_merged_completion",
+      "linux_owned_dma_addr_as_iommu_authority",
+      "trace_coverage_as_protection_proof"
+    ]
+  },
+  "ledger_levels": [
+    {
+      "id": "QueueLedger",
+      "definition": "Observation identity for a device queue, ring, or software queue endpoint.",
+      "required_fields": [
+        "queue_ledger_id",
+        "driver_name",
+        "netdev_name",
+        "direction",
+        "queue_index",
+        "queue_epoch_placeholder"
+      ],
+      "authority_note": "Observation tag only. Future production authority must come from monitor-owned QueueTag or QueueLease."
+    },
+    {
+      "id": "SubmitLedger",
+      "definition": "Observation identity for one submitted packet/request or explicit batch.",
+      "required_fields": [
+        "submit_ledger_id",
+        "queue_ledger_id",
+        "submit_seq",
+        "skb_cookie_or_request_cookie",
+        "byte_count",
+        "submit_epoch_placeholder"
+      ],
+      "authority_note": "Observation tag only. It may later align with a QueueLease submit use, but is not itself authority."
+    },
+    {
+      "id": "DescriptorLedger",
+      "definition": "Observation identity for one descriptor or descriptor range owned by a submit ledger.",
+      "required_fields": [
+        "descriptor_ledger_id",
+        "submit_ledger_id",
+        "first_desc",
+        "last_desc",
+        "descriptor_count",
+        "dma_map_state"
+      ],
+      "authority_note": "Observation tag only. It is used to correlate publish, completion, and settlement."
+    }
+  ],
+  "event_kinds": [
+    {
+      "id": "queue_bind",
+      "phase": "setup",
+      "definition": "Bind a Linux queue/ring/NAPI/IRQ object to an observation QueueLedger.",
+      "minimum_fields": [
+        "queue_ledger_id",
+        "driver_name",
+        "netdev_name",
+        "direction",
+        "queue_index"
+      ],
+      "existing_sources": [
+        "driver source map",
+        "netif_queue_set_napi",
+        "request_irq",
+        "napi add"
+      ],
+      "semantic_gap": "No monitor-owned QueueTag exists in L0."
+    },
+    {
+      "id": "submit_prepare",
+      "phase": "submit",
+      "definition": "A packet or request reaches the driver submit path before DMA map or descriptor publication.",
+      "minimum_fields": [
+        "submit_ledger_id",
+        "queue_ledger_id",
+        "skb_cookie_or_request_cookie",
+        "byte_count",
+        "queue_mapping"
+      ],
+      "existing_sources": [
+        "net_dev_queue",
+        "net_dev_start_xmit",
+        "driver xmit function kprobe"
+      ],
+      "semantic_gap": "Existing net tracepoints do not allocate a per-submit ledger identity."
+    },
+    {
+      "id": "dma_map",
+      "phase": "submit",
+      "definition": "Memory is mapped for device access on behalf of a submit ledger.",
+      "minimum_fields": [
+        "submit_ledger_id",
+        "descriptor_ledger_id",
+        "device",
+        "direction",
+        "length",
+        "dma_result"
+      ],
+      "existing_sources": [
+        "dma_map_sg",
+        "dma_map_sg_err",
+        "iommu map",
+        "driver dma_map_single or skb_frag_dma_map source anchor"
+      ],
+      "semantic_gap": "Generic DMA/IOMMU traces do not reliably link map events to a submit ledger."
+    },
+    {
+      "id": "desc_publish",
+      "phase": "submit",
+      "definition": "Driver writes descriptor fields that the device can later fetch.",
+      "minimum_fields": [
+        "descriptor_ledger_id",
+        "queue_ledger_id",
+        "first_desc",
+        "last_desc",
+        "descriptor_count",
+        "byte_count"
+      ],
+      "existing_sources": [
+        "driver source anchor",
+        "driver-local trace-only hook if required"
+      ],
+      "semantic_gap": "No generic tracepoint exposes descriptor publication semantics."
+    },
+    {
+      "id": "doorbell",
+      "phase": "submit",
+      "definition": "Driver advances a hardware-visible tail pointer or equivalent queue kick.",
+      "minimum_fields": [
+        "queue_ledger_id",
+        "submit_ledger_id",
+        "old_tail",
+        "new_tail",
+        "batch_count",
+        "xmit_more_or_batching"
+      ],
+      "existing_sources": [
+        "driver source anchor",
+        "driver-local trace-only hook if required"
+      ],
+      "semantic_gap": "Register writes are driver-specific and generic writel probes are not semantic queue events."
+    },
+    {
+      "id": "irq_entry",
+      "phase": "completion",
+      "definition": "An IRQ associated with a queue/device begins handling.",
+      "minimum_fields": [
+        "irq",
+        "handler",
+        "queue_ledger_id_or_unknown"
+      ],
+      "existing_sources": [
+        "irq_handler_entry",
+        "irq_handler_exit",
+        "driver IRQ source map"
+      ],
+      "semantic_gap": "IRQ trace alone does not prove queue ownership or caller authority."
+    },
+    {
+      "id": "napi_poll",
+      "phase": "completion",
+      "definition": "NAPI polls a queue/device and reports work and budget.",
+      "minimum_fields": [
+        "napi",
+        "netdev_name",
+        "work",
+        "budget",
+        "queue_ledger_id_or_unknown"
+      ],
+      "existing_sources": [
+        "napi_poll",
+        "driver poll kprobe"
+      ],
+      "semantic_gap": "NAPI poll does not identify individual submit ledgers without driver/ring correlation."
+    },
+    {
+      "id": "completion_observed",
+      "phase": "completion",
+      "definition": "Driver observes descriptor completion or device done state.",
+      "minimum_fields": [
+        "queue_ledger_id",
+        "descriptor_ledger_id_or_range",
+        "completion_status",
+        "completed_desc_count"
+      ],
+      "existing_sources": [
+        "driver clean_tx/clean_rx source anchor",
+        "driver-local trace-only hook if required"
+      ],
+      "semantic_gap": "Generic skb consume/free is too late and not enough for descriptor settlement."
+    },
+    {
+      "id": "settle",
+      "phase": "settlement",
+      "definition": "Completion is accounted, DMA is unmapped or returned, and delivery/drop/refund outcome is recorded.",
+      "minimum_fields": [
+        "submit_ledger_id",
+        "settle_outcome",
+        "byte_count",
+        "packet_count",
+        "drop_reason_or_none"
+      ],
+      "existing_sources": [
+        "netdev_completed_queue",
+        "consume_skb",
+        "kfree_skb",
+        "driver clean path source anchor"
+      ],
+      "semantic_gap": "Settlement requires correlation from driver completion to submit ledger."
+    },
+    {
+      "id": "revoke_start",
+      "phase": "revocation",
+      "definition": "A queue/domain/epoch revoke begins.",
+      "minimum_fields": [
+        "queue_ledger_id",
+        "revoke_epoch",
+        "revoke_reason"
+      ],
+      "existing_sources": [
+        "future CapSched trace-only hook",
+        "driver stop/reset source anchors"
+      ],
+      "semantic_gap": "No CapSched queue revoke exists in L0."
+    },
+    {
+      "id": "revoke_drop",
+      "phase": "revocation",
+      "definition": "Outstanding submit/descriptor is dropped, quarantined, or refunded due to revoke.",
+      "minimum_fields": [
+        "submit_ledger_id_or_descriptor_range",
+        "queue_ledger_id",
+        "revoke_epoch",
+        "drop_or_quarantine_or_refund"
+      ],
+      "existing_sources": [
+        "future CapSched trace-only hook"
+      ],
+      "semantic_gap": "No CapSched queue revoke exists in L0."
+    },
+    {
+      "id": "revoke_finish",
+      "phase": "revocation",
+      "definition": "Old-epoch in-flight queue work is no longer live.",
+      "minimum_fields": [
+        "queue_ledger_id",
+        "revoke_epoch",
+        "remaining_inflight"
+      ],
+      "existing_sources": [
+        "future CapSched trace-only hook"
+      ],
+      "semantic_gap": "No CapSched queue revoke exists in L0."
+    }
+  ],
+  "dimensions": {
+    "identity": [
+      "event_seq",
+      "queue_ledger_id",
+      "submit_ledger_id",
+      "descriptor_ledger_id",
+      "skb_cookie_or_request_cookie",
+      "netdev_name",
+      "ifindex",
+      "driver_name"
+    ],
+    "placement": [
+      "cpu",
+      "queue_mapping",
+      "tx_queue_index",
+      "rx_queue_index",
+      "napi",
+      "irq"
+    ],
+    "authority_placeholders": [
+      "domain_id",
+      "domain_epoch",
+      "queue_epoch",
+      "queue_lease_id",
+      "service_domain",
+      "monitor_view_id"
+    ],
+    "operation": [
+      "event_kind",
+      "direction",
+      "byte_count",
+      "descriptor_count",
+      "first_desc",
+      "last_desc",
+      "batch_count",
+      "result"
+    ],
+    "trust": [
+      "observation_only",
+      "authority_claim",
+      "linux_mutable",
+      "monitor_verified"
+    ],
+    "revocation": [
+      "revoke_epoch",
+      "revoke_reason",
+      "settle_outcome",
+      "quarantine",
+      "drop",
+      "refund"
+    ],
+    "performance": [
+      "timestamp",
+      "napi_budget",
+      "napi_work",
+      "sampling_state",
+      "estimated_hot_path_cost"
+    ]
+  },
+  "validation_targets": [
+    "existing_tracepoint_inventory",
+    "e1000e_source_anchor_correlation",
+    "submit_to_doorbell_chain",
+    "irq_napi_to_settlement_chain",
+    "dma_map_to_submit_gap_or_correlation",
+    "disabled_path_no_behavior_change",
+    "enabled_path_hot_path_cost_estimate"
+  ],
+  "next_action": "N-071"
+}

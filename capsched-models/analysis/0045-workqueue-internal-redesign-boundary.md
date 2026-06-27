@@ -278,6 +278,53 @@ revocation result
 settlement result
 ```
 
+## Internal-Only Redesign Boundary
+
+It is tempting to say:
+
+```text
+if we redesign the internals deeply enough, the async subsystem itself can
+become the authority model
+```
+
+That is only partly true.
+
+Internal redesign is valuable for:
+
+```text
+reducing ad hoc callback shapes
+making merge semantics explicit
+making service execution budgetable
+making cancellation and flush settlement auditable
+separating device/service maintenance from caller-derived work
+preparing hooks for per-Domain mutable state
+```
+
+Internal redesign is not sufficient for:
+
+```text
+proving caller authority after work coalescing
+protecting against arbitrary Linux kernel execution in one Domain
+preventing forged DomainTag, epoch, queue owner, or IOMMU state
+turning worker task identity into caller identity
+claiming hypervisor-grade separation without monitor-owned roots
+```
+
+The safe formulation is therefore:
+
+```text
+internal redesign provides a typed substrate
+typed carriers/ledgers provide proof-visible caller and resource provenance
+the HyperTag Monitor provides the non-forgeable root for production claims
+```
+
+This applies directly to device queues. A redesigned network driver or
+workqueue implementation may make the path cleaner, but a shared callback that
+processes a descriptor ring still cannot become "the last caller's work." The
+submit, DMA map, descriptor publish, doorbell, IRQ/NAPI completion, settlement,
+and revoke/drop points need a ledger or equivalent typed state that survives
+coalescing without overwriting caller or queue identity.
+
 ## L0/L1/L2 Consequence
 
 L0 should remain conservative:

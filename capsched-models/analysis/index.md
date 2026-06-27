@@ -56,15 +56,16 @@ Updated: 2026-06-27
 | 0048 | Draft representative source map | usbnet Workqueue Source Map |
 | 0049 | Draft representative Ethernet source map | e1000e QueueLease Source Map |
 | 0050 | Draft settlement semantics with TLC-backed design filter | Aggregate QueueLease Settlement Semantics |
+| 0051 | Draft observation-only plan | Linux Queue/Descriptor Ledger Observation Plan |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
 3. Representative modern multi-queue driver map with MSI-X/XDP/page-pool/devlink.
-4. Observation-only Linux queue/descriptor ledger tag plan.
-5. Workqueue origin QEMU stack-trace observation runner.
-6. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+4. Workqueue origin QEMU stack-trace observation runner.
+5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+6. Queue/descriptor ledger observation runner or static/probe readiness check.
 
 ## Behavior Tag Artifacts
 
@@ -77,3 +78,4 @@ Updated: 2026-06-27
 | `workqueue-origin-taxonomy-v1.json` | Draft contract | Machine-readable workqueue origin taxonomy for async source tagging |
 | `usbnet-workqueue-source-map-v1.json` | Draft source map | Machine-readable representative usbnet workqueue/container/effect mapping |
 | `e1000e-queuelease-source-map-v1.json` | Draft source map | Machine-readable representative Ethernet ring/IRQ/NAPI/QueueLease mapping |
+| `queue-descriptor-ledger-tags-v1.json` | Draft observation schema | Machine-readable observation-only queue/descriptor ledger event and tag contract |

@@ -282,12 +282,31 @@ analysis/0050 + formal/0027 + validation/0044:
     completion work performs aggregate settlement only. Do not start by changing
     generic workqueue semantics or attaching one mutable caller ticket to a
     shared callback object.
+
+analysis/0051 + validation/0045:
+  observation-only queue/descriptor ledger tag plan completed
+  machine-readable schema:
+    analysis/queue-descriptor-ledger-tags-v1.json
+  source evidence:
+    existing netdev, NAPI, IRQ, SKB, IOMMU, and DMA tracepoints expose useful
+    outer events, but do not reconstruct descriptor publish, tail doorbell,
+    submit-ledger correlation, completion settlement, or revoke/drop outcomes
+  internal-redesign answer:
+    deep Linux internal redesign is accepted and likely required, but it is a
+    typed substrate, not the production authority root. Domain-derived async and
+    device queue effects still require proof-visible carriers/ledgers, and
+    production claims still require monitor-owned QueueTag/IOMMU/epoch/budget
+    roots.
+  key rule:
+    queue/descriptor ledger tags are observation-only. They must not decide
+    behavior, must not become a stable ABI claim, and missing tags are coverage
+    gaps rather than fail-open policy.
 ```
 
-Next work remains observation-only: refine eventfd kernel signal provenance,
-epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-execfd handoff, and design Linux queue/descriptor ledger observation tags
-before Linux behavior changes.
+Next work remains observation-only: build a queue/descriptor ledger readiness
+runner or static/probe checker, refine eventfd kernel signal provenance, epoll
+delivery/watched-endpoint correlation, io_uring fixed-file consumption, and
+execfd handoff before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

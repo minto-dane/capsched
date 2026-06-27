@@ -324,6 +324,16 @@ analysis/0050 + formal/0027 + validation/0044
   ledger/service state and must not use one overwritten caller ticket on a
   shared callback object.
 
+analysis/0051 + validation/0045
+  observation-only queue/descriptor ledger plan:
+  existing tracepoints cover useful outer netdev, NAPI, IRQ, SKB, IOMMU, and
+  DMA events, but not descriptor publish, tail doorbell, submit-ledger
+  correlation, completion settlement, or CapSched revoke/drop semantics. Deep
+  internal redesign is allowed and likely required, but it is only the typed
+  Linux substrate; proof-visible ledgers/carriers and monitor-owned QueueTag,
+  IOMMU, epoch, and budget roots remain required for production claims. Missing
+  tags are coverage gaps, not fail-open policy.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,
