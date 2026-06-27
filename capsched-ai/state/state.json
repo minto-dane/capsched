@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "wider-endpoint-capability-refined",
+    "current_phase": "exec-generation-inheritance-refined",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -92,7 +92,8 @@
       "capsched/capsched-models/analysis/0038-same-domain-monitor-fastpath-budget-freshness.md",
       "capsched/capsched-models/analysis/0039-root-schedcontext-budget-nohz-overrun.md",
       "capsched/capsched-models/analysis/0040-class-selected-state-boundary.md",
-      "capsched/capsched-models/analysis/0041-wider-endpoint-capability-semantics.md"
+      "capsched/capsched-models/analysis/0041-wider-endpoint-capability-semantics.md",
+      "capsched/capsched-models/analysis/0042-exec-generation-inheritance-semantics.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -193,7 +194,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0041+formal/0024 now establish wider endpoint capability semantics: fd lookup, struct file/socket refs, open/create basis, nosec socket paths, dup/SCM_RIGHTS/accept-style transfer, async workers, mmap, ioctl, anon-fd and io_uring registration are not ambient authority. Endpoint effects require operation-specific FrozenEndpointUse; transfer and registration require derived/attenuated receiver authority; workers require service authority intersected with caller frozen authority and BudgetTicket. Validation/0036 passed the safe model and produced expected unsafe counterexamples for fd lookup as authority, open basis as all-operation authority, nosec bypass, transfer without derivation, ambient worker endpoint execution, revoked queued/registered use, mmap without MmapCap, and ioctl without typed command cap. Next steps remain refinement, not enforcement: exec process-generation and inherited endpoint semantics before Linux behavior changes.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0041+formal/0024 establish wider endpoint capability semantics. Analysis/0042+formal/0025 now establish exec generation and inherited endpoint semantics: successful exec does not automatically change CapSched Domain, but it is a new ProgramGeneration boundary for endpoint, async, mmap, notification, and process-image-scoped authority. The current task may continue only through same-Domain ExecContinuation with live SchedContext and fresh ProgramGeneration; surviving non-CLOEXEC fd reachability requires post-exec derivation or attenuation; CLOEXEC endpoints must not leak; credential/LSM transitions cannot amplify inherited endpoint authority; execfd handoff is a derived endpoint; AT_EXECVE_CHECK is policy-check only. Validation/0037 passed the safe model and produced expected unsafe counterexamples for domain change without token, run without continuation, old endpoint use, surviving fd without derivation, close-on-exec leak, credential amplification, execfd without derivation, old async use, old mmap survival, and check-only mutation. Next steps remain refinement, not enforcement: derive post-exec fd/resource inheritance classes and trace-only coverage before Linux behavior changes.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -237,7 +238,11 @@
     "wider_endpoint_capability_semantics": "capsched/capsched-models/analysis/0041-wider-endpoint-capability-semantics.md",
     "wider_endpoint_capability_model": "capsched/capsched-models/formal/0024-wider-endpoint-capability-model/README.md",
     "wider_endpoint_capability_tla": "capsched/capsched-models/formal/0024-wider-endpoint-capability-model/EndpointAuthority.tla",
-    "wider_endpoint_capability_validation": "capsched/capsched-models/validation/0036-wider-endpoint-capability-tlc.md"
+    "wider_endpoint_capability_validation": "capsched/capsched-models/validation/0036-wider-endpoint-capability-tlc.md",
+    "exec_generation_inheritance_semantics": "capsched/capsched-models/analysis/0042-exec-generation-inheritance-semantics.md",
+    "exec_generation_inheritance_model": "capsched/capsched-models/formal/0025-exec-generation-inheritance-model/README.md",
+    "exec_generation_inheritance_tla": "capsched/capsched-models/formal/0025-exec-generation-inheritance-model/ExecGeneration.tla",
+    "exec_generation_inheritance_validation": "capsched/capsched-models/validation/0037-exec-generation-inheritance-tlc.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1228,9 +1233,19 @@
     {
       "id": "N-058",
       "text": "Model exec process-generation and inherited endpoint semantics so exec cannot silently refresh, amplify, or launder Domain and Endpoint authority.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-057"
+      ],
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0042 and formal/0025. Source map covers bprm_execve, begin_new_exec, de_thread, exec_mmap, io_uring_task_cancel, unshare_files, do_close_on_exec, commit_creds, LSM bprm hooks, self_exec_id, execfd handoff, and AT_EXECVE_CHECK. TLC safe model explored 11 generated states and 11 distinct states with no invariant errors. Unsafe models produced expected counterexamples for Domain change without token, run after exec without continuation, old FrozenEndpointUse after exec, surviving fd without derivation, close-on-exec leak, credential/LSM amplification, execfd without derivation, old async use after exec, old mmap survival, and AT_EXECVE_CHECK mutation. Validation record: capsched/capsched-models/validation/0037-exec-generation-inheritance-tlc.md."
+    },
+    {
+      "id": "N-059",
+      "text": "Derive post-exec fd/resource inheritance classes for regular files, sockets, anon fds, epoll/eventfd/timerfd, io_uring registrations, and execfd handoff before any exec endpoint hook implementation.",
+      "status": "pending",
+      "blocked_by": [
+        "N-058"
       ]
     }
   ],

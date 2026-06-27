@@ -130,10 +130,26 @@ analysis/0041 + formal/0024 + validation/0036:
   pending uses before new endpoint effects
   mmap requires MmapCap and MemoryView consequences, not plain read/write cap
   ioctl and uring command paths require typed command authority
+
+analysis/0042 + formal/0025 + validation/0037:
+  successful exec does not automatically change CapSched Domain
+  exec is a new ProgramGeneration boundary for endpoint, async, mmap,
+  notification, and process-image-scoped authority
+  a current task may continue after exec only through same-Domain
+  ExecContinuation with live SchedContext and fresh ProgramGeneration
+  old FrozenEndpointUse cannot authorize post-exec endpoint effects
+  surviving non-CLOEXEC fd reachability must be derived or attenuated for the
+  new ProgramGeneration before endpoint effects
+  CLOEXEC endpoints must not leak usable authority into the new program image
+  credential or LSM-domain changes cannot amplify inherited endpoints
+  execfd handoff to an interpreter is a derived endpoint handoff
+  old program-generation async work and mmap/page-fault authority cannot survive
+  AT_EXECVE_CHECK is a policy check only and must not mutate generation or
+  derive post-exec authority
 ```
 
-Next work remains refinement, not enforcement: exec process-generation and
-inherited endpoint semantics.
+Next work remains refinement, not enforcement: derive post-exec fd/resource
+inheritance classes and trace-only coverage before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

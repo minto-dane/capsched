@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `7cf0b1e415bcead8a2079c8be94a9d41aad7d462`. No behavior-changing implementation
 patch points are accepted yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0041`. A candidate Linux L0 Runnable
+`capsched-models/analysis/0002` through `0042`. A candidate Linux L0 Runnable
 Lease implementation plan has been derived from the checked model. Linux source
 now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
@@ -97,6 +97,22 @@ internal async redesign is permitted, but it must preserve typed DomainRequest
 work carriers and keep service/kernel maintenance as separate audited classes.
 mmap needs MmapCap and MemoryView consequences.
 ioctl/uring commands need typed command authority.
+```
+
+Exec refinement adds:
+
+```text
+ordinary exec does not automatically change CapSched Domain.
+successful exec increments ProgramGeneration for endpoint, async, mmap,
+notification, and process-image-scoped authority.
+the current task may continue only through same-Domain ExecContinuation with
+live SchedContext and fresh ProgramGeneration.
+surviving non-CLOEXEC fds are reachability, not post-exec authority; derive or
+attenuate before endpoint effects.
+CLOEXEC, old FrozenEndpointUse, old async use, old mmap/page-fault authority,
+and old credential-derived endpoint authority must not leak across exec.
+execfd is a derived endpoint handoff to an interpreter.
+AT_EXECVE_CHECK is check-only and must not mutate generation.
 ```
 
 ## Threat Model

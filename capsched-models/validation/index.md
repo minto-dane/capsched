@@ -42,6 +42,7 @@ Updated: 2026-06-27
 | 0034 | Safe model passed; unsafe models produced expected counterexamples | Budget Split and NO_HZ Overrun TLC Check |
 | 0035 | Safe model passed; unsafe models produced expected counterexamples | Class Selected-State TLC Check |
 | 0036 | Safe model passed; unsafe models produced expected counterexamples | Wider Endpoint Capability TLC Check |
+| 0037 | Safe model passed; unsafe models produced expected counterexamples | Exec Generation and Inheritance TLC Check |
 
 ## Principles
 

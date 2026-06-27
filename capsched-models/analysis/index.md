@@ -47,14 +47,13 @@ Updated: 2026-06-27
 | 0039 | Draft budget map with TLC-backed design filter | Root Budget, SchedContext Budget, and NO_HZ Overrun Boundary |
 | 0040 | Draft selected-state map with TLC-backed design filter | Class-Specific Selected-State Boundary |
 | 0041 | Draft endpoint semantics map with TLC-backed design filter | Wider Endpoint Capability Semantics |
+| 0042 | Draft exec boundary map with TLC-backed design filter | Exec Generation and Inherited Endpoint Semantics |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Decide exec process-generation semantics jointly with endpoint/object
-   capability modeling.
-4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+3. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
 

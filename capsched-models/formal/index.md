@@ -30,9 +30,9 @@ Updated: 2026-06-27
 | 0022 | Checked with safe pass and expected unsafe counterexamples | Budget Split and Overrun Model |
 | 0023 | Checked with safe pass and expected unsafe counterexamples | Class Selected-State Model |
 | 0024 | Checked with safe pass and expected unsafe counterexamples | Wider Endpoint Capability Model |
+| 0025 | Checked with safe pass and expected unsafe counterexamples | Exec Generation and Inheritance Model |
 
 ## Planned
 
-1. Exec process-generation and inherited endpoint semantics model.
-2. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
+1. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.
