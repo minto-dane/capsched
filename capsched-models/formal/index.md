@@ -26,11 +26,13 @@ Updated: 2026-06-27
 | 0018 | Checked with safe pass and expected unsafe counterexamples | Shared Futex Endpoint Model |
 | 0019 | Checked with safe pass and expected unsafe counterexamples | Priority Donation Authority Model |
 | 0020 | Checked with safe pass and expected unsafe counterexamples | Placement Refresh Authority Model |
+| 0021 | Checked with safe pass and expected unsafe counterexamples | Same-Domain Fast Path Freshness Model |
 
 ## Planned
 
 1. Wider endpoint capability model for fd/file/socket/resource operations.
-2. Same-Domain monitor fast-path freshness and selected-state stale budget
-   decompositions.
-3. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
+2. Root-vs-SchedContext budget split and NO_HZ/hrtick overrun models.
+3. Class-specific selected-state models for CFS, RT, deadline, sched_ext,
+   core scheduling, and proxy execution.
+4. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

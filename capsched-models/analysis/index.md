@@ -43,6 +43,7 @@ Updated: 2026-06-27
 | 0035 | Draft endpoint map with TLC-backed design filter | Shared Futex Endpoint Authority |
 | 0036 | Draft dependency-authority map with TLC-backed design filter | PI, RT, and ww_mutex Priority Donation Authority |
 | 0037 | Draft placement map with TLC-backed design filter | Placement Refresh, Affinity, cpuset, Hotplug Authority |
+| 0038 | Draft monitor-fast-path map with TLC-backed design filter | Same-Domain Monitor Fast Path and Budget Freshness |
 
 ## Planned Analysis Notes
 
@@ -50,8 +51,8 @@ Updated: 2026-06-27
 2. Broker BudgetTicket and service Domain charging map.
 3. Decide exec process-generation semantics jointly with endpoint/object
    capability modeling.
-4. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
-   and class-specific CFS/RT/deadline/sched_ext/core/proxy behavior.
+4. Refine root-vs-SchedContext budget split, NO_HZ/hrtick overrun, and
+   class-specific CFS/RT/deadline/sched_ext/core/proxy behavior.
 5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts

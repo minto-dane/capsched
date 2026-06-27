@@ -38,6 +38,7 @@ Updated: 2026-06-27
 | 0030 | Safe model passed; unsafe models produced expected counterexamples | Shared Futex Endpoint TLC Check |
 | 0031 | Safe model passed; unsafe models produced expected counterexamples | Priority Donation Authority TLC Check |
 | 0032 | Safe model passed; unsafe models produced expected counterexamples | Placement Refresh Authority TLC Check |
+| 0033 | Safe model passed; unsafe models produced expected counterexamples | Same-Domain Fast Path Freshness TLC Check |
 
 ## Principles
 

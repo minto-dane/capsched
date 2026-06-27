@@ -73,12 +73,21 @@ analysis/0037 + formal/0020 + validation/0032:
   CapSched authority
   stale selected/queued/migration-pending placement must refresh, migrate
   within envelope, or fail closed before ordinary Domain execution
+
+analysis/0038 + formal/0021 + validation/0033:
+  same-Domain fast path is not no-check
+  monitor transition may be skipped only with local freshness proof for Domain
+  epoch, MemoryView, root budget, SchedContext budget, side policy, and
+  FrozenRunUse
+  NO_HZ execution of a capped Domain requires monitor-owned or unsuppressible
+  budget timer coverage
+  selected-state budget staleness and same-task revoke must fail closed,
+  preempt, refresh, or call the monitor before ordinary execution continues
 ```
 
-Next work remains refinement, not enforcement: same-Domain monitor fast-path
-freshness, root-vs-SchedContext budget split, NO_HZ/hrtick overrun,
-class-specific selected-state behavior, wider endpoint models, and exec
-process-generation semantics.
+Next work remains refinement, not enforcement: root-vs-SchedContext budget
+split, NO_HZ/hrtick overrun, class-specific selected-state behavior, wider
+endpoint models, and exec process-generation semantics.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
