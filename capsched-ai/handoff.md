@@ -24,11 +24,16 @@ analysis/0031 + formal/0014 + validation/0026:
   F1 is validation/freeze, not authority discovery
   required authority, generation, epoch, budget, placement, and FrozenRunUse
   storage must already be local/prepared under p->pi_lock constraints
+
+analysis/0032 + formal/0015 + validation/0027:
+  generic wake paths and wake_q do not carry typed authority
+  resumable-run or endpoint-derived authority must be prepared before
+  wake_q_add(), wake_up_q(), or F1
 ```
 
-Next work is source mapping for block/wait/register authority preparation,
-especially wake_q readiness and revoke-before-wake_up_q behavior. This remains
-refinement, not enforcement.
+Next work is task-local resumable-run storage lifecycle, workqueue/kthread_work
+BudgetTicket carrier semantics, shared futex endpoint semantics, and PI/RT
+priority donation modeling. This remains refinement, not enforcement.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
@@ -618,12 +623,15 @@ capsched/capsched-models/analysis/0028-tick-runtime-budget-source-map.md
 capsched/capsched-models/analysis/0029-fork-exec-exit-identity-propagation-map.md
 capsched/capsched-models/analysis/0030-task-waking-failability-boundary-map.md
 capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md
+capsched/capsched-models/analysis/0032-block-wait-register-authority-preparation.md
 capsched/capsched-models/formal/0012-linux-scheduler-authority-model/
 capsched/capsched-models/validation/0024-linux-scheduler-authority-tlc.md
 capsched/capsched-models/formal/0013-scheduler-admission-failure-model/
 capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md
 capsched/capsched-models/formal/0014-f1-admission-data-model/
 capsched/capsched-models/validation/0026-f1-admission-data-tlc.md
+capsched/capsched-models/formal/0015-wake-authority-preparation-model/
+capsched/capsched-models/validation/0027-wake-authority-preparation-tlc.md
 capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json
 capsched/capsched-models/analysis/behavior-tags/schema-v2.json
 capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json

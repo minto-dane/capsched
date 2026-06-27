@@ -124,6 +124,10 @@ analysis/0030 + formal/0013 + validation/0025
 analysis/0031 + formal/0014 + validation/0026
   F1 admission data-readiness boundary:
   F1 is validation/freeze, not authority discovery.
+
+analysis/0032 + formal/0015 + validation/0027
+  Wake authority preparation boundary:
+  generic wake paths and wake_q carry task/state, not typed authority.
 ```
 
 F1 must not allocate, sleep, walk policy, call the monitor, acquire remote
@@ -132,14 +136,20 @@ while `p->pi_lock` is held. Required authority, generation, epoch, budget,
 placement, and FrozenRunUse storage must already be local/prepared. If required
 data is missing, reject before `TASK_WAKING`.
 
+Generic wake paths must not become authority-discovery interfaces. Ordinary
+sleep should use task-local resumable-run state. Endpoint/shared futex waits
+need endpoint-specific carriers. Workqueue and kthread_work need work item
+carriers, not ambient worker authority.
+
 Next near-term sequence:
 
 ```text
-1. Map block/wait/register points where resumable-run or endpoint-derived wake
-   authority can be prepared before wake_q_add()/try_to_wake_up().
-2. Model wake_q readiness and revoke-before-wake_up_q behavior.
-3. Model placement refresh across affinity, cpuset, and CPU hotplug.
-4. Only then consider a behavior-changing L0 runnable admission slice.
+1. Map ordinary task-local resumable-run storage lifecycle.
+2. Model workqueue/kthread_work caller BudgetTicket carrier semantics.
+3. Model shared futex cross-Domain endpoint semantics.
+4. Model PI/RT/ww_mutex priority donation separately from RunCap.
+5. Model placement refresh across affinity, cpuset, and CPU hotplug.
+6. Only then consider a behavior-changing L0 runnable admission slice.
 ```
 
 ## Assurance Root

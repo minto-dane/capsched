@@ -20,14 +20,17 @@ Updated: 2026-06-27
 | 0012 | Checked for tiny finite model | Linux Scheduler Authority Model |
 | 0013 | Checked with safe pass and expected unsafe counterexamples | Scheduler Admission Failure Model |
 | 0014 | Checked with safe pass and expected unsafe counterexamples | F1 Admission Data Model |
+| 0015 | Checked with safe pass and expected unsafe counterexamples | Wake Authority Preparation Model |
 
 ## Planned
 
-1. Block/wait/register authority preparation model for wake_q and generic wake
-   readiness.
-2. Placement-refresh model for affinity, cpuset, and CPU hotplug interactions.
-3. Wider endpoint capability model for fd/file/socket/resource operations.
-4. Same-Domain monitor fast-path freshness and selected-state stale budget
+1. Ordinary task-local resumable-run storage lifecycle model.
+2. Workqueue/kthread_work caller BudgetTicket carrier model.
+3. Shared futex cross-Domain endpoint model.
+4. PI/RT/ww_mutex priority donation authority model.
+5. Placement-refresh model for affinity, cpuset, and CPU hotplug interactions.
+6. Wider endpoint capability model for fd/file/socket/resource operations.
+7. Same-Domain monitor fast-path freshness and selected-state stale budget
    decompositions.
-5. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
+8. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

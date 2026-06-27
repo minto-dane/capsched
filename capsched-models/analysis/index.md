@@ -37,20 +37,24 @@ Updated: 2026-06-27
 | 0029 | Draft source map | Fork, Clone, Exec, and Exit Identity Propagation Map |
 | 0030 | Draft boundary map | TASK_WAKING Failability Boundary Map |
 | 0031 | Draft dependency map with TLC-backed design filter | F1 Admission-Freeze Data Dependencies |
+| 0032 | Draft source map with TLC-backed design filter | Block, Wait, and Register Authority Preparation |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Map block/wait/register points where resumable-run or endpoint-derived wake
-   authority can be prepared before wake_q_add()/try_to_wake_up().
-4. Model placement-refresh interaction with affinity, cpuset, and CPU hotplug
+3. Source-map exact ordinary blocking points where task-local resumable-run
+   authority can be initialized, refreshed, and cleared.
+4. Model workqueue/kthread_work caller BudgetTicket carrier semantics.
+5. Model shared futex cross-Domain endpoint semantics.
+6. Model PI/RT/ww_mutex priority donation separately from RunCap.
+7. Model placement-refresh interaction with affinity, cpuset, and CPU hotplug
    so `p->cpus_ptr` cannot exceed FrozenRunUse authority.
-5. Decide exec process-generation semantics jointly with endpoint/object
+8. Decide exec process-generation semantics jointly with endpoint/object
    capability modeling.
-6. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
+9. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
    and class-specific CFS/RT/deadline/sched_ext/core/proxy behavior.
-7. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+10. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
 
