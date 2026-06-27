@@ -52,6 +52,7 @@ Updated: 2026-06-27
 | 0044 | Safe model passed; unsafe models produced expected counterexamples | Aggregate QueueLease Settlement TLC |
 | 0045 | Executed; high-severity semantic gaps remain | Queue/Descriptor Ledger Observation Plan |
 | 0046 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC QueueLease TLC |
+| 0047 | Executed; high-severity semantic gaps remain | ice Modern NIC Readiness Result |
 
 ## Principles
 

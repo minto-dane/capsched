@@ -370,6 +370,22 @@ formal/0028 + validation/0046
     remain typed through submit, descriptor, completion, control, service, and
     revoke paths.
 
+validation/0047
+  ice modern NIC readiness checker:
+  runner executed with 19 tracepoint rows, 0 missing; 40 source anchors, 0
+  missing; 11 class readiness rows; 12 high-severity semantic gaps. All rows
+  are observation_only=true, authority_claim=false, monitor_verified=false.
+  Key result:
+    ice has useful generic and driver tracepoints for SKB xmit, TX/RX clean,
+    NAPI, IRQ, eswitch, DMA/IOMMU outer events, plus strong source anchors for
+    XDP, AF_XDP, devlink, representor, and service work. None provides
+    monitor QueueTag, Domain epoch, typed SubmitLedger/DescriptorLedger,
+    QueueControlCap, lower QueueLease derivation, service BudgetTicket, or
+    revoke epoch/quarantine outcome.
+  Next modeling targets:
+    XDP page-pool / AF_XDP XSK ownership.
+    QueueControl / RepresentorForward derivation.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

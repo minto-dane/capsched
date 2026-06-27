@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "modern-nic-queuelease-model-checked",
+    "current_phase": "ice-modern-nic-readiness-executed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0045 records that deep internal async redesign is accepted and likely necessary, but internal-only trust is rejected: queue_work() coalescing and worker/kthread callback execution mean caller authority cannot be reconstructed from a pending work_struct or worker identity after the caller context is gone. Analysis/0050 plus formal/0027 and validation/0044 validate aggregate QueueLease settlement with expected unsafe counterexamples. Analysis/0051 defines an observation-only queue/descriptor ledger tag plan, and validation/0045 executed its static readiness checker with 14 tracepoint rows found, 25 e1000e anchors found, 12 event readiness rows, and 8 semantic gaps. Analysis/0052 maps Intel ice as a modern multi-queue NIC path: VSI/ring/q_vector/IRQ/NAPI binding, SKB TX, XDP, AF_XDP zero-copy, page-pool/XSK memory, devlink queue-control, SR-IOV/SF/representor forwarding, and service/reset/PTP/DPLL/eswitch work. Formal/0028 plus validation/0046 now model-check the modern NIC QueueLease class split. Safe TLC passed with 1474 generated states, 701 distinct states, and depth 12. Unsafe configs produced expected counterexamples for submit without QueueBind, submit without budget, SKB without IOMMU, XDP using an SKB ledger, AF_XDP without XSK ownership, representor forwarding without derivation, devlink via RunCap, service work charged to the last submitter, ambient completion authority, and delivery after revoke. The resulting rule is that modern NIC authority needs QueueBind, typed SubmitLedgers, DescriptorLedger, CompletionSettlement, QueueControl, RepresentorForward, and ServiceWork separation. All observed state remains Linux-mutable and monitor_verified=false, so readiness and source maps are modeling evidence, not protection evidence. No behavior-changing queue, workqueue, or driver enforcement is approved. Next: N-073 ice observation-only static readiness checker.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0045 records that deep internal async redesign is accepted and likely necessary, but internal-only trust is rejected: queue_work() coalescing and worker/kthread callback execution mean caller authority cannot be reconstructed from a pending work_struct or worker identity after caller context is gone. Analysis/0050 plus formal/0027 and validation/0044 validate aggregate QueueLease settlement with expected unsafe counterexamples. Analysis/0052 maps Intel ice as a modern multi-queue NIC path. Formal/0028 plus validation/0046 model-check the modern NIC QueueLease class split: safe TLC passed with 1474 generated states, 701 distinct states, and depth 12; unsafe configs produced expected counterexamples for submit without QueueBind, submit without budget, SKB without IOMMU, XDP using an SKB ledger, AF_XDP without XSK ownership, representor forwarding without derivation, devlink via RunCap, service work charged to the last submitter, ambient completion authority, and delivery after revoke. Validation/0047 executed the ice observation-only static readiness checker: 19 tracepoint rows found with 0 missing, 40 source anchors found with 0 missing, 11 class readiness rows, and 12 high-severity semantic gaps. The resulting rule is that modern NIC authority needs QueueBind, typed SubmitLedgers, DescriptorLedger, CompletionSettlement, QueueControl, RepresentorForward, ServiceWork, and RevokeSemantics separation. All observed state remains Linux-mutable and monitor_verified=false, so readiness and source maps are modeling evidence, not protection evidence. No behavior-changing queue, workqueue, or driver enforcement is approved. Next: model XDP page-pool/AF_XDP XSK ownership and QueueControl/RepresentorForward derivation before any device enforcement.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -298,7 +298,10 @@
     "modern_nic_queuelease_model": "capsched/capsched-models/formal/0028-modern-nic-queuelease-model/README.md",
     "modern_nic_queuelease_tla": "capsched/capsched-models/formal/0028-modern-nic-queuelease-model/ModernNicQueueLease.tla",
     "modern_nic_queuelease_validation": "capsched/capsched-models/validation/0046-modern-nic-queuelease-tlc.md",
-    "modern_nic_queuelease_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/modern-nic-queuelease-20260627T112613Z"
+    "modern_nic_queuelease_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/modern-nic-queuelease-20260627T112613Z",
+    "ice_modern_nic_readiness_runner": "capsched/capsched-models/validation/run-ice-modern-nic-readiness.sh",
+    "ice_modern_nic_readiness_result": "capsched/capsched-models/validation/0047-ice-modern-nic-readiness-result.md",
+    "ice_modern_nic_readiness_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/ice-modern-nic-readiness/20260627T113618Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1439,9 +1442,27 @@
     {
       "id": "N-073",
       "text": "Build an observation-only static readiness checker for the ice source map, extending queue/descriptor readiness to XDP, AF_XDP, devlink, representor, and service-work events.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created run-ice-modern-nic-readiness.sh and validation/0047. Final run 20260627T113618Z emitted 19 tracepoint rows with zero missing rows, 40 source anchor rows with zero missing rows, 11 class readiness rows, and 12 high-severity semantic gaps. Every readiness row is observation_only=true, authority_claim=false, and monitor_verified=false.",
       "blocked_by": [
         "N-072"
+      ]
+    },
+    {
+      "id": "N-074",
+      "text": "Model XDP page-pool and AF_XDP XSK/UMEM ownership semantics so XDP_TX and AF_XDP queue submits cannot borrow SKB or generic XDP authority.",
+      "status": "pending",
+      "blocked_by": [
+        "N-073"
+      ]
+    },
+    {
+      "id": "N-075",
+      "text": "Model QueueControl and RepresentorForward derivation semantics so devlink, VF/SF, and representor forwarding cannot be authorized by RunCap or plain netdev reachability.",
+      "status": "pending",
+      "blocked_by": [
+        "N-073"
       ]
     }
   ],

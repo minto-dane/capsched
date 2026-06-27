@@ -378,13 +378,50 @@ formal/0028 + validation/0046:
     SubmitLedgerSKB, SubmitLedgerXDPFrame, SubmitLedgerXDPTxPagePool,
     SubmitLedgerAFXDP, DescriptorLedger, CompletionSettlement, QueueControl,
     RepresentorForward, and ServiceWork are related but not interchangeable.
+
+validation/0047:
+  ice modern NIC observation-only static readiness checker executed
+  runner:
+    validation/run-ice-modern-nic-readiness.sh
+  run directory:
+    /media/nia/scsiusb/dev/linux-cap/build/ice-modern-nic-readiness/20260627T113618Z
+  outcome:
+    tracepoint rows 19, missing 0
+    source anchor rows 40, missing 0
+    class readiness rows 11
+    gap rows 12
+    all readiness rows carry observation_only=true, authority_claim=false, and
+    monitor_verified=false
+  readiness classes:
+    QueueBind partially_ready
+    SubmitLedgerSKB partial_gap_recorded
+    SubmitLedgerXDPFrame source_only_gap_recorded
+    SubmitLedgerXDPTxPagePool source_only_gap_recorded
+    SubmitLedgerAFXDP source_only_gap_recorded
+    DescriptorLedger partial_gap_recorded
+    CompletionSettlement partial_gap_recorded
+    QueueControl source_only_gap_recorded
+    RepresentorForward partial_gap_recorded
+    ServiceWork source_only_gap_recorded
+    RevokeSemantics not_ready_future_capsched
+  high-severity gaps:
+    authority-root, queue-tag, submit-ledger-skb, submit-ledger-xdp,
+    page-pool-ownership, xsk-ownership, descriptor-ledger,
+    completion-settlement, queue-control, representor-derivation,
+    service-provenance, revoke-semantics
+  key rule:
+    ice has strong observability but no protection evidence. Existing driver
+    tracepoints expose ring/desc/buf/skb/eswitch state, but all observed state
+    is Linux-mutable and lacks monitor QueueTag, Domain epoch, typed ledger ids,
+    QueueControlCap, RepresentorForward derivation, service BudgetTicket, and
+    revoke epoch/quarantine outcome.
 ```
 
-Next work remains observation-only/modeling-first: build an ice-specific static
-readiness checker from analysis/0052 and formal/0028. The older post-exec gaps
-also remain: eventfd kernel signal provenance, epoll delivery/watched-endpoint
-correlation, io_uring fixed-file consumption, and execfd handoff before
-behavior-changing endpoint hooks.
+Next work remains modeling-first: model XDP page-pool / AF_XDP XSK ownership
+and QueueControl / RepresentorForward derivation before any behavior-changing
+device hook. The older post-exec gaps also remain: eventfd kernel signal
+provenance, epoll delivery/watched-endpoint correlation, io_uring fixed-file
+consumption, and execfd handoff before behavior-changing endpoint hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
