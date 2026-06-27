@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `7cf0b1e415bcead8a2079c8be94a9d41aad7d462`. No behavior-changing implementation
 patch points are accepted yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0040`. A candidate Linux L0 Runnable
+`capsched-models/analysis/0002` through `0041`. A candidate Linux L0 Runnable
 Lease implementation plan has been derived from the checked model. Linux source
 now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
@@ -80,6 +80,23 @@ No async work without provenance and frozen authority.
 No caller budget, no broker/service execution on behalf of that caller.
 No raw pointer or mutable kernel object authority across Domain boundaries.
 Linux-only prototypes must not claim hypervisor-grade isolation.
+```
+
+Endpoint refinement adds:
+
+```text
+object reachability is not endpoint authority.
+fd lookup, struct file/socket refs, fixed files, and EndpointBasis are not
+operation authority.
+endpoint effects require operation-specific FrozenEndpointUse.
+transfer/register/accept/SCM_RIGHTS/epoll/service return require derived or
+attenuated receiver authority.
+async worker/service execution needs caller frozen authority plus BudgetTicket;
+ambient worker authority is not enough.
+internal async redesign is permitted, but it must preserve typed DomainRequest
+work carriers and keep service/kernel maintenance as separate audited classes.
+mmap needs MmapCap and MemoryView consequences.
+ioctl/uring commands need typed command authority.
 ```
 
 ## Threat Model

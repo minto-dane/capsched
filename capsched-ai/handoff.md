@@ -112,10 +112,28 @@ analysis/0040 + formal/0023 + validation/0035:
   donor selected authority is not owner execution authority
   class state mutation after selection must refresh, revalidate, preempt, or
   fail closed
+
+analysis/0041 + formal/0024 + validation/0036:
+  object reachability is not endpoint authority
+  fd lookup, struct file refs, socket refs, fixed-file table entries, and
+  EndpointBasis are inputs to derivation, not operation authority
+  endpoint effects require operation-specific FrozenEndpointUse
+  Linux nosec socket fast paths must still consume fresh CapSched endpoint use
+  transfer-like events such as dup, SCM_RIGHTS, accept, epoll add, io_uring
+  registration, and service return require derived/attenuated receiver authority
+  worker/rescuer/kthread/SQPOLL/io-wq context cannot perform caller-attributed
+  endpoint effects by ambient worker authority
+  internal async redesign is allowed and likely required, but Domain-derived
+  work still needs typed carriers; service/kernel maintenance work must remain
+  a separate audited class
+  endpoint/domain/object revoke invalidates queued, registered, mapped, or
+  pending uses before new endpoint effects
+  mmap requires MmapCap and MemoryView consequences, not plain read/write cap
+  ioctl and uring command paths require typed command authority
 ```
 
-Next work remains refinement, not enforcement: wider endpoint capability models
-for fd/file/socket/resource operations and exec process-generation semantics.
+Next work remains refinement, not enforcement: exec process-generation and
+inherited endpoint semantics.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

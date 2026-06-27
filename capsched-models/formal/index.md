@@ -29,10 +29,10 @@ Updated: 2026-06-27
 | 0021 | Checked with safe pass and expected unsafe counterexamples | Same-Domain Fast Path Freshness Model |
 | 0022 | Checked with safe pass and expected unsafe counterexamples | Budget Split and Overrun Model |
 | 0023 | Checked with safe pass and expected unsafe counterexamples | Class Selected-State Model |
+| 0024 | Checked with safe pass and expected unsafe counterexamples | Wider Endpoint Capability Model |
 
 ## Planned
 
-1. Wider endpoint capability model for fd/file/socket/resource operations.
-2. Wider endpoint capability model for fd/file/socket/resource operations.
-3. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
+1. Exec process-generation and inherited endpoint semantics model.
+2. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.
