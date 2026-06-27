@@ -218,11 +218,34 @@ build/workloads/slice0c_sched_workload
 modes: forkexec, futex, affinity, pressure, all
 ```
 
-Next executable step once tracefs access exists:
+QEMU runtime observation now exists:
 
 ```text
-follow validation/0019
-create validation/0020 result record
+capsched-models/validation/0020-slice0c-qemu-boot-validation-plan.md
+capsched-models/validation/0021-slice0c-qemu-boot-smoke-result.md
+capsched-models/validation/run-slice0c-qemu-boot-smoke.sh
+```
+
+Successful run:
+
+```text
+build/qemu/slice0c-boot-smoke/20260627T033853Z
+CONFIG_CAPSCHED=y
+CONFIG_FUNCTION_TRACER=y
+WORKLOAD_RET 0
+qemu_status=0
+```
+
+This is the first reproducible CapSched worktree kernel boot/trace smoke. It is
+still observation only. Coverage gaps remain around already-runnable wake,
+remote wakelist, pick internals, `__schedule`, delayed fair requeue, and core
+scheduling branches.
+
+Next executable step:
+
+```text
+run broader QEMU workloads: futex cross, affinity, pressure, all
+record the next result without claiming enforcement
 do not proceed to enforcement from trace evidence alone
 ```
 

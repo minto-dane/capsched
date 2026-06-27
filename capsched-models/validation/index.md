@@ -25,6 +25,8 @@ Updated: 2026-06-26
 | 0017 | Planned | Slice 0C Trace Analysis and Workload Plan |
 | 0018 | Added, build-tested, and smoke-tested | Slice 0C Synthetic Workload Helper |
 | 0019 | Ready for operator execution | Slice 0C Trace Execution Runbook |
+| 0020 | Executed | Slice 0C QEMU Boot Validation Plan |
+| 0021 | Passed for QEMU boot smoke; trace coverage incomplete | Slice 0C QEMU Boot Smoke Result |
 
 ## Principles
 

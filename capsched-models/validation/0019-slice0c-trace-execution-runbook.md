@@ -112,16 +112,18 @@ Analyze each trace directory separately.
 
 ## Step 5: Create Result Record
 
-Do not edit the plans in place. Create a new validation result file:
+Do not edit the plans in place. Create a new validation result file using the
+next unused validation ID. Since `0020` and `0021` are now used for QEMU boot
+validation, a future host no-code trace result should use a later ID.
 
 ```text
-capsched-models/validation/0020-slice0c-no-code-trace-result.md
+capsched-models/validation/00NN-slice0c-no-code-trace-result.md
 ```
 
 Use this template:
 
 ````markdown
-# Validation 0020: Slice 0C No-Code Trace Result
+# Validation 00NN: Slice 0C No-Code Trace Result
 
 Status: Passed for observation | Incomplete | Blocked
 

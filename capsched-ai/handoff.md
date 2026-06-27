@@ -186,6 +186,51 @@ Current session result: user `nia` has uid 1000, tracefs is not writable, and
 the running kernel is Ubuntu `6.17.0-35-generic`, not a recorded boot of the
 CapSched worktree kernel. The runner was not executed.
 
+The first CapSched worktree runtime observation has now moved to QEMU:
+
+```text
+capsched/capsched-models/validation/0020-slice0c-qemu-boot-validation-plan.md
+capsched/capsched-models/validation/run-slice0c-qemu-boot-smoke.sh
+capsched/capsched-models/validation/0021-slice0c-qemu-boot-smoke-result.md
+```
+
+Successful QEMU run:
+
+```text
+run directory:
+  /media/nia/scsiusb/dev/linux-cap/build/qemu/slice0c-boot-smoke/20260627T033853Z
+
+serial log:
+  /media/nia/scsiusb/dev/linux-cap/build/qemu/slice0c-boot-smoke/20260627T033853Z/serial.log
+
+counts:
+  /media/nia/scsiusb/dev/linux-cap/build/qemu/slice0c-boot-smoke/20260627T033853Z/counts.tsv
+
+log:
+  /media/nia/scsiusb/dev/linux-cap/build/logs/slice0c-qemu-boot-smoke-20260627T033853Z.log
+```
+
+Guest result:
+
+```text
+CONFIG_CAPSCHED=y
+CONFIG_FUNCTION_TRACER=y
+TRACEFS /sys/kernel/tracing
+TRACER function
+WORKLOAD_RET 0
+CAPSCHED_QEMU_END workload_ret=0
+qemu_status=0
+```
+
+Observed counts include `try_to_wake_up=190`, `ttwu_do_activate=294`,
+`sched_ttwu_pending=222`, `wake_up_new_task=202`, `enqueue_task=253`,
+`sched_switch=476`, and fork/exec/exit counts of 101 each.
+
+Still unresolved: `ttwu_runnable`, remote wakelist functions, pick internals,
+`__schedule` function entry, delayed fair requeue distinction, and core
+scheduling branch distinction. Do not proceed to RunCap enforcement from this
+evidence alone.
+
 ## Recovery Path
 
 Read in this order:
@@ -373,7 +418,10 @@ capsched/capsched-models/validation/0016-slice0c-trace-readiness-check.md
 capsched/capsched-models/validation/0017-slice0c-trace-analysis-and-workloads.md
 capsched/capsched-models/validation/0018-slice0c-synthetic-workload-helper.md
 capsched/capsched-models/validation/0019-slice0c-trace-execution-runbook.md
+capsched/capsched-models/validation/0020-slice0c-qemu-boot-validation-plan.md
+capsched/capsched-models/validation/0021-slice0c-qemu-boot-smoke-result.md
 capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
+capsched/capsched-models/validation/run-slice0c-qemu-boot-smoke.sh
 capsched/capsched-models/validation/analyze-slice0c-trace.sh
 capsched/capsched-models/validation/build-slice0c-workload.sh
 capsched/capsched-models/validation/workloads/slice0c_sched_workload.c
