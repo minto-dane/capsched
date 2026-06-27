@@ -146,10 +146,24 @@ analysis/0042 + formal/0025 + validation/0037:
   old program-generation async work and mmap/page-fault authority cannot survive
   AT_EXECVE_CHECK is a policy check only and must not mutate generation or
   derive post-exec authority
+
+analysis/0043 + formal/0026 + validation/0038:
+  post-exec fd reachability is not endpoint authority
+  regular files require operation masks; O_PATH is not read/write/mmap
+  authority
+  sockets require socket-state and operation-specific derivation
+  anonymous fds require fops/private_data class policy
+  epoll old readiness and watched endpoints cannot imply new ProgramGeneration
+  authority
+  eventfd signal/read/write authority must be re-derived
+  timerfd old timer state may exist but read/arm/ioctl authority must be
+  re-derived
+  io_uring ring reachability cannot carry old registered resources or activity
+  execfd handoff requires ExecfdGrant
 ```
 
-Next work remains refinement, not enforcement: derive post-exec fd/resource
-inheritance classes and trace-only coverage before Linux behavior changes.
+Next work remains refinement, not enforcement: map trace-only coverage for
+post-exec resource inheritance classes before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

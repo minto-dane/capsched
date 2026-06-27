@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `7cf0b1e415bcead8a2079c8be94a9d41aad7d462`. No behavior-changing implementation
 patch points are accepted yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0042`. A candidate Linux L0 Runnable
+`capsched-models/analysis/0002` through `0043`. A candidate Linux L0 Runnable
 Lease implementation plan has been derived from the checked model. Linux source
 now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
@@ -113,6 +113,16 @@ CLOEXEC, old FrozenEndpointUse, old async use, old mmap/page-fault authority,
 and old credential-derived endpoint authority must not leak across exec.
 execfd is a derived endpoint handoff to an interpreter.
 AT_EXECVE_CHECK is check-only and must not mutate generation.
+```
+
+Post-exec resource refinement adds:
+
+```text
+post-exec fd reachability is not endpoint authority.
+regular files, sockets, anon fds, eventfd, timerfd, epoll, io_uring, and
+execfd each require class-specific derivation or attenuation.
+epoll readiness/watched endpoints, eventfd kernel signal, timerfd old timer
+state, io_uring registered resources, and execfd handoff are high-risk.
 ```
 
 ## Threat Model

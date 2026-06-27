@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "exec-generation-inheritance-refined",
+    "current_phase": "post-exec-resource-inheritance-refined",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -93,7 +93,8 @@
       "capsched/capsched-models/analysis/0039-root-schedcontext-budget-nohz-overrun.md",
       "capsched/capsched-models/analysis/0040-class-selected-state-boundary.md",
       "capsched/capsched-models/analysis/0041-wider-endpoint-capability-semantics.md",
-      "capsched/capsched-models/analysis/0042-exec-generation-inheritance-semantics.md"
+      "capsched/capsched-models/analysis/0042-exec-generation-inheritance-semantics.md",
+      "capsched/capsched-models/analysis/0043-post-exec-resource-inheritance-classes.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -194,7 +195,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0041+formal/0024 establish wider endpoint capability semantics. Analysis/0042+formal/0025 now establish exec generation and inherited endpoint semantics: successful exec does not automatically change CapSched Domain, but it is a new ProgramGeneration boundary for endpoint, async, mmap, notification, and process-image-scoped authority. The current task may continue only through same-Domain ExecContinuation with live SchedContext and fresh ProgramGeneration; surviving non-CLOEXEC fd reachability requires post-exec derivation or attenuation; CLOEXEC endpoints must not leak; credential/LSM transitions cannot amplify inherited endpoint authority; execfd handoff is a derived endpoint; AT_EXECVE_CHECK is policy-check only. Validation/0037 passed the safe model and produced expected unsafe counterexamples for domain change without token, run without continuation, old endpoint use, surviving fd without derivation, close-on-exec leak, credential amplification, execfd without derivation, old async use, old mmap survival, and check-only mutation. Next steps remain refinement, not enforcement: derive post-exec fd/resource inheritance classes and trace-only coverage before Linux behavior changes.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0041+formal/0024 establish wider endpoint capability semantics. Analysis/0042+formal/0025 establish exec ProgramGeneration semantics. Analysis/0043+formal/0026 now establish post-exec resource inheritance classes: post-exec fd reachability is not endpoint authority; regular files require operation masks; sockets require socket-state and op-specific derivation; anonymous fds require fops/private_data class policy; epoll old readiness and watched endpoints cannot imply new authority; eventfd signal/read/write authority must be re-derived; timerfd old timer state may exist but authority must be re-derived; io_uring ring reachability cannot carry old registered resources or activity; execfd handoff requires ExecfdGrant. Validation/0038 passed the safe model and produced expected unsafe counterexamples for generic fd authority, close-on-exec leak, regular file without mask, socket ambient state, generic anon fd policy, epoll old readiness, eventfd signal leak, timerfd old authority, io_uring registered resource leak, and execfd ambient inheritance. Next steps remain refinement, not enforcement: map trace-only coverage for these classes before Linux behavior changes.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -242,7 +243,11 @@
     "exec_generation_inheritance_semantics": "capsched/capsched-models/analysis/0042-exec-generation-inheritance-semantics.md",
     "exec_generation_inheritance_model": "capsched/capsched-models/formal/0025-exec-generation-inheritance-model/README.md",
     "exec_generation_inheritance_tla": "capsched/capsched-models/formal/0025-exec-generation-inheritance-model/ExecGeneration.tla",
-    "exec_generation_inheritance_validation": "capsched/capsched-models/validation/0037-exec-generation-inheritance-tlc.md"
+    "exec_generation_inheritance_validation": "capsched/capsched-models/validation/0037-exec-generation-inheritance-tlc.md",
+    "post_exec_resource_inheritance_classes": "capsched/capsched-models/analysis/0043-post-exec-resource-inheritance-classes.md",
+    "post_exec_resource_inheritance_model": "capsched/capsched-models/formal/0026-post-exec-resource-inheritance-model/README.md",
+    "post_exec_resource_inheritance_tla": "capsched/capsched-models/formal/0026-post-exec-resource-inheritance-model/PostExecResource.tla",
+    "post_exec_resource_inheritance_validation": "capsched/capsched-models/validation/0038-post-exec-resource-inheritance-tlc.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1243,9 +1248,19 @@
     {
       "id": "N-059",
       "text": "Derive post-exec fd/resource inheritance classes for regular files, sockets, anon fds, epoll/eventfd/timerfd, io_uring registrations, and execfd handoff before any exec endpoint hook implementation.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-058"
+      ],
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0043 and formal/0026. Source map covers do_close_on_exec, regular/path-backed file operation masks, sockets and accept, anonymous inode files, eventfd, timerfd, epoll watched endpoints, io_uring ring and registered resources, and execfd handoff. TLC safe model explored 17 generated states and 17 distinct states with no invariant errors. Unsafe models produced expected counterexamples for generic fd authority, close-on-exec leak, regular file operation without mask, socket state ambient authority, generic anon fd policy, epoll old readiness, eventfd signal leak, timerfd old authority, io_uring registered resource leak, and execfd ambient inheritance. Validation record: capsched/capsched-models/validation/0038-post-exec-resource-inheritance-tlc.md."
+    },
+    {
+      "id": "N-060",
+      "text": "Map trace-only coverage points for post-exec resource inheritance classes before any behavior-changing exec endpoint enforcement hook.",
+      "status": "pending",
+      "blocked_by": [
+        "N-059"
       ]
     }
   ],

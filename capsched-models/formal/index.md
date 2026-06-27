@@ -31,8 +31,10 @@ Updated: 2026-06-27
 | 0023 | Checked with safe pass and expected unsafe counterexamples | Class Selected-State Model |
 | 0024 | Checked with safe pass and expected unsafe counterexamples | Wider Endpoint Capability Model |
 | 0025 | Checked with safe pass and expected unsafe counterexamples | Exec Generation and Inheritance Model |
+| 0026 | Checked with safe pass and expected unsafe counterexamples | Post-Exec Resource Inheritance Model |
 
 ## Planned
 
-1. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
+1. Trace-only coverage model for post-exec resource inheritance classes.
+2. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.
