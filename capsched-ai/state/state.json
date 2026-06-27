@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "e1000e-queuelease-source-map-completed",
+    "current_phase": "aggregate-queuelease-settlement-model-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -99,7 +99,8 @@
       "capsched/capsched-models/analysis/0046-workqueue-origin-taxonomy.md",
       "capsched/capsched-models/analysis/0047-drivers-net-workqueue-origin-map.md",
       "capsched/capsched-models/analysis/0048-usbnet-workqueue-source-map.md",
-      "capsched/capsched-models/analysis/0049-e1000e-queuelease-source-map.md"
+      "capsched/capsched-models/analysis/0049-e1000e-queuelease-source-map.md",
+      "capsched/capsched-models/analysis/0050-aggregate-queuelease-settlement-semantics.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -200,7 +201,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0040 executed the post-exec resource QEMU trace with qemu_status 0 and workload_ret 0. Partially observed classes remain eventfd, epoll, and io_uring; execfd remains not observed. Analysis/0045 records that internal async redesign is accepted, but internal worker execution cannot become ambient caller authority. Analysis/0046 and validation/0041 define the workqueue origin taxonomy. Validation/0042 executed the first source inventory. Analysis/0047 and validation/0043 decompose drivers/net. Analysis/0048 source-maps usbnet and rejects a single caller BudgetTicket on shared work_struct callbacks. Analysis/0049 source-maps e1000e and shows the Ethernet data-plane authority boundary is QueueLease submit, DMA/IOMMU ownership, descriptor publication, tail doorbell, IRQ/NAPI ownership, and completion settlement, not workqueue callback authority. Next steps remain observation-only: model aggregate QueueLease settlement for merged completion work and refine post-exec trace gaps before behavior-changing async or endpoint hooks.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0040 executed the post-exec resource QEMU trace with qemu_status 0 and workload_ret 0. Partially observed classes remain eventfd, epoll, and io_uring; execfd remains not observed. Analysis/0045 records that internal async redesign is accepted, but internal worker execution cannot become ambient caller authority. Analysis/0046 and validation/0041 define the workqueue origin taxonomy. Validation/0042 executed the first source inventory. Analysis/0047 and validation/0043 decompose drivers/net. Analysis/0048 source-maps usbnet and rejects a single caller BudgetTicket on shared work_struct callbacks. Analysis/0049 source-maps e1000e and shows the Ethernet data-plane authority boundary is QueueLease submit, DMA/IOMMU ownership, descriptor publication, tail doorbell, IRQ/NAPI ownership, and completion settlement. Analysis/0050 plus formal/0027 and validation/0044 now validate aggregate QueueLease settlement: safe model passed with 16 generated states and 11 distinct states; unsafe models produced expected counterexamples for doorbell without lease, submit without budget, DMA without IOMMU, completion without ledger/service budget, delivery after revoke, ledger overwrite, ambient completion, and foreign completion. Next steps remain observation-only: design Linux queue/descriptor ledger tags or refine post-exec trace gaps before behavior-changing async or endpoint hooks.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -258,7 +259,8 @@
       "capsched/capsched-models/analysis/0046-workqueue-origin-taxonomy.md",
       "capsched/capsched-models/analysis/0047-drivers-net-workqueue-origin-map.md",
       "capsched/capsched-models/analysis/0048-usbnet-workqueue-source-map.md",
-      "capsched/capsched-models/analysis/0049-e1000e-queuelease-source-map.md"
+      "capsched/capsched-models/analysis/0049-e1000e-queuelease-source-map.md",
+      "capsched/capsched-models/analysis/0050-aggregate-queuelease-settlement-semantics.md"
     ],
     "post_exec_resource_trace_coverage_map": "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md",
     "post_exec_resource_trace_validation_plan": "capsched/capsched-models/validation/0039-post-exec-resource-trace-plan.md",
@@ -277,7 +279,11 @@
     "usbnet_workqueue_source_map": "capsched/capsched-models/analysis/0048-usbnet-workqueue-source-map.md",
     "usbnet_workqueue_source_map_json": "capsched/capsched-models/analysis/usbnet-workqueue-source-map-v1.json",
     "e1000e_queuelease_source_map": "capsched/capsched-models/analysis/0049-e1000e-queuelease-source-map.md",
-    "e1000e_queuelease_source_map_json": "capsched/capsched-models/analysis/e1000e-queuelease-source-map-v1.json"
+    "e1000e_queuelease_source_map_json": "capsched/capsched-models/analysis/e1000e-queuelease-source-map-v1.json",
+    "aggregate_queuelease_settlement_semantics": "capsched/capsched-models/analysis/0050-aggregate-queuelease-settlement-semantics.md",
+    "aggregate_queuelease_settlement_model": "capsched/capsched-models/formal/0027-aggregate-queuelease-settlement-model/README.md",
+    "aggregate_queuelease_settlement_tla": "capsched/capsched-models/formal/0027-aggregate-queuelease-settlement-model/AggregateQueueSettlement.tla",
+    "aggregate_queuelease_settlement_validation": "capsched/capsched-models/validation/0044-aggregate-queuelease-settlement-tlc.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1366,14 +1372,24 @@
     {
       "id": "N-068",
       "text": "Derive and model aggregate QueueLease settlement semantics for merged completion work so coalesced device work can account, revoke, and settle without storing one overwritten caller BudgetTicket on a shared work_struct.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-066"
-      ]
+      ],
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0050, formal/0027 AggregateQueueSettlement, and validation/0044. Safe TLC passed with 16 generated states, 11 distinct states, and depth 7. Unsafe configurations produced expected counterexamples for tail doorbell without live QueueLease, submit without budget, DMA without IOMMU/ledger, completion without ledger, completion without service budget, delivery after revoke, pending ledger overwrite, ambient completion authority, and foreign completion."
     },
     {
       "id": "N-069",
       "text": "Apply the same source-map method to a modern multi-queue NIC path with MSI-X, XDP, page-pool, devlink, and SR-IOV or representor features after aggregate QueueLease settlement has a model.",
+      "status": "pending",
+      "blocked_by": [
+        "N-068"
+      ]
+    },
+    {
+      "id": "N-070",
+      "text": "Design an observation-only Linux queue/descriptor ledger tag plan that can record submit, DMA map, doorbell, IRQ/NAPI completion, settlement, and revoke/drop events without enforcing behavior yet.",
       "status": "pending",
       "blocked_by": [
         "N-068"

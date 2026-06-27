@@ -55,13 +55,14 @@ Updated: 2026-06-27
 | 0047 | Draft source-inventory map | drivers/net Workqueue Origin Map |
 | 0048 | Draft representative source map | usbnet Workqueue Source Map |
 | 0049 | Draft representative Ethernet source map | e1000e QueueLease Source Map |
+| 0050 | Draft settlement semantics with TLC-backed design filter | Aggregate QueueLease Settlement Semantics |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Aggregate QueueLease settlement model for merged completion work.
-4. Representative modern multi-queue driver map with MSI-X/XDP/page-pool/devlink.
+3. Representative modern multi-queue driver map with MSI-X/XDP/page-pool/devlink.
+4. Observation-only Linux queue/descriptor ledger tag plan.
 5. Workqueue origin QEMU stack-trace observation runner.
 6. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 

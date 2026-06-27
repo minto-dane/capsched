@@ -49,6 +49,7 @@ Updated: 2026-06-27
 | 0041 | Planned | Workqueue Origin Observation Plan |
 | 0042 | Executed; seed classifications plus gaps | Workqueue Origin Source Inventory Result |
 | 0043 | Executed; drivers/net decomposed but still observation-only | drivers/net Workqueue Origin Inventory Result |
+| 0044 | Safe model passed; unsafe models produced expected counterexamples | Aggregate QueueLease Settlement TLC |
 
 ## Principles
 

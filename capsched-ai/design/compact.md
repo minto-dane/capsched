@@ -313,6 +313,17 @@ analysis/0049
   print_hang/tx_hwtstamp work items are service/control or special timestamp
   settlement, not generic caller work carriers.
 
+analysis/0050 + formal/0027 + validation/0044
+  aggregate QueueLease settlement model:
+  safe TLC passed with 16 generated states and 11 distinct states. Unsafe
+  models produced expected counterexamples for doorbell without lease, submit
+  without budget, DMA without IOMMU/ledger, completion without ledger/service
+  budget, delivery after revoke, ledger overwrite, ambient completion authority,
+  and foreign completion. Rule: submit authority belongs at
+  QueueLease/DMA/doorbell boundaries; merged completion work settles against
+  ledger/service state and must not use one overwritten caller ticket on a
+  shared callback object.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

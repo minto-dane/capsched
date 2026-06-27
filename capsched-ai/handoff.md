@@ -262,12 +262,32 @@ analysis/0049:
     Ethernet data-plane authority should be modeled as QueueLease submit,
     in-flight descriptor ledger, IRQ/NAPI ownership, DMA/IOMMU ownership, and
     completion settlement, not as a workqueue carrier.
+
+analysis/0050 + formal/0027 + validation/0044:
+  aggregate QueueLease settlement semantics modeled and checked
+  safe model:
+    PASS, 16 generated states, 11 distinct states, depth 7
+  unsafe counterexamples:
+    doorbell without live QueueLease
+    submit without budget
+    DMA without IOMMU/ledger
+    completion without ledger
+    completion without service budget
+    delivery after revoke
+    pending ledger overwrite
+    ambient completion authority
+    foreign completion
+  key rule:
+    submit authority belongs at QueueLease/DMA/doorbell boundaries; merged
+    completion work performs aggregate settlement only. Do not start by changing
+    generic workqueue semantics or attaching one mutable caller ticket to a
+    shared callback object.
 ```
 
 Next work remains observation-only: refine eventfd kernel signal provenance,
 epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-execfd handoff, and model aggregate QueueLease settlement for merged completion
-work before Linux behavior changes.
+execfd handoff, and design Linux queue/descriptor ledger observation tags
+before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
