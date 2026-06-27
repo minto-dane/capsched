@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-27",
+  "purpose": "Machine-readable workqueue origin taxonomy for CapSched source tagging and observation planning.",
+  "source_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+  "classes": [
+    {
+      "id": "PerInvocation",
+      "definition": "One queued async item corresponds to one caller or resource operation.",
+      "carrier_required_when_domain_derived": true,
+      "required_fields": [
+        "caller_domain",
+        "caller_epoch",
+        "frozen_endpoint_use",
+        "budget_ticket",
+        "service_domain",
+        "work_generation",
+        "settlement_rule"
+      ],
+      "source_anchors": [
+        "fs/aio.c:aio_fsync_work",
+        "drivers/iommu/iommu-sva.c:iommu_sva_handle_iopf"
+      ],
+      "hard_rejects": [
+        "worker_current_task_as_caller",
+        "linux_creds_as_capsched_authority",
+        "file_reachability_as_endpoint_authority"
+      ]
+    },
+    {
+      "id": "ExplicitMerge",
+      "definition": "Multiple events or callers may intentionally coalesce into one pending work item through explicit subsystem state.",
+      "carrier_required_when_domain_derived": true,
+      "required_fields": [
+        "merge_admission_rule",
+        "merged_authority_set_or_aggregate",
+        "budget_reservation_rule",
+        "revocation_rule",
+        "cancel_flush_settlement_rule",
+        "failure_policy"
+      ],
+      "source_anchors": [
+        "block/blk-zoned.c:disk_zone_wplug_schedule_work",
+        "fs/aio.c:aio_poll_wake"
+      ],
+      "hard_rejects": [
+        "pending_carrier_overwrite",
+        "last_caller_wins",
+        "first_caller_pays_for_all",
+        "revocation_ignored_under_coalescing"
+      ]
+    },
+    {
+      "id": "ServiceOnly",
+      "definition": "Subsystem maintenance or teardown work that is not a caller-derived endpoint effect.",
+      "carrier_required_when_domain_derived": false,
+      "required_fields": [
+        "service_domain_or_kernel_service",
+        "no_caller_endpoint_effect_claim",
+        "cleanup_scope"
+      ],
+      "source_anchors": [
+        "fs/timerfd.c:timerfd_resume_work",
+        "io_uring/io_uring.c:io_ring_exit_work",
+        "kernel/cgroup/cgroup.c:css_release_work_fn"
+      ],
+      "hard_rejects": [
+        "service_work_spends_caller_budget",
+        "service_work_uses_fd_reachability_as_authority",
+        "teardown_completes_new_caller_endpoint_effect"
+      ]
+    },
+    {
+      "id": "KernelException",
+      "definition": "Audited core kernel liveness or infrastructure work outside user Domain attribution.",
+      "carrier_required_when_domain_derived": false,
+      "required_fields": [
+        "exception_reason",
+        "no_endpoint_effect_or_separate_domain_request",
+        "audited_scope"
+      ],
+      "source_anchors": [
+        "kernel/workqueue.c:pool->idle_cull_work",
+        "kernel/rcu",
+        "kernel/sched"
+      ],
+      "hard_rejects": [
+        "blanket_unknown_bucket",
+        "file_socket_device_effect_under_exception",
+        "exception_scope_growth_without_audit"
+      ]
+    },
+    {
+      "id": "InterruptDeferred",
+      "definition": "Deferred work originating in interrupt, softirq, BH workqueue, or irq_work context.",
+      "carrier_required_when_domain_derived": "handoff_required_before_endpoint_effect",
+      "required_fields": [
+        "interrupt_source",
+        "minimal_recorded_state",
+        "handoff_target_class",
+        "no_slow_authority_discovery_in_irq_context"
+      ],
+      "source_anchors": [
+        "kernel/irq_work.c:irq_work_queue",
+        "kernel/workqueue.c:system_bh_wq",
+        "drivers/vfio/virqfd.c:virqfd_wakeup"
+      ],
+      "hard_rejects": [
+        "mint_authority_in_irq_context",
+        "charge_arbitrary_caller_budget_from_irq",
+        "interrupt_source_equals_domain_identity"
+      ]
+    },
+    {
+      "id": "ReclaimRescue",
+      "definition": "Work that may execute through WQ_MEM_RECLAIM rescue workers for forward progress.",
+      "carrier_required_when_domain_derived": true,
+      "required_fields": [
+        "reclaim_reason",
+        "rescuer_possible",
+        "carrier_or_service_cleanup_only",
+        "fail_closed_rule"
+      ],
+      "source_anchors": [
+        "Documentation/core-api/workqueue.rst:WQ_MEM_RECLAIM",
+        "kernel/workqueue.c:rescuer_thread",
+        "kernel/workqueue.c:current_is_workqueue_rescuer"
+      ],
+      "hard_rejects": [
+        "rescuer_bypasses_budget_ticket",
+        "memory_pressure_grants_caller_authority",
+        "caller_endpoint_effect_without_carrier"
+      ]
+    },
+    {
+      "id": "TaskLocal",
+      "definition": "Callback is queued to a task and executes from task_work_run or an equivalent task-local path.",
+      "carrier_required_when_domain_derived": true,
+      "required_fields": [
+        "target_task_generation",
+        "program_or_process_generation_when_exec_relevant",
+        "domain_epoch",
+        "endpoint_derivation_or_attenuation",
+        "exit_exec_revoke_rule"
+      ],
+      "source_anchors": [
+        "kernel/task_work.c:task_work_add",
+        "fs/file_table.c:task_work_add",
+        "io_uring/tw.c:tctx_task_work_run"
+      ],
+      "hard_rejects": [
+        "task_equals_authority",
+        "old_program_generation_endpoint_effect",
+        "post_revoke_task_work_endpoint_effect"
+      ]
+    }
+  ],
+  "cross_cutting_tags": {
+    "origin_context": [
+      "task",
+      "syscall",
+      "irq",
+      "softirq",
+      "timer",
+      "workqueue",
+      "kthread",
+      "device",
+      "remote",
+      "reclaim",
+      "rcu",
+      "suspend_resume",
+      "unknown"
+    ],
+    "object_scope": [
+      "per_request",
+      "per_task",
+      "per_mm",
+      "per_file",
+      "per_inode",
+      "per_socket",
+      "per_device",
+      "per_superblock",
+      "per_netns",
+      "global",
+      "unknown"
+    ],
+    "coalescing": [
+      "none",
+      "pending_bit",
+      "delayed_mod",
+      "explicit_flags",
+      "list_batch",
+      "refcount_batch",
+      "unknown"
+    ],
+    "endpoint_effect": [
+      "none",
+      "file",
+      "socket",
+      "mm",
+      "device_queue",
+      "iommu",
+      "scheduler",
+      "namespace",
+      "cred",
+      "bpf",
+      "mixed",
+      "unknown"
+    ],
+    "authority_source": [
+      "caller_carrier",
+      "service_only",
+      "kernel_exception",
+      "merge_object",
+      "task_context",
+      "unknown"
+    ],
+    "reclaim_path": [
+      "none",
+      "WQ_MEM_RECLAIM",
+      "rescuer_possible",
+      "memalloc_context",
+      "unknown"
+    ],
+    "monitor_relevance": [
+      "none",
+      "DomainTag",
+      "MemoryView",
+      "Budget",
+      "IOMMU",
+      "QueueLease",
+      "mixed",
+      "unknown"
+    ]
+  },
+  "unknown_rule": {
+    "classification": "unknown_or_mixed",
+    "enforcement_allowed": false,
+    "next_step": "observe_or_instrument"
+  }
+}

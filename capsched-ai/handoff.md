@@ -194,12 +194,21 @@ analysis/0045:
   immediate rule remains: Domain-derived async work needs a typed carrier
   before it leaves caller context; kernel-internal work stays service/kernel
   classified until proved otherwise
+
+analysis/0046 + validation/0041:
+  workqueue origin taxonomy is now defined for PerInvocation, ExplicitMerge,
+  ServiceOnly, KernelException, InterruptDeferred, ReclaimRescue, TaskLocal,
+  and unknown_or_mixed
+  machine-readable taxonomy: analysis/workqueue-origin-taxonomy-v1.json
+  observation plan records required tracepoints, queue-site stack/source
+  correlation, output TSV schema, and hard rule that tracepoint evidence alone
+  cannot justify a generic workqueue enforcement hook
 ```
 
 Next work remains observation-only: refine eventfd kernel signal provenance,
 epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-execfd handoff, and workqueue origin classification before Linux behavior
-changes.
+execfd handoff, and execute a workqueue origin source inventory / trace runner
+before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

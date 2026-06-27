@@ -51,12 +51,13 @@ Updated: 2026-06-27
 | 0043 | Draft inheritance-class map with TLC-backed design filter | Post-Exec Resource Inheritance Classes |
 | 0044 | Draft trace-only coverage map | Post-Exec Resource Trace-Only Coverage Map |
 | 0045 | Draft design boundary | Workqueue Internal Redesign Boundary |
+| 0046 | Draft taxonomy | Workqueue Origin Taxonomy |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Workqueue origin taxonomy and observation plan before generic async enforcement.
+3. Workqueue origin source inventory and QEMU observation runner.
 4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
@@ -67,3 +68,4 @@ Updated: 2026-06-27
 | `behavior-tags/schema-v2-requirements.json` | Requirements only | Mandatory fields and hard reject rules for schema v2 |
 | `behavior-tags/schema-v2.json` | Draft contract | Machine-readable schema v2 contract for gap analysis and hard reject |
 | `behavior-tags/slice0c-scheduler-behavior-tags-v2.json` | Draft v2, gap-analysis only | Slice 0C behavior paths retagged under schema v2 |
+| `workqueue-origin-taxonomy-v1.json` | Draft contract | Machine-readable workqueue origin taxonomy for async source tagging |

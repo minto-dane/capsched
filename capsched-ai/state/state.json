@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "workqueue-internal-redesign-boundary-mapped",
+    "current_phase": "workqueue-origin-taxonomy-mapped",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -95,7 +95,8 @@
       "capsched/capsched-models/analysis/0041-wider-endpoint-capability-semantics.md",
       "capsched/capsched-models/analysis/0042-exec-generation-inheritance-semantics.md",
       "capsched/capsched-models/analysis/0043-post-exec-resource-inheritance-classes.md",
-      "capsched/capsched-models/analysis/0045-workqueue-internal-redesign-boundary.md"
+      "capsched/capsched-models/analysis/0045-workqueue-internal-redesign-boundary.md",
+      "capsched/capsched-models/analysis/0046-workqueue-origin-taxonomy.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -196,7 +197,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0040 executed the post-exec resource QEMU trace with qemu_status 0 and workload_ret 0. Observed classes: CLOEXEC, regular file, O_PATH, socket, anonymous fd creation, and timerfd. Partially observed classes: eventfd, epoll, and io_uring. execfd remains not observed. Analysis/0045 records the workqueue internal redesign boundary: deep internal async redesign is accepted and likely necessary for production, but internal worker execution must not become ambient caller authority. queue_work() pending coalescing forbids later caller BudgetTicket overwrite, and worker/kthread callback execution does not naturally preserve caller authority. Next steps remain observation-only: refine post-exec trace gaps and build a workqueue origin taxonomy before behavior-changing async or endpoint hooks.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0040 executed the post-exec resource QEMU trace with qemu_status 0 and workload_ret 0. Observed classes: CLOEXEC, regular file, O_PATH, socket, anonymous fd creation, and timerfd. Partially observed classes: eventfd, epoll, and io_uring; execfd remains not observed. Analysis/0045 records that internal async redesign is accepted, but internal worker execution cannot become ambient caller authority. Analysis/0046 plus validation/0041 now define the workqueue origin taxonomy and trace-only observation plan: PerInvocation, ExplicitMerge, ServiceOnly, KernelException, InterruptDeferred, ReclaimRescue, TaskLocal, and unknown_or_mixed. Next steps remain observation-only: refine post-exec trace gaps and execute taxonomy-driven workqueue source inventory or QEMU observation before behavior-changing async or endpoint hooks.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -250,14 +251,18 @@
     "post_exec_resource_inheritance_tla": "capsched/capsched-models/formal/0026-post-exec-resource-inheritance-model/PostExecResource.tla",
     "post_exec_resource_inheritance_validation": "capsched/capsched-models/validation/0038-post-exec-resource-inheritance-tlc.md",
     "source_maps": [
-      "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md"
+      "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md",
+      "capsched/capsched-models/analysis/0046-workqueue-origin-taxonomy.md"
     ],
     "post_exec_resource_trace_coverage_map": "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md",
     "post_exec_resource_trace_validation_plan": "capsched/capsched-models/validation/0039-post-exec-resource-trace-plan.md",
     "post_exec_resource_trace_runner": "capsched/capsched-models/validation/run-post-exec-resource-qemu-trace.sh",
     "post_exec_resource_trace_workload": "capsched/capsched-models/validation/workloads/post_exec_resource_workload.c",
     "post_exec_resource_trace_result": "capsched/capsched-models/validation/0040-post-exec-resource-qemu-trace-result.md",
-    "workqueue_internal_redesign_boundary": "capsched/capsched-models/analysis/0045-workqueue-internal-redesign-boundary.md"
+    "workqueue_internal_redesign_boundary": "capsched/capsched-models/analysis/0045-workqueue-internal-redesign-boundary.md",
+    "workqueue_origin_taxonomy": "capsched/capsched-models/analysis/0046-workqueue-origin-taxonomy.md",
+    "workqueue_origin_taxonomy_json": "capsched/capsched-models/analysis/workqueue-origin-taxonomy-v1.json",
+    "workqueue_origin_observation_plan": "capsched/capsched-models/validation/0041-workqueue-origin-observation-plan.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1296,9 +1301,19 @@
     {
       "id": "N-063",
       "text": "Build a workqueue origin taxonomy and observation plan that separates PerInvocation, ExplicitMerge, ServiceOnly, KernelException, InterruptDeferred, ReclaimRescue, and TaskLocal paths before any generic workqueue enforcement hook.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-061"
+      ],
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0046, analysis/workqueue-origin-taxonomy-v1.json, and validation/0041. The taxonomy separates PerInvocation, ExplicitMerge, ServiceOnly, KernelException, InterruptDeferred, ReclaimRescue, TaskLocal, and unknown_or_mixed paths. It records that workqueue/kthread tracepoints expose useful work pointer/callback/queue evidence, but queue-site stack or source correlation plus endpoint-effect and merge semantics are required before any authority claim."
+    },
+    {
+      "id": "N-064",
+      "text": "Execute the workqueue origin taxonomy with a source inventory or QEMU trace runner that emits workqueue-origin-classification.tsv and workqueue-origin-gaps.tsv before any generic async enforcement hook.",
+      "status": "pending",
+      "blocked_by": [
+        "N-063"
       ]
     }
   ],

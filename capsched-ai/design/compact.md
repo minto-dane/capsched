@@ -159,6 +159,19 @@ FrozenEndpointUse, BudgetTicket, service Domain, work generation, and merge or
 per-invocation semantics.
 ```
 
+Workqueue origin classification:
+
+```text
+PerInvocation: one caller/resource operation.
+ExplicitMerge: coalesced pending work with explicit merge/accounting rules.
+ServiceOnly: service maintenance, no caller endpoint effect.
+KernelException: audited core liveness/infrastructure only.
+InterruptDeferred: IRQ/BH/irq_work handoff, no slow authority discovery.
+ReclaimRescue: WQ_MEM_RECLAIM liveness, not authority bypass.
+TaskLocal: runs in target task, but task identity is not endpoint authority.
+unknown_or_mixed: no enforcement; observe or instrument first.
+```
+
 ## Threat Model
 
 The eventual threat model is intentionally hostile. An attacker may control all
@@ -227,6 +240,15 @@ analysis/0045
   needs explicit merge/accounting/revocation semantics; ServiceMaintenanceWork
   and KernelCoreWork cannot perform caller-attributed endpoint effects without
   a separate DomainRequestWork.
+
+analysis/0046 + validation/0041
+  Workqueue origin taxonomy and observation plan:
+  async work must be classified as PerInvocation, ExplicitMerge, ServiceOnly,
+  KernelException, InterruptDeferred, ReclaimRescue, TaskLocal, or
+  unknown_or_mixed before any generic workqueue enforcement hook. Tracepoints
+  expose work pointer, callback, queue name, and kthread work events, but
+  source correlation and queue-site stacks are required before making authority
+  claims.
 
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
