@@ -318,6 +318,23 @@ TLC summary:
     no invariant error found
 ```
 
+The current strategic gap is now explicit: these models are useful semantic
+evidence, but the project needs an assurance case that maps top-level
+hypervisor-replacement claims to models, Linux evidence, monitor evidence,
+counterexamples, forbidden claims, and missing gates.
+
+```text
+analysis:
+  capsched-models/analysis/0018-protection-claim-evidence-map.md
+
+plan:
+  capsched-models/plans/0005-assurance-driven-achievement-plan.md
+
+next gate:
+  Slice 0B inert type-only scaffolding
+  assurance-case subclaim tree in parallel
+```
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -413,7 +430,7 @@ attachment, no behavior change, no user ABI, and no collapsed capability type.
 The gate has been updated for decomposed cluster authority validation; it is not
 an accepted Linux patch yet.
 
-Alternative next gates:
+Future alternate gate:
   model a device-specific QueueLease endpoint before L4 device work
 ```
 

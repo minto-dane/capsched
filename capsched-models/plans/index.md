@@ -1,6 +1,6 @@
 # Plan Index
 
-Updated: 2026-06-25
+Updated: 2026-06-26
 
 ## Active Plans
 
@@ -10,11 +10,11 @@ Updated: 2026-06-25
 | 0002 | Active | Deep Compatibility and Cluster-Capability Analysis |
 | 0003 | Draft | Roadmap Toward Monitor-Backed CapSched |
 | 0004 | Completed | Runnable Lease Model Execution Plan |
+| 0005 | Active | Assurance-Driven Achievement Plan |
 
 ## Likely Future Plan Records
 
-1. Validation plan for enqueue/pick/tick semantics.
-2. Validation plan for async provenance.
-3. EndpointCap model execution plan.
-4. Linux Slice 0A implementation and baseline build execution after
-   `implementation/0002-l0-slice0-scaffolding-plan.md`.
+1. Assurance case subclaim tree.
+2. Validation plan for enqueue/pick/tick semantics.
+3. Validation plan for async provenance.
+4. EndpointCap model execution plan.

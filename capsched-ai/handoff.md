@@ -74,6 +74,13 @@ strengthening IRQ aliasing across non-free queues. Queue submit, DMA mapping,
 IRQ delivery, epoch, and budget are treated as one lease boundary; Linux shadow
 queue/IOMMU state is not authority. Both runs completed with no invariant
 errors.
+The current strategic gap has now been recorded in
+`analysis/0018-protection-claim-evidence-map.md`: the project needs an explicit
+assurance chain from the top-level hypervisor-replacement claim to models,
+Linux evidence, monitor evidence, counterexamples, forbidden claims, and open
+gaps. `plans/0005-assurance-driven-achievement-plan.md` chooses the next gate:
+proceed with Slice 0B inert type-only scaffolding while building the assurance
+case in parallel.
 
 ## Recovery Path
 
@@ -224,9 +231,9 @@ Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
 checked, the Linux attachment map exists, and decomposed cluster authority,
 MemoryOwnership, DirectMapTLB, PageCacheOverlay, and QueueLease models are
-checked. The next decision is whether to choose Slice 0B type-only
-endpoint/broker/domain authority scaffolding or to model a device-specific
-QueueLease endpoint before L4 implementation work.
+checked. The next gate is chosen: Slice 0B type-only endpoint/broker/domain
+authority scaffolding, plus an assurance-case subclaim tree. Device-specific
+QueueLease endpoint models remain future L4 gates.
 
 Endpoint attachment records:
 
@@ -247,6 +254,8 @@ capsched/capsched-models/formal/0010-page-cache-overlay-model/notes.md
 capsched/capsched-models/validation/0012-page-cache-overlay-tlc.md
 capsched/capsched-models/formal/0011-queue-lease-model/notes.md
 capsched/capsched-models/validation/0013-queue-lease-tlc.md
+capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md
+capsched/capsched-models/plans/0005-assurance-driven-achievement-plan.md
 ```
 
 Stopped full integration run identity:

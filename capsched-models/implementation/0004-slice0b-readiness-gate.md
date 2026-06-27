@@ -59,6 +59,10 @@ ClusterShadowForgery:
 
 ClusterEpochRevoke:
   revoked or stale lease epochs do not remain executable
+
+MemoryOwnership:
+  PageOwner, MemoryView, slab generation, and memory work provenance are
+  distinct from Linux shadow page/slab/page-cache metadata
 ```
 
 Stress only:
@@ -71,6 +75,26 @@ ClusterLease full:
 
 Use `validation/0009` as the current cluster authority evidence. Do not treat
 the stopped full run in `validation/0008` as a pass.
+
+Checked after counterexample-driven fixes:
+
+```text
+DirectMapTLB:
+  Domain activation must flush or retag stale translations, and page revoke
+  cannot finish while MemoryView, direct-map, or TLB translations remain
+
+PageCacheOverlay:
+  mutable page-cache overlay state is per-Domain or service-mediated, and
+  overlay commit requires current base version plus base-level serialization
+```
+
+Checked with two TLC runs:
+
+```text
+QueueLease:
+  queue submit, DMA mapping, IRQ delivery, epoch, and budget are one lease
+  boundary; Linux shadow queue/IOMMU state is not authority
+```
 
 ## Slice 0B Must Not Collapse Types
 
@@ -342,6 +366,10 @@ The patch should be reviewed against:
   DomainMonitor
   ClusterShadowForgery
   ClusterEpochRevoke
+  MemoryOwnership
+  DirectMapTLB
+  PageCacheOverlay
+  QueueLease
 ```
 
 Evidence required:
@@ -374,4 +402,6 @@ names and comments. The first meaningful behavior should still wait for a later
 trace-only or diagnostic slice.
 
 Do not use Slice 0B to begin MM, page-cache, IOMMU, queue, or driver work.
-Those tracks need separate MemoryOwnership and QueueLease models first.
+Those tracks now have generic semantic models, but still need separate
+implementation plans and, for devices, endpoint-specific QueueLease models
+before L4 code.

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "queue-lease-validated",
+    "current_phase": "assurance-slice0b-selected",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -66,10 +66,12 @@
       "capsched/capsched-models/analysis/0014-scheduler-topology-cluster-partition-map.md",
       "capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md",
       "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
-      "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md"
+      "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
+      "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
+    "assurance_driven_achievement_plan": "capsched/capsched-models/plans/0005-assurance-driven-achievement-plan.md",
     "runnable_lease_model_plan": "capsched/capsched-models/plans/0004-runnable-lease-model-execution-plan.md",
     "runnable_lease_model": "capsched/capsched-models/formal/0002-runnable-lease-model/README.md",
     "runnable_lease_tla": "capsched/capsched-models/formal/0002-runnable-lease-model/RunnableLease.tla",
@@ -123,7 +125,8 @@
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
-    "current_focus": "QueueLease was checked with two TLC runs after strengthening IRQ aliasing. Queue submit, DMA mapping, IRQ delivery, epoch, and budget are modeled as one lease boundary; Linux shadow queue/IOMMU state is not authority. Each final run explored 97882849 generated states and 6465312 distinct states with no invariant errors. DirectMapTLB and PageCacheOverlay are also checked. No Linux Slice 0B patch is accepted yet. Next: choose inert Slice 0B type-only scaffolding, or defer Linux code again for a device-specific QueueLease endpoint model."
+    "protection_claim_evidence_map": "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
+    "current_focus": "The next gate has been chosen: build the assurance case in parallel with Linux Slice 0B inert type-only scaffolding. QueueLease, DirectMapTLB, PageCacheOverlay, MemoryOwnership, cluster authority, DomainMonitor, BrokerBudget, EndpointAsync, and RunnableLease provide vocabulary-level evidence, not behavior authority. Slice 0B should add only opaque authority names/comments in include/linux/capsched.h and kernel/sched/capsched.c, then repeat CONFIG_CAPSCHED=n/y build validation."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -666,10 +669,29 @@
     {
       "id": "N-025",
       "text": "Choose the next gate after generic QueueLease validation: Slice 0B inert type-only scaffolding, or a device-specific QueueLease endpoint model for NIC, NVMe, GPU, or VFIO compatibility.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Chose Slice 0B inert type-only scaffolding in parallel with an assurance-case track. Device-specific QueueLease endpoint models remain future L4 gates, not the immediate next step.",
       "blocked_by": [
         "N-017",
         "N-024"
+      ]
+    },
+    {
+      "id": "N-026",
+      "text": "Apply Slice 0B inert type-only scaffolding only in include/linux/capsched.h and kernel/sched/capsched.c, then repeat CONFIG_CAPSCHED=n/y build validation.",
+      "status": "pending",
+      "blocked_by": [
+        "N-016",
+        "N-025"
+      ]
+    },
+    {
+      "id": "N-027",
+      "text": "Create an assurance-case subclaim tree that maps top-level hypervisor-replacement claims to models, Linux evidence, monitor evidence, gaps, and forbidden claims.",
+      "status": "pending",
+      "blocked_by": [
+        "N-025"
       ]
     }
   ],
