@@ -135,6 +135,16 @@ plan first, using existing scheduler tracepoints and dynamic ftrace. A Linux
 patch is allowed only if existing tracing cannot answer the coverage question,
 and would require a new gate.
 
+The no-code trace plan and runner are:
+
+```text
+capsched/capsched-models/validation/0015-slice0c-no-code-trace-plan.md
+capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
+```
+
+The runner has not been executed. It needs root or tracefs write access and
+captures existing scheduler tracepoints plus dynamic ftrace function entries.
+
 ## Recovery Path
 
 Read in this order:
@@ -317,6 +327,8 @@ capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.
 capsched/capsched-models/assurance/claims.json
 capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md
 capsched/capsched-models/implementation/0006-slice0c-trace-observation-gate.md
+capsched/capsched-models/validation/0015-slice0c-no-code-trace-plan.md
+capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
 ```
 
 Stopped full integration run identity:

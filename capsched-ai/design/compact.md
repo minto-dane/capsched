@@ -195,6 +195,15 @@ Prepare a no-code trace run plan with existing scheduler tracepoints and
 dynamic ftrace first.
 ```
 
+The no-code trace plan now exists:
+
+```text
+capsched-models/validation/0015-slice0c-no-code-trace-plan.md
+capsched-models/validation/run-slice0c-no-code-trace.sh
+```
+
+It has not been executed. It requires root or tracefs write access.
+
 The first TLA+ Runnable Lease model exists and passed TLC invariant checking in
 a tiny finite model:
 
