@@ -134,6 +134,13 @@ analysis/0033 + formal/0016 + validation/0028
   fork raw-copy must be reset, initial child run state must be prepared before
   wake_up_new_task(), ordinary TASK_WAKING requires frozen local use, revoke
   clears frozen/selected/running use, and dead tasks retain no authority.
+
+analysis/0034 + formal/0017 + validation/0029
+  Workqueue/kthread_work carrier boundary:
+  Domain-derived async worker execution needs a typed carrier with
+  FrozenEndpointUse and BudgetTicket before queueing; generic worker authority
+  is not caller authority, and pending carrier overwrite is rejected unless
+  explicit merge semantics exist.
 ```
 
 F1 must not allocate, sleep, walk policy, call the monitor, acquire remote
@@ -150,11 +157,10 @@ carriers, not ambient worker authority.
 Next near-term sequence:
 
 ```text
-1. Model workqueue/kthread_work caller BudgetTicket carrier semantics.
-2. Model shared futex cross-Domain endpoint semantics.
-3. Model PI/RT/ww_mutex priority donation separately from RunCap.
-4. Model placement refresh across affinity, cpuset, and CPU hotplug.
-5. Only then consider a behavior-changing L0 runnable admission slice.
+1. Model shared futex cross-Domain endpoint semantics.
+2. Model PI/RT/ww_mutex priority donation separately from RunCap.
+3. Model placement refresh across affinity, cpuset, and CPU hotplug.
+4. Only then consider a behavior-changing L0 runnable admission slice.
 ```
 
 ## Assurance Root

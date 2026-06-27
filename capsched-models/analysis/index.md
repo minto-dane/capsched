@@ -39,21 +39,21 @@ Updated: 2026-06-27
 | 0031 | Draft dependency map with TLC-backed design filter | F1 Admission-Freeze Data Dependencies |
 | 0032 | Draft source map with TLC-backed design filter | Block, Wait, and Register Authority Preparation |
 | 0033 | Draft lifecycle map with TLC-backed design filter | Task-Local Resumable-Run Lifecycle |
+| 0034 | Draft carrier map with TLC-backed design filter | Workqueue and kthread_work BudgetTicket Carrier |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Model workqueue/kthread_work caller BudgetTicket carrier semantics.
-4. Model shared futex cross-Domain endpoint semantics.
-5. Model PI/RT/ww_mutex priority donation separately from RunCap.
-6. Model placement-refresh interaction with affinity, cpuset, and CPU hotplug
+3. Model shared futex cross-Domain endpoint semantics.
+4. Model PI/RT/ww_mutex priority donation separately from RunCap.
+5. Model placement-refresh interaction with affinity, cpuset, and CPU hotplug
    so `p->cpus_ptr` cannot exceed FrozenRunUse authority.
-7. Decide exec process-generation semantics jointly with endpoint/object
+6. Decide exec process-generation semantics jointly with endpoint/object
    capability modeling.
-8. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
+7. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
    and class-specific CFS/RT/deadline/sched_ext/core/proxy behavior.
-9. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+8. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
 

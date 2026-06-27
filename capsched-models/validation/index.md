@@ -34,6 +34,7 @@ Updated: 2026-06-27
 | 0026 | Safe model passed; unsafe models produced expected counterexamples | F1 Admission Data TLC Check |
 | 0027 | Safe model passed; unsafe models produced expected counterexamples | Wake Authority Preparation TLC Check |
 | 0028 | Safe model passed; unsafe models produced expected counterexamples | Task-Local Run State TLC Check |
+| 0029 | Safe model passed; unsafe models produced expected counterexamples | Workqueue BudgetTicket Carrier TLC Check |
 
 ## Principles
 

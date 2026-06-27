@@ -37,11 +37,18 @@ analysis/0033 + formal/0016 + validation/0028:
   ordinary TASK_WAKING requires a frozen local use
   revoke clears frozen/selected/running uses
   dead tasks retain no CapSched authority
+
+analysis/0034 + formal/0017 + validation/0029:
+  Domain-derived worker execution needs a typed carrier
+  generic workqueue and kthread_work do not carry caller authority
+  worker task authority is not caller authority
+  carrier must be prepared before queue_work()/kthread_queue_work()
+  pending carrier overwrite is rejected unless merge semantics are explicit
+  completed/canceled/revoked work releases authority refs
 ```
 
-Next work is workqueue/kthread_work BudgetTicket carrier semantics, shared futex
-endpoint semantics, and PI/RT priority donation modeling. This remains
-refinement, not enforcement.
+Next work is shared futex endpoint semantics and PI/RT priority donation
+modeling. This remains refinement, not enforcement.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
