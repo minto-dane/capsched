@@ -303,6 +303,16 @@ analysis/0048
   belongs at submit/request boundaries such as usbnet_start_xmit, not in a
   single mutable BudgetTicket attached to shared work_struct callbacks.
 
+analysis/0049
+  e1000e representative QueueLease source map:
+  e1000e shows that a real Ethernet data path is ring/IRQ/NAPI based, not
+  workqueue based. .ndo_start_xmit -> e1000_xmit_frame maps SKBs into DMA,
+  publishes descriptors, and writes the TX tail doorbell; this is the natural
+  QueueLease submit boundary. e1000_clean_tx_irq, clean_rx, and e1000e_poll
+  are completion/settlement paths. reset/watchdog/downshift/update_phy/
+  print_hang/tx_hwtstamp work items are service/control or special timestamp
+  settlement, not generic caller work carriers.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

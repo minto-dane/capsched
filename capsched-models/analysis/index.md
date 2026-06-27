@@ -54,13 +54,14 @@ Updated: 2026-06-27
 | 0046 | Draft taxonomy | Workqueue Origin Taxonomy |
 | 0047 | Draft source-inventory map | drivers/net Workqueue Origin Map |
 | 0048 | Draft representative source map | usbnet Workqueue Source Map |
+| 0049 | Draft representative Ethernet source map | e1000e QueueLease Source Map |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Representative modern Ethernet callback/container/effect mapping.
-4. Aggregate QueueLease settlement model for merged completion work.
+3. Aggregate QueueLease settlement model for merged completion work.
+4. Representative modern multi-queue driver map with MSI-X/XDP/page-pool/devlink.
 5. Workqueue origin QEMU stack-trace observation runner.
 6. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
@@ -74,3 +75,4 @@ Updated: 2026-06-27
 | `behavior-tags/slice0c-scheduler-behavior-tags-v2.json` | Draft v2, gap-analysis only | Slice 0C behavior paths retagged under schema v2 |
 | `workqueue-origin-taxonomy-v1.json` | Draft contract | Machine-readable workqueue origin taxonomy for async source tagging |
 | `usbnet-workqueue-source-map-v1.json` | Draft source map | Machine-readable representative usbnet workqueue/container/effect mapping |
+| `e1000e-queuelease-source-map-v1.json` | Draft source map | Machine-readable representative Ethernet ring/IRQ/NAPI/QueueLease mapping |

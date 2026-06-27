@@ -244,12 +244,30 @@ analysis/0048:
     usbnet demonstrates that caller-derived authority belongs at submit/request
     boundaries, not in merged completion/control work_struct callbacks. A single
     mutable caller BudgetTicket on bh_work or kevent is rejected.
+
+analysis/0049:
+  representative e1000e QueueLease source map completed
+  machine-readable map: analysis/e1000e-queuelease-source-map-v1.json
+  data-plane boundary:
+    .ndo_start_xmit maps to e1000_xmit_frame; the QueueLease submit boundary is
+    before DMA map, descriptor publication, and tail doorbell write
+  completion boundary:
+    e1000_clean_tx_irq and clean_rx/NAPI settle descriptors, DMA unmap, BQL,
+    packet delivery, and queue wake; they do not mint caller authority
+  service work:
+    reset_task, watchdog_task, downshift_task, update_phy_task, print_hang_task,
+    and tx_hwtstamp_work are service/control or special timestamp settlement
+    paths, not generic per-caller work carriers
+  key rule:
+    Ethernet data-plane authority should be modeled as QueueLease submit,
+    in-flight descriptor ledger, IRQ/NAPI ownership, DMA/IOMMU ownership, and
+    completion settlement, not as a workqueue carrier.
 ```
 
 Next work remains observation-only: refine eventfd kernel signal provenance,
 epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-execfd handoff, source-map a modern Ethernet queue path, and model aggregate
-QueueLease settlement for merged completion work before Linux behavior changes.
+execfd handoff, and model aggregate QueueLease settlement for merged completion
+work before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

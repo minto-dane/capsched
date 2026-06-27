@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-27",
+  "status": "draft_source_map_no_implementation",
+  "linux": {
+    "repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "branch": "capsched-linux-l0",
+    "commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462"
+  },
+  "source_files": [
+    "drivers/net/ethernet/intel/e1000e/netdev.c",
+    "drivers/net/ethernet/intel/e1000e/e1000.h"
+  ],
+  "containers": [
+    {
+      "id": "e1000e.adapter",
+      "type": "struct e1000_adapter",
+      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:192",
+      "authority_note": "Device/service container. It is not caller authority by itself."
+    },
+    {
+      "id": "e1000e.ring",
+      "type": "struct e1000_ring",
+      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:130",
+      "state_fields": [
+        "desc",
+        "dma",
+        "count",
+        "next_to_use",
+        "next_to_clean",
+        "head",
+        "tail",
+        "buffer_info",
+        "ims_val",
+        "itr_val"
+      ],
+      "authority_note": "QueueLease-relevant object: descriptor memory, tail/head registers, completion cursor, IRQ/NAPI association."
+    },
+    {
+      "id": "e1000e.buffer_info",
+      "type": "struct e1000_buffer",
+      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:116",
+      "state_fields": [
+        "dma",
+        "skb",
+        "time_stamp",
+        "length",
+        "next_to_watch",
+        "segs",
+        "bytecount",
+        "mapped_as_page"
+      ],
+      "authority_note": "Per-SKB DMA and completion accounting state; useful for QueueLease settlement, not an authority root."
+    }
+  ],
+  "data_plane": {
+    "tx_submit": {
+      "netdev_op": "drivers/net/ethernet/intel/e1000e/netdev.c:7349",
+      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:5815",
+      "dma_map": [
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5605",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5640"
+      ],
+      "descriptor_publish": [
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5719",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5720",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5722",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5740"
+      ],
+      "doorbell": "drivers/net/ethernet/intel/e1000e/netdev.c:5954",
+      "batching": [
+        "netdev_xmit_more",
+        "netif_xmit_stopped",
+        "tail write may be deferred until batching boundary"
+      ],
+      "queuelease_rule": "QueueLease submit check belongs before DMA map, descriptor publication, and tail doorbell."
+    },
+    "tx_completion": {
+      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:1228",
+      "descriptor_done_loop": "drivers/net/ethernet/intel/e1000e/netdev.c:1244",
+      "completion_accounting": "drivers/net/ethernet/intel/e1000e/netdev.c:1279",
+      "queue_wake": "drivers/net/ethernet/intel/e1000e/netdev.c:1291",
+      "service_work_on_hang": "drivers/net/ethernet/intel/e1000e/netdev.c:1305",
+      "queuelease_rule": "Completion settles in-flight descriptors and queue accounting; it must not mint new caller authority."
+    },
+    "rx_completion": {
+      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:927",
+      "descriptor_done_loop": "drivers/net/ethernet/intel/e1000e/netdev.c:947",
+      "dma_unmap": "drivers/net/ethernet/intel/e1000e/netdev.c:970",
+      "stack_delivery": [
+        "drivers/net/ethernet/intel/e1000e/netdev.c:1045",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:578"
+      ],
+      "queuelease_rule": "RX is queue/service-owned input delivery; monitor IOMMU ownership must constrain posted RX buffers before device DMA."
+    }
+  },
+  "irq_napi": {
+    "request_irq": [
+      "drivers/net/ethernet/intel/e1000e/netdev.c:2122",
+      "drivers/net/ethernet/intel/e1000e/netdev.c:2138",
+      "drivers/net/ethernet/intel/e1000e/netdev.c:2180",
+      "drivers/net/ethernet/intel/e1000e/netdev.c:2190"
+    ],
+    "napi_add": "drivers/net/ethernet/intel/e1000e/netdev.c:7475",
+    "napi_queue_binding": [
+      "drivers/net/ethernet/intel/e1000e/netdev.c:4713",
+      "drivers/net/ethernet/intel/e1000e/netdev.c:4714"
+    ],
+    "poll": "drivers/net/ethernet/intel/e1000e/netdev.c:2668",
+    "irq_events": [
+      {
+        "line": "drivers/net/ethernet/intel/e1000e/netdev.c:1778",
+        "effect": "link-status interrupt may schedule downshift service work"
+      },
+      {
+        "line": "drivers/net/ethernet/intel/e1000e/netdev.c:1807",
+        "effect": "uncorrectable ECC schedules reset service work"
+      },
+      {
+        "line": "drivers/net/ethernet/intel/e1000e/netdev.c:1897",
+        "effect": "legacy/MSI schedules NAPI"
+      },
+      {
+        "line": "drivers/net/ethernet/intel/e1000e/netdev.c:1936",
+        "effect": "MSI-X TX interrupt cleans TX descriptors"
+      },
+      {
+        "line": "drivers/net/ethernet/intel/e1000e/netdev.c:1966",
+        "effect": "MSI-X RX interrupt schedules NAPI"
+      }
+    ],
+    "queuelease_rule": "IRQ route and NAPI ownership are part of queue ownership, not caller authority."
+  },
+  "service_work": [
+    {
+      "id": "e1000e.reset_task",
+      "init": "drivers/net/ethernet/intel/e1000e/netdev.c:7618",
+      "callback": "drivers/net/ethernet/intel/e1000e/netdev.c:5979",
+      "origin_projection": [
+        "ServiceOnly",
+        "InterruptDeferred"
+      ],
+      "effects": [
+        "rtnl_lock",
+        "adapter reinitialization",
+        "device reset/recovery"
+      ],
+      "queue_sites": [
+        "drivers/net/ethernet/intel/e1000e/netdev.c:632",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:649",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:1807",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:1886",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5397",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5976"
+      ],
+      "design_rule": "Reset is service authority, not caller submit authority."
+    },
+    {
+      "id": "e1000e.watchdog_task",
+      "init": "drivers/net/ethernet/intel/e1000e/netdev.c:7619",
+      "callback": "drivers/net/ethernet/intel/e1000e/netdev.c:5220",
+      "queue_site": "drivers/net/ethernet/intel/e1000e/netdev.c:5215",
+      "origin_projection": [
+        "ServiceOnly",
+        "Timer"
+      ],
+      "effects": [
+        "link status",
+        "statistics update",
+        "adaptive interrupt update",
+        "software interrupt",
+        "reset scheduling",
+        "timer rearm"
+      ],
+      "design_rule": "Watchdog is periodic device maintenance and should run under device service budget."
+    },
+    {
+      "id": "e1000e.tx_hwtstamp_work",
+      "init": "drivers/net/ethernet/intel/e1000e/netdev.c:4491",
+      "callback": "drivers/net/ethernet/intel/e1000e/netdev.c:1185",
+      "queue_sites": [
+        "drivers/net/ethernet/intel/e1000e/netdev.c:5932",
+        "drivers/net/ethernet/intel/e1000e/netdev.c:1217"
+      ],
+      "origin_projection": [
+        "ExplicitMerge",
+        "PerPacketSpecial"
+      ],
+      "merge_semantics": [
+        "single adapter->tx_hwtstamp_skb outstanding",
+        "work reschedules itself while timestamp is not ready",
+        "not a generic multi-caller queue"
+      ],
+      "design_rule": "Timestamp settlement may use per-SKB association, but the work item itself is not caller authority."
+    }
+  ],
+  "hard_rejects": [
+    "Ethernet data-plane authority implemented as generic workqueue carrier",
+    "tail doorbell without live QueueLease",
+    "DMA mapping without monitor-owned IOMMU permission",
+    "IRQ/NAPI completion treated as caller authority",
+    "reset/watchdog/PHY service work charged to an arbitrary last caller"
+  ],
+  "next_evidence": [
+    "derive aggregate QueueLease settlement model",
+    "map a modern multi-queue driver with MSI-X/XDP/page-pool/devlink",
+    "define per-SKB or per-descriptor accounting metadata for completion settlement"
+  ]
+}
