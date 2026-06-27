@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `7cf0b1e415bcead8a2079c8be94a9d41aad7d462`. No behavior-changing implementation
 patch points are accepted yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0039`. A candidate Linux L0 Runnable
+`capsched-models/analysis/0002` through `0040`. A candidate Linux L0 Runnable
 Lease implementation plan has been derived from the checked model. Linux source
 now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
@@ -175,6 +175,13 @@ analysis/0039 + formal/0022 + validation/0034
   coverage, hrtick is not an exact root cap, remote NO_HZ tick is not root
   enforcement, and budget replenishment must refresh or invalidate epoch before
   selected/running use continues.
+
+analysis/0040 + formal/0023 + validation/0035
+  Class selected-state boundary:
+  class pick is selection, not authority. Execution requires fresh FrozenRunUse
+  and class-specific revalidation after put_prev/set_next, core cached pick
+  consumption, deadline-server borrowing, sched_ext slice refill/infinite slice,
+  proxy donor/owner resolution, and class state mutation.
 ```
 
 F1 must not allocate, sleep, walk policy, call the monitor, acquire remote
@@ -191,9 +198,9 @@ carriers, not ambient worker authority.
 Next near-term sequence:
 
 ```text
-1. Model class-specific selected-state behavior for CFS, RT, deadline,
-   sched_ext, core scheduling, and proxy execution.
-2. Refine wider endpoint models and exec process-generation semantics.
+1. Refine wider endpoint capability models for fd/file/socket/resource
+   operations.
+2. Refine exec process-generation semantics.
 3. Only then consider a behavior-changing L0 runnable admission slice.
 ```
 
@@ -438,10 +445,10 @@ Current rule: fail-capable admission freeze must happen before `TASK_WAKING`.
 Post-`TASK_WAKING` checks are nofail assertions, fail-closed stops, or
 separately proven rollback/quarantine paths.
 
-Historical note: F1 data dependencies, same-Domain fast-path freshness, and
-root-vs-SchedContext budget split have now been modeled. The current executable
-refinement is class-specific selected-state behavior for CFS, RT, deadline,
-sched_ext, core scheduling, and proxy execution. Do not use the v1 ledger as
+Historical note: F1 data dependencies, same-Domain fast-path freshness,
+root-vs-SchedContext budget split, and class selected-state behavior have now
+been modeled. The current executable refinement is wider endpoint capability
+semantics for fd/file/socket/resource operations. Do not use the v1 ledger as
 solver input, enforcement evidence, or production security evidence. Do not use
 the v2 ledger for hook selection yet.
 

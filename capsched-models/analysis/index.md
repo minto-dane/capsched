@@ -45,6 +45,7 @@ Updated: 2026-06-27
 | 0037 | Draft placement map with TLC-backed design filter | Placement Refresh, Affinity, cpuset, Hotplug Authority |
 | 0038 | Draft monitor-fast-path map with TLC-backed design filter | Same-Domain Monitor Fast Path and Budget Freshness |
 | 0039 | Draft budget map with TLC-backed design filter | Root Budget, SchedContext Budget, and NO_HZ Overrun Boundary |
+| 0040 | Draft selected-state map with TLC-backed design filter | Class-Specific Selected-State Boundary |
 
 ## Planned Analysis Notes
 
@@ -52,8 +53,8 @@ Updated: 2026-06-27
 2. Broker BudgetTicket and service Domain charging map.
 3. Decide exec process-generation semantics jointly with endpoint/object
    capability modeling.
-4. Refine class-specific CFS/RT/deadline/sched_ext/core/proxy selected-state
-   behavior.
+4. Refine wider endpoint capability models for fd/file/socket/resource
+   operations.
 5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts

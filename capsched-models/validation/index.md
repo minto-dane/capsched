@@ -40,6 +40,7 @@ Updated: 2026-06-27
 | 0032 | Safe model passed; unsafe models produced expected counterexamples | Placement Refresh Authority TLC Check |
 | 0033 | Safe model passed; unsafe models produced expected counterexamples | Same-Domain Fast Path Freshness TLC Check |
 | 0034 | Safe model passed; unsafe models produced expected counterexamples | Budget Split and NO_HZ Overrun TLC Check |
+| 0035 | Safe model passed; unsafe models produced expected counterexamples | Class Selected-State TLC Check |
 
 ## Principles
 

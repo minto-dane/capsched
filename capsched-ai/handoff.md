@@ -97,11 +97,25 @@ analysis/0039 + formal/0022 + validation/0034:
   remote NO_HZ tick is not root budget enforcement
   runtime replenishment or redistribution must refresh/invalidate budget epoch
   before selected/running use continues
+
+analysis/0040 + formal/0023 + validation/0035:
+  class pick is selection, not authority
+  execution requires fresh FrozenRunUse and class-specific revalidation before
+  execution commit
+  core cached picks require fresh core/task sequence and related freshness at
+  consumption time
+  deadline-server borrowed execution requires a typed server ticket or
+  equivalent budget rule
+  sched_ext slice refill, local DSQ position, and infinite slice cannot create
+  CapSched execution authority
+  proxy execution requires a ProxyExecutionTicket or explicit owner-budget rule
+  donor selected authority is not owner execution authority
+  class state mutation after selection must refresh, revalidate, preempt, or
+  fail closed
 ```
 
-Next work remains refinement, not enforcement: class-specific selected-state
-behavior for CFS, RT, deadline, sched_ext, core scheduling, and proxy execution;
-wider endpoint models; and exec process-generation semantics.
+Next work remains refinement, not enforcement: wider endpoint capability models
+for fd/file/socket/resource operations and exec process-generation semantics.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
@@ -487,11 +501,11 @@ Current rule: fail-capable admission freeze must happen before
 `TASK_WAKING`. Post-`TASK_WAKING` checks are nofail assertions, fail-closed
 stops, or separately proven rollback/quarantine paths.
 
-Historical note: F1 data dependencies, same-Domain fast-path freshness, and
-root-vs-SchedContext budget split have now been modeled. The current open
-refinement is class-specific selected-state behavior for CFS, RT, deadline,
-sched_ext, core scheduling, and proxy execution, followed by wider endpoint
-models and exec process-generation semantics.
+Historical note: F1 data dependencies, same-Domain fast-path freshness,
+root-vs-SchedContext budget split, and class selected-state behavior have now
+been modeled. The current open refinement is wider endpoint capability models
+for fd/file/socket/resource operations, followed by exec process-generation
+semantics.
 
 ## Recovery Path
 
