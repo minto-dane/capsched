@@ -340,9 +340,9 @@ capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.m
 capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md
 ```
 
-Current next step: derive schema v2 from `0025` and `0026`, then retag Slice 0C
-behavior paths under the stricter schema before running any hook-placement
-optimizer or adding any behavior-changing Linux patch.
+Schema v2 was derived from `0025` and `0026`, then Slice 0C behavior paths were
+retagged under the stricter schema before any hook-placement optimizer or
+behavior-changing Linux patch.
 
 That v2 derivation is now done for gap analysis:
 
@@ -356,9 +356,33 @@ Important boundary: the v2 Slice 0C ledger is only for gap analysis and hard
 reject. It is not hook-selection eligible and provides no enforcement or
 production security claim.
 
-Current next step: build the LinuxSchedulerAuthority formal model and map the
-remaining source gaps for tick/runtime budget and fork/clone/exec/exit identity
-propagation.
+The LinuxSchedulerAuthority formal model and the two remaining source maps are
+now present:
+
+```text
+capsched/capsched-models/formal/0012-linux-scheduler-authority-model/
+capsched/capsched-models/validation/0024-linux-scheduler-authority-tlc.md
+capsched/capsched-models/analysis/0028-tick-runtime-budget-source-map.md
+capsched/capsched-models/analysis/0029-fork-exec-exit-identity-propagation-map.md
+```
+
+TLC completed the tiny finite LinuxSchedulerAuthority model with no invariant
+errors:
+
+```text
+126113 states generated
+17344 distinct states
+depth 21
+```
+
+Important boundary: this is semantic evidence only. It does not make Linux L0
+an enforcement boundary and does not prove CapSched-H production isolation.
+
+Current next step: refine the scheduler authority model before hook selection.
+The open refinements are failure after `TASK_WAKING`, same-Domain monitor
+fast-path freshness, root-vs-SchedContext budget split, NO_HZ/hrtick bounded
+overrun, class-specific CFS/RT/deadline/sched_ext/core/proxy selected-state
+behavior, and exec process-generation semantics.
 
 ## Recovery Path
 
@@ -425,8 +449,8 @@ Implementation must keep capability types separated:
 
 ## Modeling Anchors And Historical Gates
 
-The current next action is a LinuxSchedulerAuthority formal model and source
-maps for budget and identity propagation, not Linux code. The records below are
+The current next action is refinement of the LinuxSchedulerAuthority model and
+related source maps, not Linux behavior-changing code. The records below are
 still important anchors for implementation safety.
 
 The first two formal semantic models have been selected and checked. Runnable

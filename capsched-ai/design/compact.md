@@ -317,10 +317,35 @@ behavior-tags/schema-v2-requirements.json:
   critical-review requirement source kept as a check against schema v2.
 ```
 
-Next executable step: build a LinuxSchedulerAuthority formal model, then map
-tick/runtime budget and fork/clone/exec/exit identity propagation. Do not use
-the v1 ledger as solver input, enforcement evidence, or production security
-evidence. Do not use the v2 ledger for hook selection yet.
+The LinuxSchedulerAuthority model and the two source maps now exist:
+
+```text
+formal:
+  capsched-models/formal/0012-linux-scheduler-authority-model/
+
+validation:
+  capsched-models/validation/0024-linux-scheduler-authority-tlc.md
+
+analysis:
+  capsched-models/analysis/0028-tick-runtime-budget-source-map.md
+  capsched-models/analysis/0029-fork-exec-exit-identity-propagation-map.md
+```
+
+TLC checked the tiny finite model:
+
+```text
+126113 states generated
+17344 distinct states
+depth 21
+no invariant error found
+```
+
+Next executable step: refine the model for failure after `TASK_WAKING`,
+same-Domain monitor fast-path freshness, root-vs-SchedContext budget split,
+NO_HZ/hrtick overrun, class-specific selected-state behavior, and exec
+process-generation semantics. Do not use the v1 ledger as solver input,
+enforcement evidence, or production security evidence. Do not use the v2 ledger
+for hook selection yet.
 
 Readiness check:
 

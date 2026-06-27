@@ -78,7 +78,9 @@
       "capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md",
       "capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md",
       "capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md",
-      "capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md"
+      "capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md",
+      "capsched/capsched-models/analysis/0028-tick-runtime-budget-source-map.md",
+      "capsched/capsched-models/analysis/0029-fork-exec-exit-identity-propagation-map.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -166,11 +168,16 @@
     "linux_scheduler_authority_state_machine": "capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md",
     "scheduler_hook_proof_obligation_matrix": "capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md",
     "schema_v2_derivation": "capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md",
+    "tick_runtime_budget_source_map": "capsched/capsched-models/analysis/0028-tick-runtime-budget-source-map.md",
+    "fork_exec_exit_identity_propagation_map": "capsched/capsched-models/analysis/0029-fork-exec-exit-identity-propagation-map.md",
     "behavior_tag_v1_ledger": "capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json",
     "behavior_tag_schema_v2_requirements": "capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json",
     "behavior_tag_schema_v2_contract": "capsched/capsched-models/analysis/behavior-tags/schema-v2.json",
     "slice0c_behavior_tag_v2_ledger": "capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags-v2.json",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. ADR-0006 fixes the methodology: CapSched design is invariant-driven, while tags are evidence and constraint indexes. Analysis/0027 derives schema v2 from the scheduler authority state machine and proof-obligation matrix. behavior-tags/schema-v2.json is the draft machine-readable v2 contract. behavior-tags/slice0c-scheduler-behavior-tags-v2.json retags Slice 0C for gap analysis and hard reject only; it is not hook-selection eligible. Next steps are a LinuxSchedulerAuthority formal model and source maps for tick/runtime budget plus fork/clone/exec/exit identity propagation."
+    "linux_scheduler_authority_model": "capsched/capsched-models/formal/0012-linux-scheduler-authority-model/README.md",
+    "linux_scheduler_authority_tla": "capsched/capsched-models/formal/0012-linux-scheduler-authority-model/LinuxSchedulerAuthority.tla",
+    "linux_scheduler_authority_validation": "capsched/capsched-models/validation/0024-linux-scheduler-authority-tlc.md",
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. ADR-0006 fixes the methodology: CapSched design is invariant-driven, while tags are evidence and constraint indexes. Analysis/0027 derives schema v2 from the scheduler authority state machine and proof-obligation matrix. behavior-tags/slice0c-scheduler-behavior-tags-v2.json remains gap-analysis and hard-reject only. Formal 0012 LinuxSchedulerAuthority now models RemotePendingWake, SelectedUse, CurrentContinuation, QueuedMigration, SpawnedInitialUse, tick budget exhaustion, domain revoke, and exit invalidation; TLC passed the tiny finite model in validation/0024. Analysis/0028 maps tick/runtime budget sources; analysis/0029 maps fork/clone/exec/exit identity propagation. Next steps are refinement, not enforcement: failure after TASK_WAKING, same-Domain monitor fast-path freshness, root-vs-SchedContext budget split, NO_HZ/hrtick overrun, class-specific selected-state behavior, and exec process-generation semantics."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -497,6 +504,18 @@
       "text": "What page-cache overlay rule prevents stale Domain dirty state from overwriting a newer sealed base?",
       "status": "resolved",
       "answer": "PageCacheOverlay found that per-overlay commit is insufficient. Commit/writeback requires provenance, ticket, current base version, and base-level serialization or an equivalent commit token."
+    },
+    {
+      "id": "Q-014",
+      "text": "Should exec increment the scheduler-visible process generation for RunCap/FrozenRunUse validity?",
+      "status": "open",
+      "answer": "Analysis 0029 leaves this undecided. Option A increments endpoint/object process generation but not scheduler RunCap generation. Option B increments scheduler-visible process generation and needs a current-exec revalidation model so execution does not become stale mid-exec."
+    },
+    {
+      "id": "Q-015",
+      "text": "Where is the production root for CPU budget enforcement?",
+      "status": "resolved",
+      "answer": "Analysis 0028 says Linux tick/update_curr paths are L0 measurement and compatibility substrates only. CapSched-H needs monitor-owned root Domain budget plus sealed SchedContext epoch and bounded overrun enforcement."
     }
   ],
   "next_actions": [
@@ -665,7 +684,9 @@
     {
       "id": "N-020",
       "text": "If the user accepts Slice 0B, apply only inert type scaffolding in include/linux/capsched.h and kernel/sched/capsched.c, then repeat CONFIG_CAPSCHED=n/y build validation.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Superseded and completed by N-026. Linux commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462 applied Slice 0B type-only scaffolding and validation/0014 passed CONFIG_CAPSCHED=n/y builds.",
       "blocked_by": [
         "N-016"
       ]
@@ -901,7 +922,9 @@
     {
       "id": "N-044",
       "text": "Create a LinuxSchedulerAuthority formal model covering RemotePendingWake, SelectedUse, CurrentContinuation, QueuedMigration, SpawnedInitialUse, failure actions, and revocation over queued/selected/running/pending states.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created formal/0012 LinuxSchedulerAuthority and validation/0024. TLC completed the tiny finite model with 126113 generated states, 17344 distinct states, depth 21, and no invariant errors. The model includes remote pending wake, selected use, current continuation, queued migration, spawned initial use, selected budget fail-closed, tick exhaustion, domain revoke, and exit invalidation.",
       "blocked_by": [
         "N-042"
       ]
@@ -909,9 +932,20 @@
     {
       "id": "N-045",
       "text": "Map Linux tick/runtime budget accounting and fork/clone/exec/exit identity propagation against the v2 authority schema before any runnable authority enforcement patch.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0028 and analysis/0029. Analysis 0028 maps sched_tick, task_sched_runtime, CFS/RT/DL/sched_ext/idle/stop runtime sources and separates L0 Linux accounting from monitor-owned production root budget. Analysis 0029 maps copy_process, sched_fork, wake_up_new_task, bprm_execve, sched_exec, begin_new_exec, exit_mm, do_exit, and do_task_dead to CapSched identity propagation rules.",
       "blocked_by": [
         "N-042"
+      ]
+    },
+    {
+      "id": "N-046",
+      "text": "Refine LinuxSchedulerAuthority before hook selection: failure after TASK_WAKING, same-Domain fast-path freshness, root-vs-SchedContext budget split, NO_HZ/hrtick overrun, class-specific selected-state behavior, and exec process-generation semantics.",
+      "status": "pending",
+      "blocked_by": [
+        "N-044",
+        "N-045"
       ]
     }
   ],

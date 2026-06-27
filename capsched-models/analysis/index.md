@@ -33,15 +33,18 @@ Updated: 2026-06-27
 | 0025 | Draft state machine | Linux Scheduler Authority State Machine |
 | 0026 | Draft obligation matrix | Scheduler Hook Proof Obligation Matrix |
 | 0027 | Draft schema and v2 retagging complete for gap analysis | Schema v2 Derived from the Scheduler Authority Model |
+| 0028 | Draft source map | Tick and Runtime Budget Source Map |
+| 0029 | Draft source map | Fork, Clone, Exec, and Exit Identity Propagation Map |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. LinuxSchedulerAuthority formal model covering remote pending wake, selected
-   use, migration, spawn initialization, and fail-closed switch activation.
-4. Tick/runtime budget source map and fork/clone/exec/exit identity propagation
-   source map.
+3. Refine LinuxSchedulerAuthority decompositions for failure after
+   `TASK_WAKING`, same-Domain monitor fast-path freshness, selected-state stale
+   budget, and class-specific CFS/RT/deadline/sched_ext/core/proxy behavior.
+4. Decide exec process-generation semantics jointly with endpoint/object
+   capability modeling.
 5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts

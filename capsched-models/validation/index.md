@@ -29,6 +29,7 @@ Updated: 2026-06-27
 | 0021 | Passed for QEMU boot smoke; trace coverage incomplete | Slice 0C QEMU Boot Smoke Result |
 | 0022 | Passed for broader QEMU workload execution; trace coverage still incomplete | Slice 0C QEMU Broader Workload Result |
 | 0023 | Passed for guest-side kprobe observation; still observation-only | Slice 0C QEMU Kprobe Observation Result |
+| 0024 | Passed for tiny finite model | Linux Scheduler Authority TLC Check |
 
 ## Principles
 
