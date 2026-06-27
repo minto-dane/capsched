@@ -25,6 +25,7 @@ Updated: 2026-06-26
 | 0017 | Draft | MM Allocator and Page Cache Domain State Map |
 | 0018 | Draft | Protection Claim Evidence Map |
 | 0019 | Draft | Wakeup, Enqueue, and Runnable-State Coverage |
+| 0020 | Draft | QEMU ftrace and Symbol Eligibility for Slice 0C |
 
 ## Planned Analysis Notes
 

@@ -20,7 +20,8 @@ QEMU_TIMEOUT="${CAPSCHED_QEMU_TIMEOUT:-180}"
 QEMU_MEM="${CAPSCHED_QEMU_MEM:-1024M}"
 QEMU_SMP="${CAPSCHED_QEMU_SMP:-2}"
 WORKLOAD_MODE="${CAPSCHED_QEMU_WORKLOAD_MODE:-forkexec}"
-WORKLOAD_ITERS="${CAPSCHED_QEMU_WORKLOAD_ITERS:-100}"
+WORKLOAD_ARG_LINE=""
+ENABLE_KPROBES="${CAPSCHED_QEMU_ENABLE_KPROBES:-0}"
 
 EVENTS="
 sched/sched_waking
@@ -49,8 +50,50 @@ __schedule
 "
 EVENT_LIST="$(printf '%s\n' "$EVENTS" | xargs)"
 FUNCTION_LIST="$(printf '%s\n' "$FUNCTIONS" | xargs)"
+KPROBE_EVENTS="
+cs_enqueue_task
+cs_ttwu_do_activate
+cs_try_to_wake_up
+cs_wake_up_new_task
+cs_move_queued_task
+"
+KPROBE_EVENT_LIST="$(printf '%s\n' "$KPROBE_EVENTS" | xargs)"
 
 mkdir -p "$RUN_DIR"
+
+if [[ -n "${CAPSCHED_QEMU_WORKLOAD_ARGS:-}" ]]; then
+	read -r -a WORKLOAD_ARGV <<< "$CAPSCHED_QEMU_WORKLOAD_ARGS"
+else
+	case "$WORKLOAD_MODE" in
+	forkexec)
+		WORKLOAD_ARGV=("$WORKLOAD_MODE" "${CAPSCHED_QEMU_WORKLOAD_ITERS:-100}")
+		;;
+	futex)
+		WORKLOAD_ARGV=("$WORKLOAD_MODE" "${CAPSCHED_QEMU_WORKLOAD_ITERS:-50000}" "${CAPSCHED_QEMU_FUTEX_PLACEMENT:-cross}")
+		;;
+	affinity)
+		WORKLOAD_ARGV=("$WORKLOAD_MODE" "${CAPSCHED_QEMU_WORKLOAD_ITERS:-40}")
+		;;
+	pressure)
+		WORKLOAD_ARGV=("$WORKLOAD_MODE" "${CAPSCHED_QEMU_PRESSURE_THREADS:-8}" "${CAPSCHED_QEMU_WORKLOAD_ITERS:-500000}")
+		;;
+	all)
+		WORKLOAD_ARGV=("$WORKLOAD_MODE")
+		;;
+	*)
+		echo "error: unsupported workload mode: $WORKLOAD_MODE" >&2
+		exit 2
+		;;
+	esac
+fi
+
+for arg in "${WORKLOAD_ARGV[@]}"; do
+	if [[ ! "$arg" =~ ^[A-Za-z0-9_.:+/-]+$ ]]; then
+		echo "error: unsafe workload argument for guest shell: $arg" >&2
+		exit 2
+	fi
+done
+WORKLOAD_ARG_LINE="${WORKLOAD_ARGV[*]}"
 
 export PATH="$TOOLS/usr/bin:$PATH"
 export BISON_PKGDATADIR="$TOOLS/usr/share/bison"
@@ -129,7 +172,7 @@ make_initramfs()
 
 	cp /usr/bin/busybox "$INITRD_DIR/bin/busybox"
 	chmod 0755 "$INITRD_DIR/bin/busybox"
-	for app in sh mount mkdir cat echo grep uname sed awk wc true sleep seq poweroff reboot sync dmesg cut tr sort head tail; do
+	for app in sh mount mkdir cat echo grep uname sed awk wc true sleep seq poweroff reboot sync dmesg cut tr sort uniq head tail; do
 		ln -sf busybox "$INITRD_DIR/bin/$app"
 	done
 
@@ -184,6 +227,40 @@ for event in $EVENT_LIST; do
 	fi
 done
 
+ENABLE_KPROBES=$ENABLE_KPROBES
+if [ "\$ENABLE_KPROBES" = "1" ]; then
+	if [ -w "\$TRACEFS/kprobe_events" ]; then
+		: > "\$TRACEFS/kprobe_events" 2>/dev/null || true
+
+		add_kprobe()
+		{
+			spec="\$1"
+			if echo "\$spec" >> "\$TRACEFS/kprobe_events"; then
+				echo "KPROBE_ADDED \$spec"
+			else
+				echo "KPROBE_ADD_FAILED \$spec"
+			fi
+		}
+
+		add_kprobe 'p:capsched/cs_enqueue_task enqueue_task flags=\$arg3:x32'
+		add_kprobe 'p:capsched/cs_ttwu_do_activate ttwu_do_activate wake_flags=\$arg3:x32'
+		add_kprobe 'p:capsched/cs_try_to_wake_up try_to_wake_up state=\$arg2:x32 wake_flags=\$arg3:x32'
+		add_kprobe 'p:capsched/cs_wake_up_new_task wake_up_new_task'
+		add_kprobe 'p:capsched/cs_move_queued_task move_queued_task new_cpu=\$arg4:x32'
+
+		for event in $KPROBE_EVENT_LIST; do
+			if [ -e "\$TRACEFS/events/capsched/\$event/enable" ]; then
+				echo "KPROBE_ENABLED capsched/\$event"
+				echo 1 > "\$TRACEFS/events/capsched/\$event/enable"
+			else
+				echo "KPROBE_MISSING capsched/\$event"
+			fi
+		done
+	else
+		echo "KPROBE_EVENTS_UNAVAILABLE"
+	fi
+fi
+
 if [ -r "\$TRACEFS/available_filter_functions" ] && [ -w "\$TRACEFS/set_ftrace_filter" ]; then
 	for func in $FUNCTION_LIST; do
 		if grep -qw "\$func" "\$TRACEFS/available_filter_functions"; then
@@ -208,7 +285,7 @@ else
 fi
 
 echo 1 > "\$TRACEFS/tracing_on"
-/bin/slice0c_sched_workload "$WORKLOAD_MODE" "$WORKLOAD_ITERS"
+/bin/slice0c_sched_workload $WORKLOAD_ARG_LINE
 ret=\$?
 echo 0 > "\$TRACEFS/tracing_on"
 
@@ -216,6 +293,45 @@ for target in $FUNCTION_LIST sched_waking sched_wakeup sched_wakeup_new sched_sw
 	count=\$(grep -c "\$target" "\$TRACEFS/trace" 2>/dev/null || true)
 	echo "COUNT \$target \$count"
 done
+
+if [ "\$ENABLE_KPROBES" = "1" ]; then
+	for target in $KPROBE_EVENT_LIST; do
+		count=\$(grep -c "\$target:" "\$TRACEFS/trace" 2>/dev/null || true)
+		echo "KPROBE_COUNT \$target \$count"
+	done
+
+	echo "KPROBE_FLAGS_BEGIN cs_enqueue_task"
+	grep "cs_enqueue_task:" "\$TRACEFS/trace" 2>/dev/null |
+		sed -n 's/.* flags=\([^ ]*\).*/\1/p' |
+		sort | uniq -c |
+		sed 's/^/KPROBE_FLAGS /' || true
+	echo "KPROBE_FLAGS_END cs_enqueue_task"
+
+	echo "KPROBE_WAKE_FLAGS_BEGIN cs_try_to_wake_up"
+	grep "cs_try_to_wake_up:" "\$TRACEFS/trace" 2>/dev/null |
+		sed -n 's/.* wake_flags=\([^ ]*\).*/\1/p' |
+		sort | uniq -c |
+		sed 's/^/KPROBE_WAKE_FLAGS /' || true
+	echo "KPROBE_WAKE_FLAGS_END cs_try_to_wake_up"
+
+	echo "KPROBE_ACTIVATE_FLAGS_BEGIN cs_ttwu_do_activate"
+	grep "cs_ttwu_do_activate:" "\$TRACEFS/trace" 2>/dev/null |
+		sed -n 's/.* wake_flags=\([^ ]*\).*/\1/p' |
+		sort | uniq -c |
+		sed 's/^/KPROBE_ACTIVATE_FLAGS /' || true
+	echo "KPROBE_ACTIVATE_FLAGS_END cs_ttwu_do_activate"
+
+	echo "KPROBE_MOVE_CPU_BEGIN cs_move_queued_task"
+	grep "cs_move_queued_task:" "\$TRACEFS/trace" 2>/dev/null |
+		sed -n 's/.* new_cpu=\([^ ]*\).*/\1/p' |
+		sort | uniq -c |
+		sed 's/^/KPROBE_MOVE_CPU /' || true
+	echo "KPROBE_MOVE_CPU_END cs_move_queued_task"
+
+	grep "cs_enqueue_task:" "\$TRACEFS/trace" 2>/dev/null |
+		head -n 20 |
+		sed 's/^/KPROBE_SAMPLE /' || true
+fi
 
 echo "WORKLOAD_RET \$ret"
 echo "CAPSCHED_QEMU_END workload_ret=\$ret"
@@ -262,7 +378,18 @@ run_qemu()
 	status=${PIPESTATUS[0]}
 	set -e
 
-	grep '^COUNT ' "$SERIAL_LOG" | awk '{ print $2 "\t" $3 }' > "$COUNTS" || true
+	grep '^COUNT ' "$SERIAL_LOG" | awk '{
+		value = $3
+		sub(/[^0-9].*/, "", value)
+		if (value != "")
+			print $2 "\t" value
+	}' > "$COUNTS" || true
+	grep '^KPROBE_COUNT ' "$SERIAL_LOG" | awk '{
+		value = $3
+		sub(/[^0-9].*/, "", value)
+		if (value != "")
+			print "kprobe:" $2 "\t" value
+	}' >> "$COUNTS" || true
 
 	{
 		echo "timestamp_utc=$STAMP"
@@ -276,7 +403,8 @@ run_qemu()
 		echo "qemu_status=$status"
 		echo "qemu_timeout_seconds=$QEMU_TIMEOUT"
 		echo "workload_mode=$WORKLOAD_MODE"
-		echo "workload_iters=$WORKLOAD_ITERS"
+		echo "workload_args=$WORKLOAD_ARG_LINE"
+		echo "kprobes_enabled=$ENABLE_KPROBES"
 		if [[ -w /dev/kvm ]]; then
 			echo "kvm=enabled"
 		else
@@ -299,6 +427,16 @@ run_qemu()
 	if [[ "$status" != "0" ]]; then
 		echo "error: qemu exited with status $status" >&2
 		return 1
+	fi
+	if [[ "$ENABLE_KPROBES" == "1" ]]; then
+		if ! grep -q '^KPROBE_ENABLED capsched/cs_enqueue_task' "$SERIAL_LOG"; then
+			echo "error: guest did not enable cs_enqueue_task kprobe" >&2
+			return 1
+		fi
+		if ! awk '$1 == "KPROBE_COUNT" && $2 == "cs_enqueue_task" && $3 + 0 > 0 { found = 1 } END { exit !found }' "$SERIAL_LOG"; then
+			echo "error: cs_enqueue_task kprobe did not fire" >&2
+			return 1
+		fi
 	fi
 }
 

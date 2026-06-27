@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-06-26
+Updated: 2026-06-27
 
 ## Current Validation Records
 
@@ -27,6 +27,8 @@ Updated: 2026-06-26
 | 0019 | Ready for operator execution | Slice 0C Trace Execution Runbook |
 | 0020 | Executed | Slice 0C QEMU Boot Validation Plan |
 | 0021 | Passed for QEMU boot smoke; trace coverage incomplete | Slice 0C QEMU Boot Smoke Result |
+| 0022 | Passed for broader QEMU workload execution; trace coverage still incomplete | Slice 0C QEMU Broader Workload Result |
+| 0023 | Passed for guest-side kprobe observation; still observation-only | Slice 0C QEMU Kprobe Observation Result |
 
 ## Principles
 

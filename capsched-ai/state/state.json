@@ -70,7 +70,8 @@
       "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
       "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
       "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
-      "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md"
+      "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md",
+      "capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -137,6 +138,8 @@
     "slice0c_trace_execution_runbook": "capsched/capsched-models/validation/0019-slice0c-trace-execution-runbook.md",
     "slice0c_qemu_boot_validation_plan": "capsched/capsched-models/validation/0020-slice0c-qemu-boot-validation-plan.md",
     "slice0c_qemu_boot_smoke_result": "capsched/capsched-models/validation/0021-slice0c-qemu-boot-smoke-result.md",
+    "slice0c_qemu_broader_workload_result": "capsched/capsched-models/validation/0022-slice0c-qemu-broader-workload-result.md",
+    "slice0c_qemu_kprobe_observation_result": "capsched/capsched-models/validation/0023-slice0c-qemu-kprobe-observation-result.md",
     "slice0c_no_code_trace_runner": "capsched/capsched-models/validation/run-slice0c-no-code-trace.sh",
     "slice0c_qemu_boot_runner": "capsched/capsched-models/validation/run-slice0c-qemu-boot-smoke.sh",
     "slice0c_trace_analyzer": "capsched/capsched-models/validation/analyze-slice0c-trace.sh",
@@ -148,7 +151,8 @@
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
     "protection_claim_evidence_map": "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
     "wakeup_enqueue_runnable_coverage": "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Host tracefs execution remains separate, but QEMU guest validation now exists: validation/0020 adds a QEMU boot smoke plan and run-slice0c-qemu-boot-smoke.sh; validation/0021 records a successful CONFIG_CAPSCHED=y QEMU boot with CONFIG_FUNCTION_TRACER=y, forkexec workload_ret=0, qemu_status=0, and scheduler trace counts. Coverage is incomplete: already-runnable wake, remote wakelist, pick internals, __schedule function entry, delayed fair requeue, and core scheduling branches remain unresolved. This is runtime observation evidence, not RunCap or isolation evidence."
+    "qemu_ftrace_symbol_eligibility": "capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md",
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. QEMU guest validation now covers boot smoke, broader workloads, and guest-side kprobes. Validation/0023 records successful kprobe attachment to enqueue_task, ttwu_do_activate, try_to_wake_up, wake_up_new_task, and move_queued_task. enqueue_task flags distinguish ordinary wake enqueue, migration-related enqueue, initial enqueue, and rq-selected wake enqueue in clean reruns; ENQUEUE_DELAYED was also observed once in an earlier successful affinity serial log and should be treated as workload-nondeterministic. affinity kprobe observation captured move_queued_task new_cpu split across CPU0/CPU1. Persistent gaps remain: ttwu_runnable, remote wakelist helpers, pick internals, __schedule function-entry detail, and CONFIG_SCHED_CORE branches. Next step is a Slice 0C observation synthesis note mapping observed wake/enqueue/migration/pick evidence to the first safe CapSched hook decision, without adding enforcement yet."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -809,9 +813,39 @@
     {
       "id": "N-037",
       "text": "Broaden QEMU Slice 0C coverage with futex cross-CPU, affinity migration, pressure, and combined workloads before deciding whether a CONFIG_CAPSCHED internal observation patch is justified.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created validation/0022. QEMU workloads futex cross, affinity, pressure, and all all completed with WORKLOAD_RET 0 and qemu_status=0. Coverage improved for cross-CPU wake/switch, migration, scheduler pressure, and lifecycle events, but missing ftrace function targets persisted.",
       "blocked_by": [
         "N-036"
+      ]
+    },
+    {
+      "id": "N-038",
+      "text": "Analyze QEMU vmlinux symbol and ftrace eligibility for missing Slice 0C targets before adding any Linux observation patch.",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0020. Missing targets ttwu_runnable, __ttwu_queue_wakelist, ttwu_queue, __pick_next_task, and pick_next_task are absent from QEMU vmlinux/System.map; __schedule exists but is declared notrace and CONFIG_KPROBE_EVENTS_ON_NOTRACE=n. The resulting low-risk kprobe argument-capture step was completed in N-039.",
+      "blocked_by": [
+        "N-037"
+      ]
+    },
+    {
+      "id": "N-039",
+      "text": "Prototype a QEMU guest-side kprobe observation pass for visible scheduler targets, especially enqueue_task flags, before considering a CONFIG_CAPSCHED internal observation patch.",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created validation/0023 and extended run-slice0c-qemu-boot-smoke.sh with CAPSCHED_QEMU_ENABLE_KPROBES=1. QEMU kprobe runs for futex cross and affinity succeeded. enqueue_task flags were captured, including migration/rq-selected cases in clean reruns and one ENQUEUE_DELAYED case in an earlier successful affinity serial log; move_queued_task new_cpu was captured for affinity migration. Result remains observation-only.",
+      "blocked_by": [
+        "N-038"
+      ]
+    },
+    {
+      "id": "N-040",
+      "text": "Write a Slice 0C observation synthesis note mapping observed tracepoint/function/kprobe evidence to candidate CapSched hook placement and remaining internal-observation gaps.",
+      "status": "pending",
+      "blocked_by": [
+        "N-039"
       ]
     }
   ],

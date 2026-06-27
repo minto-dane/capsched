@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-06-26
+Updated: 2026-06-27
 
 ## Project
 
@@ -236,16 +236,55 @@ WORKLOAD_RET 0
 qemu_status=0
 ```
 
-This is the first reproducible CapSched worktree kernel boot/trace smoke. It is
-still observation only. Coverage gaps remain around already-runnable wake,
-remote wakelist, pick internals, `__schedule`, delayed fair requeue, and core
-scheduling branches.
+Broader QEMU workload results:
+
+```text
+capsched-models/validation/0022-slice0c-qemu-broader-workload-result.md
+futex cross: build/qemu/slice0c-boot-smoke/20260627T054514Z
+affinity:    build/qemu/slice0c-boot-smoke/20260627T054559Z
+pressure:    build/qemu/slice0c-boot-smoke/20260627T054618Z
+all:         build/qemu/slice0c-boot-smoke/20260627T054636Z
+```
+
+All passed with `WORKLOAD_RET 0` and `qemu_status=0`. This is reproducible
+CapSched worktree kernel boot/trace evidence, still observation only. Coverage
+gaps remain around already-runnable wake, remote wakelist, pick internals,
+`__schedule`, delayed fair requeue, and core scheduling branches. Because the
+same function targets stayed missing across workloads, next inspect vmlinux and
+ftrace eligibility before any Linux observation patch.
+
+Symbol/ftrace analysis:
+
+```text
+capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md
+```
+
+Key result: `ttwu_runnable`, `__ttwu_queue_wakelist`, `ttwu_queue`,
+`__pick_next_task`, and `pick_next_task` are absent from the QEMU symbol table;
+`__schedule` exists but is `notrace` and kprobes-on-notrace is disabled.
+
+Guest-side kprobe observation now exists:
+
+```text
+capsched-models/validation/0023-slice0c-qemu-kprobe-observation-result.md
+futex cross: build/qemu/slice0c-boot-smoke/20260627T055620Z
+affinity:    build/qemu/slice0c-boot-smoke/20260627T060342Z
+```
+
+Key result: `enqueue_task()` argument capture distinguishes ordinary wake
+enqueue, migration-related enqueue, initial enqueue, and rq-selected wake
+enqueue in clean reruns. One `ENQUEUE_DELAYED | ENQUEUE_NOCLOCK` case was
+observed in the earlier successful affinity serial log
+`20260627T055746Z`, but not in the latest clean counts run, so delayed enqueue
+is workload-nondeterministic in this harness. `move_queued_task(new_cpu)` was
+observed under the affinity workload with a CPU0/CPU1 split. This is
+observation-only evidence.
 
 Next executable step:
 
 ```text
-run broader QEMU workloads: futex cross, affinity, pressure, all
-record the next result without claiming enforcement
+write a Slice 0C observation synthesis note mapping observed evidence to
+candidate CapSched hook placement and remaining internal-observation gaps
 do not proceed to enforcement from trace evidence alone
 ```
 

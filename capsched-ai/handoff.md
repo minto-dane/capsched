@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-06-26
+Updated: 2026-06-27
 
 Read this first when resuming the project.
 
@@ -231,6 +231,82 @@ Still unresolved: `ttwu_runnable`, remote wakelist functions, pick internals,
 scheduling branch distinction. Do not proceed to RunCap enforcement from this
 evidence alone.
 
+Broader QEMU workloads have also passed:
+
+```text
+capsched/capsched-models/validation/0022-slice0c-qemu-broader-workload-result.md
+```
+
+Successful runs:
+
+```text
+futex cross:
+  build/qemu/slice0c-boot-smoke/20260627T054514Z
+
+affinity:
+  build/qemu/slice0c-boot-smoke/20260627T054559Z
+
+pressure:
+  build/qemu/slice0c-boot-smoke/20260627T054618Z
+
+all:
+  build/qemu/slice0c-boot-smoke/20260627T054636Z
+```
+
+All reported `CONFIG_CAPSCHED=y`, `CONFIG_FUNCTION_TRACER=y`, `WORKLOAD_RET 0`,
+and `qemu_status=0`. Coverage improved for cross-CPU wake/switch, queued
+migration, scheduler pressure, and lifecycle events. Persistent missing targets
+are now likely ftrace/symbol eligibility or branch/argument visibility issues,
+not merely missing workload pressure.
+
+Recommended next step: analyze the QEMU `vmlinux` and ftrace eligibility for
+`ttwu_runnable`, `__ttwu_queue_wakelist`, `ttwu_queue`, `__pick_next_task`,
+`pick_next_task`, and `__schedule` before writing any observation patch.
+
+That symbol/ftrace analysis now exists:
+
+```text
+capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md
+```
+
+Key result: `ttwu_runnable`, `__ttwu_queue_wakelist`, `ttwu_queue`,
+`__pick_next_task`, and `pick_next_task` are absent from the QEMU
+`vmlinux/System.map`; `__schedule` exists but is declared `notrace`, while
+`CONFIG_KPROBE_EVENTS_ON_NOTRACE=n`. More workload pressure will not make these
+function names visible to ftrace.
+
+The guest-side kprobe observation pass now exists:
+
+```text
+capsched/capsched-models/validation/0023-slice0c-qemu-kprobe-observation-result.md
+```
+
+Successful kprobe runs:
+
+```text
+futex cross:
+  build/qemu/slice0c-boot-smoke/20260627T055620Z
+
+affinity:
+  build/qemu/slice0c-boot-smoke/20260627T060342Z
+
+additional affinity serial evidence:
+  build/qemu/slice0c-boot-smoke/20260627T055746Z
+```
+
+Key result: kprobe argument capture can distinguish `enqueue_task()` flags,
+including ordinary wake enqueue, migration-related enqueue, initial enqueue,
+and rq-selected wake enqueue in the clean rerun. An earlier successful affinity
+serial log also observed one `ENQUEUE_DELAYED | ENQUEUE_NOCLOCK` case, so treat
+delayed enqueue as observed but workload-nondeterministic. The affinity run also
+captured `move_queued_task(new_cpu)` with a 20/20 split across CPU0 and CPU1.
+This is still observation-only and does not justify enforcement yet.
+
+Current next step: write a Slice 0C observation synthesis note mapping
+tracepoint/function/kprobe evidence to candidate CapSched hook placement and
+remaining internal-observation gaps. Do not add a Linux behavior patch before
+that synthesis.
+
 ## Recovery Path
 
 Read in this order:
@@ -294,7 +370,10 @@ Implementation must keep capability types separated:
 - Do not treat BPF, sched_ext, cpuset, or sched domains as the production
   security root. They are compatibility and policy substrates.
 
-## Next Likely Action
+## Modeling Anchors And Historical Gates
+
+The current next action is the Slice 0C observation synthesis described above.
+The records below are still important anchors for implementation safety.
 
 The first two formal semantic models have been selected and checked. Runnable
 lease semantics are modeled in:
@@ -407,6 +486,7 @@ capsched/capsched-models/formal/0011-queue-lease-model/notes.md
 capsched/capsched-models/validation/0013-queue-lease-tlc.md
 capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md
 capsched/capsched-models/plans/0005-assurance-driven-achievement-plan.md
+capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md
 capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md
 capsched/capsched-models/validation/0014-l0-slice0b-build-run.md
 capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md
@@ -420,6 +500,8 @@ capsched/capsched-models/validation/0018-slice0c-synthetic-workload-helper.md
 capsched/capsched-models/validation/0019-slice0c-trace-execution-runbook.md
 capsched/capsched-models/validation/0020-slice0c-qemu-boot-validation-plan.md
 capsched/capsched-models/validation/0021-slice0c-qemu-boot-smoke-result.md
+capsched/capsched-models/validation/0022-slice0c-qemu-broader-workload-result.md
+capsched/capsched-models/validation/0023-slice0c-qemu-kprobe-observation-result.md
 capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
 capsched/capsched-models/validation/run-slice0c-qemu-boot-smoke.sh
 capsched/capsched-models/validation/analyze-slice0c-trace.sh
