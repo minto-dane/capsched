@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-27",
+  "status": "draft_source_map_no_implementation",
+  "linux": {
+    "repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "branch": "capsched-linux-l0",
+    "commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462"
+  },
+  "driver": {
+    "name": "ice",
+    "path": "drivers/net/ethernet/intel/ice",
+    "reason_selected": "Representative modern datacenter NIC driver with multi-queue rings, MSI-X/q_vector mapping, XDP, AF_XDP, devlink, SR-IOV, subfunctions, representors, and driver-specific tracepoints."
+  },
+  "core_objects": [
+    {
+      "id": "ice.vsi",
+      "type": "struct ice_vsi",
+      "definition": "drivers/net/ethernet/intel/ice/ice.h:334",
+      "fields": [
+        "rx_rings",
+        "tx_rings",
+        "q_vectors",
+        "xdp_rings",
+        "num_q_vectors",
+        "num_rxq",
+        "num_txq",
+        "type"
+      ],
+      "authority_note": "Linux queue grouping object; useful for QueueBind but not a production authority root."
+    },
+    {
+      "id": "ice.q_vector",
+      "type": "struct ice_q_vector",
+      "definition": "drivers/net/ethernet/intel/ice/ice.h:468",
+      "fields": [
+        "napi",
+        "rx",
+        "tx",
+        "irq",
+        "reg_idx",
+        "v_idx"
+      ],
+      "authority_note": "Binds NAPI, IRQ, and ring containers; QueueLedger needs this but monitor-owned IRQ/queue authority remains separate."
+    },
+    {
+      "id": "ice.rx_ring",
+      "type": "struct ice_rx_ring",
+      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:277",
+      "fields": [
+        "page_pool",
+        "q_vector",
+        "tail",
+        "xdp_prog",
+        "xdp_ring",
+        "xsk_pool",
+        "next_to_use",
+        "next_to_clean",
+        "q_index"
+      ],
+      "authority_note": "RX queue, page-pool, XDP, and XSK memory ownership surface."
+    },
+    {
+      "id": "ice.tx_ring",
+      "type": "struct ice_tx_ring",
+      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:349",
+      "fields": [
+        "tail",
+        "q_vector",
+        "q_index",
+        "xsk_pool",
+        "next_to_use",
+        "next_to_clean"
+      ],
+      "authority_note": "TX and XDP queue surface: descriptor publication and doorbell authority must be gated by QueueLease."
+    },
+    {
+      "id": "ice.tx_buf",
+      "type": "struct ice_tx_buf",
+      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:96",
+      "fields": [
+        "next_to_watch_or_rs_idx",
+        "skb_or_xdp_frame_or_xdp_buff",
+        "bytecount",
+        "type",
+        "dma",
+        "len"
+      ],
+      "authority_note": "Per-submit completion/DMA metadata; useful for DescriptorLedger, not an authority root."
+    }
+  ],
+  "queue_binding": {
+    "q_vector_allocation": "drivers/net/ethernet/intel/ice/ice_base.c:103",
+    "irq_allocation": "drivers/net/ethernet/intel/ice/ice_base.c:143",
+    "napi_add": "drivers/net/ethernet/intel/ice/ice_base.c:158",
+    "ring_to_vector_map": "drivers/net/ethernet/intel/ice/ice_base.c:924",
+    "tx_ring_q_vector": "drivers/net/ethernet/intel/ice/ice_base.c:954",
+    "rx_ring_q_vector": "drivers/net/ethernet/intel/ice/ice_base.c:971",
+    "queuelease_rule": "Queue identity is VSI + ring + q_vector + IRQ/NAPI + epoch, not netdev alone."
+  },
+  "data_plane": {
+    "skb_tx": {
+      "netdev_ops": "drivers/net/ethernet/intel/ice/ice_main.c:9777",
+      "ndo_start_xmit": "drivers/net/ethernet/intel/ice/ice_main.c:9780",
+      "entry": "drivers/net/ethernet/intel/ice/ice_txrx.c:2273",
+      "ring_select": "drivers/net/ethernet/intel/ice/ice_txrx.c:2284",
+      "frame_ring": "drivers/net/ethernet/intel/ice/ice_txrx.c:2159",
+      "driver_trace": "drivers/net/ethernet/intel/ice/ice_txrx.c:2168",
+      "first_tx_buf": "drivers/net/ethernet/intel/ice/ice_txrx.c:2171",
+      "tx_map": "drivers/net/ethernet/intel/ice/ice_txrx.c:1398",
+      "dma_map_single": "drivers/net/ethernet/intel/ice/ice_txrx.c:1434",
+      "skb_frag_dma_map": "drivers/net/ethernet/intel/ice/ice_txrx.c:1495",
+      "descriptor_publish": [
+        "drivers/net/ethernet/intel/ice/ice_txrx.c:1451",
+        "drivers/net/ethernet/intel/ice/ice_txrx.c:1458",
+        "drivers/net/ethernet/intel/ice/ice_txrx.c:1504"
+      ],
+      "next_to_watch": "drivers/net/ethernet/intel/ice/ice_txrx.c:1508",
+      "next_to_use": "drivers/net/ethernet/intel/ice/ice_txrx.c:1514",
+      "bql": "drivers/net/ethernet/intel/ice/ice_txrx.c:1520",
+      "doorbell": "drivers/net/ethernet/intel/ice/ice_txrx.c:1567",
+      "queuelease_rule": "Check QueueLease before DMA map, descriptor publication, next_to_watch publication, and tail doorbell."
+    },
+    "xdp_tx": {
+      "ndo_xdp_xmit": "drivers/net/ethernet/intel/ice/ice_main.c:9811",
+      "submit": "drivers/net/ethernet/intel/ice/ice_txrx_lib.c:368",
+      "dma_map_single_frame": "drivers/net/ethernet/intel/ice/ice_txrx_lib.c:411",
+      "page_pool_dma_addr": "drivers/net/ethernet/intel/ice/ice_txrx_lib.c:416",
+      "dma_sync_for_device": "drivers/net/ethernet/intel/ice/ice_txrx_lib.c:417",
+      "descriptor_publish": "drivers/net/ethernet/intel/ice/ice_txrx_lib.c:427",
+      "tail": "drivers/net/ethernet/intel/ice/ice_txrx_lib.c:510",
+      "queuelease_rule": "XDP frame and XDP_TX page-pool reuse need typed submit classes distinct from SKB."
+    },
+    "af_xdp_zc": {
+      "ndo_xsk_wakeup": "drivers/net/ethernet/intel/ice/ice_main.c:9812",
+      "wakeup": "drivers/net/ethernet/intel/ice/ice_xsk.c:840",
+      "trigger_sw_interrupt": "drivers/net/ethernet/intel/ice/ice_xsk.c:865",
+      "xmit_zc": "drivers/net/ethernet/intel/ice/ice_xsk.c:791",
+      "descriptor_batch_fetch": "drivers/net/ethernet/intel/ice/ice_xsk.c:803",
+      "single_desc_publish": "drivers/net/ethernet/intel/ice/ice_xsk.c:719",
+      "batch_desc_publish": "drivers/net/ethernet/intel/ice/ice_xsk.c:734",
+      "tail": "drivers/net/ethernet/intel/ice/ice_xsk.c:822",
+      "queuelease_rule": "AF_XDP descriptors are user-provided queue entries and need separate queue/memory ownership semantics."
+    },
+    "tx_completion": {
+      "napi": "drivers/net/ethernet/intel/ice/ice_txrx.c:1267",
+      "clean_tx": "drivers/net/ethernet/intel/ice/ice_txrx.c:272",
+      "trace_clean": "drivers/net/ethernet/intel/ice/ice_txrx.c:302",
+      "done_check": "drivers/net/ethernet/intel/ice/ice_txrx.c:306",
+      "consume_skb": "drivers/net/ethernet/intel/ice/ice_txrx.c:316",
+      "dma_unmap_single": "drivers/net/ethernet/intel/ice/ice_txrx.c:319",
+      "dma_unmap_page": "drivers/net/ethernet/intel/ice/ice_txrx.c:336",
+      "queuelease_rule": "Completion settles descriptors and DMA; it must not mint caller authority."
+    },
+    "rx_completion": {
+      "clean_rx": "drivers/net/ethernet/intel/ice/ice_txrx.c:946",
+      "dd_check": "drivers/net/ethernet/intel/ice/ice_txrx.c:973",
+      "dma_rmb": "drivers/net/ethernet/intel/ice/ice_txrx.c:981",
+      "trace_rx": "drivers/net/ethernet/intel/ice/ice_txrx.c:995",
+      "trace_indicate": "drivers/net/ethernet/intel/ice/ice_txrx.c:1062",
+      "receive_skb": "drivers/net/ethernet/intel/ice/ice_txrx.c:1064",
+      "release_rx_desc": "drivers/net/ethernet/intel/ice/ice_txrx_lib.c:12",
+      "rx_tail": "drivers/net/ethernet/intel/ice/ice_txrx_lib.c:36",
+      "queuelease_rule": "RX is queue memory ownership plus delivery endpoint authority; page-pool and XSK memory models matter."
+    }
+  },
+  "tracepoints": {
+    "tx": [
+      "ice_clean_tx_irq",
+      "ice_clean_tx_irq_unmap",
+      "ice_clean_tx_irq_unmap_eop"
+    ],
+    "rx": [
+      "ice_clean_rx_irq",
+      "ice_clean_rx_irq_indicate"
+    ],
+    "xmit": [
+      "ice_xmit_frame_ring",
+      "ice_xmit_frame_ring_drop"
+    ],
+    "eswitch": [
+      "ice_eswitch_br_fdb_entry_create",
+      "ice_eswitch_br_fdb_entry_find_and_delete",
+      "ice_eswitch_br_vlan_create",
+      "ice_eswitch_br_vlan_cleanup",
+      "ice_eswitch_br_port_link",
+      "ice_eswitch_br_port_unlink"
+    ],
+    "authority_note": "Tracepoints expose ring/desc/buf/skb/eswitch objects but not monitor-owned QueueTag, Domain epoch, QueueLease budget, IOMMU ownership proof, or revoke outcome."
+  },
+  "control_plane": {
+    "netdev_ops": "drivers/net/ethernet/intel/ice/ice_main.c:9777",
+    "sf_netdev_ops": "drivers/net/ethernet/intel/ice/ice_sf_eth.c:11",
+    "repr_netdev_ops": [
+      "drivers/net/ethernet/intel/ice/ice_repr.c:267",
+      "drivers/net/ethernet/intel/ice/ice_repr.c:277"
+    ],
+    "representor_xmit": "drivers/net/ethernet/intel/ice/ice_eswitch.c:217",
+    "representor_dev_queue_xmit": "drivers/net/ethernet/intel/ice/ice_eswitch.c:227",
+    "devlink_tx_sched_layers_set": "drivers/net/ethernet/intel/ice/devlink/devlink.c:641",
+    "devlink_rate_ops": [
+      "drivers/net/ethernet/intel/ice/devlink/devlink.c:1023",
+      "drivers/net/ethernet/intel/ice/devlink/devlink.c:1038",
+      "drivers/net/ethernet/intel/ice/devlink/devlink.c:1053",
+      "drivers/net/ethernet/intel/ice/devlink/devlink.c:1068",
+      "drivers/net/ethernet/intel/ice/devlink/devlink.c:1083",
+      "drivers/net/ethernet/intel/ice/devlink/devlink.c:1098",
+      "drivers/net/ethernet/intel/ice/devlink/devlink.c:1113",
+      "drivers/net/ethernet/intel/ice/devlink/devlink.c:1128"
+    ],
+    "devlink_ops": "drivers/net/ethernet/intel/ice/devlink/devlink.c:1323",
+    "devlink_params": "drivers/net/ethernet/intel/ice/devlink/devlink.c:1661",
+    "authority_note": "Control-plane operations reshape queues, scheduling, VF/SF/representor routing, and MSI-X resources; they need QueueControlCap or DeviceService authority."
+  },
+  "service_work": [
+    {
+      "anchor": "drivers/net/ethernet/intel/ice/ice_main.c:1672",
+      "summary": "queue_work(ice_wq, &pf->serv_task)",
+      "classification": "ServiceOnly_or_ExplicitMerge"
+    },
+    {
+      "anchor": "drivers/net/ethernet/intel/ice/ice_main.c:2406",
+      "summary": "ice_schedule_reset",
+      "classification": "ServiceOnly"
+    },
+    {
+      "anchor": "drivers/net/ethernet/intel/ice/ice_eswitch_br.c:577",
+      "summary": "eswitch bridge workqueue event work",
+      "classification": "ServiceOnly_or_ExplicitMerge"
+    },
+    {
+      "anchor": "drivers/net/ethernet/intel/ice/ice_ptp.c:2881",
+      "summary": "PTP periodic kthread delayed work",
+      "classification": "ServiceOnly"
+    }
+  ],
+  "required_queuelease_classes": [
+    "QueueBind",
+    "SubmitLedgerSKB",
+    "SubmitLedgerXDPFrame",
+    "SubmitLedgerXDPTxPagePool",
+    "SubmitLedgerAFXDP",
+    "DescriptorLedger",
+    "CompletionSettlement",
+    "QueueControl",
+    "RepresentorForward",
+    "ServiceWork"
+  ],
+  "hard_rejects": [
+    "netdev_as_queue_authority",
+    "ice_tracepoint_as_authority",
+    "af_xdp_descriptor_as_plain_skb_submit",
+    "representor_forwarding_without_queuelease_derivation",
+    "devlink_rate_authority_inside_runcap",
+    "service_reset_ptp_dpll_work_charged_to_last_submitter",
+    "monitor_grade_device_isolation_from_linux_ring_state"
+  ],
+  "next_actions": [
+    "N-072 modern NIC QueueLease class model",
+    "N-073 ice static readiness checker for XDP/AF_XDP/devlink/representor events"
+  ]
+}

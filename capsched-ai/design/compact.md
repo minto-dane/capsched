@@ -337,6 +337,25 @@ analysis/0051 + validation/0045
   8 semantic gaps, including authority-root: all observed state is Linux-mutable
   and monitor_verified=false.
 
+analysis/0052
+  Intel ice modern NIC QueueLease source map:
+  ice adds the modern datacenter NIC cases missing from e1000e: VSI/ring/
+  q_vector/IRQ/NAPI binding, SKB TX, XDP frame and XDP_TX page-pool paths,
+  AF_XDP zero-copy descriptor batches, page-pool/XSK memory, driver tracepoints,
+  devlink rate/scheduler controls, SR-IOV/SF/representor forwarding, and
+  service/reset/PTP/DPLL/eswitch work.
+  Required class split:
+    QueueBind, SubmitLedgerSKB, SubmitLedgerXDPFrame,
+    SubmitLedgerXDPTxPagePool, SubmitLedgerAFXDP, DescriptorLedger,
+    CompletionSettlement, QueueControl, RepresentorForward, ServiceWork.
+  Rule:
+    modern NIC authority is not netdev identity or a workqueue callback.
+    Submit authority belongs before DMA map, descriptor publication, and
+    doorbell; completion is aggregate settlement; devlink/representor/SF/VF
+    paths are control-plane authority; service work must not be charged to the
+    last submitter. Driver tracepoints improve observability but remain
+    Linux-mutable and non-authoritative.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

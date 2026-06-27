@@ -317,12 +317,49 @@ analysis/0051 + validation/0045:
     gaps rather than fail-open policy.
     All observed state is Linux-mutable and monitor_verified=false, so this
     readiness output is not protection evidence.
+
+analysis/0052:
+  Intel ice modern NIC QueueLease source map completed
+  machine-readable map:
+    analysis/ice-modern-nic-queuelease-source-map-v1.json
+  why ice:
+    representative modern datacenter NIC complexity: multi-queue VSI/ring/
+    q_vector binding, MSI-X style vectors, NAPI, XDP, AF_XDP zero-copy,
+    page-pool/XSK memory, devlink controls, SR-IOV/SF/representors, tracepoints,
+    and service/reset/PTP/DPLL/eswitch work
+  data-plane boundaries:
+    SKB TX enters ice_start_xmit, selects vsi->tx_rings[skb->queue_mapping],
+    maps SKB/frags for DMA, publishes descriptors, advances next_to_use/
+    next_to_watch, and writes the TX tail doorbell
+    XDP and AF_XDP have distinct frame/page-pool/XSK descriptor paths and
+    cannot be collapsed into ordinary SKB SubmitLedger semantics
+  completion boundary:
+    ice_napi_poll cleans Tx/Rx rings and settles DMA/SKB/page-pool/XSK state;
+    completion is aggregate ring/q_vector settlement, not caller authority
+  control-plane boundary:
+    devlink rate/scheduler controls, MSI-X/local_fwd params, VF/SF/representor
+    lifecycle, and representor forwarding are QueueControl/DeviceService or
+    RepresentorForward authority, not RunCap
+  service-work boundary:
+    ice_service_task, reset, PTP, DPLL, GNSS, eswitch bridge, LAG, and DIM work
+    are service/control work. They must not receive a last-caller BudgetTicket
+    merely because queue_work() or kthread_work executes later.
+  required class split:
+    QueueBind, SubmitLedgerSKB, SubmitLedgerXDPFrame,
+    SubmitLedgerXDPTxPagePool, SubmitLedgerAFXDP, DescriptorLedger,
+    CompletionSettlement, QueueControl, RepresentorForward, and ServiceWork
+  hard rule:
+    driver tracepoints and Linux ring/q_vector/devlink objects improve
+    observability, but they are Linux-mutable and cannot be production
+    authority roots. No behavior-changing driver, queue, or workqueue
+    enforcement follows from this source map.
 ```
 
-Next work remains observation-only: apply the same mapping method to a modern
-multi-queue NIC path, then refine eventfd kernel signal provenance, epoll
-delivery/watched-endpoint correlation, io_uring fixed-file consumption, and
-execfd handoff before Linux behavior changes.
+Next work remains observation-only/modeling-first: build the modern NIC
+QueueLease class model from analysis/0052, then build an ice-specific static
+readiness checker. The older post-exec gaps also remain: eventfd kernel signal
+provenance, epoll delivery/watched-endpoint correlation, io_uring fixed-file
+consumption, and execfd handoff before behavior-changing endpoint hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

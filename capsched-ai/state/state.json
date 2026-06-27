@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "queue-descriptor-ledger-readiness-executed",
+    "current_phase": "ice-modern-nic-source-map-ready",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -101,7 +101,8 @@
       "capsched/capsched-models/analysis/0048-usbnet-workqueue-source-map.md",
       "capsched/capsched-models/analysis/0049-e1000e-queuelease-source-map.md",
       "capsched/capsched-models/analysis/0050-aggregate-queuelease-settlement-semantics.md",
-      "capsched/capsched-models/analysis/0051-linux-queue-descriptor-ledger-observation-plan.md"
+      "capsched/capsched-models/analysis/0051-linux-queue-descriptor-ledger-observation-plan.md",
+      "capsched/capsched-models/analysis/0052-ice-modern-nic-queuelease-source-map.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -202,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0045 records that internal async redesign is necessary but not sufficient: worker execution cannot become ambient caller authority, and production protection still needs typed carriers/ledgers plus monitor-owned roots. Analysis/0049 maps e1000e and shows Ethernet authority belongs at QueueLease submit, DMA/IOMMU ownership, descriptor publication, tail doorbell, IRQ/NAPI ownership, and completion settlement. Analysis/0050 plus formal/0027 and validation/0044 validate aggregate QueueLease settlement with expected unsafe counterexamples. Analysis/0051 defines an observation-only queue/descriptor ledger tag plan. Validation/0045 now executed the static readiness checker: 14 tracepoint rows found with 0 missing, 25 e1000e source anchors found with 0 missing, 12 event readiness rows, and 8 semantic gaps. High-severity gaps remain for SubmitLedger id, DMA-to-submit correlation, descriptor publish, tail doorbell, completion ledger, revoke semantics, and authority-root. All observed state is Linux-mutable and monitor_verified=false, so readiness output is not protection evidence. No behavior-changing queue or workqueue enforcement is approved. Next source-analysis target is a modern multi-queue NIC map under N-005.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0045 records that deep internal async redesign is accepted and likely necessary, but internal-only trust is rejected: queue_work() coalescing and worker/kthread callback execution mean caller authority cannot be reconstructed from a pending work_struct or worker identity after the caller context is gone. Analysis/0049 maps e1000e and shows Ethernet authority belongs at QueueLease submit, DMA/IOMMU ownership, descriptor publication, tail doorbell, IRQ/NAPI ownership, and completion settlement. Analysis/0050 plus formal/0027 and validation/0044 validate aggregate QueueLease settlement with expected unsafe counterexamples. Analysis/0051 defines an observation-only queue/descriptor ledger tag plan, and validation/0045 executed its static readiness checker with 14 tracepoint rows found, 25 e1000e anchors found, 12 event readiness rows, and 8 semantic gaps. Analysis/0052 maps Intel ice as a modern multi-queue NIC path: VSI/ring/q_vector/IRQ/NAPI binding, SKB TX, XDP, AF_XDP zero-copy, page-pool/XSK memory, devlink queue-control, SR-IOV/SF/representor forwarding, and service/reset/PTP/DPLL/eswitch work. The resulting rule is that modern NIC authority needs QueueBind, typed SubmitLedgers, DescriptorLedger, CompletionSettlement, QueueControl, RepresentorForward, and ServiceWork separation. All observed state remains Linux-mutable and monitor_verified=false, so readiness and source maps are modeling evidence, not protection evidence. No behavior-changing queue, workqueue, or driver enforcement is approved.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -261,7 +262,9 @@
       "capsched/capsched-models/analysis/0047-drivers-net-workqueue-origin-map.md",
       "capsched/capsched-models/analysis/0048-usbnet-workqueue-source-map.md",
       "capsched/capsched-models/analysis/0049-e1000e-queuelease-source-map.md",
-      "capsched/capsched-models/analysis/0050-aggregate-queuelease-settlement-semantics.md"
+      "capsched/capsched-models/analysis/0050-aggregate-queuelease-settlement-semantics.md",
+      "capsched/capsched-models/analysis/0051-linux-queue-descriptor-ledger-observation-plan.md",
+      "capsched/capsched-models/analysis/0052-ice-modern-nic-queuelease-source-map.md"
     ],
     "post_exec_resource_trace_coverage_map": "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md",
     "post_exec_resource_trace_validation_plan": "capsched/capsched-models/validation/0039-post-exec-resource-trace-plan.md",
@@ -289,7 +292,9 @@
     "queue_descriptor_ledger_tags_schema": "capsched/capsched-models/analysis/queue-descriptor-ledger-tags-v1.json",
     "queue_descriptor_ledger_validation_plan": "capsched/capsched-models/validation/0045-queue-descriptor-ledger-observation-plan.md",
     "queue_descriptor_ledger_readiness_runner": "capsched/capsched-models/validation/run-queue-descriptor-ledger-readiness.sh",
-    "queue_descriptor_ledger_readiness_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z"
+    "queue_descriptor_ledger_readiness_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z",
+    "ice_modern_nic_queuelease_source_map": "capsched/capsched-models/analysis/0052-ice-modern-nic-queuelease-source-map.md",
+    "ice_modern_nic_queuelease_source_map_json": "capsched/capsched-models/analysis/ice-modern-nic-queuelease-source-map-v1.json"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1388,7 +1393,9 @@
     {
       "id": "N-069",
       "text": "Apply the same source-map method to a modern multi-queue NIC path with MSI-X, XDP, page-pool, devlink, and SR-IOV or representor features after aggregate QueueLease settlement has a model.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0052 and analysis/ice-modern-nic-queuelease-source-map-v1.json for Intel ice. The map covers VSI/ring/q_vector/IRQ/NAPI binding, SKB TX DMA/descriptor/doorbell path, XDP frame and XDP_TX page-pool paths, AF_XDP zero-copy descriptor batches, TX/RX completion settlement, driver tracepoints, devlink rate/scheduling controls, SR-IOV/SF/representor surfaces, and service/reset/PTP/DPLL/eswitch work. It separates QueueBind, SubmitLedger, DescriptorLedger, CompletionSettlement, QueueControl, RepresentorForward, and ServiceWork authority classes and rejects tracepoints, netdev identity, or Linux-owned ring state as production authority roots.",
       "blocked_by": [
         "N-068"
       ]
@@ -1409,6 +1416,22 @@
       "completed_on": "2026-06-27",
       "blocked_by": [
         "N-070"
+      ]
+    },
+    {
+      "id": "N-072",
+      "text": "Build a modern NIC QueueLease class model for SKB submit, XDP frame/XDP_TX, AF_XDP zero-copy, queue bind, devlink queue-control, representor forwarding, and aggregate completion settlement.",
+      "status": "pending",
+      "blocked_by": [
+        "N-069"
+      ]
+    },
+    {
+      "id": "N-073",
+      "text": "Build an observation-only static readiness checker for the ice source map, extending queue/descriptor readiness to XDP, AF_XDP, devlink, representor, and service-work events.",
+      "status": "pending",
+      "blocked_by": [
+        "N-069"
       ]
     }
   ],

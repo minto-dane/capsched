@@ -318,6 +318,38 @@ typed carriers/ledgers provide proof-visible caller and resource provenance
 the HyperTag Monitor provides the non-forgeable root for production claims
 ```
 
+## Clarification: Reimplementing The Inside
+
+Reimplementing the internal async machinery is acceptable if "the inside" is
+defined as:
+
+```text
+typed work classes
+explicit merge objects
+per-invocation carriers where needed
+service-domain worker activation
+settlement ledgers
+generation and epoch checks
+auditable cancel/flush/revoke outcomes
+```
+
+It is not acceptable if "the inside" means:
+
+```text
+ordinary queue_work() sites continue to submit ambiguous work_struct objects
+the async core later infers the caller from worker state or the last queuer
+Domain-derived effects run by ambient kworker/service authority
+caller BudgetTicket or FrozenEndpointUse can be overwritten while pending
+proof-visible authority is hidden behind subsystem-local mutable state
+```
+
+The reason is causal, not stylistic. Once caller context is gone and an already
+pending `work_struct` has coalesced later queue attempts, the async core cannot
+reconstruct a unique caller authority unless a typed carrier or explicit merge
+ledger was created at the boundary. A stronger implementation may make this
+carrier internal to a new CapSched async API, but the proof object must still
+exist before authority can be lost.
+
 This applies directly to device queues. A redesigned network driver or
 workqueue implementation may make the path cleaner, but a shared callback that
 processes a descriptor ring still cannot become "the last caller's work." The
