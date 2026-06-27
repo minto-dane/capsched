@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "assurance-slice0b-selected",
+    "current_phase": "slice0b-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -39,9 +39,10 @@
       "upstream_commit_date": "2026-06-25 14:09:26 -0700",
       "upstream_commit_subject": "Merge tag 'bpf-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf",
       "work_branch": "capsched-linux-l0",
-      "work_commit": "0b685979f27b3d42ee620ced5f707ee391a2a27f",
-      "work_commit_subject": "sched/capsched: Add inert scaffolding",
+      "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+      "work_commit_subject": "sched/capsched: Add type-only authority scaffolding",
       "slice0a_status": "applied and build-validated: upstream baseline, CONFIG_CAPSCHED=n, and CONFIG_CAPSCHED=y vmlinux builds completed successfully under systemd user runner",
+      "slice0b_status": "applied and build-validated: type-only authority scaffolding in include/linux/capsched.h and kernel/sched/capsched.c; CONFIG_CAPSCHED=n/y vmlinux builds completed successfully",
       "private_remote": null,
       "fetched_on": "2026-06-25"
     }
@@ -118,15 +119,17 @@
     "l0_slice0_scaffolding_plan": "capsched/capsched-models/implementation/0002-l0-slice0-scaffolding-plan.md",
     "endpoint_async_attachment_plan": "capsched/capsched-models/implementation/0003-endpoint-async-attachment-plan.md",
     "slice0b_readiness_gate": "capsched/capsched-models/implementation/0004-slice0b-readiness-gate.md",
+    "l0_slice0b_type_scaffolding": "capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md",
     "l0_slice0_build_validation_plan": "capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md",
     "l0_slice0_validation_attempt": "capsched/capsched-models/validation/0003-l0-slice0-validation-attempt.md",
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
+    "l0_slice0b_build_run": "capsched/capsched-models/validation/0014-l0-slice0b-build-run.md",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
     "protection_claim_evidence_map": "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
-    "current_focus": "The next gate has been chosen: build the assurance case in parallel with Linux Slice 0B inert type-only scaffolding. QueueLease, DirectMapTLB, PageCacheOverlay, MemoryOwnership, cluster authority, DomainMonitor, BrokerBudget, EndpointAsync, and RunnableLease provide vocabulary-level evidence, not behavior authority. Slice 0B should add only opaque authority names/comments in include/linux/capsched.h and kernel/sched/capsched.c, then repeat CONFIG_CAPSCHED=n/y build validation."
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. It adds only type-only authority names/comments in include/linux/capsched.h and kernel/sched/capsched.c, with no behavior change, no task layout change, no user ABI, and no security claim. CONFIG_CAPSCHED=n/y vmlinux builds passed. Next: create the assurance-case subclaim tree, then choose Slice 0C trace-only observation or a narrower wakeup/enqueue coverage analysis."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -680,7 +683,9 @@
     {
       "id": "N-026",
       "text": "Apply Slice 0B inert type-only scaffolding only in include/linux/capsched.h and kernel/sched/capsched.c, then repeat CONFIG_CAPSCHED=n/y build validation.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Linux commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462 adds type-only authority scaffolding only in include/linux/capsched.h and kernel/sched/capsched.c. Validation 0014 passed: CONFIG_CAPSCHED=n/y vmlinux builds completed; disabled config produced no kernel/sched/capsched.o and enabled config produced kernel/sched/capsched.o.",
       "blocked_by": [
         "N-016",
         "N-025"

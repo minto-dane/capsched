@@ -19,6 +19,7 @@ Updated: 2026-06-26
 | 0011 | Passed after counterexample-driven fix | Direct Map and TLB Revocation TLC Check |
 | 0012 | Passed after counterexample-driven fix | Page Cache Overlay Conflict TLC Check |
 | 0013 | Passed with two finite TLC runs | Queue Lease and IOMMU Boundary TLC Check |
+| 0014 | Passed | L0 Slice 0B Build Run |
 
 ## Principles
 

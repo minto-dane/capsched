@@ -11,7 +11,9 @@ The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched
 
 Upstream Linux has been fetched into sibling repository `linux/`. Slice 0A has
 been committed in that Linux repository as inert `CONFIG_CAPSCHED` scaffolding.
-No behavior-changing scheduler patch points are accepted yet.
+Slice 0B has also been committed as type-only authority scaffolding in
+`include/linux/capsched.h` and `kernel/sched/capsched.c`. No behavior-changing
+scheduler patch points are accepted yet.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
@@ -81,6 +83,20 @@ Linux evidence, monitor evidence, counterexamples, forbidden claims, and open
 gaps. `plans/0005-assurance-driven-achievement-plan.md` chooses the next gate:
 proceed with Slice 0B inert type-only scaffolding while building the assurance
 case in parallel.
+Slice 0B is now applied and build-validated:
+
+```text
+linux commit:
+  7cf0b1e415bcead8a2079c8be94a9d41aad7d462
+  sched/capsched: Add type-only authority scaffolding
+
+validation:
+  capsched/capsched-models/validation/0014-l0-slice0b-build-run.md
+```
+
+It adds only opaque authority names and comments. It does not add task layout,
+scheduler hooks, endpoint hooks, monitor activation, user ABI, or any security
+claim.
 
 ## Recovery Path
 
@@ -232,8 +248,9 @@ endpoint model, broker budget model, and domain monitor activation model are
 checked, the Linux attachment map exists, and decomposed cluster authority,
 MemoryOwnership, DirectMapTLB, PageCacheOverlay, and QueueLease models are
 checked. The next gate is chosen: Slice 0B type-only endpoint/broker/domain
-authority scaffolding, plus an assurance-case subclaim tree. Device-specific
-QueueLease endpoint models remain future L4 gates.
+authority scaffolding is done; the next project-control gate is the
+assurance-case subclaim tree. Device-specific QueueLease endpoint models remain
+future L4 gates.
 
 Endpoint attachment records:
 
@@ -256,6 +273,8 @@ capsched/capsched-models/formal/0011-queue-lease-model/notes.md
 capsched/capsched-models/validation/0013-queue-lease-tlc.md
 capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md
 capsched/capsched-models/plans/0005-assurance-driven-achievement-plan.md
+capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md
+capsched/capsched-models/validation/0014-l0-slice0b-build-run.md
 ```
 
 Stopped full integration run identity:

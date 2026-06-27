@@ -335,6 +335,24 @@ next gate:
   assurance-case subclaim tree in parallel
 ```
 
+Slice 0B is now applied in Linux and build-validated:
+
+```text
+linux commit:
+  7cf0b1e415bcead8a2079c8be94a9d41aad7d462
+  sched/capsched: Add type-only authority scaffolding
+
+changed files:
+  include/linux/capsched.h
+  kernel/sched/capsched.c
+
+validation:
+  capsched-models/validation/0014-l0-slice0b-build-run.md
+```
+
+It is still inert: no scheduler hooks, no endpoint hooks, no monitor
+activation, no task layout changes, no user ABI, and no security claim.
+
 The Endpoint Async model has been mapped back to Linux source in:
 
 ```text
@@ -385,16 +403,16 @@ future L2:
 ```
 
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
-`CONFIG_CAPSCHED=n/y` build validation passed under a systemd user service.
+`CONFIG_CAPSCHED=n/y` build validation passed for Slice 0A and Slice 0B.
 
 Current validation runner:
 
 ```text
 script: capsched-models/validation/run-l0-slice0-build-validation.sh
-log:
-  /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260626T011458Z.log
-result:
-  passed
+latest log:
+  /media/nia/scsiusb/dev/linux-cap/build/logs/l0-slice0-build-20260627T005252Z.log
+latest result:
+  passed for Slice 0B
 ```
 
 Candidate implementation plan:

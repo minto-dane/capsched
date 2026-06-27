@@ -1,6 +1,6 @@
 # Implementation 0004: Slice 0B Readiness Gate
 
-Status: Draft gate, not an accepted Linux patch
+Status: Satisfied by applied Slice 0B
 
 Date: 2026-06-26
 
@@ -14,15 +14,14 @@ commit: 0b685979f27b3d42ee620ced5f707ee391a2a27f
 
 ## Purpose
 
-This note collects the implementation pressure from the checked formal models
-and the decomposed cluster authority validation before choosing the next Linux
-patch.
+This note collected the implementation pressure from the checked formal models
+and the decomposed cluster authority validation before choosing Slice 0B.
 
-Slice 0A is already applied and build-validated as inert scaffolding. The next
-temptation is to add many CapSched types at once. That is dangerous unless the
-types preserve the semantic separations proven or pressured by the models.
+Slice 0A was already applied and build-validated as inert scaffolding. The next
+temptation was to add many CapSched types at once. That was dangerous unless
+the types preserved the semantic separations proven or pressured by the models.
 
-The next Linux patch, if accepted, should still be boring:
+The accepted Slice 0B Linux patch is intentionally boring:
 
 ```text
 Slice 0B:
@@ -120,7 +119,7 @@ differently, and eventually protected by different roots.
 
 ## Candidate Type Groups
 
-Slice 0B may define opaque or small documentation-oriented types for the
+Slice 0B defined opaque or small documentation-oriented types for the
 following groups.
 
 ### Domain Identity
@@ -330,7 +329,7 @@ drivers/
 
 ## Acceptance Conditions Before Applying Slice 0B
 
-Before touching Linux for Slice 0B, confirm:
+Before touching Linux for Slice 0B, the following had to be confirmed:
 
 1. `validation/0008` records the stopped full `ClusterLease` stress run as not
    passed, and `validation/0009` records the decomposed cluster authority TLC
@@ -383,10 +382,14 @@ No Linux-only monitor/security claim.
 
 ## Recommendation
 
-Slice 0B can be considered ready for user review only as inert type scaffolding.
-It is not yet an accepted patch.
+Slice 0B was accepted only as inert type scaffolding and is now applied as:
 
-The accepted shape must be:
+```text
+7cf0b1e415bcead8a2079c8be94a9d41aad7d462
+sched/capsched: Add type-only authority scaffolding
+```
+
+The accepted shape is:
 
 ```text
 opaque type names
@@ -397,9 +400,8 @@ no activation helpers
 no hot struct fields
 ```
 
-Once accepted, Slice 0B should be a small Linux commit that adds only typed
-names and comments. The first meaningful behavior should still wait for a later
-trace-only or diagnostic slice.
+The first meaningful behavior should still wait for a later trace-only or
+diagnostic slice.
 
 Do not use Slice 0B to begin MM, page-cache, IOMMU, queue, or driver work.
 Those tracks now have generic semantic models, but still need separate

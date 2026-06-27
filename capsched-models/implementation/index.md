@@ -21,10 +21,15 @@ Candidate implementation plans:
     Endpoint Async Provenance model and Linux io_uring/workqueue/socket source
     reading.
 - `0004-slice0b-readiness-gate.md`
-  - Status: draft gate, not an accepted Linux patch.
+  - Status: gate applied by Slice 0B.
   - Purpose: integrate the checked RunnableLease, EndpointAsync, BrokerBudget,
     DomainMonitor, and decomposed cluster authority models into the
     acceptance criteria for a possible type-only Slice 0B patch.
+- `0005-l0-slice0b-type-scaffolding.md`
+  - Status: applied to Linux as commit
+    `7cf0b1e415bcead8a2079c8be94a9d41aad7d462`.
+  - Purpose: add type-only authority names in `include/linux/capsched.h` and
+    inert documentation in `kernel/sched/capsched.c` with no behavior change.
 
 Validated formal inputs:
 
@@ -77,9 +82,8 @@ Known future branch names:
 - `capsched-linux-l0`: Linux-only prototype branch.
 - `capsched-linux-h`: monitor-backed research branch.
 
-The first selected slice is Slice 0A: inert build scaffolding. Linux source has
-been patched, committed, and build-validated with `CONFIG_CAPSCHED=n` and
-`CONFIG_CAPSCHED=y`.
+Slice 0A and Slice 0B are applied and build-validated. Slice 0B remains
+type-only and does not accept any behavior-changing patch point.
 
 Likely investigation targets, not decisions:
 
@@ -98,11 +102,8 @@ Likely investigation targets, not decisions:
 Current patch recommendation, not yet executed:
 
 ```text
-Slice 0B:
-  type-only authority scaffolding in include/linux/capsched.h and
-  kernel/sched/capsched.c
-  no Linux hot struct attachment
-  no behavior change
-  review readiness gate with decomposed cluster authority validation before
-  applying any Linux patch
+Next gate:
+  assurance-case subclaim tree
+  then either Slice 0C trace-only observation or a narrower wakeup/enqueue
+  coverage analysis
 ```
