@@ -1,0 +1,338 @@
+{
+  "schema_version": 2,
+  "updated": "2026-06-27",
+  "status": "schema_contract_gap_analysis_and_hard_reject",
+  "purpose": "Machine-readable contract for CapSched behavior tags derived from invariant-driven scheduler authority modeling.",
+  "methodology_root": [
+    "capsched-ai/decisions/ADR-0006-invariant-driven-design-and-tag-indexes.md",
+    "capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md",
+    "capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md",
+    "capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md"
+  ],
+  "solver_boundary": {
+    "allowed": [
+      "gap_analysis",
+      "hard_reject",
+      "evidence_indexing",
+      "proof_obligation_generation",
+      "pareto_ranking_after_hard_filters"
+    ],
+    "forbidden": [
+      "declare_security",
+      "average_safety_scores",
+      "promote_observation_to_enforcement",
+      "promote_l0_to_caph_claim",
+      "treat_unknown_safety_as_neutral",
+      "select_hook_with_unmodeled_failure",
+      "select_hook_with_distributed_hotpath_authority"
+    ]
+  },
+  "record_kinds": [
+    "invariant",
+    "behavior_path",
+    "hook_role",
+    "proof_obligation",
+    "hook_candidate",
+    "validation_result",
+    "performance_measurement",
+    "assurance_link"
+  ],
+  "required_fields": [
+    "id",
+    "kind",
+    "status",
+    "description",
+    "claim_boundary",
+    "authority_transition",
+    "invariants",
+    "trust_and_mutability",
+    "failure_and_revocation",
+    "linux_scheduler_context",
+    "evidence",
+    "performance_and_cost",
+    "cluster_and_distribution",
+    "proof_obligations",
+    "solver_use"
+  ],
+  "enums": {
+    "status": [
+      "draft",
+      "source_confirmed",
+      "runtime_observed",
+      "model_required",
+      "model_passed",
+      "blocked_by_open_obligation",
+      "invalid_for_enforcement",
+      "rejected"
+    ],
+    "claim_scope": [
+      "l0_observation",
+      "l0_linux_enforcement",
+      "caph_monitor_enforced",
+      "caph_hardware_enforced"
+    ],
+    "enforcement_strength": [
+      "observation_only",
+      "debug_assert",
+      "default_permissive",
+      "fail_closed_linux",
+      "fail_closed_monitor",
+      "hardware_enforced"
+    ],
+    "proof_status": [
+      "unmodeled",
+      "model_required",
+      "model_passed",
+      "counterexample_known",
+      "linux_observed",
+      "protection_evidenced"
+    ],
+    "authority_state": [
+      "Blocked",
+      "CurrentContinuation",
+      "RemotePendingWake",
+      "FrozenRunnable",
+      "Queued",
+      "DelayedQueued",
+      "MigratingQueued",
+      "Selected",
+      "Running",
+      "Quarantined",
+      "Spawned",
+      "Dead",
+      "Unmapped"
+    ],
+    "authority_event": [
+      "none",
+      "creates_authority",
+      "freezes_authority",
+      "preserves_authority",
+      "refreshes_authority",
+      "selects_authority",
+      "activates_authority",
+      "consumes_budget",
+      "invalidates_authority",
+      "observes_only"
+    ],
+    "authority_lifetime": [
+      "none",
+      "current_execution_only",
+      "until_enqueue",
+      "while_remote_pending",
+      "while_queued",
+      "while_selected",
+      "while_running",
+      "until_epoch_revoke",
+      "until_budget_exhausted",
+      "until_lease_expiry"
+    ],
+    "trust_root": [
+      "not_authority",
+      "linux_mutable_shadow",
+      "monitor_sealed_token",
+      "monitor_epoch",
+      "hardware_memory_view",
+      "iommu_irq_root",
+      "service_endpoint",
+      "cluster_compiled_local_authority"
+    ],
+    "attacker_mutability": [
+      "not_applicable",
+      "writable_by_domain_kernel_compromise",
+      "linux_global_mutable",
+      "service_domain_mutable",
+      "monitor_only",
+      "hardware_only"
+    ],
+    "authority_locality": [
+      "not_applicable",
+      "monitor_sealed_local",
+      "linux_shadow_only",
+      "cluster_compiled_local",
+      "cluster_shadow_only",
+      "service_brokered",
+      "remote_untrusted_hint"
+    ],
+    "failure_action": [
+      "not_applicable_observation_only",
+      "not_modeled_invalid",
+      "reject_before_mutation",
+      "dequeue_quarantine",
+      "select_idle",
+      "force_resched",
+      "monitor_fail_closed",
+      "panic_or_isolate_cpu"
+    ],
+    "failability_after_mutation": [
+      "no_mutation_yet",
+      "state_written",
+      "class_state_mutated",
+      "rq_curr_mutated",
+      "context_switch_committed",
+      "rollback_not_available",
+      "unknown_forbidden_for_enforcement"
+    ],
+    "revocation_scope": [
+      "none",
+      "active",
+      "selected",
+      "queued",
+      "delayed",
+      "remote_pending",
+      "async",
+      "cached",
+      "service_ticket",
+      "device_queue",
+      "tlb",
+      "iommu",
+      "memory_view",
+      "audit_epoch"
+    ],
+    "revocation_stop_point": [
+      "not_applicable",
+      "before_enqueue",
+      "before_pick",
+      "before_switch",
+      "before_monitor_activation",
+      "before_endpoint_submit",
+      "before_device_dma",
+      "unknown_forbidden_for_enforcement"
+    ],
+    "lock_context": [
+      "none",
+      "rq_lock",
+      "rq_lock_irq",
+      "p_pi_lock",
+      "double_rq_lock",
+      "preempt_disabled",
+      "raw_irq_disabled",
+      "rq_pinned",
+      "lock_dropped_reacquired",
+      "may_sleep",
+      "may_allocate",
+      "scheduler_class_callback_lock_contract"
+    ],
+    "ordering_context": [
+      "none",
+      "state_checked_before_on_rq",
+      "on_cpu_acquire_required",
+      "finish_task_release_pair",
+      "rq_curr_rcu_publish",
+      "membarrier_sensitive",
+      "control_dependency_required",
+      "smp_mb_after_spinlock_required",
+      "program_order_current_self_wake"
+    ],
+    "class_semantics": [
+      "generic",
+      "fair",
+      "rt_throttling",
+      "rt_pushable",
+      "deadline_cbs",
+      "deadline_replenish",
+      "deadline_server",
+      "idle",
+      "stop_class",
+      "sched_ext_dsq",
+      "sched_ext_direct_dispatch",
+      "sched_ext_bypass",
+      "sched_ext_fallback",
+      "core_sched_cached_pick",
+      "core_sched_force_idle",
+      "proxy_exec"
+    ],
+    "config_scope": [
+      "generic",
+      "SMP",
+      "UP",
+      "PREEMPT_DYNAMIC",
+      "PREEMPT_RT",
+      "SCHED_CORE",
+      "SCHED_CLASS_EXT",
+      "SCHED_PROXY_EXEC",
+      "CPUSETS",
+      "HOTPLUG_CPU",
+      "FAIR_GROUP_SCHED",
+      "CFS_BANDWIDTH",
+      "RT_GROUP_SCHED",
+      "UCLAMP",
+      "NO_HZ"
+    ],
+    "evidence_confidence": [
+      "source_confirmed",
+      "runtime_observed",
+      "runtime_not_observed",
+      "optimized_away",
+      "config_not_enabled",
+      "inferred",
+      "unknown"
+    ],
+    "solver_use": [
+      "gap_analysis_only",
+      "hard_reject_only",
+      "gap_analysis_and_hard_reject_only",
+      "pareto_after_hard_filters",
+      "not_solver_eligible"
+    ]
+  },
+  "hard_reject_rules": [
+    {
+      "id": "HR-001",
+      "text": "Observation-only evidence cannot satisfy enforcement or production security obligations."
+    },
+    {
+      "id": "HR-002",
+      "text": "Linux mutable shadow state cannot be a CapSched-H production authority root."
+    },
+    {
+      "id": "HR-003",
+      "text": "Unknown failure action makes an enforcement hook candidate invalid."
+    },
+    {
+      "id": "HR-004",
+      "text": "Fail-capable enqueue after irreversible scheduler accounting is invalid without rollback model."
+    },
+    {
+      "id": "HR-005",
+      "text": "TASK_WAKING then reject is invalid without a lost-wakeup and ordering model."
+    },
+    {
+      "id": "HR-006",
+      "text": "Pick retry after scheduler class mutation is invalid without class-state model."
+    },
+    {
+      "id": "HR-007",
+      "text": "Switch activation failure is invalid without fail-closed monitor or CPU isolation semantics."
+    },
+    {
+      "id": "HR-008",
+      "text": "Scheduler hot paths must not acquire distributed authority, perform remote RPC, or run cluster consensus."
+    },
+    {
+      "id": "HR-009",
+      "text": "Unknown safety, trust-root, revocation, ordering, or class semantics cannot be treated as a favorable value."
+    },
+    {
+      "id": "HR-010",
+      "text": "Security invariants must not be averaged into a numeric score."
+    }
+  ],
+  "performance_vector_contract": {
+    "event_frequency": {
+      "direction": "informational",
+      "unknown_policy": "not_rankable_until_measured"
+    },
+    "local_cost_vector": {
+      "direction": "minimize",
+      "unknown_policy": "not_rankable_until_bounded"
+    },
+    "system_cost_vector": {
+      "direction": "minimize",
+      "unknown_policy": "not_rankable_until_bounded"
+    },
+    "benefit_vector": {
+      "direction": "maximize",
+      "unknown_policy": "not_positive_until_measured_or_modeled"
+    }
+  }
+}

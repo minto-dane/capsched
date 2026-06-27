@@ -1,0 +1,845 @@
+{
+  "schema_version": 2,
+  "updated": "2026-06-27",
+  "status": "v2_gap_analysis_ledger_not_hook_selection",
+  "purpose": "Slice 0C scheduler behavior paths retagged under schema v2 for gap analysis and hard-reject checking. This ledger is not sufficient for hook selection or enforcement claims.",
+  "linux_source": {
+    "repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "branch": "capsched-linux-l0",
+    "commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462"
+  },
+  "methodology_root": [
+    "capsched-ai/decisions/ADR-0006-invariant-driven-design-and-tag-indexes.md",
+    "capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md",
+    "capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md",
+    "capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md",
+    "capsched-models/analysis/behavior-tags/schema-v2.json"
+  ],
+  "solver_use": "gap_analysis_and_hard_reject_only",
+  "hook_selection_eligible": false,
+  "security_claim": "none",
+  "behavior_paths": [
+    {
+      "id": "path.current_self_wake",
+      "kind": "behavior_path",
+      "status": "source_confirmed",
+      "description": "try_to_wake_up p == current clears blocked state and performs wakeup without normal runqueue enqueue.",
+      "source_anchors": [
+        "kernel/sched/core.c:4251",
+        "kernel/sched/core.c:4258",
+        "kernel/sched/core.c:4282"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "linux_observed"
+      },
+      "authority_transition": {
+        "from": ["Running", "CurrentContinuation"],
+        "to": ["CurrentContinuation"],
+        "authority_event": ["preserves_authority", "observes_only"],
+        "authority_lifetime": "current_execution_only",
+        "role": "current_continuation"
+      },
+      "invariants": [
+        "NoSelfWakeMintRunCap"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "not_authority",
+        "attacker_mutability": "not_applicable",
+        "authority_locality": "not_applicable"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_applicable_observation_only",
+        "failability_after_mutation": "state_written",
+        "revocation_scope": ["active"],
+        "revocation_stop_point": "not_applicable"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["program_order_current_self_wake"],
+        "lock_context": ["preempt_disabled"],
+        "class_semantics": ["generic"],
+        "config_scope": ["generic"],
+        "bypass_surface": []
+      },
+      "evidence": {
+        "confidence": ["source_confirmed", "runtime_observed"],
+        "runtime_evidence": ["validation/0023 qemu kprobe observation includes try_to_wake_up attachment"],
+        "gaps": []
+      },
+      "performance_and_cost": {
+        "event_frequency": {"wake_hot_path_event_rate": "unknown"},
+        "local_cost_vector": {"per_call_cycles_estimate": "unknown"},
+        "system_cost_vector": {},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "not_applicable",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Model current continuation separately from runqueue admission."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.already_runnable_wake",
+      "kind": "behavior_path",
+      "status": "source_confirmed",
+      "description": "ttwu_runnable handles an already queued task and may perform delayed requeue.",
+      "source_anchors": [
+        "kernel/sched/core.c:3865",
+        "kernel/sched/core.c:3870",
+        "kernel/sched/core.c:3875",
+        "kernel/sched/core.c:3887"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "model_required"
+      },
+      "authority_transition": {
+        "from": ["Queued", "DelayedQueued"],
+        "to": ["Queued", "DelayedQueued"],
+        "authority_event": ["preserves_authority", "observes_only"],
+        "authority_lifetime": "while_queued",
+        "role": "already_queued_wake"
+      },
+      "invariants": [
+        "NoAlreadyQueuedWakeMintRunCap",
+        "NoDelayedQueuedUseWithoutLiveFrozenUse"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "linux_mutable_shadow",
+        "attacker_mutability": "linux_global_mutable",
+        "authority_locality": "linux_shadow_only"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_modeled_invalid",
+        "failability_after_mutation": "class_state_mutated",
+        "revocation_scope": ["queued", "delayed"],
+        "revocation_stop_point": "before_pick"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["smp_mb_after_spinlock_required"],
+        "lock_context": ["rq_lock"],
+        "class_semantics": ["generic", "fair"],
+        "config_scope": ["generic", "SCHED_PROXY_EXEC"],
+        "bypass_surface": []
+      },
+      "evidence": {
+        "confidence": ["source_confirmed"],
+        "runtime_evidence": ["ENQUEUE_DELAYED observed once in validation/0023 earlier affinity serial log"],
+        "gaps": ["ttwu_runnable absent from QEMU symbol table in analysis/0020"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"wake_hot_path_event_rate": "unknown"},
+        "local_cost_vector": {"rq_lock_extension_ns": "unknown"},
+        "system_cost_vector": {},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "monitor_sealed_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Model delayed queued state and prove stale delayed authority cannot be picked.",
+        "Decide whether delayed requeue requires fresh placement or budget validation."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.normal_wake_admission",
+      "kind": "behavior_path",
+      "status": "source_confirmed",
+      "description": "Normal wake transitions from blocked state through TASK_WAKING, CPU selection, activation, and enqueue.",
+      "source_anchors": [
+        "kernel/sched/core.c:4251",
+        "kernel/sched/core.c:4357",
+        "kernel/sched/core.c:4393",
+        "kernel/sched/core.c:4067",
+        "kernel/sched/core.c:2219",
+        "kernel/sched/core.c:2172"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "model_required"
+      },
+      "authority_transition": {
+        "from": ["Blocked"],
+        "to": ["FrozenRunnable", "Queued"],
+        "authority_event": ["freezes_authority", "observes_only"],
+        "authority_lifetime": "until_enqueue",
+        "role": "admission_freeze"
+      },
+      "invariants": [
+        "NoRunCapNoFrozenRunnable",
+        "NoSchedContextNoFrozenRunnable",
+        "NoQueuedWithoutFrozenUse",
+        "NoLinuxMutableStateAsProductionRoot"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "linux_mutable_shadow",
+        "attacker_mutability": "linux_global_mutable",
+        "authority_locality": "linux_shadow_only"
+      },
+      "failure_and_revocation": {
+        "failure_action": "reject_before_mutation",
+        "failability_after_mutation": "state_written",
+        "revocation_scope": ["queued"],
+        "revocation_stop_point": "before_enqueue"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": [
+          "state_checked_before_on_rq",
+          "on_cpu_acquire_required",
+          "control_dependency_required",
+          "smp_mb_after_spinlock_required"
+        ],
+        "lock_context": ["p_pi_lock", "preempt_disabled"],
+        "class_semantics": ["generic"],
+        "config_scope": ["generic", "SMP", "PREEMPT_RT"],
+        "bypass_surface": []
+      },
+      "evidence": {
+        "confidence": ["source_confirmed", "runtime_observed"],
+        "runtime_evidence": ["validation/0021-0023 observed wake, activation, enqueue, fork/exec workload categories"],
+        "gaps": ["No failure model for rejecting after TASK_WAKING"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"wake_hot_path_event_rate": "unknown"},
+        "local_cost_vector": {"p_pi_lock_extension_ns": "unknown"},
+        "system_cost_vector": {},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "monitor_sealed_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Model failure before TASK_WAKING and prove rejection after TASK_WAKING is invalid without rollback.",
+        "Prove FrozenRunUse binding covers task generation, process generation, domain epoch, sched context epoch, CPU, and budget."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.remote_pending_wake",
+      "kind": "behavior_path",
+      "status": "source_confirmed",
+      "description": "Remote CPU wake uses a wake list and later activation on target CPU.",
+      "source_anchors": [
+        "kernel/sched/core.c:4056",
+        "kernel/sched/core.c:3950",
+        "kernel/sched/core.c:3891",
+        "kernel/sched/core.c:3911"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "model_required"
+      },
+      "authority_transition": {
+        "from": ["Blocked"],
+        "to": ["RemotePendingWake", "FrozenRunnable", "Queued"],
+        "authority_event": ["preserves_authority", "observes_only"],
+        "authority_lifetime": "while_remote_pending",
+        "role": "remote_pending_wake"
+      },
+      "invariants": [
+        "NoRemotePendingEscape",
+        "RevocationInvalidatesRemotePendingBeforeActivation",
+        "NoRemoteAuthorityInSchedulerHotPath"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "linux_mutable_shadow",
+        "attacker_mutability": "linux_global_mutable",
+        "authority_locality": "linux_shadow_only"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_modeled_invalid",
+        "failability_after_mutation": "state_written",
+        "revocation_scope": ["remote_pending", "queued"],
+        "revocation_stop_point": "before_enqueue"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["on_cpu_acquire_required"],
+        "lock_context": ["p_pi_lock", "rq_lock_irq"],
+        "class_semantics": ["generic"],
+        "config_scope": ["SMP"],
+        "bypass_surface": []
+      },
+      "evidence": {
+        "confidence": ["source_confirmed", "runtime_observed"],
+        "runtime_evidence": ["validation/0021-0023 observed sched_ttwu_pending and ttwu_do_activate counts"],
+        "gaps": ["__ttwu_queue_wakelist and ttwu_queue absent from QEMU symbol table in analysis/0020"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"remote_wake_ratio": "unknown"},
+        "local_cost_vector": {},
+        "system_cost_vector": {"ipi_rate_delta": "unknown"},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "cluster_compiled_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Model RemotePendingWake as non-executable authority.",
+        "Prove epoch revoke blocks pending wake before activation."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.new_task_wake",
+      "kind": "behavior_path",
+      "status": "source_confirmed",
+      "description": "New task initial wake sets TASK_RUNNING, selects CPU, and enqueues with ENQUEUE_INITIAL.",
+      "source_anchors": [
+        "kernel/sched/core.c:4941",
+        "kernel/sched/core.c:4948",
+        "kernel/sched/core.c:4958",
+        "kernel/sched/core.c:4963"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "model_required"
+      },
+      "authority_transition": {
+        "from": ["Spawned"],
+        "to": ["FrozenRunnable", "Queued"],
+        "authority_event": ["creates_authority", "freezes_authority", "observes_only"],
+        "authority_lifetime": "until_enqueue",
+        "role": "spawn_initialization"
+      },
+      "invariants": [
+        "NoSpawnWithoutSpawnCap",
+        "NoInheritedAmbientRunAuthority",
+        "NoInitialQueueWithoutChildFrozenUse"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "linux_mutable_shadow",
+        "attacker_mutability": "linux_global_mutable",
+        "authority_locality": "linux_shadow_only"
+      },
+      "failure_and_revocation": {
+        "failure_action": "reject_before_mutation",
+        "failability_after_mutation": "state_written",
+        "revocation_scope": ["queued"],
+        "revocation_stop_point": "before_enqueue"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["smp_mb_after_spinlock_required"],
+        "lock_context": ["p_pi_lock", "rq_lock"],
+        "class_semantics": ["generic"],
+        "config_scope": ["generic", "HOTPLUG_CPU"],
+        "bypass_surface": []
+      },
+      "evidence": {
+        "confidence": ["source_confirmed", "runtime_observed"],
+        "runtime_evidence": ["validation/0021-0023 observed wake_up_new_task and fork/exec counts"],
+        "gaps": ["copy_process, clone, exec, and kernel thread identity propagation not yet v2-tagged"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"fork_event_rate": "unknown"},
+        "local_cost_vector": {},
+        "system_cost_vector": {},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "monitor_sealed_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Model SpawnCap and child generation issuance.",
+        "Map fork/clone/exec/exit identity propagation."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.queued_migration",
+      "kind": "behavior_path",
+      "status": "runtime_observed",
+      "description": "move_queued_task deactivates, changes CPU, relocks destination rq, and reactivates queued task.",
+      "source_anchors": [
+        "kernel/sched/core.c:2546",
+        "kernel/sched/core.c:2552",
+        "kernel/sched/core.c:2553",
+        "kernel/sched/core.c:2560"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "model_required"
+      },
+      "authority_transition": {
+        "from": ["Queued"],
+        "to": ["MigratingQueued", "Queued"],
+        "authority_event": ["refreshes_authority", "observes_only"],
+        "authority_lifetime": "while_queued",
+        "role": "placement_refresh"
+      },
+      "invariants": [
+        "NoMigrationMintAuthority",
+        "NoCPUOutsideFrozenPlacement",
+        "NoMigrationAcrossRevokedDomain"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "linux_mutable_shadow",
+        "attacker_mutability": "linux_global_mutable",
+        "authority_locality": "linux_shadow_only"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_modeled_invalid",
+        "failability_after_mutation": "state_written",
+        "revocation_scope": ["queued"],
+        "revocation_stop_point": "before_pick"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["smp_mb_after_spinlock_required"],
+        "lock_context": ["rq_lock", "lock_dropped_reacquired"],
+        "class_semantics": ["generic"],
+        "config_scope": ["SMP", "CPUSETS", "HOTPLUG_CPU"],
+        "bypass_surface": ["migration_thread"]
+      },
+      "evidence": {
+        "confidence": ["source_confirmed", "runtime_observed"],
+        "runtime_evidence": ["validation/0023 affinity kprobe captured move_queued_task new_cpu split"],
+        "gaps": ["set_cpus_allowed, hotplug fallback, migrate-disable and kthread exceptions not fully retagged"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"migration_rate": "unknown"},
+        "local_cost_vector": {},
+        "system_cost_vector": {"ipi_rate_delta": "unknown"},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "cluster_compiled_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Model placement refresh as non-minting authority.",
+        "Prove CapSched CPU authority refines Linux cpu_active/cpu_online and hotplug rules."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.generic_enqueue_custody",
+      "kind": "behavior_path",
+      "status": "runtime_observed",
+      "description": "enqueue_task is generic scheduler-class enqueue wrapper and already mutates accounting/class/core state.",
+      "source_anchors": [
+        "kernel/sched/core.c:2172",
+        "kernel/sched/core.c:2182",
+        "kernel/sched/core.c:2184",
+        "kernel/sched/core.c:2186",
+        "kernel/sched/core.c:2189",
+        "kernel/sched/core.c:2192",
+        "kernel/sched/core.c:2226"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "model_required"
+      },
+      "authority_transition": {
+        "from": ["FrozenRunnable"],
+        "to": ["Queued"],
+        "authority_event": ["preserves_authority", "observes_only"],
+        "authority_lifetime": "while_queued",
+        "role": "enqueue_assertion"
+      },
+      "invariants": [
+        "NoEnqueueWithoutFrozenUse",
+        "NoFailAfterIrreversibleAccountingWithoutRollbackModel"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "linux_mutable_shadow",
+        "attacker_mutability": "linux_global_mutable",
+        "authority_locality": "linux_shadow_only"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_applicable_observation_only",
+        "failability_after_mutation": "class_state_mutated",
+        "revocation_scope": ["queued", "delayed"],
+        "revocation_stop_point": "before_pick"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["smp_mb_after_spinlock_required"],
+        "lock_context": ["rq_lock", "scheduler_class_callback_lock_contract"],
+        "class_semantics": ["generic", "fair", "core_sched_cached_pick"],
+        "config_scope": ["generic", "UCLAMP", "SCHED_CORE"],
+        "bypass_surface": []
+      },
+      "evidence": {
+        "confidence": ["source_confirmed", "runtime_observed"],
+        "runtime_evidence": ["validation/0023 captured enqueue_task flags for ordinary, migration, initial, restore, rq-selected, and one delayed case"],
+        "gaps": ["RT/DL/sched_ext enqueue state not fully modeled"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"enqueue_hot_path_event_rate": "unknown"},
+        "local_cost_vector": {"rq_lock_extension_ns": "unknown"},
+        "system_cost_vector": {},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "monitor_sealed_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Treat enqueue as nofail assertion until full class rollback model exists.",
+        "Model class/core/sched_ext accounting before fail-capable enforcement."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.pick",
+      "kind": "behavior_path",
+      "status": "source_confirmed",
+      "description": "pick_next_task chooses next task through fair fast path or scheduler class loop.",
+      "source_anchors": [
+        "kernel/sched/core.c:6124",
+        "kernel/sched/core.c:6141",
+        "kernel/sched/core.c:6144",
+        "kernel/sched/core.c:6152",
+        "kernel/sched/core.c:6156"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "model_required"
+      },
+      "authority_transition": {
+        "from": ["Queued"],
+        "to": ["Selected"],
+        "authority_event": ["selects_authority", "observes_only"],
+        "authority_lifetime": "while_selected",
+        "role": "pick_validation"
+      },
+      "invariants": [
+        "NoPickWithoutLiveFrozenUse",
+        "NoPickAfterEpochMismatch",
+        "NoPickWithoutBudget",
+        "NoPickRetryAfterClassMutationWithoutModel"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "linux_mutable_shadow",
+        "attacker_mutability": "linux_global_mutable",
+        "authority_locality": "linux_shadow_only"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_modeled_invalid",
+        "failability_after_mutation": "class_state_mutated",
+        "revocation_scope": ["queued", "selected", "cached"],
+        "revocation_stop_point": "before_switch"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["smp_mb_after_spinlock_required"],
+        "lock_context": ["rq_lock", "scheduler_class_callback_lock_contract"],
+        "class_semantics": [
+          "generic",
+          "fair",
+          "rt_throttling",
+          "deadline_cbs",
+          "idle",
+          "sched_ext_fallback",
+          "core_sched_cached_pick",
+          "proxy_exec"
+        ],
+        "config_scope": ["generic", "SCHED_CLASS_EXT", "SCHED_CORE", "SCHED_PROXY_EXEC"],
+        "bypass_surface": ["sched_ext"]
+      },
+      "evidence": {
+        "confidence": ["source_confirmed"],
+        "runtime_evidence": [],
+        "gaps": ["__pick_next_task and pick_next_task absent from QEMU symbol table in analysis/0020"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"pick_hot_path_event_rate": "unknown"},
+        "local_cost_vector": {"rq_lock_extension_ns": "unknown"},
+        "system_cost_vector": {},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "monitor_sealed_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Model SelectedUse state and pick failure action.",
+        "Prove class accounting remains valid if a selected task is rejected.",
+        "Cover core scheduling, sched_ext, RT/DL, and proxy execution before enforcement."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.switch_activation",
+      "kind": "behavior_path",
+      "status": "source_confirmed",
+      "description": "__schedule publishes rq->curr and enters context_switch after pick.",
+      "source_anchors": [
+        "kernel/sched/core.c:7061",
+        "kernel/sched/core.c:7149",
+        "kernel/sched/core.c:7201",
+        "kernel/sched/core.c:7231",
+        "kernel/sched/core.c:7234"
+      ],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "model_required"
+      },
+      "authority_transition": {
+        "from": ["Selected"],
+        "to": ["Running"],
+        "authority_event": ["activates_authority", "observes_only"],
+        "authority_lifetime": "while_running",
+        "role": "switch_activation"
+      },
+      "invariants": [
+        "NoSwitchWithoutDomainActivation",
+        "NoLinuxShadowDomainTagAsAuthority",
+        "NoSwitchActivationFailureWithoutFailClosedModel"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "linux_mutable_shadow",
+        "attacker_mutability": "linux_global_mutable",
+        "authority_locality": "linux_shadow_only"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_modeled_invalid",
+        "failability_after_mutation": "rq_curr_mutated",
+        "revocation_scope": ["selected", "active", "memory_view", "tlb"],
+        "revocation_stop_point": "before_monitor_activation"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["rq_curr_rcu_publish", "membarrier_sensitive", "smp_mb_after_spinlock_required"],
+        "lock_context": ["rq_lock", "raw_irq_disabled"],
+        "class_semantics": ["generic", "proxy_exec"],
+        "config_scope": ["generic", "PREEMPT_DYNAMIC", "PREEMPT_RT", "SCHED_PROXY_EXEC"],
+        "bypass_surface": []
+      },
+      "evidence": {
+        "confidence": ["source_confirmed"],
+        "runtime_evidence": ["sched_switch tracepoints observed in validation/0021-0023"],
+        "gaps": ["__schedule is notrace and not available to QEMU kprobes with current config"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"switch_hot_path_event_rate": "unknown", "domain_switch_ratio": "unknown"},
+        "local_cost_vector": {},
+        "system_cost_vector": {"monitor_transition_rate": "unknown", "tlb_flush_rate_delta": "unknown"},
+        "benefit_vector": {"same_domain_fast_path_benefit": "unknown"}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "monitor_sealed_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Refine DomainMonitor model with Selected -> Running fail-closed semantics.",
+        "Model same-Domain fast path freshness for epoch, budget, and MemoryView."
+      ],
+      "solver_use": "gap_analysis_and_hard_reject_only"
+    },
+    {
+      "id": "path.budget_charge_unmapped",
+      "kind": "behavior_path",
+      "status": "model_required",
+      "description": "Tick and runtime budget charging remain unmapped in Slice 0C authority tagging.",
+      "source_anchors": [],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "unmodeled"
+      },
+      "authority_transition": {
+        "from": ["Running"],
+        "to": ["Running", "Quarantined"],
+        "authority_event": ["consumes_budget"],
+        "authority_lifetime": "until_budget_exhausted",
+        "role": "budget_charge"
+      },
+      "invariants": [
+        "NoBudgetNoExecution",
+        "NoLinuxOnlyBudgetAsProductionRoot"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "not_authority",
+        "attacker_mutability": "not_applicable",
+        "authority_locality": "monitor_sealed_local"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_modeled_invalid",
+        "failability_after_mutation": "unknown_forbidden_for_enforcement",
+        "revocation_scope": ["active"],
+        "revocation_stop_point": "unknown_forbidden_for_enforcement"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["none"],
+        "lock_context": ["none"],
+        "class_semantics": ["generic", "rt_throttling", "deadline_cbs"],
+        "config_scope": ["NO_HZ", "PREEMPT_DYNAMIC", "PREEMPT_RT"],
+        "bypass_surface": ["timer"]
+      },
+      "evidence": {
+        "confidence": ["unknown"],
+        "runtime_evidence": [],
+        "gaps": ["Tick/runtime accounting source map required before budget enforcement."]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"tick_frequency": "unknown"},
+        "local_cost_vector": {},
+        "system_cost_vector": {},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "monitor_sealed_local",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Map tick/runtime accounting source paths.",
+        "Model budget overrun bound and monitor-backed root budget."
+      ],
+      "solver_use": "hard_reject_only"
+    },
+    {
+      "id": "path.exit_unmapped",
+      "kind": "behavior_path",
+      "status": "model_required",
+      "description": "Exit/dead task cleanup and grant invalidation remain unmapped in v2 behavior tagging.",
+      "source_anchors": [],
+      "claim_boundary": {
+        "claim_scope": "l0_observation",
+        "enforcement_strength": "observation_only",
+        "proof_status": "unmodeled"
+      },
+      "authority_transition": {
+        "from": ["Queued", "Selected", "Running"],
+        "to": ["Dead"],
+        "authority_event": ["invalidates_authority"],
+        "authority_lifetime": "none",
+        "role": "exit_cleanup"
+      },
+      "invariants": [
+        "NoLiveGrantAfterTaskDeath"
+      ],
+      "trust_and_mutability": {
+        "trust_root": "not_authority",
+        "attacker_mutability": "not_applicable",
+        "authority_locality": "not_applicable"
+      },
+      "failure_and_revocation": {
+        "failure_action": "not_modeled_invalid",
+        "failability_after_mutation": "unknown_forbidden_for_enforcement",
+        "revocation_scope": ["queued", "selected", "active"],
+        "revocation_stop_point": "unknown_forbidden_for_enforcement"
+      },
+      "linux_scheduler_context": {
+        "ordering_context": ["none"],
+        "lock_context": ["none"],
+        "class_semantics": ["generic"],
+        "config_scope": ["generic"],
+        "bypass_surface": []
+      },
+      "evidence": {
+        "confidence": ["runtime_observed"],
+        "runtime_evidence": ["validation/0021-0023 observed sched_process_exit counts"],
+        "gaps": ["kernel/exit.c and scheduler dead task cleanup not yet v2-mapped"]
+      },
+      "performance_and_cost": {
+        "event_frequency": {"exit_event_rate": "unknown"},
+        "local_cost_vector": {},
+        "system_cost_vector": {},
+        "benefit_vector": {}
+      },
+      "cluster_and_distribution": {
+        "authority_locality": "not_applicable",
+        "distributed_hotpath_authority": false
+      },
+      "proof_obligations": [
+        "Map exit cleanup and invalidation of FrozenRunUse/SelectedUse.",
+        "Separate self-exit from external ThreadControlCap terminate."
+      ],
+      "solver_use": "hard_reject_only"
+    }
+  ],
+  "hook_roles": [
+    {
+      "id": "role.admission_freeze",
+      "kind": "hook_role",
+      "status": "model_required",
+      "description": "Create FrozenRunUse before executable runqueue custody.",
+      "main_transition": "Blocked -> FrozenRunnable",
+      "primary_invariants": ["NoRunCapNoFrozenRunnable", "NoSchedContextNoFrozenRunnable"],
+      "may_fail": "yes_before_mutation_only",
+      "hard_reject_if": [
+        "slow capability lookup under rq_lock or p_pi_lock",
+        "failure after TASK_WAKING without lost-wakeup model",
+        "remote cluster lease used directly"
+      ]
+    },
+    {
+      "id": "role.enqueue_assertion",
+      "kind": "hook_role",
+      "status": "model_required",
+      "description": "Nofail assertion that queued task already has FrozenRunUse.",
+      "main_transition": "FrozenRunnable -> Queued",
+      "primary_invariants": ["NoQueuedWithoutFrozenUse"],
+      "may_fail": "nofail_preferred",
+      "hard_reject_if": [
+        "returns error from enqueue_task without rollback",
+        "claims production security from Linux-only assertion"
+      ]
+    },
+    {
+      "id": "role.pick_validation",
+      "kind": "hook_role",
+      "status": "model_required",
+      "description": "Validate live grant before selected execution.",
+      "main_transition": "Queued -> Selected",
+      "primary_invariants": ["NoPickWithoutLiveFrozenUse", "NoPickWithoutBudget"],
+      "may_fail": "dangerous_requires_model",
+      "hard_reject_if": [
+        "pick failure after class mutation without model",
+        "only fair fast path covered",
+        "sched_ext/core/RT/DL ignored"
+      ]
+    },
+    {
+      "id": "role.switch_activation",
+      "kind": "hook_role",
+      "status": "model_required",
+      "description": "Activate DomainTag/MemoryView before selected task runs.",
+      "main_transition": "Selected -> Running",
+      "primary_invariants": ["NoSwitchWithoutDomainActivation", "NoLinuxShadowDomainTagAsAuthority"],
+      "may_fail": "no_ordinary_failure",
+      "hard_reject_if": [
+        "monitor failure is ordinary error return",
+        "rq_curr committed before fail-closed semantics",
+        "same-Domain fast path lacks freshness proof"
+      ]
+    }
+  ],
+  "coverage_summary": {
+    "covered_for_gap_analysis": [
+      "current self-wake",
+      "already-runnable wake",
+      "normal wake admission",
+      "remote pending wake",
+      "new task wake",
+      "queued migration",
+      "generic enqueue",
+      "pick",
+      "switch"
+    ],
+    "not_yet_covered": [
+      "tick/runtime budget charging",
+      "fork/clone/exec/exit full identity propagation",
+      "RT/deadline class-specific semantics",
+      "sched_ext custody/fallback",
+      "core scheduling forced idle and cached pick",
+      "proxy execution",
+      "async execution provenance",
+      "monitor activation failure implementation"
+    ]
+  }
+}

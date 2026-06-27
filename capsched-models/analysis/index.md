@@ -32,14 +32,17 @@ Updated: 2026-06-27
 | 0024 | Accepted analysis direction | Invariant-Driven Design and the Role of Tags |
 | 0025 | Draft state machine | Linux Scheduler Authority State Machine |
 | 0026 | Draft obligation matrix | Scheduler Hook Proof Obligation Matrix |
+| 0027 | Draft schema and v2 retagging complete for gap analysis | Schema v2 Derived from the Scheduler Authority Model |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Behavior tag schema v2 derived from `0025` and `0026`, then checked against
-   `analysis/behavior-tags/schema-v2-requirements.json`.
-4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+3. LinuxSchedulerAuthority formal model covering remote pending wake, selected
+   use, migration, spawn initialization, and fail-closed switch activation.
+4. Tick/runtime budget source map and fork/clone/exec/exit identity propagation
+   source map.
+5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
 
@@ -47,3 +50,5 @@ Updated: 2026-06-27
 | --- | --- | --- |
 | `behavior-tags/slice0c-scheduler-behavior-tags.json` | Draft v1, not solver-eligible | Exploratory Slice 0C behavior tag ledger |
 | `behavior-tags/schema-v2-requirements.json` | Requirements only | Mandatory fields and hard reject rules for schema v2 |
+| `behavior-tags/schema-v2.json` | Draft contract | Machine-readable schema v2 contract for gap analysis and hard reject |
+| `behavior-tags/slice0c-scheduler-behavior-tags-v2.json` | Draft v2, gap-analysis only | Slice 0C behavior paths retagged under schema v2 |

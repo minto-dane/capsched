@@ -306,14 +306,21 @@ analysis/0026:
   hook proof-obligation matrix maps roles to invariants, failability, evidence,
   and required models.
 
+analysis/0027 + behavior-tags/schema-v2.json:
+  schema v2 is derived from the state machine and obligation matrix.
+
+behavior-tags/slice0c-scheduler-behavior-tags-v2.json:
+  Slice 0C is retagged for gap analysis and hard reject only; it is not
+  hook-selection eligible.
+
 behavior-tags/schema-v2-requirements.json:
-  requirement source, but schema v2 must now be derived from 0025 and 0026.
+  critical-review requirement source kept as a check against schema v2.
 ```
 
-Next executable step: derive schema v2 from the state machine and obligation
-matrix, then retag Slice 0C behavior paths.
-Do not use the v1 ledger as solver input, enforcement evidence, or production
-security evidence.
+Next executable step: build a LinuxSchedulerAuthority formal model, then map
+tick/runtime budget and fork/clone/exec/exit identity propagation. Do not use
+the v1 ledger as solver input, enforcement evidence, or production security
+evidence. Do not use the v2 ledger for hook selection yet.
 
 Readiness check:
 
@@ -605,9 +612,10 @@ future L2:
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
 `CONFIG_CAPSCHED=n/y` build validation passed for Slice 0A and Slice 0B. Slice
 0C observation synthesis is done, and the methodology has been corrected to
-invariant-driven design with tag-indexed evidence. Schema v2 behavior tagging
-must now be derived from the scheduler authority state machine before
-hook-placement optimization or enforcement patches.
+invariant-driven design with tag-indexed evidence. Schema v2 and Slice 0C v2
+retagging now exist for gap analysis/hard reject. The next gate is formal and
+source-analysis coverage, not hook-placement optimization or enforcement
+patches.
 
 Current validation runner:
 

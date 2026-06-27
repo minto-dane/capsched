@@ -344,6 +344,22 @@ Current next step: derive schema v2 from `0025` and `0026`, then retag Slice 0C
 behavior paths under the stricter schema before running any hook-placement
 optimizer or adding any behavior-changing Linux patch.
 
+That v2 derivation is now done for gap analysis:
+
+```text
+capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md
+capsched/capsched-models/analysis/behavior-tags/schema-v2.json
+capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags-v2.json
+```
+
+Important boundary: the v2 Slice 0C ledger is only for gap analysis and hard
+reject. It is not hook-selection eligible and provides no enforcement or
+production security claim.
+
+Current next step: build the LinuxSchedulerAuthority formal model and map the
+remaining source gaps for tick/runtime budget and fork/clone/exec/exit identity
+propagation.
+
 ## Recovery Path
 
 Read in this order:
@@ -409,9 +425,9 @@ Implementation must keep capability types separated:
 
 ## Modeling Anchors And Historical Gates
 
-The current next action is schema v2 behavior tagging derived from the
-scheduler authority state machine, not Linux code. The records below are still
-important anchors for implementation safety.
+The current next action is a LinuxSchedulerAuthority formal model and source
+maps for budget and identity propagation, not Linux code. The records below are
+still important anchors for implementation safety.
 
 The first two formal semantic models have been selected and checked. Runnable
 lease semantics are modeled in:
@@ -501,11 +517,12 @@ checked. Slice 0B type-only endpoint/broker/domain authority scaffolding is
 done, and the assurance-case subclaim tree is now the project-control root.
 Slice 0C observation synthesis is also done. ADR-0006 now says the design is
 invariant-driven and tags are evidence/constraint indexes, not the design
-engine. The next gate is schema v2 behavior tagging derived from the scheduler
-authority state machine and proof-obligation matrix. v1 tags are exploratory
-only and must not be used as solver input, enforcement evidence, or production
-security evidence. Any next Linux slice must name which assurance claim and gate
-it supports. Device-specific QueueLease endpoint models remain future L4 gates.
+engine. Schema v2 and the Slice 0C v2 ledger now exist for gap analysis and
+hard reject only. v1 tags are exploratory only and must not be used as solver
+input, enforcement evidence, or production security evidence. v2 tags are not
+hook-selection eligible until the open proof obligations are modeled. Any next
+Linux slice must name which assurance claim and gate it supports.
+Device-specific QueueLease endpoint models remain future L4 gates.
 
 Endpoint attachment records:
 
@@ -535,8 +552,11 @@ capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md
 capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md
 capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md
 capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md
+capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md
 capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json
+capsched/capsched-models/analysis/behavior-tags/schema-v2.json
 capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json
+capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags-v2.json
 capsched/capsched-ai/decisions/ADR-0006-invariant-driven-design-and-tag-indexes.md
 capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md
 capsched/capsched-models/validation/0014-l0-slice0b-build-run.md

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "invariant-driven-scheduler-authority-modeling",
+    "current_phase": "schema-v2-gap-analysis-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -77,7 +77,8 @@
       "capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md",
       "capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md",
       "capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md",
-      "capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md"
+      "capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md",
+      "capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -164,9 +165,12 @@
     "invariant_driven_tag_role": "capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md",
     "linux_scheduler_authority_state_machine": "capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md",
     "scheduler_hook_proof_obligation_matrix": "capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md",
+    "schema_v2_derivation": "capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md",
     "behavior_tag_v1_ledger": "capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json",
     "behavior_tag_schema_v2_requirements": "capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. ADR-0006 now fixes the methodology: CapSched design is invariant-driven, while tags are evidence and constraint indexes. Analysis/0024 records that tags may reject candidates and index proof obligations, but may not declare security. Analysis/0025 maps Linux wake/enqueue/migration/pick/switch behavior into a scheduler authority state machine. Analysis/0026 maps hook roles to proof obligations. Next step is to derive schema v2 from 0025/0026 and retag Slice 0C behavior paths before any hook-placement optimizer or behavior-changing Linux patch."
+    "behavior_tag_schema_v2_contract": "capsched/capsched-models/analysis/behavior-tags/schema-v2.json",
+    "slice0c_behavior_tag_v2_ledger": "capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags-v2.json",
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. ADR-0006 fixes the methodology: CapSched design is invariant-driven, while tags are evidence and constraint indexes. Analysis/0027 derives schema v2 from the scheduler authority state machine and proof-obligation matrix. behavior-tags/schema-v2.json is the draft machine-readable v2 contract. behavior-tags/slice0c-scheduler-behavior-tags-v2.json retags Slice 0C for gap analysis and hard reject only; it is not hook-selection eligible. Next steps are a LinuxSchedulerAuthority formal model and source maps for tick/runtime budget plus fork/clone/exec/exit identity propagation."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -887,9 +891,27 @@
     {
       "id": "N-042",
       "text": "Derive schema v2 from the scheduler authority state machine and proof obligation matrix, then retag Slice 0C behavior paths under the stricter claim, trust, revocation, performance, and cluster fields.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0027, behavior-tags/schema-v2.json, and behavior-tags/slice0c-scheduler-behavior-tags-v2.json. The v2 ledger covers current self-wake, already-runnable wake, normal wake admission, remote pending wake, new task wake, queued migration, generic enqueue, pick, switch, and explicit budget/exit unmapped placeholders. The ledger is gap-analysis and hard-reject only, not hook-selection eligible.",
       "blocked_by": [
         "N-043"
+      ]
+    },
+    {
+      "id": "N-044",
+      "text": "Create a LinuxSchedulerAuthority formal model covering RemotePendingWake, SelectedUse, CurrentContinuation, QueuedMigration, SpawnedInitialUse, failure actions, and revocation over queued/selected/running/pending states.",
+      "status": "pending",
+      "blocked_by": [
+        "N-042"
+      ]
+    },
+    {
+      "id": "N-045",
+      "text": "Map Linux tick/runtime budget accounting and fork/clone/exec/exit identity propagation against the v2 authority schema before any runnable authority enforcement patch.",
+      "status": "pending",
+      "blocked_by": [
+        "N-042"
       ]
     }
   ],
