@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `7cf0b1e415bcead8a2079c8be94a9d41aad7d462`. No behavior-changing implementation
 patch points are accepted yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0031`. A candidate Linux L0 Runnable
+`capsched-models/analysis/0002` through `0033`. A candidate Linux L0 Runnable
 Lease implementation plan has been derived from the checked model. Linux source
 now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
@@ -128,6 +128,12 @@ analysis/0031 + formal/0014 + validation/0026
 analysis/0032 + formal/0015 + validation/0027
   Wake authority preparation boundary:
   generic wake paths and wake_q carry task/state, not typed authority.
+
+analysis/0033 + formal/0016 + validation/0028
+  Task-local resumable-run lifecycle:
+  fork raw-copy must be reset, initial child run state must be prepared before
+  wake_up_new_task(), ordinary TASK_WAKING requires frozen local use, revoke
+  clears frozen/selected/running use, and dead tasks retain no authority.
 ```
 
 F1 must not allocate, sleep, walk policy, call the monitor, acquire remote
@@ -144,12 +150,11 @@ carriers, not ambient worker authority.
 Next near-term sequence:
 
 ```text
-1. Map ordinary task-local resumable-run storage lifecycle.
-2. Model workqueue/kthread_work caller BudgetTicket carrier semantics.
-3. Model shared futex cross-Domain endpoint semantics.
-4. Model PI/RT/ww_mutex priority donation separately from RunCap.
-5. Model placement refresh across affinity, cpuset, and CPU hotplug.
-6. Only then consider a behavior-changing L0 runnable admission slice.
+1. Model workqueue/kthread_work caller BudgetTicket carrier semantics.
+2. Model shared futex cross-Domain endpoint semantics.
+3. Model PI/RT/ww_mutex priority donation separately from RunCap.
+4. Model placement refresh across affinity, cpuset, and CPU hotplug.
+5. Only then consider a behavior-changing L0 runnable admission slice.
 ```
 
 ## Assurance Root

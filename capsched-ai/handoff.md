@@ -29,11 +29,19 @@ analysis/0032 + formal/0015 + validation/0027:
   generic wake paths and wake_q do not carry typed authority
   resumable-run or endpoint-derived authority must be prepared before
   wake_q_add(), wake_up_q(), or F1
+
+analysis/0033 + formal/0016 + validation/0028:
+  ordinary task-local resumable-run state has a strict lifecycle
+  dup_task_struct raw-copy must be reset before child preparation
+  wake_up_new_task requires preprepared SpawnCap-derived state
+  ordinary TASK_WAKING requires a frozen local use
+  revoke clears frozen/selected/running uses
+  dead tasks retain no CapSched authority
 ```
 
-Next work is task-local resumable-run storage lifecycle, workqueue/kthread_work
-BudgetTicket carrier semantics, shared futex endpoint semantics, and PI/RT
-priority donation modeling. This remains refinement, not enforcement.
+Next work is workqueue/kthread_work BudgetTicket carrier semantics, shared futex
+endpoint semantics, and PI/RT priority donation modeling. This remains
+refinement, not enforcement.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
