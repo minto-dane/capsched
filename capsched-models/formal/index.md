@@ -23,14 +23,14 @@ Updated: 2026-06-27
 | 0015 | Checked with safe pass and expected unsafe counterexamples | Wake Authority Preparation Model |
 | 0016 | Checked with safe pass and expected unsafe counterexamples | Task-Local Run State Model |
 | 0017 | Checked with safe pass and expected unsafe counterexamples | Workqueue BudgetTicket Carrier Model |
+| 0018 | Checked with safe pass and expected unsafe counterexamples | Shared Futex Endpoint Model |
 
 ## Planned
 
-1. Shared futex cross-Domain endpoint model.
-2. PI/RT/ww_mutex priority donation authority model.
-3. Placement-refresh model for affinity, cpuset, and CPU hotplug interactions.
-4. Wider endpoint capability model for fd/file/socket/resource operations.
-5. Same-Domain monitor fast-path freshness and selected-state stale budget
+1. PI/RT/ww_mutex priority donation authority model.
+2. Placement-refresh model for affinity, cpuset, and CPU hotplug interactions.
+3. Wider endpoint capability model for fd/file/socket/resource operations.
+4. Same-Domain monitor fast-path freshness and selected-state stale budget
    decompositions.
-6. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
+5. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

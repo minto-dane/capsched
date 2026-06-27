@@ -45,10 +45,19 @@ analysis/0034 + formal/0017 + validation/0029:
   carrier must be prepared before queue_work()/kthread_queue_work()
   pending carrier overwrite is rejected unless merge semantics are explicit
   completed/canceled/revoked work releases authority refs
+
+analysis/0035 + formal/0018 + validation/0030:
+  shared/cross-Domain futex is a typed endpoint
+  FutexWaitCap gates waiter enqueue
+  FutexWakeCap gates endpoint signaling but does not grant target execution
+  target execution still requires task-local resumable-run freeze
+  requeue requires source and target endpoint authority
+  endpoint revoke invalidates queued/wake/requeue use
+  cap failure after queueing is unsafe without no-lost-wake rollback proof
 ```
 
-Next work is shared futex endpoint semantics and PI/RT priority donation
-modeling. This remains refinement, not enforcement.
+Next work is PI/RT priority donation modeling. This remains refinement, not
+enforcement.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

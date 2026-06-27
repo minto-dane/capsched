@@ -141,6 +141,12 @@ analysis/0034 + formal/0017 + validation/0029
   FrozenEndpointUse and BudgetTicket before queueing; generic worker authority
   is not caller authority, and pending carrier overwrite is rejected unless
   explicit merge semantics exist.
+
+analysis/0035 + formal/0018 + validation/0030
+  Shared futex endpoint boundary:
+  cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,
+  wake does not grant target execution, requeue needs source and target endpoint
+  rights, and cap failure after queueing is unsafe without no-lost-wake proof.
 ```
 
 F1 must not allocate, sleep, walk policy, call the monitor, acquire remote
@@ -157,10 +163,9 @@ carriers, not ambient worker authority.
 Next near-term sequence:
 
 ```text
-1. Model shared futex cross-Domain endpoint semantics.
-2. Model PI/RT/ww_mutex priority donation separately from RunCap.
-3. Model placement refresh across affinity, cpuset, and CPU hotplug.
-4. Only then consider a behavior-changing L0 runnable admission slice.
+1. Model PI/RT/ww_mutex priority donation separately from RunCap.
+2. Model placement refresh across affinity, cpuset, and CPU hotplug.
+3. Only then consider a behavior-changing L0 runnable admission slice.
 ```
 
 ## Assurance Root
