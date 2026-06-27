@@ -22,6 +22,7 @@ Updated: 2026-06-26
 | 0014 | Passed | L0 Slice 0B Build Run |
 | 0015 | Planned | Slice 0C No-Code Trace Plan |
 | 0016 | Not executed | Slice 0C Trace Readiness Check |
+| 0017 | Planned | Slice 0C Trace Analysis and Workload Plan |
 
 ## Principles
 

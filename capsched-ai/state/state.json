@@ -132,14 +132,16 @@
     "l0_slice0b_build_run": "capsched/capsched-models/validation/0014-l0-slice0b-build-run.md",
     "slice0c_no_code_trace_plan": "capsched/capsched-models/validation/0015-slice0c-no-code-trace-plan.md",
     "slice0c_trace_readiness_check": "capsched/capsched-models/validation/0016-slice0c-trace-readiness-check.md",
+    "slice0c_trace_analysis_plan": "capsched/capsched-models/validation/0017-slice0c-trace-analysis-and-workloads.md",
     "slice0c_no_code_trace_runner": "capsched/capsched-models/validation/run-slice0c-no-code-trace.sh",
+    "slice0c_trace_analyzer": "capsched/capsched-models/validation/analyze-slice0c-trace.sh",
     "l0_slice0_build_runner": "capsched/capsched-models/validation/run-l0-slice0-build-validation.sh",
     "started_on": "2026-06-25",
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
     "protection_claim_evidence_map": "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
     "wakeup_enqueue_runnable_coverage": "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. The assurance-case foundation exists in capsched-models/assurance/. Analysis/0019 maps wakeup/enqueue/runnable-state coverage. Implementation/0006 defines Slice 0C as a strict trace-only observation gate tied to EXEC-001, COMPAT-001, and G2. Validation/0015 and run-slice0c-no-code-trace.sh prepare a no-code trace run. Validation/0016 records that the runner was not executed in this session because user nia lacks tracefs write access; running kernel is Ubuntu 6.17.0-35-generic rather than a recorded CapSched worktree boot."
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains no-code/trace-only. Validation/0015 and run-slice0c-no-code-trace.sh prepare a no-code trace run. Validation/0016 records that the runner was not executed in this session because user nia lacks tracefs write access; running kernel is Ubuntu 6.17.0-35-generic rather than a recorded CapSched worktree boot. Validation/0017 and analyze-slice0c-trace.sh define post-run classification, ambiguity handling, and synthetic workload requirements."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -746,9 +748,17 @@
       "id": "N-031",
       "text": "Execute the Slice 0C no-code trace runner or decide to postpone execution until a booted matching kernel is available.",
       "status": "pending",
-      "partial_progress": "Readiness check recorded in validation/0016. Current session uid is 1000 (nia), tracefs is not writable, and the running kernel is Ubuntu 6.17.0-35-generic. The runner was not executed.",
+      "partial_progress": "Readiness check recorded in validation/0016. Current session uid is 1000 (nia), tracefs is not writable, and the running kernel is Ubuntu 6.17.0-35-generic. The runner was not executed. Validation/0017 and analyze-slice0c-trace.sh now define how to classify future trace output and workload gaps.",
       "blocked_by": [
         "N-030"
+      ]
+    },
+    {
+      "id": "N-032",
+      "text": "After Slice 0C trace execution, run analyze-slice0c-trace.sh and create a validation result record mapping observed, ambiguous, not observed, and not inferable categories.",
+      "status": "pending",
+      "blocked_by": [
+        "N-031"
       ]
     }
   ],

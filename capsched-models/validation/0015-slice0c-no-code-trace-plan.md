@@ -195,3 +195,10 @@ synthetic workloads are required before a patch
 a minimal CONFIG_CAPSCHED internal observation patch is justified
 return to source analysis before any patch
 ```
+
+Post-run classification is planned in:
+
+```text
+capsched-models/validation/0017-slice0c-trace-analysis-and-workloads.md
+capsched-models/validation/analyze-slice0c-trace.sh
+```

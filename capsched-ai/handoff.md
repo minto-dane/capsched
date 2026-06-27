@@ -144,6 +144,17 @@ capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
 
 The runner has not been executed. It needs root or tracefs write access and
 captures existing scheduler tracepoints plus dynamic ftrace function entries.
+Post-run interpretation is planned in:
+
+```text
+capsched/capsched-models/validation/0017-slice0c-trace-analysis-and-workloads.md
+capsched/capsched-models/validation/analyze-slice0c-trace.sh
+```
+
+Important: function-entry tracing can be ambiguous. For example,
+`try_to_wake_up` does not prove the self-current branch, `enqueue_task` does
+not expose `ENQUEUE_DELAYED`, and `__pick_next_task` does not prove the fair
+fast path.
 
 Trace execution readiness was checked in:
 
@@ -339,7 +350,9 @@ capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md
 capsched/capsched-models/implementation/0006-slice0c-trace-observation-gate.md
 capsched/capsched-models/validation/0015-slice0c-no-code-trace-plan.md
 capsched/capsched-models/validation/0016-slice0c-trace-readiness-check.md
+capsched/capsched-models/validation/0017-slice0c-trace-analysis-and-workloads.md
 capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
+capsched/capsched-models/validation/analyze-slice0c-trace.sh
 ```
 
 Stopped full integration run identity:

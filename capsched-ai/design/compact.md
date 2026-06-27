@@ -200,9 +200,14 @@ The no-code trace plan now exists:
 ```text
 capsched-models/validation/0015-slice0c-no-code-trace-plan.md
 capsched-models/validation/run-slice0c-no-code-trace.sh
+capsched-models/validation/0017-slice0c-trace-analysis-and-workloads.md
+capsched-models/validation/analyze-slice0c-trace.sh
 ```
 
 It has not been executed. It requires root or tracefs write access.
+Future trace results must distinguish observed, ambiguous, not observed, and
+not inferable categories. Function-entry tracing alone does not expose all
+branch or flag semantics.
 
 Readiness check:
 

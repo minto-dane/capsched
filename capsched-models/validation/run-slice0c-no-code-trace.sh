@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="${CAPSCHED_WORKSPACE:-/media/nia/scsiusb/dev/linux-cap}"
 TS="$(date -u +%Y%m%dT%H%M%SZ)"
 OUT="${CAPSCHED_TRACE_OUT:-$ROOT/build/traces/slice0c-no-code-$TS}"
+RUN_AS="${CAPSCHED_TRACE_RUN_AS:-${SUDO_USER:-}}"
 
 if [[ "$(id -u)" != "0" ]]; then
 	echo "error: this runner needs root or equivalent tracefs write access" >&2
@@ -88,6 +89,11 @@ trap restore_tracefs EXIT
 	echo "uname=$(uname -a)"
 	echo "workspace=$ROOT"
 	echo "output=$OUT"
+	if [[ -n "$RUN_AS" ]]; then
+		echo "workload_run_as=$RUN_AS"
+	else
+		echo "workload_run_as=root"
+	fi
 	if [[ -r /proc/version ]]; then
 		echo "proc_version=$(cat /proc/version)"
 	fi
@@ -145,7 +151,15 @@ fi
 write_tracefs current_tracer function
 write_tracefs tracing_on 1
 
-"${WORKLOAD[@]}"
+if [[ -n "$RUN_AS" && "$RUN_AS" != "root" ]]; then
+	if ! command -v runuser >/dev/null 2>&1; then
+		echo "error: runuser not available for CAPSCHED_TRACE_RUN_AS=$RUN_AS" >&2
+		exit 1
+	fi
+	runuser -u "$RUN_AS" -- "${WORKLOAD[@]}"
+else
+	"${WORKLOAD[@]}"
+fi
 
 write_tracefs tracing_on 0
 cat "$TRACEFS/trace" > "$OUT/trace.txt"
