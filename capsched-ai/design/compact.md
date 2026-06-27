@@ -294,11 +294,24 @@ analysis/0022:
 analysis/0023:
   critical review rejected the v1 tag ledger for solver use.
 
+ADR-0006 / analysis/0024:
+  design is invariant-driven; tags are evidence and constraint indexes, not a
+  design engine.
+
+analysis/0025:
+  Linux scheduler authority state machine maps wake, enqueue, migration, pick,
+  switch, budget, and exit to CapSched authority transitions.
+
+analysis/0026:
+  hook proof-obligation matrix maps roles to invariants, failability, evidence,
+  and required models.
+
 behavior-tags/schema-v2-requirements.json:
-  current next input for a solver-eligible schema.
+  requirement source, but schema v2 must now be derived from 0025 and 0026.
 ```
 
-Next executable step: implement schema v2 and retag Slice 0C behavior paths.
+Next executable step: derive schema v2 from the state machine and obligation
+matrix, then retag Slice 0C behavior paths.
 Do not use the v1 ledger as solver input, enforcement evidence, or production
 security evidence.
 
@@ -591,8 +604,10 @@ future L2:
 
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
 `CONFIG_CAPSCHED=n/y` build validation passed for Slice 0A and Slice 0B. Slice
-0C observation synthesis is done, but schema v2 behavior tagging must happen
-before hook-placement optimization or enforcement patches.
+0C observation synthesis is done, and the methodology has been corrected to
+invariant-driven design with tag-indexed evidence. Schema v2 behavior tagging
+must now be derived from the scheduler authority state machine before
+hook-placement optimization or enforcement patches.
 
 Current validation runner:
 

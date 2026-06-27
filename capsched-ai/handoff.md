@@ -322,9 +322,27 @@ capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md
 capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json
 ```
 
-Current next step: implement schema v2 and retag Slice 0C behavior paths under
-the stricter schema before running any hook-placement optimizer or adding any
-behavior-changing Linux patch.
+The methodology correction is now accepted:
+
+```text
+capsched/capsched-ai/decisions/ADR-0006-invariant-driven-design-and-tag-indexes.md
+capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md
+```
+
+Key result: CapSched design is invariant-driven. Tags are evidence and
+constraint indexes. Tags may reject candidates and rank surviving candidates,
+but they may not declare security or choose a hook by score.
+
+The scheduler authority state-machine root now exists:
+
+```text
+capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md
+capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md
+```
+
+Current next step: derive schema v2 from `0025` and `0026`, then retag Slice 0C
+behavior paths under the stricter schema before running any hook-placement
+optimizer or adding any behavior-changing Linux patch.
 
 ## Recovery Path
 
@@ -391,8 +409,9 @@ Implementation must keep capability types separated:
 
 ## Modeling Anchors And Historical Gates
 
-The current next action is schema v2 behavior tagging, not Linux code. The
-records below are still important anchors for implementation safety.
+The current next action is schema v2 behavior tagging derived from the
+scheduler authority state machine, not Linux code. The records below are still
+important anchors for implementation safety.
 
 The first two formal semantic models have been selected and checked. Runnable
 lease semantics are modeled in:
@@ -480,11 +499,13 @@ checked, the Linux attachment map exists, and decomposed cluster authority,
 MemoryOwnership, DirectMapTLB, PageCacheOverlay, and QueueLease models are
 checked. Slice 0B type-only endpoint/broker/domain authority scaffolding is
 done, and the assurance-case subclaim tree is now the project-control root.
-Slice 0C observation synthesis is also done. The next gate is schema v2
-behavior tagging: v1 tags are exploratory only and must not be used as solver
-input, enforcement evidence, or production security evidence. Any next Linux
-slice must name which assurance claim and gate it supports. Device-specific
-QueueLease endpoint models remain future L4 gates.
+Slice 0C observation synthesis is also done. ADR-0006 now says the design is
+invariant-driven and tags are evidence/constraint indexes, not the design
+engine. The next gate is schema v2 behavior tagging derived from the scheduler
+authority state machine and proof-obligation matrix. v1 tags are exploratory
+only and must not be used as solver input, enforcement evidence, or production
+security evidence. Any next Linux slice must name which assurance claim and gate
+it supports. Device-specific QueueLease endpoint models remain future L4 gates.
 
 Endpoint attachment records:
 
@@ -511,8 +532,12 @@ capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md
 capsched/capsched-models/analysis/0021-slice0c-observation-synthesis.md
 capsched/capsched-models/analysis/0022-behavior-tagging-methodology.md
 capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md
+capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md
+capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md
+capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md
 capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json
 capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json
+capsched/capsched-ai/decisions/ADR-0006-invariant-driven-design-and-tag-indexes.md
 capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md
 capsched/capsched-models/validation/0014-l0-slice0b-build-run.md
 capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md

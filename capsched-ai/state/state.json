@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-06-26",
+  "updated": "2026-06-27",
   "project": {
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "slice0c-trace-observation-gate",
+    "current_phase": "invariant-driven-scheduler-authority-modeling",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -74,7 +74,10 @@
       "capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md",
       "capsched/capsched-models/analysis/0021-slice0c-observation-synthesis.md",
       "capsched/capsched-models/analysis/0022-behavior-tagging-methodology.md",
-      "capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md"
+      "capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md",
+      "capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md",
+      "capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md",
+      "capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -158,9 +161,12 @@
     "slice0c_observation_synthesis": "capsched/capsched-models/analysis/0021-slice0c-observation-synthesis.md",
     "behavior_tagging_methodology": "capsched/capsched-models/analysis/0022-behavior-tagging-methodology.md",
     "behavior_tagging_critical_review": "capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md",
+    "invariant_driven_tag_role": "capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md",
+    "linux_scheduler_authority_state_machine": "capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md",
+    "scheduler_hook_proof_obligation_matrix": "capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md",
     "behavior_tag_v1_ledger": "capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json",
     "behavior_tag_schema_v2_requirements": "capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. QEMU guest validation now covers boot smoke, broader workloads, and guest-side kprobes. Analysis/0021 synthesizes the evidence and blocks direct enforcement. Analysis/0022 defines behavior tagging as a hard-constraint plus multi-objective design-selection method. Analysis/0023 records subagent critical review: v1 tags are not solver-eligible because they can confuse observation with enforcement, Linux-only claims with monitor-backed claims, and mixed performance costs with benefits. Next step is to implement schema v2 and retag Slice 0C behavior paths before any hook-placement optimizer or behavior-changing Linux patch."
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. ADR-0006 now fixes the methodology: CapSched design is invariant-driven, while tags are evidence and constraint indexes. Analysis/0024 records that tags may reject candidates and index proof obligations, but may not declare security. Analysis/0025 maps Linux wake/enqueue/migration/pick/switch behavior into a scheduler authority state machine. Analysis/0026 maps hook roles to proof obligations. Next step is to derive schema v2 from 0025/0026 and retag Slice 0C behavior paths before any hook-placement optimizer or behavior-changing Linux patch."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -869,11 +875,21 @@
       ]
     },
     {
-      "id": "N-042",
-      "text": "Implement schema v2 as the first solver-eligible behavior tag ledger and retag Slice 0C behavior paths under the stricter claim, trust, revocation, performance, and cluster fields.",
-      "status": "pending",
+      "id": "N-043",
+      "text": "Record the invariant-driven design decision and map Linux scheduler runnable behavior into a scheduler authority state machine before deriving schema v2.",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created ADR-0006, analysis/0024, analysis/0025, and analysis/0026. The project now treats tags as evidence/constraint indexes rather than a design engine. The scheduler authority state machine maps current self-wake, already-runnable wake, normal wake, remote pending wake, new task wake, queued migration, enqueue, pick, switch, budget, and exit to CapSched authority transitions and proof obligations.",
       "blocked_by": [
         "N-041"
+      ]
+    },
+    {
+      "id": "N-042",
+      "text": "Derive schema v2 from the scheduler authority state machine and proof obligation matrix, then retag Slice 0C behavior paths under the stricter claim, trust, revocation, performance, and cluster fields.",
+      "status": "pending",
+      "blocked_by": [
+        "N-043"
       ]
     }
   ],

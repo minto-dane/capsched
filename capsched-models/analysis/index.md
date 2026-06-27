@@ -29,12 +29,16 @@ Updated: 2026-06-27
 | 0021 | Draft synthesis | Slice 0C Observation Synthesis and Hook-Placement Constraints |
 | 0022 | Draft methodology, revised after critical review | Behavior Tagging Methodology for Mechanical Design Selection |
 | 0023 | Review complete, schema v2 required | Critical Review of Behavior Tagging Before Schema Finalization |
+| 0024 | Accepted analysis direction | Invariant-Driven Design and the Role of Tags |
+| 0025 | Draft state machine | Linux Scheduler Authority State Machine |
+| 0026 | Draft obligation matrix | Scheduler Hook Proof Obligation Matrix |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Behavior tag schema v2 from `analysis/behavior-tags/schema-v2-requirements.json`.
+3. Behavior tag schema v2 derived from `0025` and `0026`, then checked against
+   `analysis/behavior-tags/schema-v2-requirements.json`.
 4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts

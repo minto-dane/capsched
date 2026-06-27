@@ -1,6 +1,6 @@
 # Decision Index
 
-Updated: 2026-06-25
+Updated: 2026-06-27
 
 | ID | Status | Title |
 | --- | --- | --- |
@@ -9,3 +9,4 @@ Updated: 2026-06-25
 | ADR-0003 | Superseded by ADR-0004 | Use two top-level directories for AI state and modeling work |
 | ADR-0004 | Accepted | Encapsulate project-control repo under capsched and do not ignore Linux |
 | ADR-0005 | Accepted | Use git.kernel.org torvalds/linux as upstream Linux base |
+| ADR-0006 | Accepted | Use invariant-driven design with tag-indexed evidence |
