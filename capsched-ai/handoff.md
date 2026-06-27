@@ -83,11 +83,25 @@ analysis/0038 + formal/0021 + validation/0033:
   budget timer coverage
   selected-state budget staleness and same-task revoke must fail closed,
   preempt, refresh, or call the monitor before ordinary execution continues
+
+analysis/0039 + formal/0022 + validation/0034:
+  MonitorRootBudget is the production CPU authority root
+  SchedContextBudget is required CapSched scheduler authority
+  CFS/RT/DL/SCX runtime is Linux compatibility/policy/accounting substrate only
+  existing class runtime may narrow execution but must never expand CapSched
+  authority or replace monitor-owned root budget enforcement
+  capped NO_HZ execution requires monitor-owned or equivalent unsuppressible
+  budget timer coverage
+  hrtick is not an exact root cap because it is Linux-owned and has a minimum
+  delay floor
+  remote NO_HZ tick is not root budget enforcement
+  runtime replenishment or redistribution must refresh/invalidate budget epoch
+  before selected/running use continues
 ```
 
-Next work remains refinement, not enforcement: root-vs-SchedContext budget
-split, NO_HZ/hrtick overrun, class-specific selected-state behavior, wider
-endpoint models, and exec process-generation semantics.
+Next work remains refinement, not enforcement: class-specific selected-state
+behavior for CFS, RT, deadline, sched_ext, core scheduling, and proxy execution;
+wider endpoint models; and exec process-generation semantics.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
@@ -473,12 +487,11 @@ Current rule: fail-capable admission freeze must happen before
 `TASK_WAKING`. Post-`TASK_WAKING` checks are nofail assertions, fail-closed
 stops, or separately proven rollback/quarantine paths.
 
-Current next step: map F1 admission-freeze data dependencies under
-`p->pi_lock` so the pre-`TASK_WAKING` check can avoid allocation, sleep, remote
-service calls, and monitor round trips. Other open refinements remain:
-same-Domain monitor fast-path freshness, root-vs-SchedContext budget split,
-NO_HZ/hrtick bounded overrun, class-specific CFS/RT/deadline/sched_ext/core/
-proxy selected-state behavior, and exec process-generation semantics.
+Historical note: F1 data dependencies, same-Domain fast-path freshness, and
+root-vs-SchedContext budget split have now been modeled. The current open
+refinement is class-specific selected-state behavior for CFS, RT, deadline,
+sched_ext, core scheduling, and proxy execution, followed by wider endpoint
+models and exec process-generation semantics.
 
 ## Recovery Path
 
