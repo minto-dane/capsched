@@ -172,6 +172,17 @@ TaskLocal: runs in target task, but task identity is not endpoint authority.
 unknown_or_mixed: no enforcement; observe or instrument first.
 ```
 
+First workqueue origin source inventory:
+
+```text
+validation/0042 completed as observation-only source inventory.
+known source-inferred classifications: 10.
+gap rows: 49.
+largest unknown groups: drivers/net, drivers/gpu, drivers/scsi, drivers/usb,
+sound/soc.
+generic enforcement remains forbidden from this evidence alone.
+```
+
 ## Threat Model
 
 The eventual threat model is intentionally hostile. An attacker may control all
@@ -249,6 +260,14 @@ analysis/0046 + validation/0041
   expose work pointer, callback, queue name, and kthread work events, but
   source correlation and queue-site stacks are required before making authority
   claims.
+
+validation/0042
+  Workqueue origin source inventory:
+  source-inferred seed classifications were emitted for AIO fsync, AIO poll,
+  blk zoned plug work, timerfd resume, io_uring exit, workqueue idle cull,
+  irq_work, bio rescue, task_work fput, and VFIO virqfd injection. Bulk gaps
+  remain explicit and large; no generic workqueue enforcement follows from
+  this result.
 
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:

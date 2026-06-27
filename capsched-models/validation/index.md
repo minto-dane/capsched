@@ -47,6 +47,7 @@ Updated: 2026-06-27
 | 0039 | Planned | Post-Exec Resource Trace-Only Plan |
 | 0040 | Executed; observation-only gaps remain | Post-Exec Resource QEMU Trace Result |
 | 0041 | Planned | Workqueue Origin Observation Plan |
+| 0042 | Executed; seed classifications plus gaps | Workqueue Origin Source Inventory Result |
 
 ## Principles
 

@@ -203,12 +203,22 @@ analysis/0046 + validation/0041:
   observation plan records required tracepoints, queue-site stack/source
   correlation, output TSV schema, and hard rule that tracepoint evidence alone
   cannot justify a generic workqueue enforcement hook
+
+validation/0042:
+  source inventory runner executed successfully at
+  build/workqueue-origin-source-inventory/20260627T102126Z
+  known source-inferred classification rows: 10
+  gap rows: 49
+  largest unknown groups: drivers/net, drivers/gpu, drivers/scsi, drivers/usb,
+  sound/soc
+  result remains observation-only; no generic workqueue enforcement hook is
+  justified yet
 ```
 
 Next work remains observation-only: refine eventfd kernel signal provenance,
 epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-execfd handoff, and execute a workqueue origin source inventory / trace runner
-before Linux behavior changes.
+execfd handoff, and deepen workqueue source inventory or build QEMU stack-trace
+observation before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
