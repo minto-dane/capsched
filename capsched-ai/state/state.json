@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "post-exec-resource-inheritance-refined",
+    "current_phase": "post-exec-resource-trace-coverage-mapped",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -195,7 +195,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0041+formal/0024 establish wider endpoint capability semantics. Analysis/0042+formal/0025 establish exec ProgramGeneration semantics. Analysis/0043+formal/0026 now establish post-exec resource inheritance classes: post-exec fd reachability is not endpoint authority; regular files require operation masks; sockets require socket-state and op-specific derivation; anonymous fds require fops/private_data class policy; epoll old readiness and watched endpoints cannot imply new authority; eventfd signal/read/write authority must be re-derived; timerfd old timer state may exist but authority must be re-derived; io_uring ring reachability cannot carry old registered resources or activity; execfd handoff requires ExecfdGrant. Validation/0038 passed the safe model and produced expected unsafe counterexamples for generic fd authority, close-on-exec leak, regular file without mask, socket ambient state, generic anon fd policy, epoll old readiness, eventfd signal leak, timerfd old authority, io_uring registered resource leak, and execfd ambient inheritance. Next steps remain refinement, not enforcement: map trace-only coverage for these classes before Linux behavior changes.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0041+formal/0024 establish wider endpoint capability semantics. Analysis/0042+formal/0025 establish exec ProgramGeneration semantics. Analysis/0043+formal/0026 establish post-exec resource inheritance classes. Analysis/0044 now maps trace-only coverage for those classes: raw syscall tracing observes fd-level surfaces, sched_prepare_exec/sched_process_exec bracket ProgramGeneration change, io_uring tracepoints expose ring/register/submit/worker/completion behavior, workqueue tracepoints expose generic worker execution without caller authority, socket tracepoints expose state/send/recv effects, and kprobes can observe many internal class anchors in the QEMU build. The key limitation is that trace-only evidence can prove path coverage and blind spots, not endpoint authority derivation. Validation/0039 records the planned QEMU post-exec resource trace run. Next steps remain observation-only: build a post-exec resource trace workload/runner extension and classify each class as observed, partially_observed, not_observed, or not_trace_provable before any behavior-changing exec endpoint hook.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -247,7 +247,12 @@
     "post_exec_resource_inheritance_classes": "capsched/capsched-models/analysis/0043-post-exec-resource-inheritance-classes.md",
     "post_exec_resource_inheritance_model": "capsched/capsched-models/formal/0026-post-exec-resource-inheritance-model/README.md",
     "post_exec_resource_inheritance_tla": "capsched/capsched-models/formal/0026-post-exec-resource-inheritance-model/PostExecResource.tla",
-    "post_exec_resource_inheritance_validation": "capsched/capsched-models/validation/0038-post-exec-resource-inheritance-tlc.md"
+    "post_exec_resource_inheritance_validation": "capsched/capsched-models/validation/0038-post-exec-resource-inheritance-tlc.md",
+    "source_maps": [
+      "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md"
+    ],
+    "post_exec_resource_trace_coverage_map": "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md",
+    "post_exec_resource_trace_validation_plan": "capsched/capsched-models/validation/0039-post-exec-resource-trace-plan.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1258,9 +1263,19 @@
     {
       "id": "N-060",
       "text": "Map trace-only coverage points for post-exec resource inheritance classes before any behavior-changing exec endpoint enforcement hook.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-059"
+      ],
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0044 and validation/0039. The trace-only coverage map separates raw syscall surface observation, exec boundary tracepoints, io_uring tracepoints, workqueue tracepoints, socket tracepoints, and kprobe-visible internal anchors from semantic authority derivation. It records that trace-only evidence can validate hook visibility and blind spots, but cannot prove post-exec endpoint protection. The next observation-only step is a QEMU post-exec resource trace workload/runner extension."
+    },
+    {
+      "id": "N-061",
+      "text": "Build a QEMU post-exec resource trace workload and runner extension, then classify each resource class as observed, partially_observed, not_observed, or not_trace_provable.",
+      "status": "pending",
+      "blocked_by": [
+        "N-060"
       ]
     }
   ],

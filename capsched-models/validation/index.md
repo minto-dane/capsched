@@ -44,6 +44,7 @@ Updated: 2026-06-27
 | 0036 | Safe model passed; unsafe models produced expected counterexamples | Wider Endpoint Capability TLC Check |
 | 0037 | Safe model passed; unsafe models produced expected counterexamples | Exec Generation and Inheritance TLC Check |
 | 0038 | Safe model passed; unsafe models produced expected counterexamples | Post-Exec Resource Inheritance TLC Check |
+| 0039 | Planned | Post-Exec Resource Trace-Only Plan |
 
 ## Principles
 

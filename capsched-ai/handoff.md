@@ -160,10 +160,24 @@ analysis/0043 + formal/0026 + validation/0038:
   re-derived
   io_uring ring reachability cannot carry old registered resources or activity
   execfd handoff requires ExecfdGrant
+
+analysis/0044 + validation/0039:
+  trace-only coverage can show path visibility and blind spots, not endpoint
+  authority derivation
+  raw syscall tracing observes fd-level surfaces only
+  sched_prepare_exec/sched_process_exec bracket ProgramGeneration change
+  io_uring tracepoints expose create/register/file_get/submit/async/task_work
+  and completion behavior
+  workqueue tracepoints expose worker execution but no caller authority
+  socket tracepoints expose state/send/recv effects but no CapSched derivation
+  kprobes can observe many class anchors in the QEMU build, but missing
+  symbols, inline functions, and insufficient argument capture must be recorded
 ```
 
-Next work remains refinement, not enforcement: map trace-only coverage for
-post-exec resource inheritance classes before Linux behavior changes.
+Next work remains observation-only: build a QEMU post-exec resource trace
+workload/runner extension and classify each class as observed,
+partially_observed, not_observed, or not_trace_provable before Linux behavior
+changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
