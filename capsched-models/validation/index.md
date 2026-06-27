@@ -24,6 +24,7 @@ Updated: 2026-06-26
 | 0016 | Not executed | Slice 0C Trace Readiness Check |
 | 0017 | Planned | Slice 0C Trace Analysis and Workload Plan |
 | 0018 | Added, build-tested, and smoke-tested | Slice 0C Synthetic Workload Helper |
+| 0019 | Ready for operator execution | Slice 0C Trace Execution Runbook |
 
 ## Principles
 

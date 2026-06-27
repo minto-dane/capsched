@@ -203,6 +203,7 @@ capsched-models/validation/run-slice0c-no-code-trace.sh
 capsched-models/validation/0017-slice0c-trace-analysis-and-workloads.md
 capsched-models/validation/analyze-slice0c-trace.sh
 capsched-models/validation/0018-slice0c-synthetic-workload-helper.md
+capsched-models/validation/0019-slice0c-trace-execution-runbook.md
 ```
 
 It has not been executed. It requires root or tracefs write access.
@@ -215,6 +216,14 @@ The userspace helper builds and smoke-tests locally:
 ```text
 build/workloads/slice0c_sched_workload
 modes: forkexec, futex, affinity, pressure, all
+```
+
+Next executable step once tracefs access exists:
+
+```text
+follow validation/0019
+create validation/0020 result record
+do not proceed to enforcement from trace evidence alone
 ```
 
 Readiness check:
