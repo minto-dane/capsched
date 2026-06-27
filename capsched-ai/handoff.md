@@ -379,10 +379,32 @@ Important boundary: this is semantic evidence only. It does not make Linux L0
 an enforcement boundary and does not prove CapSched-H production isolation.
 
 Current next step: refine the scheduler authority model before hook selection.
-The open refinements are failure after `TASK_WAKING`, same-Domain monitor
-fast-path freshness, root-vs-SchedContext budget split, NO_HZ/hrtick bounded
-overrun, class-specific CFS/RT/deadline/sched_ext/core/proxy selected-state
-behavior, and exec process-generation semantics.
+The `TASK_WAKING` failability refinement is now done:
+
+```text
+capsched/capsched-models/analysis/0030-task-waking-failability-boundary-map.md
+capsched/capsched-models/formal/0013-scheduler-admission-failure-model/
+capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md
+```
+
+Result:
+
+```text
+Safe pre-TASK_WAKING rejection model passed.
+Unsafe delayed-freeze model violated NoTaskWakingWithoutFrozenUse.
+Unsafe rollback model violated NoLostWakeAfterCondition.
+```
+
+Current rule: fail-capable admission freeze must happen before
+`TASK_WAKING`. Post-`TASK_WAKING` checks are nofail assertions, fail-closed
+stops, or separately proven rollback/quarantine paths.
+
+Current next step: map F1 admission-freeze data dependencies under
+`p->pi_lock` so the pre-`TASK_WAKING` check can avoid allocation, sleep, remote
+service calls, and monitor round trips. Other open refinements remain:
+same-Domain monitor fast-path freshness, root-vs-SchedContext budget split,
+NO_HZ/hrtick bounded overrun, class-specific CFS/RT/deadline/sched_ext/core/
+proxy selected-state behavior, and exec process-generation semantics.
 
 ## Recovery Path
 
@@ -577,6 +599,13 @@ capsched/capsched-models/analysis/0024-invariant-driven-design-and-tag-role.md
 capsched/capsched-models/analysis/0025-linux-scheduler-authority-state-machine.md
 capsched/capsched-models/analysis/0026-scheduler-hook-proof-obligation-matrix.md
 capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md
+capsched/capsched-models/analysis/0028-tick-runtime-budget-source-map.md
+capsched/capsched-models/analysis/0029-fork-exec-exit-identity-propagation-map.md
+capsched/capsched-models/analysis/0030-task-waking-failability-boundary-map.md
+capsched/capsched-models/formal/0012-linux-scheduler-authority-model/
+capsched/capsched-models/validation/0024-linux-scheduler-authority-tlc.md
+capsched/capsched-models/formal/0013-scheduler-admission-failure-model/
+capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md
 capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json
 capsched/capsched-models/analysis/behavior-tags/schema-v2.json
 capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json

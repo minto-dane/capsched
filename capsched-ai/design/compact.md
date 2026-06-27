@@ -340,12 +340,42 @@ depth 21
 no invariant error found
 ```
 
-Next executable step: refine the model for failure after `TASK_WAKING`,
-same-Domain monitor fast-path freshness, root-vs-SchedContext budget split,
-NO_HZ/hrtick overrun, class-specific selected-state behavior, and exec
-process-generation semantics. Do not use the v1 ledger as solver input,
-enforcement evidence, or production security evidence. Do not use the v2 ledger
-for hook selection yet.
+The `TASK_WAKING` failability refinement now exists:
+
+```text
+analysis:
+  capsched-models/analysis/0030-task-waking-failability-boundary-map.md
+
+formal:
+  capsched-models/formal/0013-scheduler-admission-failure-model/
+
+validation:
+  capsched-models/validation/0025-scheduler-admission-failure-tlc.md
+```
+
+TLC result:
+
+```text
+safe pre-TASK_WAKING rejection:
+  passed, 8 states generated, 7 distinct states
+
+unsafe delayed-freeze:
+  expected counterexample to NoTaskWakingWithoutFrozenUse
+
+unsafe rollback:
+  expected counterexample to NoLostWakeAfterCondition
+```
+
+Current rule: fail-capable admission freeze must happen before `TASK_WAKING`.
+Post-`TASK_WAKING` checks are nofail assertions, fail-closed stops, or
+separately proven rollback/quarantine paths.
+
+Next executable step: map F1 admission-freeze data dependencies under
+`p->pi_lock`, then continue same-Domain monitor fast-path freshness,
+root-vs-SchedContext budget split, NO_HZ/hrtick overrun, class-specific
+selected-state behavior, and exec process-generation semantics. Do not use the
+v1 ledger as solver input, enforcement evidence, or production security
+evidence. Do not use the v2 ledger for hook selection yet.
 
 Readiness check:
 
