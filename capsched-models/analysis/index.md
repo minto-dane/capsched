@@ -36,18 +36,21 @@ Updated: 2026-06-27
 | 0028 | Draft source map | Tick and Runtime Budget Source Map |
 | 0029 | Draft source map | Fork, Clone, Exec, and Exit Identity Propagation Map |
 | 0030 | Draft boundary map | TASK_WAKING Failability Boundary Map |
+| 0031 | Draft dependency map with TLC-backed design filter | F1 Admission-Freeze Data Dependencies |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Refine F1 admission-freeze data dependencies under `p->pi_lock`, including
-   no allocation, no sleep, no remote service calls, and no monitor round trips.
-4. Decide exec process-generation semantics jointly with endpoint/object
+3. Map block/wait/register points where resumable-run or endpoint-derived wake
+   authority can be prepared before wake_q_add()/try_to_wake_up().
+4. Model placement-refresh interaction with affinity, cpuset, and CPU hotplug
+   so `p->cpus_ptr` cannot exceed FrozenRunUse authority.
+5. Decide exec process-generation semantics jointly with endpoint/object
    capability modeling.
-5. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
+6. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
    and class-specific CFS/RT/deadline/sched_ext/core/proxy behavior.
-6. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+7. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
 

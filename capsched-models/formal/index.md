@@ -19,12 +19,15 @@ Updated: 2026-06-27
 | 0011 | Checked with two TLC runs | Queue Lease and IOMMU Boundary Model |
 | 0012 | Checked for tiny finite model | Linux Scheduler Authority Model |
 | 0013 | Checked with safe pass and expected unsafe counterexamples | Scheduler Admission Failure Model |
+| 0014 | Checked with safe pass and expected unsafe counterexamples | F1 Admission Data Model |
 
 ## Planned
 
-1. F1 admission-freeze data dependency model for `p->pi_lock` constraints.
-2. Wider endpoint capability model for fd/file/socket/resource operations.
-3. Same-Domain monitor fast-path freshness and selected-state stale budget
+1. Block/wait/register authority preparation model for wake_q and generic wake
+   readiness.
+2. Placement-refresh model for affinity, cpuset, and CPU hotplug interactions.
+3. Wider endpoint capability model for fd/file/socket/resource operations.
+4. Same-Domain monitor fast-path freshness and selected-state stale budget
    decompositions.
-4. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
+5. Driver-specific QueueLease endpoint models for NIC, NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

@@ -81,7 +81,8 @@
       "capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md",
       "capsched/capsched-models/analysis/0028-tick-runtime-budget-source-map.md",
       "capsched/capsched-models/analysis/0029-fork-exec-exit-identity-propagation-map.md",
-      "capsched/capsched-models/analysis/0030-task-waking-failability-boundary-map.md"
+      "capsched/capsched-models/analysis/0030-task-waking-failability-boundary-map.md",
+      "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -182,7 +183,11 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. ADR-0006 fixes the methodology: CapSched design is invariant-driven, while tags are evidence and constraint indexes. behavior-tags/slice0c-scheduler-behavior-tags-v2.json remains gap-analysis and hard-reject only. Formal 0012 LinuxSchedulerAuthority passed the tiny finite model. Analysis/0028 maps tick/runtime budget sources; analysis/0029 maps fork/clone/exec/exit identity propagation. Analysis/0030 and formal/0013 now establish the TASK_WAKING failability boundary: fail-capable admission freeze must happen before TASK_WAKING; post-TASK_WAKING checks are nofail assertions, fail-closed stops, or separately proven rollback/quarantine paths. Validation/0025 passed the safe model and produced expected unsafe counterexamples. Next steps remain refinement, not enforcement: F1 data dependencies under p->pi_lock, same-Domain monitor fast-path freshness, root-vs-SchedContext budget split, NO_HZ/hrtick overrun, class-specific selected-state behavior, and exec process-generation semantics."
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. ADR-0006 fixes the methodology: CapSched design is invariant-driven, while tags are evidence and constraint indexes. Formal 0012 models Linux scheduler authority; analysis/0028 maps tick/runtime budget sources; analysis/0029 maps fork/clone/exec/exit identity propagation. Analysis/0030 and formal/0013 establish the TASK_WAKING failability boundary: fail-capable admission freeze must happen before TASK_WAKING. Analysis/0031 and formal/0014 now establish the F1 data-readiness boundary: F1 is validation/freeze, not authority discovery; required authority, generation, epoch, budget, placement, and FrozenRunUse storage must be local/prepared before p->pi_lock hot-path freeze. Validation/0026 passed the safe model and produced expected unsafe counterexamples for slow lookup, allocation, monitor call, missing data, and missing placement. Next steps remain refinement, not enforcement: block/wait/register authority preparation, wake_q readiness and revocation, placement refresh, same-Domain monitor fast-path freshness, root-vs-SchedContext budget split, NO_HZ/hrtick overrun, class-specific selected-state behavior, and exec process-generation semantics.",
+    "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
+    "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
+    "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
+    "f1_admission_data_validation": "capsched/capsched-models/validation/0026-f1-admission-data-tlc.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -527,6 +532,12 @@
       "text": "Can a future CapSched runnable-admission check fail after Linux writes TASK_WAKING?",
       "status": "resolved",
       "answer": "No ordinary fail-return is allowed after TASK_WAKING without a separate rollback/quarantine proof. Analysis 0030 and formal/0013 show the conservative boundary: fail-capable admission belongs before TASK_WAKING; post-TASK_WAKING checks are nofail assertions, fail-closed stops, or separately proven rollback paths."
+    },
+    {
+      "id": "Q-017",
+      "text": "Where should resumable-run or endpoint-derived wake authority be prepared before F1, wake_q_add(), or try_to_wake_up()?",
+      "status": "open",
+      "answer": "Analysis 0031 says F1 cannot discover authority. The likely preparation points are block/wait registration, endpoint registration, task-local resumable-run state, SpawnCap-derived initial authority, or explicit service/kernel-domain exception paths; this still needs source mapping."
     }
   ],
   "next_actions": [
@@ -954,7 +965,7 @@
       "id": "N-046",
       "text": "Refine LinuxSchedulerAuthority before hook selection: failure after TASK_WAKING, same-Domain fast-path freshness, root-vs-SchedContext budget split, NO_HZ/hrtick overrun, class-specific selected-state behavior, and exec process-generation semantics.",
       "status": "pending",
-      "partial_progress": "TASK_WAKING failability is now refined in analysis/0030 and formal/0013. Validation/0025 passed the safe pre-WAKING rejection model and produced expected counterexamples for unsafe delayed-freeze and unsafe rollback. Remaining refinements include F1 data dependencies, same-Domain fast path, budget split/overrun, class-specific selected-state behavior, and exec generation semantics.",
+      "partial_progress": "TASK_WAKING failability is refined in analysis/0030 and formal/0013. F1 data readiness is refined in analysis/0031 and formal/0014. Validation/0026 passed the safe model and produced expected counterexamples for slow lookup, allocation, monitor call, missing data, and missing placement. Remaining refinements include block/wait/register authority preparation, wake_q revocation, placement refresh, same-Domain fast path, budget split/overrun, class-specific selected-state behavior, and exec generation semantics.",
       "blocked_by": [
         "N-044",
         "N-045"
@@ -963,9 +974,19 @@
     {
       "id": "N-047",
       "text": "Map F1 admission-freeze data dependencies under p->pi_lock so the pre-TASK_WAKING check can avoid allocation, sleep, remote service calls, and monitor round trips.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-046"
+      ],
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0031 and formal/0014. TLC safe model explored 259 generated/distinct states with no invariant errors. Unsafe models produced expected counterexamples for slow lookup under p->pi_lock, allocation under p->pi_lock, monitor call under p->pi_lock, freezing with missing data, and queuing without placement envelope. Validation record: capsched/capsched-models/validation/0026-f1-admission-data-tlc.md."
+    },
+    {
+      "id": "N-048",
+      "text": "Map block/wait/register points where resumable-run or endpoint-derived wake authority can be prepared before wake_q_add() or try_to_wake_up().",
+      "status": "pending",
+      "blocked_by": [
+        "N-047"
       ]
     }
   ],

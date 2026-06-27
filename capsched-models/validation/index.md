@@ -31,6 +31,7 @@ Updated: 2026-06-27
 | 0023 | Passed for guest-side kprobe observation; still observation-only | Slice 0C QEMU Kprobe Observation Result |
 | 0024 | Passed for tiny finite model | Linux Scheduler Authority TLC Check |
 | 0025 | Safe model passed; unsafe models produced expected counterexamples | Scheduler Admission Failure TLC Check |
+| 0026 | Safe model passed; unsafe models produced expected counterexamples | F1 Admission Data TLC Check |
 
 ## Principles
 

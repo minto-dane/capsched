@@ -14,6 +14,21 @@ been committed in that Linux repository as inert `CONFIG_CAPSCHED` scaffolding.
 Slice 0B has also been committed as type-only authority scaffolding in
 `include/linux/capsched.h` and `kernel/sched/capsched.c`. No behavior-changing
 scheduler patch points are accepted yet.
+The current scheduler-authority refinement frontier is now:
+
+```text
+analysis/0030 + formal/0013:
+  fail-capable admission freeze must happen before TASK_WAKING
+
+analysis/0031 + formal/0014 + validation/0026:
+  F1 is validation/freeze, not authority discovery
+  required authority, generation, epoch, budget, placement, and FrozenRunUse
+  storage must already be local/prepared under p->pi_lock constraints
+```
+
+Next work is source mapping for block/wait/register authority preparation,
+especially wake_q readiness and revoke-before-wake_up_q behavior. This remains
+refinement, not enforcement.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
@@ -602,10 +617,13 @@ capsched/capsched-models/analysis/0027-schema-v2-derived-from-authority-model.md
 capsched/capsched-models/analysis/0028-tick-runtime-budget-source-map.md
 capsched/capsched-models/analysis/0029-fork-exec-exit-identity-propagation-map.md
 capsched/capsched-models/analysis/0030-task-waking-failability-boundary-map.md
+capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md
 capsched/capsched-models/formal/0012-linux-scheduler-authority-model/
 capsched/capsched-models/validation/0024-linux-scheduler-authority-tlc.md
 capsched/capsched-models/formal/0013-scheduler-admission-failure-model/
 capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md
+capsched/capsched-models/formal/0014-f1-admission-data-model/
+capsched/capsched-models/validation/0026-f1-admission-data-tlc.md
 capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json
 capsched/capsched-models/analysis/behavior-tags/schema-v2.json
 capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json

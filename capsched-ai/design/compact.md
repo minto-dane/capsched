@@ -14,7 +14,7 @@ Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
 `7cf0b1e415bcead8a2079c8be94a9d41aad7d462`. No behavior-changing implementation
 patch points are accepted yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0018`. A candidate Linux L0 Runnable
+`capsched-models/analysis/0002` through `0031`. A candidate Linux L0 Runnable
 Lease implementation plan has been derived from the checked model. Linux source
 now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
@@ -112,21 +112,34 @@ Cluster direction: do not make one monolithic distributed kernel. Prefer a
 single capability/resource lease namespace where signed cluster leases compile
 into local node SchedContexts and endpoint capabilities.
 
-## Near-Term Sequence
+## Current Scheduler Refinement
 
-1. Use `capsched-models/plans/0001-upstream-analysis-plan.md` and `0002` as
-   the analysis record.
-2. Read `capsched-models/analysis/0002` through `0007` before proposing patch
-   points.
-3. Draft the formal model-selection memo.
-4. Model runnable lease semantics first.
-5. Validate semantics with TLA+ or similar before prototype implementation.
-
-Current first model target:
+Current source/model frontier:
 
 ```text
-Task + TaskGeneration + ProcessGeneration + Domain + DomainEpoch
-+ RunCap + SchedContext + FrozenRunUse + RunqueueState + CPU + Budget
+analysis/0030 + formal/0013 + validation/0025
+  TASK_WAKING failability boundary:
+  fail-capable runnable admission must happen before TASK_WAKING.
+
+analysis/0031 + formal/0014 + validation/0026
+  F1 admission data-readiness boundary:
+  F1 is validation/freeze, not authority discovery.
+```
+
+F1 must not allocate, sleep, walk policy, call the monitor, acquire remote
+cluster authority, or discover endpoint authority through a slow global lookup
+while `p->pi_lock` is held. Required authority, generation, epoch, budget,
+placement, and FrozenRunUse storage must already be local/prepared. If required
+data is missing, reject before `TASK_WAKING`.
+
+Next near-term sequence:
+
+```text
+1. Map block/wait/register points where resumable-run or endpoint-derived wake
+   authority can be prepared before wake_q_add()/try_to_wake_up().
+2. Model wake_q readiness and revoke-before-wake_up_q behavior.
+3. Model placement refresh across affinity, cpuset, and CPU hotplug.
+4. Only then consider a behavior-changing L0 runnable admission slice.
 ```
 
 ## Assurance Root
