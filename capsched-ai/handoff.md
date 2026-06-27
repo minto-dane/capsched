@@ -54,10 +54,21 @@ analysis/0035 + formal/0018 + validation/0030:
   requeue requires source and target endpoint authority
   endpoint revoke invalidates queued/wake/requeue use
   cap failure after queueing is unsafe without no-lost-wake rollback proof
+
+analysis/0036 + formal/0019 + validation/0031:
+  PI/RT/ww_mutex priority donation is dependency-derived ordering authority
+  PriorityDonationCap is not RunCap or SchedControlCap
+  donated priority cannot create FrozenRunUse or CPU budget
+  scheduler proxy execution needs an explicit owner-budget or
+  ProxyExecutionTicket policy
+  ww_mutex wound/wait is endpoint deadlock-resolution authority, not
+  ThreadControlCap
 ```
 
-Next work is PI/RT priority donation modeling. This remains refinement, not
-enforcement.
+Next work remains refinement, not enforcement: placement refresh across
+affinity/cpuset/CPU hotplug, same-Domain monitor fast-path freshness, root-vs
+SchedContext budget split, NO_HZ/hrtick overrun, class-specific selected-state
+behavior, and exec process-generation semantics.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

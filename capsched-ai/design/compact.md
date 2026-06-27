@@ -147,6 +147,12 @@ analysis/0035 + formal/0018 + validation/0030
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,
   wake does not grant target execution, requeue needs source and target endpoint
   rights, and cap failure after queueing is unsafe without no-lost-wake proof.
+
+analysis/0036 + formal/0019 + validation/0031
+  Priority donation authority boundary:
+  PI/RT/ww_mutex donation is dependency-derived ordering authority, not RunCap,
+  not SchedControlCap, not ThreadControlCap, and not free CPU budget. Proxy
+  execution needs an explicit owner-budget or ProxyExecutionTicket policy.
 ```
 
 F1 must not allocate, sleep, walk policy, call the monitor, acquire remote
@@ -163,8 +169,8 @@ carriers, not ambient worker authority.
 Next near-term sequence:
 
 ```text
-1. Model PI/RT/ww_mutex priority donation separately from RunCap.
-2. Model placement refresh across affinity, cpuset, and CPU hotplug.
+1. Model placement refresh across affinity, cpuset, and CPU hotplug.
+2. Refine same-Domain monitor fast-path and budget overrun behavior.
 3. Only then consider a behavior-changing L0 runnable admission slice.
 ```
 

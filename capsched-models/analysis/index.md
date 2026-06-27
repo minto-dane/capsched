@@ -41,19 +41,19 @@ Updated: 2026-06-27
 | 0033 | Draft lifecycle map with TLC-backed design filter | Task-Local Resumable-Run Lifecycle |
 | 0034 | Draft carrier map with TLC-backed design filter | Workqueue and kthread_work BudgetTicket Carrier |
 | 0035 | Draft endpoint map with TLC-backed design filter | Shared Futex Endpoint Authority |
+| 0036 | Draft dependency-authority map with TLC-backed design filter | PI, RT, and ww_mutex Priority Donation Authority |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Model PI/RT/ww_mutex priority donation separately from RunCap.
-4. Model placement-refresh interaction with affinity, cpuset, and CPU hotplug
+3. Model placement-refresh interaction with affinity, cpuset, and CPU hotplug
    so `p->cpus_ptr` cannot exceed FrozenRunUse authority.
-5. Decide exec process-generation semantics jointly with endpoint/object
+4. Decide exec process-generation semantics jointly with endpoint/object
    capability modeling.
-6. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
+5. Refine same-Domain monitor fast-path freshness, selected-state stale budget,
    and class-specific CFS/RT/deadline/sched_ext/core/proxy behavior.
-7. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+6. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
 

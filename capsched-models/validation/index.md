@@ -36,6 +36,7 @@ Updated: 2026-06-27
 | 0028 | Safe model passed; unsafe models produced expected counterexamples | Task-Local Run State TLC Check |
 | 0029 | Safe model passed; unsafe models produced expected counterexamples | Workqueue BudgetTicket Carrier TLC Check |
 | 0030 | Safe model passed; unsafe models produced expected counterexamples | Shared Futex Endpoint TLC Check |
+| 0031 | Safe model passed; unsafe models produced expected counterexamples | Priority Donation Authority TLC Check |
 
 ## Principles
 
