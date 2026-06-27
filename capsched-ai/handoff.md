@@ -63,12 +63,22 @@ analysis/0036 + formal/0019 + validation/0031:
   ProxyExecutionTicket policy
   ww_mutex wound/wait is endpoint deadlock-resolution authority, not
   ThreadControlCap
+
+analysis/0037 + formal/0020 + validation/0032:
+  placement selection is not authority
+  p->cpus_ptr is a mutable Linux placement input, not the CapSched authority
+  root
+  FrozenRunUse.allowed_cpus plus fresh PlacementEpoch is the authority envelope
+  cpuset/fallback/force-affinity can repair Linux placement but cannot expand
+  CapSched authority
+  stale selected/queued/migration-pending placement must refresh, migrate
+  within envelope, or fail closed before ordinary Domain execution
 ```
 
-Next work remains refinement, not enforcement: placement refresh across
-affinity/cpuset/CPU hotplug, same-Domain monitor fast-path freshness, root-vs
-SchedContext budget split, NO_HZ/hrtick overrun, class-specific selected-state
-behavior, and exec process-generation semantics.
+Next work remains refinement, not enforcement: same-Domain monitor fast-path
+freshness, root-vs-SchedContext budget split, NO_HZ/hrtick overrun,
+class-specific selected-state behavior, wider endpoint models, and exec
+process-generation semantics.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

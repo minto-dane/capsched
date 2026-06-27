@@ -153,6 +153,12 @@ analysis/0036 + formal/0019 + validation/0031
   PI/RT/ww_mutex donation is dependency-derived ordering authority, not RunCap,
   not SchedControlCap, not ThreadControlCap, and not free CPU budget. Proxy
   execution needs an explicit owner-budget or ProxyExecutionTicket policy.
+
+analysis/0037 + formal/0020 + validation/0032
+  Placement refresh authority boundary:
+  selected CPU is a hint; p->cpus_ptr is mutable Linux placement input;
+  FrozenRunUse.allowed_cpus plus fresh PlacementEpoch is the authority envelope.
+  cpuset/hotplug fallback cannot expand CapSched authority.
 ```
 
 F1 must not allocate, sleep, walk policy, call the monitor, acquire remote
@@ -169,8 +175,8 @@ carriers, not ambient worker authority.
 Next near-term sequence:
 
 ```text
-1. Model placement refresh across affinity, cpuset, and CPU hotplug.
-2. Refine same-Domain monitor fast-path and budget overrun behavior.
+1. Refine same-Domain monitor fast-path and budget overrun behavior.
+2. Model wider fd/file/socket endpoint authority.
 3. Only then consider a behavior-changing L0 runnable admission slice.
 ```
 
