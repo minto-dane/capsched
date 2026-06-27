@@ -183,11 +183,23 @@ validation/0040:
   io_uring ring/register/unregister/enter without fixed-file request
   consumption
   not observed: execfd handoff
+
+analysis/0045:
+  workqueue internal redesign is accepted as a production direction, but
+  internal worker execution must not become ambient caller authority
+  queue_work() pending coalescing means the same work_struct cannot safely
+  have its caller BudgetTicket overwritten by later callers
+  worker->current_func(work) / work->func(work) executes in worker/kthread
+  context, so caller authority is not naturally preserved
+  immediate rule remains: Domain-derived async work needs a typed carrier
+  before it leaves caller context; kernel-internal work stays service/kernel
+  classified until proved otherwise
 ```
 
 Next work remains observation-only: refine eventfd kernel signal provenance,
 epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-and execfd handoff before Linux behavior changes.
+execfd handoff, and workqueue origin classification before Linux behavior
+changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

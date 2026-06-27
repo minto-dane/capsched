@@ -50,12 +50,13 @@ Updated: 2026-06-27
 | 0042 | Draft exec boundary map with TLC-backed design filter | Exec Generation and Inherited Endpoint Semantics |
 | 0043 | Draft inheritance-class map with TLC-backed design filter | Post-Exec Resource Inheritance Classes |
 | 0044 | Draft trace-only coverage map | Post-Exec Resource Trace-Only Coverage Map |
+| 0045 | Draft design boundary | Workqueue Internal Redesign Boundary |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Post-exec QEMU resource inheritance trace workload and result record.
+3. Workqueue origin taxonomy and observation plan before generic async enforcement.
 4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts

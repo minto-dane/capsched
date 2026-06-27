@@ -148,6 +148,17 @@ not observed: execfd.
 remaining gaps must be refined with more observation, not enforcement.
 ```
 
+Workqueue redesign answer:
+
+```text
+Yes, production CapSched-H may need a deeply redesigned internal async
+substrate.
+No, internal-only trust is not sufficient.
+The proof-visible boundary must still preserve caller Domain, epoch,
+FrozenEndpointUse, BudgetTicket, service Domain, work generation, and merge or
+per-invocation semantics.
+```
+
 ## Threat Model
 
 The eventual threat model is intentionally hostile. An attacker may control all
@@ -207,6 +218,15 @@ analysis/0034 + formal/0017 + validation/0029
   FrozenEndpointUse and BudgetTicket before queueing; generic worker authority
   is not caller authority, and pending carrier overwrite is rejected unless
   explicit merge semantics exist.
+
+analysis/0045
+  Workqueue internal redesign boundary:
+  deep internal async redesign is accepted and likely necessary for
+  production, but internal worker execution must not become ambient caller
+  authority. DomainRequestWork needs typed carriers; MergedDomainBatchWork
+  needs explicit merge/accounting/revocation semantics; ServiceMaintenanceWork
+  and KernelCoreWork cannot perform caller-attributed endpoint effects without
+  a separate DomainRequestWork.
 
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
