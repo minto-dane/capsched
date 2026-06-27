@@ -138,6 +138,16 @@ missing kprobe symbols, inline functions, and insufficient argument capture are
 evidence gaps, not failures to ignore.
 ```
 
+First post-exec resource QEMU trace result:
+
+```text
+validation/0040 completed with qemu_status=0 and workload_ret=0.
+observed: CLOEXEC, regular file, O_PATH, socket, anonfd creation, timerfd.
+partially observed: eventfd, epoll, io_uring.
+not observed: execfd.
+remaining gaps must be refined with more observation, not enforcement.
+```
+
 ## Threat Model
 
 The eventual threat model is intentionally hostile. An attacker may control all

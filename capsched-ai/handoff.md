@@ -172,12 +172,22 @@ analysis/0044 + validation/0039:
   socket tracepoints expose state/send/recv effects but no CapSched derivation
   kprobes can observe many class anchors in the QEMU build, but missing
   symbols, inline functions, and insufficient argument capture must be recorded
+
+validation/0040:
+  QEMU post-exec resource trace executed with qemu_status=0 and workload_ret=0
+  using existing QEMU bzImage without rebuilding the kernel
+  observed classes: CLOEXEC, regular file, O_PATH, socket, anonymous fd
+  creation, timerfd
+  partially observed classes: eventfd read/write without kernel-held
+  eventfd_signal_mask, epoll_wait readiness without ep_insert/ep_poll probes,
+  io_uring ring/register/unregister/enter without fixed-file request
+  consumption
+  not observed: execfd handoff
 ```
 
-Next work remains observation-only: build a QEMU post-exec resource trace
-workload/runner extension and classify each class as observed,
-partially_observed, not_observed, or not_trace_provable before Linux behavior
-changes.
+Next work remains observation-only: refine eventfd kernel signal provenance,
+epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
+and execfd handoff before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

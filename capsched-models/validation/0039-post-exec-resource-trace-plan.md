@@ -1,6 +1,6 @@
 # Validation 0039: Post-Exec Resource Trace-Only Plan
 
-Status: Planned, not executed
+Status: Planned and implemented; first result recorded in validation 0040
 
 Date: 2026-06-27
 
@@ -187,4 +187,22 @@ step is either:
 ```text
 1. a narrower workload or kprobe argument capture improvement, or
 2. a CONFIG_CAPSCHED internal observation-only patch proposal.
+```
+
+## Prepared Artifacts
+
+The planned runner and workload are:
+
+```text
+capsched/capsched-models/validation/run-post-exec-resource-qemu-trace.sh
+capsched/capsched-models/validation/workloads/post_exec_resource_workload.c
+```
+
+The runner is intended to reuse an existing QEMU `bzImage` by default. Set
+`CAPSCHED_POSTEXEC_QEMU_REBUILD=1` only when a fresh kernel build is required.
+
+First execution result:
+
+```text
+capsched/capsched-models/validation/0040-post-exec-resource-qemu-trace-result.md
 ```
