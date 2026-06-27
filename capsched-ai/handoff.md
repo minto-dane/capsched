@@ -415,13 +415,37 @@ validation/0047:
     is Linux-mutable and lacks monitor QueueTag, Domain epoch, typed ledger ids,
     QueueControlCap, RepresentorForward derivation, service BudgetTicket, and
     revoke epoch/quarantine outcome.
+
+formal/0029 + validation/0048:
+  XDP and AF_XDP memory ownership model checked
+  model:
+    formal/0029-xdp-afxdp-memory-ownership-model/XdpAfxdpMemoryOwnership.tla
+  validation:
+    validation/0048-xdp-afxdp-memory-ownership-tlc.md
+  safe result:
+    PASS, 19 generated states, 13 distinct states, depth 6
+  unsafe counterexamples:
+    XDP_TX submit without page-pool ownership
+    AF_XDP submit without XSK/UMEM ownership
+    DMA submit without live MemoryView
+    ambient AF_XDP descriptor use without freeze
+    cross-Domain DMA
+    completion without typed ledger
+    double return of packet memory
+    return after revoke
+    submit without budget
+  key rule:
+    XDP_TX page-pool reuse and AF_XDP zero-copy require explicit memory
+    ownership authority. Queue reachability, SKB authority, generic XDP
+    authority, or ambient driver state cannot authorize DMA-capable packet
+    memory.
 ```
 
-Next work remains modeling-first: model XDP page-pool / AF_XDP XSK ownership
-and QueueControl / RepresentorForward derivation before any behavior-changing
-device hook. The older post-exec gaps also remain: eventfd kernel signal
-provenance, epoll delivery/watched-endpoint correlation, io_uring fixed-file
-consumption, and execfd handoff before behavior-changing endpoint hooks.
+Next work remains modeling-first: model QueueControl / RepresentorForward
+derivation before any behavior-changing device hook. The older post-exec gaps
+also remain: eventfd kernel signal provenance, epoll delivery/watched-endpoint
+correlation, io_uring fixed-file consumption, and execfd handoff before
+behavior-changing endpoint hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

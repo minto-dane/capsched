@@ -63,11 +63,10 @@ Updated: 2026-06-27
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. XDP page-pool and AF_XDP XSK/UMEM ownership semantics.
-4. QueueControl and RepresentorForward derivation semantics.
-5. Workqueue origin QEMU stack-trace observation runner.
-6. Slice 0C trace-only observation patch map only if schema/modeling requires it.
-7. Queue/descriptor trace-only patch map only if readiness gaps require it.
+3. QueueControl and RepresentorForward derivation semantics.
+4. Workqueue origin QEMU stack-trace observation runner.
+5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+6. Queue/descriptor trace-only patch map only if readiness gaps require it.
 
 ## Behavior Tag Artifacts
 

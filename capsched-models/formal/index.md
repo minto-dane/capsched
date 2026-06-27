@@ -34,6 +34,7 @@ Updated: 2026-06-27
 | 0026 | Checked with safe pass and expected unsafe counterexamples | Post-Exec Resource Inheritance Model |
 | 0027 | Checked with safe pass and expected unsafe counterexamples | Aggregate QueueLease Settlement Model |
 | 0028 | Checked with safe pass and expected unsafe counterexamples | Modern NIC QueueLease Model |
+| 0029 | Checked with safe pass and expected unsafe counterexamples | XDP and AF_XDP Memory Ownership Model |
 
 ## Planned
 

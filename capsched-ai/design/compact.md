@@ -386,6 +386,20 @@ validation/0047
     XDP page-pool / AF_XDP XSK ownership.
     QueueControl / RepresentorForward derivation.
 
+formal/0029 + validation/0048
+  XDP and AF_XDP memory ownership model:
+  safe TLC passed with 19 generated states, 13 distinct states, and depth 6.
+  Unsafe configs produced expected counterexamples for:
+    XDP_TX without page-pool ownership; AF_XDP without XSK/UMEM ownership;
+    DMA without MemoryView; ambient AF_XDP descriptor use; cross-Domain DMA;
+    completion without typed ledger; double memory return; return after revoke;
+    submit without budget.
+  Rule:
+    XDP_TX page-pool reuse and AF_XDP zero-copy submit are memory ownership
+    problems as much as queue submit problems. Queue reachability, SKB
+    authority, generic XDP authority, or ambient driver state must not authorize
+    DMA-capable packet memory.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

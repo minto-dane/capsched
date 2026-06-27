@@ -53,6 +53,7 @@ Updated: 2026-06-27
 | 0045 | Executed; high-severity semantic gaps remain | Queue/Descriptor Ledger Observation Plan |
 | 0046 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC QueueLease TLC |
 | 0047 | Executed; high-severity semantic gaps remain | ice Modern NIC Readiness Result |
+| 0048 | Safe model passed; unsafe models produced expected counterexamples | XDP and AF_XDP Memory Ownership TLC |
 
 ## Principles
 
