@@ -156,6 +156,17 @@ Important: function-entry tracing can be ambiguous. For example,
 not expose `ENQUEUE_DELAYED`, and `__pick_next_task` does not prove the fair
 fast path.
 
+A userspace-only workload helper now exists:
+
+```text
+capsched/capsched-models/validation/0018-slice0c-synthetic-workload-helper.md
+capsched/capsched-models/validation/build-slice0c-workload.sh
+capsched/capsched-models/validation/workloads/slice0c_sched_workload.c
+```
+
+It builds to `build/workloads/slice0c_sched_workload` and passed non-trace
+smoke tests for `forkexec`, `futex`, `pressure`, and `affinity` modes.
+
 Trace execution readiness was checked in:
 
 ```text
@@ -351,8 +362,11 @@ capsched/capsched-models/implementation/0006-slice0c-trace-observation-gate.md
 capsched/capsched-models/validation/0015-slice0c-no-code-trace-plan.md
 capsched/capsched-models/validation/0016-slice0c-trace-readiness-check.md
 capsched/capsched-models/validation/0017-slice0c-trace-analysis-and-workloads.md
+capsched/capsched-models/validation/0018-slice0c-synthetic-workload-helper.md
 capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
 capsched/capsched-models/validation/analyze-slice0c-trace.sh
+capsched/capsched-models/validation/build-slice0c-workload.sh
+capsched/capsched-models/validation/workloads/slice0c_sched_workload.c
 ```
 
 Stopped full integration run identity:

@@ -129,7 +129,19 @@ sudo ./capsched/capsched-models/validation/run-slice0c-no-code-trace.sh \
   bash -lc 'for i in $(seq 1 200); do sleep 0.001 & wait $!; done'
 ```
 
-This is weak. A small userspace C futex ping-pong workload may be needed later.
+A small userspace C futex ping-pong workload is now available:
+
+```text
+capsched-models/validation/workloads/slice0c_sched_workload.c
+capsched-models/validation/build-slice0c-workload.sh
+```
+
+After building:
+
+```sh
+sudo ./capsched/capsched-models/validation/run-slice0c-no-code-trace.sh \
+  ./build/workloads/slice0c_sched_workload futex 50000 cross
+```
 
 ### W2: Cross-CPU Wake
 
@@ -280,3 +292,11 @@ source-only refinement before any patch
 
 The default should remain no Linux patch unless the observation gap directly
 blocks the next assurance gate.
+
+## Helper Workload
+
+The userspace helper is documented in:
+
+```text
+capsched-models/validation/0018-slice0c-synthetic-workload-helper.md
+```
