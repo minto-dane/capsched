@@ -23,6 +23,10 @@ CapSched-Linux.
 `implementation/`
 : Implementation plans, patch maps, branch plans, and prototype notes.
 
+`assurance/`
+: Claim trees, evidence registers, forbidden-claim lists, and gate criteria
+  that tie models and patches to the final security and efficiency goals.
+
 ## Boundary
 
 AI handoff, state ledger, compact design memory, decisions, and templates live

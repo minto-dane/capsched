@@ -14,7 +14,13 @@ Updated: 2026-06-26
 
 ## Likely Future Plan Records
 
-1. Assurance case subclaim tree.
-2. Validation plan for enqueue/pick/tick semantics.
-3. Validation plan for async provenance.
-4. EndpointCap model execution plan.
+1. Validation plan for enqueue/pick/tick semantics.
+2. Validation plan for async provenance.
+3. EndpointCap model execution plan.
+4. Trace-only Slice 0C observation plan or wakeup/enqueue source-coverage gate.
+
+## Related Assurance Artifacts
+
+| ID | Status | Title |
+| --- | --- | --- |
+| 0001 | Active | Hypervisor-Grade Domain Separation Case |

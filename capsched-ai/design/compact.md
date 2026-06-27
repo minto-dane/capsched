@@ -12,13 +12,13 @@ boundaries at lower operational cost.
 
 Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
-`0b685979f27b3d42ee620ced5f707ee391a2a27f`. No behavior-changing implementation
-patch points are decided yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0014`. A candidate Linux L0
-Runnable Lease implementation plan has been derived from the checked model, but
-Linux source now contains the first Slice 0A commit. The first patch slice was
-narrowed to inert `CONFIG_CAPSCHED` build scaffolding with no task layout or
-scheduler behavior changes.
+`7cf0b1e415bcead8a2079c8be94a9d41aad7d462`. No behavior-changing implementation
+patch points are accepted yet. A first deep source-analysis pass now exists in
+`capsched-models/analysis/0002` through `0018`. A candidate Linux L0 Runnable
+Lease implementation plan has been derived from the checked model. Linux source
+now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
+type-only authority scaffolding, both with no task layout or scheduler behavior
+changes.
 
 ## Core Architecture
 
@@ -127,6 +127,33 @@ Current first model target:
 ```text
 Task + TaskGeneration + ProcessGeneration + Domain + DomainEpoch
 + RunCap + SchedContext + FrozenRunUse + RunqueueState + CPU + Budget
+```
+
+## Assurance Root
+
+The assurance-case foundation is now:
+
+```text
+capsched-models/assurance/index.md
+capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md
+capsched-models/assurance/claims.json
+```
+
+Top-level production claim:
+
+```text
+TOP-001:
+  Domain-local userspace plus Domain-local Linux kernel-context compromise
+  cannot cross into another Domain except by breaking the HyperTag Monitor or
+  an explicitly exposed typed service endpoint.
+```
+
+Current status:
+
+```text
+No claim is Protection-evidenced.
+Linux-only L0 evidence is prototype or compatibility evidence only.
+Every future Linux patch must name the assurance claim and gate it supports.
 ```
 
 The first TLA+ Runnable Lease model exists and passed TLC invariant checking in

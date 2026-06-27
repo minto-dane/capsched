@@ -1,0 +1,531 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-26",
+  "scope": "CapSched-H production assurance case with Linux-only L0 prototype boundaries",
+  "status_legend": {
+    "open": "Required for the final goal but not established.",
+    "model_supported": "Supported by small or decomposed semantic models.",
+    "prototype_evidenced": "Supported by Linux compatibility or integration evidence only.",
+    "protection_evidenced": "Supported by monitor-backed production implementation and validation.",
+    "forbidden_for_l0": "Must not be claimed by Linux-only prototypes."
+  },
+  "claims": [
+    {
+      "id": "TOP-001",
+      "parent": null,
+      "status": "open",
+      "title": "Cross-Domain escape requires monitor or typed endpoint break",
+      "claim": "A Domain-local userspace and Linux-kernel-context compromise cannot cross into another Domain's memory, execution authority, device queue, DMA memory, or control authority without breaking the HyperTag Monitor or an explicitly exposed typed service endpoint.",
+      "children": [
+        "ACT-001",
+        "EXEC-001",
+        "BUDGET-001",
+        "ENDP-001",
+        "ASYNC-001",
+        "MEM-001",
+        "TLB-001",
+        "PCACHE-001",
+        "DEV-001",
+        "REVOKE-001",
+        "CLUSTER-001",
+        "COMPAT-001",
+        "TCB-001",
+        "SIDE-001",
+        "EVAL-001"
+      ],
+      "evidence": [
+        "E-MAP-001"
+      ],
+      "gaps": [
+        "No monitor implementation.",
+        "No per-Domain mutable kernel state implementation.",
+        "No exploit-containment evaluation."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "ACT-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "Non-forgeable Domain activation",
+      "claim": "Linux-visible Domain shadows do not create active authority; monitor validation of RunToken, epoch, placement, root budget, and MemoryView is required.",
+      "evidence": [
+        "E-ACT-001",
+        "E-L0-002"
+      ],
+      "gaps": [
+        "No HyperTag Monitor.",
+        "No sealed RunToken.",
+        "No arch activation path.",
+        "No proof that Linux cannot mutate active roots."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "EXEC-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "No CPU execution without runnable authority",
+      "claim": "A task cannot enter or remain executable without a live RunCap-derived FrozenRunUse, SchedContext, epoch, generation, CPU placement, and remaining budget.",
+      "evidence": [
+        "E-RUN-001",
+        "E-L0-002"
+      ],
+      "gaps": [
+        "No enqueue/pick/tick implementation.",
+        "No wakeup/migration/remote wake coverage.",
+        "No scheduler class coverage.",
+        "No monitor timer."
+      ],
+      "forbidden_l0": false
+    },
+    {
+      "id": "BUDGET-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "CPU and service execution stay within root budget",
+      "claim": "Domain CPU use and service execution on behalf of callers are bounded by non-forgeable root budgets and caller-reserved BudgetTickets.",
+      "evidence": [
+        "E-BUD-001"
+      ],
+      "gaps": [
+        "No monitor root budget timer.",
+        "No Linux accounting integration.",
+        "No service-domain debit/refund policy."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "ENDP-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "Resource access requires typed endpoint authority",
+      "claim": "Resource operations require EndpointCap-derived frozen use; scheduler RunCap is not resource authority.",
+      "evidence": [
+        "E-ENDP-001",
+        "HAZ-ENDP-001"
+      ],
+      "gaps": [
+        "No VFS/socket endpoint implementation.",
+        "No fd survival/revocation semantics.",
+        "No io_uring registered-resource enforcement."
+      ],
+      "forbidden_l0": false
+    },
+    {
+      "id": "ASYNC-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "Async work preserves caller provenance",
+      "claim": "Domain-derived async work executes with caller provenance and frozen caller authority.",
+      "evidence": [
+        "E-ENDP-001",
+        "HAZ-ENDP-001"
+      ],
+      "gaps": [
+        "No CapSched work wrapper.",
+        "No io_uring carrier implementation.",
+        "No timer, RCU, softirq, or completion provenance policy."
+      ],
+      "forbidden_l0": false
+    },
+    {
+      "id": "MEM-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "Other Domain memory and mutable kernel state are unmapped",
+      "claim": "Domain-private user pages and mutable kernel pages are mapped only in the owning MemoryView or through explicit service/shared buffers.",
+      "evidence": [
+        "E-MEM-001"
+      ],
+      "gaps": [
+        "No monitor PageOwner.",
+        "No MemoryView implementation.",
+        "No direct-map split/removal.",
+        "No per-Domain mutable kernel-state allocator plan."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "TLB-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "No stale translation crosses activation or revoke",
+      "claim": "Domain activation and page revoke leave no usable stale direct-map, stage-2/EPT, ASID/PCID/VMID, IOMMU, or CPU TLB translation into another Domain.",
+      "evidence": [
+        "E-TLB-001"
+      ],
+      "counterexamples": [
+        "CEX-TLB-001"
+      ],
+      "gaps": [
+        "No arch implementation.",
+        "No shootdown ordering proof.",
+        "No IOMMU TLB ordering proof."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "PCACHE-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "Mutable page cache is Domain-owned or service-mediated",
+      "claim": "Sealed base content may be shared, but mutable overlays are Domain-owned and commits are serialized through a service endpoint or equivalent token.",
+      "evidence": [
+        "E-PCACHE-001"
+      ],
+      "counterexamples": [
+        "CEX-PCACHE-001"
+      ],
+      "gaps": [
+        "No filesystem-specific implementation.",
+        "No writeback/reclaim integration.",
+        "No crash-consistency policy."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "Queue submit, DMA, IRQ, and rate revoke as one lease",
+      "claim": "Device queue ownership, allowed DMA memory, interrupt route, epoch, and queue budget/rate limit are one monitor-owned QueueLease boundary.",
+      "evidence": [
+        "E-DEV-001"
+      ],
+      "counterexamples": [
+        "CEX-DEV-001"
+      ],
+      "gaps": [
+        "No device-specific queue model.",
+        "No IOMMU implementation.",
+        "No IRQ remapping implementation.",
+        "No DMA attack tests."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "REVOKE-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "Epoch revoke invalidates all authority paths",
+      "claim": "Domain, process, object, queue, endpoint, and cluster epoch revocation invalidates active, queued, delayed, async, remote, and cached authority before reuse.",
+      "evidence": [
+        "E-RUN-001",
+        "E-CLUSTER-002",
+        "E-MEM-001",
+        "E-DEV-001"
+      ],
+      "gaps": [
+        "No lazy-vs-eager Linux revoke decision.",
+        "No queue drain policy.",
+        "No async cancellation policy.",
+        "No endpoint-family object generation policy."
+      ],
+      "forbidden_l0": false
+    },
+    {
+      "id": "CLUSTER-001",
+      "parent": "TOP-001",
+      "status": "model_supported",
+      "title": "Cluster leases compile local before use",
+      "claim": "Cluster-wide authority compiles into node-local Domain epoch, SchedContext, EndpointCap, BudgetTicket, and QueueLease state before local use.",
+      "evidence": [
+        "E-CLUSTER-001",
+        "E-CLUSTER-002"
+      ],
+      "gaps": [
+        "No cluster control plane.",
+        "No signed lease format.",
+        "No node admission path.",
+        "No migration/rebalancing policy."
+      ],
+      "forbidden_l0": false
+    },
+    {
+      "id": "COMPAT-001",
+      "parent": "TOP-001",
+      "status": "prototype_evidenced",
+      "title": "Linux compatibility is preserved",
+      "claim": "CapSched refines Linux scheduler, cgroup, cpuset, namespace, cred, LSM, rlimit, hotplug, and topology constraints without silently bypassing them or breaking ABI compatibility.",
+      "evidence": [
+        "E-L0-001",
+        "E-L0-002",
+        "E-MAP-001"
+      ],
+      "gaps": [
+        "No boot/runtime evidence.",
+        "No workload compatibility matrix.",
+        "No scheduler behavior patch yet."
+      ],
+      "forbidden_l0": false
+    },
+    {
+      "id": "TCB-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Monitor and service domains stay smaller than VM/VMM attack area",
+      "claim": "The production TCB is small enough to improve or preserve attack surface while reducing cost versus per-VM guest kernels.",
+      "evidence": [],
+      "gaps": [
+        "No monitor code.",
+        "No TCB line/interface count.",
+        "No service-domain split design.",
+        "No KVM or Firecracker comparison."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "SIDE-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Co-tenancy and side-channel policy is explicit",
+      "claim": "CPU core, SMT, cache, NUMA, device, and queue co-tenancy decisions are explicit Domain policy.",
+      "evidence": [],
+      "gaps": [
+        "No side-channel threat partition.",
+        "No core scheduling integration.",
+        "No cache/NUMA isolation policy."
+      ],
+      "forbidden_l0": false
+    },
+    {
+      "id": "EVAL-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Exploit and cost baselines are tested",
+      "claim": "CapSched-H provides VM-like cross-Domain protection and better cost efficiency for selected datacenter workloads.",
+      "evidence": [],
+      "gaps": [
+        "No kernel-exploit containment test.",
+        "No cross-Domain memory/DMA test.",
+        "No monitor escape test.",
+        "No cost, tail-latency, throughput, or density benchmark."
+      ],
+      "forbidden_l0": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E-RUN-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0001-runnable-lease-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "REVOKE-001"
+      ]
+    },
+    {
+      "id": "E-L0-001",
+      "kind": "linux_build_validation",
+      "record": "capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
+      "supports": [
+        "COMPAT-001"
+      ]
+    },
+    {
+      "id": "E-ENDP-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0005-endpoint-async-tlc.md",
+      "supports": [
+        "ENDP-001",
+        "ASYNC-001"
+      ]
+    },
+    {
+      "id": "E-BUD-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0006-broker-budget-ticket-tlc.md",
+      "supports": [
+        "BUDGET-001"
+      ]
+    },
+    {
+      "id": "E-ACT-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0007-domain-monitor-activation-tlc.md",
+      "supports": [
+        "ACT-001"
+      ]
+    },
+    {
+      "id": "E-CLUSTER-001",
+      "kind": "negative_stress_record",
+      "record": "capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md",
+      "supports": [
+        "CLUSTER-001"
+      ],
+      "limitation": "Full integration TLC run stopped after state explosion and is not a pass."
+    },
+    {
+      "id": "E-CLUSTER-002",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0009-cluster-authority-decomposition-tlc.md",
+      "supports": [
+        "CLUSTER-001",
+        "REVOKE-001"
+      ]
+    },
+    {
+      "id": "E-MEM-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0010-memory-ownership-tlc.md",
+      "supports": [
+        "MEM-001",
+        "REVOKE-001"
+      ]
+    },
+    {
+      "id": "E-TLB-001",
+      "kind": "counterexample_driven_tla_validation",
+      "record": "capsched-models/validation/0011-direct-map-tlb-tlc.md",
+      "supports": [
+        "TLB-001"
+      ]
+    },
+    {
+      "id": "E-PCACHE-001",
+      "kind": "counterexample_driven_tla_validation",
+      "record": "capsched-models/validation/0012-page-cache-overlay-tlc.md",
+      "supports": [
+        "PCACHE-001"
+      ]
+    },
+    {
+      "id": "E-DEV-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0013-queue-lease-tlc.md",
+      "supports": [
+        "DEV-001",
+        "REVOKE-001"
+      ]
+    },
+    {
+      "id": "E-L0-002",
+      "kind": "linux_build_validation",
+      "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
+      "supports": [
+        "COMPAT-001"
+      ]
+    },
+    {
+      "id": "E-MAP-001",
+      "kind": "analysis",
+      "record": "capsched-models/analysis/0018-protection-claim-evidence-map.md",
+      "supports": [
+        "TOP-001",
+        "COMPAT-001"
+      ]
+    },
+    {
+      "id": "HAZ-ENDP-001",
+      "kind": "analysis_hazard",
+      "record": "capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md",
+      "supports": [
+        "ENDP-001",
+        "ASYNC-001"
+      ],
+      "limitation": "Socket endpoint checks cannot rely only on LSM because some paths reuse sock_sendmsg_nosec()."
+    }
+  ],
+  "counterexamples": [
+    {
+      "id": "CEX-TLB-001",
+      "record": "capsched-models/validation/0011-direct-map-tlb-tlc.md",
+      "meaning": "Domain switch without flush or retag leaves stale TLB authority."
+    },
+    {
+      "id": "CEX-PCACHE-001",
+      "record": "capsched-models/validation/0012-page-cache-overlay-tlc.md",
+      "meaning": "Per-overlay commit without base serialization permits stale commit."
+    },
+    {
+      "id": "CEX-DEV-001",
+      "record": "capsched-models/validation/0013-queue-lease-tlc.md",
+      "meaning": "IRQ aliasing across non-free queues must be forbidden."
+    },
+    {
+      "id": "NEG-CLUSTER-001",
+      "record": "capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md",
+      "meaning": "Full ClusterLease integration TLC did not finish and is not a pass."
+    }
+  ],
+  "forbidden_claims": [
+    "Linux-only L0 provides hypervisor-grade isolation.",
+    "task_struct Domain pointers create a hard security boundary.",
+    "RunCap is resource endpoint authority.",
+    "EndpointCap is CPU execution authority.",
+    "SchedContext budget is monitor root budget.",
+    "Linux page/slab/memcg/page-cache metadata is memory authority.",
+    "VFIO/iommufd Linux objects are production queue authority roots.",
+    "BPF or sched_ext is the production root for No RunCap, no run.",
+    "Cluster-wide leases are directly executable.",
+    "TLC completion alone proves the datacenter OS goal."
+  ],
+  "gates": [
+    {
+      "id": "G0",
+      "status": "completed",
+      "title": "Vocabulary and build compatibility",
+      "evidence": [
+        "E-L0-001",
+        "E-L0-002"
+      ],
+      "allowed_claim": "CONFIG_CAPSCHED scaffolding and type-only vocabulary build without changing Linux scheduler behavior."
+    },
+    {
+      "id": "G1",
+      "status": "active",
+      "title": "Assurance case foundation",
+      "exit_criteria": [
+        "Top-level claim exists.",
+        "Subclaim tree exists.",
+        "Current evidence is mapped.",
+        "Counterexamples are visible.",
+        "Forbidden L0 claims are visible.",
+        "Next Linux slice must name which claim it supports."
+      ]
+    },
+    {
+      "id": "G2",
+      "status": "candidate",
+      "title": "Trace-only Linux observation",
+      "allowed": [
+        "Domain shadow identity trace or debug counters.",
+        "Context-switch observation.",
+        "Wakeup/enqueue coverage measurement.",
+        "No scheduling decision changes."
+      ]
+    },
+    {
+      "id": "G3",
+      "status": "blocked",
+      "title": "Runnable lease prototype"
+    },
+    {
+      "id": "G4",
+      "status": "blocked",
+      "title": "Async and endpoint prototype"
+    },
+    {
+      "id": "G5",
+      "status": "blocked",
+      "title": "Monitor and memory prototype"
+    },
+    {
+      "id": "G6",
+      "status": "blocked",
+      "title": "Queue lease prototype"
+    },
+    {
+      "id": "G7",
+      "status": "blocked",
+      "title": "Hypervisor-replacement evaluation"
+    }
+  ],
+  "next_linux_choice": [
+    "Slice 0C trace-only Domain shadow identity and transition observation.",
+    "Narrow source-analysis gate for wakeup/enqueue/runnable-state coverage before any trace patch."
+  ],
+  "safer_default": "Run the source-analysis gate if any scheduler path coverage question remains unclear."
+}

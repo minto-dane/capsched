@@ -98,6 +98,20 @@ It adds only opaque authority names and comments. It does not add task layout,
 scheduler hooks, endpoint hooks, monitor activation, user ABI, or any security
 claim.
 
+The assurance-case foundation now exists:
+
+```text
+capsched/capsched-models/assurance/index.md
+capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md
+capsched/capsched-models/assurance/claims.json
+```
+
+The top-level production claim is `TOP-001`: a Domain-local userspace and
+Linux-kernel-context compromise should cross into another Domain only by
+breaking the HyperTag Monitor or an explicitly exposed typed service endpoint.
+The claim tree currently has no `Protection-evidenced` claim. All production
+security claims remain open until monitor-backed evidence exists.
+
 ## Recovery Path
 
 Read in this order:
@@ -248,8 +262,9 @@ endpoint model, broker budget model, and domain monitor activation model are
 checked, the Linux attachment map exists, and decomposed cluster authority,
 MemoryOwnership, DirectMapTLB, PageCacheOverlay, and QueueLease models are
 checked. The next gate is chosen: Slice 0B type-only endpoint/broker/domain
-authority scaffolding is done; the next project-control gate is the
-assurance-case subclaim tree. Device-specific QueueLease endpoint models remain
+authority scaffolding is done; the assurance-case subclaim tree is now the
+current project-control root. Any next Linux slice must name which assurance
+claim and gate it supports. Device-specific QueueLease endpoint models remain
 future L4 gates.
 
 Endpoint attachment records:
@@ -275,6 +290,8 @@ capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md
 capsched/capsched-models/plans/0005-assurance-driven-achievement-plan.md
 capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md
 capsched/capsched-models/validation/0014-l0-slice0b-build-run.md
+capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md
+capsched/capsched-models/assurance/claims.json
 ```
 
 Stopped full integration run identity:
@@ -328,6 +345,6 @@ repo: ../linux
 remote: upstream = https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 branch: capsched-linux-l0
 base: 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
-current commit: 0b685979f27b3d42ee620ced5f707ee391a2a27f
-current subject: sched/capsched: Add inert scaffolding
+current commit: 7cf0b1e415bcead8a2079c8be94a9d41aad7d462
+current subject: sched/capsched: Add type-only authority scaffolding
 ```
