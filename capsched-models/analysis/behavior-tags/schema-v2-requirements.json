@@ -1,0 +1,417 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-27",
+  "purpose": "Requirements for behavior tag schema v2 before any tag-driven CapSched hook selection.",
+  "status": "requirements_only",
+  "not_yet": [
+    "not a behavior tag ledger",
+    "not a solver input",
+    "not enforcement evidence",
+    "not production security evidence"
+  ],
+  "core_rules": [
+    {
+      "id": "RULE-001",
+      "text": "Safety, security, compatibility, trust-root, and claim-scope constraints are hard filters, never weighted objectives."
+    },
+    {
+      "id": "RULE-002",
+      "text": "Observation coverage must never satisfy enforcement or production security obligations."
+    },
+    {
+      "id": "RULE-003",
+      "text": "Linux-only L0 evidence must never satisfy monitor-backed CapSched-H production claims."
+    },
+    {
+      "id": "RULE-004",
+      "text": "Unknown safety fields make a candidate ineligible for enforcement selection."
+    },
+    {
+      "id": "RULE-005",
+      "text": "Cost and benefit vectors must be separate and must define polarity, unit, unknown policy, and evidence source."
+    },
+    {
+      "id": "RULE-006",
+      "text": "Scheduler hot paths may validate only local compiled authority; they must not acquire distributed authority."
+    }
+  ],
+  "mandatory_fields": {
+    "identity": {
+      "id": "stable unique id",
+      "kind": "behavior_path | hook_candidate | hard_constraint | objective",
+      "description": "short human-readable description",
+      "source_anchors": "list of file:line or function anchors"
+    },
+    "claim_boundary": {
+      "claim_scope": [
+        "l0_observation",
+        "l0_linux_enforcement",
+        "caph_monitor_enforced",
+        "caph_hardware_enforced"
+      ],
+      "enforcement_strength": [
+        "observation_only",
+        "debug_assert",
+        "default_permissive",
+        "fail_closed_linux",
+        "fail_closed_monitor",
+        "hardware_enforced"
+      ],
+      "proof_status": [
+        "unmodeled",
+        "model_required",
+        "model_passed",
+        "counterexample_known",
+        "linux_observed",
+        "protection_evidenced"
+      ]
+    },
+    "trust_and_mutability": {
+      "trust_root": [
+        "linux_mutable_shadow",
+        "monitor_sealed_token",
+        "monitor_epoch",
+        "hardware_memory_view",
+        "iommu_irq_root",
+        "service_endpoint",
+        "cluster_compiled_local_authority"
+      ],
+      "attacker_mutability": [
+        "writable_by_domain_kernel_compromise",
+        "linux_global_mutable",
+        "service_domain_mutable",
+        "monitor_only",
+        "hardware_only"
+      ],
+      "authority_locality": [
+        "monitor_sealed_local",
+        "linux_shadow_only",
+        "cluster_shadow_only",
+        "service_brokered",
+        "remote_untrusted_hint"
+      ]
+    },
+    "authority_semantics": {
+      "authority_event": [
+        "creates_authority",
+        "freezes_authority",
+        "preserves_authority",
+        "refreshes_authority",
+        "selects_authority",
+        "activates_authority",
+        "consumes_budget",
+        "observes_only"
+      ],
+      "authority_lifetime": [
+        "none",
+        "until_enqueue",
+        "while_queued",
+        "while_selected",
+        "while_running",
+        "until_epoch_revoke",
+        "until_budget_exhausted",
+        "until_lease_expiry"
+      ],
+      "authority_exemption_source": [
+        "none",
+        "compile_time_trusted_class",
+        "monitor_sealed_policy",
+        "linux_mutable_flag_forbidden"
+      ]
+    },
+    "failure_and_revocation": {
+      "failure_action": [
+        "not_modeled_invalid",
+        "reject_before_mutation",
+        "dequeue_quarantine",
+        "select_idle",
+        "force_resched",
+        "monitor_fail_closed",
+        "panic_or_isolate_cpu"
+      ],
+      "failability_after_mutation": [
+        "no_mutation_yet",
+        "state_written",
+        "class_state_mutated",
+        "rq_curr_mutated",
+        "context_switch_committed",
+        "rollback_not_available"
+      ],
+      "revocation_scope": [
+        "active",
+        "selected",
+        "queued",
+        "delayed",
+        "remote_pending",
+        "async",
+        "cached",
+        "service_ticket",
+        "device_queue",
+        "tlb",
+        "iommu",
+        "memory_view",
+        "audit_epoch"
+      ],
+      "revocation_stop_point": [
+        "before_enqueue",
+        "before_pick",
+        "before_switch",
+        "before_monitor_activation",
+        "before_endpoint_submit",
+        "before_device_dma"
+      ],
+      "revocation_latency_bound": [
+        "same_cpu_instruction_bound",
+        "next_local_epoch_check",
+        "next_pick",
+        "next_switch",
+        "lease_expiry",
+        "unbounded_forbidden"
+      ]
+    },
+    "linux_scheduler_context": {
+      "ordering_context": [
+        "state_checked_before_on_rq",
+        "on_cpu_acquire_required",
+        "finish_task_release_pair",
+        "rq_curr_rcu_publish",
+        "membarrier_sensitive",
+        "control_dependency_required",
+        "smp_mb_after_spinlock_required"
+      ],
+      "lock_context": [
+        "none",
+        "rq_lock",
+        "rq_lock_irq",
+        "p_pi_lock",
+        "double_rq_lock",
+        "preempt_disabled",
+        "raw_irq_disabled",
+        "rq_pinned",
+        "lock_dropped_reacquired",
+        "may_sleep",
+        "may_allocate",
+        "scheduler_class_callback_lock_contract"
+      ],
+      "class_semantics": [
+        "fair",
+        "rt_throttling",
+        "rt_pushable",
+        "deadline_cbs",
+        "deadline_replenish",
+        "deadline_server",
+        "idle",
+        "stop_class",
+        "sched_ext_dsq",
+        "sched_ext_direct_dispatch",
+        "sched_ext_bypass",
+        "sched_ext_fallback",
+        "core_sched_cached_pick",
+        "core_sched_force_idle"
+      ],
+      "config_scope": [
+        "SMP",
+        "UP",
+        "PREEMPT_DYNAMIC",
+        "PREEMPT_RT",
+        "SCHED_CORE",
+        "SCHED_CLASS_EXT",
+        "SCHED_PROXY_EXEC",
+        "CPUSETS",
+        "HOTPLUG_CPU",
+        "FAIR_GROUP_SCHED",
+        "CFS_BANDWIDTH",
+        "RT_GROUP_SCHED",
+        "UCLAMP"
+      ],
+      "bypass_surface": [
+        "kthread",
+        "workqueue",
+        "task_work",
+        "io_uring",
+        "softirq",
+        "timer",
+        "rcu",
+        "stop_task",
+        "migration_thread",
+        "sched_ext"
+      ]
+    },
+    "performance_and_cost": {
+      "event_frequency": {
+        "direction": "informational",
+        "unit_examples": ["events_per_second", "events_per_workload", "ratio"],
+        "required_dimensions": [
+          "wake_hot_path_event_rate",
+          "enqueue_hot_path_event_rate",
+          "pick_hot_path_event_rate",
+          "switch_hot_path_event_rate",
+          "remote_wake_ratio",
+          "migration_rate",
+          "domain_switch_ratio",
+          "revocation_rate"
+        ]
+      },
+      "local_cost_vector": {
+        "direction": "minimize",
+        "required_dimensions": [
+          "per_call_cycles_estimate",
+          "branch_cost",
+          "branch_predictability",
+          "cacheline_read_set",
+          "cacheline_write_set",
+          "false_sharing_risk",
+          "rq_lock_extension_ns",
+          "pi_lock_extension_ns",
+          "atomic_cost",
+          "rcu_cost",
+          "layout_cost",
+          "trace_or_observation_cost"
+        ]
+      },
+      "system_cost_vector": {
+        "direction": "minimize",
+        "required_dimensions": [
+          "ipi_rate_delta",
+          "tlb_flush_rate_delta",
+          "monitor_transition_rate",
+          "service_domain_ipc_rate",
+          "queue_lease_rebind_rate",
+          "numa_remote_state_access",
+          "revocation_fanout_cost"
+        ]
+      },
+      "benefit_vector": {
+        "direction": "maximize",
+        "required_dimensions": [
+          "same_domain_fast_path_benefit",
+          "same_domain_run_length",
+          "batching_potential",
+          "domain_affinity_benefit",
+          "memory_view_switch_reduction",
+          "direct_queue_datapath_benefit"
+        ]
+      },
+      "implementation_strategy": {
+        "direction": "informational",
+        "required_dimensions": [
+          "disabled_overhead_class",
+          "static_branch_state",
+          "compiled_out_when_disabled",
+          "hot_struct_layout_change"
+        ]
+      }
+    },
+    "scalability_and_cluster": {
+      "scalability_vector": [
+        "per_cpu_local",
+        "cross_cpu_shared",
+        "global_lock_pressure",
+        "rq_local_only",
+        "smt_core_coupled",
+        "hotplug_sensitive",
+        "per_domain_state_size",
+        "per_task_state_size",
+        "per_cpu_domain_cache",
+        "domain_count_sensitive",
+        "epoch_revoke_fanout",
+        "grant_lifetime_pressure"
+      ],
+      "cluster_lease_role": [
+        "non_executable_policy_token",
+        "compile_input_only",
+        "local_schedcontext_output",
+        "local_endpointcap_output",
+        "local_queuelease_output",
+        "local_memoryview_output"
+      ],
+      "lease_compile_site": [
+        "admission_control_plane",
+        "node_local_compiler",
+        "monitor_seal",
+        "scheduler_hot_path_forbidden"
+      ],
+      "partition_mode": [
+        "healthy",
+        "control_plane_unreachable",
+        "remote_service_unreachable",
+        "split_brain_suspected",
+        "node_quarantined"
+      ],
+      "partition_semantics": [
+        "continue_existing_local_budget",
+        "deny_new_remote_authority",
+        "deny_remote_endpoint_use",
+        "expire_without_renewal",
+        "fail_closed_on_epoch_uncertainty",
+        "audit_buffer_locally"
+      ],
+      "failure_domain": [
+        "task_local",
+        "domain_local",
+        "service_domain_local",
+        "node_local",
+        "cluster_cell_local",
+        "cluster_wide"
+      ]
+    },
+    "evidence": {
+      "source_line": "file:line or function anchor",
+      "runtime_evidence": "QEMU run, tracepoint, ftrace, kprobe, count, or sample",
+      "confidence": [
+        "source_confirmed",
+        "runtime_observed",
+        "runtime_not_observed",
+        "optimized_away",
+        "config_not_enabled",
+        "inferred",
+        "unknown"
+      ],
+      "measurement_source": [
+        "source_reading",
+        "qemu_trace",
+        "qemu_kprobe",
+        "perf",
+        "lockstat",
+        "pahole",
+        "formal_model",
+        "not_measured"
+      ]
+    }
+  },
+  "hard_reject_tags": [
+    "observation_only_satisfies_security_claim",
+    "linux_mutable_shadow_as_production_root",
+    "cluster_consensus_in_wake_pick_switch",
+    "remote_rpc_in_scheduler_hot_path",
+    "raw_cluster_lease_as_executable_authority",
+    "failure_action_not_modeled_for_enforcement",
+    "unknown_safety_field_for_enforcement",
+    "enqueue_task_fail_capable_without_rollback",
+    "TASK_WAKING_then_reject",
+    "pick_retry_after_class_state_mutation_without_model",
+    "switch_activation_failure_without_fail_closed_model",
+    "global_task_scan_in_hot_path",
+    "sleeping_allocation_in_hot_path",
+    "public_abi_from_observation_slice"
+  ],
+  "solver_eligibility": {
+    "required": [
+      "claim_scope is explicit",
+      "enforcement_strength is not observation_only for enforcement selection",
+      "trust_root is compatible with claim_scope",
+      "attacker_mutability is compatible with threat model",
+      "failure_action is modeled",
+      "revocation_scope and stop point are explicit",
+      "ordering_context is known or conservatively modeled",
+      "cost and benefit vectors define polarity",
+      "evidence confidence is explicit"
+    ],
+    "forbidden": [
+      "unknown safety fields",
+      "mixed-polarity numeric vectors",
+      "unbounded revocation for production enforcement",
+      "distributed authority acquisition in scheduler hot path"
+    ]
+  }
+}

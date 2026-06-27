@@ -1,6 +1,6 @@
 # CapSched Models and Engineering Work
 
-Updated: 2026-06-26
+Updated: 2026-06-27
 
 This directory contains the modeling and engineering work products for
 CapSched-Linux.

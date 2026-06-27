@@ -280,13 +280,27 @@ is workload-nondeterministic in this harness. `move_queued_task(new_cpu)` was
 observed under the affinity workload with a CPU0/CPU1 split. This is
 observation-only evidence.
 
-Next executable step:
+Slice 0C synthesis and tag review:
 
 ```text
-write a Slice 0C observation synthesis note mapping observed evidence to
-candidate CapSched hook placement and remaining internal-observation gaps
-do not proceed to enforcement from trace evidence alone
+analysis/0021:
+  observation synthesis is done; hook roles are admission/freeze, enqueue
+  assertion, pick validation, and switch activation.
+
+analysis/0022:
+  behavior tagging methodology is hard constraints first, then Pareto/scenario
+  optimization.
+
+analysis/0023:
+  critical review rejected the v1 tag ledger for solver use.
+
+behavior-tags/schema-v2-requirements.json:
+  current next input for a solver-eligible schema.
 ```
+
+Next executable step: implement schema v2 and retag Slice 0C behavior paths.
+Do not use the v1 ledger as solver input, enforcement evidence, or production
+security evidence.
 
 Readiness check:
 
@@ -576,7 +590,9 @@ future L2:
 ```
 
 The next gate is not Linux behavior changes yet. The out-of-tree baseline and
-`CONFIG_CAPSCHED=n/y` build validation passed for Slice 0A and Slice 0B.
+`CONFIG_CAPSCHED=n/y` build validation passed for Slice 0A and Slice 0B. Slice
+0C observation synthesis is done, but schema v2 behavior tagging must happen
+before hook-placement optimization or enforcement patches.
 
 Current validation runner:
 

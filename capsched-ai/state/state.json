@@ -71,7 +71,10 @@
       "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
       "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
       "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md",
-      "capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md"
+      "capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md",
+      "capsched/capsched-models/analysis/0021-slice0c-observation-synthesis.md",
+      "capsched/capsched-models/analysis/0022-behavior-tagging-methodology.md",
+      "capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -152,7 +155,12 @@
     "protection_claim_evidence_map": "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
     "wakeup_enqueue_runnable_coverage": "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md",
     "qemu_ftrace_symbol_eligibility": "capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. QEMU guest validation now covers boot smoke, broader workloads, and guest-side kprobes. Validation/0023 records successful kprobe attachment to enqueue_task, ttwu_do_activate, try_to_wake_up, wake_up_new_task, and move_queued_task. enqueue_task flags distinguish ordinary wake enqueue, migration-related enqueue, initial enqueue, and rq-selected wake enqueue in clean reruns; ENQUEUE_DELAYED was also observed once in an earlier successful affinity serial log and should be treated as workload-nondeterministic. affinity kprobe observation captured move_queued_task new_cpu split across CPU0/CPU1. Persistent gaps remain: ttwu_runnable, remote wakelist helpers, pick internals, __schedule function-entry detail, and CONFIG_SCHED_CORE branches. Next step is a Slice 0C observation synthesis note mapping observed wake/enqueue/migration/pick evidence to the first safe CapSched hook decision, without adding enforcement yet."
+    "slice0c_observation_synthesis": "capsched/capsched-models/analysis/0021-slice0c-observation-synthesis.md",
+    "behavior_tagging_methodology": "capsched/capsched-models/analysis/0022-behavior-tagging-methodology.md",
+    "behavior_tagging_critical_review": "capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md",
+    "behavior_tag_v1_ledger": "capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json",
+    "behavior_tag_schema_v2_requirements": "capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json",
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. QEMU guest validation now covers boot smoke, broader workloads, and guest-side kprobes. Analysis/0021 synthesizes the evidence and blocks direct enforcement. Analysis/0022 defines behavior tagging as a hard-constraint plus multi-objective design-selection method. Analysis/0023 records subagent critical review: v1 tags are not solver-eligible because they can confuse observation with enforcement, Linux-only claims with monitor-backed claims, and mixed performance costs with benefits. Next step is to implement schema v2 and retag Slice 0C behavior paths before any hook-placement optimizer or behavior-changing Linux patch."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -843,9 +851,29 @@
     {
       "id": "N-040",
       "text": "Write a Slice 0C observation synthesis note mapping observed tracepoint/function/kprobe evidence to candidate CapSched hook placement and remaining internal-observation gaps.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0021. It records that enqueue_task is a strong observation/nofail assertion point but unsafe as a first fail-capable enforcement point, that activate_task alone is incomplete, and that future hook placement needs separate admission/freeze, enqueue assertion, pick validation, and switch activation roles. It also says schema v2 must precede mechanical hook selection.",
       "blocked_by": [
         "N-039"
+      ]
+    },
+    {
+      "id": "N-041",
+      "text": "Before tagging-driven hook selection, define behavior tagging methodology and run critical review across security, performance, multi-cluster, and Linux scheduler perspectives.",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created analysis/0022 and analysis/0023, plus behavior-tags/schema-v2-requirements.json. The review rejected the v1 ledger for solver use and required explicit claim_scope, enforcement_strength, trust_root, attacker_mutability, failure_action, revocation_scope, scheduler ordering/locking/class/config context, separated cost/benefit vectors, and cluster hot-path rules.",
+      "blocked_by": [
+        "N-040"
+      ]
+    },
+    {
+      "id": "N-042",
+      "text": "Implement schema v2 as the first solver-eligible behavior tag ledger and retag Slice 0C behavior paths under the stricter claim, trust, revocation, performance, and cluster fields.",
+      "status": "pending",
+      "blocked_by": [
+        "N-041"
       ]
     }
   ],

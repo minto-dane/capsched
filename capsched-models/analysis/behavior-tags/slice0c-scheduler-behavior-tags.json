@@ -1,0 +1,907 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-27",
+  "status": "draft_v1_exploratory_not_solver_eligible",
+  "purpose": "Exploratory Slice 0C scheduler behavior tags. This v1 ledger is not safe for mechanical hook selection.",
+  "warnings": [
+    "do not use as solver input",
+    "do not use as enforcement evidence",
+    "do not use as production security evidence",
+    "observation_only entries do not satisfy security obligations",
+    "performance_vector mixes costs and benefits and is superseded by schema-v2-requirements.json",
+    "claim_scope, trust_root, attacker_mutability, failure_action, and revocation_scope are not mandatory in this v1 draft"
+  ],
+  "superseded_by_requirements": "capsched-models/analysis/behavior-tags/schema-v2-requirements.json",
+  "source": {
+    "linux_repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "linux_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+    "linux_subject": "sched/capsched: Add type-only authority scaffolding"
+  },
+  "tag_dimensions": {
+    "state_transition": [
+      "blocked_to_waking",
+      "waking_to_queued",
+      "already_queued_wake",
+      "delayed_requeue",
+      "new_task_initial_enqueue",
+      "queued_migration",
+      "queued_to_selected",
+      "selected_to_running",
+      "current_self_wake",
+      "remote_pending_wake"
+    ],
+    "authority_role": [
+      "admission_freeze",
+      "enqueue_assertion",
+      "placement_refresh",
+      "pick_validation",
+      "switch_activation",
+      "budget_charge",
+      "observation_only"
+    ],
+    "mutation_phase": [
+      "pre_mutation",
+      "mid_mutation",
+      "post_mutation",
+      "final_selection",
+      "context_activation"
+    ],
+    "failability": [
+      "fail_capable_before_state_change",
+      "nofail_assert_only",
+      "must_not_fail",
+      "failure_semantics_unknown"
+    ],
+    "lock_context": [
+      "none",
+      "preempt_disabled",
+      "p_pi_lock",
+      "rq_lock",
+      "rq_lock_irq",
+      "raw_irq_disabled",
+      "scheduler_class_callback",
+      "notrace_function"
+    ],
+    "observability": [
+      "tracepoint",
+      "function_tracer",
+      "kprobe_args",
+      "source_only",
+      "optimized_away",
+      "notrace_unavailable"
+    ],
+    "config_dependency": [
+      "generic",
+      "CONFIG_SMP",
+      "CONFIG_SCHED_CORE",
+      "CONFIG_SCHED_CLASS_EXT",
+      "CONFIG_SCHED_PROXY_EXEC",
+      "CONFIG_KPROBE_EVENTS",
+      "CONFIG_FUNCTION_TRACER"
+    ],
+    "security_obligation": [
+      "no_queued_without_frozen_use",
+      "no_pick_without_live_frozen_use",
+      "migration_does_not_mint_authority",
+      "self_wake_does_not_mint_runcap",
+      "remote_pending_revoke_safe",
+      "cross_domain_switch_requires_activation",
+      "budget_not_exceeded",
+      "compat_no_behavior_change"
+    ],
+    "performance_vector": [
+      "wake_hot_path_frequency",
+      "enqueue_hot_path_frequency",
+      "pick_hot_path_frequency",
+      "switch_hot_path_frequency",
+      "lock_hold_cost",
+      "cacheline_touch_cost",
+      "branch_cost",
+      "allocation_cost",
+      "atomic_cost",
+      "rcu_cost",
+      "ipi_cost",
+      "tlb_or_memory_view_cost",
+      "domain_switch_cost",
+      "same_domain_fast_path_benefit",
+      "batching_potential",
+      "trace_or_observation_cost",
+      "rollback_cost",
+      "static_key_compatibility",
+      "disabled_config_zero_cost"
+    ]
+  },
+  "hard_constraints": [
+    {
+      "id": "HC-001",
+      "text": "A behavior-changing enforcement hook must not be placed after irreversible scheduler accounting mutation unless rollback or nofail semantics are modeled."
+    },
+    {
+      "id": "HC-002",
+      "text": "No hook may sleep, allocate, or perform slow capability-table lookup while rq locks, p->pi_lock, raw IRQ-disabled regions, or scheduler class callback locks are held."
+    },
+    {
+      "id": "HC-003",
+      "text": "No selected non-idle task requiring CapSched authority may run without a live FrozenRunUse in any enforcement model."
+    },
+    {
+      "id": "HC-004",
+      "text": "Queued migration may refresh placement authority but must not mint broader RunCap authority."
+    },
+    {
+      "id": "HC-005",
+      "text": "Current self-wake must not be treated as a new runqueue submission authority event."
+    },
+    {
+      "id": "HC-006",
+      "text": "Remote-pending wake state must be invalidated by relevant epoch revocation before execution can occur."
+    },
+    {
+      "id": "HC-007",
+      "text": "CONFIG_CAPSCHED=n must preserve upstream behavior and layout unless a separate gate explicitly approves otherwise."
+    },
+    {
+      "id": "HC-008",
+      "text": "Optimization may minimize cost only after security obligations are covered."
+    }
+  ],
+  "soft_cost_dimensions": {
+    "hot_path_cost": "Estimated steady-state scheduler overhead.",
+    "code_churn": "Estimated number and sensitivity of source regions touched.",
+    "rollback_complexity": "How hard failure semantics are at this point.",
+    "config_complexity": "How many scheduler config variants require distinct handling.",
+    "observability_gap": "How much source-only reasoning remains after tracing.",
+    "upstream_intrusiveness": "How unnatural the patch would look upstream."
+  },
+  "performance_vector_semantics": {
+    "scale": "0 means none or favorable, 5 means severe or frequent; unknown values must remain null, not guessed.",
+    "hard_rule": "Performance ranking never weakens security hard constraints.",
+    "multi_objective_use": "After hard security and compatibility constraints are satisfied, optimize the vector lexicographically or with explicit weights.",
+    "recommended_priority_for_l0": [
+      "disabled_config_zero_cost",
+      "lock_hold_cost",
+      "wake_hot_path_frequency",
+      "pick_hot_path_frequency",
+      "switch_hot_path_frequency",
+      "cacheline_touch_cost",
+      "rollback_cost",
+      "trace_or_observation_cost"
+    ],
+    "recommended_priority_for_monitor_backed": [
+      "domain_switch_cost",
+      "same_domain_fast_path_benefit",
+      "tlb_or_memory_view_cost",
+      "batching_potential",
+      "ipi_cost",
+      "lock_hold_cost"
+    ]
+  },
+  "behavior_paths": [
+    {
+      "id": "path.self_current_wake",
+      "source": "kernel/sched/core.c:4251",
+      "entry_function": "try_to_wake_up",
+      "description": "p == current path clears blocked state and calls ttwu_do_wakeup without normal enqueue.",
+      "tags": {
+        "state_transition": ["current_self_wake"],
+        "authority_role": ["observation_only"],
+        "mutation_phase": ["mid_mutation"],
+        "failability": ["must_not_fail"],
+        "lock_context": ["preempt_disabled"],
+        "observability": ["function_tracer", "kprobe_args"],
+        "config_dependency": ["generic"],
+        "security_obligation": ["self_wake_does_not_mint_runcap"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 5,
+          "enqueue_hot_path_frequency": 0,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 1,
+          "cacheline_touch_cost": 1,
+          "branch_cost": 2,
+          "allocation_cost": 5,
+          "atomic_cost": 2,
+          "rcu_cost": 0,
+          "ipi_cost": 0,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 0,
+          "trace_or_observation_cost": 2,
+          "rollback_cost": 4,
+          "static_key_compatibility": 4,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.already_runnable_wake",
+      "source": "kernel/sched/core.c:3865",
+      "entry_function": "ttwu_runnable",
+      "description": "Task is already queued; wake may complete without activate_task.",
+      "tags": {
+        "state_transition": ["already_queued_wake"],
+        "authority_role": ["pick_validation", "observation_only"],
+        "mutation_phase": ["mid_mutation"],
+        "failability": ["failure_semantics_unknown"],
+        "lock_context": ["rq_lock"],
+        "observability": ["optimized_away", "source_only"],
+        "config_dependency": ["generic", "CONFIG_SCHED_PROXY_EXEC"],
+        "security_obligation": ["no_pick_without_live_frozen_use"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 4,
+          "enqueue_hot_path_frequency": 0,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 3,
+          "branch_cost": 3,
+          "allocation_cost": 5,
+          "atomic_cost": 2,
+          "rcu_cost": 0,
+          "ipi_cost": 0,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 0,
+          "trace_or_observation_cost": 3,
+          "rollback_cost": 5,
+          "static_key_compatibility": 4,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.delayed_requeue",
+      "source": "kernel/sched/core.c:3876",
+      "entry_function": "ttwu_runnable -> enqueue_task",
+      "description": "Fair delayed entity can be re-enqueued with ENQUEUE_DELAYED.",
+      "tags": {
+        "state_transition": ["delayed_requeue"],
+        "authority_role": ["enqueue_assertion", "pick_validation"],
+        "mutation_phase": ["mid_mutation"],
+        "failability": ["nofail_assert_only"],
+        "lock_context": ["rq_lock"],
+        "observability": ["kprobe_args", "source_only"],
+        "config_dependency": ["generic"],
+        "security_obligation": ["no_queued_without_frozen_use", "no_pick_without_live_frozen_use"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 2,
+          "enqueue_hot_path_frequency": 3,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 3,
+          "branch_cost": 2,
+          "allocation_cost": 5,
+          "atomic_cost": 2,
+          "rcu_cost": 0,
+          "ipi_cost": 0,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 0,
+          "trace_or_observation_cost": 3,
+          "rollback_cost": 5,
+          "static_key_compatibility": 4,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.normal_wake_local_activate",
+      "source": "kernel/sched/core.c:3805",
+      "entry_function": "ttwu_do_activate",
+      "description": "Common blocked-to-runnable wake path leading to activate_task and enqueue_task.",
+      "tags": {
+        "state_transition": ["blocked_to_waking", "waking_to_queued"],
+        "authority_role": ["admission_freeze", "enqueue_assertion"],
+        "mutation_phase": ["pre_mutation", "mid_mutation"],
+        "failability": ["failure_semantics_unknown"],
+        "lock_context": ["rq_lock"],
+        "observability": ["function_tracer", "kprobe_args"],
+        "config_dependency": ["generic"],
+        "security_obligation": ["no_queued_without_frozen_use"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 5,
+          "enqueue_hot_path_frequency": 4,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 3,
+          "branch_cost": 3,
+          "allocation_cost": 5,
+          "atomic_cost": 2,
+          "rcu_cost": 0,
+          "ipi_cost": 1,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 0,
+          "trace_or_observation_cost": 3,
+          "rollback_cost": 5,
+          "static_key_compatibility": 4,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.remote_wakelist_enqueue",
+      "source": "kernel/sched/core.c:3950",
+      "entry_function": "__ttwu_queue_wakelist",
+      "description": "Remote wake queues task on target CPU wake list before later activation.",
+      "tags": {
+        "state_transition": ["remote_pending_wake"],
+        "authority_role": ["observation_only"],
+        "mutation_phase": ["pre_mutation"],
+        "failability": ["must_not_fail"],
+        "lock_context": ["p_pi_lock", "raw_irq_disabled"],
+        "observability": ["optimized_away", "source_only"],
+        "config_dependency": ["generic", "CONFIG_SMP"],
+        "security_obligation": ["remote_pending_revoke_safe"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 4,
+          "enqueue_hot_path_frequency": 0,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 2,
+          "cacheline_touch_cost": 4,
+          "branch_cost": 3,
+          "allocation_cost": 5,
+          "atomic_cost": 3,
+          "rcu_cost": 0,
+          "ipi_cost": 4,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 2,
+          "trace_or_observation_cost": 3,
+          "rollback_cost": 5,
+          "static_key_compatibility": 4,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.remote_pending_activate",
+      "source": "kernel/sched/core.c:3891",
+      "entry_function": "sched_ttwu_pending",
+      "description": "Target CPU drains remote wake list and calls ttwu_do_activate.",
+      "tags": {
+        "state_transition": ["remote_pending_wake", "waking_to_queued"],
+        "authority_role": ["admission_freeze", "enqueue_assertion"],
+        "mutation_phase": ["mid_mutation"],
+        "failability": ["failure_semantics_unknown"],
+        "lock_context": ["rq_lock_irq"],
+        "observability": ["function_tracer", "tracepoint"],
+        "config_dependency": ["CONFIG_SMP"],
+        "security_obligation": ["remote_pending_revoke_safe", "no_queued_without_frozen_use"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 4,
+          "enqueue_hot_path_frequency": 4,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 4,
+          "branch_cost": 3,
+          "allocation_cost": 5,
+          "atomic_cost": 3,
+          "rcu_cost": 0,
+          "ipi_cost": 3,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 2,
+          "trace_or_observation_cost": 3,
+          "rollback_cost": 5,
+          "static_key_compatibility": 4,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.new_task_initial_enqueue",
+      "source": "kernel/sched/core.c:4941",
+      "entry_function": "wake_up_new_task",
+      "description": "Newly forked task becomes runnable via ENQUEUE_INITIAL.",
+      "tags": {
+        "state_transition": ["new_task_initial_enqueue"],
+        "authority_role": ["admission_freeze", "enqueue_assertion"],
+        "mutation_phase": ["pre_mutation", "mid_mutation"],
+        "failability": ["failure_semantics_unknown"],
+        "lock_context": ["p_pi_lock", "rq_lock"],
+        "observability": ["tracepoint", "function_tracer", "kprobe_args"],
+        "config_dependency": ["generic"],
+        "security_obligation": ["no_queued_without_frozen_use"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 2,
+          "enqueue_hot_path_frequency": 2,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 3,
+          "branch_cost": 2,
+          "allocation_cost": 5,
+          "atomic_cost": 2,
+          "rcu_cost": 0,
+          "ipi_cost": 1,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 0,
+          "trace_or_observation_cost": 3,
+          "rollback_cost": 4,
+          "static_key_compatibility": 4,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.queued_migration",
+      "source": "kernel/sched/core.c:2546",
+      "entry_function": "move_queued_task",
+      "description": "Queued task is deactivated, moved to another CPU, and reactivated.",
+      "tags": {
+        "state_transition": ["queued_migration"],
+        "authority_role": ["placement_refresh", "enqueue_assertion"],
+        "mutation_phase": ["mid_mutation"],
+        "failability": ["nofail_assert_only"],
+        "lock_context": ["rq_lock"],
+        "observability": ["function_tracer", "kprobe_args", "tracepoint"],
+        "config_dependency": ["CONFIG_SMP"],
+        "security_obligation": ["migration_does_not_mint_authority", "no_queued_without_frozen_use"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 2,
+          "enqueue_hot_path_frequency": 3,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 4,
+          "branch_cost": 3,
+          "allocation_cost": 5,
+          "atomic_cost": 2,
+          "rcu_cost": 0,
+          "ipi_cost": 2,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 1,
+          "trace_or_observation_cost": 3,
+          "rollback_cost": 5,
+          "static_key_compatibility": 4,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.generic_enqueue",
+      "source": "kernel/sched/core.c:2172",
+      "entry_function": "enqueue_task",
+      "description": "Generic class enqueue wrapper and shared accounting mutation point.",
+      "tags": {
+        "state_transition": ["waking_to_queued", "delayed_requeue", "new_task_initial_enqueue", "queued_migration"],
+        "authority_role": ["enqueue_assertion"],
+        "mutation_phase": ["mid_mutation"],
+        "failability": ["nofail_assert_only"],
+        "lock_context": ["rq_lock", "scheduler_class_callback"],
+        "observability": ["function_tracer", "kprobe_args"],
+        "config_dependency": ["generic", "CONFIG_SCHED_CORE"],
+        "security_obligation": ["no_queued_without_frozen_use", "compat_no_behavior_change"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 5,
+          "enqueue_hot_path_frequency": 5,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 0,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 4,
+          "branch_cost": 3,
+          "allocation_cost": 5,
+          "atomic_cost": 3,
+          "rcu_cost": 0,
+          "ipi_cost": 1,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 0,
+          "batching_potential": 0,
+          "trace_or_observation_cost": 2,
+          "rollback_cost": 5,
+          "static_key_compatibility": 5,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.pick_fair_fast_or_class_iteration",
+      "source": "kernel/sched/core.c:6124",
+      "entry_function": "__pick_next_task",
+      "description": "Fair fast path and active class iteration select a task.",
+      "tags": {
+        "state_transition": ["queued_to_selected"],
+        "authority_role": ["pick_validation"],
+        "mutation_phase": ["final_selection"],
+        "failability": ["failure_semantics_unknown"],
+        "lock_context": ["rq_lock"],
+        "observability": ["optimized_away", "source_only"],
+        "config_dependency": ["generic", "CONFIG_SCHED_CLASS_EXT"],
+        "security_obligation": ["no_pick_without_live_frozen_use", "budget_not_exceeded"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 0,
+          "enqueue_hot_path_frequency": 0,
+          "pick_hot_path_frequency": 5,
+          "switch_hot_path_frequency": 4,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 4,
+          "branch_cost": 4,
+          "allocation_cost": 5,
+          "atomic_cost": 3,
+          "rcu_cost": 0,
+          "ipi_cost": 0,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 2,
+          "batching_potential": 1,
+          "trace_or_observation_cost": 4,
+          "rollback_cost": 5,
+          "static_key_compatibility": 5,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.core_scheduling_pick",
+      "source": "kernel/sched/core.c:6216",
+      "entry_function": "pick_next_task",
+      "description": "Core scheduling may reuse cached picks or force idle for co-tenancy.",
+      "tags": {
+        "state_transition": ["queued_to_selected"],
+        "authority_role": ["pick_validation"],
+        "mutation_phase": ["final_selection"],
+        "failability": ["failure_semantics_unknown"],
+        "lock_context": ["rq_lock"],
+        "observability": ["source_only"],
+        "config_dependency": ["CONFIG_SCHED_CORE"],
+        "security_obligation": ["no_pick_without_live_frozen_use", "budget_not_exceeded"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 0,
+          "enqueue_hot_path_frequency": 0,
+          "pick_hot_path_frequency": 4,
+          "switch_hot_path_frequency": 4,
+          "lock_hold_cost": 5,
+          "cacheline_touch_cost": 5,
+          "branch_cost": 4,
+          "allocation_cost": 5,
+          "atomic_cost": 3,
+          "rcu_cost": 0,
+          "ipi_cost": 1,
+          "tlb_or_memory_view_cost": 0,
+          "domain_switch_cost": 0,
+          "same_domain_fast_path_benefit": 3,
+          "batching_potential": 2,
+          "trace_or_observation_cost": 5,
+          "rollback_cost": 5,
+          "static_key_compatibility": 5,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    },
+    {
+      "id": "path.context_switch",
+      "source": "kernel/sched/core.c:7061",
+      "entry_function": "__schedule",
+      "description": "Final selected task becomes rq->curr and context_switch is called.",
+      "tags": {
+        "state_transition": ["selected_to_running"],
+        "authority_role": ["switch_activation", "budget_charge"],
+        "mutation_phase": ["context_activation"],
+        "failability": ["failure_semantics_unknown"],
+        "lock_context": ["rq_lock", "raw_irq_disabled", "notrace_function"],
+        "observability": ["tracepoint", "notrace_unavailable"],
+        "config_dependency": ["generic", "CONFIG_SCHED_CORE", "CONFIG_SCHED_PROXY_EXEC"],
+        "security_obligation": ["cross_domain_switch_requires_activation", "budget_not_exceeded"],
+        "performance_vector": {
+          "wake_hot_path_frequency": 0,
+          "enqueue_hot_path_frequency": 0,
+          "pick_hot_path_frequency": 0,
+          "switch_hot_path_frequency": 5,
+          "lock_hold_cost": 4,
+          "cacheline_touch_cost": 4,
+          "branch_cost": 4,
+          "allocation_cost": 5,
+          "atomic_cost": 3,
+          "rcu_cost": 1,
+          "ipi_cost": 0,
+          "tlb_or_memory_view_cost": 5,
+          "domain_switch_cost": 5,
+          "same_domain_fast_path_benefit": 5,
+          "batching_potential": 5,
+          "trace_or_observation_cost": 2,
+          "rollback_cost": 5,
+          "static_key_compatibility": 5,
+          "disabled_config_zero_cost": 5
+        }
+      }
+    }
+  ],
+  "hook_candidates": [
+    {
+      "id": "hook.pre_enqueue_admission_freeze",
+      "description": "Resolve/freeze authority before enqueue-related mutation in individual caller families.",
+      "roles": ["admission_freeze"],
+      "covers": [
+        "path.normal_wake_local_activate",
+        "path.remote_pending_activate",
+        "path.new_task_initial_enqueue"
+      ],
+      "does_not_cover": [
+        "path.already_runnable_wake",
+        "path.pick_fair_fast_or_class_iteration",
+        "path.context_switch"
+      ],
+      "hard_risks": ["HC-001", "HC-002"],
+      "soft_costs": {
+        "hot_path_cost": 4,
+        "code_churn": 5,
+        "rollback_complexity": 5,
+        "config_complexity": 3,
+        "observability_gap": 2,
+        "upstream_intrusiveness": 4
+      },
+      "performance_vector": {
+        "wake_hot_path_frequency": 5,
+        "enqueue_hot_path_frequency": 4,
+        "pick_hot_path_frequency": 0,
+        "switch_hot_path_frequency": 0,
+        "lock_hold_cost": 4,
+        "cacheline_touch_cost": 4,
+        "branch_cost": 4,
+        "allocation_cost": 5,
+        "atomic_cost": 3,
+        "rcu_cost": 1,
+        "ipi_cost": 2,
+        "tlb_or_memory_view_cost": 0,
+        "domain_switch_cost": 0,
+        "same_domain_fast_path_benefit": 0,
+        "batching_potential": 0,
+        "trace_or_observation_cost": 3,
+        "rollback_cost": 5,
+        "static_key_compatibility": 5,
+        "disabled_config_zero_cost": 5
+      }
+    },
+    {
+      "id": "hook.enqueue_assertion",
+      "description": "Nofail check/trace at enqueue_task that confirms an already-frozen authority record is present.",
+      "roles": ["enqueue_assertion"],
+      "covers": [
+        "path.delayed_requeue",
+        "path.normal_wake_local_activate",
+        "path.remote_pending_activate",
+        "path.new_task_initial_enqueue",
+        "path.queued_migration",
+        "path.generic_enqueue"
+      ],
+      "does_not_cover": [
+        "path.self_current_wake",
+        "path.already_runnable_wake",
+        "path.pick_fair_fast_or_class_iteration",
+        "path.context_switch"
+      ],
+      "hard_risks": ["HC-001", "HC-002"],
+      "soft_costs": {
+        "hot_path_cost": 2,
+        "code_churn": 2,
+        "rollback_complexity": 1,
+        "config_complexity": 2,
+        "observability_gap": 1,
+        "upstream_intrusiveness": 2
+      },
+      "performance_vector": {
+        "wake_hot_path_frequency": 5,
+        "enqueue_hot_path_frequency": 5,
+        "pick_hot_path_frequency": 0,
+        "switch_hot_path_frequency": 0,
+        "lock_hold_cost": 3,
+        "cacheline_touch_cost": 3,
+        "branch_cost": 2,
+        "allocation_cost": 5,
+        "atomic_cost": 2,
+        "rcu_cost": 0,
+        "ipi_cost": 0,
+        "tlb_or_memory_view_cost": 0,
+        "domain_switch_cost": 0,
+        "same_domain_fast_path_benefit": 0,
+        "batching_potential": 0,
+        "trace_or_observation_cost": 2,
+        "rollback_cost": 1,
+        "static_key_compatibility": 5,
+        "disabled_config_zero_cost": 5
+      }
+    },
+    {
+      "id": "hook.migration_refresh",
+      "description": "Refresh placement authority around queued migration without minting new RunCap rights.",
+      "roles": ["placement_refresh"],
+      "covers": ["path.queued_migration"],
+      "does_not_cover": [
+        "path.normal_wake_local_activate",
+        "path.pick_fair_fast_or_class_iteration",
+        "path.context_switch"
+      ],
+      "hard_risks": ["HC-002", "HC-004"],
+      "soft_costs": {
+        "hot_path_cost": 2,
+        "code_churn": 3,
+        "rollback_complexity": 3,
+        "config_complexity": 2,
+        "observability_gap": 1,
+        "upstream_intrusiveness": 3
+      },
+      "performance_vector": {
+        "wake_hot_path_frequency": 2,
+        "enqueue_hot_path_frequency": 3,
+        "pick_hot_path_frequency": 0,
+        "switch_hot_path_frequency": 0,
+        "lock_hold_cost": 4,
+        "cacheline_touch_cost": 4,
+        "branch_cost": 3,
+        "allocation_cost": 5,
+        "atomic_cost": 2,
+        "rcu_cost": 0,
+        "ipi_cost": 2,
+        "tlb_or_memory_view_cost": 0,
+        "domain_switch_cost": 0,
+        "same_domain_fast_path_benefit": 0,
+        "batching_potential": 1,
+        "trace_or_observation_cost": 3,
+        "rollback_cost": 4,
+        "static_key_compatibility": 4,
+        "disabled_config_zero_cost": 5
+      }
+    },
+    {
+      "id": "hook.pick_validation",
+      "description": "Cheap validation of live frozen authority for the selected task near final pick.",
+      "roles": ["pick_validation"],
+      "covers": [
+        "path.already_runnable_wake",
+        "path.pick_fair_fast_or_class_iteration",
+        "path.core_scheduling_pick"
+      ],
+      "does_not_cover": [
+        "path.generic_enqueue",
+        "path.remote_wakelist_enqueue",
+        "path.context_switch"
+      ],
+      "hard_risks": ["HC-002", "HC-003"],
+      "soft_costs": {
+        "hot_path_cost": 3,
+        "code_churn": 4,
+        "rollback_complexity": 5,
+        "config_complexity": 4,
+        "observability_gap": 4,
+        "upstream_intrusiveness": 4
+      },
+      "performance_vector": {
+        "wake_hot_path_frequency": 0,
+        "enqueue_hot_path_frequency": 0,
+        "pick_hot_path_frequency": 5,
+        "switch_hot_path_frequency": 4,
+        "lock_hold_cost": 4,
+        "cacheline_touch_cost": 4,
+        "branch_cost": 4,
+        "allocation_cost": 5,
+        "atomic_cost": 3,
+        "rcu_cost": 0,
+        "ipi_cost": 0,
+        "tlb_or_memory_view_cost": 0,
+        "domain_switch_cost": 0,
+        "same_domain_fast_path_benefit": 2,
+        "batching_potential": 1,
+        "trace_or_observation_cost": 4,
+        "rollback_cost": 5,
+        "static_key_compatibility": 5,
+        "disabled_config_zero_cost": 5
+      }
+    },
+    {
+      "id": "hook.switch_activation",
+      "description": "Activate DomainTag/MemoryView or trace Domain transition after final next task selection.",
+      "roles": ["switch_activation", "budget_charge"],
+      "covers": ["path.context_switch"],
+      "does_not_cover": [
+        "path.generic_enqueue",
+        "path.pick_fair_fast_or_class_iteration"
+      ],
+      "hard_risks": ["HC-002"],
+      "soft_costs": {
+        "hot_path_cost": 3,
+        "code_churn": 3,
+        "rollback_complexity": 4,
+        "config_complexity": 3,
+        "observability_gap": 2,
+        "upstream_intrusiveness": 3
+      },
+      "performance_vector": {
+        "wake_hot_path_frequency": 0,
+        "enqueue_hot_path_frequency": 0,
+        "pick_hot_path_frequency": 0,
+        "switch_hot_path_frequency": 5,
+        "lock_hold_cost": 4,
+        "cacheline_touch_cost": 4,
+        "branch_cost": 3,
+        "allocation_cost": 5,
+        "atomic_cost": 3,
+        "rcu_cost": 1,
+        "ipi_cost": 0,
+        "tlb_or_memory_view_cost": 5,
+        "domain_switch_cost": 5,
+        "same_domain_fast_path_benefit": 5,
+        "batching_potential": 5,
+        "trace_or_observation_cost": 2,
+        "rollback_cost": 5,
+        "static_key_compatibility": 5,
+        "disabled_config_zero_cost": 5
+      }
+    },
+    {
+      "id": "hook.remote_pending_epoch_guard",
+      "description": "Track or validate pending remote wake epoch before activation can queue a task.",
+      "roles": ["observation_only", "admission_freeze"],
+      "covers": [
+        "path.remote_wakelist_enqueue",
+        "path.remote_pending_activate"
+      ],
+      "does_not_cover": [
+        "path.generic_enqueue",
+        "path.pick_fair_fast_or_class_iteration",
+        "path.context_switch"
+      ],
+      "hard_risks": ["HC-002", "HC-006"],
+      "soft_costs": {
+        "hot_path_cost": 3,
+        "code_churn": 4,
+        "rollback_complexity": 4,
+        "config_complexity": 3,
+        "observability_gap": 5,
+        "upstream_intrusiveness": 4
+      },
+      "performance_vector": {
+        "wake_hot_path_frequency": 4,
+        "enqueue_hot_path_frequency": 2,
+        "pick_hot_path_frequency": 0,
+        "switch_hot_path_frequency": 0,
+        "lock_hold_cost": 3,
+        "cacheline_touch_cost": 4,
+        "branch_cost": 4,
+        "allocation_cost": 5,
+        "atomic_cost": 3,
+        "rcu_cost": 0,
+        "ipi_cost": 4,
+        "tlb_or_memory_view_cost": 0,
+        "domain_switch_cost": 0,
+        "same_domain_fast_path_benefit": 0,
+        "batching_potential": 2,
+        "trace_or_observation_cost": 4,
+        "rollback_cost": 5,
+        "static_key_compatibility": 4,
+        "disabled_config_zero_cost": 5
+      }
+    }
+  ],
+  "mechanical_selection_problem": {
+    "variables": "Select hook_candidates by Boolean variable H[id].",
+    "hard_requirements": [
+      "For every required security_obligation, selected hooks plus modeled no-op exceptions must cover all applicable behavior_paths.",
+      "Selected hooks must not violate hard_constraints.",
+      "A fail-capable hook is invalid at a path tagged nofail_assert_only, must_not_fail, or failure_semantics_unknown until a rollback model exists."
+    ],
+    "soft_objective": "Minimize weighted sum of hot_path_cost, code_churn, rollback_complexity, config_complexity, observability_gap, upstream_intrusiveness, and performance_vector costs, while separately maximizing same_domain_fast_path_benefit and batching_potential for monitor-backed designs.",
+    "recommended_solver_shapes": [
+      "weighted set cover for first-pass hook-set exploration",
+      "MaxSAT for hard/soft constraints and forbidden combinations",
+      "MILP/ILP if costs become numeric and multi-objective",
+      "TLA+ after a candidate set is chosen to validate semantics"
+    ],
+    "current_human_readable_result": "At least enqueue assertion plus pick validation plus switch activation are needed for full runnable authority semantics. Pre-enqueue admission freeze and remote-pending epoch handling need more modeling before fail-capable enforcement."
+  }
+}

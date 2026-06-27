@@ -302,10 +302,29 @@ delayed enqueue as observed but workload-nondeterministic. The affinity run also
 captured `move_queued_task(new_cpu)` with a 20/20 split across CPU0 and CPU1.
 This is still observation-only and does not justify enforcement yet.
 
-Current next step: write a Slice 0C observation synthesis note mapping
-tracepoint/function/kprobe evidence to candidate CapSched hook placement and
-remaining internal-observation gaps. Do not add a Linux behavior patch before
-that synthesis.
+The Slice 0C synthesis now exists:
+
+```text
+capsched/capsched-models/analysis/0021-slice0c-observation-synthesis.md
+```
+
+Key result: the evidence supports a four-role hook-placement model
+(`admission/freeze`, `enqueue assertion`, `pick validation`, `switch
+activation`), but it does not yet justify enforcement. A pre-tagging critical
+review then found that the first behavior tag ledger is not safe for mechanical
+selection.
+
+Read next:
+
+```text
+capsched/capsched-models/analysis/0022-behavior-tagging-methodology.md
+capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md
+capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json
+```
+
+Current next step: implement schema v2 and retag Slice 0C behavior paths under
+the stricter schema before running any hook-placement optimizer or adding any
+behavior-changing Linux patch.
 
 ## Recovery Path
 
@@ -372,8 +391,8 @@ Implementation must keep capability types separated:
 
 ## Modeling Anchors And Historical Gates
 
-The current next action is the Slice 0C observation synthesis described above.
-The records below are still important anchors for implementation safety.
+The current next action is schema v2 behavior tagging, not Linux code. The
+records below are still important anchors for implementation safety.
 
 The first two formal semantic models have been selected and checked. Runnable
 lease semantics are modeled in:
@@ -459,11 +478,13 @@ Do not jump to scheduler behavior patches. Slice 0A is validated, the async
 endpoint model, broker budget model, and domain monitor activation model are
 checked, the Linux attachment map exists, and decomposed cluster authority,
 MemoryOwnership, DirectMapTLB, PageCacheOverlay, and QueueLease models are
-checked. The next gate is chosen: Slice 0B type-only endpoint/broker/domain
-authority scaffolding is done; the assurance-case subclaim tree is now the
-current project-control root. Any next Linux slice must name which assurance
-claim and gate it supports. Device-specific QueueLease endpoint models remain
-future L4 gates.
+checked. Slice 0B type-only endpoint/broker/domain authority scaffolding is
+done, and the assurance-case subclaim tree is now the project-control root.
+Slice 0C observation synthesis is also done. The next gate is schema v2
+behavior tagging: v1 tags are exploratory only and must not be used as solver
+input, enforcement evidence, or production security evidence. Any next Linux
+slice must name which assurance claim and gate it supports. Device-specific
+QueueLease endpoint models remain future L4 gates.
 
 Endpoint attachment records:
 
@@ -487,6 +508,11 @@ capsched/capsched-models/validation/0013-queue-lease-tlc.md
 capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md
 capsched/capsched-models/plans/0005-assurance-driven-achievement-plan.md
 capsched/capsched-models/analysis/0020-qemu-ftrace-symbol-eligibility.md
+capsched/capsched-models/analysis/0021-slice0c-observation-synthesis.md
+capsched/capsched-models/analysis/0022-behavior-tagging-methodology.md
+capsched/capsched-models/analysis/0023-behavior-tagging-critical-review.md
+capsched/capsched-models/analysis/behavior-tags/schema-v2-requirements.json
+capsched/capsched-models/analysis/behavior-tags/slice0c-scheduler-behavior-tags.json
 capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md
 capsched/capsched-models/validation/0014-l0-slice0b-build-run.md
 capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md
