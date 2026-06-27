@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "queue-descriptor-ledger-observation-plan-ready",
+    "current_phase": "queue-descriptor-ledger-readiness-executed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -202,7 +202,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0040 executed the post-exec resource QEMU trace with qemu_status 0 and workload_ret 0. Analysis/0045 records that internal async redesign is necessary but not sufficient: worker execution cannot become ambient caller authority, and production protection still needs typed carriers/ledgers plus monitor-owned roots. Analysis/0048 rejects a single caller BudgetTicket on shared usbnet work_struct callbacks. Analysis/0049 maps e1000e and shows Ethernet authority belongs at QueueLease submit, DMA/IOMMU ownership, descriptor publication, tail doorbell, IRQ/NAPI ownership, and completion settlement. Analysis/0050 plus formal/0027 and validation/0044 validate aggregate QueueLease settlement with expected unsafe counterexamples. Analysis/0051 and validation/0045 now define an observation-only queue/descriptor ledger tag plan: existing tracepoints cover outer netdev/NAPI/IRQ/SKB/IOMMU signals, while descriptor publish, doorbell, submit-ledger correlation, completion settlement, and revoke/drop outcomes need driver-specific observation or later CONFIG_CAPSCHED_TRACE-style tags. No behavior-changing queue or workqueue enforcement is approved.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0045 records that internal async redesign is necessary but not sufficient: worker execution cannot become ambient caller authority, and production protection still needs typed carriers/ledgers plus monitor-owned roots. Analysis/0049 maps e1000e and shows Ethernet authority belongs at QueueLease submit, DMA/IOMMU ownership, descriptor publication, tail doorbell, IRQ/NAPI ownership, and completion settlement. Analysis/0050 plus formal/0027 and validation/0044 validate aggregate QueueLease settlement with expected unsafe counterexamples. Analysis/0051 defines an observation-only queue/descriptor ledger tag plan. Validation/0045 now executed the static readiness checker: 14 tracepoint rows found with 0 missing, 25 e1000e source anchors found with 0 missing, 12 event readiness rows, and 8 semantic gaps. High-severity gaps remain for SubmitLedger id, DMA-to-submit correlation, descriptor publish, tail doorbell, completion ledger, revoke semantics, and authority-root. All observed state is Linux-mutable and monitor_verified=false, so readiness output is not protection evidence. No behavior-changing queue or workqueue enforcement is approved. Next source-analysis target is a modern multi-queue NIC map under N-005.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -287,7 +287,9 @@
     "aggregate_queuelease_settlement_validation": "capsched/capsched-models/validation/0044-aggregate-queuelease-settlement-tlc.md",
     "queue_descriptor_ledger_observation_plan": "capsched/capsched-models/analysis/0051-linux-queue-descriptor-ledger-observation-plan.md",
     "queue_descriptor_ledger_tags_schema": "capsched/capsched-models/analysis/queue-descriptor-ledger-tags-v1.json",
-    "queue_descriptor_ledger_validation_plan": "capsched/capsched-models/validation/0045-queue-descriptor-ledger-observation-plan.md"
+    "queue_descriptor_ledger_validation_plan": "capsched/capsched-models/validation/0045-queue-descriptor-ledger-observation-plan.md",
+    "queue_descriptor_ledger_readiness_runner": "capsched/capsched-models/validation/run-queue-descriptor-ledger-readiness.sh",
+    "queue_descriptor_ledger_readiness_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1403,7 +1405,8 @@
     {
       "id": "N-071",
       "text": "Build an observation-only runner or static/probe readiness checker for the queue/descriptor ledger schema, starting with existing netdev/NAPI/IRQ/SKB/IOMMU tracepoints and e1000e-like probe anchors.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
       "blocked_by": [
         "N-070"
       ]

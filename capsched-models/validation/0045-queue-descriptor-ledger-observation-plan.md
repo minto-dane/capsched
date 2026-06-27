@@ -1,6 +1,6 @@
 # Validation 0045: Queue/Descriptor Ledger Observation Plan
 
-Status: Planned observation-only validation, not executed
+Status: Executed observation-only static readiness check
 
 Date: 2026-06-27
 
@@ -15,7 +15,7 @@ analysis/0050-aggregate-queuelease-settlement-semantics.md
 
 ## Purpose
 
-This validation plan checks whether the observation-only queue/descriptor
+This validation checks whether the observation-only queue/descriptor
 ledger schema can be populated from current Linux tracepoints, source anchors,
 and targeted kprobes/fprobes before any trace-only Linux patch is proposed.
 
@@ -154,10 +154,158 @@ revoke/drop/quarantine remains mostly future CapSched trace-only work
 This is acceptable. The validation is designed to discover gaps before we add
 any behavior-changing QueueLease gate.
 
+## Executed Result
+
+Final run:
+
+```text
+run directory:
+  /media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z
+
+tracepoints:
+  /media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z/tracepoint-inventory.tsv
+
+source anchors:
+  /media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z/source-anchors.tsv
+
+readiness:
+  /media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z/event-readiness.tsv
+
+gaps:
+  /media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z/semantic-gaps.tsv
+```
+
+Outcome:
+
+```text
+status: observation_only_static_readiness
+tracepoint_rows: 14
+tracepoint_missing_rows: 0
+source_anchor_rows: 25
+source_anchor_missing_rows: 0
+event_readiness_rows: 12
+gap_rows: 8
+```
+
+Every readiness row carries:
+
+```text
+observation_only=true
+authority_claim=false
+monitor_verified=false
+```
+
+The result confirms that current Linux has useful outer visibility:
+
+```text
+net_dev_queue
+net_dev_start_xmit
+net_dev_xmit
+net_dev_xmit_timeout
+napi_poll
+consume_skb
+kfree_skb
+irq_handler_entry
+irq_handler_exit
+iommu map/unmap
+dma_map_sg/dma_map_sg_err/dma_unmap_sg
+```
+
+The representative e1000e source anchors were all found:
+
+```text
+netif_queue_set_napi RX/TX
+request_irq MSI-X
+e1000_xmit_frame
+ndo_start_xmit binding
+e1000_tx_map
+dma_map_single
+skb_frag_dma_map
+e1000_tx_queue
+tx_desc field writes
+tail writel
+e1000e_update_tdt_wa
+e1000_intr_msi
+e1000_intr_msix_tx
+e1000_intr_msix_rx
+e1000e_poll
+e1000_clean_tx_irq
+E1000_TXD_STAT_DD
+e1000_put_txbuf
+netdev_completed_queue
+dev_consume_skb_any
+driver down/reset and TX ring cleanup anchors
+```
+
+## Readiness Classification
+
+The checker classified the event kinds as:
+
+```text
+partially_ready:
+  queue_bind
+  submit_prepare
+  irq_entry
+  napi_poll
+
+partial_gap_recorded:
+  dma_map
+  settle
+
+source_only_gap_recorded:
+  desc_publish
+  doorbell
+  completion_observed
+
+not_ready_future_capsched:
+  revoke_start
+  revoke_drop
+  revoke_finish
+```
+
+This means existing tracepoints are enough to see the outer network/IRQ/NAPI
+shape, but not enough to construct a semantic QueueLease proof.
+
+## High-Severity Gaps
+
+The checker records these high-severity gaps:
+
+```text
+submit-ledger-id:
+  net tracepoints expose skbaddr and queue_mapping but no SubmitLedger id.
+
+dma-submit-correlation:
+  dma_map_single/skb_frag_dma_map anchors exist, but generic DMA/IOMMU traces
+  do not tie maps to submit ledgers.
+
+descriptor-publish:
+  e1000_tx_queue writes descriptors, but there is no generic descriptor publish
+  tracepoint.
+
+tail-doorbell:
+  tail writel exists and may be batched by netdev_xmit_more, but generic
+  register probes are not semantic doorbells.
+
+completion-ledger:
+  e1000_clean_tx_irq observes descriptor done state, but generic skb/free
+  events cannot reconstruct descriptor ledger settlement.
+
+revoke-semantics:
+  driver down/reset cleanup exists, but no CapSched queue revoke epoch or
+  quarantine/drop outcome exists.
+
+authority-root:
+  all observed state is Linux-mutable and monitor_verified=false.
+```
+
+The `authority-root` gap is decisive. This validation output must not be used as
+protection evidence. It is only evidence for where later observation tags,
+models, or monitor-backed roots are needed.
+
 ## Next Action
 
 ```text
-N-071:
-  Implement a small observation-only runner or static/probe readiness checker
-  for the queue/descriptor ledger schema. Keep it outside enforcement paths.
+N-005:
+  Apply the same source-map method to a modern multi-queue NIC path with MSI-X,
+  XDP, page-pool, devlink, SR-IOV, or representor features.
 ```

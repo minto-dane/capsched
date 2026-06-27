@@ -65,7 +65,7 @@ Updated: 2026-06-27
 3. Representative modern multi-queue driver map with MSI-X/XDP/page-pool/devlink.
 4. Workqueue origin QEMU stack-trace observation runner.
 5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
-6. Queue/descriptor ledger observation runner or static/probe readiness check.
+6. Queue/descriptor trace-only patch map only if readiness gaps require it.
 
 ## Behavior Tag Artifacts
 

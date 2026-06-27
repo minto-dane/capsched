@@ -287,10 +287,24 @@ analysis/0051 + validation/0045:
   observation-only queue/descriptor ledger tag plan completed
   machine-readable schema:
     analysis/queue-descriptor-ledger-tags-v1.json
+  readiness runner:
+    validation/run-queue-descriptor-ledger-readiness.sh
+  executed run:
+    /media/nia/scsiusb/dev/linux-cap/build/queue-descriptor-ledger-readiness/20260627T110900Z
+  outcome:
+    tracepoint rows 14, missing 0
+    source anchor rows 25, missing 0
+    event readiness rows 12
+    semantic gap rows 8
+    readiness rows carry observation_only=true, authority_claim=false, and
+    monitor_verified=false
   source evidence:
     existing netdev, NAPI, IRQ, SKB, IOMMU, and DMA tracepoints expose useful
     outer events, but do not reconstruct descriptor publish, tail doorbell,
     submit-ledger correlation, completion settlement, or revoke/drop outcomes
+  high-severity gaps:
+    SubmitLedger id, DMA-to-submit correlation, descriptor publish, tail
+    doorbell, completion ledger, revoke semantics, and authority-root
   internal-redesign answer:
     deep Linux internal redesign is accepted and likely required, but it is a
     typed substrate, not the production authority root. Domain-derived async and
@@ -301,10 +315,12 @@ analysis/0051 + validation/0045:
     queue/descriptor ledger tags are observation-only. They must not decide
     behavior, must not become a stable ABI claim, and missing tags are coverage
     gaps rather than fail-open policy.
+    All observed state is Linux-mutable and monitor_verified=false, so this
+    readiness output is not protection evidence.
 ```
 
-Next work remains observation-only: build a queue/descriptor ledger readiness
-runner or static/probe checker, refine eventfd kernel signal provenance, epoll
+Next work remains observation-only: apply the same mapping method to a modern
+multi-queue NIC path, then refine eventfd kernel signal provenance, epoll
 delivery/watched-endpoint correlation, io_uring fixed-file consumption, and
 execfd handoff before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable

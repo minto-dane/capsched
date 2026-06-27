@@ -325,14 +325,17 @@ analysis/0050 + formal/0027 + validation/0044
   shared callback object.
 
 analysis/0051 + validation/0045
-  observation-only queue/descriptor ledger plan:
+  observation-only queue/descriptor ledger plan and readiness run:
   existing tracepoints cover useful outer netdev, NAPI, IRQ, SKB, IOMMU, and
   DMA events, but not descriptor publish, tail doorbell, submit-ledger
   correlation, completion settlement, or CapSched revoke/drop semantics. Deep
   internal redesign is allowed and likely required, but it is only the typed
   Linux substrate; proof-visible ledgers/carriers and monitor-owned QueueTag,
   IOMMU, epoch, and budget roots remain required for production claims. Missing
-  tags are coverage gaps, not fail-open policy.
+  tags are coverage gaps, not fail-open policy. The static readiness run found
+  14 tracepoints and 25 e1000e source anchors with no missing rows, but recorded
+  8 semantic gaps, including authority-root: all observed state is Linux-mutable
+  and monitor_verified=false.
 
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
