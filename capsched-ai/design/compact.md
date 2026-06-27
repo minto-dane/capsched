@@ -356,6 +356,20 @@ analysis/0052
     last submitter. Driver tracepoints improve observability but remain
     Linux-mutable and non-authoritative.
 
+formal/0028 + validation/0046
+  Modern NIC QueueLease class model:
+  safe TLC passed with 1474 generated states, 701 distinct states, and depth 12.
+  Unsafe configs produced expected counterexamples for:
+    submit without QueueBind; submit without budget; SKB without IOMMU;
+    XDP using an SKB ledger; AF_XDP without XSK ownership; representor
+    forwarding without derivation; devlink via RunCap; service work charged to
+    the last submitter; ambient completion authority; delivery after revoke.
+  Rule:
+    Queue-adjacent actions are not one authority. SKB, XDP frame, XDP_TX
+    page-pool, AF_XDP, QueueControl, RepresentorForward, and ServiceWork must
+    remain typed through submit, descriptor, completion, control, service, and
+    revoke paths.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

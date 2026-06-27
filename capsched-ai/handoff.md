@@ -353,13 +353,38 @@ analysis/0052:
     observability, but they are Linux-mutable and cannot be production
     authority roots. No behavior-changing driver, queue, or workqueue
     enforcement follows from this source map.
+
+formal/0028 + validation/0046:
+  Modern NIC QueueLease class model checked
+  model:
+    formal/0028-modern-nic-queuelease-model/ModernNicQueueLease.tla
+  validation:
+    validation/0046-modern-nic-queuelease-tlc.md
+  safe result:
+    PASS, 1474 generated states, 701 distinct states, depth 12
+  unsafe counterexamples:
+    submit without QueueBind
+    submit without budget
+    SKB submit without IOMMU proof
+    XDP submit using an SKB ledger/capability
+    AF_XDP zero-copy submit without XSK/UMEM ownership
+    representor forwarding without derived lower queue authority
+    devlink queue-control through RunCap
+    service/reset/PTP/DPLL work charged to the last submitter
+    completion by ambient worker/service authority
+    delivery after revoke
+  key rule:
+    modern NIC authority must preserve operation class. QueueBind,
+    SubmitLedgerSKB, SubmitLedgerXDPFrame, SubmitLedgerXDPTxPagePool,
+    SubmitLedgerAFXDP, DescriptorLedger, CompletionSettlement, QueueControl,
+    RepresentorForward, and ServiceWork are related but not interchangeable.
 ```
 
-Next work remains observation-only/modeling-first: build the modern NIC
-QueueLease class model from analysis/0052, then build an ice-specific static
-readiness checker. The older post-exec gaps also remain: eventfd kernel signal
-provenance, epoll delivery/watched-endpoint correlation, io_uring fixed-file
-consumption, and execfd handoff before behavior-changing endpoint hooks.
+Next work remains observation-only/modeling-first: build an ice-specific static
+readiness checker from analysis/0052 and formal/0028. The older post-exec gaps
+also remain: eventfd kernel signal provenance, epoll delivery/watched-endpoint
+correlation, io_uring fixed-file consumption, and execfd handoff before
+behavior-changing endpoint hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

@@ -51,6 +51,7 @@ Updated: 2026-06-27
 | 0043 | Executed; drivers/net decomposed but still observation-only | drivers/net Workqueue Origin Inventory Result |
 | 0044 | Safe model passed; unsafe models produced expected counterexamples | Aggregate QueueLease Settlement TLC |
 | 0045 | Executed; high-severity semantic gaps remain | Queue/Descriptor Ledger Observation Plan |
+| 0046 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC QueueLease TLC |
 
 ## Principles
 

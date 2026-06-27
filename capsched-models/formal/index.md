@@ -33,9 +33,9 @@ Updated: 2026-06-27
 | 0025 | Checked with safe pass and expected unsafe counterexamples | Exec Generation and Inheritance Model |
 | 0026 | Checked with safe pass and expected unsafe counterexamples | Post-Exec Resource Inheritance Model |
 | 0027 | Checked with safe pass and expected unsafe counterexamples | Aggregate QueueLease Settlement Model |
+| 0028 | Checked with safe pass and expected unsafe counterexamples | Modern NIC QueueLease Model |
 
 ## Planned
 
-1. Driver-specific QueueLease endpoint models for modern multi-queue NIC,
-   NVMe, GPU, or VFIO
+1. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.
