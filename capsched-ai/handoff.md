@@ -225,12 +225,31 @@ analysis/0047 + validation/0043:
   queue_delayed_work 211, mod_delayed_work 57
   key rule: drivers/net is a QueueLease/DeviceService hotspot; no net driver
   hook is justified until callback/container/effect mapping is done
+
+analysis/0048:
+  representative usbnet source map completed
+  machine-readable map: analysis/usbnet-workqueue-source-map-v1.json
+  bh_work:
+    INIT_WORK at usbnet.c:1781, callback usbnet_bh_work at usbnet.c:1644,
+    drains dev->done, processes rx_done/tx_done/rx_cleanup, refills RX, wakes
+    TX queue, and may self-resubmit while RX queue remains short
+    classification: InterruptDeferred_or_ServiceOnly with ExplicitMerge via
+    dev->done plus work pending bit
+  kevent:
+    INIT_WORK at usbnet.c:1782, scheduled by usbnet_defer_kevent at
+    usbnet.c:472 through flags bitset plus schedule_work()
+    handles TX/RX halt, RX memory recovery, link reset/change, and rx_mode
+    classification: ExplicitMerge_or_ServiceOnly control-plane work
+  key rule:
+    usbnet demonstrates that caller-derived authority belongs at submit/request
+    boundaries, not in merged completion/control work_struct callbacks. A single
+    mutable caller BudgetTicket on bh_work or kevent is rejected.
 ```
 
 Next work remains observation-only: refine eventfd kernel signal provenance,
 epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-execfd handoff, and source-map a representative net driver callback/container/
-effect path before Linux behavior changes.
+execfd handoff, source-map a modern Ethernet queue path, and model aggregate
+QueueLease settlement for merged completion work before Linux behavior changes.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

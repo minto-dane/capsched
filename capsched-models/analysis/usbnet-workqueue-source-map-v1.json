@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-27",
+  "status": "draft_source_map_no_implementation",
+  "linux": {
+    "repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "branch": "capsched-linux-l0",
+    "commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462"
+  },
+  "source_files": [
+    "drivers/net/usb/usbnet.c",
+    "include/linux/usb/usbnet.h"
+  ],
+  "containers": [
+    {
+      "id": "usbnet.struct_usbnet",
+      "type": "struct usbnet",
+      "definition": "include/linux/usb/usbnet.h:20",
+      "state_fields": [
+        "udev",
+        "intf",
+        "net",
+        "in",
+        "out",
+        "status",
+        "rxq",
+        "txq",
+        "done",
+        "rxq_pause",
+        "interrupt",
+        "deferred",
+        "bh_work",
+        "kevent",
+        "flags"
+      ],
+      "authority_note": "Container state describes USB network service and queue state; it is not caller execution authority."
+    },
+    {
+      "id": "usbnet.skb_data",
+      "type": "struct skb_data",
+      "definition": "include/linux/usb/usbnet.h:245",
+      "state_fields": [
+        "urb",
+        "dev",
+        "state",
+        "length",
+        "packets"
+      ],
+      "authority_note": "Per-SKB URB state can support accounting, but does not mint endpoint authority by itself."
+    }
+  ],
+  "carriers": [
+    {
+      "id": "usbnet.bh_work",
+      "carrier_kind": "work_struct",
+      "container": "usbnet.struct_usbnet",
+      "init": "drivers/net/usb/usbnet.c:1781",
+      "callback": "drivers/net/usb/usbnet.c:1644",
+      "callback_chain": [
+        "usbnet_bh_work(work)",
+        "from_work(dev, work, bh_work)",
+        "usbnet_bh(&dev->delay)"
+      ],
+      "also_timer_callback": "drivers/net/usb/usbnet.c:1784",
+      "origin_projection": [
+        "InterruptDeferred",
+        "ServiceOnly"
+      ],
+      "merge_semantics": [
+        "defer_bh queues only when dev->done.qlen == 1",
+        "queue_work uses the work_struct pending bit and may coalesce already-pending work",
+        "usbnet_bh may self-resubmit while rxq remains below RX_QLEN"
+      ],
+      "queue_sites": [
+        {
+          "line": "drivers/net/usb/usbnet.c:461",
+          "reason": "defer_bh moved skb to dev->done and done queue became non-empty"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:549",
+          "reason": "rx_submit unexpected submit error"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:710",
+          "reason": "resume paused RX"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:966",
+          "reason": "netdev open posts initial reads"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:1152",
+          "reason": "link-change RX read repost"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:1227",
+          "reason": "RX halt recovery"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:1253",
+          "reason": "RX memory recovery"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:1354",
+          "reason": "TX timeout cleanup"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:1637",
+          "reason": "self-resubmit while RX queue remains short"
+        },
+        {
+          "line": "drivers/net/usb/usbnet.c:2014",
+          "reason": "USB resume"
+        }
+      ],
+      "endpoint_effects": [
+        "drain dev->done",
+        "rx_done -> rx_process -> network stack delivery",
+        "tx_done -> completion accounting",
+        "rx_cleanup -> free URB/SKB",
+        "RX queue refill",
+        "TX queue wake"
+      ],
+      "queue_lease_relevance": [
+        "completion settlement",
+        "RX refill service",
+        "TX/RX queue accounting"
+      ],
+      "caller_authority": "not_preserved_by_work_struct",
+      "design_rule": "Do not attach a single mutable caller BudgetTicket to bh_work. Use submit-time QueueLease checks plus aggregate queue/service settlement."
+    },
+    {
+      "id": "usbnet.kevent",
+      "carrier_kind": "work_struct",
+      "container": "usbnet.struct_usbnet",
+      "init": "drivers/net/usb/usbnet.c:1782",
+      "queue_helper": "drivers/net/usb/usbnet.c:472",
+      "callback": "drivers/net/usb/usbnet.c:1182",
+      "callback_chain": [
+        "usbnet_defer_kevent(dev, work)",
+        "set_bit(work, &dev->flags)",
+        "schedule_work(&dev->kevent)",
+        "usbnet_deferred_kevent(work)",
+        "container_of(work, struct usbnet, kevent)"
+      ],
+      "origin_projection": [
+        "ExplicitMerge",
+        "ServiceOnly"
+      ],
+      "merge_semantics": [
+        "events merge in dev->flags bitset",
+        "schedule_work can fail when work is active or pending",
+        "one callback may process multiple flags from multiple origins"
+      ],
+      "event_bits": [
+        "EVENT_TX_HALT",
+        "EVENT_RX_HALT",
+        "EVENT_RX_MEMORY",
+        "EVENT_LINK_RESET",
+        "EVENT_LINK_CHANGE",
+        "EVENT_SET_RX_MODE"
+      ],
+      "endpoint_effects": [
+        "unlink TX/RX URBs",
+        "usb_clear_halt(out)",
+        "usb_clear_halt(in)",
+        "RX URB allocation and submit",
+        "driver_info->link_reset",
+        "carrier/link handling",
+        "driver_info->set_rx_mode"
+      ],
+      "queue_lease_relevance": [
+        "device control service",
+        "link/reset/rx-mode authority",
+        "not direct data-plane submit authority"
+      ],
+      "caller_authority": "not_preserved_by_work_struct_or_flags",
+      "design_rule": "Treat kevent as service/control-plane merged work. Caller-derived control requests need a typed DomainRequest before setting or consuming merged flags."
+    }
+  ],
+  "caller_derived_submit_path": {
+    "id": "usbnet.start_xmit",
+    "entry": "drivers/net/usb/usbnet.c:1395",
+    "effects": [
+      "tx_fixup",
+      "usb_alloc_urb",
+      "usb_fill_bulk_urb(... tx_complete ...)",
+      "usb_submit_urb",
+      "__usbnet_queue_skb(&dev->txq, skb, tx_start)"
+    ],
+    "design_rule": "Future caller-derived Network EndpointCap or QueueLease checks belong at submit/request boundaries, not in merged completion work."
+  },
+  "hard_rejects": [
+    "generic workqueue callback identity as authority",
+    "single BudgetTicket stored on a shared pending work_struct",
+    "caller authority recovered from worker kthread context",
+    "network async enforcement based only on queue_work API names"
+  ],
+  "next_evidence": [
+    "map a representative modern Ethernet driver such as e1000e or igb",
+    "derive aggregate QueueLease settlement model for merged completion work",
+    "observe workqueue queue-site stacks only after source mapping defines expected classes"
+  ]
+}

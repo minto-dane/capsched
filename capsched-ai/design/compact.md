@@ -292,6 +292,17 @@ analysis/0047 + validation/0043
   firmware, PTP, TX/RX cleanup, BH handoff, and queue control; endpoint effect
   and callback/container mapping are mandatory before enforcement.
 
+analysis/0048
+  usbnet representative workqueue source map:
+  bh_work is initialized at usbnet.c:1781, callback usbnet_bh_work at
+  usbnet.c:1644, and drains dev->done/refills RX/wakes TX through usbnet_bh.
+  kevent is initialized at usbnet.c:1782, scheduled through flags bit merging
+  in usbnet_defer_kevent at usbnet.c:472, and handles halt, RX memory, link,
+  and rx-mode control-plane events. Both are merged device/service work, not
+  per-caller work. Caller-derived Network EndpointCap or QueueLease authority
+  belongs at submit/request boundaries such as usbnet_start_xmit, not in a
+  single mutable BudgetTicket attached to shared work_struct callbacks.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

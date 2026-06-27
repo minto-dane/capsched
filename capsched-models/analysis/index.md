@@ -53,14 +53,16 @@ Updated: 2026-06-27
 | 0045 | Draft design boundary | Workqueue Internal Redesign Boundary |
 | 0046 | Draft taxonomy | Workqueue Origin Taxonomy |
 | 0047 | Draft source-inventory map | drivers/net Workqueue Origin Map |
+| 0048 | Draft representative source map | usbnet Workqueue Source Map |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Representative net driver callback/container/effect mapping.
-4. Workqueue origin QEMU stack-trace observation runner.
-5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+3. Representative modern Ethernet callback/container/effect mapping.
+4. Aggregate QueueLease settlement model for merged completion work.
+5. Workqueue origin QEMU stack-trace observation runner.
+6. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 
 ## Behavior Tag Artifacts
 
@@ -71,3 +73,4 @@ Updated: 2026-06-27
 | `behavior-tags/schema-v2.json` | Draft contract | Machine-readable schema v2 contract for gap analysis and hard reject |
 | `behavior-tags/slice0c-scheduler-behavior-tags-v2.json` | Draft v2, gap-analysis only | Slice 0C behavior paths retagged under schema v2 |
 | `workqueue-origin-taxonomy-v1.json` | Draft contract | Machine-readable workqueue origin taxonomy for async source tagging |
+| `usbnet-workqueue-source-map-v1.json` | Draft source map | Machine-readable representative usbnet workqueue/container/effect mapping |
