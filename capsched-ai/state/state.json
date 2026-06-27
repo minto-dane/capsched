@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "xdp-afxdp-memory-ownership-model-checked",
+    "current_phase": "queuecontrol-representor-model-checked",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0045 records that deep internal async redesign is accepted and likely necessary, but internal-only trust is rejected. Analysis/0052 maps Intel ice as a modern multi-queue NIC path. Formal/0028 plus validation/0046 model-check the modern NIC QueueLease class split. Validation/0047 executed the ice observation-only static readiness checker: 19 tracepoint rows found with 0 missing, 40 source anchors found with 0 missing, 11 class readiness rows, and 12 high-severity semantic gaps. Formal/0029 plus validation/0048 model-check XDP page-pool and AF_XDP XSK/UMEM memory ownership. Safe TLC passed with 19 generated states, 13 distinct states, and depth 6. Unsafe configs produced expected counterexamples for XDP_TX submit without page-pool ownership, AF_XDP submit without XSK/UMEM ownership, DMA without MemoryView, ambient AF_XDP descriptor use, cross-Domain DMA, completion without typed ledger, double memory return, return after revoke, and submit without budget. The resulting rule is that XDP_TX page-pool reuse and AF_XDP zero-copy require explicit memory ownership authority and cannot borrow SKB, generic XDP, netdev, queue reachability, or ambient worker authority. All observed state remains Linux-mutable and monitor_verified=false, so readiness and source maps are modeling evidence, not protection evidence. No behavior-changing queue, workqueue, or driver enforcement is approved. Next: N-075 QueueControl/RepresentorForward derivation.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0052 maps Intel ice as a modern multi-queue NIC path. Formal/0028 plus validation/0046 model-check the modern NIC QueueLease class split. Validation/0047 executed the ice observation-only static readiness checker: 19 tracepoint rows found with 0 missing, 40 source anchors found with 0 missing, 11 class readiness rows, and 12 high-severity semantic gaps. Formal/0029 plus validation/0048 model-check XDP page-pool and AF_XDP XSK/UMEM memory ownership. Formal/0030 plus validation/0049 model-check QueueControl and RepresentorForward derivation. Safe TLC passed with 7 generated states, 7 distinct states, and depth 3. Unsafe configs produced expected counterexamples for devlink via RunCap, devlink via netdev reachability, representor without cap, representor without lower QueueLease, stale lower queue epoch, representor via netdev reachability, forwarding without service budget, control after revoke, and forwarding after revoke. The resulting rule is that devlink/rate/scheduler/VF/SF/representor lifecycle authority is QueueControl, and representor transmit requires RepresentorForwardCap plus live lower QueueLease; neither may be authorized by RunCap, plain netdev reachability, or Linux's ability to call dev_queue_xmit(). All observed state remains Linux-mutable and monitor_verified=false, so readiness and source maps are modeling evidence, not protection evidence. No behavior-changing queue, workqueue, or driver enforcement is approved.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -305,7 +305,11 @@
     "xdp_afxdp_memory_ownership_model": "capsched/capsched-models/formal/0029-xdp-afxdp-memory-ownership-model/README.md",
     "xdp_afxdp_memory_ownership_tla": "capsched/capsched-models/formal/0029-xdp-afxdp-memory-ownership-model/XdpAfxdpMemoryOwnership.tla",
     "xdp_afxdp_memory_ownership_validation": "capsched/capsched-models/validation/0048-xdp-afxdp-memory-ownership-tlc.md",
-    "xdp_afxdp_memory_ownership_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/xdp-afxdp-memory-ownership-20260627T114322Z"
+    "xdp_afxdp_memory_ownership_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/xdp-afxdp-memory-ownership-20260627T114322Z",
+    "queuecontrol_representor_model": "capsched/capsched-models/formal/0030-queuecontrol-representor-model/README.md",
+    "queuecontrol_representor_tla": "capsched/capsched-models/formal/0030-queuecontrol-representor-model/QueueControlRepresentor.tla",
+    "queuecontrol_representor_validation": "capsched/capsched-models/validation/0049-queuecontrol-representor-tlc.md",
+    "queuecontrol_representor_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/queuecontrol-representor-20260627T114912Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -483,6 +487,10 @@
     {
       "id": "DEVICE-009",
       "text": "XDP_TX page-pool reuse and AF_XDP zero-copy submit require explicit memory ownership authority; DMA-capable packet memory must not be authorized by queue reachability, SKB authority, generic XDP authority, or ambient driver state."
+    },
+    {
+      "id": "DEVICE-010",
+      "text": "Devlink/rate/scheduler/VF/SF/representor lifecycle authority is QueueControl authority, and representor transmit requires RepresentorForward authority plus a live lower QueueLease; neither may be authorized by RunCap or plain netdev reachability."
     }
   ],
   "design_boundaries": [
@@ -1470,9 +1478,19 @@
     {
       "id": "N-075",
       "text": "Model QueueControl and RepresentorForward derivation semantics so devlink, VF/SF, and representor forwarding cannot be authorized by RunCap or plain netdev reachability.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-27",
+      "partial_progress": "Created formal/0030 QueueControlRepresentor and validation/0049. Safe TLC passed with 7 generated states, 7 distinct states, and depth 3. Unsafe configs produced expected counterexamples for devlink via RunCap, devlink via netdev reachability, representor without cap, representor without lower QueueLease, stale lower queue epoch, representor via netdev reachability, forwarding without service budget, control after revoke, and forwarding after revoke.",
       "blocked_by": [
         "N-073"
+      ]
+    },
+    {
+      "id": "N-076",
+      "text": "Consolidate modern NIC QueueLease evidence into an assurance subclaim map, separating what is model-checked, source-observed, monitor-missing, and still forbidden for implementation.",
+      "status": "pending",
+      "blocked_by": [
+        "N-075"
       ]
     }
   ],

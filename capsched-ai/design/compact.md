@@ -400,6 +400,20 @@ formal/0029 + validation/0048
     authority, generic XDP authority, or ambient driver state must not authorize
     DMA-capable packet memory.
 
+formal/0030 + validation/0049
+  QueueControl and RepresentorForward model:
+  safe TLC passed with 7 generated states, 7 distinct states, and depth 3.
+  Unsafe configs produced expected counterexamples for:
+    devlink via RunCap; devlink via netdev reachability; representor without
+    cap; representor without lower QueueLease; stale lower queue epoch;
+    representor via netdev reachability; forwarding without service budget;
+    control after revoke; forwarding after revoke.
+  Rule:
+    devlink/rate/scheduler/VF/SF/representor lifecycle authority is
+    QueueControl. Representor transmit requires RepresentorForwardCap plus a
+    live lower QueueLease. Neither is authorized by RunCap, plain netdev
+    reachability, or Linux's ability to call dev_queue_xmit().
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

@@ -35,6 +35,7 @@ Updated: 2026-06-27
 | 0027 | Checked with safe pass and expected unsafe counterexamples | Aggregate QueueLease Settlement Model |
 | 0028 | Checked with safe pass and expected unsafe counterexamples | Modern NIC QueueLease Model |
 | 0029 | Checked with safe pass and expected unsafe counterexamples | XDP and AF_XDP Memory Ownership Model |
+| 0030 | Checked with safe pass and expected unsafe counterexamples | QueueControl and RepresentorForward Model |
 
 ## Planned
 

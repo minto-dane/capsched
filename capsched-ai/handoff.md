@@ -439,13 +439,38 @@ formal/0029 + validation/0048:
     ownership authority. Queue reachability, SKB authority, generic XDP
     authority, or ambient driver state cannot authorize DMA-capable packet
     memory.
+
+formal/0030 + validation/0049:
+  QueueControl and RepresentorForward model checked
+  model:
+    formal/0030-queuecontrol-representor-model/QueueControlRepresentor.tla
+  validation:
+    validation/0049-queuecontrol-representor-tlc.md
+  safe result:
+    PASS, 7 generated states, 7 distinct states, depth 3
+  unsafe counterexamples:
+    devlink queue-control through RunCap
+    devlink queue-control through plain netdev reachability
+    representor forwarding without RepresentorForwardCap
+    representor forwarding without lower QueueLease
+    representor forwarding with stale lower queue epoch
+    representor forwarding by plain netdev reachability
+    representor forwarding without service budget
+    queue control after revoke
+    representor forwarding after revoke
+  key rule:
+    Devlink/rate/scheduler/VF/SF/representor lifecycle authority is
+    QueueControl authority. Representor transmit requires
+    RepresentorForwardCap plus a live lower QueueLease. Neither may be
+    authorized by RunCap, plain netdev reachability, or Linux's ability to call
+    dev_queue_xmit().
 ```
 
-Next work remains modeling-first: model QueueControl / RepresentorForward
-derivation before any behavior-changing device hook. The older post-exec gaps
-also remain: eventfd kernel signal provenance, epoll delivery/watched-endpoint
-correlation, io_uring fixed-file consumption, and execfd handoff before
-behavior-changing endpoint hooks.
+Next work remains modeling-first: consolidate the modern NIC QueueLease
+evidence into an assurance subclaim map before any behavior-changing device
+hook. The older post-exec gaps also remain: eventfd kernel signal provenance,
+epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
+and execfd handoff before behavior-changing endpoint hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
