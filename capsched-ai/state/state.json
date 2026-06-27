@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "assurance-case-foundation",
+    "current_phase": "slice0c-source-coverage",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -69,7 +69,8 @@
       "capsched/capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md",
       "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
       "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
-      "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md"
+      "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
+      "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md"
     ],
     "formal_model_selection": "capsched/capsched-models/formal/0001-model-selection.md",
     "goal_roadmap": "capsched/capsched-models/plans/0003-goal-achievement-roadmap.md",
@@ -133,7 +134,8 @@
     "device_iommu_queue_lease_map": "capsched/capsched-models/analysis/0016-device-iommu-queue-lease-map.md",
     "mm_allocator_page_cache_domain_state_map": "capsched/capsched-models/analysis/0017-mm-allocator-page-cache-domain-state-map.md",
     "protection_claim_evidence_map": "capsched/capsched-models/analysis/0018-protection-claim-evidence-map.md",
-    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. The assurance-case foundation now exists in capsched-models/assurance/: TOP-001 decomposes the hypervisor-grade Domain separation goal into activation, execution, budget, endpoint, async, memory, TLB, page-cache, device, revocation, cluster, compatibility, TCB, side-channel, and evaluation subclaims. Next: choose either Slice 0C trace-only observation or a narrower wakeup/enqueue/runnable-state coverage analysis before any behavior-changing scheduler hook."
+    "wakeup_enqueue_runnable_coverage": "capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md",
+    "current_focus": "Linux Slice 0B is applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. The assurance-case foundation exists in capsched-models/assurance/. After that gate, the safer next Linux-facing choice was source coverage rather than immediate trace patching: analysis/0019 maps try_to_wake_up, ttwu_runnable, remote wakelist, wake_up_new_task, move_queued_task, affinity changes, pick_next_task, __schedule, sched_class contracts, and sched_ext enqueue custody. Next: draft a strict Slice 0C trace-only implementation gate tied to EXEC-001, COMPAT-001, and G2, with no behavior changes."
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -709,9 +711,19 @@
     {
       "id": "N-028",
       "text": "Select the next Linux-facing gate: Slice 0C trace-only Domain observation or a narrower wakeup/enqueue/runnable-state source coverage analysis.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-26",
+      "partial_progress": "Selected the narrower wakeup/enqueue/runnable-state source coverage analysis before any trace patch. Added analysis/0019, which shows activate_task alone is insufficient and maps self wake, already-runnable wake, delayed fair requeue, remote wakelist, new task wake, queued migration, affinity changes, pick/core scheduling, switch, sched_class contracts, and sched_ext enqueue custody.",
       "blocked_by": [
         "N-027"
+      ]
+    },
+    {
+      "id": "N-029",
+      "text": "Draft a strict Slice 0C trace-only implementation gate using analysis/0019 and assurance claims EXEC-001, COMPAT-001, and G2.",
+      "status": "pending",
+      "blocked_by": [
+        "N-028"
       ]
     }
   ],

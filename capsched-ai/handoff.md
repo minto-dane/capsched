@@ -112,6 +112,18 @@ breaking the HyperTag Monitor or an explicitly exposed typed service endpoint.
 The claim tree currently has no `Protection-evidenced` claim. All production
 security claims remain open until monitor-backed evidence exists.
 
+After the assurance gate, the next Linux-facing choice was narrowed by source
+coverage rather than by writing code. Read:
+
+```text
+capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md
+```
+
+Key result: `activate_task()` alone is not enough even for a future runnable
+authority model. The next implementation record should be a strict Slice 0C
+trace-only gate tied to `EXEC-001`, `COMPAT-001`, and assurance gate `G2`.
+It should not reject wakeups, enqueue, pick, or context switches.
+
 ## Recovery Path
 
 Read in this order:
@@ -292,6 +304,7 @@ capsched/capsched-models/implementation/0005-l0-slice0b-type-scaffolding.md
 capsched/capsched-models/validation/0014-l0-slice0b-build-run.md
 capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md
 capsched/capsched-models/assurance/claims.json
+capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md
 ```
 
 Stopped full integration run identity:

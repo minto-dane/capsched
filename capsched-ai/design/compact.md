@@ -156,6 +156,31 @@ Linux-only L0 evidence is prototype or compatibility evidence only.
 Every future Linux patch must name the assurance claim and gate it supports.
 ```
 
+After the assurance gate, the next Linux-facing choice was source coverage
+first, not an immediate trace patch. The active note is:
+
+```text
+capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md
+```
+
+Key result:
+
+```text
+activate_task() is not complete runnable-state coverage.
+try_to_wake_up(), ttwu_runnable(), remote wakelists, wake_up_new_task(),
+move_queued_task(), affinity changes, pick/core scheduling, __schedule(),
+sched_class contracts, and sched_ext custody all matter.
+```
+
+Next intended gate:
+
+```text
+Slice 0C trace-only implementation gate
+  claims: EXEC-001, COMPAT-001
+  assurance gate: G2
+  no behavior change
+```
+
 The first TLA+ Runnable Lease model exists and passed TLC invariant checking in
 a tiny finite model:
 
