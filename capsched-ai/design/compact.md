@@ -204,6 +204,20 @@ capsched-models/validation/run-slice0c-no-code-trace.sh
 
 It has not been executed. It requires root or tracefs write access.
 
+Readiness check:
+
+```text
+capsched-models/validation/0016-slice0c-trace-readiness-check.md
+```
+
+Current session cannot execute it:
+
+```text
+uid 1000 user nia
+tracefs_writable=no
+running kernel: Ubuntu 6.17.0-35-generic
+```
+
 The first TLA+ Runnable Lease model exists and passed TLC invariant checking in
 a tiny finite model:
 

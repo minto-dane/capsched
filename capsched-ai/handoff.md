@@ -145,6 +145,16 @@ capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
 The runner has not been executed. It needs root or tracefs write access and
 captures existing scheduler tracepoints plus dynamic ftrace function entries.
 
+Trace execution readiness was checked in:
+
+```text
+capsched/capsched-models/validation/0016-slice0c-trace-readiness-check.md
+```
+
+Current session result: user `nia` has uid 1000, tracefs is not writable, and
+the running kernel is Ubuntu `6.17.0-35-generic`, not a recorded boot of the
+CapSched worktree kernel. The runner was not executed.
+
 ## Recovery Path
 
 Read in this order:
@@ -328,6 +338,7 @@ capsched/capsched-models/assurance/claims.json
 capsched/capsched-models/analysis/0019-wakeup-enqueue-runnable-coverage.md
 capsched/capsched-models/implementation/0006-slice0c-trace-observation-gate.md
 capsched/capsched-models/validation/0015-slice0c-no-code-trace-plan.md
+capsched/capsched-models/validation/0016-slice0c-trace-readiness-check.md
 capsched/capsched-models/validation/run-slice0c-no-code-trace.sh
 ```
 

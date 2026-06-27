@@ -21,6 +21,7 @@ Updated: 2026-06-26
 | 0013 | Passed with two finite TLC runs | Queue Lease and IOMMU Boundary TLC Check |
 | 0014 | Passed | L0 Slice 0B Build Run |
 | 0015 | Planned | Slice 0C No-Code Trace Plan |
+| 0016 | Not executed | Slice 0C Trace Readiness Check |
 
 ## Principles
 
