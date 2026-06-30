@@ -241,7 +241,9 @@
         "E-DEV-MNIC-035",
         "E-DEV-MNIC-036",
         "E-DEV-MNIC-037",
-        "E-DEV-MNIC-038"
+        "E-DEV-MNIC-038",
+        "E-DEV-MNIC-039",
+        "E-DEV-MNIC-040"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -591,7 +593,9 @@
         "E-DEV-MNIC-035",
         "E-DEV-MNIC-036",
         "E-DEV-MNIC-037",
-        "E-DEV-MNIC-038"
+        "E-DEV-MNIC-038",
+        "E-DEV-MNIC-039",
+        "E-DEV-MNIC-040"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1219,6 +1223,26 @@
       "limitation": "Finite model checks request-carrier non-authority, monitor receipt ledger authority, Linux shadow non-authority, replay/tamper rejection, audit-only rejection, and raw-handle non-exposure; it is not monitor ABI or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-039",
+      "kind": "analysis_semantic_abi_candidate",
+      "record": "capsched-models/analysis/0069-local-monitor-admission-abi-semantics.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines LocalMonitorAdmissionABI-v0 semantic request/response classes, ledger ownership, replay windows, Linux shadow invalidation, failure terminality, and revoke ordering; it is not a binary ABI, Linux stub, monitor implementation, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-040",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0068-local-monitor-admission-abi-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks ABI semantic constraints for request classes, monitor response ownership, replay rejection, failure terminality, ledger ownership, endpoint receipt gating, shadow invalidation, and revoke ordering; it is not ABI layout or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1301,6 +1325,7 @@
     "Cluster-wide leases are directly executable.",
     "Root-management ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation is a LocalDomainDeviceLease.",
     "Linux service-domain queues, Linux-owned response stores, Linux-visible shadows, audit logs, ring slots, or raw driver handles are monitor receipt authority.",
+    "A semantic ABI candidate is a selected binary ABI, monitor call layout, Linux stub, shared-ring format, or production protection proof.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1374,7 +1399,9 @@
         "E-DEV-MNIC-035",
         "E-DEV-MNIC-036",
         "E-DEV-MNIC-037",
-        "E-DEV-MNIC-038"
+        "E-DEV-MNIC-038",
+        "E-DEV-MNIC-039",
+        "E-DEV-MNIC-040"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1384,7 +1411,8 @@
         "No-behavior-change validator for LocalDomainDeviceLease contract dependencies and safety flags.",
         "Admission-protocol model for failure and revoke ordering.",
         "Pre-ABI monitor admission interface boundary model.",
-        "Pre-ABI carrier/storage choice gate model."
+        "Pre-ABI carrier/storage choice gate model.",
+        "Semantic monitor ABI candidate model before carrier or binary layout selection."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

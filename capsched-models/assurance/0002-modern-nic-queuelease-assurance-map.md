@@ -98,6 +98,9 @@ validation/0066-local-monitor-admission-interface-tlc.md
 
 formal/0045-monitor-admission-carrier-storage-model/
 validation/0067-monitor-admission-carrier-storage-tlc.md
+
+formal/0046-local-monitor-admission-abi-model/
+validation/0068-local-monitor-admission-abi-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -122,6 +125,7 @@ analysis/0065-local-domain-device-lease-observation-contract.md
 analysis/0066-local-domain-device-lease-admission-protocol.md
 analysis/0067-local-monitor-admission-interface-boundary.md
 analysis/0068-local-monitor-admission-carrier-storage.md
+analysis/0069-local-monitor-admission-abi-semantics.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -138,6 +142,7 @@ analysis/local-domain-device-lease-observation-contract-v1.json
 analysis/local-domain-device-lease-admission-protocol-v1.json
 analysis/local-monitor-admission-interface-boundary-v1.json
 analysis/local-monitor-admission-carrier-storage-v1.json
+analysis/local-monitor-admission-abi-semantics-v0.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -146,6 +151,7 @@ validation/0064-local-domain-device-lease-observation-contract-result.md
 validation/0065-local-domain-device-lease-admission-tlc.md
 validation/0066-local-monitor-admission-interface-tlc.md
 validation/0067-monitor-admission-carrier-storage-tlc.md
+validation/0068-local-monitor-admission-abi-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
@@ -255,6 +261,13 @@ MonitorAdmissionCarrierStorage:
   non-authoritative caches, monitor receipt ledgers are the authority root,
   audit-only logs are not runtime authority, and raw driver handles are not
   target Domain endpoints.
+
+LocalMonitorAdmissionABI:
+  `LocalMonitorAdmissionABI-v0` is a semantic candidate, not a binary ABI.
+  Typed request classes, monitor-owned responses, monitor-owned receipt ledger
+  writes, monitor-owned replay windows, non-authoritative Linux shadows,
+  terminal failure, and ordered revoke with shadow invalidation are required
+  before any carrier or code layout can be selected.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It

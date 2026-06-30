@@ -1,0 +1,175 @@
+{
+  "schema": "capsched.local_monitor_admission_abi_semantics.v0",
+  "status": "draft_semantic_candidate",
+  "date": "2026-06-30",
+  "scope": {
+    "name": "LocalMonitorAdmissionABI-v0",
+    "semantic_candidate_only": true,
+    "binary_abi_selected": false,
+    "carrier_selected": false,
+    "linux_stub_selected": false,
+    "monitor_implementation_selected": false,
+    "behavior_change": false,
+    "protection_claim": false
+  },
+  "participants": [
+    {
+      "name": "root_management_plane",
+      "authority": "cluster_policy_intent"
+    },
+    {
+      "name": "linux_service_domain",
+      "authority": "request_carrier_and_non_authoritative_shadow"
+    },
+    {
+      "name": "local_hypertag_monitor",
+      "authority": "response_minting_replay_windows_receipt_ledger_revoke_state"
+    },
+    {
+      "name": "target_domain",
+      "authority": "typed_endpoint_receiver_after_monitor_verified_receipts"
+    }
+  ],
+  "request_classes": [
+    "HTAG_REQ_IMPORT_CLUSTER_LEASE",
+    "HTAG_REQ_BIND_DEVICE_ROOT",
+    "HTAG_REQ_ADMIT_SERVICE_DOMAIN",
+    "HTAG_REQ_ADMIT_TARGET_DOMAIN",
+    "HTAG_REQ_COMPILE_LOCAL_DEVICE_LEASE",
+    "HTAG_REQ_MINT_DERIVED_RECEIPTS",
+    "HTAG_REQ_QUERY_RECEIPT",
+    "HTAG_REQ_REVOKE_LOCAL_DEVICE_LEASE"
+  ],
+  "response_classes": [
+    "HTAG_RESP_ACCEPTED",
+    "HTAG_RESP_FAILURE",
+    "HTAG_RESP_REPLAY_REJECTED",
+    "HTAG_RESP_STALE_EPOCH",
+    "HTAG_RESP_RECEIPT_SET",
+    "HTAG_RESP_REVOKE_STARTED",
+    "HTAG_RESP_DERIVED_RECEIPTS_REVOKED",
+    "HTAG_RESP_REVOKE_COMPLETE"
+  ],
+  "common_request_fields": [
+    "abi_version",
+    "request_class",
+    "request_id",
+    "request_nonce",
+    "replay_window_id",
+    "caller_domain_id",
+    "caller_domain_epoch",
+    "monitor_id",
+    "expected_monitor_epoch",
+    "cluster_lease_id",
+    "cluster_epoch",
+    "root_management_epoch",
+    "node_id",
+    "service_domain_id",
+    "service_domain_epoch",
+    "target_domain_id",
+    "target_domain_epoch",
+    "device_root_id",
+    "device_root_epoch",
+    "local_lease_id",
+    "local_lease_epoch",
+    "requested_receipt_classes",
+    "requested_revoke_scope"
+  ],
+  "ledger_semantics": {
+    "owner": "local_hypertag_monitor",
+    "linux_authoritative_write_allowed": false,
+    "required_fields": [
+      "receipt_id",
+      "receipt_epoch",
+      "local_lease_id",
+      "local_lease_epoch",
+      "monitor_epoch",
+      "source_request_id",
+      "source_request_nonce",
+      "response_class",
+      "receipt_class_set",
+      "valid_or_revoked",
+      "revoke_epoch",
+      "shadow_generation"
+    ],
+    "integrity": "append_only_or_equivalent_tamper_evident_mutation"
+  },
+  "replay_window_semantics": {
+    "owner": "local_hypertag_monitor",
+    "fresh_request_rule": "request_nonce_unused_in_replay_window_and_expected_epochs_match",
+    "accept_rule": "consume_nonce_before_success_receipts_are_visible",
+    "replay_rule": "replayed_or_stale_request_must_not_mint_receipts_or_refresh_shadows",
+    "linux_only_ring_slot_generation_is_sufficient": false
+  },
+  "linux_shadow_semantics": {
+    "allowed": true,
+    "authority_root": false,
+    "source": [
+      "monitor_receipt_id",
+      "receipt_epoch",
+      "shadow_generation"
+    ],
+    "allowed_use": [
+      "cache",
+      "index",
+      "trace",
+      "slow_path_hint"
+    ],
+    "miss_or_corruption": "slow_path_monitor_query_or_fail_closed",
+    "invalidate_on": [
+      "revoke_start",
+      "derived_receipt_revoke"
+    ]
+  },
+  "failure_semantics": {
+    "terminal_for_attempt": true,
+    "new_attempt_requires": [
+      "new_request_id",
+      "new_request_nonce"
+    ],
+    "terminal_classes": [
+      "HTAG_RESP_FAILURE",
+      "HTAG_RESP_REPLAY_REJECTED",
+      "HTAG_RESP_STALE_EPOCH"
+    ],
+    "terminal_conditions": [
+      "unknown_request_class",
+      "field_presence_or_type_mismatch",
+      "policy_mismatch",
+      "service_domain_mismatch",
+      "target_domain_mismatch",
+      "device_root_mismatch",
+      "root_budget_mismatch"
+    ]
+  },
+  "revoke_semantics": {
+    "required_order": [
+      "HTAG_REQ_REVOKE_LOCAL_DEVICE_LEASE",
+      "HTAG_RESP_REVOKE_STARTED",
+      "new_receipt_embargo",
+      "derived_receipts_revoked",
+      "linux_visible_shadows_invalidated",
+      "HTAG_RESP_REVOKE_COMPLETE"
+    ],
+    "new_receipts_during_revoke_allowed": false,
+    "revoke_complete_before_derived_revoke_allowed": false
+  },
+  "accepted_future_carriers": [
+    "direct_monitor_call",
+    "monitor_owned_shared_ring",
+    "linux_service_domain_request_queue_with_monitor_copy_validate",
+    "root_management_feed_with_local_monitor_import"
+  ],
+  "invariants": [
+    "known_request_class_required_for_accept",
+    "monitor_response_requires_request",
+    "accepted_request_requires_fresh_replay_window",
+    "failure_is_terminal_for_attempt",
+    "monitor_owns_receipt_ledger_writes",
+    "endpoint_delivery_requires_monitor_verified_receipts",
+    "linux_shadow_is_not_authority",
+    "linux_shadow_invalidated_before_revoke_complete",
+    "no_new_receipts_during_revoke",
+    "revoke_complete_requires_derived_receipt_revoke"
+  ]
+}

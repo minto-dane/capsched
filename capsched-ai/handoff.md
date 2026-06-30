@@ -90,20 +90,22 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Local monitor admission carrier/storage choice gate. Analysis/0068 compares
-  direct monitor call, monitor-owned shared ring, Linux service-domain queue,
-  monitor receipt ledger, Linux-visible shadow, audit-only log, and raw driver
-  handles. Formal/0045 plus validation/0067 safe TLC passed with 11 generated
-  states, 9 distinct states, and depth 7. Unsafe configs reject Linux-owned
-  response authority, service-domain queue authority, Linux shadow authority,
-  replayed ring slot, tampered receipt ledger, request-as-receipt,
-  audit-as-authority, and raw handle endpoint delivery.
+  Local monitor admission ABI semantic candidate. Analysis/0069 defines
+  `LocalMonitorAdmissionABI-v0` request classes, response classes, common
+  fields, monitor-owned receipt ledger semantics, replay windows,
+  Linux-visible shadow invalidation, failure terminality, and revoke ordering.
+  Formal/0046 plus validation/0068 safe TLC passed with 24 generated states,
+  20 distinct states, and depth 12. Unsafe configs reject unknown request-class
+  acceptance, response without request, replay acceptance, failure-then-
+  receipt, Linux ledger writes, endpoint before receipt, Linux shadow authority,
+  missing shadow invalidation before revoke complete, new receipt during revoke,
+  and revoke complete before derived receipt revoke. This is semantic evidence,
+  not ABI layout or implementation evidence.
 
 next focused risk:
-  Define the first concrete monitor ABI semantics candidate for local
-  admission, including request/response classes, receipt ledger ownership,
-  replay windows, Linux-visible shadow invalidation, and failure/revoke paths,
-  without selecting code layout or implementing it.
+  Compare direct-call-first and monitor-owned-ring-first implementation-facing
+  sketches against `LocalMonitorAdmissionABI-v0`, without selecting code layout
+  or implementing it.
 ```
 
 That focused VF IRQ model is now checked:

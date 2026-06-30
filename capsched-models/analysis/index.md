@@ -74,6 +74,7 @@ Updated: 2026-06-30
 | 0066 | Draft admission protocol with model gate | Local Domain Device Lease Admission Protocol |
 | 0067 | Draft interface boundary with model gate | Local Monitor Admission Interface Boundary |
 | 0068 | Draft choice gate with model | Local Monitor Admission Carrier and Receipt Storage |
+| 0069 | Draft semantic ABI candidate with model gate | Local Monitor Admission ABI Semantics Candidate |
 
 ## Planned Analysis Notes
 
@@ -112,3 +113,4 @@ Updated: 2026-06-30
 | `local-domain-device-lease-admission-protocol-v1.json` | Draft admission protocol | Machine-readable root-management/local monitor admission path, failure modes, revoke ordering, and invariant list |
 | `local-monitor-admission-interface-boundary-v1.json` | Draft interface boundary | Machine-readable local monitor request/response object boundary, freshness fields, attachment points, and forbidden exposures |
 | `local-monitor-admission-carrier-storage-v1.json` | Draft choice gate | Machine-readable local monitor carrier/storage choice gate and authority-collapse rejection map |
+| `local-monitor-admission-abi-semantics-v0.json` | Draft semantic ABI candidate | Machine-readable LocalMonitorAdmissionABI-v0 request/response, ledger, replay, shadow, failure, and revoke semantics |

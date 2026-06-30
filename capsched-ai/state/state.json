@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "monitor-admission-carrier-storage-modeled",
+    "current_phase": "local-monitor-admission-abi-semantics-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. N-091 through N-094 established LocalDomainDeviceLease compilation, observation contract, admission/revoke ordering, and local monitor admission interface boundaries. N-095 now compares local monitor admission carrier/storage choices before selecting any monitor ABI or Linux stub. Analysis/0068 plus local-monitor-admission-carrier-storage-v1.json classify direct monitor call as the correctness baseline, monitor-owned shared ring as a guarded throughput extension, Linux service-domain queue as request-only, monitor receipt ledger as authority root, Linux-visible shadow as non-authoritative cache/index/trace, audit-only log as non-authority, and raw driver handles as non-endpoints. Formal/0045 and validation/0067 checked the tiny finite model: safe TLC passed with 11 generated states, 9 distinct states, and depth 7; unsafe configs produced expected counterexamples for Linux-owned response authority, service-domain queue authority, Linux shadow authority, replayed ring slot, tampered receipt ledger, request carrier treated as receipt, audit log as authority, and raw driver handle endpoint. This is model-supported semantics only, not monitor ABI, Linux stub, root-management implementation, monitor implementation, cryptographic sealing design, or production protection evidence. The current hard gaps remain: no actual HyperTag Monitor implementation; no root-management/local monitor LocalDomainDeviceLease compile implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is N-096: define the first concrete monitor ABI semantics candidate at the level of requests, receipts, storage ownership, replay windows, and Linux-visible non-authority shadows without selecting code layout yet.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. N-091 through N-095 established LocalDomainDeviceLease compilation, observation contract, admission/revoke ordering, local monitor admission interface boundaries, and carrier/storage choice constraints. N-096 now defines LocalMonitorAdmissionABI-v0 as a semantic candidate before selecting carrier, binary ABI, Linux stub, or monitor implementation. Analysis/0069 plus local-monitor-admission-abi-semantics-v0.json define typed request classes, response classes, common fields, monitor-owned receipt ledger semantics, monitor-owned replay windows, Linux-visible shadow invalidation, failure terminality, and revoke ordering. Formal/0046 and validation/0068 checked the finite model: safe TLC passed with 24 generated states, 20 distinct states, and depth 12; unsafe configs produced expected counterexamples for unknown request-class acceptance, response without request, replay acceptance, failure-then-receipt, Linux ledger writes, endpoint before receipt, Linux shadow authority, shadow not invalidated before revoke complete, new receipt during revoke, and revoke complete before derived receipt revoke. A model-refinement note records that endpoint delivery history and live endpoint authority must be distinct or generation-scoped. This is model-supported semantics only, not monitor ABI layout, Linux stub, root-management implementation, monitor implementation, cryptographic sealing design, or production protection evidence. The current hard gaps remain: no actual HyperTag Monitor implementation; no root-management/local monitor LocalDomainDeviceLease compile implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is N-097: compare direct-call-first and monitor-owned-ring-first implementation-facing sketches against LocalMonitorAdmissionABI-v0 without selecting code layout or implementing it.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -418,7 +418,13 @@
     "monitor_admission_carrier_storage_model": "capsched/capsched-models/formal/0045-monitor-admission-carrier-storage-model/README.md",
     "monitor_admission_carrier_storage_tla": "capsched/capsched-models/formal/0045-monitor-admission-carrier-storage-model/MonitorAdmissionCarrierStorage.tla",
     "monitor_admission_carrier_storage_validation": "capsched/capsched-models/validation/0067-monitor-admission-carrier-storage-tlc.md",
-    "monitor_admission_carrier_storage_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/monitor-admission-carrier-storage-20260630T053457Z"
+    "monitor_admission_carrier_storage_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/monitor-admission-carrier-storage-20260630T053457Z",
+    "local_monitor_admission_abi_semantics": "capsched/capsched-models/analysis/0069-local-monitor-admission-abi-semantics.md",
+    "local_monitor_admission_abi_semantics_json": "capsched/capsched-models/analysis/local-monitor-admission-abi-semantics-v0.json",
+    "local_monitor_admission_abi_model": "capsched/capsched-models/formal/0046-local-monitor-admission-abi-model/README.md",
+    "local_monitor_admission_abi_tla": "capsched/capsched-models/formal/0046-local-monitor-admission-abi-model/LocalMonitorAdmissionABI.tla",
+    "local_monitor_admission_abi_validation": "capsched/capsched-models/validation/0068-local-monitor-admission-abi-tlc.md",
+    "local_monitor_admission_abi_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/local-monitor-admission-abi-20260630T055403Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1797,9 +1803,19 @@
     {
       "id": "N-096",
       "text": "Define the first concrete monitor ABI semantics candidate for local admission, including request/response classes, receipt ledger ownership, replay windows, Linux-visible shadow invalidation, and failure/revoke paths, without selecting code layout or implementing it.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created analysis/0069 plus local-monitor-admission-abi-semantics-v0.json, then formal/0046 LocalMonitorAdmissionABI and validation/0068. The semantic candidate defines request classes, response classes, common request fields, monitor-owned receipt ledger semantics, replay-window ownership, Linux-visible shadow invalidation, failure terminality, and revoke ordering without selecting a carrier, binary ABI, Linux stub, or monitor implementation. Safe TLC passed with 24 generated states, 20 distinct states, and depth 12. Unsafe configs produced expected counterexamples for unknown request-class acceptance, response without request, replay acceptance, failure-then-receipt, Linux ledger writes, endpoint before receipt, Linux shadow authority, shadow not invalidated before revoke complete, new receipt during revoke, and revoke complete before derived receipt revoke. No implementation or protection claim is made.",
       "blocked_by": [
         "N-095"
+      ]
+    },
+    {
+      "id": "N-097",
+      "text": "Compare direct-call-first and monitor-owned-ring-first implementation-facing sketches against LocalMonitorAdmissionABI-v0, including transition cost, batching, replay-window ownership, ledger visibility, shadow invalidation, and failure/revoke handling, without selecting code layout or implementing it.",
+      "status": "pending",
+      "blocked_by": [
+        "N-096"
       ]
     }
   ],

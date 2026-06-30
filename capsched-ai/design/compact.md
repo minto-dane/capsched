@@ -92,19 +92,20 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Local monitor admission carrier/storage choice gate. Analysis/0068 and
-  formal/0045 separate request carriers, monitor receipt ledger authority,
-  Linux-visible shadows, audit logs, and raw driver handles. Validation/0067
-  safe TLC passed with 11 generated states, 9 distinct states, and depth 7;
-  unsafe configs reject Linux-owned response authority, service-domain queue
-  authority, Linux shadow authority, replayed ring slot, tampered receipt
-  ledger, request-as-receipt, audit-as-authority, and raw handle endpoint
-  delivery.
+  Local monitor admission ABI semantic candidate. Analysis/0069 and formal/0046
+  define `LocalMonitorAdmissionABI-v0` semantics for typed request classes,
+  monitor responses, monitor-owned ledger writes, replay windows,
+  non-authoritative Linux shadows, failure terminality, and revoke ordering.
+  Validation/0068 safe TLC passed with 24 generated states, 20 distinct states,
+  and depth 12; unsafe configs reject unknown-class acceptance, response
+  without request, replay acceptance, failure-then-receipt, Linux ledger writes,
+  endpoint before receipt, shadow authority, missing shadow invalidation, new
+  receipt during revoke, and early revoke complete.
 
 next focused risk:
-  Define the first concrete monitor ABI semantics candidate for local
-  admission, including request/response classes, receipt ledger ownership,
-  replay windows, Linux-visible shadow invalidation, and failure/revoke paths.
+  Compare direct-call-first and monitor-owned-ring-first implementation-facing
+  sketches against `LocalMonitorAdmissionABI-v0`; do not confuse semantic ABI
+  candidate with selected binary ABI or implementation.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

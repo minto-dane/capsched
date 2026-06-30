@@ -277,6 +277,18 @@ Monitor admission carrier/storage choice gate:
   handle endpoint delivery. This is model-supported semantics only, not ABI,
   implementation, or protection evidence.
 
+Local monitor admission ABI semantic candidate:
+  analysis/0069 and validation/0068 define and check `LocalMonitorAdmissionABI-
+  v0` semantics before choosing a carrier or binary ABI. Safe TLC passed with
+  24 generated states, 20 distinct states, and depth 12. Unsafe configs
+  produced expected counterexamples for unknown request-class acceptance,
+  response without request, replay acceptance, failure-then-receipt,
+  Linux-owned ledger writes, endpoint before receipt, Linux shadow authority,
+  missing shadow invalidation before revoke complete, new receipt during
+  revoke, and revoke complete before derived receipt revoke. This is
+  model-supported semantics only, not ABI layout, implementation, or protection
+  evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

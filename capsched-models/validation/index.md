@@ -73,6 +73,7 @@ Updated: 2026-06-30
 | 0065 | Safe model passed; unsafe models produced expected counterexamples | Local Domain Device Lease Admission TLC |
 | 0066 | Safe model passed; unsafe models produced expected counterexamples | Local Monitor Admission Interface TLC |
 | 0067 | Safe model passed; unsafe models produced expected counterexamples | Monitor Admission Carrier Storage TLC |
+| 0068 | Safe model passed; unsafe models produced expected counterexamples | Local Monitor Admission ABI TLC |
 
 ## Principles
 
