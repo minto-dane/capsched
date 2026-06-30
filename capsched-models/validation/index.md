@@ -84,6 +84,7 @@ Updated: 2026-06-30
 | 0076 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Inventory Contract TLC |
 | 0077 | Executed; source-only inventory emitted | Direct-Call Inventory Runner Result |
 | 0078 | Executed; source-only inventory broadened | Direct-Call Inventory Expansion Result |
+| 0079 | Executed; source-only drift check emitted | Direct-Call Overlay Drift Checker Result |
 
 ## Principles
 

@@ -113,20 +113,19 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call source-only inventory expansion. Validation/0078 executed
-  capsched-models/validation/run-direct-call-inventory.sh against the current
-  Linux source tree. Run 20260630T230536Z emitted 41 ledger rows: 34 available
-  anchors, 19 existing trace event declaration rows, 12 symbol candidate rows,
-  6 future gaps, 1 trace-plan row, and 41 overlay seed rows. There were 0
-  safety-flag violations. The run preserved source_only=true,
-  requires_privilege=false, writes_tracefs=false, attaches_probes=false,
-  modifies_linux=false, public_tracepoint_abi=false, authority_claim=false,
-  monitor_verified=false, and protection_claim=false.
+  Direct-call overlay drift checker. Validation/0079 executed
+  capsched-models/traceability/check-direct-call-overlay-drift.sh against the
+  N-106 overlay seed. Run 20260630T230822Z emitted 41 anchor rows: 34 ok rows,
+  7 expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic
+  recheck-required rows, and 0 safety-flag violations. The run preserved
+  source_only=true, requires_privilege=false, writes_tracefs=false,
+  attaches_probes=false, modifies_linux=false, public_tracepoint_abi=false,
+  authority_claim=false, monitor_verified=false, and protection_claim=false.
 
 next focused risk:
-  Create a drift-aware traceability ledger/checker from the N-106 overlay seed
-  so upstream Linux updates can classify path, symbol/pattern, blob, and
-  semantic-recheck drift without turning source anchors into authority.
+  Generalize the direct-call drift checker into a project-level traceability
+  ledger/checker that can ingest older source-map families without rewriting
+  N-series history or treating source anchors as authority.
 ```
 
 That focused VF IRQ model is now checked:

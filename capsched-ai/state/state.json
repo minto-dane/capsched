@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-inventory-expanded",
+    "current_phase": "direct-call-overlay-drift-checker-executed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-106 broadened the source-only direct-call inventory under ADR-0007 and ADR-0008. The runner capsched-models/validation/run-direct-call-inventory.sh now emits 41 ledger rows, 34 available source anchors, 19 existing trace event declaration rows, 12 symbol candidate rows, 6 future gaps, 1 trace-plan row, 7 gap rows, 0 safety-flag violations, and 41 overlay seed rows. Validation/0078 records run 20260630T230536Z under build/direct-call-inventory. The run stayed source-only: no Linux modification, no root requirement, no tracefs write, no probe attachment, no public tracepoint ABI, no runtime coverage claim, no authority claim, no monitor verification, and no protection claim. Linux remains unchanged. Next focused risk is N-107: turn the N-106 overlay seed into a drift-aware traceability ledger/checker that can mark path, symbol/pattern, blob, and semantic recheck status after upstream Linux updates without turning source anchors into authority.",
+    "current_focus": "N-107 created and executed the source-only direct-call overlay drift checker. The checker capsched-models/traceability/check-direct-call-overlay-drift.sh consumed the N-106 overlay seed and emitted drift-ledger.tsv, drift-ledger.json, stale-or-gap.tsv, summary.txt, and metadata.txt under build/traceability-drift/20260630T230822Z. Result: 41 seed rows, 41 anchor rows, 34 ok rows, 7 expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic_recheck_required rows, and 0 safety-flag violations. The run did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection. Next focused risk is N-108: generalize from direct-call seed checking to a project-level traceability ledger/checker that can ingest older source-map families while preserving ADR-0007/0008 constraints.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -483,7 +483,10 @@
     "direct_call_inventory_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T215918Z",
     "direct_call_inventory_expansion_result": "capsched/capsched-models/validation/0078-direct-call-inventory-expansion-result.md",
     "direct_call_inventory_expansion_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T230536Z",
-    "direct_call_inventory_overlay_seed": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T230536Z/overlay-seed.json"
+    "direct_call_inventory_overlay_seed": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T230536Z/overlay-seed.json",
+    "direct_call_overlay_drift_checker": "capsched/capsched-models/traceability/check-direct-call-overlay-drift.sh",
+    "direct_call_overlay_drift_result": "capsched/capsched-models/validation/0079-direct-call-overlay-drift-checker-result.md",
+    "direct_call_overlay_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-drift/20260630T230822Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1973,9 +1976,19 @@
     {
       "id": "N-107",
       "text": "Create a drift-aware traceability ledger/checker from the N-106 overlay seed that can be rerun after upstream Linux updates to classify path, symbol/pattern, blob, and semantic recheck status while preserving source_only, authority_claim=false, monitor_verified=false, and protection_claim=false.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-106"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created capsched-models/traceability/check-direct-call-overlay-drift.sh and executed it on the N-106 overlay seed. Run 20260630T230822Z emitted 41 anchor rows with 34 ok rows, 7 expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic recheck-required rows, and 0 safety flag violations. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection."
+    },
+    {
+      "id": "N-108",
+      "text": "Generalize the direct-call drift checker into a project-level traceability ledger/checker that can ingest older source-map families and classify upstream drift without rewriting N-series history or treating source anchors as authority.",
+      "status": "pending",
+      "blocked_by": [
+        "N-107"
       ]
     }
   ],

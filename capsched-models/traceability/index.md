@@ -23,6 +23,27 @@ Instead, it explains how to read them together.
 | --- | --- |
 | `0001-n-series-overlay-policy.md` | Human-readable policy for N-series overlay traceability and Linux drift handling. |
 | `overlay-row-schema-v1.json` | Machine-readable row schema for future N/artifact/Linux/claim crosswalk ledgers. |
+| `check-direct-call-overlay-drift.sh` | Source-only drift checker for N-106 direct-call overlay seed rows. |
+
+## Latest Direct-Call Drift Check
+
+Validation/0079 executed the direct-call overlay drift checker against the N-106
+seed:
+
+```text
+run: build/traceability-drift/20260630T230822Z
+seed_rows=41
+anchor_rows=41
+ok_rows=34
+gap_rows=7
+path_changed_rows=0
+pattern_missing_rows=0
+semantic_recheck_required_rows=0
+safety_flag_violations=0
+```
+
+This is source-only drift evidence, not authority, monitor verification, or
+protection evidence.
 
 ## Existing Indexes
 

@@ -123,6 +123,9 @@ Prototype-evidenced areas:
   with no Linux modification, root requirement, tracefs write, probe
   attachment, public tracepoint ABI, runtime coverage, authority claim, monitor
   verification, or protection claim
+- source-only direct-call overlay drift checker output with 34 ok rows, 7
+  expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic
+  recheck-required rows, and no authority/protection claims
 
 Open production gaps:
 

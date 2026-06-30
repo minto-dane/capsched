@@ -129,7 +129,7 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  turn the N-106 source-only overlay seed into a drift-aware traceability
-  ledger/checker, or create a separate privileged tracefs runbook before any
-  tracefs execution, direct-call carrier, or public tracepoint patch
+  generalize the N-107 direct-call drift checker into a project-level
+  traceability ledger/checker, or create a separate privileged tracefs runbook
+  before any tracefs execution, direct-call carrier, or public tracepoint patch
 ```
