@@ -444,6 +444,16 @@ formal/0031 + validation/0050
     IOMMU/DMA reachability, block stale completion/control/representor/service
     effects, and only then reassign under a new epoch.
 
+analysis/0053
+  Intel ice revoke source map:
+  useful anchors include ice_down, ice_vsi_dis_irq, ice_napi_disable_all,
+  ring stop/clean, XSK clean, ice_qp_dis/ena, prepare_for_reset,
+  service_task_stop, representor queue stop, and devlink reload. Verdict:
+  source-observed only. Hard gaps remain for QueueTag/epoch, typed ledgers,
+  monitor IOMMU/MemoryView invalidation, stale XSK/page-pool quarantine, VF IRQ
+  ownership, RepresentorForward lower-QueueLease revoke, service carrier, and
+  old/new epoch reassignment proof.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "modern-nic-queue-revoke-model-checked",
+    "current_phase": "ice-modern-nic-revoke-source-mapped",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. The modern NIC QueueLease evidence chain is consolidated in assurance/0002 and modern-nic-queuelease-subclaims-v1.json. DEV-001 now has DEV-NIC-001 through DEV-NIC-010 subclaims covering QueueBind, typed submit classes, DescriptorLedger, DMA packet memory ownership, CompletionSettlement, QueueControl, RepresentorForward, ServiceWork/async provenance, RevokeSemantics, and Linux substrate compatibility. Formal/0031 plus validation/0050 model-check modern NIC queue revoke/drain/quarantine semantics: safe TLC passed with 7 generated states, 7 distinct states, depth 5; nine unsafe configs produced expected counterexamples for submit after revoke, completion delivery after revoke, QueueControl after revoke, RepresentorForward after revoke, service work after revoke, ledger clear before DMA drain, reassignment before drain/quarantine, reassignment without IOMMU/IRQ invalidation, and quarantined delivery. The resulting rule is that revoke means block new submit, bump queue epoch, mask IRQ, drain or quarantine typed outstanding state, invalidate IOMMU/DMA reachability, prevent stale completion/control/representor/service effects, and only then reassign under a new epoch. This is still model-supported and not production protection evidence. No behavior-changing queue, workqueue, or driver enforcement is approved. The next high-value gap is mapping formal/0031 obligations back to concrete ice reset/down/NAPI/IRQ/DMA/XDP/AF_XDP/representor/service paths.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0053 maps formal/0031 modern NIC revoke/drain/quarantine obligations back to Intel ice source. Useful anchors include ice_down(), ice_vsi_dis_irq(), ice_napi_disable_all(), ice_vsi_stop_lan_tx_rings(), ice_vsi_stop_xdp_tx_rings(), ice_vsi_stop_all_rx_rings(), ice_clean_tx_ring(), ice_clean_rx_ring(), ice_xsk_clean_rx_ring(), ice_xsk_clean_xdp_ring(), ice_qp_dis(), ice_qp_ena(), ice_prepare_for_reset(), ice_service_task_stop(), ice_eswitch_stop_all_tx_queues(), ice_repr_stop_tx_queues(), and devlink reload down/up. The hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-owned IOMMU/MemoryView invalidation; no stale XSK/page-pool completion quarantine distinction; no VF IRQ ownership proof for the synchronize_irq exception; no RepresentorForward-to-lower-QueueLease revoke proof; no service work carrier or service/caller authority intersection; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -315,7 +315,9 @@
     "modern_nic_queue_revoke_model": "capsched/capsched-models/formal/0031-modern-nic-queue-revoke-model/README.md",
     "modern_nic_queue_revoke_tla": "capsched/capsched-models/formal/0031-modern-nic-queue-revoke-model/ModernNicQueueRevoke.tla",
     "modern_nic_queue_revoke_validation": "capsched/capsched-models/validation/0050-modern-nic-queue-revoke-tlc.md",
-    "modern_nic_queue_revoke_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/modern-nic-queue-revoke-20260630T001016Z"
+    "modern_nic_queue_revoke_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/modern-nic-queue-revoke-20260630T001016Z",
+    "ice_modern_nic_revoke_source_map": "capsched/capsched-models/analysis/0053-ice-modern-nic-revoke-source-map.md",
+    "ice_modern_nic_revoke_source_map_json": "capsched/capsched-models/analysis/ice-modern-nic-revoke-source-map-v1.json"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1514,9 +1516,19 @@
     {
       "id": "N-078",
       "text": "Map formal/0031 revoke, drain, and quarantine proof obligations back to Intel ice reset/down/NAPI/IRQ/DMA/XDP/AF_XDP/representor/service source paths before any queue behavior change.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-29",
+      "partial_progress": "Created analysis/0053 and ice-modern-nic-revoke-source-map-v1.json. The source map identifies useful ice anchors for stop, IRQ masking, NAPI disable, ring clean, XSK cleanup, queue-pair disable/enable, representor stop, service/reset work, and devlink reload, while preserving gaps for QueueTag/epoch, typed ledgers, monitor IOMMU/MemoryView invalidation, stale XSK completion quarantine, VF IRQ synchronization exception, lower QueueLease representor revoke, service carriers, and old/new epoch reassignment proof.",
       "blocked_by": [
         "N-077"
+      ]
+    },
+    {
+      "id": "N-079",
+      "text": "Design an observation-only ice revoke trace/readiness checker that emits formal/0031 obligation coverage without claiming authority or protection.",
+      "status": "pending",
+      "blocked_by": [
+        "N-078"
       ]
     }
   ],

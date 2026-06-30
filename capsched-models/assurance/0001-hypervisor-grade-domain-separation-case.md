@@ -353,6 +353,7 @@ Current evidence:
 - `validation/0013-queue-lease-tlc.md`
 - Slice 0B type name: `capsched_queue_lease`
 - `analysis/0052-ice-modern-nic-queuelease-source-map.md`
+- `analysis/0053-ice-modern-nic-revoke-source-map.md`
 - `formal/0028-modern-nic-queuelease-model/`
 - `validation/0046-modern-nic-queuelease-tlc.md`
 - `validation/0047-ice-modern-nic-readiness-result.md`

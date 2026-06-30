@@ -65,7 +65,9 @@ analysis/0049-e1000e-queuelease-source-map.md
 analysis/0050-aggregate-queuelease-settlement-semantics.md
 analysis/0051-linux-queue-descriptor-ledger-observation-plan.md
 analysis/0052-ice-modern-nic-queuelease-source-map.md
+analysis/0053-ice-modern-nic-revoke-source-map.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
+analysis/ice-modern-nic-revoke-source-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 ```
@@ -528,6 +530,8 @@ Model:
 
 Source:
   analysis/0052 records reset/down/service paths as future revoke anchors.
+  analysis/0053 maps formal/0031 obligations to ice down/reset/NAPI/IRQ/DMA/
+  XDP/AF_XDP/representor/service anchors.
 
 Readiness:
   validation/0047 classifies RevokeSemantics as not_ready_future_capsched.

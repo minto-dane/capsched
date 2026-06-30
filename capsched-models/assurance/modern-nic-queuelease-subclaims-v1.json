@@ -97,6 +97,15 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks revoke/drain/quarantine semantics; it is not real hardware or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-007",
+      "class": "source_observed",
+      "path": "capsched-models/analysis/0053-ice-modern-nic-revoke-source-map.md",
+      "supports": [
+        "DEV-NIC-009"
+      ],
+      "limitation": "Source map for ice shutdown/rebuild anchors; not authority or protection evidence."
     }
   ],
   "subclaims": [

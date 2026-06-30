@@ -58,15 +58,15 @@ Updated: 2026-06-29
 | 0050 | Draft settlement semantics with TLC-backed design filter | Aggregate QueueLease Settlement Semantics |
 | 0051 | Draft observation-only plan | Linux Queue/Descriptor Ledger Observation Plan |
 | 0052 | Draft modern NIC source map | Intel ice Modern NIC QueueLease Source Map |
+| 0053 | Draft revoke source map | Intel ice Modern NIC Revoke Source Map |
 
 ## Planned Analysis Notes
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Modern NIC queue revoke/drain/quarantine source map against formal/0031.
-4. Workqueue origin QEMU stack-trace observation runner.
-5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
-6. Queue/descriptor trace-only patch map only if readiness gaps require it.
+3. Workqueue origin QEMU stack-trace observation runner.
+4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+5. Queue/descriptor trace-only patch map only if readiness gaps require it.
 
 ## Behavior Tag Artifacts
 
@@ -81,3 +81,4 @@ Updated: 2026-06-29
 | `e1000e-queuelease-source-map-v1.json` | Draft source map | Machine-readable representative Ethernet ring/IRQ/NAPI/QueueLease mapping |
 | `queue-descriptor-ledger-tags-v1.json` | Draft observation schema | Machine-readable observation-only queue/descriptor ledger event and tag contract |
 | `ice-modern-nic-queuelease-source-map-v1.json` | Draft source map | Machine-readable modern NIC QueueLease mapping for ice SKB/XDP/AF_XDP/devlink/representor paths |
+| `ice-modern-nic-revoke-source-map-v1.json` | Draft source map | Machine-readable modern NIC revoke/drain/quarantine source map for ice paths |

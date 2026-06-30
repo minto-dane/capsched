@@ -209,7 +209,8 @@
         "E-DEV-MNIC-003",
         "E-DEV-MNIC-004",
         "E-DEV-MNIC-005",
-        "E-DEV-MNIC-006"
+        "E-DEV-MNIC-006",
+        "E-DEV-MNIC-007"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -394,7 +395,8 @@
         "E-DEV-MNIC-003",
         "E-DEV-MNIC-004",
         "E-DEV-MNIC-005",
-        "E-DEV-MNIC-006"
+        "E-DEV-MNIC-006",
+        "E-DEV-MNIC-007"
       ],
       "gaps": [
         "No queue revoke epoch implementation.",
@@ -707,6 +709,16 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks revoke/drain/quarantine semantic constraints; it is not real queue reset, DMA drain, IRQ masking, IOMMU invalidation, or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-007",
+      "kind": "source_observation",
+      "record": "capsched-models/analysis/0053-ice-modern-nic-revoke-source-map.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Maps ice shutdown/rebuild source anchors to formal revoke obligations; it is source-observed only and not protection evidence."
     },
     {
       "id": "E-L0-002",

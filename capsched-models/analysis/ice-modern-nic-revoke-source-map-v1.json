@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-29",
+  "linux_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+  "scope": "Intel ice source anchors for formal/0031 modern NIC queue revoke obligations",
+  "authority_claim": false,
+  "monitor_verified": false,
+  "implementation_approved": false,
+  "obligations": [
+    {
+      "id": "REV-ICE-001",
+      "formal_obligation": "Block new submit",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_main.c:7232 netif_carrier_off",
+        "drivers/net/ethernet/intel/ice/ice_main.c:7233 netif_tx_disable",
+        "drivers/net/ethernet/intel/ice/ice_base.c:1445 netif_carrier_off",
+        "drivers/net/ethernet/intel/ice/ice_base.c:1446 netif_tx_stop_queue"
+      ],
+      "status": "source_observed_partial",
+      "gap": "No QueueTag or queue epoch; netdev stop is not monitor authority."
+    },
+    {
+      "id": "REV-ICE-002",
+      "formal_obligation": "Bump queue epoch",
+      "source_anchors": [],
+      "status": "not_present",
+      "gap": "Requires CapSched/Monitor-owned queue epoch."
+    },
+    {
+      "id": "REV-ICE-003",
+      "formal_obligation": "Mask or redirect IRQ",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_main.c:7212 ice_vsi_dis_irq",
+        "drivers/net/ethernet/intel/ice/ice_main.c:7224 QINT_RQCTL CAUSE_ENA clear",
+        "drivers/net/ethernet/intel/ice/ice_main.c:7239 GLINT_DYN_CTL clear",
+        "drivers/net/ethernet/intel/ice/ice_main.c:7244 ice_flush",
+        "drivers/net/ethernet/intel/ice/ice_main.c:7253 synchronize_irq",
+        "drivers/net/ethernet/intel/ice/ice_base.c:1448 ice_qvec_dis_irq"
+      ],
+      "status": "source_observed_partial",
+      "gap": "ICE_VSI_VF path skips synchronize_irq from host; no monitor IRQ ownership proof."
+    },
+    {
+      "id": "REV-ICE-004",
+      "formal_obligation": "Drain or quarantine submit, descriptor, and DMA state",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_main.c:7241 ice_vsi_stop_lan_tx_rings",
+        "drivers/net/ethernet/intel/ice/ice_main.c:7246 ice_vsi_stop_xdp_tx_rings",
+        "drivers/net/ethernet/intel/ice/ice_main.c:7252 ice_vsi_stop_all_rx_rings",
+        "drivers/net/ethernet/intel/ice/ice_txrx.c:203 ice_clean_tx_ring",
+        "drivers/net/ethernet/intel/ice/ice_txrx.c:538 ice_clean_rx_ring",
+        "drivers/net/ethernet/intel/ice/ice_base.c:1466 ice_qp_clean_rings"
+      ],
+      "status": "source_observed_partial",
+      "gap": "No typed SubmitLedger or DescriptorLedger; no proof that ledger clear follows DMA drain."
+    },
+    {
+      "id": "REV-ICE-005",
+      "formal_obligation": "Invalidate IOMMU/DMA reachability",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_xsk.c:131 xsk_pool_dma_unmap",
+        "drivers/net/ethernet/intel/ice/ice_txrx.c:217 ice_unmap_and_free_tx_buf"
+      ],
+      "status": "source_observed_partial",
+      "gap": "No monitor MemoryView/IOMMU invalidation root and no universal packet memory revoke ordering."
+    },
+    {
+      "id": "REV-ICE-006",
+      "formal_obligation": "Prevent stale completion delivery",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_main.c:7257 ice_napi_disable_all",
+        "drivers/net/ethernet/intel/ice/ice_xsk.c:897 ice_xsk_clean_rx_ring",
+        "drivers/net/ethernet/intel/ice/ice_xsk.c:919 ice_xsk_clean_xdp_ring",
+        "drivers/net/ethernet/intel/ice/ice_xsk.c:940 xsk_tx_completed"
+      ],
+      "status": "source_observed_gap",
+      "gap": "xsk_tx_completed during cleanup needs revoke-aware settlement/quarantine distinction."
+    },
+    {
+      "id": "REV-ICE-007",
+      "formal_obligation": "Prevent stale QueueControl",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_main.c:676 ice_reset_subtask",
+        "drivers/net/ethernet/intel/ice/ice_main.c:536 ice_prepare_for_reset",
+        "drivers/net/ethernet/intel/ice/devlink/devlink.c:455 ice_devlink_reinit_down"
+      ],
+      "status": "source_observed_partial",
+      "gap": "No QueueControlCap or queue-control epoch."
+    },
+    {
+      "id": "REV-ICE-008",
+      "formal_obligation": "Prevent stale RepresentorForward",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_eswitch.c:217 ice_eswitch_port_start_xmit",
+        "drivers/net/ethernet/intel/ice/ice_eswitch.c:434 ice_eswitch_stop_all_tx_queues",
+        "drivers/net/ethernet/intel/ice/ice_repr.c:546 ice_repr_stop_tx_queues"
+      ],
+      "status": "source_observed_gap",
+      "gap": "Representor netdev queue stop is not lower QueueLease revoke."
+    },
+    {
+      "id": "REV-ICE-009",
+      "formal_obligation": "Stop service work effects",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_main.c:1667 ice_service_task_schedule",
+        "drivers/net/ethernet/intel/ice/ice_main.c:1695 ice_service_task_stop",
+        "drivers/net/ethernet/intel/ice/ice_main.c:2292 ice_service_task"
+      ],
+      "status": "source_observed_gap",
+      "gap": "ICE_SERVICE_SCHED coalescing and queue_work are service authority, not per-caller authority."
+    },
+    {
+      "id": "REV-ICE-010",
+      "formal_obligation": "Reassign only after drain/quarantine/invalidation",
+      "source_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_base.c:1476 ice_qp_ena",
+        "drivers/net/ethernet/intel/ice/ice_main.c:1235 ice_rebuild",
+        "drivers/net/ethernet/intel/ice/devlink/devlink.c:1235 ice_devlink_reinit_up"
+      ],
+      "status": "source_observed_gap",
+      "gap": "No old/new queue epoch handoff proof."
+    }
+  ],
+  "verdict": "source-observed only; useful shutdown/rebuild anchors exist, but CapSched revoke semantics are not implemented or protection-evidenced"
+}

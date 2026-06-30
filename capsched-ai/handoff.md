@@ -510,14 +510,35 @@ formal/0031 + validation/0050:
     epoch, mask IRQ, drain or quarantine typed outstanding state, invalidate
     IOMMU/DMA reachability, prevent stale completion/control/representor/service
     effects, and only then reassign under a new epoch.
+
+analysis/0053:
+  Intel ice modern NIC revoke source map completed
+  machine-readable map:
+    analysis/ice-modern-nic-revoke-source-map-v1.json
+  useful anchors:
+    ice_down(), ice_vsi_dis_irq(), ice_napi_disable_all(),
+    ice_vsi_stop_lan_tx_rings(), ice_vsi_stop_xdp_tx_rings(),
+    ice_vsi_stop_all_rx_rings(), ice_clean_tx_ring(), ice_clean_rx_ring(),
+    ice_xsk_clean_rx_ring(), ice_xsk_clean_xdp_ring(), ice_qp_dis(),
+    ice_qp_ena(), ice_prepare_for_reset(), ice_service_task_stop(),
+    ice_eswitch_stop_all_tx_queues(), ice_repr_stop_tx_queues(), and devlink
+    reload down/up.
+  hard gaps:
+    no QueueTag or queue epoch root; no typed SubmitLedger, DescriptorLedger,
+    or CompletionSettlement id; no monitor-owned IOMMU/MemoryView invalidation;
+    no stale XSK/page-pool completion quarantine distinction; no VF IRQ
+    ownership proof for the synchronize_irq exception; no
+    RepresentorForward-to-lower-QueueLease revoke proof; no service work carrier
+    or service/caller authority intersection; no old/new epoch reassignment
+    proof.
 ```
 
-Next work remains modeling-first: map formal/0031 obligations back to concrete
-Intel ice reset/down/NAPI/IRQ/DMA/XDP/AF_XDP/representor/service paths before
-any behavior-changing device hook. The older post-exec gaps also remain:
-eventfd kernel signal provenance, epoll delivery/watched-endpoint correlation,
-io_uring fixed-file consumption, and execfd handoff before behavior-changing
-endpoint hooks.
+Next work remains observation-first: design an observation-only ice revoke
+trace/readiness checker that emits formal/0031 obligation coverage without
+claiming authority or protection. The older post-exec gaps also remain: eventfd
+kernel signal provenance, epoll delivery/watched-endpoint correlation, io_uring
+fixed-file consumption, and execfd handoff before behavior-changing endpoint
+hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster
