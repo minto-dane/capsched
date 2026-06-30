@@ -37,8 +37,8 @@ hard gaps:
   no old/new queue epoch handoff proof
 
 next focused risk:
-  RepresentorForward lower QueueLease derivation, revoke, and handoff
-  semantics across bridge/FDB/VLAN/TC paths.
+  Modern NIC ServiceWork carrier and service/caller authority intersection
+  for reset/PTP/DPLL/eswitch/LAG/firmware/maintenance work.
 ```
 
 That focused VF IRQ model is now checked:
@@ -144,9 +144,35 @@ analysis/0056 + formal/0035 + validation/0055:
     classification, XSK/page-pool quarantine or explicit policy delivery,
     generation reset/retag, and a single settlement path.
 
+analysis/0057 + formal/0036 + validation/0056:
+  Representor lower QueueLease derivation substrate mapped and modeled.
+  source substrate:
+    ice representor ndo_start_xmit and ice_eswitch_port_start_xmit()
+    metadata_dst port_id and lower_dev binding
+    dev_queue_xmit(), TC/BPF redirect, bridge/FDB/VLAN/switchdev paths
+    ice TC flower redirect/mirror offload and hardware rule install/delete
+    LAG lower_dev update and representor Tx queue stop
+  safe TLC:
+    14 generated states, 8 distinct states, depth 4
+  unsafe counterexamples:
+    representor netdev-only lower forwarding
+    bridge FDB as lower lease
+    VLAN as lower lease
+    TC/offload rule install without control authority
+    TC/offload stale destination
+    LAG stale lower_dev forwarding
+    forwarding after revoke
+    representor stop as lower QueueLease revoke
+  design rule:
+    lower queue authority is not representor netdev reachability, metadata_dst,
+    bridge FDB/VLAN success, TC redirect target, switchdev mark, LAG rewrite,
+    or representor queue stop. It needs a frozen RepresentorForward-to-lower
+    QueueLease carrier, and TC/switchdev offload needs QueueControl/Offload
+    authority plus stale-rule invalidation on revoke.
+
 next focused risk:
-  RepresentorForward lower QueueLease derivation, revoke, and handoff
-  semantics across bridge/FDB/VLAN/TC paths.
+  Modern NIC ServiceWork carrier and service/caller authority intersection
+  for reset/PTP/DPLL/eswitch/LAG/firmware/maintenance work.
 ```
 The current scheduler-authority refinement frontier is now:
 

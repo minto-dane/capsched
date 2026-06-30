@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-29",
+  "scope": "Representor forwarding, bridge/FDB/VLAN/TC offload, and lower QueueLease derivation source map",
+  "status": "source_observed_only",
+  "authority_root": {
+    "required": "fresh RepresentorForwardCap plus fresh lower QueueLease epoch for software forwarding; QueueControl/OffloadCap plus lower QueueLease epoch for hardware switch/offload programming",
+    "not_authority": [
+      "representor netdev reachability",
+      "metadata_dst existence",
+      "skb->dev retargeting",
+      "bridge FDB hit",
+      "VLAN ingress or egress success",
+      "switchdev offload_fwd_mark or hwdom mark",
+      "TC redirect target device existence",
+      "representor netdev queue stop"
+    ]
+  },
+  "source_anchors": [
+    {
+      "id": "REPR-ICE-001",
+      "component": "ice-representor-software-forward",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_repr.c",
+        "drivers/net/ethernet/intel/ice/ice_eswitch.c",
+        "drivers/net/ethernet/intel/ice/ice_lag.c"
+      ],
+      "symbols": [
+        "ice_repr_vf_netdev_ops",
+        "ice_repr_sf_netdev_ops",
+        "ice_eswitch_setup_repr",
+        "ice_eswitch_port_start_xmit",
+        "ice_eswitch_set_target_vsi",
+        "ice_lag_config_eswitch",
+        "ice_repr_stop_tx_queues"
+      ],
+      "supports": [
+        "representor_ndo_start_xmit_observation",
+        "metadata_dst_port_id_observation",
+        "lower_dev_retarget_observation",
+        "lag_lower_dev_update_observation",
+        "representor_netdev_stop_observation"
+      ],
+      "limitation": "representor metadata and queue state are Linux-mutable and do not prove lower QueueLease derivation or revoke."
+    },
+    {
+      "id": "REPR-NETCORE-001",
+      "component": "generic-netdev-transmit-and-redirect",
+      "files": [
+        "net/core/dev.c",
+        "net/sched/act_mirred.c",
+        "net/core/filter.c"
+      ],
+      "symbols": [
+        "__dev_queue_xmit",
+        "xmit_one",
+        "netdev_start_xmit",
+        "tcf_mirred_forward",
+        "tcf_dev_queue_xmit",
+        "__bpf_tx_skb",
+        "skb_do_redirect"
+      ],
+      "supports": [
+        "skb_dev_queue_observation",
+        "tc_redirect_retarget_observation",
+        "bpf_redirect_retarget_observation"
+      ],
+      "limitation": "generic transmit queues on skb->dev and cannot by itself preserve representor-to-lower authority provenance."
+    },
+    {
+      "id": "REPR-BRIDGE-001",
+      "component": "bridge-fdb-vlan-switchdev",
+      "files": [
+        "net/bridge/br_input.c",
+        "net/bridge/br_forward.c",
+        "net/bridge/br_switchdev.c"
+      ],
+      "symbols": [
+        "br_handle_frame_finish",
+        "br_allowed_ingress",
+        "br_fdb_find_rcu",
+        "br_forward",
+        "should_deliver",
+        "br_allowed_egress",
+        "br_handle_vlan",
+        "br_dev_queue_push_xmit",
+        "nbp_switchdev_frame_mark",
+        "nbp_switchdev_allowed_egress",
+        "br_switchdev_fdb_notify"
+      ],
+      "supports": [
+        "bridge_fdb_policy_observation",
+        "bridge_vlan_policy_observation",
+        "switchdev_hwdom_mark_observation",
+        "bridge_dev_queue_xmit_observation"
+      ],
+      "limitation": "bridge and switchdev marks are forwarding policy/duplication controls, not lower QueueLease authority."
+    },
+    {
+      "id": "REPR-ICE-TC-001",
+      "component": "ice-switchdev-tc-offload",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_eswitch_br.c",
+        "drivers/net/ethernet/intel/ice/ice_tc_lib.c"
+      ],
+      "symbols": [
+        "ice_eswitch_br_is_dev_valid",
+        "ice_eswitch_br_vf_repr_port_init",
+        "ice_eswitch_br_port_link",
+        "ice_tc_setup_action",
+        "ice_eswitch_tc_parse_action",
+        "ice_eswitch_add_tc_fltr",
+        "ice_add_adv_rule",
+        "ice_del_tc_fltr",
+        "ice_rem_adv_rule_by_id"
+      ],
+      "supports": [
+        "ice_bridge_port_to_vsi_observation",
+        "ice_tc_redirect_dest_vsi_observation",
+        "ice_tc_mirror_dest_vsi_observation",
+        "ice_hardware_rule_install_observation",
+        "ice_hardware_rule_delete_observation"
+      ],
+      "limitation": "TC/switchdev programming is QueueControl/Offload authority and cannot be represented as plain per-packet RepresentorForward."
+    }
+  ],
+  "required_invariants": [
+    "No lower queue submit through representor without frozen RepresentorForward-to-lower QueueLease carrier",
+    "No representor netdev reachability as lower QueueLease",
+    "No bridge FDB hit as lower QueueLease",
+    "No VLAN allow decision as lower QueueLease",
+    "No TC/switchdev hardware rule install without QueueControl/OffloadCap and lower QueueLease binding",
+    "No lower queue submit after LAG lower_dev change without metadata and lower QueueLease rebind",
+    "No representor forwarding or hardware rule forwarding after revoke",
+    "No representor queue stop as lower QueueLease revoke"
+  ],
+  "forbidden_claims": [
+    "representor netdev access authorizes lower queue submit",
+    "metadata_dst proves lower queue authority",
+    "bridge FDB/VLAN success proves lower queue authority",
+    "TC redirect target dev proves lower queue authority",
+    "TC flower offload is only RepresentorForward and not QueueControl",
+    "LAG lower_dev rewrite preserves lower QueueLease without rebind",
+    "stopping representor queues revokes lower queue/DMA/IOMMU/IRQ authority"
+  ],
+  "next_model": "formal/0036-representor-lower-queuelease-model"
+}

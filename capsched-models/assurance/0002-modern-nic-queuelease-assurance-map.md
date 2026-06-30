@@ -68,6 +68,9 @@ validation/0054-monitor-dma-iommu-invalidation-tlc.md
 
 formal/0035-xsk-pagepool-quarantine-model/
 validation/0055-xsk-pagepool-quarantine-tlc.md
+
+formal/0036-representor-lower-queuelease-model/
+validation/0056-representor-lower-queuelease-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -80,10 +83,12 @@ analysis/0052-ice-modern-nic-queuelease-source-map.md
 analysis/0053-ice-modern-nic-revoke-source-map.md
 analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md
 analysis/0056-xsk-pagepool-quarantine-source-map.md
+analysis/0057-representor-lower-queuelease-source-map.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
 analysis/xsk-pagepool-quarantine-source-map-v1.json
+analysis/representor-lower-queuelease-source-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -128,7 +133,9 @@ QueueControl:
   devlink/rate/scheduler/VF/SF/representor lifecycle authority
 
 RepresentorForward:
-  representor ingress authority plus live lower QueueLease derivation
+  representor ingress authority plus live lower QueueLease derivation,
+  metadata generation, lower_dev binding, bridge/FDB/VLAN policy input, and
+  LAG rebind proof
 
 ServiceWork:
   reset, PTP, DPLL, eswitch, LAG, DIM, firmware, and maintenance authority
@@ -427,10 +434,13 @@ Evidence:
 Model:
   formal/0028, validation/0046
   formal/0030, validation/0049
+  formal/0036, validation/0056
 
 Source:
   analysis/0052 maps ice_devlink_tx_sched_layers_set and devlink rate/control
   anchors.
+  analysis/0057 maps TC/switchdev redirect/mirror rule programming and hardware
+  switch rule install/delete anchors.
 
 Readiness:
   validation/0047 classifies QueueControl as source_only_gap_recorded.
@@ -443,6 +453,7 @@ no QueueControlCap
 no monitor QueueTag check
 no VF/SF lifecycle authority model
 no devlink policy proof
+no TC/switchdev OffloadCap or rule-generation proof
 ```
 
 Forbidden claim:
@@ -450,6 +461,8 @@ Forbidden claim:
 ```text
 Do not authorize queue/rate/scheduler control by RunCap, CAP_NET_ADMIN alone,
 netdev reachability alone, or the fact that Linux can call devlink ops.
+Do not treat TC/switchdev hardware rule installation as plain
+RepresentorForward.
 ```
 
 ### DEV-NIC-007: RepresentorForward
@@ -458,10 +471,12 @@ Claim:
 
 ```text
 Representor transmit requires RepresentorForward authority plus a live derived
-lower QueueLease with a fresh lower queue epoch and service budget.
+lower QueueLease with a fresh lower queue epoch and service budget. Bridge FDB,
+VLAN, metadata_dst, TC redirect target, and representor netdev reachability are
+policy or Linux metadata inputs, not lower queue authority.
 ```
 
-Current status: Model-supported plus source-observed
+Current status: Model-supported plus source-observed, refined by N-084
 
 Evidence:
 
@@ -469,10 +484,13 @@ Evidence:
 Model:
   formal/0028, validation/0046
   formal/0030, validation/0049
+  formal/0036, validation/0056
 
 Source:
   analysis/0052 maps representor ndo_start_xmit,
   ice_eswitch_port_start_xmit(), and lower dev_queue_xmit().
+  analysis/0057 maps bridge/FDB/VLAN/switchdev, TC/BPF redirect, TC flower
+  offload, and LAG lower_dev update hazards.
 
 Readiness:
   validation/0047 classifies RepresentorForward as partial_gap_recorded.
@@ -486,6 +504,9 @@ no lower QueueLease derivation artifact
 no fresh lower queue epoch check
 no service budget proof
 no bridge/FDB/VLAN/TC policy proof
+no metadata_dst generation or lower_dev-to-QueueLease binding
+no LAG lower_dev rebind proof
+no TC/switchdev stale-rule invalidation receipt
 ```
 
 Forbidden claim:
@@ -493,6 +514,9 @@ Forbidden claim:
 ```text
 Do not treat a representor netdev as direct authority to submit on the lower
 queue.
+Do not treat bridge FDB hit, VLAN allow, switchdev hwdom/offload mark, TC
+redirect target, metadata_dst, or representor Tx queue stop as lower QueueLease
+authority or revoke proof.
 ```
 
 ### DEV-NIC-008: ServiceWork and Async Provenance

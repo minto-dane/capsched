@@ -44,8 +44,8 @@ do not claim:
   authority.
 
 next focused risk:
-  RepresentorForward lower QueueLease derivation, revoke, and handoff
-  semantics across bridge/FDB/VLAN/TC paths.
+  Modern NIC ServiceWork carrier and service/caller authority intersection
+  for reset/PTP/DPLL/eswitch/LAG/firmware/maintenance work.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -130,6 +130,29 @@ analysis/0056 + formal/0035 + validation/0055:
     packet memory return is a quarantine/generation-reset settlement, not
     xsk_tx_completed(), xsk_buff_free(), page_pool recycle, or DMA receipt
     alone.
+
+analysis/0057 + formal/0036 + validation/0056:
+  representor lower QueueLease derivation substrate mapped and modeled.
+  source substrate:
+    ice representor xmit retargets skb->dev to metadata lower_dev
+    dev_queue_xmit, TC/BPF redirect, bridge/FDB/VLAN/switchdev paths
+    ice TC flower offload and hardware switch rule install/delete
+    LAG lower_dev update and representor Tx queue stop
+  safe TLC:
+    14 generated states, 8 distinct states, depth 4
+  unsafe counterexamples:
+    representor netdev-only lower forwarding
+    bridge FDB/VLAN as lower lease
+    TC/offload without control authority or with stale destination
+    stale LAG lower_dev forwarding
+    forwarding after revoke
+    representor stop as lower QueueLease revoke
+  design rule:
+    lower queue submit is not representor netdev reachability, metadata_dst,
+    bridge FDB/VLAN success, TC redirect target, switchdev mark, LAG rewrite,
+    or representor queue stop. It needs a frozen RepresentorForward-to-lower
+    QueueLease carrier; hardware offload needs QueueControl/Offload authority
+    and stale-rule invalidation on revoke.
 ```
 
 ## Core Architecture

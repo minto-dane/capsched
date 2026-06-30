@@ -71,6 +71,7 @@ Model-supported areas:
 - monitor IRQ route invalidation receipt semantics
 - monitor DMA/IOMMU/MemoryView invalidation receipt semantics
 - stale XSK/page-pool completion quarantine semantics
+- representor-to-lower QueueLease derivation semantics
 
 Prototype-evidenced areas:
 
@@ -140,11 +141,20 @@ XSK and page-pool quarantine model:
   return without generation reset, double return, and queue reassignment before
   settlement.
 
+Representor lower QueueLease model:
+  safe TLC passed with 14 generated states and 8 distinct states. Unsafe
+  configs produced expected counterexamples for representor netdev-only lower
+  forwarding, bridge FDB as lower lease, VLAN as lower lease, TC/offload rule
+  install without control authority, TC/offload stale destination after LAG
+  lower_dev change, forwarding with stale lower_dev, forwarding after revoke,
+  and representor stop as lower QueueLease revoke.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
   Linux-owned DMA unmap, queued IOMMU flush, iommufd IOAS unmap, VFIO unmap
   callback, xsk_tx_completed(), xsk_buff_free(), page-pool recycle,
-  representor stop, or devlink reload as QueueLease revoke authority. Do not
+  representor stop, bridge FDB/VLAN success, TC redirect target, metadata_dst,
+  or devlink reload as QueueLease authority or revoke authority. Do not
   implement behavior-changing QueueLease enforcement from this evidence alone.
 ```

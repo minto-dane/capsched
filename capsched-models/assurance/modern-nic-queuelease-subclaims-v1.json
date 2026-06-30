@@ -12,6 +12,7 @@
     "monitor_irq_route_invalidation": "model_checked",
     "monitor_dma_iommu_invalidation": "model_checked",
     "xsk_pagepool_quarantine": "model_checked",
+    "representor_lower_queuelease": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -183,6 +184,29 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks stale XSK/page-pool completion quarantine and packet memory return semantics; not real AF_XDP, page-pool, or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-015",
+      "class": "source_observed",
+      "path": "capsched-models/analysis/0057-representor-lower-queuelease-source-map.md",
+      "supports": [
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Source map for ice representor, bridge/FDB/VLAN/switchdev, TC offload, BPF/TC redirect, and LAG lower_dev substrate; not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-016",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0056-representor-lower-queuelease-tlc.md",
+      "supports": [
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks representor-to-lower QueueLease derivation, bridge/FDB/VLAN non-authority, TC/offload control authority, stale lower_dev rebind, and representor-stop non-revoke semantics; not real bridge, TC, ice, or monitor enforcement evidence."
     }
   ],
   "subclaims": [
@@ -282,12 +306,14 @@
         "QueueControlCap",
         "monitor QueueTag check",
         "VF/SF lifecycle authority model",
-        "devlink policy proof"
+        "devlink policy proof",
+        "TC/switchdev OffloadCap and rule-generation proof"
       ],
       "forbidden": [
         "QueueControl authorized by RunCap",
         "QueueControl authorized by plain netdev reachability",
-        "QueueControl authorized by CAP_NET_ADMIN alone"
+        "QueueControl authorized by CAP_NET_ADMIN alone",
+        "TC/switchdev hardware rule install treated as plain RepresentorForward"
       ]
     },
     {
@@ -300,10 +326,15 @@
         "lower QueueLease derivation artifact",
         "fresh lower queue epoch check",
         "service budget proof",
-        "bridge/FDB/VLAN/TC policy proof"
+        "bridge/FDB/VLAN/TC policy proof",
+        "metadata_dst generation and lower_dev-to-QueueLease binding",
+        "LAG lower_dev rebind proof"
       ],
       "forbidden": [
-        "representor netdev reachability as lower queue submit authority"
+        "representor netdev reachability as lower queue submit authority",
+        "bridge FDB hit or VLAN allow decision as lower QueueLease authority",
+        "metadata_dst existence as lower QueueLease proof",
+        "LAG lower_dev rewrite preserving lower QueueLease without rebind"
       ]
     },
     {
@@ -336,13 +367,16 @@
         "monitor-backed VF IRQ route invalidation implementation",
         "monitor-backed IRQ route invalidation receipt implementation",
         "monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation",
-        "stale XSK/page-pool quarantine and packet generation reset implementation"
+        "stale XSK/page-pool quarantine and packet generation reset implementation",
+        "representor lower QueueLease invalidation and TC/offload rule removal receipt implementation"
       ],
       "forbidden": [
         "queue revocation inferred from Linux netdev down/reset alone",
         "queue reassignment after IRQ invalidation but before DMA receipt",
         "PageOwner transfer or packet page return before DMA receipt",
-        "normal XSK CQ completion or page-pool recycle after revoke"
+        "normal XSK CQ completion or page-pool recycle after revoke",
+        "representor netdev queue stop treated as lower QueueLease revoke",
+        "TC/switchdev stale hardware rule left live after lower QueueLease revoke"
       ]
     },
     {
@@ -367,6 +401,7 @@
     "revoke/drain/quarantine models",
     "DMA/IOMMU/MemoryView implementation planning that names receipt sources",
     "XSK/page-pool quarantine implementation planning that names packet generation reset",
+    "representor lower QueueLease derivation planning that names metadata, bridge, TC, and LAG proof events",
     "implementation planning that names subclaim coverage"
   ],
   "forbidden_next_work": [
@@ -374,6 +409,7 @@
     "generic workqueue enforcement hooks",
     "Linux ring/q_vector/netdev/devlink state as non-forgeable authority",
     "IOMMU/QueueLease protection claims without monitor-backed ownership",
-    "collapsed SKB/XDP/AF_XDP/control/representor/service capability"
+    "collapsed SKB/XDP/AF_XDP/control/representor/service capability",
+    "representor netdev, bridge FDB/VLAN, TC redirect target, or metadata_dst as lower QueueLease authority"
   ]
 }

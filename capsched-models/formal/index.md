@@ -41,6 +41,7 @@ Updated: 2026-06-29
 | 0033 | Checked with safe pass and expected unsafe counterexamples | Monitor IRQ Route Invalidation Model |
 | 0034 | Checked with safe pass and expected unsafe counterexamples | Monitor DMA/IOMMU Invalidation Model |
 | 0035 | Checked with safe pass and expected unsafe counterexamples | XSK and Page-Pool Quarantine Model |
+| 0036 | Checked with safe pass and expected unsafe counterexamples | Representor Lower QueueLease Model |
 
 ## Planned
 

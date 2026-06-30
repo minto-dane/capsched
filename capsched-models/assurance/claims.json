@@ -217,7 +217,9 @@
         "E-DEV-MNIC-011",
         "E-DEV-MNIC-012",
         "E-DEV-MNIC-013",
-        "E-DEV-MNIC-014"
+        "E-DEV-MNIC-014",
+        "E-DEV-MNIC-015",
+        "E-DEV-MNIC-016"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -350,13 +352,16 @@
         "E-DEV-MNIC-001",
         "E-DEV-MNIC-003",
         "E-DEV-MNIC-004",
-        "E-DEV-MNIC-005"
+        "E-DEV-MNIC-005",
+        "E-DEV-MNIC-015",
+        "E-DEV-MNIC-016"
       ],
       "gaps": [
         "No QueueControlCap.",
         "No monitor QueueTag check.",
         "No VF/SF lifecycle authority model.",
-        "No devlink policy proof."
+        "No devlink policy proof.",
+        "No TC/switchdev OffloadCap or rule-generation proof."
       ],
       "forbidden_l0": true
     },
@@ -370,14 +375,18 @@
         "E-DEV-MNIC-001",
         "E-DEV-MNIC-003",
         "E-DEV-MNIC-004",
-        "E-DEV-MNIC-005"
+        "E-DEV-MNIC-005",
+        "E-DEV-MNIC-015",
+        "E-DEV-MNIC-016"
       ],
       "gaps": [
         "No RepresentorForwardCap.",
         "No lower QueueLease derivation artifact.",
         "No fresh lower queue epoch check.",
         "No service budget proof.",
-        "No bridge/FDB/VLAN/TC policy proof."
+        "No bridge/FDB/VLAN/TC policy proof.",
+        "No metadata_dst generation or lower_dev-to-QueueLease binding.",
+        "No LAG lower_dev rebind proof."
       ],
       "forbidden_l0": true
     },
@@ -420,7 +429,9 @@
         "E-DEV-MNIC-011",
         "E-DEV-MNIC-012",
         "E-DEV-MNIC-013",
-        "E-DEV-MNIC-014"
+        "E-DEV-MNIC-014",
+        "E-DEV-MNIC-015",
+        "E-DEV-MNIC-016"
       ],
       "gaps": [
         "No queue revoke epoch implementation.",
@@ -430,7 +441,8 @@
         "No stale service-work cancellation proof.",
         "No monitor-backed IRQ route invalidation receipt implementation.",
         "No monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation.",
-        "No stale XSK/page-pool quarantine or packet generation reset implementation."
+        "No stale XSK/page-pool quarantine or packet generation reset implementation.",
+        "No representor lower QueueLease invalidation or TC/offload stale-rule removal receipt implementation."
       ],
       "forbidden_l0": true
     },
@@ -444,7 +456,8 @@
         "E-DEV-MNIC-004",
         "E-DEV-MNIC-005",
         "E-DEV-MNIC-011",
-        "E-DEV-MNIC-013"
+        "E-DEV-MNIC-013",
+        "E-DEV-MNIC-015"
       ],
       "gaps": [
         "All observed state is Linux-mutable.",
@@ -829,6 +842,31 @@
       "limitation": "Finite model checks stale XSK/page-pool completion quarantine and packet memory return semantics; it is not real AF_XDP, page-pool, ice, or monitor implementation evidence."
     },
     {
+      "id": "E-DEV-MNIC-015",
+      "kind": "analysis_source_map",
+      "record": "capsched-models/analysis/0057-representor-lower-queuelease-source-map.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Maps ice representor, bridge/FDB/VLAN/switchdev, TC offload, BPF/TC redirect, and LAG lower_dev substrate; it is source observation, not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-016",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0056-representor-lower-queuelease-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks representor lower QueueLease derivation, bridge/FDB/VLAN non-authority, TC/offload control authority, stale lower_dev rebind, forward-after-revoke, and representor-stop non-revoke semantics; it is not real bridge, TC, ice, or monitor implementation evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -891,6 +929,9 @@
     "XDP_TX or AF_XDP zero-copy can borrow SKB authority, generic netdev reachability, or ambient driver worker authority.",
     "QueueControl can be authorized by RunCap, CAP_NET_ADMIN alone, or plain netdev reachability.",
     "Representor netdev reachability is lower QueueLease authority.",
+    "Bridge FDB hit, VLAN allow, switchdev hwdom/offload mark, TC redirect target, or metadata_dst is lower QueueLease authority.",
+    "Representor netdev queue stop proves lower QueueLease revoke.",
+    "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",
     "Linux netdev down/reset proves monitor-grade queue revoke.",
     "IRQ route invalidation proves DMA reachability revocation.",
     "dma_unmap_*(), xsk_pool_dma_unmap(), iommufd IOAS unmap, VFIO unmap callback, iommu_unmap_fast(), queued IOVA flush, page unpin, or refcount release proves monitor-grade PageOwner transfer safety.",

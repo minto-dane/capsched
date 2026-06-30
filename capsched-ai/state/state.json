@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0056 maps XSK/page-pool stale completion quarantine across ice AF_XDP cleanup, AF_XDP core CQ/free-list paths, and page_pool recycle/return paths. Validation/0055 adds the XSK and Page-Pool Quarantine model: safe TLC passed with 11 generated states, 11 distinct states, and depth 11; eight unsafe configs produced expected counterexamples for XSK CQ submit after revoke, XSK free-list return after revoke, page-pool recycle after revoke, packet return before DMA receipt, PageOwner transfer before quarantine, packet return without generation reset, double return, and queue reassignment before settlement. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no RepresentorForward-to-lower-QueueLease revoke proof; no service work carrier or service/caller authority intersection; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0057 maps representor lower QueueLease derivation across ice representor xmit, metadata_dst lower_dev binding, dev_queue_xmit, bridge/FDB/VLAN/switchdev, TC/BPF redirect, TC flower offload, and LAG lower_dev updates. Validation/0056 adds the Representor Lower QueueLease model: safe TLC passed with 14 generated states, 8 distinct states, and depth 4; eight unsafe configs produced expected counterexamples for representor netdev-only lower forwarding, bridge FDB as lower lease, VLAN as lower lease, TC/offload rule install without control authority, TC/offload stale destination, LAG stale lower_dev forwarding, forwarding after revoke, and representor stop as lower QueueLease revoke. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no service work carrier or service/caller authority intersection; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -268,7 +268,8 @@
       "capsched/capsched-models/analysis/0053-ice-modern-nic-revoke-source-map.md",
       "capsched/capsched-models/analysis/0054-monitor-irq-route-invalidation-source-map.md",
       "capsched/capsched-models/analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md",
-      "capsched/capsched-models/analysis/0056-xsk-pagepool-quarantine-source-map.md"
+      "capsched/capsched-models/analysis/0056-xsk-pagepool-quarantine-source-map.md",
+      "capsched/capsched-models/analysis/0057-representor-lower-queuelease-source-map.md"
     ],
     "post_exec_resource_trace_coverage_map": "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md",
     "post_exec_resource_trace_validation_plan": "capsched/capsched-models/validation/0039-post-exec-resource-trace-plan.md",
@@ -346,7 +347,13 @@
     "xsk_pagepool_quarantine_model": "capsched/capsched-models/formal/0035-xsk-pagepool-quarantine-model/README.md",
     "xsk_pagepool_quarantine_tla": "capsched/capsched-models/formal/0035-xsk-pagepool-quarantine-model/XskPagePoolQuarantine.tla",
     "xsk_pagepool_quarantine_validation": "capsched/capsched-models/validation/0055-xsk-pagepool-quarantine-tlc.md",
-    "xsk_pagepool_quarantine_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/xsk-pagepool-quarantine-20260630T012805Z"
+    "xsk_pagepool_quarantine_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/xsk-pagepool-quarantine-20260630T012805Z",
+    "representor_lower_queuelease_source_map": "capsched/capsched-models/analysis/0057-representor-lower-queuelease-source-map.md",
+    "representor_lower_queuelease_source_map_json": "capsched/capsched-models/analysis/representor-lower-queuelease-source-map-v1.json",
+    "representor_lower_queuelease_model": "capsched/capsched-models/formal/0036-representor-lower-queuelease-model/README.md",
+    "representor_lower_queuelease_tla": "capsched/capsched-models/formal/0036-representor-lower-queuelease-model/RepresentorLowerQueueLease.tla",
+    "representor_lower_queuelease_validation": "capsched/capsched-models/validation/0056-representor-lower-queuelease-tlc.md",
+    "representor_lower_queuelease_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/representor-lower-queuelease-20260630T014001Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1605,9 +1612,19 @@
     {
       "id": "N-084",
       "text": "Model RepresentorForward lower QueueLease derivation, revoke, and handoff semantics so representor netdev reachability cannot stand in for lower queue authority across bridge/FDB/VLAN/TC paths.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-29",
+      "partial_progress": "Created analysis/0057 plus representor-lower-queuelease-source-map-v1.json, then formal/0036 RepresentorLowerQueueLease and validation/0056. The source map separates representor netdev reachability, metadata_dst lower_dev binding, bridge FDB/VLAN policy, switchdev marks, TC/BPF redirect, TC flower hardware rule programming, LAG lower_dev updates, and representor Tx queue stop from lower QueueLease authority. Safe TLC passed with 14 generated states, 8 distinct states, and depth 4. Unsafe configs produced expected counterexamples for netdev-only lower forwarding, bridge FDB as lower lease, VLAN as lower lease, TC/offload rule install without control authority, TC/offload stale destination, LAG stale lower_dev forwarding, forwarding after revoke, and representor stop as lower QueueLease revoke.",
       "blocked_by": [
         "N-083"
+      ]
+    },
+    {
+      "id": "N-085",
+      "text": "Model modern NIC ServiceWork carrier and service/caller authority intersection for reset, PTP, DPLL, eswitch, LAG, firmware, and maintenance work so internal driver service work cannot create ambient caller or queue authority.",
+      "status": "pending",
+      "blocked_by": [
+        "N-084"
       ]
     }
   ],
