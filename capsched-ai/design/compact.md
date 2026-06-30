@@ -54,10 +54,15 @@ latest completed focused risk:
   VF identity epoch and SR-IOV/VF reset/reassignment handoff so old vf_id, VSI,
   queue, IRQ, DMA, or FDIR state cannot carry authority into a new Domain.
 
+latest completed focused risk:
+  Modern NIC HyperTag Monitor interface and Linux service/driver Domain split
+  for QueueLease/VF/DMA/IRQ/representor/offload/service-work authority.
+
 next focused risk:
-  Project modern NIC QueueLease/VF evidence into a HyperTag Monitor interface
-  and service/driver Domain split before any behavior-changing implementation
-  plan.
+  Define the first implementation-readiness gate for the monitor-backed modern
+  NIC path, mapping each required receipt/carrier to an observation-only Linux
+  probe or stub and proving that no behavior-changing enforcement is approved
+  until the gate is satisfied.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -244,6 +249,35 @@ analysis/0060 + formal/0039 + validation/0059:
     vf_id equality, ice_vf reachability, cfg_lock, ACTIVE/DIS state, stable VSI,
     queue/vector id, allowlist state, reset completion, or VPINT/VPLAN writes
     are not authority.
+
+analysis/0061 + formal/0040 + validation/0060:
+  Modern NIC HyperTag Monitor interface and service/driver Domain split mapped
+  and modeled.
+  architecture split:
+    Monitor owns Domain epochs, MemoryViews/PageOwner roots, DMA roots,
+    QueueTag/QueueLease epochs, IRQ route tags, VF/SF binding epochs, root
+    budgets, sealed receipt keys, and immutable audit roots.
+    Linux service/driver Domain owns virtchnl/devlink/TC/switchdev policy, PF
+    driver sequencing, netdev/NAPI/ring/q_vector lifecycle, reset/rebuild,
+    PTP/DPLL/GNSS workers, and hardware programming substrate.
+    target Domains receive typed endpoints only.
+  safe TLC:
+    10 generated states, 10 distinct states, depth 10
+  unsafe counterexamples:
+    service Domain receipt minting
+    Linux DMA as receipt
+    Linux IRQ as receipt
+    raw endpoint exposure
+    queue activation without DMA/IRQ/ledger roots
+    service replay under old epoch
+    remote cluster lease used directly
+    audit-only monitor calls
+    per-packet monitor traps
+  design rule:
+    service policy, Linux state, mailbox validity, DMA/IRQ teardown, queue/VSI
+    ids, reset completion, remote lease text, and audit logs are not monitor
+    authority. Monitor entry is for bind, config, revoke, epoch, budget, and
+    ownership changes, not ordinary packet submission.
 ```
 
 ## Core Architecture

@@ -80,6 +80,9 @@ validation/0058-vf-mailbox-carrier-tlc.md
 
 formal/0039-vf-epoch-handoff-model/
 validation/0059-vf-epoch-handoff-tlc.md
+
+formal/0040-modern-nic-hypertag-split-model/
+validation/0060-modern-nic-hypertag-split-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -96,6 +99,7 @@ analysis/0057-representor-lower-queuelease-source-map.md
 analysis/0058-ice-servicework-carrier-source-map.md
 analysis/0059-ice-vf-mailbox-carrier-source-map.md
 analysis/0060-ice-vf-epoch-handoff-source-map.md
+analysis/0061-modern-nic-hypertag-interface-map.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -104,6 +108,7 @@ analysis/representor-lower-queuelease-source-map-v1.json
 analysis/ice-servicework-carrier-source-map-v1.json
 analysis/ice-vf-mailbox-carrier-source-map-v1.json
 analysis/ice-vf-epoch-handoff-source-map-v1.json
+analysis/modern-nic-hypertag-interface-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -163,6 +168,11 @@ VfEpochHandoff:
   visible VF id, VSI index, queue id, vector id, mailbox generation, FDIR
   context, and service replay are reopened only after fresh VF/Domain/queue
   epochs and monitor receipts
+
+HyperTagSplit:
+  monitor mints roots and receipts, Linux service Domains parse policy and
+  program hardware only after receipts, target Domains receive typed endpoints,
+  and ordinary packet submission does not trap to the monitor per packet
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -687,6 +697,12 @@ Refinement:
   embargo, queue quiescence, DMA/IRQ revoke, FDIR context clear, VF epoch bump,
   VSI/QueueLease generation bump, fresh Domain binding, and fresh service replay
   authority are present before a new Domain effect.
+  validation/0060 models the modern NIC HyperTag split. Safe TLC passes only
+  when local monitor lease compilation, device-root receipt, service policy, VF
+  epoch receipt, QueueLease receipt, DMA receipt, IRQ receipt, ledger root
+  receipt, typed endpoints, and fresh service carrier are all present before a
+  data-plane effect, while ordinary packet submission avoids per-packet monitor
+  traps.
   validation/0055 models stale XSK/page-pool completion quarantine. Safe TLC
   passes only when old XSK CQ completion, XSK free-list return, page-pool
   recycle, PageOwner transfer, packet generation reset, and queue reassignment
@@ -755,6 +771,9 @@ Do not upgrade source observation into protection evidence.
 Do not treat visible vf_id, ice_vf pointer reachability, ICE_VF_STATE_ACTIVE,
 ICE_VF_STATE_DIS, stable lan_vsi_idx/ctrl_vsi_idx, queue id, vector id, old
 allowlist state, or VPINT/VPLAN programming success as fresh handoff authority.
+Do not treat service Domain policy, Linux DMA/IRQ state, signed cluster lease
+text, audit-only monitor logging, or raw PF/VF/IOMMU/MSI/devlink handles as
+monitor roots or receipts.
 ```
 
 ## Gate Result
@@ -773,6 +792,8 @@ DEV-001 modern NIC refinement:
   authority intersection semantics
   model-supported for VF mailbox queue/DMA/IRQ/budget/FDIR carrier semantics
   model-supported for VF epoch handoff and stale identifier rejection semantics
+  model-supported for HyperTag Monitor/service Domain/target endpoint split
+  semantics
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -791,6 +812,9 @@ implementation planning that names subclaim coverage
 VF epoch handoff planning that names mailbox embargo, VF epoch bump, VSI
 generation, QueueLease generation, DMA/IRQ receipts, FDIR context clearing, and
 service replay authorization
+HyperTag interface planning that names monitor-owned roots, service Domain
+policy-only authority, typed target endpoints, receipt minting, and no
+per-packet monitor trap
 ```
 
 Still forbidden:
@@ -804,6 +828,11 @@ collapsing SKB/XDP/AF_XDP/control/representor/service paths into one cap
 using vf_id, ice_vf pointer reachability, ICE_VF_STATE_ACTIVE/DIS, lan_vsi_idx,
 ctrl_vsi_idx, queue id, vector id, old allowlist state, or reset completion as
 fresh VF/Domain/QueueLease authority
+service Domain minting monitor receipts
+Linux DMA/IRQ state as monitor receipts
+raw PF/VF/IOMMU/MSI/devlink authority exposed to target Domains
+audit-only monitor calls after Linux side effects
+per-packet monitor traps as the normal data path
 ```
 
 ## Implementation Consequence
@@ -830,6 +859,10 @@ A behavior-changing prototype is not allowed until it has at least:
 10. VF epoch handoff carrier for mailbox embargo, reset/reassignment reopen,
     VSI generation, QueueLease generation, DMA/IRQ receipts, FDIR context
     clearing, and service replay freshness
-11. clear statement that Linux-only evidence is compatibility/prototype
+11. HyperTag interface split that keeps receipt minting in the monitor, policy
+    and hardware programming in the service Domain, typed endpoints in target
+    Domains, cluster lease compilation local, and ordinary packet submission off
+    the monitor slow path
+12. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

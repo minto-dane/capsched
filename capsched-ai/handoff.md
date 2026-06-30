@@ -50,10 +50,15 @@ latest completed risk:
   VF identity epoch and SR-IOV/VF reset/reassignment handoff so old vf_id, VSI,
   queue, IRQ, DMA, or FDIR state cannot carry authority into a new Domain.
 
+latest completed risk:
+  Modern NIC HyperTag Monitor interface and Linux service/driver Domain split
+  for QueueLease/VF/DMA/IRQ/representor/offload/service-work authority.
+
 next focused risk:
-  Project the modern NIC QueueLease/VF evidence into a HyperTag Monitor
-  interface and service/driver Domain split before any behavior-changing
-  implementation plan.
+  Define the first implementation-readiness gate for the monitor-backed modern
+  NIC path, mapping each required receipt/carrier to an observation-only Linux
+  probe or stub and proving that no behavior-changing enforcement is approved
+  until the gate is satisfied.
 ```
 
 That focused VF IRQ model is now checked:
@@ -275,12 +280,43 @@ analysis/0060 + formal/0039 + validation/0059:
     VF epoch bump, VSI/QueueLease generation bump, fresh Domain binding, and
     fresh service replay authority.
 
+analysis/0061 + formal/0040 + validation/0060:
+  Modern NIC HyperTag Monitor interface and service/driver Domain split mapped
+  and modeled.
+  architecture split:
+    HyperTag Monitor owns Domain epochs, MemoryViews/PageOwner roots, device DMA
+    roots, QueueTag/QueueLease epochs, IRQ route tags, VF/SF binding epochs,
+    root budgets, sealed receipt keys, and immutable audit roots.
+    Linux service/driver Domain owns virtchnl/devlink/TC/switchdev policy,
+    PF driver sequencing, netdev/NAPI/ring/q_vector lifecycle, reset/rebuild,
+    PTP/DPLL/GNSS workers, and hardware programming substrate.
+    target Domains receive typed endpoints only: QueueSubmit, DescriptorLedger,
+    Completion, VFMailbox, QueueConfig/Enable/Budget, IrqRoute, QueueControl,
+    RepresentorForward, Offload, PTP, and DPLL as granted.
+  safe TLC:
+    10 generated states, 10 distinct states, depth 10
+  unsafe counterexamples:
+    service Domain mints monitor roots
+    Linux DMA state used as DMA receipt
+    Linux IRQ state used as IRQ receipt
+    raw PF/VF/IOMMU/MSI/devlink endpoint exposed to target Domain
+    queue activation without DMA, IRQ, and ledger receipts
+    service replay under an old epoch
+    remote cluster lease used directly without local monitor compilation
+    audit-only monitor calls
+    per-packet monitor traps on ordinary data-plane submission
+  design rule:
+    service policy, Linux driver state, VF mailbox validity, DMA API/IOMMU
+    teardown, IRQ teardown, queue/VSI/vector ids, reset completion, remote lease
+    text, and audit logs are not monitor authority. Ordinary packet submission
+    must be fast-path local after bind; monitor entry is for bind, config,
+    revoke, epoch, budget, and ownership changes.
+
 next focused risk:
-  Project modern NIC QueueLease/VF evidence into a HyperTag Monitor interface
-  and service/driver Domain split. This should specify which roots belong to
-  the monitor, which operations remain Linux service authority, which typed
-  endpoints are exposed to Domains, and what receipt/call boundaries must exist
-  before implementation planning.
+  Define the first implementation-readiness gate for the monitor-backed modern
+  NIC path. This should map each required receipt/carrier to an observation-only
+  Linux probe or stub and prove that no behavior-changing enforcement is
+  approved until the gate is satisfied.
 ```
 The current scheduler-authority refinement frontier is now:
 

@@ -225,7 +225,9 @@
         "E-DEV-MNIC-019",
         "E-DEV-MNIC-020",
         "E-DEV-MNIC-021",
-        "E-DEV-MNIC-022"
+        "E-DEV-MNIC-022",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -237,6 +239,7 @@
         "No monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, typed SubmitLedger, or DescriptorLedger.",
         "No queue revoke/drain/quarantine implementation.",
         "No VF identity epoch and reassignment handoff implementation.",
+        "No HyperTag monitor interface or service/driver Domain split implementation.",
         "No DMA attack tests."
       ],
       "forbidden_l0": true
@@ -252,12 +255,15 @@
         "E-DEV-MNIC-004",
         "E-DEV-MNIC-005",
         "E-DEV-MNIC-021",
-        "E-DEV-MNIC-022"
+        "E-DEV-MNIC-022",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No monitor QueueTag.",
         "No queue epoch emission or check.",
         "No VF epoch or VSI generation emission/check.",
+        "No HyperTag monitor receipt minting implementation.",
         "No non-forgeable IRQ route ownership.",
         "No queue budget root below Linux."
       ],
@@ -273,7 +279,9 @@
         "E-DEV-MNIC-001",
         "E-DEV-MNIC-002",
         "E-DEV-MNIC-004",
-        "E-DEV-MNIC-005"
+        "E-DEV-MNIC-005",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No typed SubmitLedger id.",
@@ -292,7 +300,9 @@
       "evidence": [
         "E-DEV-MNIC-001",
         "E-DEV-MNIC-004",
-        "E-DEV-MNIC-005"
+        "E-DEV-MNIC-005",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No typed DescriptorLedger emitted.",
@@ -319,7 +329,9 @@
         "E-DEV-MNIC-019",
         "E-DEV-MNIC-020",
         "E-DEV-MNIC-021",
-        "E-DEV-MNIC-022"
+        "E-DEV-MNIC-022",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No monitor-backed MemoryView for packet pages.",
@@ -347,7 +359,9 @@
         "E-DEV-MNIC-004",
         "E-DEV-MNIC-005",
         "E-DEV-MNIC-013",
-        "E-DEV-MNIC-014"
+        "E-DEV-MNIC-014",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No completion ledger id.",
@@ -374,7 +388,9 @@
         "E-DEV-MNIC-019",
         "E-DEV-MNIC-020",
         "E-DEV-MNIC-021",
-        "E-DEV-MNIC-022"
+        "E-DEV-MNIC-022",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No QueueControlCap.",
@@ -400,7 +416,9 @@
         "E-DEV-MNIC-004",
         "E-DEV-MNIC-005",
         "E-DEV-MNIC-015",
-        "E-DEV-MNIC-016"
+        "E-DEV-MNIC-016",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No RepresentorForwardCap.",
@@ -428,7 +446,9 @@
         "E-DEV-MNIC-019",
         "E-DEV-MNIC-020",
         "E-DEV-MNIC-021",
-        "E-DEV-MNIC-022"
+        "E-DEV-MNIC-022",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No typed service work carrier.",
@@ -470,7 +490,9 @@
         "E-DEV-MNIC-019",
         "E-DEV-MNIC-020",
         "E-DEV-MNIC-021",
-        "E-DEV-MNIC-022"
+        "E-DEV-MNIC-022",
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-024"
       ],
       "gaps": [
         "No queue revoke epoch implementation.",
@@ -503,7 +525,8 @@
         "E-DEV-MNIC-015",
         "E-DEV-MNIC-017",
         "E-DEV-MNIC-019",
-        "E-DEV-MNIC-021"
+        "E-DEV-MNIC-021",
+        "E-DEV-MNIC-023"
       ],
       "gaps": [
         "All observed state is Linux-mutable.",
@@ -990,6 +1013,43 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks VF id/VSI/queue/IRQ/DMA/FDIR/mailbox/service replay handoff freshness; it is not real SR-IOV, virtchnl, MSI-X, IOMMU, FDIR, or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-023",
+      "kind": "analysis_architecture_map",
+      "record": "capsched-models/analysis/0061-modern-nic-hypertag-interface-map.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Maps the HyperTag Monitor, Linux service/driver Domain, target endpoint, receipt-minting, and data-plane trap boundary for modern NIC QueueLease/VF authority; it is architecture analysis, not implementation or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-024",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0060-modern-nic-hypertag-split-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks monitor-root, service-Domain, DMA/IRQ receipt, typed endpoint, local cluster-lease compilation, audit-only, and per-packet trap separation; it is not real monitor, driver, IOMMU, IRQ, or performance evidence."
     },
     {
       "id": "E-L0-002",

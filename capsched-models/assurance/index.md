@@ -77,6 +77,8 @@ Model-supported areas:
 - VF mailbox queue/DMA/IRQ/budget/FDIR carrier semantics
 - VF epoch handoff, reset/reassignment, stale VSI/queue/IRQ/DMA/FDIR/mailbox,
   and service replay freshness semantics
+- modern NIC HyperTag Monitor, Linux service/driver Domain, target endpoint,
+  and receipt-minting split semantics
 
 Prototype-evidenced areas:
 
@@ -181,6 +183,15 @@ VF epoch handoff model:
   allowlist/capability state surviving reset as authority, and service replay
   under the old epoch.
 
+Modern NIC HyperTag split model:
+  safe TLC passed with 10 generated states and 10 distinct states. Unsafe
+  configs produced expected counterexamples for service Domain minting monitor
+  roots, Linux DMA state as DMA receipt, Linux IRQ state as IRQ receipt, raw
+  PF/VF/IOMMU/MSI/devlink endpoint exposure, queue activation without DMA/IRQ
+  receipts, service replay under old epoch, remote cluster lease use without
+  local monitor compilation, audit-only monitor calls after Linux side effects,
+  and per-packet monitor traps on the ordinary data path.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -192,7 +203,9 @@ Forbidden:
   replay, VF-provided dma_ring_addr, queue id checks, vector id checks, QoS
   caps, FDIR ctx_done, vf_id equality, ice_vf pointer reachability, vf->cfg_lock,
   ICE_VF_STATE_ACTIVE/DIS, stable lan_vsi_idx/ctrl_vsi_idx, MSI-X vector id, or
-  VPLAN/VPINT programming success as QueueLease authority, Domain ownership, or
-  revoke authority. Do not implement behavior-changing QueueLease enforcement
-  from this evidence alone.
+  VPLAN/VPINT programming success, service Domain policy, Linux DMA/IRQ state,
+  signed cluster lease text, audit-only monitor logging, or raw PF/VF/IOMMU/MSI/
+  devlink handle exposure as QueueLease authority, Domain ownership, receipt
+  minting, or revoke authority. Do not implement behavior-changing QueueLease
+  enforcement from this evidence alone.
 ```

@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "id": "modern-nic-hypertag-interface-map-v1",
+  "analysis": "0061-modern-nic-hypertag-interface-map.md",
+  "date": "2026-06-30",
+  "purpose": "Project modern NIC QueueLease, VF mailbox, VF epoch handoff, DMA/IOMMU, IRQ, representor, and service-work evidence into a HyperTag Monitor interface and Linux service/driver Domain split.",
+  "roles": {
+    "monitor": {
+      "owns": [
+        "Domain registry and epochs",
+        "MemoryView and PageOwner roots",
+        "device DMA root: RID/PASID/IOMMU domain ownership",
+        "QueueTag and QueueLease epochs",
+        "IRQ route tags and route epochs",
+        "VF/SF/queue binding epochs",
+        "root CPU and service budget roots",
+        "sealed token and receipt keys",
+        "immutable audit root for root transitions and receipts"
+      ],
+      "does_not_parse": [
+        "full virtchnl protocol",
+        "full TC flower syntax",
+        "full devlink policy",
+        "full driver ring structures",
+        "full bridge/VLAN/FDB policy",
+        "packet contents"
+      ]
+    },
+    "linux_service_domain": {
+      "owns": [
+        "PF driver and firmware AdminQ/MailboxQ logic",
+        "virtchnl/VF mailbox parsing and syntax validation",
+        "netdev/NAPI/ring/q_vector lifecycle",
+        "devlink, TC, switchdev, bridge, and representor policy front-ends",
+        "PTP/DPLL/GNSS and device control-plane workers",
+        "reset/rebuild/service replay logic",
+        "hardware programming substrate"
+      ],
+      "cannot_mint": [
+        "DeviceRootReceipt",
+        "QueueLeaseReceipt",
+        "DmaMemoryViewReceipt",
+        "IrqRouteReceipt",
+        "QueueActivationReceipt",
+        "QueueRevokeReceipt",
+        "NewVfEpochReceipt"
+      ]
+    },
+    "target_domain": {
+      "receives": [
+        "QueueSubmitEndpoint",
+        "DescriptorLedgerEndpoint",
+        "CompletionEndpoint",
+        "VFMailboxEndpoint",
+        "QueueConfigEndpoint",
+        "QueueEnableEndpoint",
+        "IrqRouteEndpoint",
+        "QueueBudgetEndpoint",
+        "QueueControlEndpoint when policy grants it",
+        "RepresentorForwardEndpoint",
+        "OffloadEndpoint",
+        "PtpControlEndpoint when policy grants it",
+        "DpllControlEndpoint when policy grants it"
+      ],
+      "does_not_receive": [
+        "raw PF driver handle",
+        "raw IOMMU domain handle",
+        "raw MSI/MSI-X route handle",
+        "raw lower_dev authority",
+        "ambient devlink/switchdev authority",
+        "monitor receipt minting authority"
+      ]
+    },
+    "root_management_domain": {
+      "owns": [
+        "tenant/service/device placement policy",
+        "Domain-to-device admission",
+        "service Domain selection",
+        "initial queue/VF/SF allocation policy",
+        "cluster lease signing and revocation policy"
+      ]
+    }
+  },
+  "monitor_calls": [
+    {
+      "name": "monitor_device_register",
+      "returns": "DeviceRootReceipt",
+      "forbidden_shortcuts": [
+        "PCI enumeration",
+        "netdev registration",
+        "driver probe success",
+        "VFIO group ownership"
+      ]
+    },
+    {
+      "name": "monitor_compile_cluster_lease",
+      "returns": "LocalDomainDeviceLease",
+      "forbidden_shortcuts": [
+        "signed cluster lease text",
+        "scheduler placement decision"
+      ]
+    },
+    {
+      "name": "monitor_bind_vf",
+      "returns": "VfEpochReceipt",
+      "forbidden_shortcuts": [
+        "ice_get_vf_by_id",
+        "ice_vf pointer reachability",
+        "vf->cfg_lock",
+        "ICE_VF_STATE_ACTIVE",
+        "ICE_VF_STATE_DIS",
+        "stable VSI index"
+      ]
+    },
+    {
+      "name": "monitor_queue_lease_create",
+      "returns": "QueueLeaseReceipt",
+      "forbidden_shortcuts": [
+        "ring pointer",
+        "q_vector",
+        "NAPI",
+        "queue_mapping",
+        "VF queue id",
+        "VPLAN queue base",
+        "devlink queue state"
+      ]
+    },
+    {
+      "name": "monitor_dma_bind",
+      "returns": "DmaMemoryViewReceipt",
+      "forbidden_shortcuts": [
+        "VF-provided dma_ring_addr",
+        "Linux dma_map_*",
+        "VFIO/iommufd unmap callback",
+        "iommu_unmap_fast",
+        "queued flush",
+        "page unpin",
+        "xsk_pool_dma_unmap",
+        "page_pool recycle"
+      ]
+    },
+    {
+      "name": "monitor_irq_route_bind",
+      "returns": "IrqRouteReceipt",
+      "forbidden_shortcuts": [
+        "vector id range check",
+        "request_irq",
+        "free_irq",
+        "pci_free_irq_vectors",
+        "eventfd detach",
+        "IRTE clear without flush"
+      ]
+    },
+    {
+      "name": "monitor_queue_activate",
+      "returns": "QueueActivationReceipt",
+      "forbidden_shortcuts": [
+        "queue enable",
+        "QS_ENA bit",
+        "virtchnl validation",
+        "opcode allowlist",
+        "hardware queue context write"
+      ]
+    },
+    {
+      "name": "monitor_ledger_root_bind",
+      "returns": "LedgerRootReceipt",
+      "forbidden_shortcuts": [
+        "driver ring index",
+        "tracepoint visibility",
+        "current worker task",
+        "last submitter"
+      ]
+    },
+    {
+      "name": "monitor_offload_rule_bind",
+      "returns": "OffloadRuleReceipt",
+      "forbidden_shortcuts": [
+        "bridge FDB hit",
+        "VLAN allow",
+        "TC redirect target",
+        "metadata_dst",
+        "switchdev mark",
+        "LAG lower_dev rewrite"
+      ]
+    },
+    {
+      "name": "monitor_queue_revoke",
+      "returns": "QueueRevokeReceipt",
+      "forbidden_shortcuts": [
+        "netdev down",
+        "reset completion",
+        "representor stop",
+        "FDIR ctx_done clear",
+        "service worker completion",
+        "mailbox counter reset"
+      ]
+    },
+    {
+      "name": "monitor_vf_epoch_bump",
+      "returns": "NewVfEpochReceipt",
+      "forbidden_shortcuts": [
+        "clearing Linux DIS state",
+        "setting ACTIVE state",
+        "VSI rebuild",
+        "service replay",
+        "mailbox reopen without monitor epoch"
+      ]
+    }
+  ],
+  "safe_data_plane_rule": [
+    "Monitor establishes QueueLease, DMA, IRQ, budget, and endpoint receipts.",
+    "Monitor establishes typed ledger roots for allowed submit classes.",
+    "Service Domain programs hardware according to those receipts.",
+    "Target Domain submits descriptors to its leased queue.",
+    "IOMMU/MemoryView and queue ownership limit damage if Linux or the target Domain is compromised.",
+    "Monitor is re-entered for bind, config, revoke, epoch bump, budget root changes, or ownership changes, not ordinary packet submission."
+  ],
+  "confused_deputy_hotspots": [
+    "VF mailbox syntax-valid request treated as authority",
+    "ring index, tracepoint, worker identity, or last submitter used as DescriptorLedger or CompletionSettlement authority",
+    "reset/rebuild replay under stale policy or old epoch",
+    "FDIR/offload completion after VF epoch bump",
+    "representor lower_dev or metadata_dst change without fresh lower QueueLease",
+    "TC/switchdev stale hardware destination after lower QueueLease revoke",
+    "XSK/page-pool packet return before DMA/IOMMU receipt and generation reset",
+    "eventfd/posting/MSI route delivery after queue/VF revoke",
+    "signed remote cluster lease used directly instead of local monitor compilation"
+  ],
+  "implementation_reject_rules": [
+    "Do not collapse monitor receipts into Linux driver state.",
+    "Do not let the service Domain mint QueueLease, DMA, IRQ, or VF epoch receipts.",
+    "Do not let target Domains see raw PF/VF/IOMMU/MSI/devlink authority.",
+    "Do not use remote cluster lease text directly on a queue.",
+    "Do not reopen a VF or queue after reset without fresh monitor epoch.",
+    "Do not activate queue data path without matching DMA and IRQ receipts.",
+    "Do not claim production security from Linux-only trace/build evidence."
+  ]
+}

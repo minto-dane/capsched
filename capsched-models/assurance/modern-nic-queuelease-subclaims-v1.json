@@ -16,6 +16,7 @@
     "servicework_carrier": "model_checked",
     "vf_mailbox_carrier": "model_checked",
     "vf_epoch_handoff": "model_checked",
+    "hypertag_service_split": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -283,6 +284,41 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks VF id/VSI/queue/IRQ/DMA/FDIR/mailbox/service replay handoff freshness; not real SR-IOV, virtchnl, MSI-X, IOMMU, FDIR, or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-023",
+      "class": "source_observed",
+      "path": "capsched-models/analysis/0061-modern-nic-hypertag-interface-map.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Architecture map for monitor roots, Linux service/driver Domain policy, typed target endpoints, receipt minting, local cluster lease compilation, and no per-packet monitor trap; not implementation or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-024",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0060-modern-nic-hypertag-split-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks monitor/service/target endpoint split, receipt minting, audit-only monitor hazards, remote lease local compilation, and no per-packet monitor trap; not real monitor, driver, IOMMU, IRQ, or performance evidence."
     }
   ],
   "subclaims": [
@@ -295,6 +331,7 @@
         "monitor QueueTag",
         "queue epoch emission/check",
         "VF epoch and VSI generation emission/check",
+        "HyperTag monitor receipt minting implementation",
         "non-forgeable IRQ route ownership",
         "queue budget root below Linux"
       ],
@@ -349,7 +386,8 @@
         "stale XSK/page-pool quarantine implementation",
         "packet generation reset/retag implementation",
         "VF mailbox QueueConfigCarrier and DMA ring-address carrier implementation",
-        "VF epoch handoff DMA/IOMMU receipt implementation"
+        "VF epoch handoff DMA/IOMMU receipt implementation",
+        "HyperTag monitor-owned DMA receipt minting implementation"
       ],
       "forbidden": [
         "Linux DMA mapping success as Domain authorization proof",
@@ -387,6 +425,7 @@
       "protection_missing": [
         "QueueControlCap",
         "monitor QueueTag check",
+        "monitor receipt consumption before hardware mutation",
         "VF/SF lifecycle authority model",
         "devlink policy proof",
         "TC/switchdev OffloadCap and rule-generation proof",
@@ -436,7 +475,8 @@
         "service-domain budget charging rule",
         "reset/rebuild replay reauthorization implementation",
         "frozen VF request carrier propagation into async FDIR completion",
-        "VF epoch handoff carrier for reset/reassignment reopen"
+        "VF epoch handoff carrier for reset/reassignment reopen",
+        "service Domain proof that policy parsing does not mint monitor roots"
       ],
       "forbidden": [
         "generic workqueue execution as a CapSched authority hook",
@@ -481,6 +521,8 @@
         "TC/switchdev stale hardware rule left live after lower QueueLease revoke",
         "VF mailbox queue, IRQ, budget, or FDIR effect after revoke without fresh authorization",
         "visible vf_id, stable VSI index, queue id, vector id, or old allowlist state as fresh handoff authority"
+        ,
+        "service Domain policy, Linux DMA/IRQ state, signed cluster lease text, audit-only monitor logging, or raw PF/VF/IOMMU/MSI/devlink handles as monitor roots or receipts"
       ]
     },
     {
@@ -509,6 +551,7 @@
     "service-work carrier planning that names per-effect carriers, merge semantics, and reset/rebuild reauthorization",
     "VF mailbox carrier planning that names queue config, DMA ring base, IRQ route, queue budget, FDIR, async context, and revoke proofs",
     "VF epoch handoff planning that names mailbox embargo, VF epoch bump, VSI generation, QueueLease generation, DMA/IRQ receipts, FDIR context clearing, and service replay authorization",
+    "HyperTag interface planning that names monitor-owned roots, service Domain policy-only authority, typed target endpoints, receipt minting, local cluster lease compilation, and no per-packet monitor trap",
     "implementation planning that names subclaim coverage"
   ],
   "forbidden_next_work": [
@@ -520,6 +563,11 @@
     "representor netdev, bridge FDB/VLAN, TC redirect target, or metadata_dst as lower QueueLease authority",
     "worker identity, ICE_SERVICE_SCHED, virtchnl allowlists, PTP/DPLL callback reachability, LAG lower_dev rewrite, or reset/rebuild replay as service-work carrier authority",
     "virtchnl validation, opcode allowlist, VF-provided dma_ring_addr, queue id check, vector id check, QoS caps, or FDIR ctx_done as VF mailbox carrier authority",
-    "vf_id equality, ice_vf pointer reachability, ICE_VF_STATE_ACTIVE/DIS, lan_vsi_idx/ctrl_vsi_idx stability, or VPINT/VPLAN programming success as VF epoch handoff authority"
+    "vf_id equality, ice_vf pointer reachability, ICE_VF_STATE_ACTIVE/DIS, lan_vsi_idx/ctrl_vsi_idx stability, or VPINT/VPLAN programming success as VF epoch handoff authority",
+    "service Domain minting monitor receipts",
+    "Linux DMA/IRQ state as monitor receipts",
+    "raw PF/VF/IOMMU/MSI/devlink authority exposed to target Domains",
+    "audit-only monitor calls after Linux side effects",
+    "per-packet monitor traps as the normal data path"
   ]
 }

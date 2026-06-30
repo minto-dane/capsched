@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "vf-epoch-handoff-modeled",
+    "current_phase": "modern-nic-hypertag-split-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0060 maps Intel ice VF reset, SR-IOV teardown, MSI-X/vector remap, VSI reuse, queue/DMA/IRQ config, FDIR async completion, mailbox dispatch, and service replay handoff substrate. Validation/0059 adds the VF Epoch Handoff model: safe TLC passed with 9 generated states, 9 distinct states, and depth 9; eight unsafe configs produced expected counterexamples for visible vf_id reuse without fresh VF epoch, VSI reuse without generation bump, queue reassignment before DMA/IOMMU revoke, IRQ route reassignment before stale route revoke, FDIR completion surviving reset, mailbox acceptance during reset embargo, allowlist/capability state surviving reset as authority, and service replay under the old epoch. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, or driver enforcement is approved. Next focused risk is projecting the modern NIC QueueLease/VF evidence into a HyperTag Monitor interface and service/driver Domain split.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0061 projects modern NIC QueueLease, VF mailbox, VF epoch handoff, DMA/IOMMU, IRQ, representor, offload, service-work, and cluster-lease evidence into a HyperTag Monitor interface plus Linux service/driver Domain split. Validation/0060 adds the Modern NIC HyperTag Split model: safe TLC passed with 10 generated states, 10 distinct states, and depth 10; unsafe configs produced expected counterexamples for service-Domain receipt minting, Linux DMA as receipt, Linux IRQ as receipt, raw endpoint exposure, queue activation without DMA/IRQ/ledger roots, service replay under an old epoch, remote cluster lease used directly, audit-only monitor calls, and per-packet monitor traps. The current hard gaps remain: no actual HyperTag Monitor implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is defining the first implementation-readiness gate for the monitor-backed modern NIC path, mapping each required receipt/carrier to observation-only Linux probes/stubs and proving that no behavior-changing enforcement is approved until the gate is satisfied.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -371,7 +371,13 @@
     "vf_epoch_handoff_model": "capsched/capsched-models/formal/0039-vf-epoch-handoff-model/README.md",
     "vf_epoch_handoff_tla": "capsched/capsched-models/formal/0039-vf-epoch-handoff-model/VfEpochHandoff.tla",
     "vf_epoch_handoff_validation": "capsched/capsched-models/validation/0059-vf-epoch-handoff-tlc.md",
-    "vf_epoch_handoff_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/vf-epoch-handoff-20260630T024639Z"
+    "vf_epoch_handoff_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/vf-epoch-handoff-20260630T024639Z",
+    "modern_nic_hypertag_interface_map": "capsched/capsched-models/analysis/0061-modern-nic-hypertag-interface-map.md",
+    "modern_nic_hypertag_interface_map_json": "capsched/capsched-models/analysis/modern-nic-hypertag-interface-map-v1.json",
+    "modern_nic_hypertag_split_model": "capsched/capsched-models/formal/0040-modern-nic-hypertag-split-model/README.md",
+    "modern_nic_hypertag_split_tla": "capsched/capsched-models/formal/0040-modern-nic-hypertag-split-model/NicHypertagSplit.tla",
+    "modern_nic_hypertag_split_validation": "capsched/capsched-models/validation/0060-modern-nic-hypertag-split-tlc.md",
+    "modern_nic_hypertag_split_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/nic-hypertag-split-20260630T040652Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1670,9 +1676,19 @@
     {
       "id": "N-088",
       "text": "Project the modern NIC QueueLease, VF mailbox, VF epoch handoff, DMA/IOMMU, IRQ, representor, and service-work evidence into a HyperTag Monitor interface and service/driver Domain split before any behavior-changing implementation plan.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created analysis/0061 plus modern-nic-hypertag-interface-map-v1.json, then formal/0040 NicHypertagSplit and validation/0060. The architecture map separates monitor-owned Domain epochs, MemoryViews, device DMA roots, QueueTag/QueueLease epochs, IRQ route tags, VF/SF binding epochs, root budgets, sealed receipt keys, and immutable audit roots from Linux service/driver Domain policy and hardware-programming substrate. Safe TLC passed with 10 generated states, 10 distinct states, and depth 10. Unsafe configs produced expected counterexamples for service-Domain receipt minting, Linux DMA as receipt, Linux IRQ as receipt, raw endpoint exposure, queue activation without DMA/IRQ/ledger roots, service replay under an old epoch, remote cluster lease direct use, audit-only monitor calls, and per-packet monitor traps.",
       "blocked_by": [
         "N-087"
+      ]
+    },
+    {
+      "id": "N-089",
+      "text": "Define the first implementation-readiness gate for the monitor-backed modern NIC path, mapping each required receipt/carrier to an observation-only Linux probe or stub and proving that no behavior-changing enforcement is approved until the gate is satisfied.",
+      "status": "pending",
+      "blocked_by": [
+        "N-088"
       ]
     }
   ],
