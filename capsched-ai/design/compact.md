@@ -20,6 +20,33 @@ now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
 changes.
 
+Modern NIC QueueLease/revoke status:
+
+```text
+formal/0031 + validation/0050:
+  queue revoke/drain/quarantine model checked.
+
+analysis/0053 + validation/0051:
+  Intel ice revoke anchors are source-observed and readiness-checked only.
+  latest readiness run:
+    build/ice-revoke-readiness/20260630T002344Z
+  result:
+    tracepoint_rows=8, source_anchor_rows=31,
+    obligation_readiness_rows=10, gap_rows=8
+  every row:
+    observation_only=true
+    authority_claim=false
+    monitor_verified=false
+
+do not claim:
+  netdev down/reset, Linux ring cleanup, DMA unmap, NAPI disable, devlink
+  reload, representor stop, or service work cancellation as QueueLease revoke
+  authority.
+
+next focused risk:
+  VF IRQ ownership and synchronize_irq exception modeling.
+```
+
 ## Core Architecture
 
 CapSched-Linux has two tracks:

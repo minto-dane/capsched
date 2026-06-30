@@ -70,6 +70,7 @@ analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
+validation/0051-ice-revoke-readiness-result.md
 ```
 
 Top-level assurance evidence:
@@ -516,8 +517,8 @@ completion, control, representor, and service work before authority can be
 reused or delivered to another Domain.
 ```
 
-Current status: Model-supported, source-observed reset/down anchors, no
-readiness
+Current status: Model-supported, source-observed reset/down anchors,
+observation-only readiness with high-severity gaps
 
 Evidence:
 
@@ -535,6 +536,9 @@ Source:
 
 Readiness:
   validation/0047 classifies RevokeSemantics as not_ready_future_capsched.
+  validation/0051 emits formal/0031 obligation coverage for ice revoke paths
+  with tracepoint_rows=8, source_anchor_rows=31, and gap_rows=8. Every row is
+  observation_only=true, authority_claim=false, and monitor_verified=false.
 ```
 
 Protection missing:
@@ -570,6 +574,8 @@ Evidence:
 ```text
 analysis/0052 maps a representative modern NIC path.
 validation/0047 confirms source and tracepoint observability.
+validation/0051 confirms observation-only revoke readiness for selected ice
+down/reset/NAPI/IRQ/DMA/XSK/representor/service/rebuild anchors.
 ```
 
 Protection missing:
@@ -596,6 +602,7 @@ DEV-001 modern NIC refinement:
   model-supported for authority-class separation
   source-observed for Intel ice anchors
   observation-only for trace/readiness
+  observation-only for selected ice revoke readiness
   not protection-evidenced
   not implementation-approved
 ```

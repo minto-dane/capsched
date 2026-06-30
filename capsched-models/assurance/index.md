@@ -101,9 +101,14 @@ Observation-only:
   ice readiness found 19 tracepoint rows, 40 source anchors, and 12
   high-severity gaps. Every row remains authority_claim=false and
   monitor_verified=false.
+  ice revoke readiness found 8 tracepoint rows, 31 source anchors, 10
+  obligation readiness rows, and 8 high-severity gaps. Every row remains
+  observation_only=true, authority_claim=false, and monitor_verified=false.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
-  authority. Do not implement behavior-changing QueueLease enforcement from
-  this evidence alone.
+  authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
+  Linux-owned DMA unmap, representor stop, or devlink reload as QueueLease
+  revoke authority. Do not implement behavior-changing QueueLease enforcement
+  from this evidence alone.
 ```

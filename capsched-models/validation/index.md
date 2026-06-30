@@ -56,6 +56,7 @@ Updated: 2026-06-29
 | 0048 | Safe model passed; unsafe models produced expected counterexamples | XDP and AF_XDP Memory Ownership TLC |
 | 0049 | Safe model passed; unsafe models produced expected counterexamples | QueueControl and RepresentorForward TLC |
 | 0050 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC Queue Revoke TLC |
+| 0051 | Executed; high-severity semantic gaps remain | ice Revoke Readiness Result |
 
 ## Principles
 

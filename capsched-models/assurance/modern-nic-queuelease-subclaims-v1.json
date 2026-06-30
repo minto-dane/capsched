@@ -7,6 +7,7 @@
     "authority_class_separation": "model_supported",
     "linux_source_anchors": "source_observed",
     "trace_readiness": "observation_only",
+    "revoke_readiness": "observation_only",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -106,6 +107,16 @@
         "DEV-NIC-009"
       ],
       "limitation": "Source map for ice shutdown/rebuild anchors; not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-008",
+      "class": "observation_only",
+      "path": "capsched-models/validation/0051-ice-revoke-readiness-result.md",
+      "supports": [
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Observation-only formal/0031 obligation coverage for ice revoke paths; authority_claim=false and monitor_verified=false."
     }
   ],
   "subclaims": [

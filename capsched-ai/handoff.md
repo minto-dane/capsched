@@ -14,6 +14,32 @@ been committed in that Linux repository as inert `CONFIG_CAPSCHED` scaffolding.
 Slice 0B has also been committed as type-only authority scaffolding in
 `include/linux/capsched.h` and `kernel/sched/capsched.c`. No behavior-changing
 scheduler patch points are accepted yet.
+Modern NIC QueueLease revoke analysis has reached an observation-only readiness
+gate for Intel `ice`:
+
+```text
+validation/0051:
+  runner: validation/run-ice-revoke-readiness.sh
+  latest run: build/ice-revoke-readiness/20260630T002344Z
+  tracepoint_rows=8, tracepoint_missing_rows=0
+  source_anchor_rows=31, source_anchor_missing_rows=0
+  obligation_readiness_rows=10, gap_rows=8
+  observation_only=true, authority_claim=false, monitor_verified=false
+
+hard gaps:
+  no QueueTag / queue epoch root
+  no typed SubmitLedger / DescriptorLedger / CompletionSettlement id
+  no monitor-owned IOMMU / MemoryView invalidation
+  no stale XSK/page-pool completion quarantine distinction
+  no VF IRQ ownership proof for the synchronize_irq exception
+  no lower QueueLease proof for representor revoke
+  no service work carrier or service/caller authority intersection
+  no old/new queue epoch handoff proof
+
+next focused risk:
+  model VF IRQ ownership and synchronization exception semantics before any
+  ice behavior change.
+```
 The current scheduler-authority refinement frontier is now:
 
 ```text
