@@ -62,6 +62,9 @@ validation/0052-vf-irq-revoke-ownership-tlc.md
 
 formal/0033-monitor-irq-route-invalidation-model/
 validation/0053-monitor-irq-route-invalidation-tlc.md
+
+formal/0034-monitor-dma-iommu-invalidation-model/
+validation/0054-monitor-dma-iommu-invalidation-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -72,8 +75,10 @@ analysis/0050-aggregate-queuelease-settlement-semantics.md
 analysis/0051-linux-queue-descriptor-ledger-observation-plan.md
 analysis/0052-ice-modern-nic-queuelease-source-map.md
 analysis/0053-ice-modern-nic-revoke-source-map.md
+analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
+analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -311,11 +316,14 @@ Evidence:
 ```text
 Model:
   formal/0029, validation/0048
+  formal/0034, validation/0054
 
 Source:
   analysis/0052 maps dma_map_single(), skb_frag_dma_map(),
   page_pool_get_dma_addr(), dma_sync_single_for_device(), xsk_pool, and
   AF_XDP descriptor batch fetch.
+  analysis/0055 maps ice teardown, DMA API, IOMMU core, iommufd, VFIO type1,
+  and arch-IOMMU invalidation anchors for revoke ordering.
 
 Readiness:
   validation/0047 records page-pool-ownership and xsk-ownership as high
@@ -329,7 +337,8 @@ no monitor-backed MemoryView for packet pages
 no IOMMU ownership root below Linux
 no page-pool ownership provenance
 no XSK/UMEM ownership provenance
-no IOMMU invalidation latency/order proof
+no real monitor-backed DMA invalidation receipt implementation
+no real IOMMU invalidation latency/order proof
 ```
 
 Forbidden claim:
@@ -337,6 +346,9 @@ Forbidden claim:
 ```text
 Do not treat Linux DMA mapping success as proof that the DMA target is
 Domain-authorized.
+Do not treat IRQ invalidation, dma_unmap_*(), xsk_pool_dma_unmap(),
+iommu_unmap_fast(), queued IOVA flush, iommufd IOAS unmap, VFIO unmap callback,
+or page unpin/refcount release as PageOwner transfer safety.
 ```
 
 ### DEV-NIC-005: Completion Settlement
@@ -536,11 +548,14 @@ Model:
   formal/0031, validation/0050
   formal/0032, validation/0052
   formal/0033, validation/0053
+  formal/0034, validation/0054
 
 Source:
   analysis/0052 records reset/down/service paths as future revoke anchors.
   analysis/0053 maps formal/0031 obligations to ice down/reset/NAPI/IRQ/DMA/
   XDP/AF_XDP/representor/service anchors.
+  analysis/0055 maps the DMA/IOMMU/MemoryView invalidation substrate and its
+  forbidden shortcuts.
 
 Readiness:
   validation/0047 classifies RevokeSemantics as not_ready_future_capsched.
@@ -556,6 +571,14 @@ Refinement:
   eventfd, Linux IRQ/MSI allocation, iommufd isolated MSI, IRTE clear, IEC
   flush, and posted interrupt state. Safe TLC passes only when a full
   invalidation receipt exists before queue reassignment.
+  validation/0054 models monitor-backed DMA/IOMMU/MemoryView invalidation.
+  Safe TLC passes only when monitor-owned DMA root, new-work embargo, IRQ
+  invalidation, descriptor/doorbell stop, hardware queue quiescence, HW-owned
+  descriptor drain, driver DMA teardown, access-user release,
+  IOMMU translation removal, completed IOTLB invalidation, old device-domain/
+  PASID fence, outstanding DMA drain, stale completion quarantine, and old
+  MemoryView unmap are all present before PageOwner transfer, page return, or
+  queue reassignment.
 ```
 
 Protection missing:
@@ -568,6 +591,7 @@ no outstanding ledger cleanup proof
 no stale service-work cancellation proof
 no monitor-backed implementation of VF IRQ route invalidation
 no monitor-backed IRQ route invalidation receipt implementation
+no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation
 ```
 
 Forbidden claim:
@@ -621,6 +645,8 @@ DEV-001 modern NIC refinement:
   model-supported for authority-class separation
   model-supported for VF IRQ ownership separation
   model-supported for monitor IRQ route invalidation receipt semantics
+  model-supported for monitor DMA/IOMMU/MemoryView invalidation receipt
+  semantics
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -661,6 +687,7 @@ A behavior-changing prototype is not allowed until it has at least:
 1. typed QueueTag and queue epoch representation
 2. typed SubmitLedger and DescriptorLedger representation
 3. explicit MemoryView/IOMMU ownership boundary for DMA packet memory
+   including an invalidation receipt before PageOwner transfer
 4. QueueControl and RepresentorForward split
 5. service work classification and carrier/merge policy
 6. revoke/drain/quarantine model

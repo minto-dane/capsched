@@ -44,7 +44,7 @@ do not claim:
   authority.
 
 next focused risk:
-  monitor-owned DMA/IOMMU and MemoryView invalidation ordering.
+  stale XSK/page-pool completion quarantine and packet memory return semantics.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -81,6 +81,32 @@ analysis/0054 + formal/0033 + validation/0053:
     receipt with eventfd still live
   design rule:
     IRQ revoke is a monitor-visible receipt, not any one Linux teardown call.
+
+analysis/0055 + formal/0034 + validation/0054:
+  monitor DMA/IOMMU/MemoryView invalidation substrate mapped and modeled.
+  source substrate:
+    ice ring cleanup, XSK DMA map/unmap, and per-queue disable paths
+    ice wait=false Rx disable hazard vs all-Rx flush/wait path
+    DMA API and dma-iommu unmap/queued-flush paths
+    IOMMU core default-vs-blocking domain ownership behavior
+    iommufd access-user notify/unmap/unpin paths
+    VFIO type1 unmap/unpin callbacks and batched sync paths
+    arch-IOMMU invalidation backends
+  safe TLC:
+    17 generated states, 17 distinct states, depth 17
+  unsafe counterexamples:
+    IRQ-only reassignment
+    driver-unmap-only receipt
+    IOMMU unmap without IOTLB sync
+    queued flush as receipt
+    PageOwner transfer with DMA in flight
+    new MemoryView before old unmap
+    completion after revoke
+    packet return before receipt
+  design rule:
+    DMA revoke is a monitor-visible receipt, not IRQ revoke, ring cleanup,
+    dma_unmap, XSK unmap, iommufd/VFIO unmap, iommu_unmap_fast, queued flush,
+    page unpin, or refcount release.
 ```
 
 ## Core Architecture
@@ -513,9 +539,9 @@ analysis/0053
   ring stop/clean, XSK clean, ice_qp_dis/ena, prepare_for_reset,
   service_task_stop, representor queue stop, and devlink reload. Verdict:
   source-observed only. Hard gaps remain for QueueTag/epoch, typed ledgers,
-  monitor IOMMU/MemoryView invalidation, stale XSK/page-pool quarantine, VF IRQ
-  ownership, RepresentorForward lower-QueueLease revoke, service carrier, and
-  old/new epoch reassignment proof.
+  monitor DMA/IOMMU/MemoryView receipt implementation, stale XSK/page-pool
+  quarantine, VF IRQ ownership, RepresentorForward lower-QueueLease revoke,
+  service carrier, and old/new epoch reassignment proof.
 
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:

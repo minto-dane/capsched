@@ -69,6 +69,7 @@ Model-supported areas:
 - modern NIC queue revoke/drain/quarantine semantics
 - VF IRQ revoke ownership and synchronization-exception semantics
 - monitor IRQ route invalidation receipt semantics
+- monitor DMA/IOMMU/MemoryView invalidation receipt semantics
 
 Prototype-evidenced areas:
 
@@ -120,10 +121,21 @@ Monitor IRQ route invalidation model:
   stale eventfd delivery, reassignment without receipt, receipt without IEC
   flush, receipt with posted state, and receipt with eventfd still live.
 
+Monitor DMA/IOMMU invalidation model:
+  safe TLC passed with 17 generated states and 17 distinct states. Unsafe
+  configs produced expected counterexamples for IRQ-only reassignment,
+  driver-unmap-only receipt, IOMMU unmap without IOTLB sync, queued-flush
+  receipt, PageOwner transfer with DMA in flight, new MemoryView before old
+  unmap, completion after revoke, and packet return before receipt. The
+  receipt now also requires monitor-owned DMA root, new-work embargo,
+  hardware queue quiescence, HW-owned descriptor drain, access-user release,
+  and old device-domain/PASID fence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
-  Linux-owned DMA unmap, representor stop, or devlink reload as QueueLease
-  revoke authority. Do not implement behavior-changing QueueLease enforcement
-  from this evidence alone.
+  Linux-owned DMA unmap, queued IOMMU flush, iommufd IOAS unmap, VFIO unmap
+  callback, representor stop, or devlink reload as QueueLease revoke
+  authority. Do not implement behavior-changing QueueLease enforcement from
+  this evidence alone.
 ```

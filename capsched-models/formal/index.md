@@ -39,6 +39,7 @@ Updated: 2026-06-29
 | 0031 | Checked with safe pass and expected unsafe counterexamples | Modern NIC Queue Revoke Model |
 | 0032 | Checked with safe pass and expected unsafe counterexamples | VF IRQ Revoke Ownership Model |
 | 0033 | Checked with safe pass and expected unsafe counterexamples | Monitor IRQ Route Invalidation Model |
+| 0034 | Checked with safe pass and expected unsafe counterexamples | Monitor DMA/IOMMU Invalidation Model |
 
 ## Planned
 

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "monitor-irq-route-invalidation-modeled",
+    "current_phase": "monitor-dma-iommu-invalidation-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0054 maps monitor-backed IRQ route invalidation across ice, VFIO PCI, iommufd, PCI/MSI, generic MSI domains, and x86 Intel interrupt remapping. Validation/0053 adds the Monitor IRQ Route Invalidation model: safe TLC passed with 14 generated states, 12 distinct states, and depth 8; six unsafe configs produced expected counterexamples for unsafe interrupt override, eventfd delivery after revoke, reassignment without receipt, receipt without IEC flush, receipt with posted state, and receipt with eventfd still live. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-owned IOMMU/MemoryView invalidation; no monitor-backed IRQ route invalidation receipt implementation; no stale XSK/page-pool completion quarantine implementation; no RepresentorForward-to-lower-QueueLease revoke proof; no service work carrier or service/caller authority intersection; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0055 maps monitor-backed DMA/IOMMU/MemoryView invalidation across ice, DMA API, IOMMU core, iommufd, VFIO type1, and arch-IOMMU substrate. Validation/0054 adds the Monitor DMA/IOMMU Invalidation model: safe TLC passed with 17 generated states, 17 distinct states, and depth 17; eight unsafe configs produced expected counterexamples for IRQ-only reassignment, driver-unmap-only receipt, IOMMU unmap without IOTLB sync, queued-flush receipt, PageOwner transfer with DMA in flight, new MemoryView before old unmap, completion after revoke, and packet return before receipt. The receipt now requires monitor-owned DMA root, new-work embargo, hardware queue quiescence, HW-owned descriptor drain, iommufd/VFIO access-user release, old device-domain/PASID fence, IOMMU/IOTLB invalidation, outstanding DMA drain, stale completion quarantine, and old MemoryView unmap. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool completion quarantine implementation; no RepresentorForward-to-lower-QueueLease revoke proof; no service work carrier or service/caller authority intersection; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -266,7 +266,8 @@
       "capsched/capsched-models/analysis/0051-linux-queue-descriptor-ledger-observation-plan.md",
       "capsched/capsched-models/analysis/0052-ice-modern-nic-queuelease-source-map.md",
       "capsched/capsched-models/analysis/0053-ice-modern-nic-revoke-source-map.md",
-      "capsched/capsched-models/analysis/0054-monitor-irq-route-invalidation-source-map.md"
+      "capsched/capsched-models/analysis/0054-monitor-irq-route-invalidation-source-map.md",
+      "capsched/capsched-models/analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md"
     ],
     "post_exec_resource_trace_coverage_map": "capsched/capsched-models/analysis/0044-post-exec-resource-trace-coverage-map.md",
     "post_exec_resource_trace_validation_plan": "capsched/capsched-models/validation/0039-post-exec-resource-trace-plan.md",
@@ -332,7 +333,13 @@
     "monitor_irq_route_invalidation_model": "capsched/capsched-models/formal/0033-monitor-irq-route-invalidation-model/README.md",
     "monitor_irq_route_invalidation_tla": "capsched/capsched-models/formal/0033-monitor-irq-route-invalidation-model/MonitorIrqRouteInvalidation.tla",
     "monitor_irq_route_invalidation_validation": "capsched/capsched-models/validation/0053-monitor-irq-route-invalidation-tlc.md",
-    "monitor_irq_route_invalidation_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/monitor-irq-route-invalidation-20260630T005913Z"
+    "monitor_irq_route_invalidation_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/monitor-irq-route-invalidation-20260630T005913Z",
+    "monitor_dma_iommu_invalidation_source_map": "capsched/capsched-models/analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md",
+    "monitor_dma_iommu_invalidation_source_map_json": "capsched/capsched-models/analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json",
+    "monitor_dma_iommu_invalidation_model": "capsched/capsched-models/formal/0034-monitor-dma-iommu-invalidation-model/README.md",
+    "monitor_dma_iommu_invalidation_tla": "capsched/capsched-models/formal/0034-monitor-dma-iommu-invalidation-model/MonitorDmaIommuInvalidation.tla",
+    "monitor_dma_iommu_invalidation_validation": "capsched/capsched-models/validation/0054-monitor-dma-iommu-invalidation-tlc.md",
+    "monitor_dma_iommu_invalidation_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/monitor-dma-iommu-invalidation-20260630T010946Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1571,9 +1578,19 @@
     {
       "id": "N-082",
       "text": "Model monitor-owned DMA/IOMMU and MemoryView invalidation ordering for modern NIC QueueLease revoke so IRQ route invalidation cannot be mistaken for DMA reachability revocation.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-29",
+      "partial_progress": "Created analysis/0055 plus monitor-dma-iommu-memoryview-invalidation-source-map-v1.json, then formal/0034 MonitorDmaIommuInvalidation and validation/0054. The source map separates IRQ route invalidation from DMA reachability revocation and records ice wait=false queue-disable hazards, IOMMU core default-vs-blocking domain behavior, DMA API queued flush hazards, iommufd access-user release, VFIO unmap/unpin ordering, and arch-IOMMU invalidation anchors. Safe TLC passed with 17 generated states, 17 distinct states, and depth 17. Unsafe configs produced expected counterexamples for IRQ-only reassignment, driver-unmap-only receipt, IOMMU unmap without IOTLB sync, queued-flush receipt, PageOwner transfer with DMA in flight, new MemoryView before old unmap, completion after revoke, and packet return before receipt.",
       "blocked_by": [
         "N-081"
+      ]
+    },
+    {
+      "id": "N-083",
+      "text": "Model stale XSK/page-pool completion quarantine and packet memory return semantics after QueueLease revoke, building on the DMA/IOMMU/MemoryView receipt so returned packet memory cannot carry old authority or stale DMA effects.",
+      "status": "pending",
+      "blocked_by": [
+        "N-082"
       ]
     }
   ],

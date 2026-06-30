@@ -213,14 +213,16 @@
         "E-DEV-MNIC-007",
         "E-DEV-MNIC-008",
         "E-DEV-MNIC-009",
-        "E-DEV-MNIC-010"
+        "E-DEV-MNIC-010",
+        "E-DEV-MNIC-011",
+        "E-DEV-MNIC-012"
       ],
       "counterexamples": [
         "CEX-DEV-001"
       ],
       "gaps": [
         "No behavior-changing QueueLease implementation.",
-        "No IOMMU implementation.",
+        "No monitor-backed DMA/IOMMU/MemoryView implementation.",
         "No IRQ remapping implementation.",
         "No monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, typed SubmitLedger, or DescriptorLedger.",
         "No queue revoke/drain/quarantine implementation.",
@@ -295,14 +297,17 @@
       "evidence": [
         "E-DEV-MNIC-002",
         "E-DEV-MNIC-004",
-        "E-DEV-MNIC-005"
+        "E-DEV-MNIC-005",
+        "E-DEV-MNIC-011",
+        "E-DEV-MNIC-012"
       ],
       "gaps": [
         "No monitor-backed MemoryView for packet pages.",
         "No IOMMU ownership root below Linux.",
         "No page-pool ownership provenance.",
         "No XSK/UMEM ownership provenance.",
-        "No IOMMU invalidation latency or ordering proof."
+        "No real monitor-backed DMA invalidation receipt implementation.",
+        "No real IOMMU invalidation latency or ordering proof."
       ],
       "forbidden_l0": true
     },
@@ -402,14 +407,18 @@
         "E-DEV-MNIC-007",
         "E-DEV-MNIC-008",
         "E-DEV-MNIC-009",
-        "E-DEV-MNIC-010"
+        "E-DEV-MNIC-010",
+        "E-DEV-MNIC-011",
+        "E-DEV-MNIC-012"
       ],
       "gaps": [
         "No queue revoke epoch implementation.",
         "No queue drain/quarantine implementation.",
         "No DMA/IOMMU/IRQ invalidation order proof.",
         "No outstanding ledger cleanup proof.",
-        "No stale service-work cancellation proof."
+        "No stale service-work cancellation proof.",
+        "No monitor-backed IRQ route invalidation receipt implementation.",
+        "No monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation."
       ],
       "forbidden_l0": true
     },
@@ -421,7 +430,8 @@
       "claim": "Linux netdev, NAPI, XDP, AF_XDP, devlink, representor, workqueue, and tracepoint structures are useful compatibility substrates but not production authority roots.",
       "evidence": [
         "E-DEV-MNIC-004",
-        "E-DEV-MNIC-005"
+        "E-DEV-MNIC-005",
+        "E-DEV-MNIC-011"
       ],
       "gaps": [
         "All observed state is Linux-mutable.",
@@ -758,6 +768,29 @@
       "limitation": "Finite model checks route invalidation receipt semantics across eventfd, Linux IRQ/MSI, IRTE/IEC flush, isolated MSI, and posted state; it is not monitor or hardware implementation evidence."
     },
     {
+      "id": "E-DEV-MNIC-011",
+      "kind": "analysis_source_map",
+      "record": "capsched-models/analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-004",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Maps ice, DMA API, IOMMU core, iommufd, VFIO, and arch-IOMMU invalidation substrate; it is source observation, not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-012",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0054-monitor-dma-iommu-invalidation-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-004",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks DMA/IOMMU/MemoryView invalidation receipt semantics; it is not real IOMMU, NIC, MemoryView, or monitor implementation evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -821,6 +854,9 @@
     "QueueControl can be authorized by RunCap, CAP_NET_ADMIN alone, or plain netdev reachability.",
     "Representor netdev reachability is lower QueueLease authority.",
     "Linux netdev down/reset proves monitor-grade queue revoke.",
+    "IRQ route invalidation proves DMA reachability revocation.",
+    "dma_unmap_*(), xsk_pool_dma_unmap(), iommufd IOAS unmap, VFIO unmap callback, iommu_unmap_fast(), queued IOVA flush, page unpin, or refcount release proves monitor-grade PageOwner transfer safety.",
+    "Queue reassignment, packet page return, or new MemoryView mapping may occur before a DMA/IOMMU/MemoryView invalidation receipt.",
     "BPF or sched_ext is the production root for No RunCap, no run.",
     "Cluster-wide leases are directly executable.",
     "TLC completion alone proves the datacenter OS goal."

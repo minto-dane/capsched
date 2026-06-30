@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-29",
+  "scope": "monitor-backed DMA/IOMMU/MemoryView invalidation source map for CapSched QueueLease revoke",
+  "status": "source_observed_only",
+  "authority_root": {
+    "required": "monitor-owned DmaReachabilityTag, QueueTag, QueueLeaseEpoch, PageOwner, and MemoryView receipt",
+    "not_authority": [
+      "IRQ route invalidation",
+      "Linux ring cleanup",
+      "dma_unmap_* return",
+      "xsk_pool_dma_unmap return",
+      "VFIO dma_unmap callback",
+      "iommufd IOAS unmap alone",
+      "iommu_unmap_fast alone",
+      "queued IOVA flush request",
+      "Linux page refcount or unpin alone"
+    ]
+  },
+  "required_receipt_events": [
+    "monitor-owned RID/PASID/domain attachment or equivalent DMA root",
+    "new submit/descriptor/XSK buffer/access pin/MemoryView borrow embargo",
+    "IRQ route invalidated as a separate prerequisite",
+    "hardware-observed queue quiescence or stronger reset/fence",
+    "HW-owned descriptors drained",
+    "driver DMA teardown observed",
+    "iommufd/VFIO access users released or quarantined",
+    "IOMMU translations removed",
+    "IOTLB or equivalent stale-translation invalidation completed",
+    "device DMA domain/PASID fenced for old epoch",
+    "outstanding DMA drained or affected pages quarantined",
+    "old MemoryView unmapped",
+    "monitor-visible DMA invalidation receipt"
+  ],
+  "source_anchors": [
+    {
+      "id": "DMA-ICE-001",
+      "component": "ice",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_txrx.c",
+        "drivers/net/ethernet/intel/ice/ice_xsk.c",
+        "drivers/net/ethernet/intel/ice/ice_main.c"
+      ],
+      "symbols": [
+        "ice_qvec_dis_irq",
+        "ice_qp_dis",
+        "ice_vsi_ctrl_all_rx_rings",
+        "ice_unmap_and_free_tx_buf",
+        "ice_clean_tx_ring",
+        "ice_clean_rx_ring",
+        "xsk_pool_dma_unmap",
+        "ice_down"
+      ],
+      "supports": [
+        "driver_ring_cleanup_observation",
+        "skb_xdp_dma_unmap_observation",
+        "xsk_pool_dma_unmap_observation",
+        "weak_wait_false_rx_disable_hazard",
+        "hardware_wait_path_observation"
+      ],
+      "limitation": "Driver cleanup and XSK DMA unmap do not prove monitor-owned IOMMU/IOTLB/MemoryView/PageOwner invalidation. The ice_qp_dis per-queue Rx disable uses wait=false before ring cleanup, so queue cleanup is not hardware quiescence proof."
+    },
+    {
+      "id": "DMA-IOMMU-CORE-001",
+      "component": "iommu-core",
+      "files": [
+        "drivers/iommu/iommu.c",
+        "drivers/iommu/dma-iommu.c"
+      ],
+      "symbols": [
+        "iommu_unmap",
+        "iommu_unmap_fast",
+        "iommu_iotlb_sync",
+        "__iommu_group_set_core_domain",
+        "__iommu_dma_iova_unlink",
+        "fq_flush_iotlb",
+        "queue_iova",
+        "dma_iova_link",
+        "dma_iova_sync"
+      ],
+      "supports": [
+        "domain_attachment_transition_observation",
+        "iommu_translation_remove_observation",
+        "iotlb_sync_observation",
+        "dma_map_sync_separation_observation",
+        "queued_flush_hazard_observation"
+      ],
+      "limitation": "iommu_unmap_fast and queued flush paths split translation removal from completed stale-translation invalidation. Returning a group to core domain is blocking only while an owner exists; otherwise default DMA domain may be restored."
+    },
+    {
+      "id": "DMA-IOMMUFD-001",
+      "component": "iommufd",
+      "files": [
+        "drivers/iommu/iommufd/device.c",
+        "drivers/iommu/iommufd/ioas.c",
+        "drivers/iommu/iommufd/io_pagetable.c",
+        "drivers/iommu/iommufd/pages.c"
+      ],
+      "symbols": [
+        "iommufd_device_unbind",
+        "iommufd_device_detach",
+        "iommufd_access_notify_unmap",
+        "iommufd_ioas_unmap",
+        "iopt_unmap_iova_range",
+        "iopt_area_unfill_domains",
+        "iommu_unmap_nofail",
+        "iopt_dmabuf_revoked"
+      ],
+      "supports": [
+        "device_ownership_transition_observation",
+        "ioas_unmap_observation",
+        "access_unmap_notification_observation",
+        "domain_unfill_observation",
+        "unmap_before_unpin_ordering_observation"
+      ],
+      "limitation": "iommufd unmap/detach is Linux cooperation substrate; the monitor must still verify DMA reachability and PageOwner/MemoryView state."
+    },
+    {
+      "id": "DMA-VFIO-001",
+      "component": "vfio-type1",
+      "files": [
+        "drivers/vfio/vfio_iommu_type1.c"
+      ],
+      "symbols": [
+        "unmap_unpin_fast",
+        "unmap_unpin_slow",
+        "vfio_unmap_unpin",
+        "vfio_notify_dma_unmap",
+        "vfio_dma_do_unmap",
+        "vfio_remove_dma"
+      ],
+      "supports": [
+        "vfio_dma_unmap_callback_observation",
+        "batched_unmap_sync_unpin_observation",
+        "userspace_unmap_semantics_observation"
+      ],
+      "limitation": "VFIO unmap/unpin is not a monitor-owned PageOwner transfer or stale-DMA drain proof."
+    },
+    {
+      "id": "DMA-ARCH-IOMMU-001",
+      "component": "arch-iommu",
+      "files": [
+        "drivers/iommu/intel/iommu.c",
+        "drivers/iommu/amd/iommu.c"
+      ],
+      "symbols": [
+        "intel_iommu_iotlb_sync_map",
+        "cache_tag_flush_range_np",
+        "amd_iommu_iotlb_sync",
+        "amd_iommu_domain_flush_pages"
+      ],
+      "supports": [
+        "hardware_iotlb_invalidation_backend_observation"
+      ],
+      "limitation": "Backend invalidation must be lifted into an explicit monitor-visible receipt for the target hardware."
+    }
+  ],
+  "required_invariants": [
+    "No QueueLease reassignment without DMA invalidation receipt",
+    "No DMA invalidation receipt without monitor-owned DMA root",
+    "No DMA invalidation receipt without new-work embargo",
+    "No DMA invalidation receipt without hardware-observed queue quiescence",
+    "No DMA invalidation receipt without HW-owned descriptor drain",
+    "No DMA invalidation receipt while iommufd/VFIO access users can still hold pins",
+    "No DMA invalidation receipt without old device domain/PASID fence",
+    "No DMA invalidation receipt without IOMMU translation removal",
+    "No DMA invalidation receipt without completed IOTLB or equivalent stale-translation invalidation",
+    "No DMA invalidation receipt while queued flush is merely pending",
+    "No PageOwner transfer before outstanding DMA is drained",
+    "No new MemoryView mapping while old MemoryView or old DMA reachability remains",
+    "No normal completion delivery after revoke",
+    "No packet-page return before DMA invalidation receipt"
+  ],
+  "forbidden_claims": [
+    "IRQ route invalidation proves DMA revocation",
+    "ice ring cleanup proves DMA revocation",
+    "ice_qp_dis wait=false Rx disable proves hardware queue quiescence",
+    "dma_unmap_* return proves monitor-grade DMA revocation",
+    "iommu_unmap_fast proves stale translation invalidation",
+    "queued IOVA flush request proves stale translation invalidation",
+    "iommufd IOAS unmap proves PageOwner transfer safety",
+    "VFIO dma_unmap callback proves PageOwner transfer safety",
+    "IOMMU group detach proves blocked DMA without checking owner/default-domain transition",
+    "packet page unpin/refcount release proves new Domain may map the page"
+  ],
+  "next_model": "formal/0034-monitor-dma-iommu-invalidation-model"
+}

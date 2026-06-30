@@ -29,7 +29,7 @@ validation/0051:
 hard gaps:
   no QueueTag / queue epoch root
   no typed SubmitLedger / DescriptorLedger / CompletionSettlement id
-  no monitor-owned IOMMU / MemoryView invalidation
+  no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation
   no stale XSK/page-pool completion quarantine distinction
   no VF IRQ ownership proof for the synchronize_irq exception
   no lower QueueLease proof for representor revoke
@@ -37,8 +37,8 @@ hard gaps:
   no old/new queue epoch handoff proof
 
 next focused risk:
-  model monitor-owned DMA/IOMMU and MemoryView invalidation ordering so IRQ
-  route invalidation cannot be mistaken for DMA reachability revocation.
+  stale XSK/page-pool completion quarantine and packet memory return semantics
+  after QueueLease revoke.
 ```
 
 That focused VF IRQ model is now checked:
@@ -83,6 +83,46 @@ design rule:
   receipt covering isolated MSI, route tag/epoch, delivery endpoint quarantine,
   Linux IRQ/MSI teardown, IRTE/equivalent clear, IEC/equivalent flush, and
   posted interrupt teardown.
+```
+
+The monitor DMA/IOMMU/MemoryView invalidation map/model is now checked:
+
+```text
+analysis/0055:
+  maps ice, DMA API, IOMMU core, iommufd, VFIO type1, and arch-IOMMU
+  invalidation substrate.
+  key source hazards:
+    ice_qp_dis() uses one-Rx-ring disable with wait=false before ring cleanup
+    IOMMU group core-domain return is blocking only while an owner exists;
+      otherwise default DMA domain can be restored
+    dma-iommu may split unmap from IOTLB sync through queued flush
+    iommufd/VFIO distinguish access-user invalidation, unmap, unpin, and page
+      release
+
+formal/0034 + validation/0054:
+  safe TLC passed with 17 generated states, 17 distinct states, depth 17
+  unsafe counterexamples:
+    IRQ-only queue reassignment
+    driver-unmap-only receipt
+    IOMMU unmap without IOTLB sync
+    queued flush treated as receipt
+    PageOwner transfer with DMA in flight
+    new MemoryView before old unmap
+    normal completion after revoke
+    packet page return before receipt
+
+design rule:
+  DMA revoked is not IRQ revoked, ring cleanup, dma_unmap_*(), XSK pool unmap,
+  VFIO/iommufd unmap, iommu_unmap_fast(), queued flush, page unpin, or refcount
+  release. It needs a monitor-visible receipt covering monitor-owned DMA root,
+  new-work embargo, hardware queue quiescence, HW descriptor drain, access-user
+  release, IOMMU translation removal, completed IOTLB invalidation, old
+  device-domain/PASID fence, outstanding DMA drain, stale completion
+  quarantine, and old MemoryView unmap.
+
+next focused risk:
+  stale XSK/page-pool completion quarantine and packet memory return semantics
+  after QueueLease revoke.
 ```
 The current scheduler-authority refinement frontier is now:
 
