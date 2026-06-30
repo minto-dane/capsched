@@ -253,7 +253,9 @@
         "E-DEV-MNIC-047",
         "E-DEV-MNIC-048",
         "E-DEV-MNIC-049",
-        "E-DEV-MNIC-050"
+        "E-DEV-MNIC-050",
+        "E-DEV-MNIC-051",
+        "E-DEV-MNIC-052"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -615,7 +617,9 @@
         "E-DEV-MNIC-047",
         "E-DEV-MNIC-048",
         "E-DEV-MNIC-049",
-        "E-DEV-MNIC-050"
+        "E-DEV-MNIC-050",
+        "E-DEV-MNIC-051",
+        "E-DEV-MNIC-052"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1363,6 +1367,26 @@
       "limitation": "Finite model checks direct-call carrier requirements for bounded copy-before-validation, carrier selection non-authority, replay-before-ledger, same-nonce digest mismatch, response ledger backing, shared shadow generation, timeout non-terminality, transport non-authority, control priority non-bypass, carrier sequence non-replay authority, and carrier-neutral namespaces; it is not binary ABI layout, implementation, performance, liveness, or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-051",
+      "kind": "analysis_schema_compatibility",
+      "record": "capsched-models/analysis/0075-direct-call-schema-compatibility.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines direct-call semantic schema compatibility rules for schema objects, negotiation acceptance, field criticality, canonical digest/replay binding, downgrade rejection, response/ledger/error schemas, and future ring compatibility; it is not numeric schema assignment, binary encoding, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-052",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0074-direct-call-schema-compatibility-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks schema compatibility constraints for unsupported schema rejection, monitor/caller minimum downgrade rejection, mandatory/critical optional field handling, ignored optional non-authority, required feature coverage, safety-feature downgrade rejection, response/ledger compatibility, unknown success rejection, transport non-authority, and carrier-neutral schema namespace; it is not numeric schema assignment, binary encoding, implementation, performance, liveness, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1452,6 +1476,7 @@
     "Monitor-owned ring refinement permits Linux ring slots, Linux response publication, Linux-only slot generations, or ring-full/drop accounting to become authority.",
     "Combined direct-call plus monitor-owned-ring carrier planning permits separate replay namespaces, carrier-local receipt ledgers, carrier-local shadow generations, duplicate fallback success, or one-carrier revoke completion.",
     "Direct-call carrier requirements select a binary ABI, permit validation before bounded monitor copy/freeze, treat Linux timeout as monitor terminality, or create direct-only replay, ledger, or shadow namespaces.",
+    "Direct-call schema compatibility permits unsupported schema acceptance, downgrade of monitor/caller minimums, unknown mandatory fields, unknown success codes, transport observations as receipts, or direct-only schema namespaces.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1537,7 +1562,9 @@
         "E-DEV-MNIC-047",
         "E-DEV-MNIC-048",
         "E-DEV-MNIC-049",
-        "E-DEV-MNIC-050"
+        "E-DEV-MNIC-050",
+        "E-DEV-MNIC-051",
+        "E-DEV-MNIC-052"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1553,7 +1580,8 @@
         "Direct-call reference ABI sketch before binary layout or implementation.",
         "Monitor-owned ring refinement sketch before binary layout or implementation.",
         "Combined direct-call plus monitor-owned-ring carrier plan before binary layout or implementation.",
-        "Direct-call carrier requirements gate before binary layout or implementation."
+        "Direct-call carrier requirements gate before binary layout or implementation.",
+        "Direct-call semantic schema compatibility gate before binary layout or implementation."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

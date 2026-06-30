@@ -116,6 +116,9 @@ validation/0072-combined-admission-carriers-tlc.md
 
 formal/0051-direct-call-carrier-requirements-model/
 validation/0073-direct-call-carrier-requirements-tlc.md
+
+formal/0052-direct-call-schema-compatibility-model/
+validation/0074-direct-call-schema-compatibility-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -146,6 +149,7 @@ analysis/0071-direct-call-reference-abi-sketch.md
 analysis/0072-monitor-owned-ring-refinement-sketch.md
 analysis/0073-combined-admission-carriers-plan.md
 analysis/0074-direct-call-carrier-requirements.md
+analysis/0075-direct-call-schema-compatibility.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -168,6 +172,7 @@ analysis/direct-call-reference-abi-sketch-v1.json
 analysis/monitor-owned-ring-refinement-sketch-v1.json
 analysis/combined-admission-carriers-plan-v1.json
 analysis/direct-call-carrier-requirements-v1.json
+analysis/direct-call-schema-compatibility-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -182,6 +187,7 @@ validation/0070-direct-call-reference-abi-tlc.md
 validation/0071-monitor-owned-ring-refinement-tlc.md
 validation/0072-combined-admission-carriers-tlc.md
 validation/0073-direct-call-carrier-requirements-tlc.md
+validation/0074-direct-call-schema-compatibility-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
@@ -338,6 +344,13 @@ DirectCallCarrierRequirements:
   transport observation, control priority without replay/budget/epoch bypass,
   and carrier-neutral replay/ledger/shadow namespaces for future ring
   refinement.
+
+DirectCallSchemaCompatibility:
+  direct-call semantic schema negotiation must fail closed on unsupported
+  schemas, monitor/caller minimum downgrade, missing or unknown mandatory
+  fields, critical unknown optional fields, missing required features, stripped
+  safety features, incompatible response/ledger/error schemas, unknown success
+  codes, transport observations as receipts, and direct-only schema namespaces.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It

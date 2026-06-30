@@ -92,23 +92,23 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call carrier requirements gate. Analysis/0074 and formal/0051 define
-  direct-call reference-first carrier selection, request envelope semantic
-  groups, bounded monitor copy/freeze, replay keys, ledger rows, response
-  handles, terminal monitor error classes versus transport observations, shared
-  shadow generation, control/revoke lane requirements, and carrier-neutral
-  namespaces for future ring compatibility. Validation/0073 safe TLC passed
-  with 26 generated states, 22 distinct states, and depth 20; unsafe configs
-  reject carrier selection as approval, carrier sequence replay authority,
-  control priority bypass, direct-only namespaces, ledger before replay,
-  response without ledger, same-nonce different-digest success, shadow without
-  shared generation, success without attempt, timeout as monitor failure,
-  transport observation as receipt, and validation before bounded copy/freeze.
+  Direct-call schema compatibility gate. Analysis/0075 and formal/0052 define
+  DirectCallSemanticSchema-v0 as a semantic candidate, schema objects,
+  negotiation acceptance rules, field criticality, canonical digest/replay
+  binding, downgrade rejection, response/ledger schema requirements, error
+  namespace categories, and carrier-neutral schema namespaces for future ring
+  compatibility. Validation/0074 safe TLC passed with 37 generated states, 28
+  distinct states, and depth 14; unsafe configs reject caller minimum
+  downgrade, critical optional ignore, direct-only schema namespace, ignored
+  optional authority, missing required feature, monitor minimum downgrade,
+  stripped safety feature, incompatible response/ledger schemas, shadow from
+  unsupported response, transport observation as receipt, unknown mandatory
+  accept, unknown success code, and unsupported schema accept.
 
 next focused risk:
-  Define the direct-call semantic schema candidate and version/fail-closed
-  compatibility rules before binary packing, Linux stub, monitor
-  implementation, or ring layout selection.
+  Define a no-code direct-call Linux/monitor attachment and readiness map for
+  the schema-compatible carrier boundary before any Linux stub, monitor
+  implementation, or binary layout is selected.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

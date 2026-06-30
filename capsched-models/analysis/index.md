@@ -80,6 +80,7 @@ Updated: 2026-06-30
 | 0072 | Draft throughput refinement sketch with model gate | Monitor-Owned Ring Refinement Sketch |
 | 0073 | Draft combined carrier plan with model gate | Combined Direct-Call and Ring Admission Carrier Plan |
 | 0074 | Draft implementation-facing carrier requirements with model gate | Direct-Call Carrier Requirements Gate |
+| 0075 | Draft semantic schema candidate with model gate | Direct-Call Semantic Schema and Compatibility |
 
 ## Planned Analysis Notes
 
@@ -124,3 +125,4 @@ Updated: 2026-06-30
 | `monitor-owned-ring-refinement-sketch-v1.json` | Draft throughput refinement sketch | Machine-readable monitor-owned ring refinement semantics for slot claim, slot epochs, batch boundaries, response publication, drain, and DoS accounting |
 | `combined-admission-carriers-plan-v1.json` | Draft combined carrier plan | Machine-readable direct-call plus monitor-owned-ring admission carrier semantics for shared attempt, replay, ledger, shadow, fallback, and revoke ordering |
 | `direct-call-carrier-requirements-v1.json` | Draft implementation-facing requirements | Machine-readable direct-call carrier requirements for request envelopes, bounded copy, replay keys, ledger rows, response handles, errors, shadow generation, control lane, and future ring compatibility |
+| `direct-call-schema-compatibility-v1.json` | Draft semantic schema candidate | Machine-readable direct-call schema compatibility rules for schema negotiation, field criticality, downgrade rejection, response/ledger/error schemas, and ring-compatible namespaces |

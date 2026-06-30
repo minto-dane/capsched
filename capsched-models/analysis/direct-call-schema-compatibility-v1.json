@@ -1,0 +1,196 @@
+{
+  "id": "direct-call-schema-compatibility-v1",
+  "analysis": "0075-direct-call-schema-compatibility",
+  "status": "draft_semantic_schema_candidate_with_model_gate",
+  "date": "2026-06-30",
+  "candidate_name": "DirectCallSemanticSchema-v0",
+  "non_goals": [
+    "numeric schema ids",
+    "binary field encodings",
+    "endianness",
+    "alignment",
+    "C struct layout",
+    "TLV versus fixed header",
+    "syscall or monitor-call mechanism",
+    "cryptographic handle format",
+    "Linux source file placement",
+    "monitor source tree",
+    "performance budget",
+    "production protection claim"
+  ],
+  "schema_objects": [
+    "abi_family",
+    "semantic_schema_id",
+    "request_class_schema_id",
+    "response_schema_id",
+    "ledger_schema_id",
+    "error_namespace_id",
+    "feature_set_id"
+  ],
+  "negotiation_acceptance_requires": [
+    "abi_family_matches_LocalMonitorAdmissionABI",
+    "semantic_schema_id_supported_by_monitor",
+    "request_class_schema_id_supported_for_request_class",
+    "response_schema_id_supported_or_safely_translatable",
+    "ledger_schema_id_supported_by_monitor",
+    "error_namespace_id_supported_or_safely_translatable",
+    "all_mandatory_fields_known_and_valid",
+    "all_required_features_supported",
+    "monitor_policy_minimum_schema_satisfied",
+    "caller_declared_minimum_schema_satisfied",
+    "no_forbidden_field_present",
+    "no_critical_unknown_field_present"
+  ],
+  "field_schema": {
+    "attributes": [
+      "field_id",
+      "field_type",
+      "presence",
+      "criticality",
+      "nullability",
+      "maximum_semantic_length",
+      "digest_participation",
+      "replay_key_participation",
+      "authority_effect"
+    ],
+    "presence_values": [
+      "mandatory",
+      "optional",
+      "forbidden"
+    ],
+    "criticality_values": [
+      "critical",
+      "noncritical"
+    ],
+    "rules": [
+      "missing_mandatory_field_fails_closed",
+      "unknown_mandatory_field_fails_closed",
+      "unknown_critical_optional_field_fails_closed",
+      "unknown_noncritical_optional_field_may_be_ignored_only_if_response_records_it",
+      "forbidden_field_present_fails_closed",
+      "typed_null_where_forbidden_fails_closed",
+      "implicit_default_for_absent_field_forbidden"
+    ]
+  },
+  "canonical_digest_includes": [
+    "abi_family",
+    "semantic_schema_id",
+    "request_class_schema_id",
+    "request_class",
+    "known_mandatory_fields",
+    "known_accepted_optional_fields",
+    "typed_null_declarations",
+    "accepted_feature_set",
+    "authority_relevant_epochs_and_ids"
+  ],
+  "canonical_digest_excludes": [
+    "binary_padding",
+    "linux_buffer_address",
+    "carrier_sequence_number",
+    "ignored_noncritical_optional_field_payload",
+    "future_ring_slot_generation"
+  ],
+  "downgrade_rejection": {
+    "monitor_tracks": [
+      "monitor_min_schema",
+      "monitor_supported_schema_set",
+      "monitor_required_feature_set",
+      "caller_min_schema",
+      "request_declared_schema",
+      "request_required_feature_set"
+    ],
+    "accept_only_if": [
+      "request_declared_schema_at_least_monitor_min_schema",
+      "request_declared_schema_at_least_caller_min_schema",
+      "request_required_feature_set_subset_monitor_supported_feature_set",
+      "monitor_required_feature_set_subset_request_effective_feature_set"
+    ],
+    "must_not_strip": [
+      "bounded_copy_freeze",
+      "canonical_digest",
+      "shared_replay",
+      "ledger_backed_response",
+      "shared_shadow_generation",
+      "timeout_as_unknown",
+      "carrier_neutral_namespace",
+      "budget_checks",
+      "epoch_checks"
+    ]
+  },
+  "response_schema_fields": [
+    "response_schema_id",
+    "ledger_schema_id",
+    "error_namespace_id",
+    "accepted_schema_id",
+    "accepted_feature_set",
+    "ignored_optional_field_set",
+    "ledger_row_id",
+    "ledger_row_epoch",
+    "attempt_id",
+    "attempt_epoch",
+    "response_class",
+    "terminal_or_transport_outcome",
+    "receipt_summary",
+    "shadow_generation",
+    "monitor_epoch",
+    "revoke_epoch"
+  ],
+  "ledger_schema_fields": [
+    "ledger_schema_id",
+    "semantic_schema_id",
+    "request_class_schema_id",
+    "response_schema_id",
+    "error_namespace_id",
+    "accepted_feature_set",
+    "canonical_request_digest",
+    "replay_result",
+    "terminal_or_success_outcome",
+    "receipt_ids_and_epochs",
+    "shadow_generation",
+    "revoke_epoch",
+    "carrier_kind_for_audit"
+  ],
+  "error_namespace_categories": [
+    "success",
+    "terminal_monitor_failure",
+    "replay_or_stale_rejection",
+    "schema_or_field_rejection",
+    "policy_or_budget_rejection",
+    "revoke_or_cancel_terminal",
+    "transport_observation",
+    "unknown_non_authority"
+  ],
+  "error_rules": [
+    "unknown_success_code_fails_closed",
+    "unknown_terminal_failure_code_treated_as_terminal_non_success",
+    "unknown_transport_observation_code_treated_as_non_authoritative_unknown",
+    "transport_observation_cannot_consume_replay_mint_receipt_or_refresh_shadow",
+    "terminal_monitor_failure_cannot_later_become_success_for_same_attempt"
+  ],
+  "ring_forward_compatibility": [
+    "schema_ids_are_carrier_neutral",
+    "request_class_schema_id_shared_by_direct_and_ring",
+    "response_schema_id_shared_or_explicitly_translatable",
+    "ledger_schema_id_shared_by_direct_and_ring",
+    "error_namespace_id_shared_by_direct_and_ring",
+    "accepted_feature_set_carrier_neutral",
+    "carrier_kind_audit_metadata_only",
+    "ring_claim_freezes_same_semantic_schema_as_direct_monitor_copy",
+    "ring_response_references_same_ledger_schema"
+  ],
+  "invariants": [
+    "no_accept_on_unsupported_semantic_schema",
+    "no_accept_when_monitor_minimum_schema_not_satisfied",
+    "no_accept_when_caller_minimum_schema_not_satisfied",
+    "no_accept_with_missing_or_unknown_mandatory_fields",
+    "no_accept_with_unknown_critical_optional_fields",
+    "no_authority_from_ignored_noncritical_optional_fields",
+    "no_success_unless_accepted_feature_set_covers_monitor_required_features",
+    "no_downgrade_removing_required_safety_features",
+    "no_success_response_without_compatible_response_and_ledger_schema",
+    "no_shadow_refresh_from_unsupported_response_interpretation",
+    "no_unknown_success_code",
+    "no_transport_observation_as_receipt_authority",
+    "no_direct_only_schema_namespace_that_prevents_ring_refinement"
+  ]
+}

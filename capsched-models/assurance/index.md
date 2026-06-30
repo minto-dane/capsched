@@ -353,6 +353,21 @@ Direct-call carrier requirements gate:
   requirements only, not binary ABI layout, C struct definition, Linux stub,
   monitor implementation, performance, liveness, or protection evidence.
 
+Direct-call schema compatibility gate:
+  analysis/0075 and validation/0074 define and check the direct-call semantic
+  schema compatibility candidate. Safe TLC passed with 37 generated states, 28
+  distinct states, and depth 14. Unsafe configs produced expected
+  counterexamples for caller minimum downgrade, unknown critical optional field
+  ignore, direct-only schema namespace, ignored optional field authority,
+  missing required features, monitor minimum downgrade, stripped required
+  safety features, incompatible response/ledger schemas, shadow refresh from
+  unsupported response interpretation, transport observation as receipt,
+  unknown mandatory accept, unknown success code authority, and unsupported
+  semantic schema accept. This is model-supported schema negotiation semantics
+  only, not numeric schema-id assignment, binary encoding, C struct layout,
+  Linux stub, monitor implementation, performance, liveness, or protection
+  evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

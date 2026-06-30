@@ -90,25 +90,24 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call carrier requirements gate. Analysis/0074 defines direct-call
-  reference-first carrier selection, request envelope semantic groups, bounded
-  monitor copy/freeze, replay key requirements, ledger row semantics, response
-  handle semantics, terminal monitor error classes versus transport
-  observations, shared shadow generation, control/revoke lane requirements, and
-  future ring compatibility through carrier-neutral replay/ledger/shadow
-  namespaces. Formal/0051 plus validation/0073 safe TLC passed with 26
-  generated states, 22 distinct states, and depth 20. Unsafe configs reject
-  carrier selection as approval, carrier sequence as replay authority, control
-  priority bypass, direct-only namespaces, ledger before replay, response
-  without ledger, same-nonce different-digest success, shadow without shared
-  generation, success without canonical attempt, Linux timeout as monitor
-  failure, transport observation as receipt, and validation before bounded
-  copy/freeze.
+  Direct-call schema compatibility gate. Analysis/0075 defines
+  DirectCallSemanticSchema-v0 as a semantic candidate, schema objects,
+  negotiation acceptance rules, mandatory/optional/forbidden field handling,
+  canonical digest/replay binding, downgrade rejection, response schema fields,
+  ledger schema fields, error namespace categories, and ring-forward
+  compatibility. Formal/0052 plus validation/0074 safe TLC passed with 37
+  generated states, 28 distinct states, and depth 14. Unsafe configs reject
+  caller minimum downgrade, critical optional ignore, direct-only schema
+  namespace, ignored optional authority, missing required feature, monitor
+  minimum downgrade, stripped required safety feature, incompatible response/
+  ledger schemas, shadow from unsupported response, transport observation as
+  receipt, unknown mandatory accept, unknown success code, and unsupported
+  schema accept.
 
 next focused risk:
-  Define the direct-call semantic schema candidate and version/fail-closed
-  compatibility rules before binary packing, Linux stub, monitor
-  implementation, or ring layout selection.
+  Define a no-code direct-call Linux/monitor attachment and readiness map for
+  the schema-compatible carrier boundary before any Linux stub, monitor
+  implementation, or binary layout is selected.
 ```
 
 That focused VF IRQ model is now checked:

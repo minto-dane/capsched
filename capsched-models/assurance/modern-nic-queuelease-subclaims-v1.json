@@ -30,6 +30,7 @@
     "monitor_owned_ring_refinement": "model_checked",
     "combined_admission_carriers": "model_checked",
     "direct_call_carrier_requirements": "model_checked",
+    "direct_call_schema_compatibility": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -783,6 +784,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks direct-call carrier requirements for copy-before-validation, carrier selection non-authority, replay-before-ledger, digest mismatch, response ledger backing, shared shadow generation, timeout non-terminality, transport non-authority, control priority non-bypass, carrier sequence non-authority, and carrier-neutral namespaces; it is not binary ABI layout, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-051",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0075-direct-call-schema-compatibility.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines direct-call semantic schema compatibility rules for negotiation, field criticality, canonical digest/replay binding, downgrade rejection, response/ledger/error schemas, and future ring compatibility; it is not numeric schema assignment, binary encoding, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-052",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0074-direct-call-schema-compatibility-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks schema compatibility constraints for unsupported schema rejection, monitor/caller minimum downgrade rejection, mandatory/critical optional fields, ignored optional non-authority, required features, safety-feature downgrade rejection, response/ledger compatibility, unknown success rejection, transport non-authority, and carrier-neutral schema namespace; it is not numeric schema assignment, binary encoding, implementation, performance, liveness, or protection evidence."
     }
   ],
   "subclaims": [
@@ -1027,7 +1064,8 @@
     "direct-call reference ABI sketch before binary layout, Linux stub, or monitor implementation",
     "monitor-owned ring refinement sketch before binary layout, Linux stub, or monitor implementation",
     "combined direct-call plus monitor-owned-ring carrier plan before binary layout, Linux stub, or monitor implementation",
-    "direct-call carrier requirements gate before binary layout, Linux stub, or monitor implementation"
+    "direct-call carrier requirements gate before binary layout, Linux stub, or monitor implementation",
+    "direct-call semantic schema compatibility gate before binary layout, Linux stub, or monitor implementation"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",
@@ -1046,6 +1084,7 @@
     "audit-only monitor calls after Linux side effects",
     "carrier-local replay namespace, receipt ledger, shadow generation, or fallback success as admission authority",
     "direct-call carrier selection, Linux timeout, or carrier sequence number as monitor approval or replay authority",
+    "unsupported schema, schema downgrade, unknown mandatory field, unknown success code, or transport observation as admission authority",
     "per-packet monitor traps as the normal data path"
   ]
 }
