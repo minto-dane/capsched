@@ -75,6 +75,8 @@ Model-supported areas:
 - modern NIC service-work carrier and service/caller authority intersection
   semantics
 - VF mailbox queue/DMA/IRQ/budget/FDIR carrier semantics
+- VF epoch handoff, reset/reassignment, stale VSI/queue/IRQ/DMA/FDIR/mailbox,
+  and service replay freshness semantics
 
 Prototype-evidenced areas:
 
@@ -170,6 +172,15 @@ VF mailbox carrier model:
   write without OffloadCap, FDIR completion without frozen context, and effects
   after revoke.
 
+VF epoch handoff model:
+  safe TLC passed with 9 generated states and 9 distinct states. Unsafe configs
+  produced expected counterexamples for visible vf_id reuse without a fresh VF
+  epoch, VSI reuse without generation bump, queue reassignment before stale
+  DMA/IOMMU revoke, IRQ route reassignment before stale route revoke, FDIR
+  completion surviving reset, mailbox processing during reset embargo,
+  allowlist/capability state surviving reset as authority, and service replay
+  under the old epoch.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -179,6 +190,9 @@ Forbidden:
   devlink reload, worker identity, ICE_SERVICE_SCHED, virtchnl allowlists,
   PTP/DPLL callback reachability, LAG lower_dev rewrites, or reset/rebuild
   replay, VF-provided dma_ring_addr, queue id checks, vector id checks, QoS
-  caps, or FDIR ctx_done as QueueLease authority or revoke authority. Do not
-  implement behavior-changing QueueLease enforcement from this evidence alone.
+  caps, FDIR ctx_done, vf_id equality, ice_vf pointer reachability, vf->cfg_lock,
+  ICE_VF_STATE_ACTIVE/DIS, stable lan_vsi_idx/ctrl_vsi_idx, MSI-X vector id, or
+  VPLAN/VPINT programming success as QueueLease authority, Domain ownership, or
+  revoke authority. Do not implement behavior-changing QueueLease enforcement
+  from this evidence alone.
 ```

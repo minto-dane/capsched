@@ -50,9 +50,14 @@ latest completed focused risk:
 latest completed focused risk:
   VF mailbox QueueControl/DMA/IRQ/budget/FDIR carrier semantics.
 
-next focused risk:
+latest completed focused risk:
   VF identity epoch and SR-IOV/VF reset/reassignment handoff so old vf_id, VSI,
   queue, IRQ, DMA, or FDIR state cannot carry authority into a new Domain.
+
+next focused risk:
+  Project modern NIC QueueLease/VF evidence into a HyperTag Monitor interface
+  and service/driver Domain split before any behavior-changing implementation
+  plan.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -211,6 +216,34 @@ analysis/0059 + formal/0038 + validation/0058:
     VF mailbox validity is not authority. Queue config, DMA ring base, queue
     enable, IRQ map, queue budget/quanta, FDIR write, and FDIR async completion
     each need an explicit carrier and fresh epoch.
+
+analysis/0060 + formal/0039 + validation/0059:
+  ICE VF epoch handoff substrate mapped and modeled.
+  source substrate:
+    vf_id lookup and ice_vf lifetime through RCU/kref
+    vf->cfg_lock, ICE_VF_STATE_ACTIVE/DIS, and virtchnl allowlists
+    reset/rebuild/free/VFLR paths, VSI reuse, and ctrl VSI release/reinit
+    VPINT/VPLAN/GLINT vector and queue mapping clear/reprogram paths
+    VF-provided DMA ring base, queue/IRQ config, FDIR ctx_irq/ctx_done, and
+      service replay
+  safe TLC:
+    9 generated states, 9 distinct states, depth 9
+  unsafe counterexamples:
+    visible vf_id reuse without fresh VF epoch
+    VSI reuse without generation bump
+    queue reassignment before DMA/IOMMU revoke
+    IRQ route reassignment before stale route revoke
+    FDIR completion surviving reset
+    mailbox acceptance during reset embargo
+    allowlist/capability state surviving reset as authority
+    service replay under the old epoch
+  design rule:
+    VF handoff requires mailbox embargo, queue quiescence, DMA/IRQ revoke
+    receipts, FDIR context clear or epoch-tag, VF epoch bump, VSI/QueueLease
+    generation bump, fresh Domain binding, and fresh service replay authority.
+    vf_id equality, ice_vf reachability, cfg_lock, ACTIVE/DIS state, stable VSI,
+    queue/vector id, allowlist state, reset completion, or VPINT/VPLAN writes
+    are not authority.
 ```
 
 ## Core Architecture

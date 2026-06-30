@@ -36,7 +36,8 @@ hard gaps:
   no typed service-work carrier implementation
   no service/caller budget charging rule
   no reset/rebuild replay reauthorization implementation
-  no old/new queue epoch handoff proof
+  no VF identity epoch, VSI generation, mailbox embargo, or service replay
+    handoff implementation
 
 latest completed risk:
   Modern NIC ServiceWork carrier and service/caller authority intersection
@@ -45,9 +46,14 @@ latest completed risk:
 latest completed risk:
   VF mailbox QueueControl/DMA/IRQ/budget/FDIR carrier semantics.
 
-next focused risk:
+latest completed risk:
   VF identity epoch and SR-IOV/VF reset/reassignment handoff so old vf_id, VSI,
   queue, IRQ, DMA, or FDIR state cannot carry authority into a new Domain.
+
+next focused risk:
+  Project the modern NIC QueueLease/VF evidence into a HyperTag Monitor
+  interface and service/driver Domain split before any behavior-changing
+  implementation plan.
 ```
 
 That focused VF IRQ model is now checked:
@@ -239,10 +245,42 @@ analysis/0059 + formal/0038 + validation/0058:
     virtchnl validation, opcode allowlist, dma_ring_addr, queue/vector checks,
     QoS caps, and FDIR ctx_done are not authority.
 
+analysis/0060 + formal/0039 + validation/0059:
+  ICE VF epoch handoff substrate mapped and modeled.
+  source substrate:
+    ice_get_vf_by_id() and ice_vf lifetime through RCU/kref
+    vf->cfg_lock and ICE_VF_STATE_ACTIVE/DIS as Linux protocol state
+    ice_reset_vf(), ice_reset_all_vfs(), ice_free_vfs(), and VFLR processing
+    lan_vsi_idx/ctrl_vsi_idx reuse and FDIR ctrl VSI release/reinit
+    VPINT/VPLAN/GLINT vector and queue mapping clear/reprogram paths
+    VF-provided DMA ring base and queue/IRQ configuration
+    FDIR ctx_irq/ctx_done timer/IRQ/service completion
+    mailbox dispatch and reset/rebuild service replay
+  safe TLC:
+    9 generated states, 9 distinct states, depth 9
+  unsafe counterexamples:
+    visible vf_id reuse without fresh VF epoch
+    VSI reuse without generation bump
+    queue reassignment before DMA/IOMMU revoke
+    IRQ route reassignment before stale route revoke
+    FDIR completion surviving reset
+    mailbox acceptance during reset embargo
+    allowlist/capability state surviving reset as authority
+    service replay under the old epoch
+  design rule:
+    VF handoff is not vf_id equality, ice_vf pointer reachability, cfg_lock,
+    ACTIVE/DIS state, stable VSI index, queue id, vector id, allowlist state,
+    VPINT/VPLAN programming, or reset completion. It requires mailbox embargo,
+    queue quiescence, DMA/IRQ revoke receipts, FDIR context clear or epoch-tag,
+    VF epoch bump, VSI/QueueLease generation bump, fresh Domain binding, and
+    fresh service replay authority.
+
 next focused risk:
-  VF identity epoch and SR-IOV/VF reset/reassignment handoff. This targets the
-  old/new epoch gap: reused vf_id, VSI, queue, IRQ, DMA, or FDIR state must not
-  carry old Domain authority into a new assignment.
+  Project modern NIC QueueLease/VF evidence into a HyperTag Monitor interface
+  and service/driver Domain split. This should specify which roots belong to
+  the monitor, which operations remain Linux service authority, which typed
+  endpoints are exposed to Domains, and what receipt/call boundaries must exist
+  before implementation planning.
 ```
 The current scheduler-authority refinement frontier is now:
 

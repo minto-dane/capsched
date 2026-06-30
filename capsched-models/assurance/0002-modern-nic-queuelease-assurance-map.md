@@ -77,6 +77,9 @@ validation/0057-modern-nic-servicework-carrier-tlc.md
 
 formal/0038-vf-mailbox-carrier-model/
 validation/0058-vf-mailbox-carrier-tlc.md
+
+formal/0039-vf-epoch-handoff-model/
+validation/0059-vf-epoch-handoff-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -92,6 +95,7 @@ analysis/0056-xsk-pagepool-quarantine-source-map.md
 analysis/0057-representor-lower-queuelease-source-map.md
 analysis/0058-ice-servicework-carrier-source-map.md
 analysis/0059-ice-vf-mailbox-carrier-source-map.md
+analysis/0060-ice-vf-epoch-handoff-source-map.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -99,6 +103,7 @@ analysis/xsk-pagepool-quarantine-source-map-v1.json
 analysis/representor-lower-queuelease-source-map-v1.json
 analysis/ice-servicework-carrier-source-map-v1.json
 analysis/ice-vf-mailbox-carrier-source-map-v1.json
+analysis/ice-vf-epoch-handoff-source-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -153,6 +158,11 @@ ServiceWork:
 RevokeSemantics:
   epoch change, queue drain/quarantine, DMA/IRQ invalidation, and stale work
   cancellation
+
+VfEpochHandoff:
+  visible VF id, VSI index, queue id, vector id, mailbox generation, FDIR
+  context, and service replay are reopened only after fresh VF/Domain/queue
+  epochs and monitor receipts
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -341,6 +351,8 @@ Model:
   formal/0034, validation/0054
   formal/0035, validation/0055
   formal/0038, validation/0058
+  formal/0039, validation/0059
+  formal/0039, validation/0059
 
 Source:
   analysis/0052 maps dma_map_single(), skb_frag_dma_map(),
@@ -352,6 +364,8 @@ Source:
   and packet generation reset hazards.
   analysis/0059 maps VF-provided descriptor-ring DMA address configuration
   through ice virtchnl queue config into Tx/Rx hardware queue contexts.
+  analysis/0060 maps VF reset/reassignment handoff paths where stale DMA,
+  queue, IRQ, and VSI state could otherwise cross into a new Domain binding.
 
 Readiness:
   validation/0047 records page-pool-ownership and xsk-ownership as high
@@ -370,6 +384,7 @@ no real IOMMU invalidation latency/order proof
 no real stale XSK/page-pool quarantine implementation
 no packet generation reset/retag implementation
 no VF mailbox QueueConfigCarrier or DMA ring-address carrier implementation
+no VF epoch handoff DMA/IOMMU receipt implementation
 ```
 
 Forbidden claim:
@@ -384,6 +399,8 @@ Do not treat xsk_tx_completed(), xsk_buff_free(), or page_pool recycle as
 safe packet memory return after revoke.
 Do not treat VF-provided dma_ring_addr plus queue/ring validation as DMA
 MemoryView authority.
+Do not treat vf_id equality, stable VSI index, or VF reset completion as DMA
+MemoryView freshness.
 ```
 
 ### DEV-NIC-005: Completion Settlement
@@ -560,6 +577,7 @@ Model:
   formal/0017, validation/0029
   formal/0037, validation/0057
   formal/0038, validation/0058
+  formal/0039, validation/0059
 
 Source:
   analysis/0045, analysis/0046, analysis/0047, and analysis/0052 map workqueue
@@ -570,6 +588,8 @@ Source:
   as service-work carrier and per-effect authority hazards.
   analysis/0059 maps the VF mailbox request side of queue/DMA/IRQ/budget/FDIR
   effects that the service work model requires to preserve.
+  analysis/0060 maps reset/rebuild replay and mailbox reopen hazards across
+  VF epoch handoff.
 
 Readiness:
   validation/0047 classifies ServiceWork as source_only_gap_recorded.
@@ -585,6 +605,7 @@ no cancellation/quarantine rule for stale queued work
 no service-domain budget charging rule
 no reset/rebuild replay reauthorization implementation
 no frozen VF request carrier propagation into async FDIR completion
+no VF epoch handoff carrier for reset/reassignment reopen
 ```
 
 Forbidden claim:
@@ -597,6 +618,8 @@ Do not treat worker identity, ICE_SERVICE_SCHED, virtchnl allowlists, PTP/DPLL
 callback reachability, bridge/FDB events, LAG lower_dev rewrites, or reset
 rebuild replay as caller, queue, control, offload, or lower QueueLease
 authority.
+Do not treat vf_id equality, ICE_VF_STATE_ACTIVE, ICE_VF_STATE_DIS, or
+vf->cfg_lock as VF Domain authority.
 ```
 
 ### DEV-NIC-009: Revoke Semantics
@@ -635,6 +658,8 @@ Source:
   analysis/0056 maps XSK/page-pool stale completion and packet memory return
   substrate.
   analysis/0059 maps VF mailbox queue/DMA/IRQ/budget/FDIR carrier substrate.
+  analysis/0060 maps VF identity epoch, reset/reassignment, stale VSI/queue/
+  IRQ/DMA/FDIR/mailbox, and service replay handoff substrate.
 
 Readiness:
   validation/0047 classifies RevokeSemantics as not_ready_future_capsched.
@@ -658,6 +683,10 @@ Refinement:
   PASID fence, outstanding DMA drain, stale completion quarantine, and old
   MemoryView unmap are all present before PageOwner transfer, page return, or
   queue reassignment.
+  validation/0059 models VF epoch handoff. Safe TLC passes only when mailbox
+  embargo, queue quiescence, DMA/IRQ revoke, FDIR context clear, VF epoch bump,
+  VSI/QueueLease generation bump, fresh Domain binding, and fresh service replay
+  authority are present before a new Domain effect.
   validation/0055 models stale XSK/page-pool completion quarantine. Safe TLC
   passes only when old XSK CQ completion, XSK free-list return, page-pool
   recycle, PageOwner transfer, packet generation reset, and queue reassignment
@@ -723,6 +752,9 @@ Forbidden claim:
 
 ```text
 Do not upgrade source observation into protection evidence.
+Do not treat visible vf_id, ice_vf pointer reachability, ICE_VF_STATE_ACTIVE,
+ICE_VF_STATE_DIS, stable lan_vsi_idx/ctrl_vsi_idx, queue id, vector id, old
+allowlist state, or VPINT/VPLAN programming success as fresh handoff authority.
 ```
 
 ## Gate Result
@@ -740,6 +772,7 @@ DEV-001 modern NIC refinement:
   model-supported for modern NIC ServiceWork carrier and service/caller
   authority intersection semantics
   model-supported for VF mailbox queue/DMA/IRQ/budget/FDIR carrier semantics
+  model-supported for VF epoch handoff and stale identifier rejection semantics
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -755,6 +788,9 @@ machine-readable ledger refinement
 additional device family source maps
 small formal models for revoke/drain/quarantine ordering
 implementation planning that names subclaim coverage
+VF epoch handoff planning that names mailbox embargo, VF epoch bump, VSI
+generation, QueueLease generation, DMA/IRQ receipts, FDIR context clearing, and
+service replay authorization
 ```
 
 Still forbidden:
@@ -765,6 +801,9 @@ generic workqueue enforcement hooks
 using Linux ring/q_vector/netdev/devlink state as non-forgeable authority
 claiming IOMMU/QueueLease protection without monitor-backed ownership
 collapsing SKB/XDP/AF_XDP/control/representor/service paths into one cap
+using vf_id, ice_vf pointer reachability, ICE_VF_STATE_ACTIVE/DIS, lan_vsi_idx,
+ctrl_vsi_idx, queue id, vector id, old allowlist state, or reset completion as
+fresh VF/Domain/QueueLease authority
 ```
 
 ## Implementation Consequence
@@ -788,6 +827,9 @@ A behavior-changing prototype is not allowed until it has at least:
 8. reset/rebuild replay reauthorization and stale service-work cancellation
 9. VF mailbox request carrier for queue config, DMA ring base, IRQ map,
    queue budget/quanta, and FDIR async completion
-10. clear statement that Linux-only evidence is compatibility/prototype
+10. VF epoch handoff carrier for mailbox embargo, reset/reassignment reopen,
+    VSI generation, QueueLease generation, DMA/IRQ receipts, FDIR context
+    clearing, and service replay freshness
+11. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

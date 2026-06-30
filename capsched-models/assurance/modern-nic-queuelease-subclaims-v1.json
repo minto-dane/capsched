@@ -15,6 +15,7 @@
     "representor_lower_queuelease": "model_checked",
     "servicework_carrier": "model_checked",
     "vf_mailbox_carrier": "model_checked",
+    "vf_epoch_handoff": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -255,6 +256,33 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks VF mailbox request, QueueControl, DMA ring-address, IRQ route, queue budget, FDIR offload, async completion, and revoke carrier separation; not real virtchnl, ice, IOMMU, MSI-X, or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-021",
+      "class": "source_observed",
+      "path": "capsched-models/analysis/0060-ice-vf-epoch-handoff-source-map.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-004",
+        "DEV-NIC-006",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Source map for ice VF reset, teardown, MSI-X/vector remap, VSI generation, queue/DMA/IRQ config, FDIR async completion, mailbox dispatch, and service replay substrate; not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-022",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0059-vf-epoch-handoff-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-004",
+        "DEV-NIC-006",
+        "DEV-NIC-008",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks VF id/VSI/queue/IRQ/DMA/FDIR/mailbox/service replay handoff freshness; not real SR-IOV, virtchnl, MSI-X, IOMMU, FDIR, or monitor enforcement evidence."
     }
   ],
   "subclaims": [
@@ -266,11 +294,13 @@
       "protection_missing": [
         "monitor QueueTag",
         "queue epoch emission/check",
+        "VF epoch and VSI generation emission/check",
         "non-forgeable IRQ route ownership",
         "queue budget root below Linux"
       ],
       "forbidden": [
-        "netdev/ring/q_vector/NAPI reachability as QueueLease authority"
+        "netdev/ring/q_vector/NAPI reachability as QueueLease authority",
+        "vf_id equality, ice_vf pointer reachability, or stable VSI index as QueueLease authority"
       ]
     },
     {
@@ -318,7 +348,8 @@
         "real IOMMU invalidation latency/order proof",
         "stale XSK/page-pool quarantine implementation",
         "packet generation reset/retag implementation",
-        "VF mailbox QueueConfigCarrier and DMA ring-address carrier implementation"
+        "VF mailbox QueueConfigCarrier and DMA ring-address carrier implementation",
+        "VF epoch handoff DMA/IOMMU receipt implementation"
       ],
       "forbidden": [
         "Linux DMA mapping success as Domain authorization proof",
@@ -327,7 +358,8 @@
         "iommu_unmap_fast or queued IOVA flush as stale-translation invalidation proof",
         "iommufd IOAS unmap or VFIO dma_unmap callback as PageOwner transfer proof",
         "xsk_tx_completed, xsk_buff_free, or page_pool recycle as packet return proof",
-        "VF-provided dma_ring_addr plus queue/ring validation as DMA MemoryView authority"
+        "VF-provided dma_ring_addr plus queue/ring validation as DMA MemoryView authority",
+        "vf_id equality, stable VSI index, or VF reset completion as DMA MemoryView freshness"
       ]
     },
     {
@@ -403,7 +435,8 @@
         "stale queued work cancellation",
         "service-domain budget charging rule",
         "reset/rebuild replay reauthorization implementation",
-        "frozen VF request carrier propagation into async FDIR completion"
+        "frozen VF request carrier propagation into async FDIR completion",
+        "VF epoch handoff carrier for reset/reassignment reopen"
       ],
       "forbidden": [
         "generic workqueue execution as a CapSched authority hook",
@@ -414,7 +447,8 @@
         "PTP/DPLL callback reachability as caller control authority",
         "bridge/FDB/switchdev/LAG event as OffloadCap or lower QueueLease authority",
         "reset/rebuild replay after revoke without fresh reauthorization",
-        "FDIR ctx_irq or ctx_done as frozen request authority"
+        "FDIR ctx_irq or ctx_done as frozen request authority",
+        "vf_id equality, ICE_VF_STATE_ACTIVE, ICE_VF_STATE_DIS, or vf->cfg_lock as VF Domain authority"
       ]
     },
     {
@@ -435,7 +469,8 @@
         "monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation",
         "stale XSK/page-pool quarantine and packet generation reset implementation",
         "representor lower QueueLease invalidation and TC/offload rule removal receipt implementation",
-        "VF mailbox request carrier and async FDIR context implementation"
+        "VF mailbox request carrier and async FDIR context implementation",
+        "VF identity epoch, VSI generation, mailbox embargo, and service replay handoff implementation"
       ],
       "forbidden": [
         "queue revocation inferred from Linux netdev down/reset alone",
@@ -444,7 +479,8 @@
         "normal XSK CQ completion or page-pool recycle after revoke",
         "representor netdev queue stop treated as lower QueueLease revoke",
         "TC/switchdev stale hardware rule left live after lower QueueLease revoke",
-        "VF mailbox queue, IRQ, budget, or FDIR effect after revoke without fresh authorization"
+        "VF mailbox queue, IRQ, budget, or FDIR effect after revoke without fresh authorization",
+        "visible vf_id, stable VSI index, queue id, vector id, or old allowlist state as fresh handoff authority"
       ]
     },
     {
@@ -472,6 +508,7 @@
     "representor lower QueueLease derivation planning that names metadata, bridge, TC, and LAG proof events",
     "service-work carrier planning that names per-effect carriers, merge semantics, and reset/rebuild reauthorization",
     "VF mailbox carrier planning that names queue config, DMA ring base, IRQ route, queue budget, FDIR, async context, and revoke proofs",
+    "VF epoch handoff planning that names mailbox embargo, VF epoch bump, VSI generation, QueueLease generation, DMA/IRQ receipts, FDIR context clearing, and service replay authorization",
     "implementation planning that names subclaim coverage"
   ],
   "forbidden_next_work": [
@@ -482,6 +519,7 @@
     "collapsed SKB/XDP/AF_XDP/control/representor/service capability",
     "representor netdev, bridge FDB/VLAN, TC redirect target, or metadata_dst as lower QueueLease authority",
     "worker identity, ICE_SERVICE_SCHED, virtchnl allowlists, PTP/DPLL callback reachability, LAG lower_dev rewrite, or reset/rebuild replay as service-work carrier authority",
-    "virtchnl validation, opcode allowlist, VF-provided dma_ring_addr, queue id check, vector id check, QoS caps, or FDIR ctx_done as VF mailbox carrier authority"
+    "virtchnl validation, opcode allowlist, VF-provided dma_ring_addr, queue id check, vector id check, QoS caps, or FDIR ctx_done as VF mailbox carrier authority",
+    "vf_id equality, ice_vf pointer reachability, ICE_VF_STATE_ACTIVE/DIS, lan_vsi_idx/ctrl_vsi_idx stability, or VPINT/VPLAN programming success as VF epoch handoff authority"
   ]
 }

@@ -223,7 +223,9 @@
         "E-DEV-MNIC-017",
         "E-DEV-MNIC-018",
         "E-DEV-MNIC-019",
-        "E-DEV-MNIC-020"
+        "E-DEV-MNIC-020",
+        "E-DEV-MNIC-021",
+        "E-DEV-MNIC-022"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -234,6 +236,7 @@
         "No IRQ remapping implementation.",
         "No monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, typed SubmitLedger, or DescriptorLedger.",
         "No queue revoke/drain/quarantine implementation.",
+        "No VF identity epoch and reassignment handoff implementation.",
         "No DMA attack tests."
       ],
       "forbidden_l0": true
@@ -247,11 +250,14 @@
       "evidence": [
         "E-DEV-MNIC-001",
         "E-DEV-MNIC-004",
-        "E-DEV-MNIC-005"
+        "E-DEV-MNIC-005",
+        "E-DEV-MNIC-021",
+        "E-DEV-MNIC-022"
       ],
       "gaps": [
         "No monitor QueueTag.",
         "No queue epoch emission or check.",
+        "No VF epoch or VSI generation emission/check.",
         "No non-forgeable IRQ route ownership.",
         "No queue budget root below Linux."
       ],
@@ -311,7 +317,9 @@
         "E-DEV-MNIC-013",
         "E-DEV-MNIC-014",
         "E-DEV-MNIC-019",
-        "E-DEV-MNIC-020"
+        "E-DEV-MNIC-020",
+        "E-DEV-MNIC-021",
+        "E-DEV-MNIC-022"
       ],
       "gaps": [
         "No monitor-backed MemoryView for packet pages.",
@@ -322,7 +330,8 @@
         "No real IOMMU invalidation latency or ordering proof.",
         "No stale XSK/page-pool quarantine implementation.",
         "No packet generation reset or retag implementation.",
-        "No VF mailbox QueueConfigCarrier or DMA ring-address carrier implementation."
+        "No VF mailbox QueueConfigCarrier or DMA ring-address carrier implementation.",
+        "No VF epoch handoff DMA/IOMMU receipt implementation."
       ],
       "forbidden_l0": true
     },
@@ -363,7 +372,9 @@
         "E-DEV-MNIC-015",
         "E-DEV-MNIC-016",
         "E-DEV-MNIC-019",
-        "E-DEV-MNIC-020"
+        "E-DEV-MNIC-020",
+        "E-DEV-MNIC-021",
+        "E-DEV-MNIC-022"
       ],
       "gaps": [
         "No QueueControlCap.",
@@ -372,7 +383,8 @@
         "No devlink policy proof.",
         "No TC/switchdev OffloadCap or rule-generation proof.",
         "No VF mailbox QueueControl carrier implementation.",
-        "No VF mailbox queue budget/quanta carrier implementation."
+        "No VF mailbox queue budget/quanta carrier implementation.",
+        "No VF epoch handoff QueueControl reopen proof."
       ],
       "forbidden_l0": true
     },
@@ -414,7 +426,9 @@
         "E-DEV-MNIC-017",
         "E-DEV-MNIC-018",
         "E-DEV-MNIC-019",
-        "E-DEV-MNIC-020"
+        "E-DEV-MNIC-020",
+        "E-DEV-MNIC-021",
+        "E-DEV-MNIC-022"
       ],
       "gaps": [
         "No typed service work carrier.",
@@ -423,7 +437,8 @@
         "No cancellation/quarantine rule for stale queued work.",
         "No service-domain budget charging rule.",
         "No reset/rebuild replay reauthorization implementation.",
-        "No frozen VF request carrier propagation into async FDIR completion."
+        "No frozen VF request carrier propagation into async FDIR completion.",
+        "No VF epoch handoff carrier for reset/reassignment reopen."
       ],
       "forbidden_l0": true
     },
@@ -453,7 +468,9 @@
         "E-DEV-MNIC-017",
         "E-DEV-MNIC-018",
         "E-DEV-MNIC-019",
-        "E-DEV-MNIC-020"
+        "E-DEV-MNIC-020",
+        "E-DEV-MNIC-021",
+        "E-DEV-MNIC-022"
       ],
       "gaps": [
         "No queue revoke epoch implementation.",
@@ -467,7 +484,8 @@
         "No representor lower QueueLease invalidation or TC/offload stale-rule removal receipt implementation.",
         "No service-work carrier merge policy proof.",
         "No reset/rebuild replay reauthorization proof.",
-        "No VF mailbox request carrier and async FDIR context implementation."
+        "No VF mailbox request carrier and async FDIR context implementation.",
+        "No VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation."
       ],
       "forbidden_l0": true
     },
@@ -484,7 +502,8 @@
         "E-DEV-MNIC-013",
         "E-DEV-MNIC-015",
         "E-DEV-MNIC-017",
-        "E-DEV-MNIC-019"
+        "E-DEV-MNIC-019",
+        "E-DEV-MNIC-021"
       ],
       "gaps": [
         "All observed state is Linux-mutable.",
@@ -942,6 +961,35 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks VF mailbox request, QueueControl, DMA ring-address, IRQ route, queue budget, FDIR offload, async completion, and revoke carrier separation; it is not real virtchnl, ice, IOMMU, MSI-X, or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-021",
+      "kind": "analysis_source_map",
+      "record": "capsched-models/analysis/0060-ice-vf-epoch-handoff-source-map.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-001",
+        "DEV-NIC-004",
+        "DEV-NIC-006",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Maps ice VF reset, teardown, MSI-X/vector remap, VSI generation, queue/DMA/IRQ config, FDIR async completion, mailbox dispatch, and service replay substrate; it is source observation, not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-022",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0059-vf-epoch-handoff-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-001",
+        "DEV-NIC-004",
+        "DEV-NIC-006",
+        "DEV-NIC-008",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks VF id/VSI/queue/IRQ/DMA/FDIR/mailbox/service replay handoff freshness; it is not real SR-IOV, virtchnl, MSI-X, IOMMU, FDIR, or monitor enforcement evidence."
     },
     {
       "id": "E-L0-002",

@@ -44,6 +44,7 @@ Updated: 2026-06-30
 | 0036 | Checked with safe pass and expected unsafe counterexamples | Representor Lower QueueLease Model |
 | 0037 | Checked with safe pass and expected unsafe counterexamples | Modern NIC ServiceWork Carrier Model |
 | 0038 | Checked with safe pass and expected unsafe counterexamples | VF Mailbox Carrier Model |
+| 0039 | Checked with safe pass and expected unsafe counterexamples | VF Epoch Handoff Model |
 
 ## Planned
 

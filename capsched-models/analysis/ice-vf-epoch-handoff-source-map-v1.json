@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "id": "ice-vf-epoch-handoff-source-map-v1",
+  "analysis": "0060-ice-vf-epoch-handoff-source-map.md",
+  "date": "2026-06-30",
+  "linux": {
+    "repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "branch": "capsched-linux-l0",
+    "commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+    "subject": "sched/capsched: Add type-only authority scaffolding"
+  },
+  "problem": {
+    "summary": "Visible VF, VSI, queue, vector, and mailbox identifiers can be reused across reset/reassignment; CapSched-H requires fresh epochs and monitor receipts so stale carriers cannot affect a new Domain.",
+    "unsafe_shortcuts": [
+      "vf_id equality as VF identity freshness",
+      "ice_vf pointer reachability as Domain ownership",
+      "refcount/RCU as authority epoch",
+      "vf->cfg_lock as stale carrier rejection",
+      "ICE_VF_STATE_ACTIVE as QueueLease authority",
+      "ICE_VF_STATE_DIS as monitor revoke receipt",
+      "VSI index stability as MemoryView stability",
+      "queue id range validity as queue ownership",
+      "MSI-X vector remap as IRQ route authority",
+      "FDIR ctx_done validity as frozen completion authority",
+      "reset/rebuild replay as fresh Domain request"
+    ]
+  },
+  "source_anchors": [
+    {
+      "id": "vf_lookup_lifetime",
+      "file": "drivers/net/ethernet/intel/ice/ice_vf_lib.c",
+      "functions": [
+        "ice_get_vf_by_id",
+        "ice_put_vf",
+        "ice_get_vf_vsi"
+      ],
+      "lines": [
+        "25-46",
+        "75-78",
+        "123-128"
+      ],
+      "existing_mechanism": "RCU/kref lifetime and vf_id lookup",
+      "capsched_rule": "Lookup is not current Domain binding authority."
+    },
+    {
+      "id": "vf_struct_identity_fields",
+      "file": "drivers/net/ethernet/intel/ice/ice_vf_lib.h",
+      "functions": [
+        "struct ice_vf",
+        "enum ice_vf_states"
+      ],
+      "lines": [
+        "34-42",
+        "139-200"
+      ],
+      "existing_mechanism": "VF id, VSI indices, FDIR state, queue bitmaps, num_msix, num_vf_qs, state bits, and opcode allowlist",
+      "capsched_rule": "Visible fields need epoch-bearing carrier roots."
+    },
+    {
+      "id": "vf_allocation",
+      "file": "drivers/net/ethernet/intel/ice/ice_sriov.c",
+      "functions": [
+        "ice_alloc_vfs"
+      ],
+      "lines": [
+        "697-722"
+      ],
+      "existing_mechanism": "vf_id assigned sequentially and inserted into hash table",
+      "capsched_rule": "New allocation must create a fresh VfEpochReceipt."
+    },
+    {
+      "id": "vf_initialize",
+      "file": "drivers/net/ethernet/intel/ice/ice_vf_lib.c",
+      "functions": [
+        "ice_initialize_vf_entry"
+      ],
+      "lines": [
+        "1001-1033"
+      ],
+      "existing_mechanism": "Default allowlist, num_msix, num_vf_qs, ctrl_vsi invalidation, FDIR init, mailbox init",
+      "capsched_rule": "Initialization prepares Linux state; it does not mint queue, IRQ, DMA, or mailbox authority."
+    },
+    {
+      "id": "vf_resource_negotiation",
+      "file": "drivers/net/ethernet/intel/ice/virt/virtchnl.c",
+      "functions": [
+        "ice_vc_get_vf_res_msg"
+      ],
+      "lines": [
+        "245-355"
+      ],
+      "existing_mechanism": "Driver caps negotiation, allowlist update, ACTIVE state",
+      "capsched_rule": "ACTIVE must pair with fresh Domain/VF binding epoch."
+    },
+    {
+      "id": "single_vf_reset",
+      "file": "drivers/net/ethernet/intel/ice/ice_vf_lib.c",
+      "functions": [
+        "ice_reset_vf"
+      ],
+      "lines": [
+        "864-982"
+      ],
+      "existing_mechanism": "Set DIS, trigger reset, disable queues, clear caps/allowlist, reset FDIR, release ctrl VSI, reconfig VSI, reset mailbox counters",
+      "capsched_rule": "Reset start must embargo mailbox and invalidate old carriers; reopen requires fresh epochs."
+    },
+    {
+      "id": "bulk_vf_reset",
+      "file": "drivers/net/ethernet/intel/ice/ice_vf_lib.c",
+      "functions": [
+        "ice_reset_all_vfs"
+      ],
+      "lines": [
+        "748-824"
+      ],
+      "existing_mechanism": "Bulk reset of all VFs, per-VF rebuild, eswitch detach/attach",
+      "capsched_rule": "Every affected VF binding and lower QueueLease must be epoch-bumped before attach/replay."
+    },
+    {
+      "id": "vf_teardown",
+      "file": "drivers/net/ethernet/intel/ice/ice_sriov.c",
+      "functions": [
+        "ice_free_vfs",
+        "ice_free_vf_res",
+        "ice_dis_vf_mappings"
+      ],
+      "lines": [
+        "131-185",
+        "48-83",
+        "89-125"
+      ],
+      "existing_mechanism": "Disable queues, free IRQs, clear VPINT/GLINT/VPLAN mappings, release VSIs and VF entries",
+      "capsched_rule": "Teardown must produce monitor revoke receipts before reuse or release."
+    },
+    {
+      "id": "msix_queue_mapping_reuse",
+      "file": "drivers/net/ethernet/intel/ice/ice_sriov.c",
+      "functions": [
+        "ice_ena_vf_msix_mappings",
+        "ice_ena_vf_q_mappings",
+        "ice_sriov_remap_vectors",
+        "ice_sriov_set_msix_vec_count"
+      ],
+      "lines": [
+        "230-268",
+        "276-317",
+        "876-911",
+        "928-1025"
+      ],
+      "existing_mechanism": "Program VPINT, GLINT_VECT2FUNC, queue-base registers, free/reallocate vectors and rebuild queue mappings",
+      "capsched_rule": "Vector and queue mapping changes require fresh IRQ route and QueueLease epochs."
+    },
+    {
+      "id": "vf_dma_irq_queue_config",
+      "file": "drivers/net/ethernet/intel/ice/virt/queues.c",
+      "functions": [
+        "ice_vc_cfg_qs_msg",
+        "ice_vc_cfg_irq_map_msg",
+        "ice_vc_ena_qs_msg"
+      ],
+      "lines": [
+        "749-914",
+        "513-581",
+        "234-313"
+      ],
+      "existing_mechanism": "Validate queue/vector ids, copy VF DMA ring bases, program queues, map interrupts, enable queues",
+      "capsched_rule": "Requires fresh QueueLease, DMA MemoryView/IOMMU receipt, IRQ route receipt, and frozen queue config generation."
+    },
+    {
+      "id": "fdir_async_completion",
+      "file": "drivers/net/ethernet/intel/ice/virt/fdir.c",
+      "functions": [
+        "ice_vc_fdir_set_irq_ctx",
+        "ice_vf_fdir_timer",
+        "ice_vc_fdir_irq_handler",
+        "ice_flush_fdir_ctx",
+        "ice_vf_fdir_init",
+        "ice_vf_fdir_exit"
+      ],
+      "lines": [
+        "1880-1907",
+        "1451-1482",
+        "1489-1526",
+        "1803-1868",
+        "2411-2422",
+        "2428-2434"
+      ],
+      "existing_mechanism": "FDIR ctx_irq/ctx_done async completion and local init/exit cleanup",
+      "capsched_rule": "Completion must carry current VF epoch, ctrl_vsi generation, rule generation, and frozen request carrier."
+    },
+    {
+      "id": "mailbox_dispatch",
+      "file": "drivers/net/ethernet/intel/ice/virt/virtchnl.c",
+      "functions": [
+        "ice_vc_process_vf_msg"
+      ],
+      "lines": [
+        "2736-2935"
+      ],
+      "existing_mechanism": "vf_id lookup, cfg_lock, DIS check, virtchnl validation, opcode allowlist, operation dispatch",
+      "capsched_rule": "Mailbox ingress must freeze a VFRequestCarrier with current vf_epoch and mailbox_generation."
+    }
+  ],
+  "required_receipts": [
+    "VfEpochReceipt",
+    "DomainBindingReceipt",
+    "QueueLeaseReceipt",
+    "DmaMemoryViewReceipt",
+    "IrqRouteReceipt",
+    "FdirContextReceipt",
+    "MailboxEmbargoReceipt",
+    "ServiceReplayReceipt"
+  ],
+  "safe_handoff_sequence": [
+    "embargo mailbox and submit path",
+    "disable and quiesce queues",
+    "invalidate old DMA/IOMMU MemoryView",
+    "invalidate old IRQ route",
+    "clear or epoch-tag async FDIR context",
+    "bump VF and queue epochs",
+    "bind new Domain and VSI generation",
+    "derive fresh QueueLease and route receipts",
+    "reopen mailbox under fresh VFRequestCarrier",
+    "authorize service replay under fresh carrier"
+  ],
+  "design_constraints": [
+    "No old epoch effect may survive handoff into a new Domain.",
+    "Visible identifiers can be reused only after authority epochs change.",
+    "Linux reset cleanup is substrate, not the security root.",
+    "Monitor receipts are required for DMA, IRQ, queue, and VF epoch authority.",
+    "Cluster migration must preserve the same revoke/bump/reopen sequence."
+  ]
+}

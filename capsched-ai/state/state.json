@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "vf-mailbox-carrier-modeled",
+    "current_phase": "vf-epoch-handoff-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0059 maps Intel ice VF mailbox queue config, VF-provided descriptor-ring DMA address, queue enable, IRQ map, queue bandwidth/quanta, FDIR offload, and FDIR async completion substrate. Validation/0058 adds the VF Mailbox Carrier model: safe TLC passed with 42 generated states, 23 distinct states, and depth 7; eight unsafe configs produced expected counterexamples for virtchnl validation as queue authority, DMA ring base without MemoryView/IOMMU authority, queue enable without frozen queue config, IRQ map without route authority, queue budget/quanta without budget authority, FDIR write without OffloadCap, FDIR completion without frozen context, and effects after revoke. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no old/new VF/queue epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved. Next focused risk is VF identity epoch and SR-IOV/VF reset/reassignment handoff.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0060 maps Intel ice VF reset, SR-IOV teardown, MSI-X/vector remap, VSI reuse, queue/DMA/IRQ config, FDIR async completion, mailbox dispatch, and service replay handoff substrate. Validation/0059 adds the VF Epoch Handoff model: safe TLC passed with 9 generated states, 9 distinct states, and depth 9; eight unsafe configs produced expected counterexamples for visible vf_id reuse without fresh VF epoch, VSI reuse without generation bump, queue reassignment before DMA/IOMMU revoke, IRQ route reassignment before stale route revoke, FDIR completion surviving reset, mailbox acceptance during reset embargo, allowlist/capability state surviving reset as authority, and service replay under the old epoch. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, or driver enforcement is approved. Next focused risk is projecting the modern NIC QueueLease/VF evidence into a HyperTag Monitor interface and service/driver Domain split.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -365,7 +365,13 @@
     "vf_mailbox_carrier_model": "capsched/capsched-models/formal/0038-vf-mailbox-carrier-model/README.md",
     "vf_mailbox_carrier_tla": "capsched/capsched-models/formal/0038-vf-mailbox-carrier-model/VfMailboxCarrier.tla",
     "vf_mailbox_carrier_validation": "capsched/capsched-models/validation/0058-vf-mailbox-carrier-tlc.md",
-    "vf_mailbox_carrier_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/vf-mailbox-carrier-20260630T023200Z"
+    "vf_mailbox_carrier_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/vf-mailbox-carrier-20260630T023200Z",
+    "ice_vf_epoch_handoff_source_map": "capsched/capsched-models/analysis/0060-ice-vf-epoch-handoff-source-map.md",
+    "ice_vf_epoch_handoff_source_map_json": "capsched/capsched-models/analysis/ice-vf-epoch-handoff-source-map-v1.json",
+    "vf_epoch_handoff_model": "capsched/capsched-models/formal/0039-vf-epoch-handoff-model/README.md",
+    "vf_epoch_handoff_tla": "capsched/capsched-models/formal/0039-vf-epoch-handoff-model/VfEpochHandoff.tla",
+    "vf_epoch_handoff_validation": "capsched/capsched-models/validation/0059-vf-epoch-handoff-tlc.md",
+    "vf_epoch_handoff_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/vf-epoch-handoff-20260630T024639Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1654,9 +1660,19 @@
     {
       "id": "N-087",
       "text": "Map and model VF identity epoch, SR-IOV/VF reset, VSI reuse, queue reassignment, and mailbox handoff semantics so old vf_id, VSI, queue, IRQ, DMA, or FDIR state cannot carry authority into a new Domain.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created analysis/0060 plus ice-vf-epoch-handoff-source-map-v1.json, then formal/0039 VfEpochHandoff and validation/0059. The source map separates vf_id lookup, ice_vf pointer lifetime, cfg_lock, ICE_VF_STATE_ACTIVE/DIS, lan_vsi_idx/ctrl_vsi_idx, queue id, MSI-X/vector id, VF-provided DMA ring address, FDIR ctx_irq/ctx_done, mailbox allowlist, and reset/rebuild replay from fresh Domain authority. Safe TLC passed with 9 generated states, 9 distinct states, and depth 9. Unsafe configs produced expected counterexamples for visible vf_id reuse without fresh VF epoch, VSI reuse without generation bump, queue reassignment before DMA/IOMMU revoke, IRQ route reassignment before stale route revoke, FDIR completion surviving reset, mailbox acceptance during reset embargo, allowlist/capability state surviving reset as authority, and service replay under the old epoch.",
       "blocked_by": [
         "N-086"
+      ]
+    },
+    {
+      "id": "N-088",
+      "text": "Project the modern NIC QueueLease, VF mailbox, VF epoch handoff, DMA/IOMMU, IRQ, representor, and service-work evidence into a HyperTag Monitor interface and service/driver Domain split before any behavior-changing implementation plan.",
+      "status": "pending",
+      "blocked_by": [
+        "N-087"
       ]
     }
   ],

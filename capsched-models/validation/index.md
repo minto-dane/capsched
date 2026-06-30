@@ -64,6 +64,7 @@ Updated: 2026-06-30
 | 0056 | Safe model passed; unsafe models produced expected counterexamples | Representor Lower QueueLease TLC |
 | 0057 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC ServiceWork Carrier TLC |
 | 0058 | Safe model passed; unsafe models produced expected counterexamples | VF Mailbox Carrier TLC |
+| 0059 | Safe model passed; unsafe models produced expected counterexamples | VF Epoch Handoff TLC |
 
 ## Principles
 
