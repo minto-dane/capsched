@@ -92,16 +92,19 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Local monitor admission interface boundary. Analysis/0067 and formal/0044
-  separate Linux request carriage from monitor-only response/receipt minting.
-  Validation/0066 safe TLC passed with 14 generated states, 12 distinct states,
-  and depth 11; unsafe configs reject Linux-minted responses, replay,
-  failure-then-compile, receipt/endpoint shortcut, revoke-complete shortcut, and
-  raw service-handle exposure.
+  Local monitor admission carrier/storage choice gate. Analysis/0068 and
+  formal/0045 separate request carriers, monitor receipt ledger authority,
+  Linux-visible shadows, audit logs, and raw driver handles. Validation/0067
+  safe TLC passed with 11 generated states, 9 distinct states, and depth 7;
+  unsafe configs reject Linux-owned response authority, service-domain queue
+  authority, Linux shadow authority, replayed ring slot, tampered receipt
+  ledger, request-as-receipt, audit-as-authority, and raw handle endpoint
+  delivery.
 
 next focused risk:
-  Compare local monitor admission carrier and receipt-storage choices before
-  selecting monitor ABI, Linux service-domain stubs, or implementation.
+  Define the first concrete monitor ABI semantics candidate for local
+  admission, including request/response classes, receipt ledger ownership,
+  replay windows, Linux-visible shadow invalidation, and failure/revoke paths.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

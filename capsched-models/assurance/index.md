@@ -266,6 +266,17 @@ Local monitor admission interface boundary:
   handle exposure. This is model-supported semantics only, not ABI,
   implementation, or protection evidence.
 
+Monitor admission carrier/storage choice gate:
+  analysis/0068 and validation/0067 compare direct monitor calls,
+  monitor-owned shared rings, Linux service-domain queues, monitor receipt
+  ledgers, Linux-visible shadows, audit-only logs, and raw driver handles. Safe
+  TLC passed with 11 generated states, 9 distinct states, and depth 7. Unsafe
+  configs produced expected counterexamples for Linux-owned response authority,
+  service-domain queue authority, Linux shadow authority, replayed ring slots,
+  tampered receipt ledgers, request-as-receipt, audit-as-authority, and raw
+  handle endpoint delivery. This is model-supported semantics only, not ABI,
+  implementation, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

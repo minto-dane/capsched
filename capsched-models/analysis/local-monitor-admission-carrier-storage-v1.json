@@ -1,0 +1,222 @@
+{
+  "schema": "capsched.local_monitor_admission_carrier_storage.v1",
+  "status": "draft_choice_gate",
+  "date": "2026-06-30",
+  "scope": {
+    "purpose": "Compare local monitor admission carrier and receipt-storage choices before selecting a monitor ABI or Linux stub.",
+    "behavior_change": false,
+    "monitor_abi_selected": false,
+    "linux_stub_selected": false,
+    "implementation_approved": false,
+    "protection_claim": false
+  },
+  "authority_roots": [
+    {
+      "name": "monitor_live_state",
+      "owner": "local_hypertag_monitor",
+      "may_authorize_endpoint": true,
+      "may_be_minted_by_linux": false
+    },
+    {
+      "name": "monitor_receipt_ledger",
+      "owner": "local_hypertag_monitor",
+      "may_authorize_endpoint": true,
+      "may_be_minted_by_linux": false
+    }
+  ],
+  "non_authority_state": [
+    {
+      "name": "linux_service_domain_queue",
+      "allowed_role": "request_carrier",
+      "forbidden_role": "admission_authority"
+    },
+    {
+      "name": "linux_visible_shadow",
+      "allowed_role": "cache_index_trace_hint",
+      "forbidden_role": "authority_root"
+    },
+    {
+      "name": "audit_log",
+      "allowed_role": "debug_assurance_evidence",
+      "forbidden_role": "runtime_authority"
+    }
+  ],
+  "choices": [
+    {
+      "id": "direct_monitor_call",
+      "classification": "accepted_baseline",
+      "accepted_role": "synchronous_request_response_carrier",
+      "authority_root": "monitor_live_state_or_monitor_receipt_ledger",
+      "required_guards": [
+        "fresh_request_nonce",
+        "monitor_epoch",
+        "service_domain_epoch",
+        "target_domain_epoch",
+        "device_root_epoch",
+        "local_lease_epoch",
+        "monitor_minted_response"
+      ],
+      "rejected_collapses": [
+        "linux_owned_response_authority"
+      ],
+      "cost_notes": [
+        "simple_correctness_baseline",
+        "higher_per_admission_transition_cost",
+        "limited_batching"
+      ]
+    },
+    {
+      "id": "monitor_owned_shared_ring",
+      "classification": "accepted_with_strict_guards",
+      "accepted_role": "batched_request_response_carrier",
+      "authority_root": "monitor_receipt_ledger",
+      "required_guards": [
+        "monitor_owned_slot_epoch",
+        "fresh_request_nonce",
+        "sealed_response_epoch",
+        "monitor_validated_head_tail_or_equivalent",
+        "replay_window_rejection"
+      ],
+      "rejected_collapses": [
+        "ring_slot_as_receipt",
+        "linux_only_slot_generation_as_replay_protection"
+      ],
+      "cost_notes": [
+        "supports_batching",
+        "better_throughput",
+        "requires_slot_epoch_and_replay_design"
+      ]
+    },
+    {
+      "id": "linux_service_domain_queue",
+      "classification": "accepted_request_only",
+      "accepted_role": "request_buffering_and_ordering_hint",
+      "authority_root": "none",
+      "required_guards": [
+        "monitor_copies_and_validates_request",
+        "queue_drop_or_reorder_is_dos_only",
+        "no_queue_item_mints_response"
+      ],
+      "rejected_collapses": [
+        "queue_item_as_admission_authority",
+        "service_domain_response_store_as_authority"
+      ],
+      "cost_notes": [
+        "integrates_with_linux_service_scheduling",
+        "high_authority_collapse_risk_if_not_request_only"
+      ]
+    },
+    {
+      "id": "root_management_feed",
+      "classification": "accepted_policy_input_only",
+      "accepted_role": "cluster_policy_input",
+      "authority_root": "none_until_local_monitor_compilation",
+      "required_guards": [
+        "cluster_epoch_check",
+        "root_management_epoch_check",
+        "target_node_match",
+        "local_monitor_compilation"
+      ],
+      "rejected_collapses": [
+        "remote_cluster_lease_as_local_device_lease"
+      ],
+      "cost_notes": [
+        "supports_multi_cluster_os_policy",
+        "must_compile_to_local_monitor_receipts"
+      ]
+    },
+    {
+      "id": "monitor_receipt_ledger",
+      "classification": "recommended_authority_store",
+      "accepted_role": "epoch_indexed_receipt_authority",
+      "authority_root": "monitor_receipt_ledger",
+      "required_guards": [
+        "monitor_owned_append_only_or_equivalent_integrity",
+        "receipt_epoch",
+        "revoke_epoch",
+        "tamper_rejection",
+        "lookup_or_seal_verification"
+      ],
+      "rejected_collapses": [
+        "mutable_linux_log_as_ledger"
+      ],
+      "cost_notes": [
+        "supports_revoke",
+        "supports_audit_root",
+        "requires_lookup_and_cache_invalidation_design"
+      ]
+    },
+    {
+      "id": "linux_visible_shadow",
+      "classification": "accepted_non_authoritative_cache",
+      "accepted_role": "cache_index_trace_hint",
+      "authority_root": "none",
+      "required_guards": [
+        "derived_from_monitor_receipts",
+        "receipt_handle_or_epoch",
+        "fail_closed_or_slow_path_on_miss",
+        "cannot_mint_or_refresh_receipts"
+      ],
+      "rejected_collapses": [
+        "shadow_cache_as_authority_root"
+      ],
+      "cost_notes": [
+        "fast_lookup",
+        "useful_for_trace_and_debug",
+        "corruption_must_not_grant_authority"
+      ]
+    },
+    {
+      "id": "audit_only_log",
+      "classification": "rejected_as_authority",
+      "accepted_role": "debug_and_assurance_evidence",
+      "authority_root": "none",
+      "required_guards": [
+        "not_used_for_runtime_authorization"
+      ],
+      "rejected_collapses": [
+        "audit_log_as_runtime_authority"
+      ],
+      "cost_notes": [
+        "valuable_for_observation",
+        "not_a_security_boundary"
+      ]
+    },
+    {
+      "id": "raw_driver_handle",
+      "classification": "rejected_for_target_endpoint",
+      "accepted_role": "service_domain_internal_implementation_detail",
+      "authority_root": "none",
+      "required_guards": [
+        "typed_endpoint_materialization",
+        "raw_handle_non_exposure"
+      ],
+      "rejected_collapses": [
+        "pf_vf_iommu_msi_devlink_handle_as_domain_endpoint"
+      ],
+      "cost_notes": [
+        "low_overhead_if_exposed",
+        "unacceptable_security_collapse"
+      ]
+    }
+  ],
+  "invariants": [
+    "no_linux_owned_response_store_as_authority",
+    "no_service_domain_queue_item_as_authority",
+    "no_linux_shadow_state_as_authority",
+    "no_replayed_ring_slot_accepted",
+    "no_tampered_receipt_ledger_accepted",
+    "no_request_carrier_treated_as_receipt",
+    "no_audit_only_log_treated_as_authority",
+    "no_raw_service_domain_handle_delivered_as_target_endpoint",
+    "no_endpoint_delivery_without_monitor_verified_receipt"
+  ],
+  "recommended_next_shape": {
+    "correctness_baseline": "direct_monitor_call",
+    "throughput_extension": "monitor_owned_shared_ring",
+    "authority_storage": "monitor_live_state_plus_monitor_receipt_ledger",
+    "request_buffering": "linux_service_domain_queue_request_only",
+    "fast_lookup": "linux_visible_shadow_non_authoritative",
+    "endpoint_delivery": "monitor_verified_receipts_only"
+  }
+}

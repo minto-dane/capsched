@@ -95,6 +95,9 @@ validation/0065-local-domain-device-lease-admission-tlc.md
 
 formal/0044-local-monitor-admission-interface-model/
 validation/0066-local-monitor-admission-interface-tlc.md
+
+formal/0045-monitor-admission-carrier-storage-model/
+validation/0067-monitor-admission-carrier-storage-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -118,6 +121,7 @@ analysis/0064-local-domain-device-lease-compilation.md
 analysis/0065-local-domain-device-lease-observation-contract.md
 analysis/0066-local-domain-device-lease-admission-protocol.md
 analysis/0067-local-monitor-admission-interface-boundary.md
+analysis/0068-local-monitor-admission-carrier-storage.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -133,6 +137,7 @@ analysis/local-domain-device-lease-compilation-v1.json
 analysis/local-domain-device-lease-observation-contract-v1.json
 analysis/local-domain-device-lease-admission-protocol-v1.json
 analysis/local-monitor-admission-interface-boundary-v1.json
+analysis/local-monitor-admission-carrier-storage-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -140,6 +145,7 @@ validation/0062-modern-nic-hypertag-observation-ledger-result.md
 validation/0064-local-domain-device-lease-observation-contract-result.md
 validation/0065-local-domain-device-lease-admission-tlc.md
 validation/0066-local-monitor-admission-interface-tlc.md
+validation/0067-monitor-admission-carrier-storage-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
@@ -240,6 +246,15 @@ LocalMonitorAdmissionInterface:
   attempt, device receipts require a monitor-minted local lease response, typed
   endpoints require monitor-minted device receipts, revoke completion requires
   derived receipt revoke, and raw service-domain handles must not escape.
+
+MonitorAdmissionCarrierStorage:
+  request carriers transport intent but are not receipt authority. Direct
+  monitor calls are the correctness baseline, monitor-owned shared rings are a
+  throughput extension only with monitor-owned slot freshness, Linux
+  service-domain queues are request-only, Linux-visible shadows are
+  non-authoritative caches, monitor receipt ledgers are the authority root,
+  audit-only logs are not runtime authority, and raw driver handles are not
+  target Domain endpoints.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It

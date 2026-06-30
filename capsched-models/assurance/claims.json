@@ -239,7 +239,9 @@
         "E-DEV-MNIC-033",
         "E-DEV-MNIC-034",
         "E-DEV-MNIC-035",
-        "E-DEV-MNIC-036"
+        "E-DEV-MNIC-036",
+        "E-DEV-MNIC-037",
+        "E-DEV-MNIC-038"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -587,7 +589,9 @@
         "E-DEV-MNIC-033",
         "E-DEV-MNIC-034",
         "E-DEV-MNIC-035",
-        "E-DEV-MNIC-036"
+        "E-DEV-MNIC-036",
+        "E-DEV-MNIC-037",
+        "E-DEV-MNIC-038"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1195,6 +1199,26 @@
       "limitation": "Finite model checks monitor-only response minting, replay rejection, failure termination, receipt-gated endpoint delivery, revoke completion ordering, and raw-handle non-exposure; it is not monitor ABI or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-037",
+      "kind": "analysis_choice_gate",
+      "record": "capsched-models/analysis/0068-local-monitor-admission-carrier-storage.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Compares carrier and receipt-storage choices and rejects authority collapse into Linux queues, Linux-visible shadows, audit logs, or raw driver handles; it is not ABI, stub, implementation, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-038",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0067-monitor-admission-carrier-storage-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks request-carrier non-authority, monitor receipt ledger authority, Linux shadow non-authority, replay/tamper rejection, audit-only rejection, and raw-handle non-exposure; it is not monitor ABI or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1276,6 +1300,7 @@
     "BPF or sched_ext is the production root for No RunCap, no run.",
     "Cluster-wide leases are directly executable.",
     "Root-management ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation is a LocalDomainDeviceLease.",
+    "Linux service-domain queues, Linux-owned response stores, Linux-visible shadows, audit logs, ring slots, or raw driver handles are monitor receipt authority.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1347,7 +1372,9 @@
         "E-DEV-MNIC-033",
         "E-DEV-MNIC-034",
         "E-DEV-MNIC-035",
-        "E-DEV-MNIC-036"
+        "E-DEV-MNIC-036",
+        "E-DEV-MNIC-037",
+        "E-DEV-MNIC-038"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1356,7 +1383,8 @@
         "Root-management/local monitor observation contract for LocalDomainDeviceLease fields.",
         "No-behavior-change validator for LocalDomainDeviceLease contract dependencies and safety flags.",
         "Admission-protocol model for failure and revoke ordering.",
-        "Pre-ABI monitor admission interface boundary model."
+        "Pre-ABI monitor admission interface boundary model.",
+        "Pre-ABI carrier/storage choice gate model."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

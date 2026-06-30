@@ -90,18 +90,20 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Local monitor admission interface boundary. Analysis/0067 names request
-  objects, monitor-owned response/receipt objects, freshness fields, Linux
-  service-domain attachment points, and forbidden raw-handle exposure. Formal/
-  0044 plus validation/0066 safe TLC passed with 14 generated states, 12
-  distinct states, and depth 11. Unsafe configs reject Linux-minted monitor
-  response, replay acceptance, failure-then-compile, receipt without monitor
-  local lease response, endpoint without receipts, revoke complete with live
-  derived receipts, and raw service handle exposure.
+  Local monitor admission carrier/storage choice gate. Analysis/0068 compares
+  direct monitor call, monitor-owned shared ring, Linux service-domain queue,
+  monitor receipt ledger, Linux-visible shadow, audit-only log, and raw driver
+  handles. Formal/0045 plus validation/0067 safe TLC passed with 11 generated
+  states, 9 distinct states, and depth 7. Unsafe configs reject Linux-owned
+  response authority, service-domain queue authority, Linux shadow authority,
+  replayed ring slot, tampered receipt ledger, request-as-receipt,
+  audit-as-authority, and raw handle endpoint delivery.
 
 next focused risk:
-  Compare local monitor admission carrier and receipt-storage choices before
-  selecting a monitor ABI, Linux service-domain stub, or implementation.
+  Define the first concrete monitor ABI semantics candidate for local
+  admission, including request/response classes, receipt ledger ownership,
+  replay windows, Linux-visible shadow invalidation, and failure/revoke paths,
+  without selecting code layout or implementing it.
 ```
 
 That focused VF IRQ model is now checked:
