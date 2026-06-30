@@ -227,7 +227,9 @@
         "E-DEV-MNIC-021",
         "E-DEV-MNIC-022",
         "E-DEV-MNIC-023",
-        "E-DEV-MNIC-024"
+        "E-DEV-MNIC-024",
+        "E-DEV-MNIC-025",
+        "E-DEV-MNIC-026"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -240,6 +242,7 @@
         "No queue revoke/drain/quarantine implementation.",
         "No VF identity epoch and reassignment handoff implementation.",
         "No HyperTag monitor interface or service/driver Domain split implementation.",
+        "No observation-only modern NIC HyperTag probe/stub Linux patch.",
         "No DMA attack tests."
       ],
       "forbidden_l0": true
@@ -1052,6 +1055,24 @@
       "limitation": "Finite model checks monitor-root, service-Domain, DMA/IRQ receipt, typed endpoint, local cluster-lease compilation, audit-only, and per-packet trap separation; it is not real monitor, driver, IOMMU, IRQ, or performance evidence."
     },
     {
+      "id": "E-DEV-MNIC-025",
+      "kind": "analysis_readiness_gate",
+      "record": "capsched-models/analysis/0062-modern-nic-hypertag-readiness-probe-map.md",
+      "supports": [
+        "DEV-001"
+      ],
+      "limitation": "Maps modern NIC HyperTag receipt/carrier rows to observation-only probes and inert stubs; it is implementation-readiness evidence only, not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-026",
+      "kind": "tla_validation_readiness_gate",
+      "record": "capsched-models/validation/0061-modern-nic-readiness-gate-tlc.md",
+      "supports": [
+        "DEV-001"
+      ],
+      "limitation": "Finite model checks readiness-gate ordering and rejects behavior approval before gate satisfaction, probe-as-authority, non-inert stubs, missing coverage, raw endpoint stubs, and protection claims; it is not real Linux patch compatibility or monitor enforcement evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1188,6 +1209,25 @@
       "id": "G6",
       "status": "blocked",
       "title": "Queue lease prototype"
+    },
+    {
+      "id": "G6A",
+      "status": "candidate",
+      "title": "Modern NIC HyperTag readiness gate",
+      "evidence": [
+        "E-DEV-MNIC-025",
+        "E-DEV-MNIC-026"
+      ],
+      "allowed": [
+        "Observation-only probe or no-code trace runner design.",
+        "Inert type/stub scaffolding with no behavior change.",
+        "Machine-readable receipt/carrier coverage ledger."
+      ],
+      "forbidden": [
+        "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",
+        "Probe or stub treated as authority.",
+        "Readiness evidence described as protection evidence."
+      ]
     },
     {
       "id": "G7",

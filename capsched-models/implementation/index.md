@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-06-26
+Updated: 2026-06-30
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -34,6 +34,11 @@ Candidate implementation plans:
   - Status: proposed gate, no Linux patch approved yet.
   - Purpose: define a strict trace-only observation gate tied to assurance
     claims `EXEC-001`, `COMPAT-001`, and gate `G2`, using analysis `0019`.
+- `0007-modern-nic-hypertag-readiness-gate.md`
+  - Status: proposed gate, no Linux patch approved yet.
+  - Purpose: define the observation-only probe and inert-stub gate for the
+    monitor-backed modern NIC path before any behavior-changing QueueLease,
+    DMA, IRQ, VF, representor, offload, or service-work enforcement.
 
 Validated formal inputs:
 

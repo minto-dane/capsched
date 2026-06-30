@@ -54,11 +54,14 @@ latest completed risk:
   Modern NIC HyperTag Monitor interface and Linux service/driver Domain split
   for QueueLease/VF/DMA/IRQ/representor/offload/service-work authority.
 
+latest completed risk:
+  Modern NIC HyperTag implementation-readiness gate for observation-only
+  probes, inert stubs, and no behavior-changing approval before gate
+  satisfaction.
+
 next focused risk:
-  Define the first implementation-readiness gate for the monitor-backed modern
-  NIC path, mapping each required receipt/carrier to an observation-only Linux
-  probe or stub and proving that no behavior-changing enforcement is approved
-  until the gate is satisfied.
+  Design the observation-only Linux probe/stub ledger and no-code trace runner
+  for the modern NIC HyperTag path without behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:
@@ -312,11 +315,36 @@ analysis/0061 + formal/0040 + validation/0060:
     must be fast-path local after bind; monitor entry is for bind, config,
     revoke, epoch, budget, and ownership changes.
 
+analysis/0062 + implementation/0007 + formal/0041 + validation/0061:
+  Modern NIC HyperTag implementation-readiness gate mapped and modeled.
+  gate rule:
+    every required LocalDomainDeviceLease, DeviceRootReceipt, VfEpochReceipt,
+    QueueLeaseReceipt, DmaMemoryViewReceipt, IrqRouteReceipt, LedgerRootReceipt,
+    typed endpoint carrier, and revoke/handoff receipt must map to observation-
+    only Linux probes or inert stubs.
+    each row must preserve:
+      observation_only=true
+      authority_claim=false
+      monitor_verified=false
+      behavior_change=false
+      protection_claim=false
+  safe TLC:
+    8 generated states, 7 distinct states, depth 7
+  unsafe counterexamples:
+    behavior-changing approval before gate satisfaction
+    probe treated as authority
+    stub changes behavior
+    missing receipt/carrier coverage
+    raw endpoint exposed by stub
+    readiness evidence described as protection evidence
+  design rule:
+    a probe or stub may help find future receipt consumption points, but cannot
+    be a receipt, authority, monitor verification, or protection claim.
+
 next focused risk:
-  Define the first implementation-readiness gate for the monitor-backed modern
-  NIC path. This should map each required receipt/carrier to an observation-only
-  Linux probe or stub and prove that no behavior-changing enforcement is
-  approved until the gate is satisfied.
+  Design the observation-only Linux probe/stub ledger and no-code trace runner
+  for the modern NIC HyperTag path. This should select the smallest source
+  anchors and validation commands, still with no behavior-changing patches.
 ```
 The current scheduler-authority refinement frontier is now:
 

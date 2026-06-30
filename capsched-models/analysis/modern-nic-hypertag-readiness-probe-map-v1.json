@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "id": "modern-nic-hypertag-readiness-probe-map-v1",
+  "analysis": "0062-modern-nic-hypertag-readiness-probe-map.md",
+  "date": "2026-06-30",
+  "purpose": "Map each required modern NIC HyperTag monitor receipt or typed carrier to observation-only Linux probes or inert stubs before any behavior-changing implementation is approved.",
+  "global_constraints": {
+    "observation_only": true,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "behavior_change": false,
+    "protection_claim": false
+  },
+  "required_rows": [
+    {
+      "id": "LocalDomainDeviceLease",
+      "kind": "monitor_receipt_precondition",
+      "observation_surfaces": [
+        "root-management admission decision log",
+        "service Domain selection log",
+        "device placement policy trace",
+        "cluster lease receive/revoke trace"
+      ],
+      "inert_stub": [
+        "opaque local lease id",
+        "epoch value",
+        "service Domain id",
+        "device id"
+      ],
+      "forbidden_shortcuts": [
+        "signed cluster lease text",
+        "scheduler placement decision",
+        "service admission state"
+      ]
+    },
+    {
+      "id": "DeviceRootReceipt",
+      "kind": "monitor_receipt",
+      "observation_surfaces": [
+        "PCI probe/remove",
+        "driver bind/unbind",
+        "VFIO/iommufd ownership transitions",
+        "IOMMU domain attach/detach",
+        "netdev register/unregister",
+        "devlink instance register/unregister"
+      ],
+      "inert_stub": [
+        "device root receipt type",
+        "RID/PASID identity fields",
+        "service Domain binding field",
+        "monitor epoch field"
+      ],
+      "forbidden_shortcuts": [
+        "PCI enumeration",
+        "netdev registration",
+        "driver probe success",
+        "VFIO group ownership",
+        "iommufd object lifetime"
+      ]
+    },
+    {
+      "id": "VfEpochReceipt",
+      "kind": "monitor_receipt",
+      "observation_surfaces": [
+        "ice_get_vf_by_id source anchor",
+        "ice_reset_vf",
+        "ice_reset_all_vfs",
+        "ice_free_vfs",
+        "VFLR processing",
+        "ICE_VF_STATE_ACTIVE/DIS transitions",
+        "mailbox open/embargo/reopen",
+        "VSI index release/reuse"
+      ],
+      "inert_stub": [
+        "VF epoch token type",
+        "visible vf_id",
+        "monitor vf_epoch",
+        "VSI generation placeholder"
+      ],
+      "forbidden_shortcuts": [
+        "vf_id equality",
+        "ice_vf pointer reachability",
+        "cfg_lock",
+        "ACTIVE/DIS state",
+        "stable VSI index",
+        "reset completion"
+      ]
+    },
+    {
+      "id": "QueueLeaseReceipt",
+      "kind": "monitor_receipt",
+      "observation_surfaces": [
+        "ring allocation/free",
+        "q_vector/NAPI binding",
+        "VSI queue map changes",
+        "VF queue configuration",
+        "devlink/rate queue-control",
+        "XDP/AF_XDP queue bind",
+        "representor lower queue selection"
+      ],
+      "inert_stub": [
+        "QueueLease id and epoch",
+        "submit class enum",
+        "queue budget placeholder",
+        "allowed queue id"
+      ],
+      "forbidden_shortcuts": [
+        "ring pointer",
+        "q_vector",
+        "NAPI instance",
+        "queue_mapping",
+        "VF queue id",
+        "VPLAN queue base",
+        "devlink queue state"
+      ]
+    },
+    {
+      "id": "DmaMemoryViewReceipt",
+      "kind": "monitor_receipt",
+      "observation_surfaces": [
+        "VF-provided dma_ring_addr copy points",
+        "dma_map/dma_unmap call paths",
+        "dma-iommu unmap and sync paths",
+        "iommufd access-user release/unmap/unpin",
+        "VFIO type1 unmap/unpin callbacks",
+        "IOMMU queued flush and completion",
+        "XSK pool map/unmap",
+        "page_pool recycle/return"
+      ],
+      "inert_stub": [
+        "DMA MemoryView receipt type",
+        "old/new MemoryView ids",
+        "IOTLB completion placeholder",
+        "outstanding DMA drain placeholder"
+      ],
+      "forbidden_shortcuts": [
+        "Linux dma_map/unmap",
+        "VFIO/iommufd unmap callback",
+        "iommu_unmap_fast",
+        "queued flush",
+        "page unpin",
+        "XSK pool unmap",
+        "page_pool recycle"
+      ]
+    },
+    {
+      "id": "IrqRouteReceipt",
+      "kind": "monitor_receipt",
+      "observation_surfaces": [
+        "MSI/MSI-X vector allocation/free",
+        "request_irq/free_irq",
+        "VFIO eventfd attach/detach",
+        "iommufd isolated-MSI setup",
+        "IRTE or architecture route updates",
+        "interrupt-entry-cache flush",
+        "posted interrupt teardown",
+        "queue vector remap"
+      ],
+      "inert_stub": [
+        "IRQ route receipt type",
+        "route tag",
+        "route epoch",
+        "delivery endpoint id"
+      ],
+      "forbidden_shortcuts": [
+        "vector id range check",
+        "request_irq",
+        "free_irq",
+        "pci_free_irq_vectors",
+        "eventfd detach",
+        "IRTE clear without flush"
+      ]
+    },
+    {
+      "id": "LedgerRootReceipt",
+      "kind": "monitor_receipt",
+      "observation_surfaces": [
+        "descriptor write points",
+        "tail doorbell writes",
+        "NAPI poll completion paths",
+        "IRQ completion paths",
+        "XSK CQ submit/free-list return",
+        "page_pool return/recycle",
+        "driver tracepoints"
+      ],
+      "inert_stub": [
+        "SubmitLedger id",
+        "DescriptorLedger id",
+        "CompletionSettlement id",
+        "queue epoch",
+        "submit class"
+      ],
+      "forbidden_shortcuts": [
+        "driver ring index",
+        "tracepoint visibility",
+        "current worker task",
+        "last submitter",
+        "NAPI poll context"
+      ]
+    },
+    {
+      "id": "TypedEndpointCarriers",
+      "kind": "carrier_set",
+      "carriers": [
+        "QueueSubmitEndpoint",
+        "DescriptorLedgerEndpoint",
+        "CompletionEndpoint",
+        "VFMailboxEndpoint",
+        "QueueConfigEndpoint",
+        "QueueEnableEndpoint",
+        "IrqRouteEndpoint",
+        "QueueBudgetEndpoint",
+        "QueueControlEndpoint",
+        "RepresentorForwardEndpoint",
+        "OffloadEndpoint",
+        "PtpControlEndpoint",
+        "DpllControlEndpoint",
+        "ServiceWorkCarrier",
+        "BudgetTicket"
+      ],
+      "observation_surfaces": [
+        "virtchnl message dispatch and handler selection",
+        "queue config and enable paths",
+        "IRQ map paths",
+        "bandwidth/quanta programming paths",
+        "FDIR/TC/switchdev offload paths",
+        "representor transmit and lower_dev rebinding",
+        "PTP/DPLL/GNSS control workers",
+        "service-task coalescing and reset/replay loops"
+      ],
+      "inert_stub": [
+        "frozen request/carrier structures",
+        "explicit operation class",
+        "caller Domain id and epoch fields",
+        "service Domain id and epoch fields",
+        "budget placeholder"
+      ],
+      "forbidden_shortcuts": [
+        "virtchnl validation",
+        "opcode allowlist",
+        "devlink object reachability",
+        "bridge/FDB policy",
+        "switchdev mark",
+        "representor netdev reachability",
+        "service worker identity",
+        "PTP/DPLL callback reachability"
+      ]
+    },
+    {
+      "id": "RevokeAndHandoffReceipts",
+      "kind": "receipt_set",
+      "observation_surfaces": [
+        "queue disable and drain paths",
+        "reset/VFLR completion paths",
+        "FDIR ctx_irq/ctx_done clear paths",
+        "TC/offload stale-rule removal",
+        "XSK/page-pool settlement paths",
+        "DMA/IOMMU invalidation paths",
+        "IRQ route invalidation paths",
+        "mailbox embargo/reopen paths"
+      ],
+      "inert_stub": [
+        "QueueRevokeReceipt placeholder",
+        "NewVfEpochReceipt placeholder",
+        "stale completion quarantine marker",
+        "generation reset placeholder"
+      ],
+      "forbidden_shortcuts": [
+        "netdev down",
+        "reset completion",
+        "ring cleanup",
+        "FDIR ctx_done clear",
+        "representor stop",
+        "service work completion",
+        "mailbox counter reset",
+        "packet free"
+      ]
+    }
+  ],
+  "allowed_patch_shape": [
+    "CONFIG_CAPSCHED gated",
+    "no user ABI",
+    "no new public tracepoint ABI unless separately approved",
+    "no changed return values",
+    "no queue rejection",
+    "no queue enable/disable behavior change",
+    "no DMA map/unmap behavior change",
+    "no IRQ allocation/free behavior change",
+    "no netdev/devlink/VFIO/iommufd semantic change",
+    "no scheduler behavior change",
+    "no monitor security claim"
+  ],
+  "required_row_fields_for_future_ledger": [
+    "receipt_or_carrier",
+    "linux_source_anchor",
+    "observation_surface",
+    "stub_shape",
+    "observation_only",
+    "authority_claim",
+    "monitor_verified",
+    "behavior_change",
+    "protection_claim",
+    "forbidden_shortcut",
+    "validation_command"
+  ],
+  "exit_criteria": [
+    "every required receipt/carrier row has an observation surface",
+    "every row has a forbidden-shortcut statement",
+    "every proposed stub is inert and has no hardware or user-visible effect",
+    "finite model rejects behavior-changing approval before gate satisfaction",
+    "assurance case records the gate as readiness evidence only",
+    "next Linux action remains observation or inert type scaffolding"
+  ]
+}

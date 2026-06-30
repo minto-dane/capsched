@@ -79,6 +79,8 @@ Model-supported areas:
   and service replay freshness semantics
 - modern NIC HyperTag Monitor, Linux service/driver Domain, target endpoint,
   and receipt-minting split semantics
+- modern NIC HyperTag implementation-readiness gate semantics, explicitly
+  limited to observation-only probes and inert stubs
 
 Prototype-evidenced areas:
 
@@ -96,6 +98,7 @@ Open production gaps:
 - real IOMMU, IRQ, and queue revocation
 - monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, and typed
   queue ledger roots
+- observation-only modern NIC HyperTag probe/stub patch or no-code trace runner
 - service-domain TCB reduction
 - exploit-containment and cost-efficiency evaluation
 
@@ -192,6 +195,13 @@ Modern NIC HyperTag split model:
   local monitor compilation, audit-only monitor calls after Linux side effects,
   and per-packet monitor traps on the ordinary data path.
 
+Modern NIC HyperTag readiness gate model:
+  safe TLC passed with 8 generated states and 7 distinct states. Unsafe configs
+  produced expected counterexamples for behavior-changing approval before gate
+  satisfaction, probe-as-authority, non-inert stubs, missing receipt/carrier
+  coverage, raw endpoint exposure through stubs, and protection claims from
+  readiness evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -206,6 +216,8 @@ Forbidden:
   VPLAN/VPINT programming success, service Domain policy, Linux DMA/IRQ state,
   signed cluster lease text, audit-only monitor logging, or raw PF/VF/IOMMU/MSI/
   devlink handle exposure as QueueLease authority, Domain ownership, receipt
-  minting, or revoke authority. Do not implement behavior-changing QueueLease
-  enforcement from this evidence alone.
+  minting, or revoke authority. Do not treat an observation probe, inert stub,
+  readiness ledger, or successful readiness TLC run as production protection.
+  Do not implement behavior-changing QueueLease enforcement from this evidence
+  alone.
 ```

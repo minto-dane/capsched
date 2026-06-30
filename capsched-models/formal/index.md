@@ -46,6 +46,7 @@ Updated: 2026-06-30
 | 0038 | Checked with safe pass and expected unsafe counterexamples | VF Mailbox Carrier Model |
 | 0039 | Checked with safe pass and expected unsafe counterexamples | VF Epoch Handoff Model |
 | 0040 | Checked with safe pass and expected unsafe counterexamples | Modern NIC HyperTag Split Model |
+| 0041 | Checked with safe pass and expected unsafe counterexamples | Modern NIC HyperTag Readiness Gate Model |
 
 ## Planned
 

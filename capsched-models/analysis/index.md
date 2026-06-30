@@ -67,6 +67,7 @@ Updated: 2026-06-30
 | 0059 | Draft source map with model gate | ICE VF Mailbox Queue Carrier Source Map |
 | 0060 | Draft source map with model gate | ICE VF Epoch and Handoff Source Map |
 | 0061 | Draft architecture map with model gate | Modern NIC HyperTag Interface and Service Domain Split |
+| 0062 | Draft implementation-readiness map with model gate | Modern NIC HyperTag Readiness Probe Map |
 
 ## Planned Analysis Notes
 
@@ -98,3 +99,4 @@ Updated: 2026-06-30
 | `ice-vf-mailbox-carrier-source-map-v1.json` | Draft source map | Machine-readable ICE VF mailbox queue/DMA/IRQ/budget/FDIR carrier authority map |
 | `ice-vf-epoch-handoff-source-map-v1.json` | Draft source map | Machine-readable ICE VF reset/reassignment, VF epoch, VSI generation, queue/IRQ/DMA, FDIR, mailbox, and service replay handoff map |
 | `modern-nic-hypertag-interface-map-v1.json` | Draft architecture map | Machine-readable HyperTag Monitor, Linux service/driver Domain, target endpoint, and modern NIC receipt split map |
+| `modern-nic-hypertag-readiness-probe-map-v1.json` | Draft readiness map | Machine-readable observation-only probe and inert-stub mapping for modern NIC HyperTag receipts/carriers |

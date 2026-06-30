@@ -83,6 +83,9 @@ validation/0059-vf-epoch-handoff-tlc.md
 
 formal/0040-modern-nic-hypertag-split-model/
 validation/0060-modern-nic-hypertag-split-tlc.md
+
+formal/0041-modern-nic-readiness-gate-model/
+validation/0061-modern-nic-readiness-gate-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -100,6 +103,7 @@ analysis/0058-ice-servicework-carrier-source-map.md
 analysis/0059-ice-vf-mailbox-carrier-source-map.md
 analysis/0060-ice-vf-epoch-handoff-source-map.md
 analysis/0061-modern-nic-hypertag-interface-map.md
+analysis/0062-modern-nic-hypertag-readiness-probe-map.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -109,9 +113,12 @@ analysis/ice-servicework-carrier-source-map-v1.json
 analysis/ice-vf-mailbox-carrier-source-map-v1.json
 analysis/ice-vf-epoch-handoff-source-map-v1.json
 analysis/modern-nic-hypertag-interface-map-v1.json
+analysis/modern-nic-hypertag-readiness-probe-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
+
+implementation/0007-modern-nic-hypertag-readiness-gate.md
 ```
 
 Top-level assurance evidence:
@@ -173,6 +180,11 @@ HyperTagSplit:
   monitor mints roots and receipts, Linux service Domains parse policy and
   program hardware only after receipts, target Domains receive typed endpoints,
   and ordinary packet submission does not trap to the monitor per packet
+
+ReadinessGate:
+  every required receipt/carrier maps to observation-only probes or inert stubs;
+  probes and stubs are not authority, do not change behavior, do not expose raw
+  endpoints, and do not justify protection claims
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -703,6 +715,10 @@ Refinement:
   receipt, typed endpoints, and fresh service carrier are all present before a
   data-plane effect, while ordinary packet submission avoids per-packet monitor
   traps.
+  validation/0061 models the implementation-readiness gate. Safe TLC passes
+  only when receipt/carrier inventory, observation probe mapping, observation-
+  only probe classification, inert stubs, no raw endpoint exposure, model gate,
+  and assurance linkage are all present before behavior-changing approval.
   validation/0055 models stale XSK/page-pool completion quarantine. Safe TLC
   passes only when old XSK CQ completion, XSK free-list return, page-pool
   recycle, PageOwner transfer, packet generation reset, and queue reassignment
@@ -794,9 +810,11 @@ DEV-001 modern NIC refinement:
   model-supported for VF epoch handoff and stale identifier rejection semantics
   model-supported for HyperTag Monitor/service Domain/target endpoint split
   semantics
+  model-supported for implementation-readiness gate ordering
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
+  readiness-only for HyperTag probe/stub planning
   not protection-evidenced
   not implementation-approved
 ```
@@ -808,13 +826,15 @@ trace-only observation improvements
 machine-readable ledger refinement
 additional device family source maps
 small formal models for revoke/drain/quarantine ordering
-implementation planning that names subclaim coverage
+observation-only implementation planning that names receipt/carrier coverage
 VF epoch handoff planning that names mailbox embargo, VF epoch bump, VSI
 generation, QueueLease generation, DMA/IRQ receipts, FDIR context clearing, and
 service replay authorization
 HyperTag interface planning that names monitor-owned roots, service Domain
 policy-only authority, typed target endpoints, receipt minting, and no
 per-packet monitor trap
+HyperTag readiness planning that maps receipt/carrier rows to observation-only
+Linux probes or inert stubs, with authority_claim=false and behavior_change=false
 ```
 
 Still forbidden:
@@ -863,6 +883,8 @@ A behavior-changing prototype is not allowed until it has at least:
     and hardware programming in the service Domain, typed endpoints in target
     Domains, cluster lease compilation local, and ordinary packet submission off
     the monitor slow path
-12. clear statement that Linux-only evidence is compatibility/prototype
+12. HyperTag readiness gate proof that probes/stubs are observation-only,
+    coverage-complete, inert, raw-endpoint-free, and not protection evidence
+13. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

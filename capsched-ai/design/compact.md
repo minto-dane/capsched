@@ -58,11 +58,14 @@ latest completed focused risk:
   Modern NIC HyperTag Monitor interface and Linux service/driver Domain split
   for QueueLease/VF/DMA/IRQ/representor/offload/service-work authority.
 
+latest completed focused risk:
+  Modern NIC HyperTag implementation-readiness gate for observation-only
+  probes, inert stubs, and no behavior-changing approval before gate
+  satisfaction.
+
 next focused risk:
-  Define the first implementation-readiness gate for the monitor-backed modern
-  NIC path, mapping each required receipt/carrier to an observation-only Linux
-  probe or stub and proving that no behavior-changing enforcement is approved
-  until the gate is satisfied.
+  Design the observation-only Linux probe/stub ledger and no-code trace runner
+  for the modern NIC HyperTag path without behavior-changing patches.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -278,6 +281,25 @@ analysis/0061 + formal/0040 + validation/0060:
     ids, reset completion, remote lease text, and audit logs are not monitor
     authority. Monitor entry is for bind, config, revoke, epoch, budget, and
     ownership changes, not ordinary packet submission.
+
+analysis/0062 + implementation/0007 + formal/0041 + validation/0061:
+  Modern NIC HyperTag implementation-readiness gate mapped and modeled.
+  gate rule:
+    every required receipt/carrier row maps to observation-only probes or inert
+    stubs with observation_only=true, authority_claim=false,
+    monitor_verified=false, behavior_change=false, and protection_claim=false.
+  safe TLC:
+    8 generated states, 7 distinct states, depth 7
+  unsafe counterexamples:
+    behavior approval before gate satisfaction
+    probe-as-authority
+    non-inert stub
+    missing receipt/carrier coverage
+    raw endpoint stub
+    protection claim from readiness evidence
+  design rule:
+    readiness may scope a future observation patch; it is not a monitor receipt,
+    authority, implementation, or production protection claim.
 ```
 
 ## Core Architecture

@@ -17,6 +17,7 @@
     "vf_mailbox_carrier": "model_checked",
     "vf_epoch_handoff": "model_checked",
     "hypertag_service_split": "model_checked",
+    "hypertag_readiness_gate": "model_checked_readiness_only",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -24,6 +25,7 @@
     "model_checked": "Finite TLA+ evidence supporting local semantic constraints.",
     "source_observed": "Linux source anchors showing where a future implementation might attach observation or enforcement.",
     "observation_only": "Tracepoint/source readiness evidence; useful for study but not protection proof.",
+    "readiness_gate": "Evidence constraining a future implementation plan; useful for staging but not protection proof.",
     "protection_missing": "Required monitor-backed or non-forgeable root is absent.",
     "forbidden": "Claim or shortcut that must not be made from current evidence."
   },
@@ -319,6 +321,42 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks monitor/service/target endpoint split, receipt minting, audit-only monitor hazards, remote lease local compilation, and no per-packet monitor trap; not real monitor, driver, IOMMU, IRQ, or performance evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-025",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0062-modern-nic-hypertag-readiness-probe-map.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Maps each required receipt/carrier to observation-only probes or inert stubs; it is a readiness map, not implementation, authority, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-026",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0061-modern-nic-readiness-gate-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks implementation-readiness gate ordering and rejects behavior approval, probe-as-authority, non-inert stubs, missing coverage, raw endpoint stubs, and protection claims; it is not real Linux compatibility or monitor enforcement evidence."
     }
   ],
   "subclaims": [

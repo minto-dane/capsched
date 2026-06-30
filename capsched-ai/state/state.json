@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "modern-nic-hypertag-split-modeled",
+    "current_phase": "modern-nic-hypertag-readiness-gate-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0061 projects modern NIC QueueLease, VF mailbox, VF epoch handoff, DMA/IOMMU, IRQ, representor, offload, service-work, and cluster-lease evidence into a HyperTag Monitor interface plus Linux service/driver Domain split. Validation/0060 adds the Modern NIC HyperTag Split model: safe TLC passed with 10 generated states, 10 distinct states, and depth 10; unsafe configs produced expected counterexamples for service-Domain receipt minting, Linux DMA as receipt, Linux IRQ as receipt, raw endpoint exposure, queue activation without DMA/IRQ/ledger roots, service replay under an old epoch, remote cluster lease used directly, audit-only monitor calls, and per-packet monitor traps. The current hard gaps remain: no actual HyperTag Monitor implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is defining the first implementation-readiness gate for the monitor-backed modern NIC path, mapping each required receipt/carrier to observation-only Linux probes/stubs and proving that no behavior-changing enforcement is approved until the gate is satisfied.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0062 and implementation/0007 define the modern NIC HyperTag implementation-readiness gate: every required LocalDomainDeviceLease, DeviceRootReceipt, VfEpochReceipt, QueueLeaseReceipt, DmaMemoryViewReceipt, IrqRouteReceipt, LedgerRootReceipt, typed endpoint carrier, and revoke/handoff receipt must map to observation-only Linux probes or inert stubs, with observation_only=true, authority_claim=false, monitor_verified=false, behavior_change=false, and protection_claim=false. Validation/0061 adds the Modern NIC HyperTag Readiness Gate model: safe TLC passed with 8 generated states, 7 distinct states, and depth 7; unsafe configs produced expected counterexamples for behavior approval before gate satisfaction, probe-as-authority, non-inert stubs, missing receipt/carrier coverage, raw endpoint stubs, and protection claims from readiness evidence. The current hard gaps remain: no observation-only modern NIC HyperTag Linux probe/stub patch; no actual HyperTag Monitor implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is designing the observation-only Linux probe/stub ledger and no-code trace runner for the modern NIC HyperTag path without behavior-changing patches.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -377,7 +377,14 @@
     "modern_nic_hypertag_split_model": "capsched/capsched-models/formal/0040-modern-nic-hypertag-split-model/README.md",
     "modern_nic_hypertag_split_tla": "capsched/capsched-models/formal/0040-modern-nic-hypertag-split-model/NicHypertagSplit.tla",
     "modern_nic_hypertag_split_validation": "capsched/capsched-models/validation/0060-modern-nic-hypertag-split-tlc.md",
-    "modern_nic_hypertag_split_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/nic-hypertag-split-20260630T040652Z"
+    "modern_nic_hypertag_split_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/nic-hypertag-split-20260630T040652Z",
+    "modern_nic_hypertag_readiness_probe_map": "capsched/capsched-models/analysis/0062-modern-nic-hypertag-readiness-probe-map.md",
+    "modern_nic_hypertag_readiness_probe_map_json": "capsched/capsched-models/analysis/modern-nic-hypertag-readiness-probe-map-v1.json",
+    "modern_nic_hypertag_readiness_gate": "capsched/capsched-models/implementation/0007-modern-nic-hypertag-readiness-gate.md",
+    "modern_nic_hypertag_readiness_gate_model": "capsched/capsched-models/formal/0041-modern-nic-readiness-gate-model/README.md",
+    "modern_nic_hypertag_readiness_gate_tla": "capsched/capsched-models/formal/0041-modern-nic-readiness-gate-model/NicHypertagReadinessGate.tla",
+    "modern_nic_hypertag_readiness_gate_validation": "capsched/capsched-models/validation/0061-modern-nic-readiness-gate-tlc.md",
+    "modern_nic_hypertag_readiness_gate_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/nic-hypertag-readiness-gate-20260630T042432Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1686,9 +1693,19 @@
     {
       "id": "N-089",
       "text": "Define the first implementation-readiness gate for the monitor-backed modern NIC path, mapping each required receipt/carrier to an observation-only Linux probe or stub and proving that no behavior-changing enforcement is approved until the gate is satisfied.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created analysis/0062 plus modern-nic-hypertag-readiness-probe-map-v1.json, implementation/0007, then formal/0041 NicHypertagReadinessGate and validation/0061. The map requires every receipt/carrier row to remain observation_only=true, authority_claim=false, monitor_verified=false, behavior_change=false, and protection_claim=false. Safe TLC passed with 8 generated states, 7 distinct states, and depth 7. Unsafe configs produced expected counterexamples for behavior approval before gate satisfaction, probe-as-authority, non-inert stubs, missing receipt/carrier coverage, raw endpoint stubs, and protection claims from readiness evidence.",
       "blocked_by": [
         "N-088"
+      ]
+    },
+    {
+      "id": "N-090",
+      "text": "Design the observation-only Linux probe/stub ledger and no-code trace runner for the modern NIC HyperTag path, selecting the smallest source anchors and validation commands without behavior-changing patches.",
+      "status": "pending",
+      "blocked_by": [
+        "N-089"
       ]
     }
   ],
