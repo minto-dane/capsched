@@ -90,22 +90,22 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Local monitor admission ABI semantic candidate. Analysis/0069 defines
-  `LocalMonitorAdmissionABI-v0` request classes, response classes, common
-  fields, monitor-owned receipt ledger semantics, replay windows,
-  Linux-visible shadow invalidation, failure terminality, and revoke ordering.
-  Formal/0046 plus validation/0068 safe TLC passed with 24 generated states,
-  20 distinct states, and depth 12. Unsafe configs reject unknown request-class
-  acceptance, response without request, replay acceptance, failure-then-
-  receipt, Linux ledger writes, endpoint before receipt, Linux shadow authority,
-  missing shadow invalidation before revoke complete, new receipt during revoke,
-  and revoke complete before derived receipt revoke. This is semantic evidence,
-  not ABI layout or implementation evidence.
+  Local monitor admission carrier sketch comparison. Analysis/0070 compares
+  direct-call-first reference semantics with monitor-owned-ring-first throughput
+  refinement. Formal/0047 plus validation/0069 safe TLC passed with 18
+  generated states, 16 distinct states, and depth 9. Unsafe configs reject
+  Linux direct response authority, direct response without replay check, ring
+  slot authority, ring response before monitor claim, batch epoch crossing,
+  shadow refresh from carrier, revoke complete with pending ring responses, and
+  performance cost as security authority. Ring remains required for data-center
+  throughput; it must refine the direct-call semantic model rather than
+  replacing monitor authority with ring state.
 
 next focused risk:
-  Compare direct-call-first and monitor-owned-ring-first implementation-facing
-  sketches against `LocalMonitorAdmissionABI-v0`, without selecting code layout
-  or implementing it.
+  Define the direct-call reference ABI sketch against
+  `LocalMonitorAdmissionABI-v0`, including monitor entry, request copy/validate,
+  replay-window consume, ledger write, response handle, Linux shadow refresh,
+  and revoke slow path, without selecting binary layout or implementing it.
 ```
 
 That focused VF IRQ model is now checked:

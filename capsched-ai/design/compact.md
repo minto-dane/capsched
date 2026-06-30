@@ -92,20 +92,20 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Local monitor admission ABI semantic candidate. Analysis/0069 and formal/0046
-  define `LocalMonitorAdmissionABI-v0` semantics for typed request classes,
-  monitor responses, monitor-owned ledger writes, replay windows,
-  non-authoritative Linux shadows, failure terminality, and revoke ordering.
-  Validation/0068 safe TLC passed with 24 generated states, 20 distinct states,
-  and depth 12; unsafe configs reject unknown-class acceptance, response
-  without request, replay acceptance, failure-then-receipt, Linux ledger writes,
-  endpoint before receipt, shadow authority, missing shadow invalidation, new
-  receipt during revoke, and early revoke complete.
+  Local monitor admission carrier sketch comparison. Analysis/0070 and
+  formal/0047 compare direct-call-first reference semantics with
+  monitor-owned-ring-first throughput refinement. Validation/0069 safe TLC
+  passed with 18 generated states, 16 distinct states, and depth 9; unsafe
+  configs reject Linux direct response authority, direct response without replay
+  check, ring slot authority, ring response before monitor claim, batch epoch
+  crossing, shadow refresh from carrier, revoke complete with pending ring
+  responses, and cost-as-security. Ring remains a required throughput
+  refinement, not a weaker alternative.
 
 next focused risk:
-  Compare direct-call-first and monitor-owned-ring-first implementation-facing
-  sketches against `LocalMonitorAdmissionABI-v0`; do not confuse semantic ABI
-  candidate with selected binary ABI or implementation.
+  Define the direct-call reference ABI sketch against
+  `LocalMonitorAdmissionABI-v0`, without selecting binary layout or
+  implementing it.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

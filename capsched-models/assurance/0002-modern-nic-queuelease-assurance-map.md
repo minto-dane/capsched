@@ -101,6 +101,9 @@ validation/0067-monitor-admission-carrier-storage-tlc.md
 
 formal/0046-local-monitor-admission-abi-model/
 validation/0068-local-monitor-admission-abi-tlc.md
+
+formal/0047-monitor-admission-carrier-sketch-model/
+validation/0069-monitor-admission-carrier-sketch-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -126,6 +129,7 @@ analysis/0066-local-domain-device-lease-admission-protocol.md
 analysis/0067-local-monitor-admission-interface-boundary.md
 analysis/0068-local-monitor-admission-carrier-storage.md
 analysis/0069-local-monitor-admission-abi-semantics.md
+analysis/0070-local-monitor-admission-carrier-sketch-comparison.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -143,6 +147,7 @@ analysis/local-domain-device-lease-admission-protocol-v1.json
 analysis/local-monitor-admission-interface-boundary-v1.json
 analysis/local-monitor-admission-carrier-storage-v1.json
 analysis/local-monitor-admission-abi-semantics-v0.json
+analysis/local-monitor-admission-carrier-sketch-comparison-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -152,6 +157,7 @@ validation/0065-local-domain-device-lease-admission-tlc.md
 validation/0066-local-monitor-admission-interface-tlc.md
 validation/0067-monitor-admission-carrier-storage-tlc.md
 validation/0068-local-monitor-admission-abi-tlc.md
+validation/0069-monitor-admission-carrier-sketch-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
@@ -268,6 +274,13 @@ LocalMonitorAdmissionABI:
   writes, monitor-owned replay windows, non-authoritative Linux shadows,
   terminal failure, and ordered revoke with shadow invalidation are required
   before any carrier or code layout can be selected.
+
+MonitorAdmissionCarrierSketch:
+  direct-call-first is the small reference semantic sketch and
+  monitor-owned-ring-first is the throughput refinement direction. The ring
+  path must add monitor slot claims, slot epochs, batch epoch stability, pending
+  response drain, and DoS accounting; it must not replace monitor authority with
+  ring state.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It

@@ -75,6 +75,7 @@ Updated: 2026-06-30
 | 0067 | Draft interface boundary with model gate | Local Monitor Admission Interface Boundary |
 | 0068 | Draft choice gate with model | Local Monitor Admission Carrier and Receipt Storage |
 | 0069 | Draft semantic ABI candidate with model gate | Local Monitor Admission ABI Semantics Candidate |
+| 0070 | Draft implementation-facing sketch comparison with model gate | Local Monitor Admission Carrier Sketch Comparison |
 
 ## Planned Analysis Notes
 
@@ -114,3 +115,4 @@ Updated: 2026-06-30
 | `local-monitor-admission-interface-boundary-v1.json` | Draft interface boundary | Machine-readable local monitor request/response object boundary, freshness fields, attachment points, and forbidden exposures |
 | `local-monitor-admission-carrier-storage-v1.json` | Draft choice gate | Machine-readable local monitor carrier/storage choice gate and authority-collapse rejection map |
 | `local-monitor-admission-abi-semantics-v0.json` | Draft semantic ABI candidate | Machine-readable LocalMonitorAdmissionABI-v0 request/response, ledger, replay, shadow, failure, and revoke semantics |
+| `local-monitor-admission-carrier-sketch-comparison-v1.json` | Draft sketch comparison | Machine-readable direct-call-first versus monitor-owned-ring-first carrier sketch comparison |

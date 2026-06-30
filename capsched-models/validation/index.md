@@ -74,6 +74,7 @@ Updated: 2026-06-30
 | 0066 | Safe model passed; unsafe models produced expected counterexamples | Local Monitor Admission Interface TLC |
 | 0067 | Safe model passed; unsafe models produced expected counterexamples | Monitor Admission Carrier Storage TLC |
 | 0068 | Safe model passed; unsafe models produced expected counterexamples | Local Monitor Admission ABI TLC |
+| 0069 | Safe model passed; unsafe models produced expected counterexamples | Monitor Admission Carrier Sketch TLC |
 
 ## Principles
 

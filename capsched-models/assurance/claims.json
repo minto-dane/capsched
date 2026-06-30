@@ -243,7 +243,9 @@
         "E-DEV-MNIC-037",
         "E-DEV-MNIC-038",
         "E-DEV-MNIC-039",
-        "E-DEV-MNIC-040"
+        "E-DEV-MNIC-040",
+        "E-DEV-MNIC-041",
+        "E-DEV-MNIC-042"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -595,7 +597,9 @@
         "E-DEV-MNIC-037",
         "E-DEV-MNIC-038",
         "E-DEV-MNIC-039",
-        "E-DEV-MNIC-040"
+        "E-DEV-MNIC-040",
+        "E-DEV-MNIC-041",
+        "E-DEV-MNIC-042"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1243,6 +1247,26 @@
       "limitation": "Finite model checks ABI semantic constraints for request classes, monitor response ownership, replay rejection, failure terminality, ledger ownership, endpoint receipt gating, shadow invalidation, and revoke ordering; it is not ABI layout or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-041",
+      "kind": "analysis_carrier_sketch_comparison",
+      "record": "capsched-models/analysis/0070-local-monitor-admission-carrier-sketch-comparison.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Compares direct-call-first reference semantics with monitor-owned-ring-first throughput refinement and records required ring obligations; it is not ABI layout, implementation, performance, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-042",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0069-monitor-admission-carrier-sketch-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks direct/ring carrier sketch constraints for response ownership, replay checks, monitor slot claims, batch epoch stability, shadow refresh source, pending response drain, and cost non-authority; it is not ABI layout or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1326,6 +1350,8 @@
     "Root-management ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation is a LocalDomainDeviceLease.",
     "Linux service-domain queues, Linux-owned response stores, Linux-visible shadows, audit logs, ring slots, or raw driver handles are monitor receipt authority.",
     "A semantic ABI candidate is a selected binary ABI, monitor call layout, Linux stub, shared-ring format, or production protection proof.",
+    "Choosing direct-call reference semantics means ring/batching is unnecessary for the datacenter performance target.",
+    "Ring batching can weaken monitor-owned response, replay, receipt ledger, revoke, or shadow invalidation semantics.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1401,7 +1427,9 @@
         "E-DEV-MNIC-037",
         "E-DEV-MNIC-038",
         "E-DEV-MNIC-039",
-        "E-DEV-MNIC-040"
+        "E-DEV-MNIC-040",
+        "E-DEV-MNIC-041",
+        "E-DEV-MNIC-042"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1412,7 +1440,8 @@
         "Admission-protocol model for failure and revoke ordering.",
         "Pre-ABI monitor admission interface boundary model.",
         "Pre-ABI carrier/storage choice gate model.",
-        "Semantic monitor ABI candidate model before carrier or binary layout selection."
+        "Semantic monitor ABI candidate model before carrier or binary layout selection.",
+        "Direct-call versus monitor-owned-ring implementation-facing sketch comparison."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

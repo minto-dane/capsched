@@ -1,0 +1,109 @@
+{
+  "schema": "capsched.local_monitor_admission_carrier_sketch_comparison.v1",
+  "status": "draft_comparison",
+  "date": "2026-06-30",
+  "scope": {
+    "compares": [
+      "direct_call_first",
+      "monitor_owned_ring_first"
+    ],
+    "binary_abi_selected": false,
+    "code_layout_selected": false,
+    "implementation_approved": false,
+    "behavior_change": false,
+    "protection_claim": false
+  },
+  "reference_semantics": "LocalMonitorAdmissionABI-v0",
+  "candidates": [
+    {
+      "id": "direct_call_first",
+      "classification": "reference_semantic_sketch",
+      "authority_root": "monitor_entry_plus_monitor_receipt_ledger",
+      "strengths": [
+        "smallest_state_machine",
+        "lowest_replay_ambiguity",
+        "simple_failure_terminality",
+        "simple_revoke_ordering",
+        "good_reference_for_ring_refinement"
+      ],
+      "costs": [
+        "monitor_transition_per_admission",
+        "poor_batching",
+        "weak_high_churn_scaling",
+        "poor_cluster_burst_amortization"
+      ],
+      "required_guards": [
+        "monitor_entry_required",
+        "replay_window_check_before_success",
+        "monitor_owned_ledger_write",
+        "linux_response_store_non_authoritative",
+        "shadow_refresh_from_ledger"
+      ]
+    },
+    {
+      "id": "monitor_owned_ring_first",
+      "classification": "throughput_refinement_sketch",
+      "authority_root": "monitor_slot_claim_plus_monitor_receipt_ledger",
+      "strengths": [
+        "batching",
+        "transition_amortization",
+        "multi_queue_scaling",
+        "better_fit_for_high_rate_queue_lease_churn",
+        "natural_node_admission_queue"
+      ],
+      "costs": [
+        "larger_state_machine",
+        "slot_generation_design",
+        "head_tail_or_equivalent_monitor_ownership",
+        "pending_response_drain",
+        "ring_full_dos_accounting",
+        "batch_epoch_stability"
+      ],
+      "required_guards": [
+        "monitor_owned_slot_claim",
+        "monitor_owned_slot_epoch",
+        "monitor_claim_before_response",
+        "replay_window_check_below_linux",
+        "batch_epoch_boundary",
+        "pending_response_drain_before_revoke_complete",
+        "shadow_refresh_from_ledger"
+      ]
+    }
+  ],
+  "shared_invariants": [
+    "monitor_response_requires_monitor_entry_or_claim",
+    "replay_check_before_ledger_write_or_success_response",
+    "receipt_ledger_write_is_monitor_owned",
+    "linux_shadow_refresh_derives_from_monitor_ledger",
+    "failure_terminality_preserved",
+    "revoke_complete_requires_pending_response_drain_and_shadow_invalidation",
+    "performance_cost_metric_is_not_security_authority"
+  ],
+  "ring_specific_invariants": [
+    "linux_ring_slot_is_not_authority",
+    "monitor_claim_precedes_response_publication",
+    "linux_only_slot_generation_is_not_replay_protection",
+    "batch_reorder_cannot_cross_epoch_boundary",
+    "pending_ring_responses_drained_or_invalidated_before_revoke_complete"
+  ],
+  "direct_specific_invariants": [
+    "monitor_entry_not_bypassable_by_linux_response_store",
+    "success_response_requires_replay_window_consumption",
+    "failure_replay_or_stale_response_terminal_for_same_nonce"
+  ],
+  "staging_recommendation": {
+    "reference_semantic_sketch": "direct_call_first",
+    "production_throughput_refinement": "monitor_owned_ring_first",
+    "required_relation": "ring_behavior_refines_direct_call_semantic_model"
+  },
+  "rejected_designs": [
+    "linux_owned_response_store_for_direct_calls",
+    "linux_ring_slot_as_request_or_response_authority",
+    "ring_response_before_monitor_slot_claim",
+    "linux_only_slot_generation_as_replay_protection",
+    "batch_reorder_across_epoch_boundary",
+    "shadow_refresh_from_carrier_state",
+    "revoke_complete_with_pending_ring_responses",
+    "performance_cost_metric_as_security_authority"
+  ]
+}

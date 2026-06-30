@@ -289,6 +289,17 @@ Local monitor admission ABI semantic candidate:
   model-supported semantics only, not ABI layout, implementation, or protection
   evidence.
 
+Monitor admission carrier sketch comparison:
+  analysis/0070 and validation/0069 compare direct-call-first reference
+  semantics with monitor-owned-ring-first throughput refinement. Safe TLC
+  passed with 18 generated states, 16 distinct states, and depth 9. Unsafe
+  configs produced expected counterexamples for Linux direct response authority,
+  direct response without replay check, ring slot authority, ring response
+  before monitor claim, batch epoch crossing, shadow refresh from carrier,
+  revoke complete with pending ring responses, and performance cost as security
+  authority. This is model-supported semantics only, not ABI layout,
+  implementation, performance, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
