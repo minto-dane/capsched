@@ -89,9 +89,19 @@ latest completed risk:
   compile with target mismatch, receipt before local lease, new receipt during
   revoke, reuse before revoke completion, and audit-only acceptance.
 
+latest completed risk:
+  Local monitor admission interface boundary. Analysis/0067 names request
+  objects, monitor-owned response/receipt objects, freshness fields, Linux
+  service-domain attachment points, and forbidden raw-handle exposure. Formal/
+  0044 plus validation/0066 safe TLC passed with 14 generated states, 12
+  distinct states, and depth 11. Unsafe configs reject Linux-minted monitor
+  response, replay acceptance, failure-then-compile, receipt without monitor
+  local lease response, endpoint without receipts, revoke complete with live
+  derived receipts, and raw service handle exposure.
+
 next focused risk:
-  Define the local monitor admission interface boundary map before any monitor
-  ABI, inert Linux probe/stub proposal, or implementation.
+  Compare local monitor admission carrier and receipt-storage choices before
+  selecting a monitor ABI, Linux service-domain stub, or implementation.
 ```
 
 That focused VF IRQ model is now checked:

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "local-domain-device-lease-admission-protocol-modeled",
+    "current_phase": "local-monitor-admission-interface-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. N-091 resolved LocalDomainDeviceLease as root-management/local monitor compilation, not a Linux source-anchor gap. N-092 defined and validated the LocalDomainDeviceLease observation contract. N-093 mapped the root-management/local monitor admission protocol to that contract. Analysis/0066 plus local-domain-device-lease-admission-protocol-v1.json define happy path, failure terminality, service/target mismatch handling, revoke ordering, non-authority inputs, and required invariants. Formal/0043 and validation/0065 checked the tiny finite model: safe TLC passed with 29 generated states, 21 distinct states, and depth 14; unsafe configs produced expected counterexamples for compile after failed cluster checks, compile with service mismatch, compile with target mismatch, receipt before local lease, new receipt during revoke, local lease reuse before revoke completion, and audit-only admission/revoke acceptance. This is model-supported semantics only, not root-management implementation, monitor implementation, or production protection evidence. The current hard gaps remain: no actual HyperTag Monitor implementation; no root-management/local monitor LocalDomainDeviceLease compile implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is N-094: define the local monitor admission interface boundary map before any monitor ABI, inert Linux probe/stub proposal, or implementation.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. N-091 resolved LocalDomainDeviceLease as root-management/local monitor compilation, not a Linux source-anchor gap. N-092 defined and validated the observation contract. N-093 mapped admission failure/revoke ordering. N-094 defined the local monitor admission interface boundary before selecting any ABI or Linux stub. Analysis/0067 plus local-monitor-admission-interface-boundary-v1.json define request objects, monitor-owned response/receipt objects, freshness fields, Linux service-domain attachment points, forbidden exposures, and invariants. Formal/0044 and validation/0066 checked the tiny finite model: safe TLC passed with 14 generated states, 12 distinct states, and depth 11; unsafe configs produced expected counterexamples for Linux-minted monitor response, replayed admission response, failure-then-compile, receipt without monitor local lease response, endpoint without receipts, revoke complete with live derived receipts, and raw service handle exposure. This is model-supported semantics only, not monitor ABI, Linux stub, root-management implementation, monitor implementation, or production protection evidence. The current hard gaps remain: no actual HyperTag Monitor implementation; no root-management/local monitor LocalDomainDeviceLease compile implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is N-095: compare local monitor admission carrier/storage choices and reject any choice that collapses monitor response authority into Linux service-domain state.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -406,7 +406,13 @@
     "local_domain_device_lease_admission_model": "capsched/capsched-models/formal/0043-local-domain-device-lease-admission-model/README.md",
     "local_domain_device_lease_admission_tla": "capsched/capsched-models/formal/0043-local-domain-device-lease-admission-model/LocalDomainDeviceLeaseAdmission.tla",
     "local_domain_device_lease_admission_validation": "capsched/capsched-models/validation/0065-local-domain-device-lease-admission-tlc.md",
-    "local_domain_device_lease_admission_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/local-domain-device-lease-admission-20260630T051906Z"
+    "local_domain_device_lease_admission_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/local-domain-device-lease-admission-20260630T051906Z",
+    "local_monitor_admission_interface_boundary": "capsched/capsched-models/analysis/0067-local-monitor-admission-interface-boundary.md",
+    "local_monitor_admission_interface_boundary_json": "capsched/capsched-models/analysis/local-monitor-admission-interface-boundary-v1.json",
+    "local_monitor_admission_interface_model": "capsched/capsched-models/formal/0044-local-monitor-admission-interface-model/README.md",
+    "local_monitor_admission_interface_tla": "capsched/capsched-models/formal/0044-local-monitor-admission-interface-model/LocalMonitorAdmissionInterface.tla",
+    "local_monitor_admission_interface_validation": "capsched/capsched-models/validation/0066-local-monitor-admission-interface-tlc.md",
+    "local_monitor_admission_interface_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/local-monitor-admission-interface-20260630T052615Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1765,9 +1771,19 @@
     {
       "id": "N-094",
       "text": "Define the local monitor admission interface boundary map for LocalDomainDeviceLease, naming request/response objects, failure receipts, revoke receipts, replay/freshness fields, and Linux service-domain attachment points before any monitor ABI, inert Linux probe/stub proposal, or implementation.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created analysis/0067 plus local-monitor-admission-interface-boundary-v1.json, then formal/0044 LocalMonitorAdmissionInterface and validation/0066. The boundary separates Linux service-domain request carriage from monitor-only response/receipt minting, names freshness fields and attachment points, and forbids raw service handles, Linux-minted responses, replay acceptance, failure-then-compile, receipt without monitor local lease response, endpoint without receipts, and revoke complete with live derived receipts. Safe TLC passed with 14 generated states, 12 distinct states, and depth 11. No ABI, stub, implementation, or protection claim is made.",
       "blocked_by": [
         "N-093"
+      ]
+    },
+    {
+      "id": "N-095",
+      "text": "Compare local monitor admission carrier and receipt-storage choices, including monitor call, shared ring, service-domain queue, immutable ledger, and Linux-visible shadow state, and reject any choice that collapses monitor response authority into Linux service-domain state.",
+      "status": "pending",
+      "blocked_by": [
+        "N-094"
       ]
     }
   ],

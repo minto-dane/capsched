@@ -91,9 +91,17 @@ latest completed focused risk:
   compile, receipt during revoke, reuse before revoke completion, and audit-only
   acceptance.
 
+latest completed focused risk:
+  Local monitor admission interface boundary. Analysis/0067 and formal/0044
+  separate Linux request carriage from monitor-only response/receipt minting.
+  Validation/0066 safe TLC passed with 14 generated states, 12 distinct states,
+  and depth 11; unsafe configs reject Linux-minted responses, replay,
+  failure-then-compile, receipt/endpoint shortcut, revoke-complete shortcut, and
+  raw service-handle exposure.
+
 next focused risk:
-  Define the local monitor admission interface boundary map before any monitor
-  ABI, inert Linux probe/stub proposal, or implementation.
+  Compare local monitor admission carrier and receipt-storage choices before
+  selecting monitor ABI, Linux service-domain stubs, or implementation.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

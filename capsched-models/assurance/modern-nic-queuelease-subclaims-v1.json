@@ -22,6 +22,7 @@
     "local_domain_device_lease_compilation": "model_checked",
     "local_domain_device_lease_observation_contract": "observation_contract_validated",
     "local_domain_device_lease_admission_protocol": "model_checked",
+    "local_monitor_admission_interface_boundary": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -487,6 +488,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks local lease admission failure and revoke ordering semantics; it is not root-management, monitor, driver, IOMMU, IRQ, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-035",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0067-local-monitor-admission-interface-boundary.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines pre-ABI request/response objects, monitor-owned receipts, freshness fields, Linux service-domain attachment points, and forbidden exposures; it is not ABI or implementation evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-036",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0066-local-monitor-admission-interface-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks response ownership, replay rejection, failure termination, receipt-gated endpoint delivery, revoke ordering, and raw handle non-exposure; it is not monitor ABI, Linux stub, or protection evidence."
     }
   ],
   "subclaims": [
@@ -723,7 +760,8 @@
     "implementation planning that names subclaim coverage",
     "root-management/local monitor observation-contract planning for LocalDomainDeviceLease rows, including cluster epoch, local monitor epoch, service Domain, target Domain, device root, DMA MemoryView, IRQ route, root budget, compile result, and revocation status",
     "root-management/local monitor admission-protocol planning that consumes the LocalDomainDeviceLease observation contract without claiming enforcement",
-    "failure-mode and revoke-ordering refinement for root-management/local monitor admission before any monitor ABI or Linux stub is selected"
+    "failure-mode and revoke-ordering refinement for root-management/local monitor admission before any monitor ABI or Linux stub is selected",
+    "local monitor admission interface boundary refinement before choosing monitor ABI, Linux service-domain stubs, or typed endpoint carriers"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",

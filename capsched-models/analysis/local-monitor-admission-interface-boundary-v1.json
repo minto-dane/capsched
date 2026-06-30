@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "id": "local-monitor-admission-interface-boundary-v1",
+  "analysis": "0067-local-monitor-admission-interface-boundary.md",
+  "date": "2026-06-30",
+  "purpose": "Define the typed request/response boundary for LocalDomainDeviceLease admission before choosing a monitor ABI, Linux stub, or implementation.",
+  "status": {
+    "abi_selected": false,
+    "linux_stub_approved": false,
+    "monitor_implementation_present": false,
+    "behavior_change_approved": false,
+    "protection_claim": false
+  },
+  "request_objects": [
+    {
+      "id": "ClusterLeaseImportRequest",
+      "owner": "root_management_or_service_carrier",
+      "monitor_minted": false,
+      "must_include": [
+        "cluster_lease_id",
+        "cluster_epoch",
+        "root_management_epoch",
+        "node_id",
+        "request_nonce"
+      ]
+    },
+    {
+      "id": "ServiceAdmissionRequest",
+      "owner": "root_management_or_service_carrier",
+      "monitor_minted": false,
+      "must_include": [
+        "service_domain_id",
+        "service_domain_epoch",
+        "allowed_service_actions",
+        "request_nonce"
+      ]
+    },
+    {
+      "id": "DeviceRootBindRequest",
+      "owner": "linux_service_domain_carrier",
+      "monitor_minted": false,
+      "must_include": [
+        "device_root_id",
+        "device_identity",
+        "device_root_epoch_intent",
+        "request_nonce"
+      ]
+    },
+    {
+      "id": "TargetDomainAdmissionRequest",
+      "owner": "root_management_or_service_carrier",
+      "monitor_minted": false,
+      "must_include": [
+        "target_domain_id",
+        "target_domain_epoch",
+        "root_budget_id",
+        "request_nonce"
+      ]
+    },
+    {
+      "id": "LocalLeaseCompileRequest",
+      "owner": "linux_service_domain_carrier",
+      "monitor_minted": false,
+      "must_include": [
+        "cluster_lease_id",
+        "service_domain_id",
+        "target_domain_id",
+        "device_root_id",
+        "allowed_queue_classes",
+        "dma_memoryview_policy_id",
+        "irq_route_policy_id",
+        "root_budget_id",
+        "request_nonce"
+      ]
+    },
+    {
+      "id": "DeviceReceiptMintRequest",
+      "owner": "linux_service_domain_carrier",
+      "monitor_minted": false,
+      "must_include": [
+        "local_lease_id",
+        "local_lease_epoch",
+        "requested_receipt_classes",
+        "request_nonce"
+      ]
+    },
+    {
+      "id": "LocalLeaseRevokeRequest",
+      "owner": "root_management_or_service_carrier",
+      "monitor_minted": false,
+      "must_include": [
+        "local_lease_id",
+        "local_lease_epoch",
+        "revoke_epoch",
+        "revoke_reason",
+        "revoke_scope",
+        "request_nonce"
+      ]
+    }
+  ],
+  "monitor_response_objects": [
+    "AdmissionFailureReceipt",
+    "LocalDomainDeviceLeaseReceipt",
+    "DeviceRootReceipt",
+    "VfEpochReceipt",
+    "QueueLeaseReceipt",
+    "DmaMemoryViewReceipt",
+    "IrqRouteReceipt",
+    "LedgerRootReceipt",
+    "RevokeStartedReceipt",
+    "NewReceiptEmbargoReceipt",
+    "DerivedReceiptRevokeReceipt",
+    "LocalLeaseRevokeCompleteReceipt"
+  ],
+  "freshness_fields": [
+    "request_nonce",
+    "request_generation",
+    "monitor_id",
+    "monitor_epoch",
+    "cluster_lease_id",
+    "cluster_epoch",
+    "root_management_epoch",
+    "node_id",
+    "service_domain_id",
+    "service_domain_epoch",
+    "target_domain_id",
+    "target_domain_epoch",
+    "device_root_id",
+    "device_root_epoch",
+    "local_lease_id",
+    "local_lease_epoch",
+    "receipt_epoch",
+    "revoke_epoch",
+    "replay_window_id"
+  ],
+  "linux_service_domain_attachment_points": [
+    "request_construction",
+    "request_submission_to_monitor",
+    "monitor_response_arrival",
+    "service_domain_receipt_consumption",
+    "hardware_programming_after_receipt",
+    "typed_endpoint_delivery_to_target_domain",
+    "revoke_request",
+    "revoke_receipt_consumption"
+  ],
+  "forbidden_exposures": [
+    "raw PF/VF/IOMMU/MSI/devlink handles to target Domains",
+    "Linux-minted monitor responses",
+    "Linux-minted receipt ids",
+    "audit-only success",
+    "stale replayed responses"
+  ],
+  "required_invariants": [
+    "NoLinuxMintedMonitorResponse",
+    "NoReplayedAdmissionResponse",
+    "FailureReceiptTerminatesAttempt",
+    "NoDeviceReceiptWithoutMonitorLocalLeaseResponse",
+    "NoTypedEndpointWithoutMonitorDeviceReceipts",
+    "NoLocalLeaseReuseBeforeRevokeComplete",
+    "NoRevokeCompleteWithLiveDerivedReceipts",
+    "NoRawServiceDomainHandleEscapes"
+  ]
+}

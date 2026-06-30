@@ -72,6 +72,7 @@ Updated: 2026-06-30
 | 0064 | Draft external-gap map with model gate | Local Domain Device Lease Compilation |
 | 0065 | Draft observation contract | Local Domain Device Lease Observation Contract |
 | 0066 | Draft admission protocol with model gate | Local Domain Device Lease Admission Protocol |
+| 0067 | Draft interface boundary with model gate | Local Monitor Admission Interface Boundary |
 
 ## Planned Analysis Notes
 
@@ -108,3 +109,4 @@ Updated: 2026-06-30
 | `local-domain-device-lease-compilation-v1.json` | Draft external-gap map | Machine-readable root-management/local monitor compilation boundary for LocalDomainDeviceLease |
 | `local-domain-device-lease-observation-contract-v1.json` | Draft observation contract | Machine-readable LocalDomainDeviceLease row contract, dependency rules, safety flags, and forbidden authority collapses |
 | `local-domain-device-lease-admission-protocol-v1.json` | Draft admission protocol | Machine-readable root-management/local monitor admission path, failure modes, revoke ordering, and invariant list |
+| `local-monitor-admission-interface-boundary-v1.json` | Draft interface boundary | Machine-readable local monitor request/response object boundary, freshness fields, attachment points, and forbidden exposures |

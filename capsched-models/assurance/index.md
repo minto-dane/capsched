@@ -94,6 +94,10 @@ Model-supported areas:
 - LocalDomainDeviceLease admission protocol failure and revoke ordering
   semantics, including terminal rejection, mismatch handling, receipt embargo,
   and no reuse before revoke completion
+- local monitor admission interface boundary semantics, including request-only
+  Linux service Domain carriage, monitor-only response minting, replay
+  rejection, failure termination, receipt-gated endpoint delivery, revoke
+  completion ordering, and raw-handle non-exposure
 
 Prototype-evidenced areas:
 
@@ -251,6 +255,16 @@ LocalDomainDeviceLease admission protocol:
   lease, new receipt during revoke, local lease reuse before revoke completion,
   and audit-only admission/revoke acceptance. This is model-supported semantics
   only, not root-management, monitor, or protection evidence.
+
+Local monitor admission interface boundary:
+  analysis/0067 and validation/0066 define and check the pre-ABI request/
+  response boundary. Safe TLC passed with 14 generated states, 12 distinct
+  states, and depth 11. Unsafe configs produced expected counterexamples for
+  Linux-minted monitor responses, replayed admission response acceptance,
+  failure-then-compile, receipt without monitor local lease response, endpoint
+  without receipts, revoke complete with live derived receipts, and raw service
+  handle exposure. This is model-supported semantics only, not ABI,
+  implementation, or protection evidence.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production

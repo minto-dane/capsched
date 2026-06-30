@@ -237,7 +237,9 @@
         "E-DEV-MNIC-031",
         "E-DEV-MNIC-032",
         "E-DEV-MNIC-033",
-        "E-DEV-MNIC-034"
+        "E-DEV-MNIC-034",
+        "E-DEV-MNIC-035",
+        "E-DEV-MNIC-036"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -583,7 +585,9 @@
         "E-DEV-MNIC-031",
         "E-DEV-MNIC-032",
         "E-DEV-MNIC-033",
-        "E-DEV-MNIC-034"
+        "E-DEV-MNIC-034",
+        "E-DEV-MNIC-035",
+        "E-DEV-MNIC-036"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1171,6 +1175,26 @@
       "limitation": "Finite model checks admission failure terminality, service/target mismatch rejection, receipt ordering, revoke receipt embargo, no reuse before revoke completion, and audit-only rejection; it is not monitor, driver, cluster, or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-035",
+      "kind": "analysis_interface_boundary",
+      "record": "capsched-models/analysis/0067-local-monitor-admission-interface-boundary.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines pre-ABI request/response/receipt ownership, freshness fields, service-domain attachment points, and forbidden raw-handle exposures; it is not ABI, stub, implementation, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-036",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0066-local-monitor-admission-interface-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks monitor-only response minting, replay rejection, failure termination, receipt-gated endpoint delivery, revoke completion ordering, and raw-handle non-exposure; it is not monitor ABI or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1321,7 +1345,9 @@
         "E-DEV-MNIC-031",
         "E-DEV-MNIC-032",
         "E-DEV-MNIC-033",
-        "E-DEV-MNIC-034"
+        "E-DEV-MNIC-034",
+        "E-DEV-MNIC-035",
+        "E-DEV-MNIC-036"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1329,7 +1355,8 @@
         "Machine-readable receipt/carrier coverage ledger.",
         "Root-management/local monitor observation contract for LocalDomainDeviceLease fields.",
         "No-behavior-change validator for LocalDomainDeviceLease contract dependencies and safety flags.",
-        "Admission-protocol model for failure and revoke ordering."
+        "Admission-protocol model for failure and revoke ordering.",
+        "Pre-ABI monitor admission interface boundary model."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",
