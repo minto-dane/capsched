@@ -54,6 +54,7 @@ Updated: 2026-06-30
 | 0046 | Checked with safe pass and expected unsafe counterexamples | Local Monitor Admission ABI Model |
 | 0047 | Checked with safe pass and expected unsafe counterexamples | Monitor Admission Carrier Sketch Model |
 | 0048 | Checked with safe pass and expected unsafe counterexamples | Direct Call Reference ABI Model |
+| 0049 | Checked with safe pass and expected unsafe counterexamples | Monitor-Owned Ring Refinement Model |
 
 ## Planned
 

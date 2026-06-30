@@ -76,6 +76,7 @@ Updated: 2026-06-30
 | 0068 | Safe model passed; unsafe models produced expected counterexamples | Local Monitor Admission ABI TLC |
 | 0069 | Safe model passed; unsafe models produced expected counterexamples | Monitor Admission Carrier Sketch TLC |
 | 0070 | Safe model passed; unsafe models produced expected counterexamples | Direct Call Reference ABI TLC |
+| 0071 | Safe model passed; unsafe models produced expected counterexamples | Monitor-Owned Ring Refinement TLC |
 
 ## Principles
 

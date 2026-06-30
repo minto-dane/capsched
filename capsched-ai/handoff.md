@@ -90,25 +90,24 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call reference ABI sketch. Analysis/0071 defines monitor entry,
-  monitor-owned request copy/freeze before validation, replay-window consume
-  before success ledger write, monitor-owned ledger writes, response handles,
-  Linux shadow refresh from handle/query only, failure terminality, and revoke
-  slow path with in-flight direct-call drain. Formal/0048 plus validation/0070
-  safe TLC passed with 23 generated states, 21 distinct states, and depth 20.
-  Unsafe configs reject Linux mutable request validation, success without
-  monitor entry, ledger write without copied-request validation, ledger before
-  replay consume, Linux ledger writes, response handle without ledger, shadow
-  from request, shadow authority, receipt after terminal failure, revoke
-  without embargo, revoke with in-flight direct calls, and revoke before
-  derived receipt revoke plus shadow invalidation. This is reference semantics,
-  not the final performance path.
+  Monitor-owned ring refinement sketch. Analysis/0072 defines Linux-writable
+  request carrier slots, monitor-owned slot claim/epoch/generation, frozen
+  request images, batch epoch boundaries, replay consume before ledger write,
+  monitor-owned response publication, shadow refresh from monitor state only,
+  pending slot/response drain before revoke complete, and ring full/drop DoS
+  accounting as availability state only. Formal/0049 plus validation/0071 safe
+  TLC passed with 21 generated states, 19 distinct states, and depth 18. Unsafe
+  configs reject Linux slot authority, response before monitor claim,
+  post-claim mutation, slot reuse without generation advance, batch epoch
+  crossing, ledger before replay consume, Linux response publication, shadow
+  from ring state, revoke with pending claimed slot, revoke with pending
+  response, and ring-full/drop as success authority.
 
 next focused risk:
-  Define the monitor-owned ring refinement sketch against the direct-call
-  reference ABI, including monitor slot claim, slot epochs, batch epoch
-  boundaries, response publication, pending response drain, shadow generation,
-  and ring DoS accounting, without selecting binary layout or implementing it.
+  Define the combined direct-call plus monitor-owned-ring ABI plan, including
+  fallback semantics, shared receipt ledger, shared replay namespace, shared
+  shadow generation, and revoke ordering across both carriers, without selecting
+  binary layout or implementing it.
 ```
 
 That focused VF IRQ model is now checked:

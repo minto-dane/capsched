@@ -1,0 +1,135 @@
+{
+  "schema": "capsched.monitor_owned_ring_refinement_sketch.v1",
+  "status": "draft_throughput_refinement",
+  "date": "2026-06-30",
+  "scope": {
+    "reference_semantics": "LocalMonitorAdmissionABI-v0",
+    "refines": "direct-call-reference-abi-sketch-v1",
+    "carrier": "monitor_owned_ring_refinement",
+    "binary_layout_selected": false,
+    "linux_stub_selected": false,
+    "monitor_implementation_selected": false,
+    "performance_benchmark": false,
+    "behavior_change": false,
+    "protection_claim": false
+  },
+  "ownership_split": {
+    "linux_writable": [
+      "request_payload_area",
+      "producer_hint",
+      "doorbell_hint"
+    ],
+    "monitor_owned": [
+      "slot_claim",
+      "slot_epoch",
+      "slot_generation",
+      "batch_epoch",
+      "replay_window_state",
+      "response_epoch",
+      "response_publication_state",
+      "receipt_ledger",
+      "revoke_drain_state"
+    ],
+    "linux_head_tail_generation_is_replay_authority": false
+  },
+  "request_path": [
+    "linux_writes_bounded_request_payload",
+    "linux_signals_monitor",
+    "monitor_claims_slot_with_epoch_generation",
+    "monitor_freezes_slot_payload_to_request_image",
+    "monitor_validates_frozen_request_image",
+    "monitor_checks_batch_and_authority_epochs",
+    "monitor_consumes_replay_window",
+    "monitor_writes_receipt_ledger",
+    "monitor_publishes_response_with_response_epoch",
+    "linux_consumes_response_handle",
+    "linux_refreshes_non_authoritative_shadow_from_monitor_state"
+  ],
+  "batch_epoch_fields": [
+    "monitor_epoch",
+    "local_lease_epoch",
+    "service_domain_epoch",
+    "target_domain_epoch",
+    "device_root_epoch",
+    "slot_epoch",
+    "batch_epoch",
+    "revoke_epoch"
+  ],
+  "response_publication_requires": [
+    "monitor_slot_claim",
+    "frozen_request_image",
+    "validation_outcome",
+    "replay_window_consume_or_terminal_rejection",
+    "ledger_write",
+    "monitor_owned_response_epoch"
+  ],
+  "shadow_refresh": {
+    "allowed_sources": [
+      "monitor_response_handle",
+      "monitor_receipt_query",
+      "monitor_shadow_generation"
+    ],
+    "forbidden_sources": [
+      "ring_slot_payload",
+      "linux_producer_state",
+      "doorbell_state",
+      "linux_visible_response_cache_without_monitor_epoch"
+    ],
+    "authority_root": false
+  },
+  "revoke_drain_order": [
+    "monitor_marks_revoke_started",
+    "monitor_stops_accepting_old_epoch_slots",
+    "monitor_embargoes_new_receipts",
+    "monitor_drains_or_invalidates_pending_claimed_slots",
+    "monitor_drains_or_invalidates_pending_responses",
+    "monitor_revokes_derived_receipts",
+    "monitor_invalidates_linux_shadow_generation",
+    "monitor_writes_revoke_complete_ledger_row"
+  ],
+  "dos_accounting": {
+    "ring_full_or_drop_is_authority": false,
+    "ring_full_or_drop_may_emit_terminal_accounting": true,
+    "ring_full_or_drop_may_mint_success_receipt": false,
+    "ring_full_or_drop_may_refresh_shadow": false
+  },
+  "refinement_obligation": {
+    "every_successful_ring_admission_has_direct_call_trace": [
+      "monitor_entry_or_claim",
+      "monitor_owned_request_image",
+      "validation",
+      "replay_consume",
+      "ledger_write",
+      "response_handle",
+      "non_authoritative_shadow_refresh"
+    ],
+    "ring_may_add": [
+      "batching",
+      "slot_epochs",
+      "response_epochs",
+      "pending_response_drain",
+      "dos_accounting"
+    ],
+    "ring_may_not_remove": [
+      "monitor_response_ownership",
+      "replay_before_ledger",
+      "monitor_ledger_authority",
+      "failure_terminality",
+      "shadow_non_authority",
+      "revoke_drain_order"
+    ]
+  },
+  "invariants": [
+    "no_linux_ring_slot_as_authority",
+    "no_monitor_response_before_monitor_slot_claim",
+    "no_validation_from_mutable_linux_slot_after_claim",
+    "no_slot_reuse_without_monitor_generation_advance",
+    "no_batch_crosses_epoch_or_revoke_boundary",
+    "no_ledger_write_before_replay_consume",
+    "no_linux_published_success_response",
+    "no_shadow_refresh_from_ring_payload_or_producer_state",
+    "no_revoke_complete_before_pending_claimed_slot_drain",
+    "no_revoke_complete_before_pending_response_drain",
+    "no_ring_full_or_drop_accounting_as_success_authority"
+  ]
+}

@@ -107,6 +107,9 @@ validation/0069-monitor-admission-carrier-sketch-tlc.md
 
 formal/0048-direct-call-reference-abi-model/
 validation/0070-direct-call-reference-abi-tlc.md
+
+formal/0049-monitor-owned-ring-refinement-model/
+validation/0071-monitor-owned-ring-refinement-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -134,6 +137,7 @@ analysis/0068-local-monitor-admission-carrier-storage.md
 analysis/0069-local-monitor-admission-abi-semantics.md
 analysis/0070-local-monitor-admission-carrier-sketch-comparison.md
 analysis/0071-direct-call-reference-abi-sketch.md
+analysis/0072-monitor-owned-ring-refinement-sketch.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -153,6 +157,7 @@ analysis/local-monitor-admission-carrier-storage-v1.json
 analysis/local-monitor-admission-abi-semantics-v0.json
 analysis/local-monitor-admission-carrier-sketch-comparison-v1.json
 analysis/direct-call-reference-abi-sketch-v1.json
+analysis/monitor-owned-ring-refinement-sketch-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -164,6 +169,7 @@ validation/0067-monitor-admission-carrier-storage-tlc.md
 validation/0068-local-monitor-admission-abi-tlc.md
 validation/0069-monitor-admission-carrier-sketch-tlc.md
 validation/0070-direct-call-reference-abi-tlc.md
+validation/0071-monitor-owned-ring-refinement-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
@@ -295,6 +301,14 @@ DirectCallReferenceABI:
   shadow refresh from handle/ledger state, terminal failure for the same
   attempt, and revoke completion only after embargo, in-flight direct call
   drain, derived receipt revoke, and shadow invalidation.
+
+MonitorOwnedRingRefinement:
+  monitor-owned ring refinement allows Linux to write request payload carriers
+  but requires monitor slot claim, monitor-owned slot generation, frozen request
+  image validation, stable batch epochs, replay consume before ledger write,
+  monitor-owned response publication, shadow refresh from monitor state only,
+  pending slot/response drain before revoke complete, and ring full/drop
+  accounting as availability state only.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It

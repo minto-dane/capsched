@@ -92,20 +92,22 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call reference ABI sketch. Analysis/0071 and formal/0048 define
-  monitor entry, request copy/freeze before validation, replay consume before
-  success ledger write, monitor-owned ledger writes, response handles, shadow
-  refresh from handle/query only, failure terminality, and revoke slow path with
-  in-flight direct-call drain. Validation/0070 safe TLC passed with 23
-  generated states, 21 distinct states, and depth 20; unsafe configs reject
-  mutable request validation, success without entry, ledger shortcut, replay
-  shortcut, Linux ledger write, response without ledger, shadow shortcut,
-  shadow authority, failure-then-receipt, and revoke-order shortcuts.
+  Monitor-owned ring refinement sketch. Analysis/0072 and formal/0049 define
+  Linux-writable request carrier slots, monitor slot claim/epoch/generation,
+  frozen request validation, stable batch epochs, replay consume before ledger,
+  monitor response publication, shadow refresh from monitor state only, pending
+  slot/response drain before revoke complete, and ring full/drop accounting as
+  availability state only. Validation/0071 safe TLC passed with 21 generated
+  states, 19 distinct states, and depth 18; unsafe configs reject slot
+  authority, response before claim, post-claim mutation, slot reuse without
+  generation, batch epoch crossing, replay shortcut, Linux response
+  publication, ring-derived shadow, revoke drain shortcuts, and ring-full
+  authority.
 
 next focused risk:
-  Define the monitor-owned ring refinement sketch against the direct-call
-  reference ABI. Direct-call remains reference semantics, not the final
-  throughput path.
+  Define the combined direct-call plus monitor-owned-ring ABI plan. Both
+  carriers must share receipt ledger, replay namespace, shadow generation, and
+  revoke ordering.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

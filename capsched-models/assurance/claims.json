@@ -247,7 +247,9 @@
         "E-DEV-MNIC-041",
         "E-DEV-MNIC-042",
         "E-DEV-MNIC-043",
-        "E-DEV-MNIC-044"
+        "E-DEV-MNIC-044",
+        "E-DEV-MNIC-045",
+        "E-DEV-MNIC-046"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -603,7 +605,9 @@
         "E-DEV-MNIC-041",
         "E-DEV-MNIC-042",
         "E-DEV-MNIC-043",
-        "E-DEV-MNIC-044"
+        "E-DEV-MNIC-044",
+        "E-DEV-MNIC-045",
+        "E-DEV-MNIC-046"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1291,6 +1295,26 @@
       "limitation": "Finite model checks direct-call reference constraints for TOCTOU-safe request copy, replay-before-ledger, monitor-owned ledger writes, response-handle gating, shadow source, failure terminality, and revoke slow-path ordering; it is not ABI layout or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-045",
+      "kind": "analysis_ring_refinement_sketch",
+      "record": "capsched-models/analysis/0072-monitor-owned-ring-refinement-sketch.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines monitor-owned ring refinement semantics for Linux request carriers, monitor slot claim, slot generation, frozen request validation, batch epoch stability, replay-before-ledger, response publication, shadow refresh, revoke drain, and ring DoS accounting; it is not ABI layout, implementation, performance, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-046",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0071-monitor-owned-ring-refinement-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks monitor-owned ring refinement constraints for slot authority, monitor claim, post-claim mutation, slot generation, batch epoch crossing, replay-before-ledger, response ownership, shadow source, revoke drain, and ring-full non-authority; it is not ABI layout or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1377,6 +1401,7 @@
     "Choosing direct-call reference semantics means ring/batching is unnecessary for the datacenter performance target.",
     "Ring batching can weaken monitor-owned response, replay, receipt ledger, revoke, or shadow invalidation semantics.",
     "A direct-call reference ABI sketch is a selected binary ABI, Linux stub, monitor implementation, performance result, or production protection proof.",
+    "Monitor-owned ring refinement permits Linux ring slots, Linux response publication, Linux-only slot generations, or ring-full/drop accounting to become authority.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1456,7 +1481,9 @@
         "E-DEV-MNIC-041",
         "E-DEV-MNIC-042",
         "E-DEV-MNIC-043",
-        "E-DEV-MNIC-044"
+        "E-DEV-MNIC-044",
+        "E-DEV-MNIC-045",
+        "E-DEV-MNIC-046"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1469,7 +1496,8 @@
         "Pre-ABI carrier/storage choice gate model.",
         "Semantic monitor ABI candidate model before carrier or binary layout selection.",
         "Direct-call versus monitor-owned-ring implementation-facing sketch comparison.",
-        "Direct-call reference ABI sketch before binary layout or implementation."
+        "Direct-call reference ABI sketch before binary layout or implementation.",
+        "Monitor-owned ring refinement sketch before binary layout or implementation."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

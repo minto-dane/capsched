@@ -313,6 +313,19 @@ Direct-call reference ABI sketch:
   invalidation. This is model-supported reference semantics only, not ABI
   layout, implementation, performance, or protection evidence.
 
+Monitor-owned ring refinement sketch:
+  analysis/0072 and validation/0071 define and check the monitor-owned ring
+  throughput refinement against the direct-call reference semantics. Safe TLC
+  passed with 21 generated states, 19 distinct states, and depth 18. Unsafe
+  configs produced expected counterexamples for Linux slot authority, response
+  before monitor claim, post-claim mutation affecting validation, slot reuse
+  without monitor generation advance, batch epoch crossing, ledger write before
+  replay consume, Linux response publication, shadow refresh from ring state,
+  revoke complete with pending claimed slot, revoke complete with pending
+  response, and ring-full/drop accounting as success authority. This is
+  model-supported refinement semantics only, not ABI layout, implementation,
+  performance, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
