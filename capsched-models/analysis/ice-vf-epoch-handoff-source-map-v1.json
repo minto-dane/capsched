@@ -60,7 +60,7 @@
       "id": "vf_allocation",
       "file": "drivers/net/ethernet/intel/ice/ice_sriov.c",
       "functions": [
-        "ice_alloc_vfs"
+        "ice_create_vf_entries"
       ],
       "lines": [
         "697-722"

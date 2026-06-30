@@ -1490,12 +1490,12 @@ checker:
   capsched-models/traceability/check-project-source-map-drift.sh
 
 run:
-  build/traceability-project-drift/20260630T233617Z
+  build/traceability-project-drift/20260630T234623Z
 
 summary:
   15 machine-readable source-map/ledger artifacts scanned
   515 extracted anchors
-  480 path/pattern-ok rows
+  482 path/pattern-ok rows
   14 gap rows preserved as gaps
   1 symbol-missing row requiring semantic recheck
   1 descriptive pattern-missing row
@@ -1520,13 +1520,13 @@ N-109 completed:
   build-project-overlay-ledger.sh
 
 run:
-  build/traceability-overlay/20260630T233634Z
+  build/traceability-overlay/20260630T234640Z
 
 summary:
   515 overlay rows
-  480 ok source path/pattern rows
+  482 ok source path/pattern rows
   14 preserved gap rows
-  21 needs_semantic_recheck rows
+  19 needs_semantic_recheck rows
   explicit match_kind and next_action fields
   semantic_validation=false
   n_series_rewrite=false
@@ -1543,16 +1543,15 @@ N-110 completed:
   build-semantic-recheck-queue.sh
 
 run:
-  build/semantic-recheck/20260630T234227Z
+  build/semantic-recheck/20260630T234640Z
 
 summary:
-  21 semantic recheck items
+  19 semantic recheck items
   14 gap-preservation items
   19 line-only anchors
-  1 missing symbol
-  1 missing descriptive pattern
   semantic_validation=false
 
 next:
-  N-111 first semantic recheck batch, high-priority rows first.
+  N-111 completed first semantic recheck batch.
+  N-112 line-only anchor recheck for remaining rows.
 ```

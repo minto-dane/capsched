@@ -19,13 +19,13 @@ capsched/capsched-models/traceability/semantic-recheck-workflow-v1.md
 Input:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T233634Z/project-overlay-ledger.json
+/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T234640Z/project-overlay-ledger.json
 ```
 
 Run directory:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260630T234227Z
+/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260630T234640Z
 ```
 
 Output files:
@@ -42,11 +42,11 @@ metadata.txt
 
 ```text
 overlay_rows=515
-semantic_recheck_items=21
+semantic_recheck_items=19
 gap_items=14
 line_only_anchor_items=19
-symbol_missing_items=1
-pattern_missing_items=1
+symbol_missing_items=0
+pattern_missing_items=0
 gap_or_plan_items=14
 safety_flag_violations=0
 source_only=true
@@ -66,10 +66,8 @@ semantic_validation=false
 The queue separates:
 
 ```text
-21 semantic recheck items:
+19 semantic recheck items:
   19 line-only anchors
-  1 missing symbol
-  1 missing descriptive pattern
 
 14 gap preservation items:
   future direct-call gaps
@@ -94,6 +92,6 @@ production protection exists
 
 ## Design Consequence
 
-N-110 is satisfied as a queue/workflow preparation step. The next safe step is
-to perform the first semantic recheck batch and update or preserve the affected
-source-map anchors without changing Linux behavior.
+N-110 is satisfied as a queue/workflow preparation step. N-111 removed the two
+high-priority missing-symbol/pattern items; the remaining queue is line-only
+anchor recheck plus gap preservation.

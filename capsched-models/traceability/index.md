@@ -56,14 +56,14 @@ Validation/0080 executed the project-level source-map drift checker against
 legacy machine-readable source maps and the latest direct-call overlay seed:
 
 ```text
-run: build/traceability-project-drift/20260630T233617Z
+run: build/traceability-project-drift/20260630T234623Z
 json_artifacts_scanned=15
 anchor_rows=515
-ok_rows=480
+ok_rows=482
 gap_rows=14
 path_changed_rows=0
-symbol_missing_rows=1
-pattern_missing_rows=1
+symbol_missing_rows=0
+pattern_missing_rows=0
 semantic_recheck_required_rows=19
 unsupported_extraction_rows=3
 safety_flag_violations=0
@@ -73,13 +73,10 @@ source_path_pattern_only=true
 semantic_validation=false
 ```
 
-The one missing symbol is `ice_alloc_vfs` in
-`drivers/net/ethernet/intel/ice/ice_sriov.c`; current source shows the relevant
-VF allocation region under `ice_create_vf_entries()`, so that legacy anchor
-requires semantic recheck. The 19 semantic-recheck rows are line-only anchors
-that are no longer treated as evidence merely because the file exists. Gap rows
-and unsupported rows are preserved, not converted into authority or removed
-obligations.
+N-111 rechecked the previous missing symbol and descriptive pattern rows. The
+19 semantic-recheck rows are now line-only anchors that are not treated as
+evidence merely because the file exists. Gap rows and unsupported rows are
+preserved, not converted into authority or removed obligations.
 
 The `ok_rows` count is path/pattern drift evidence only; it is not semantic
 validation of those source regions.
@@ -90,16 +87,16 @@ Validation/0081 executed the project overlay ledger normalizer against the
 latest project source-map drift output:
 
 ```text
-run: build/traceability-overlay/20260630T233634Z
+run: build/traceability-overlay/20260630T234640Z
 input_rows=515
 overlay_rows=515
-ok_rows=480
+ok_rows=482
 gap_rows=14
 path_changed_rows=0
-symbol_missing_rows=1
-pattern_missing_rows=1
+symbol_missing_rows=0
+pattern_missing_rows=0
 semantic_recheck_required_rows=19
-needs_semantic_recheck_rows=21
+needs_semantic_recheck_rows=19
 path_only_rows=67
 line_only_rows=19
 symbol_rows=378
@@ -120,13 +117,13 @@ Validation/0082 executed the semantic recheck queue builder against the latest
 project overlay ledger:
 
 ```text
-run: build/semantic-recheck/20260630T234227Z
+run: build/semantic-recheck/20260630T234640Z
 overlay_rows=515
-semantic_recheck_items=21
+semantic_recheck_items=19
 gap_items=14
 line_only_anchor_items=19
-symbol_missing_items=1
-pattern_missing_items=1
+symbol_missing_items=0
+pattern_missing_items=0
 gap_or_plan_items=14
 safety_flag_violations=0
 semantic_validation=false
@@ -135,6 +132,19 @@ semantic_validation=false
 This is a review queue, not completed semantic review. It exists to prevent
 line-only anchors, missing symbols, descriptive patterns, and preserved gaps
 from being mistaken for implementation evidence.
+
+## Latest Semantic Recheck Batch
+
+Validation/0083 performed the first high-priority source-anchor recheck:
+
+```text
+ice_alloc_vfs -> ice_create_vf_entries
+inert translation unit -> This translation unit is intentionally inert
+```
+
+This removed the missing-symbol and missing-pattern rows from the active queue.
+It did not validate runtime behavior, monitor authority, or production
+protection.
 
 ## Existing Indexes
 

@@ -88,6 +88,7 @@ Updated: 2026-06-30
 | 0080 | Executed; source-only project drift check emitted | Project Source-Map Drift Checker Result |
 | 0081 | Executed; source-only overlay ledger emitted | Project Overlay Ledger Normalization Result |
 | 0082 | Executed; source-only recheck queue emitted | Semantic Recheck Queue Result |
+| 0083 | Executed; high-priority source-anchor recheck completed | Semantic Recheck Batch 1 Result |
 
 ## Principles
 

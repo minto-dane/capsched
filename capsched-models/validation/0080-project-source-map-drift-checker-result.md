@@ -13,7 +13,7 @@ capsched/capsched-models/traceability/check-project-source-map-drift.sh
 Run directory:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T233617Z
+/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T234623Z
 ```
 
 Output files:
@@ -32,11 +32,11 @@ metadata.txt
 ```text
 json_artifacts_scanned=15
 anchor_rows=515
-ok_rows=480
+ok_rows=482
 gap_rows=14
 path_changed_rows=0
-symbol_missing_rows=1
-pattern_missing_rows=1
+symbol_missing_rows=0
+pattern_missing_rows=0
 semantic_recheck_required_rows=19
 unsupported_extraction_rows=3
 safety_flag_violations=0
@@ -69,7 +69,7 @@ The checker ingested existing machine-readable source-map and ledger artifacts,
 plus the latest direct-call overlay seed, and produced a central source-anchor
 drift ledger.
 
-The 480 ok rows mean the mechanically extracted source paths and, where
+The 482 ok rows mean the mechanically extracted source paths and, where
 precise enough, symbols or patterns still match the current Linux tree.
 They do not mean the source semantics were validated.
 
@@ -79,29 +79,13 @@ obligations.
 The 19 semantic-recheck rows are line-only anchors. The checker now refuses to
 turn a historical line number into semantic evidence without a symbol or pattern.
 
-The one symbol-missing row is useful drift evidence:
+The previous high-priority missing symbol and descriptive-pattern rows were
+rechecked in N-111 and now match current source:
 
 ```text
-capsched-models/analysis/ice-vf-epoch-handoff-source-map-v1.json
-drivers/net/ethernet/intel/ice/ice_sriov.c
-ice_alloc_vfs
+ice_alloc_vfs -> ice_create_vf_entries
+inert translation unit -> This translation unit is intentionally inert
 ```
-
-In the current Linux tree, the relevant allocation region is represented by
-`ice_create_vf_entries()`, so this source-map anchor needs semantic recheck
-before it is used as evidence.
-
-The one pattern-missing row is:
-
-```text
-capsched-models/analysis/direct-call-trace-source-inventory-contract-v1.json
-kernel/sched/capsched.c
-inert translation unit
-```
-
-That row used a descriptive phrase, not a literal source pattern, so the next
-normalization step should encode it as path-only or replace it with a literal
-predicate.
 
 The 3 unsupported extraction rows are also deliberate:
 

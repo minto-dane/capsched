@@ -127,7 +127,7 @@
       "anchor_available": true,
       "anchor_confidence": "source_observed",
       "source_path": "kernel/sched/capsched.c",
-      "symbol_or_pattern": "inert translation unit",
+      "symbol_or_pattern": "This translation unit is intentionally inert",
       "trace_event": "none",
       "dynamic_probe_candidate": "none",
       "requires_privilege": false,

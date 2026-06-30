@@ -1644,15 +1644,15 @@ N-108 completed:
   capsched-models/traceability/check-project-source-map-drift.sh
 
 latest run:
-  build/traceability-project-drift/20260630T233617Z
+  build/traceability-project-drift/20260630T234623Z
 
 result:
   json_artifacts_scanned=15
   anchor_rows=515
-  ok_rows=480
+  ok_rows=482
   gap_rows=14
-  symbol_missing_rows=1
-  pattern_missing_rows=1
+  symbol_missing_rows=0
+  pattern_missing_rows=0
   semantic_recheck_required_rows=19
   unsupported_extraction_rows=3
   safety_flag_violations=0
@@ -1660,10 +1660,10 @@ result:
   source_path_pattern_only=true
   semantic_validation=false
 
-important drift:
-  ice_alloc_vfs in drivers/net/ethernet/intel/ice/ice_sriov.c is missing as a
-  symbol; current source uses ice_create_vf_entries() for the relevant
-  allocation region, so the old source-map anchor needs semantic recheck.
+resolved by N-111:
+  ice_alloc_vfs was replaced with ice_create_vf_entries.
+  inert translation unit was replaced with literal source pattern
+  This translation unit is intentionally inert.
 
 important caution:
   line-only anchors are semantic_recheck_required, not ok merely because the
@@ -1683,13 +1683,13 @@ N-109 completed:
   capsched-models/traceability/build-project-overlay-ledger.sh
 
 latest run:
-  build/traceability-overlay/20260630T233634Z
+  build/traceability-overlay/20260630T234640Z
 
 result:
   overlay_rows=515
-  ok_rows=480
+  ok_rows=482
   gap_rows=14
-  needs_semantic_recheck_rows=21
+  needs_semantic_recheck_rows=19
   line_only_rows=19
   symbol_rows=378
   pattern_rows=37
@@ -1708,17 +1708,17 @@ N-110 completed:
   capsched-models/traceability/build-semantic-recheck-queue.sh
 
 latest run:
-  build/semantic-recheck/20260630T234227Z
+  build/semantic-recheck/20260630T234640Z
 
 result:
-  semantic_recheck_items=21
+  semantic_recheck_items=19
   gap_items=14
   line_only_anchor_items=19
-  symbol_missing_items=1
-  pattern_missing_items=1
+  symbol_missing_items=0
+  pattern_missing_items=0
   semantic_validation=false
 
 next:
-  N-111 perform first semantic recheck batch, starting with the high-priority
-  missing symbol and descriptive pattern rows.
+  N-111 completed first semantic recheck batch.
+  N-112 line-only anchor recheck for the remaining 19 rows.
 ```

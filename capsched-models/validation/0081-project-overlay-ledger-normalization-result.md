@@ -13,13 +13,13 @@ capsched/capsched-models/traceability/build-project-overlay-ledger.sh
 Input:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T233617Z/project-anchor-ledger.json
+/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T234623Z/project-anchor-ledger.json
 ```
 
 Run directory:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T233634Z
+/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T234640Z
 ```
 
 Output files:
@@ -38,13 +38,13 @@ metadata.txt
 ```text
 input_rows=515
 overlay_rows=515
-ok_rows=480
+ok_rows=482
 gap_rows=14
 path_changed_rows=0
-symbol_missing_rows=1
-pattern_missing_rows=1
+symbol_missing_rows=0
+pattern_missing_rows=0
 semantic_recheck_required_rows=19
-needs_semantic_recheck_rows=21
+needs_semantic_recheck_rows=19
 path_only_rows=67
 line_only_rows=19
 symbol_rows=378

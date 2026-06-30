@@ -129,9 +129,9 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  perform the first semantic recheck batch for queued rows, starting with the
-  high-priority missing symbol and descriptive pattern rows. A separate
-  privileged tracefs runbook is required before any tracefs execution,
+  perform line-only anchor recheck for the remaining 19 queued rows, replacing
+  line numbers with symbols/patterns or explicit path-only downgrades. A
+  separate privileged tracefs runbook is required before any tracefs execution,
   direct-call carrier, or public tracepoint patch.
 
 Current blocker to behavior-changing Linux patches:
