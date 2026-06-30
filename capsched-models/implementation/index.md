@@ -129,12 +129,14 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  define a semantic recheck workflow for the 21 central overlay rows that are
-  not path/pattern-ok. A separate privileged tracefs runbook is required before
-  any tracefs execution, direct-call carrier, or public tracepoint patch.
+  perform the first semantic recheck batch for queued rows, starting with the
+  high-priority missing symbol and descriptive pattern rows. A separate
+  privileged tracefs runbook is required before any tracefs execution,
+  direct-call carrier, or public tracepoint patch.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 and validation/0081 are source-only drift/normalization
-  evidence only, not semantic validation, authority, monitor verification, ABI
-  approval, runtime coverage, or production protection evidence.
+  validation/0080, validation/0081, and validation/0082 are source-only
+  drift/normalization/queue evidence only, not completed semantic validation,
+  authority, monitor verification, ABI approval, runtime coverage, or production
+  protection evidence.
 ```

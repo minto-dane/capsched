@@ -27,6 +27,8 @@ Instead, it explains how to read them together.
 | `check-direct-call-overlay-drift.sh` | Source-only drift checker for N-106 direct-call overlay seed rows. |
 | `check-project-source-map-drift.sh` | Source-only project-level drift checker for legacy source-map families and direct-call overlay seeds. |
 | `build-project-overlay-ledger.sh` | Source-only normalizer from project drift rows to central overlay ledger rows. |
+| `semantic-recheck-workflow-v1.md` | Source-only workflow for reviewing weak source anchors. |
+| `build-semantic-recheck-queue.sh` | Source-only queue builder for semantic recheck and gap-preservation items. |
 
 ## Latest Direct-Call Drift Check
 
@@ -111,6 +113,28 @@ n_series_rewrite=false
 This generated ledger is the central overlay view for current source-map drift
 state. It is still source-only: it does not support monitor verification,
 runtime coverage, authority, ABI approval, or production protection.
+
+## Latest Semantic Recheck Queue
+
+Validation/0082 executed the semantic recheck queue builder against the latest
+project overlay ledger:
+
+```text
+run: build/semantic-recheck/20260630T234227Z
+overlay_rows=515
+semantic_recheck_items=21
+gap_items=14
+line_only_anchor_items=19
+symbol_missing_items=1
+pattern_missing_items=1
+gap_or_plan_items=14
+safety_flag_violations=0
+semantic_validation=false
+```
+
+This is a review queue, not completed semantic review. It exists to prevent
+line-only anchors, missing symbols, descriptive patterns, and preserved gaps
+from being mistaken for implementation evidence.
 
 ## Existing Indexes
 

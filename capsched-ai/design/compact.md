@@ -1532,5 +1532,27 @@ summary:
   n_series_rewrite=false
 
 next:
-  N-110 semantic recheck workflow for non-ok/non-gap rows.
+  N-110 completed semantic recheck workflow for non-ok/non-gap rows.
+```
+
+Latest semantic recheck queue:
+
+```text
+N-110 completed:
+  semantic-recheck-workflow-v1.md
+  build-semantic-recheck-queue.sh
+
+run:
+  build/semantic-recheck/20260630T234227Z
+
+summary:
+  21 semantic recheck items
+  14 gap-preservation items
+  19 line-only anchors
+  1 missing symbol
+  1 missing descriptive pattern
+  semantic_validation=false
+
+next:
+  N-111 first semantic recheck batch, high-priority rows first.
 ```

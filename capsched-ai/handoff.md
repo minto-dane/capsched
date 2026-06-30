@@ -1697,5 +1697,28 @@ result:
   semantic_validation=false
 
 next:
-  N-110 define semantic recheck workflow for the 21 non-ok/non-gap rows.
+  N-110 completed semantic recheck queue/workflow.
+```
+
+Latest semantic recheck queue:
+
+```text
+N-110 completed:
+  capsched-models/traceability/semantic-recheck-workflow-v1.md
+  capsched-models/traceability/build-semantic-recheck-queue.sh
+
+latest run:
+  build/semantic-recheck/20260630T234227Z
+
+result:
+  semantic_recheck_items=21
+  gap_items=14
+  line_only_anchor_items=19
+  symbol_missing_items=1
+  pattern_missing_items=1
+  semantic_validation=false
+
+next:
+  N-111 perform first semantic recheck batch, starting with the high-priority
+  missing symbol and descriptive pattern rows.
 ```

@@ -134,6 +134,9 @@ Prototype-evidenced areas:
 - source-only project overlay ledger normalization output with 515 overlay rows,
   explicit match predicates, 21 rows needing semantic recheck, 14 preserved
   gaps, `n_series_rewrite=false`, and no authority/protection claims
+- source-only semantic recheck queue output with 21 semantic recheck items, 14
+  gap-preservation items, explicit review classes/actions, and no completed
+  semantic validation or protection claims
 
 Open production gaps:
 
@@ -458,6 +461,14 @@ Project overlay ledger normalizer:
   This is traceability normalization evidence only, not implementation approval
   or protection evidence.
 
+Semantic recheck queue:
+  validation/0082 built a queue from the central overlay ledger: 21 semantic
+  recheck items and 14 gap-preservation items. The semantic recheck items are
+  19 line-only anchors, 1 missing symbol, and 1 missing descriptive pattern.
+  The queue records recommended review actions and forbidden claims. This is
+  workflow preparation only, not completed semantic validation or protection
+  evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -484,6 +495,7 @@ Forbidden:
   coverage, monitor verification, or permission to add public tracepoint ABI.
   Do not treat project source-map drift `ok_rows` as semantic validation or
   production protection evidence.
+  Do not treat the semantic recheck queue as completed semantic review.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```
