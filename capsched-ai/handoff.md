@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-06-27
+Updated: 2026-06-29
 
 Read this first when resuming the project.
 
@@ -464,13 +464,35 @@ formal/0030 + validation/0049:
     RepresentorForwardCap plus a live lower QueueLease. Neither may be
     authorized by RunCap, plain netdev reachability, or Linux's ability to call
     dev_queue_xmit().
+
+assurance/0002:
+  Modern NIC QueueLease assurance map completed
+  human-readable map:
+    assurance/0002-modern-nic-queuelease-assurance-map.md
+  machine-readable map:
+    assurance/modern-nic-queuelease-subclaims-v1.json
+  claims registry:
+    assurance/claims.json now records DEV-NIC-001 through DEV-NIC-010
+  subclaims:
+    QueueBind; typed SKB/XDP/XDP_TX/AF_XDP submit classes; DescriptorLedger;
+    DMA packet memory ownership; CompletionSettlement; QueueControl;
+    RepresentorForward; ServiceWork/async provenance; RevokeSemantics; Linux
+    substrate compatibility
+  gate result:
+    authority-class separation is model-supported; Intel ice anchors are
+    source-observed; trace/readiness evidence is observation-only; production
+    protection is not evidenced; implementation is not approved.
+  forbidden:
+    do not treat netdev/ring/q_vector/devlink/representor/tracepoint/workqueue
+    state as modern NIC QueueLease authority; do not collapse SKB, XDP,
+    AF_XDP, control, representor, and service classes into one capability.
 ```
 
-Next work remains modeling-first: consolidate the modern NIC QueueLease
-evidence into an assurance subclaim map before any behavior-changing device
-hook. The older post-exec gaps also remain: eventfd kernel signal provenance,
-epoll delivery/watched-endpoint correlation, io_uring fixed-file consumption,
-and execfd handoff before behavior-changing endpoint hooks.
+Next work remains modeling-first: model modern NIC queue revoke, drain, and
+quarantine semantics before any behavior-changing device hook. The older
+post-exec gaps also remain: eventfd kernel signal provenance, epoll
+delivery/watched-endpoint correlation, io_uring fixed-file consumption, and
+execfd handoff before behavior-changing endpoint hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-06-27
+Updated: 2026-06-29
 
 ## Project
 
@@ -413,6 +413,22 @@ formal/0030 + validation/0049
     QueueControl. Representor transmit requires RepresentorForwardCap plus a
     live lower QueueLease. Neither is authorized by RunCap, plain netdev
     reachability, or Linux's ability to call dev_queue_xmit().
+
+assurance/0002
+  Modern NIC QueueLease assurance map:
+  DEV-001 now has ten subclaims: QueueBind, typed submit classes,
+  DescriptorLedger, DMA packet memory ownership, CompletionSettlement,
+  QueueControl, RepresentorForward, ServiceWork/async provenance,
+  RevokeSemantics, and Linux substrate compatibility.
+  Gate result:
+    model-supported authority-class separation; source-observed Intel ice
+    anchors; observation-only readiness; no production protection evidence; no
+    implementation approval.
+  Rule:
+    netdev/ring/q_vector/devlink/representor/tracepoint/workqueue state is
+    Linux-mutable substrate, not modern NIC QueueLease authority. Do not collapse
+    SKB, XDP, XDP_TX, AF_XDP, QueueControl, RepresentorForward, and ServiceWork
+    into one capability.
 
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:

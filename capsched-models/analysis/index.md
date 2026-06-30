@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-06-27
+Updated: 2026-06-29
 
 ## Current Analysis Notes
 
@@ -63,7 +63,7 @@ Updated: 2026-06-27
 
 1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 2. Broker BudgetTicket and service Domain charging map.
-3. Modern NIC QueueLease assurance subclaim map.
+3. Modern NIC queue revoke/drain/quarantine source map after assurance/0002.
 4. Workqueue origin QEMU stack-trace observation runner.
 5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
 6. Queue/descriptor trace-only patch map only if readiness gaps require it.

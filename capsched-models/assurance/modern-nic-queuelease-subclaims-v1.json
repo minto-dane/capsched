@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-29",
+  "parent_claim": "DEV-001",
+  "scope": "Modern NIC QueueLease assurance subclaims for CapSched-H, using Intel ice as representative source evidence",
+  "gate_result": {
+    "authority_class_separation": "model_supported",
+    "linux_source_anchors": "source_observed",
+    "trace_readiness": "observation_only",
+    "production_protection": "not_evidenced",
+    "implementation_approved": false
+  },
+  "evidence_classes": {
+    "model_checked": "Finite TLA+ evidence supporting local semantic constraints.",
+    "source_observed": "Linux source anchors showing where a future implementation might attach observation or enforcement.",
+    "observation_only": "Tracepoint/source readiness evidence; useful for study but not protection proof.",
+    "protection_missing": "Required monitor-backed or non-forgeable root is absent.",
+    "forbidden": "Claim or shortcut that must not be made from current evidence."
+  },
+  "evidence_records": [
+    {
+      "id": "E-DEV-MNIC-001",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0046-modern-nic-queuelease-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009"
+      ]
+    },
+    {
+      "id": "E-DEV-MNIC-002",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0048-xdp-afxdp-memory-ownership-tlc.md",
+      "supports": [
+        "DEV-NIC-002",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-009"
+      ]
+    },
+    {
+      "id": "E-DEV-MNIC-003",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0049-queuecontrol-representor-tlc.md",
+      "supports": [
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-009"
+      ]
+    },
+    {
+      "id": "E-DEV-MNIC-004",
+      "class": "source_observed",
+      "path": "capsched-models/analysis/0052-ice-modern-nic-queuelease-source-map.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ]
+    },
+    {
+      "id": "E-DEV-MNIC-005",
+      "class": "observation_only",
+      "path": "capsched-models/validation/0047-ice-modern-nic-readiness-result.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Every readiness row is observation_only=true, authority_claim=false, and monitor_verified=false."
+    }
+  ],
+  "subclaims": [
+    {
+      "id": "DEV-NIC-001",
+      "title": "Queue identity and binding",
+      "status": "model_supported_plus_source_observed",
+      "claim": "Queue effects require live QueueTag, queue epoch, ring, q_vector, NAPI instance, IRQ route, and queue budget.",
+      "protection_missing": [
+        "monitor QueueTag",
+        "queue epoch emission/check",
+        "non-forgeable IRQ route ownership",
+        "queue budget root below Linux"
+      ],
+      "forbidden": [
+        "netdev/ring/q_vector/NAPI reachability as QueueLease authority"
+      ]
+    },
+    {
+      "id": "DEV-NIC-002",
+      "title": "Typed submit classes",
+      "status": "model_supported_plus_source_observed",
+      "claim": "SKB, XDP frame, XDP_TX page-pool, and AF_XDP zero-copy submits are different authority classes.",
+      "protection_missing": [
+        "typed SubmitLedger id",
+        "Domain/epoch correlation on packet memory",
+        "frozen XDP/AF_XDP descriptor authority",
+        "monitor-backed XSK/UMEM ownership"
+      ],
+      "forbidden": [
+        "XDP_TX or AF_XDP zero-copy authorized by SKB authority",
+        "AF_XDP descriptor use by ambient driver state"
+      ]
+    },
+    {
+      "id": "DEV-NIC-003",
+      "title": "Descriptor publication and doorbell",
+      "status": "model_supported_plus_source_observed",
+      "claim": "Descriptor writes, next_to_watch publication, in-flight DMA, and tail doorbell consume a typed DescriptorLedger.",
+      "protection_missing": [
+        "typed DescriptorLedger emitted",
+        "monitor-visible descriptor publication event",
+        "descriptor-to-DMA-to-doorbell correlation",
+        "stale descriptor quarantine"
+      ],
+      "forbidden": [
+        "ice tracepoint or Linux ring index as the ledger itself"
+      ]
+    },
+    {
+      "id": "DEV-NIC-004",
+      "title": "DMA packet memory ownership",
+      "status": "model_supported_plus_source_observed",
+      "claim": "DMA-capable packet memory requires MemoryView/IOMMU and class-specific memory authority.",
+      "protection_missing": [
+        "monitor-backed MemoryView for packet pages",
+        "IOMMU ownership root below Linux",
+        "page-pool ownership provenance",
+        "XSK/UMEM ownership provenance",
+        "IOMMU invalidation order proof"
+      ],
+      "forbidden": [
+        "Linux DMA mapping success as Domain authorization proof"
+      ]
+    },
+    {
+      "id": "DEV-NIC-005",
+      "title": "Completion settlement",
+      "status": "model_supported_plus_source_observed",
+      "claim": "Completion settles a typed ledger under service authority and service budget.",
+      "protection_missing": [
+        "completion ledger id",
+        "submit-class settlement correlation",
+        "service BudgetTicket or service budget rule",
+        "delivery-after-revoke proof"
+      ],
+      "forbidden": [
+        "completion charged to last submitter without explicit settlement rule",
+        "worker task identity as caller authority"
+      ]
+    },
+    {
+      "id": "DEV-NIC-006",
+      "title": "QueueControl",
+      "status": "model_supported_plus_source_observed",
+      "claim": "Devlink/rate/scheduler/VF/SF/representor lifecycle operations require QueueControl authority.",
+      "protection_missing": [
+        "QueueControlCap",
+        "monitor QueueTag check",
+        "VF/SF lifecycle authority model",
+        "devlink policy proof"
+      ],
+      "forbidden": [
+        "QueueControl authorized by RunCap",
+        "QueueControl authorized by plain netdev reachability",
+        "QueueControl authorized by CAP_NET_ADMIN alone"
+      ]
+    },
+    {
+      "id": "DEV-NIC-007",
+      "title": "RepresentorForward",
+      "status": "model_supported_plus_source_observed",
+      "claim": "Representor transmit requires RepresentorForward authority plus a live lower QueueLease and service budget.",
+      "protection_missing": [
+        "RepresentorForwardCap",
+        "lower QueueLease derivation artifact",
+        "fresh lower queue epoch check",
+        "service budget proof",
+        "bridge/FDB/VLAN/TC policy proof"
+      ],
+      "forbidden": [
+        "representor netdev reachability as lower queue submit authority"
+      ]
+    },
+    {
+      "id": "DEV-NIC-008",
+      "title": "ServiceWork and async provenance",
+      "status": "model_supported_plus_source_observed",
+      "claim": "Service and maintenance work is service/kernel authority and cannot create caller-attributed effects without a typed carrier.",
+      "protection_missing": [
+        "typed service work carrier",
+        "merge policy for coalesced work",
+        "service/caller authority intersection",
+        "stale queued work cancellation"
+      ],
+      "forbidden": [
+        "generic workqueue execution as a CapSched authority hook",
+        "kernel-internal work treated as caller authority"
+      ]
+    },
+    {
+      "id": "DEV-NIC-009",
+      "title": "Revoke semantics",
+      "status": "model_supported_but_not_ready",
+      "claim": "Queue revoke invalidates submit, descriptor, DMA, completion, control, representor, and service work paths before reuse or delivery.",
+      "protection_missing": [
+        "queue revoke epoch",
+        "queue drain/quarantine state",
+        "DMA/IOMMU/IRQ invalidation order proof",
+        "outstanding ledger cleanup proof",
+        "stale service-work cancellation proof"
+      ],
+      "forbidden": [
+        "queue revocation inferred from Linux netdev down/reset alone"
+      ]
+    },
+    {
+      "id": "DEV-NIC-010",
+      "title": "Linux substrate compatibility",
+      "status": "source_observed_only",
+      "claim": "Linux netdev, NAPI, XDP, AF_XDP, devlink, representor, workqueue, and tracepoints are compatibility substrates, not production authority roots.",
+      "protection_missing": [
+        "non-forgeable authority roots",
+        "monitor verification",
+        "hostile-kernel containment evidence"
+      ],
+      "forbidden": [
+        "source observation upgraded into protection evidence"
+      ]
+    }
+  ],
+  "allowed_next_work": [
+    "trace-only observation improvements",
+    "machine-readable ledger refinement",
+    "additional device family source maps",
+    "revoke/drain/quarantine models",
+    "implementation planning that names subclaim coverage"
+  ],
+  "forbidden_next_work": [
+    "behavior-changing NIC enforcement patches",
+    "generic workqueue enforcement hooks",
+    "Linux ring/q_vector/netdev/devlink state as non-forgeable authority",
+    "IOMMU/QueueLease protection claims without monitor-backed ownership",
+    "collapsed SKB/XDP/AF_XDP/control/representor/service capability"
+  ]
+}

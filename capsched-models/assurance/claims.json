@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-06-26",
+  "updated": "2026-06-29",
   "scope": "CapSched-H production assurance case with Linux-only L0 prototype boundaries",
   "status_legend": {
     "open": "Required for the final goal but not established.",
@@ -190,17 +190,233 @@
       "status": "model_supported",
       "title": "Queue submit, DMA, IRQ, and rate revoke as one lease",
       "claim": "Device queue ownership, allowed DMA memory, interrupt route, epoch, and queue budget/rate limit are one monitor-owned QueueLease boundary.",
+      "children": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
       "evidence": [
-        "E-DEV-001"
+        "E-DEV-001",
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-002",
+        "E-DEV-MNIC-003",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
       ],
       "counterexamples": [
         "CEX-DEV-001"
       ],
       "gaps": [
-        "No device-specific queue model.",
+        "No behavior-changing QueueLease implementation.",
         "No IOMMU implementation.",
         "No IRQ remapping implementation.",
+        "No monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, typed SubmitLedger, or DescriptorLedger.",
+        "No queue revoke/drain/quarantine implementation.",
         "No DMA attack tests."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-001",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "Modern NIC queue identity and binding",
+      "claim": "Queue effects require live QueueTag, queue epoch, ring, q_vector, NAPI instance, IRQ route, and queue budget.",
+      "evidence": [
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No monitor QueueTag.",
+        "No queue epoch emission or check.",
+        "No non-forgeable IRQ route ownership.",
+        "No queue budget root below Linux."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-002",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "Typed modern NIC submit classes",
+      "claim": "SKB, XDP frame, XDP_TX page-pool, and AF_XDP zero-copy submits are distinct authority classes.",
+      "evidence": [
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-002",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No typed SubmitLedger id.",
+        "No Domain/epoch correlation on packet memory.",
+        "No frozen XDP or AF_XDP descriptor authority.",
+        "No monitor-backed XSK/UMEM ownership."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-003",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "Descriptor publication and doorbell ledger",
+      "claim": "Descriptor writes, next_to_watch publication, in-flight DMA state, and tail doorbell publication consume a typed DescriptorLedger.",
+      "evidence": [
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No typed DescriptorLedger emitted.",
+        "No monitor-visible descriptor publication event.",
+        "No descriptor-to-DMA-to-doorbell correlation.",
+        "No stale descriptor quarantine after revoke."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-004",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "DMA packet memory ownership",
+      "claim": "DMA-capable packet memory requires MemoryView/IOMMU ownership and class-specific memory authority.",
+      "evidence": [
+        "E-DEV-MNIC-002",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No monitor-backed MemoryView for packet pages.",
+        "No IOMMU ownership root below Linux.",
+        "No page-pool ownership provenance.",
+        "No XSK/UMEM ownership provenance.",
+        "No IOMMU invalidation latency or ordering proof."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-005",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "Modern NIC completion settlement",
+      "claim": "NAPI, IRQ, worker, or service completion settles a previously typed ledger under service authority and service budget.",
+      "evidence": [
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-002",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No completion ledger id.",
+        "No submit-class settlement correlation.",
+        "No service BudgetTicket or service budget rule.",
+        "No proof that completion cannot deliver after revoke."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-006",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "Modern NIC QueueControl authority",
+      "claim": "Devlink rate/scheduler and VF/SF/representor lifecycle operations require QueueControl authority and a live queue epoch.",
+      "evidence": [
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-003",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No QueueControlCap.",
+        "No monitor QueueTag check.",
+        "No VF/SF lifecycle authority model.",
+        "No devlink policy proof."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-007",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "Modern NIC RepresentorForward authority",
+      "claim": "Representor transmit requires RepresentorForward authority plus a live lower QueueLease, fresh lower queue epoch, and service budget.",
+      "evidence": [
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-003",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No RepresentorForwardCap.",
+        "No lower QueueLease derivation artifact.",
+        "No fresh lower queue epoch check.",
+        "No service budget proof.",
+        "No bridge/FDB/VLAN/TC policy proof."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-008",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "Modern NIC service work and async provenance",
+      "claim": "Reset, PTP, DPLL, eswitch, LAG, DIM, firmware, and maintenance work execute as service/kernel authority classes and cannot create caller-attributed effects without typed carriers.",
+      "evidence": [
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No typed service work carrier.",
+        "No merge policy for coalesced work.",
+        "No service/caller authority intersection.",
+        "No cancellation/quarantine rule for stale queued work."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-009",
+      "parent": "DEV-001",
+      "status": "model_supported",
+      "title": "Modern NIC queue revoke semantics",
+      "claim": "Queue revoke invalidates submit, descriptor, doorbell, in-flight DMA, completion, control, representor, and service work before authority can be reused or delivered to another Domain.",
+      "evidence": [
+        "E-DEV-MNIC-001",
+        "E-DEV-MNIC-002",
+        "E-DEV-MNIC-003",
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "No queue revoke epoch.",
+        "No queue drain/quarantine state.",
+        "No DMA/IOMMU/IRQ invalidation order proof.",
+        "No outstanding ledger cleanup proof.",
+        "No stale service-work cancellation proof."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "DEV-NIC-010",
+      "parent": "DEV-001",
+      "status": "prototype_evidenced",
+      "title": "Modern NIC Linux substrate compatibility",
+      "claim": "Linux netdev, NAPI, XDP, AF_XDP, devlink, representor, workqueue, and tracepoint structures are useful compatibility substrates but not production authority roots.",
+      "evidence": [
+        "E-DEV-MNIC-004",
+        "E-DEV-MNIC-005"
+      ],
+      "gaps": [
+        "All observed state is Linux-mutable.",
+        "No monitor verification.",
+        "No hostile-kernel containment evidence."
       ],
       "forbidden_l0": true
     },
@@ -401,6 +617,86 @@
       ]
     },
     {
+      "id": "E-DEV-MNIC-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0046-modern-nic-queuelease-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks authority-class separation; it is not real NIC enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-002",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0048-xdp-afxdp-memory-ownership-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-002",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks XDP/AF_XDP memory ownership constraints; it is not real page-pool, XSK, UMEM, or IOMMU enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-003",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0049-queuecontrol-representor-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks QueueControl and RepresentorForward separation; it is not devlink, VF/SF, eswitch, or bridge policy correctness evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-004",
+      "kind": "source_observation",
+      "record": "capsched-models/analysis/0052-ice-modern-nic-queuelease-source-map.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Linux source anchors are mutable Linux substrate and not protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-005",
+      "kind": "observation_only_readiness",
+      "record": "capsched-models/validation/0047-ice-modern-nic-readiness-result.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Every readiness row is observation_only=true, authority_claim=false, and monitor_verified=false."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -458,6 +754,12 @@
     "SchedContext budget is monitor root budget.",
     "Linux page/slab/memcg/page-cache metadata is memory authority.",
     "VFIO/iommufd Linux objects are production queue authority roots.",
+    "Linux netdev, ring, q_vector, devlink, representor, tracepoint, or workqueue state is modern NIC QueueLease authority.",
+    "SKB, XDP frame, XDP_TX page-pool, AF_XDP zero-copy, QueueControl, RepresentorForward, and ServiceWork can be collapsed into one queue capability.",
+    "XDP_TX or AF_XDP zero-copy can borrow SKB authority, generic netdev reachability, or ambient driver worker authority.",
+    "QueueControl can be authorized by RunCap, CAP_NET_ADMIN alone, or plain netdev reachability.",
+    "Representor netdev reachability is lower QueueLease authority.",
+    "Linux netdev down/reset proves monitor-grade queue revoke.",
     "BPF or sched_ext is the production root for No RunCap, no run.",
     "Cluster-wide leases are directly executable.",
     "TLC completion alone proves the datacenter OS goal."

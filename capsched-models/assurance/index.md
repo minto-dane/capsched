@@ -1,6 +1,6 @@
 # Assurance Case Index
 
-Updated: 2026-06-26
+Updated: 2026-06-29
 
 ## Purpose
 
@@ -22,7 +22,9 @@ Linux-only L0 evidence is useful, but it is not production protection evidence.
 | File | Role |
 | --- | --- |
 | `0001-hypervisor-grade-domain-separation-case.md` | Human-readable top-level claim tree, gaps, forbidden claims, and gate criteria. |
+| `0002-modern-nic-queuelease-assurance-map.md` | Human-readable DEV-001 subclaim map for modern NIC QueueLease evidence, gaps, and forbidden claims. |
 | `claims.json` | Machine-readable claim, evidence, counterexample, and gate register for AI/state recovery. |
+| `modern-nic-queuelease-subclaims-v1.json` | Machine-readable DEV-001 modern NIC subclaim map and evidence classification. |
 
 ## Status Legend
 
@@ -61,6 +63,9 @@ Model-supported areas:
 - direct-map and TLB revocation pressure
 - page-cache overlay conflict handling
 - queue lease and IOMMU/IRQ boundary
+- modern NIC QueueLease authority-class separation
+- XDP and AF_XDP memory ownership
+- QueueControl and RepresentorForward separation
 
 Prototype-evidenced areas:
 
@@ -76,5 +81,28 @@ Open production gaps:
 - real scheduler enforcement across all runnable paths
 - async provenance implementation
 - real IOMMU, IRQ, and queue revocation
+- monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, and typed
+  queue ledger roots
 - service-domain TCB reduction
 - exploit-containment and cost-efficiency evaluation
+
+Current modern NIC QueueLease summary:
+
+```text
+Model-supported:
+  SKB/XDP/AF_XDP/control/representor/service authority classes are separated.
+
+Source-observed:
+  Intel ice contains usable queue, descriptor, DMA, completion, devlink,
+  representor, and service anchors.
+
+Observation-only:
+  ice readiness found 19 tracepoint rows, 40 source anchors, and 12
+  high-severity gaps. Every row remains authority_claim=false and
+  monitor_verified=false.
+
+Forbidden:
+  Do not treat netdev/ring/q_vector/devlink/workqueue state as production
+  authority. Do not implement behavior-changing QueueLease enforcement from
+  this evidence alone.
+```

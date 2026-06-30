@@ -352,19 +352,56 @@ Current evidence:
 - `formal/0011-queue-lease-model/`
 - `validation/0013-queue-lease-tlc.md`
 - Slice 0B type name: `capsched_queue_lease`
+- `analysis/0052-ice-modern-nic-queuelease-source-map.md`
+- `formal/0028-modern-nic-queuelease-model/`
+- `validation/0046-modern-nic-queuelease-tlc.md`
+- `validation/0047-ice-modern-nic-readiness-result.md`
+- `formal/0029-xdp-afxdp-memory-ownership-model/`
+- `validation/0048-xdp-afxdp-memory-ownership-tlc.md`
+- `formal/0030-queuecontrol-representor-model/`
+- `validation/0049-queuecontrol-representor-tlc.md`
+- `assurance/0002-modern-nic-queuelease-assurance-map.md`
+
+Modern NIC subclaims:
+
+```text
+DEV-NIC-001 Queue identity and binding
+DEV-NIC-002 Typed submit classes
+DEV-NIC-003 Descriptor publication and doorbell ledger
+DEV-NIC-004 DMA packet memory ownership
+DEV-NIC-005 Completion settlement
+DEV-NIC-006 QueueControl
+DEV-NIC-007 RepresentorForward
+DEV-NIC-008 ServiceWork and async provenance
+DEV-NIC-009 Queue revoke semantics
+DEV-NIC-010 Linux substrate compatibility
+```
+
+Important limitation:
+
+```text
+The modern NIC evidence is model-supported and source-observed, not
+protection-evidenced. ice readiness is observation-only; all rows remain
+authority_claim=false and monitor_verified=false.
+```
 
 Open gaps:
 
-- no device-specific NIC/NVMe/GPU queue model
+- no behavior-changing QueueLease implementation
 - no IOMMU implementation
 - no IRQ remapping implementation
 - no VFIO/iommufd integration plan
+- no monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, typed
+  SubmitLedger, or DescriptorLedger
+- no queue revoke/drain/quarantine implementation
 - no DMA attack tests
 
 Forbidden L0 claim:
 
 ```text
 Do not treat Linux VFIO/iommufd objects as the production authority root.
+Do not treat Linux netdev, ring, q_vector, devlink, representor, tracepoint, or
+workqueue state as modern NIC QueueLease authority.
 ```
 
 ### REVOKE-001: Epoch Revoke Invalidates All Authority Paths
