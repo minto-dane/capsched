@@ -92,20 +92,20 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Local monitor admission carrier sketch comparison. Analysis/0070 and
-  formal/0047 compare direct-call-first reference semantics with
-  monitor-owned-ring-first throughput refinement. Validation/0069 safe TLC
-  passed with 18 generated states, 16 distinct states, and depth 9; unsafe
-  configs reject Linux direct response authority, direct response without replay
-  check, ring slot authority, ring response before monitor claim, batch epoch
-  crossing, shadow refresh from carrier, revoke complete with pending ring
-  responses, and cost-as-security. Ring remains a required throughput
-  refinement, not a weaker alternative.
+  Direct-call reference ABI sketch. Analysis/0071 and formal/0048 define
+  monitor entry, request copy/freeze before validation, replay consume before
+  success ledger write, monitor-owned ledger writes, response handles, shadow
+  refresh from handle/query only, failure terminality, and revoke slow path with
+  in-flight direct-call drain. Validation/0070 safe TLC passed with 23
+  generated states, 21 distinct states, and depth 20; unsafe configs reject
+  mutable request validation, success without entry, ledger shortcut, replay
+  shortcut, Linux ledger write, response without ledger, shadow shortcut,
+  shadow authority, failure-then-receipt, and revoke-order shortcuts.
 
 next focused risk:
-  Define the direct-call reference ABI sketch against
-  `LocalMonitorAdmissionABI-v0`, without selecting binary layout or
-  implementing it.
+  Define the monitor-owned ring refinement sketch against the direct-call
+  reference ABI. Direct-call remains reference semantics, not the final
+  throughput path.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

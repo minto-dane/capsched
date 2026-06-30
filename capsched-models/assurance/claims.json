@@ -245,7 +245,9 @@
         "E-DEV-MNIC-039",
         "E-DEV-MNIC-040",
         "E-DEV-MNIC-041",
-        "E-DEV-MNIC-042"
+        "E-DEV-MNIC-042",
+        "E-DEV-MNIC-043",
+        "E-DEV-MNIC-044"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -599,7 +601,9 @@
         "E-DEV-MNIC-039",
         "E-DEV-MNIC-040",
         "E-DEV-MNIC-041",
-        "E-DEV-MNIC-042"
+        "E-DEV-MNIC-042",
+        "E-DEV-MNIC-043",
+        "E-DEV-MNIC-044"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1267,6 +1271,26 @@
       "limitation": "Finite model checks direct/ring carrier sketch constraints for response ownership, replay checks, monitor slot claims, batch epoch stability, shadow refresh source, pending response drain, and cost non-authority; it is not ABI layout or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-043",
+      "kind": "analysis_reference_abi_sketch",
+      "record": "capsched-models/analysis/0071-direct-call-reference-abi-sketch.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines direct-call reference ABI semantics for monitor entry, request copy/freeze, replay consume, monitor ledger write, response handle, Linux shadow refresh, failure terminality, and revoke slow path; it is not ABI layout, Linux stub, monitor implementation, performance, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-044",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0070-direct-call-reference-abi-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks direct-call reference constraints for TOCTOU-safe request copy, replay-before-ledger, monitor-owned ledger writes, response-handle gating, shadow source, failure terminality, and revoke slow-path ordering; it is not ABI layout or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1352,6 +1376,7 @@
     "A semantic ABI candidate is a selected binary ABI, monitor call layout, Linux stub, shared-ring format, or production protection proof.",
     "Choosing direct-call reference semantics means ring/batching is unnecessary for the datacenter performance target.",
     "Ring batching can weaken monitor-owned response, replay, receipt ledger, revoke, or shadow invalidation semantics.",
+    "A direct-call reference ABI sketch is a selected binary ABI, Linux stub, monitor implementation, performance result, or production protection proof.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1429,7 +1454,9 @@
         "E-DEV-MNIC-039",
         "E-DEV-MNIC-040",
         "E-DEV-MNIC-041",
-        "E-DEV-MNIC-042"
+        "E-DEV-MNIC-042",
+        "E-DEV-MNIC-043",
+        "E-DEV-MNIC-044"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1441,7 +1468,8 @@
         "Pre-ABI monitor admission interface boundary model.",
         "Pre-ABI carrier/storage choice gate model.",
         "Semantic monitor ABI candidate model before carrier or binary layout selection.",
-        "Direct-call versus monitor-owned-ring implementation-facing sketch comparison."
+        "Direct-call versus monitor-owned-ring implementation-facing sketch comparison.",
+        "Direct-call reference ABI sketch before binary layout or implementation."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

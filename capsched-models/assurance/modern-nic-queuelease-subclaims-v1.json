@@ -26,6 +26,7 @@
     "monitor_admission_carrier_storage": "model_checked",
     "local_monitor_admission_abi_semantics": "model_checked",
     "monitor_admission_carrier_sketch": "model_checked",
+    "direct_call_reference_abi": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -635,6 +636,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks direct/ring carrier sketch constraints for Linux response rejection, replay checks, monitor ring claim, batch epoch stability, shadow refresh source, pending response drain, and performance cost non-authority; it is not ABI layout or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-043",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0071-direct-call-reference-abi-sketch.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines direct-call reference semantics for monitor entry, request copy/freeze, replay consume, monitor ledger write, response handle, Linux shadow refresh, failure terminality, and revoke slow path; it is not ABI layout, implementation, performance, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-044",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0070-direct-call-reference-abi-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks direct-call request copy, validation, replay, ledger, response handle, shadow source, failure terminality, and revoke slow-path ordering; it is not ABI layout, implementation, performance, or protection evidence."
     }
   ],
   "subclaims": [
@@ -875,7 +912,8 @@
     "local monitor admission interface boundary refinement before choosing monitor ABI, Linux service-domain stubs, or typed endpoint carriers",
     "local monitor admission carrier/storage choice refinement before choosing direct call, shared ring, receipt ledger, or Linux-visible shadow layouts",
     "semantic monitor ABI candidate refinement before choosing a binary ABI, carrier, Linux stub, or monitor implementation",
-    "direct-call versus monitor-owned-ring carrier sketch comparison before choosing implementation-facing ABI layout"
+    "direct-call versus monitor-owned-ring carrier sketch comparison before choosing implementation-facing ABI layout",
+    "direct-call reference ABI sketch before binary layout, Linux stub, or monitor implementation"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",

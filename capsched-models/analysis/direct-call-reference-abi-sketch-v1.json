@@ -1,0 +1,126 @@
+{
+  "schema": "capsched.direct_call_reference_abi_sketch.v1",
+  "status": "draft_reference_sketch",
+  "date": "2026-06-30",
+  "scope": {
+    "reference_semantics": "LocalMonitorAdmissionABI-v0",
+    "carrier": "direct_call_reference",
+    "binary_abi_selected": false,
+    "monitor_entry_mechanism_selected": false,
+    "linux_stub_selected": false,
+    "monitor_implementation_selected": false,
+    "behavior_change": false,
+    "protection_claim": false
+  },
+  "call_flow": [
+    "linux_builds_request_in_linux_visible_memory",
+    "monitor_entry",
+    "monitor_copies_request_to_monitor_owned_image",
+    "monitor_validates_copied_request",
+    "monitor_consumes_replay_window",
+    "monitor_writes_ledger",
+    "monitor_mints_response_handle",
+    "linux_refreshes_non_authoritative_shadow_from_handle_or_query"
+  ],
+  "request_copy_freeze": {
+    "linux_visible_request_is_authority": false,
+    "monitor_validates_linux_mutable_memory": false,
+    "required_order": [
+      "monitor_entry",
+      "bounded_copy",
+      "request_image_id_and_generation",
+      "validate_copied_image",
+      "ignore_post_copy_linux_mutation"
+    ]
+  },
+  "validation_fields": [
+    "abi_version",
+    "request_class",
+    "required_field_presence",
+    "typed_nulls_for_irrelevant_fields",
+    "monitor_id",
+    "expected_monitor_epoch",
+    "cluster_lease_id",
+    "cluster_epoch",
+    "root_management_epoch",
+    "node_id",
+    "service_domain_id",
+    "service_domain_epoch",
+    "target_domain_id",
+    "target_domain_epoch",
+    "device_root_id",
+    "device_root_epoch",
+    "local_lease_id",
+    "local_lease_epoch",
+    "requested_receipt_classes",
+    "requested_revoke_scope",
+    "root_budget_binding"
+  ],
+  "replay_handling": {
+    "owner": "local_hypertag_monitor",
+    "success_requires_replay_consume_before_ledger_write": true,
+    "replayed_or_stale_request_mints_success_receipt": false,
+    "terminal_failure_records_attempt": true,
+    "same_attempt_after_failure_can_mint_receipt": false
+  },
+  "ledger_and_response": {
+    "ledger_owner": "local_hypertag_monitor",
+    "linux_ledger_write_allowed": false,
+    "response_handle_owner": "local_hypertag_monitor",
+    "response_handle_is_ledger": false,
+    "success_handle_requires": [
+      "monitor_entry",
+      "request_copy",
+      "request_validation",
+      "replay_consume",
+      "monitor_ledger_write"
+    ]
+  },
+  "linux_shadow_refresh": {
+    "allowed_sources": [
+      "monitor_response_handle",
+      "monitor_receipt_query",
+      "monitor_shadow_generation"
+    ],
+    "forbidden_sources": [
+      "linux_mutable_request",
+      "failure_only_state",
+      "linux_owned_ledger",
+      "ambient_service_domain_state"
+    ],
+    "authority_root": false
+  },
+  "revoke_slow_path": {
+    "required_order": [
+      "linux_carries_revoke_request",
+      "monitor_entry",
+      "monitor_copies_revoke_request",
+      "monitor_validates_lease_epoch_and_scope",
+      "monitor_consumes_revoke_replay_nonce",
+      "monitor_marks_revoke_started",
+      "monitor_embargoes_new_receipts",
+      "monitor_drains_or_rejects_relevant_in_flight_direct_calls",
+      "monitor_revokes_derived_receipts",
+      "monitor_invalidates_linux_shadow_generation",
+      "monitor_writes_revoke_complete_ledger_row",
+      "monitor_returns_revoke_complete_handle"
+    ],
+    "revoke_complete_requires_inflight_drain": true,
+    "revoke_complete_requires_shadow_invalidation": true,
+    "revoke_complete_requires_derived_revoke": true
+  },
+  "invariants": [
+    "no_validation_from_linux_mutable_request",
+    "no_success_response_without_monitor_entry",
+    "no_success_ledger_write_without_copied_request_validation",
+    "no_success_ledger_write_before_replay_consume",
+    "no_linux_owned_ledger_write",
+    "no_response_handle_without_monitor_ledger_state",
+    "no_linux_shadow_refresh_from_mutable_request_or_failure_only_state",
+    "no_linux_shadow_as_endpoint_authority",
+    "no_receipt_after_terminal_failure_for_same_attempt",
+    "no_revoke_complete_before_new_receipt_embargo",
+    "no_revoke_complete_before_inflight_direct_calls_drain_or_reject",
+    "no_revoke_complete_before_derived_receipt_revoke_and_shadow_invalidation"
+  ]
+}

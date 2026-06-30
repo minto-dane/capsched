@@ -76,6 +76,7 @@ Updated: 2026-06-30
 | 0068 | Draft choice gate with model | Local Monitor Admission Carrier and Receipt Storage |
 | 0069 | Draft semantic ABI candidate with model gate | Local Monitor Admission ABI Semantics Candidate |
 | 0070 | Draft implementation-facing sketch comparison with model gate | Local Monitor Admission Carrier Sketch Comparison |
+| 0071 | Draft reference ABI sketch with model gate | Direct-Call Reference ABI Sketch |
 
 ## Planned Analysis Notes
 
@@ -116,3 +117,4 @@ Updated: 2026-06-30
 | `local-monitor-admission-carrier-storage-v1.json` | Draft choice gate | Machine-readable local monitor carrier/storage choice gate and authority-collapse rejection map |
 | `local-monitor-admission-abi-semantics-v0.json` | Draft semantic ABI candidate | Machine-readable LocalMonitorAdmissionABI-v0 request/response, ledger, replay, shadow, failure, and revoke semantics |
 | `local-monitor-admission-carrier-sketch-comparison-v1.json` | Draft sketch comparison | Machine-readable direct-call-first versus monitor-owned-ring-first carrier sketch comparison |
+| `direct-call-reference-abi-sketch-v1.json` | Draft reference ABI sketch | Machine-readable direct-call reference semantics for monitor entry, request copy, replay, ledger, response handle, shadow refresh, and revoke |

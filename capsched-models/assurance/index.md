@@ -300,6 +300,19 @@ Monitor admission carrier sketch comparison:
   authority. This is model-supported semantics only, not ABI layout,
   implementation, performance, or protection evidence.
 
+Direct-call reference ABI sketch:
+  analysis/0071 and validation/0070 define and check the direct-call reference
+  semantics for `LocalMonitorAdmissionABI-v0`. Safe TLC passed with 23
+  generated states, 21 distinct states, and depth 20. Unsafe configs produced
+  expected counterexamples for validating Linux mutable request memory, success
+  without monitor entry, ledger write without copied-request validation, ledger
+  before replay consume, Linux ledger writes, response handle without ledger,
+  shadow refresh from request, shadow authority, receipt after terminal
+  failure, revoke complete without embargo, revoke complete with in-flight
+  direct calls, and revoke complete before derived receipt revoke plus shadow
+  invalidation. This is model-supported reference semantics only, not ABI
+  layout, implementation, performance, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

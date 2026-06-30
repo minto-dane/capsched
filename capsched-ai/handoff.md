@@ -90,22 +90,25 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Local monitor admission carrier sketch comparison. Analysis/0070 compares
-  direct-call-first reference semantics with monitor-owned-ring-first throughput
-  refinement. Formal/0047 plus validation/0069 safe TLC passed with 18
-  generated states, 16 distinct states, and depth 9. Unsafe configs reject
-  Linux direct response authority, direct response without replay check, ring
-  slot authority, ring response before monitor claim, batch epoch crossing,
-  shadow refresh from carrier, revoke complete with pending ring responses, and
-  performance cost as security authority. Ring remains required for data-center
-  throughput; it must refine the direct-call semantic model rather than
-  replacing monitor authority with ring state.
+  Direct-call reference ABI sketch. Analysis/0071 defines monitor entry,
+  monitor-owned request copy/freeze before validation, replay-window consume
+  before success ledger write, monitor-owned ledger writes, response handles,
+  Linux shadow refresh from handle/query only, failure terminality, and revoke
+  slow path with in-flight direct-call drain. Formal/0048 plus validation/0070
+  safe TLC passed with 23 generated states, 21 distinct states, and depth 20.
+  Unsafe configs reject Linux mutable request validation, success without
+  monitor entry, ledger write without copied-request validation, ledger before
+  replay consume, Linux ledger writes, response handle without ledger, shadow
+  from request, shadow authority, receipt after terminal failure, revoke
+  without embargo, revoke with in-flight direct calls, and revoke before
+  derived receipt revoke plus shadow invalidation. This is reference semantics,
+  not the final performance path.
 
 next focused risk:
-  Define the direct-call reference ABI sketch against
-  `LocalMonitorAdmissionABI-v0`, including monitor entry, request copy/validate,
-  replay-window consume, ledger write, response handle, Linux shadow refresh,
-  and revoke slow path, without selecting binary layout or implementing it.
+  Define the monitor-owned ring refinement sketch against the direct-call
+  reference ABI, including monitor slot claim, slot epochs, batch epoch
+  boundaries, response publication, pending response drain, shadow generation,
+  and ring DoS accounting, without selecting binary layout or implementing it.
 ```
 
 That focused VF IRQ model is now checked:
