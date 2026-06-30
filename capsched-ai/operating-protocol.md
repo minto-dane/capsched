@@ -17,6 +17,8 @@ For any nontrivial change:
 6. Put validation plans/results in `capsched/capsched-models/validation/`.
 7. Put roadmaps and task breakdowns in `capsched/capsched-models/plans/`.
 8. Put implementation-specific patch maps in `capsched/capsched-models/implementation/`.
+9. Put cross-work traceability, Linux anchor drift rules, and N-to-artifact
+   mapping policy in `capsched/capsched-models/traceability/`.
 
 ## Context Budget Discipline
 
@@ -51,6 +53,34 @@ Before implementation, read upstream code and write focused investigation notes.
 Tie findings to file paths, function names, and CapSched invariants.
 
 Do not use speculative patch maps as accepted implementation plans.
+
+## Traceability Discipline
+
+`N-*` items are chronological work records only. Do not turn them into
+requirements, invariants, Linux source anchors, validation ids, patch ids, or
+assurance claims.
+
+Use overlay traceability rows for semantic interpretation:
+
+```text
+N -> artifact -> REQ/THR/INV/DES/MODEL/VAL/LINUX/PATCH/CLAIM
+```
+
+For future N items, keep the N record format simple and add or refresh overlay
+rows separately. This keeps N-106 and later readable the same way as N-001
+through N-105.
+
+Linux source anchors must record a checked commit. Source anchors are useful
+evidence, but they default to:
+
+```text
+authority_claim=false
+monitor_verified=false
+protection_claim=false
+```
+
+After upstream Linux updates, compile success is not enough. Any affected Linux
+anchor row must be checked for path, symbol/pattern, and semantic drift.
 
 ## Validation Discipline
 

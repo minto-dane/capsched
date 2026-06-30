@@ -20,6 +20,14 @@ now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
 changes.
 
+ADR-0007 adds a project-wide traceability rule: `N-*` ids are only
+chronological work records, for both N-001 through N-105 and N-106 onward.
+Semantic interpretation is an overlay under `capsched-models/traceability/`.
+Linux anchors must record checked commits and default to no authority, no
+monitor verification, and no protection claim. Existing source maps are
+topic-local; a central drift-aware N/artifact/Linux/claim ledger remains a
+pending traceability build-out.
+
 Modern NIC QueueLease/revoke status:
 
 ```text

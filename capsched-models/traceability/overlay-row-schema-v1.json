@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "title": "CapSched overlay traceability row schema",
+  "row_shape": {
+    "row_id": "string, stable within the ledger",
+    "map_version": "string",
+    "mapped_on": "YYYY-MM-DD",
+    "n_ids": [
+      "N-xxx"
+    ],
+    "artifact_paths": [
+      "repository-relative path"
+    ],
+    "relation": "documents | observes | anchors | checks | models | refines | blocks | falsifies | supersedes | forbidden_upgrade",
+    "evidence_class": "analysis_only | source_only | observation_only | model_checked | build_only | counterexample | implementation_plan | code_patch | protection_evidenced",
+    "semantic_ids": {
+      "req": [
+        "REQ-xxx"
+      ],
+      "thr": [
+        "THR-xxx"
+      ],
+      "inv": [
+        "INV-xxx"
+      ],
+      "des": [
+        "DES-xxx or ADR-xxxx"
+      ],
+      "model": [
+        "MODEL-xxx or formal path"
+      ],
+      "val": [
+        "VAL-xxx or validation path"
+      ],
+      "linux": [
+        "LINUX-xxx"
+      ],
+      "patch": [
+        "PATCH-xxx"
+      ],
+      "claim": [
+        "CLAIM-xxx"
+      ]
+    },
+    "linux_anchors": [
+      {
+        "linux_id": "LINUX-xxx",
+        "upstream_base_commit": "git sha",
+        "work_commit": "git sha",
+        "last_checked_commit": "git sha",
+        "source_path": "linux repository relative path",
+        "symbol_or_pattern": "symbol, tracepoint, or source pattern",
+        "anchor_class": "current_source_anchor | future_gap | trace_catalog_plan | public_abi | private_helper | patch_anchor",
+        "anchor_kind": "file | function | struct | field | tracepoint | pattern | config | makefile | gap",
+        "blob_oid": "optional git blob oid",
+        "drift_status": "ok | path_changed | symbol_missing | pattern_missing | semantic_recheck_required | gap | deprecated | unknown",
+        "notes": "short note"
+      }
+    ],
+    "supported_claims": [
+      "CLAIM-xxx"
+    ],
+    "not_supported_claims": [
+      "CLAIM-xxx or short forbidden claim"
+    ],
+    "safety_flags": {
+      "authority_claim": false,
+      "monitor_verified": false,
+      "protection_claim": false,
+      "behavior_change": false,
+      "public_abi": false
+    },
+    "confidence": "high | medium | low | unknown",
+    "status": "active | pending | deprecated | superseded",
+    "next_action": "string"
+  },
+  "hard_rules": [
+    "N ids are chronological work ids, not semantic ids.",
+    "N ids must not directly support CLAIM ids.",
+    "source_only, observation_only, build_only, and model_checked rows do not imply protection_evidenced.",
+    "LINUX anchors default to authority_claim=false, monitor_verified=false, and protection_claim=false.",
+    "A missing Linux anchor is a gap, not proof that the semantic obligation is unnecessary.",
+    "When upstream source changes, drift_status must be rechecked before using the row for design decisions."
+  ]
+}

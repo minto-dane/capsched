@@ -14,6 +14,21 @@ been committed in that Linux repository as inert `CONFIG_CAPSCHED` scaffolding.
 Slice 0B has also been committed as type-only authority scaffolding in
 `include/linux/capsched.h` and `kernel/sched/capsched.c`. No behavior-changing
 scheduler patch points are accepted yet.
+
+ADR-0007 fixes the N-series traceability policy. `N-*` remains a chronological
+work ledger for past and future work. Semantic meaning, Linux anchors, drift
+state, validation class, and claim limits live in overlay rows under
+`capsched-models/traceability/`. Existing source-map artifacts are useful
+topic-local Linux mappings, but there is not yet a complete central
+N-to-artifact-to-Linux-to-claim drift ledger. Linux source anchors remain
+non-authoritative by default:
+
+```text
+authority_claim=false
+monitor_verified=false
+protection_claim=false
+```
+
 Modern NIC QueueLease/service-work analysis has reached a model-supported but
 not implementation-approved gate for Intel `ice`:
 

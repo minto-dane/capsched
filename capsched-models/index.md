@@ -27,6 +27,11 @@ CapSched-Linux.
 : Claim trees, evidence registers, forbidden-claim lists, and gate criteria
   that tie models and patches to the final security and efficiency goals.
 
+`traceability/`
+: Cross-reference policy, schemas, and future ledgers tying N-series work
+  items to artifacts, semantic ids, Linux source anchors, validation classes,
+  drift status, and assurance claim limits.
+
 ## Boundary
 
 AI handoff, state ledger, compact design memory, decisions, and templates live

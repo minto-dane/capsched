@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-inventory-runner-executed",
+    "current_phase": "overlay-traceability-policy-fixed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -27,6 +27,7 @@
       "plans": "capsched/capsched-models/plans",
       "implementation": "capsched/capsched-models/implementation",
       "assurance": "capsched/capsched-models/assurance",
+      "traceability": "capsched/capsched-models/traceability",
       "linux_source_repo": "linux"
     },
     "linux_source": {
@@ -158,6 +159,9 @@
     "assurance_case_index": "capsched/capsched-models/assurance/index.md",
     "assurance_case_tree": "capsched/capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md",
     "assurance_claims_json": "capsched/capsched-models/assurance/claims.json",
+    "traceability_index": "capsched/capsched-models/traceability/index.md",
+    "n_series_overlay_policy": "capsched/capsched-models/traceability/0001-n-series-overlay-policy.md",
+    "traceability_overlay_schema": "capsched/capsched-models/traceability/overlay-row-schema-v1.json",
     "l0_slice0_build_validation_plan": "capsched/capsched-models/validation/0002-l0-slice0-build-validation-plan.md",
     "l0_slice0_validation_attempt": "capsched/capsched-models/validation/0003-l0-slice0-validation-attempt.md",
     "l0_slice0_systemd_build_run": "capsched/capsched-models/validation/0004-l0-slice0-systemd-build-run.md",
@@ -203,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-105 implemented and executed the source-only direct-call trace/source inventory runner under the N-104 contract. The runner is capsched-models/validation/run-direct-call-inventory.sh. Validation/0077 records run 20260630T215918Z under build/direct-call-inventory. It emitted 10 ledger rows, 3 current inert CapSched anchors, 6 future direct-call gaps, 1 trace-plan row, 7 total gap rows, and 0 safety-flag violations. The run preserved source_only=true, requires_privilege=false, writes_tracefs=false, attaches_probes=false, modifies_linux=false, public_tracepoint_abi=false, authority_claim=false, monitor_verified=false, and protection_claim=false. This is source-only runner evidence, not tracefs runtime coverage, monitor verification, ABI approval, performance evidence, liveness proof, or production protection evidence. Linux remains unchanged. Next focused risk is N-106: broaden the source-only direct-call inventory to check more existing trace event source declarations and symbol candidates, still without root, tracefs writes, probe attachment, Linux modification, public tracepoint ABI, or protection claims.",
+    "current_focus": "ADR-0007 now fixes overlay traceability for the N-series and Linux anchors. N-* remains a chronological work ledger for both N-001 through N-105 and N-106 onward; semantic interpretation lives in overlay rows under capsched-models/traceability. Linux source anchors must carry checked commits and default to authority_claim=false, monitor_verified=false, and protection_claim=false. Existing analysis/source-map indexes are useful topic-local maps, but a central N-to-artifact-to-Linux-to-claim drift-aware ledger is not complete yet. N-106 remains pending: broaden the source-only direct-call inventory and keep it within the same overlay traceability policy, still without root, tracefs writes, probe attachment, Linux modification, public tracepoint ABI, runtime coverage claims, or protection claims.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -1954,7 +1958,7 @@
     },
     {
       "id": "N-106",
-      "text": "Broaden the source-only direct-call inventory to check additional existing trace event source declarations and symbol candidates, still without root, tracefs writes, probe attachment, Linux modification, public tracepoint ABI, runtime coverage claims, or protection claims.",
+      "text": "Broaden the source-only direct-call inventory to check additional existing trace event source declarations and symbol candidates, and keep any new rows compatible with ADR-0007 overlay traceability, still without root, tracefs writes, probe attachment, Linux modification, public tracepoint ABI, runtime coverage claims, or protection claims.",
       "status": "pending",
       "blocked_by": [
         "N-105"
@@ -1974,6 +1978,8 @@
     "validation_index": "capsched/capsched-models/validation/index.md",
     "assurance_index": "capsched/capsched-models/assurance/index.md",
     "assurance_claims": "capsched/capsched-models/assurance/claims.json",
+    "traceability_index": "capsched/capsched-models/traceability/index.md",
+    "traceability_overlay_schema": "capsched/capsched-models/traceability/overlay-row-schema-v1.json",
     "plan_index": "capsched/capsched-models/plans/index.md",
     "active_analysis_plan": "capsched/capsched-models/plans/0001-upstream-analysis-plan.md",
     "event_log": "capsched/capsched-ai/state/events.jsonl"
