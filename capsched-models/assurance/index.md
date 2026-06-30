@@ -70,6 +70,7 @@ Model-supported areas:
 - VF IRQ revoke ownership and synchronization-exception semantics
 - monitor IRQ route invalidation receipt semantics
 - monitor DMA/IOMMU/MemoryView invalidation receipt semantics
+- stale XSK/page-pool completion quarantine semantics
 
 Prototype-evidenced areas:
 
@@ -131,11 +132,19 @@ Monitor DMA/IOMMU invalidation model:
   hardware queue quiescence, HW-owned descriptor drain, access-user release,
   and old device-domain/PASID fence.
 
+XSK and page-pool quarantine model:
+  safe TLC passed with 11 generated states and 11 distinct states. Unsafe
+  configs produced expected counterexamples for XSK CQ submit after revoke,
+  XSK free-list return after revoke, page-pool recycle after revoke, packet
+  return before DMA receipt, PageOwner transfer before quarantine, packet
+  return without generation reset, double return, and queue reassignment before
+  settlement.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
   Linux-owned DMA unmap, queued IOMMU flush, iommufd IOAS unmap, VFIO unmap
-  callback, representor stop, or devlink reload as QueueLease revoke
-  authority. Do not implement behavior-changing QueueLease enforcement from
-  this evidence alone.
+  callback, xsk_tx_completed(), xsk_buff_free(), page-pool recycle,
+  representor stop, or devlink reload as QueueLease revoke authority. Do not
+  implement behavior-changing QueueLease enforcement from this evidence alone.
 ```

@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-29",
+  "scope": "XSK/page-pool stale completion quarantine and packet memory return source map for CapSched QueueLease revoke",
+  "status": "source_observed_only",
+  "authority_root": {
+    "required": "monitor-owned QueueLease epoch plus DMA/IOMMU/MemoryView receipt plus stale-completion quarantine receipt",
+    "not_authority": [
+      "xsk_tx_completed()",
+      "xsk_buff_free()",
+      "page_pool recycle eligibility",
+      "page_pool_return_netmem()",
+      "page unpin/refcount release",
+      "DMA receipt alone"
+    ]
+  },
+  "source_anchors": [
+    {
+      "id": "XSK-ICE-001",
+      "component": "ice-af-xdp",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_xsk.c",
+        "drivers/net/ethernet/intel/ice/ice_txrx.c"
+      ],
+      "symbols": [
+        "ice_clean_xdp_irq_zc",
+        "ice_xsk_clean_xdp_ring",
+        "ice_xsk_clean_rx_ring",
+        "ice_xmit_zc",
+        "xsk_tx_completed",
+        "xsk_buff_free"
+      ],
+      "supports": [
+        "ice_xsk_completion_observation",
+        "ice_xsk_cleanup_completion_observation",
+        "ice_xsk_buffer_free_observation"
+      ],
+      "limitation": "ice cleanup and completion calls are Linux lifetime/accounting mechanisms, not stale-epoch quarantine proof."
+    },
+    {
+      "id": "XSK-CORE-001",
+      "component": "af-xdp-core",
+      "files": [
+        "net/xdp/xsk.c",
+        "include/net/xdp_sock_drv.h",
+        "net/xdp/xsk_buff_pool.c"
+      ],
+      "symbols": [
+        "xsk_tx_completed",
+        "xsk_tx_peek_release_desc_batch",
+        "xskq_prod_write_addr_batch",
+        "xskq_prod_submit_n",
+        "xsk_buff_free",
+        "xp_free",
+        "xp_alloc_batch"
+      ],
+      "supports": [
+        "xsk_completion_queue_reservation_observation",
+        "xsk_completion_queue_submit_observation",
+        "xsk_free_list_return_observation",
+        "xsk_fill_queue_release_observation"
+      ],
+      "limitation": "AF_XDP queue mechanics expose completion and free-list behavior but do not encode CapSched Domain/epoch quarantine."
+    },
+    {
+      "id": "PAGEPOOL-001",
+      "component": "page-pool",
+      "files": [
+        "net/core/page_pool.c"
+      ],
+      "symbols": [
+        "page_pool_return_netmem",
+        "__page_pool_put_page",
+        "page_pool_dma_sync_for_device",
+        "page_pool_put_unrefed_netmem",
+        "page_pool_scrub",
+        "page_pool_release"
+      ],
+      "supports": [
+        "page_pool_recycle_observation",
+        "page_pool_return_observation",
+        "page_pool_dma_sync_observation",
+        "page_pool_destroy_scrub_observation"
+      ],
+      "limitation": "page_pool recycle/free decisions are not Domain/epoch memory-return authority."
+    }
+  ],
+  "required_invariants": [
+    "No XSK CQ submit after revoke unless fresh epoch or explicit quarantine delivery policy exists",
+    "No xsk_buff_free free-list return after revoke without quarantine settlement",
+    "No page_pool normal recycle after revoke without fresh page-pool epoch",
+    "No packet memory return before DMA/IOMMU/MemoryView receipt",
+    "No PageOwner transfer before stale XSK/page-pool completion quarantine",
+    "No packet memory return without generation reset or retag",
+    "No double return through XSK and page-pool/PageOwner paths",
+    "No queue reassignment before stale packet-memory settlement"
+  ],
+  "forbidden_claims": [
+    "xsk_tx_completed proves safe packet return",
+    "xsk_buff_free proves safe packet return",
+    "page_pool recycle proves Domain/epoch authority",
+    "DMA receipt alone permits user-visible completion delivery",
+    "ring cleanup can submit old XSK completions normally after revoke",
+    "old packet memory can be returned to a new Domain without generation reset"
+  ],
+  "next_model": "formal/0035-xsk-pagepool-quarantine-model"
+}

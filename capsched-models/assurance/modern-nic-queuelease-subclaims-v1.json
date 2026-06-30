@@ -11,6 +11,7 @@
     "vf_irq_revoke_ownership": "model_checked",
     "monitor_irq_route_invalidation": "model_checked",
     "monitor_dma_iommu_invalidation": "model_checked",
+    "xsk_pagepool_quarantine": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -159,6 +160,29 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks DMA/IOMMU/MemoryView invalidation receipt semantics; not real hardware or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-013",
+      "class": "source_observed",
+      "path": "capsched-models/analysis/0056-xsk-pagepool-quarantine-source-map.md",
+      "supports": [
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Source map for XSK CQ submission, XSK free-list return, page-pool recycle, and packet memory return substrate; not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-014",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0055-xsk-pagepool-quarantine-tlc.md",
+      "supports": [
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks stale XSK/page-pool completion quarantine and packet memory return semantics; not real AF_XDP, page-pool, or monitor enforcement evidence."
     }
   ],
   "subclaims": [
@@ -219,14 +243,17 @@
         "page-pool ownership provenance",
         "XSK/UMEM ownership provenance",
         "real monitor-backed DMA invalidation receipt implementation",
-        "real IOMMU invalidation latency/order proof"
+        "real IOMMU invalidation latency/order proof",
+        "stale XSK/page-pool quarantine implementation",
+        "packet generation reset/retag implementation"
       ],
       "forbidden": [
         "Linux DMA mapping success as Domain authorization proof",
         "IRQ invalidation as DMA revocation proof",
         "dma_unmap_* or xsk_pool_dma_unmap return as DMA revocation proof",
         "iommu_unmap_fast or queued IOVA flush as stale-translation invalidation proof",
-        "iommufd IOAS unmap or VFIO dma_unmap callback as PageOwner transfer proof"
+        "iommufd IOAS unmap or VFIO dma_unmap callback as PageOwner transfer proof",
+        "xsk_tx_completed, xsk_buff_free, or page_pool recycle as packet return proof"
       ]
     },
     {
@@ -238,7 +265,8 @@
         "completion ledger id",
         "submit-class settlement correlation",
         "service BudgetTicket or service budget rule",
-        "delivery-after-revoke proof"
+        "delivery-after-revoke proof",
+        "stale XSK completion quarantine implementation"
       ],
       "forbidden": [
         "completion charged to last submitter without explicit settlement rule",
@@ -307,12 +335,14 @@
         "stale service-work cancellation proof",
         "monitor-backed VF IRQ route invalidation implementation",
         "monitor-backed IRQ route invalidation receipt implementation",
-        "monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation"
+        "monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation",
+        "stale XSK/page-pool quarantine and packet generation reset implementation"
       ],
       "forbidden": [
         "queue revocation inferred from Linux netdev down/reset alone",
         "queue reassignment after IRQ invalidation but before DMA receipt",
-        "PageOwner transfer or packet page return before DMA receipt"
+        "PageOwner transfer or packet page return before DMA receipt",
+        "normal XSK CQ completion or page-pool recycle after revoke"
       ]
     },
     {
@@ -336,6 +366,7 @@
     "additional device family source maps",
     "revoke/drain/quarantine models",
     "DMA/IOMMU/MemoryView implementation planning that names receipt sources",
+    "XSK/page-pool quarantine implementation planning that names packet generation reset",
     "implementation planning that names subclaim coverage"
   ],
   "forbidden_next_work": [

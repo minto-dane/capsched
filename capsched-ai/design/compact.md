@@ -44,7 +44,8 @@ do not claim:
   authority.
 
 next focused risk:
-  stale XSK/page-pool completion quarantine and packet memory return semantics.
+  RepresentorForward lower QueueLease derivation, revoke, and handoff
+  semantics across bridge/FDB/VLAN/TC paths.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -107,6 +108,28 @@ analysis/0055 + formal/0034 + validation/0054:
     DMA revoke is a monitor-visible receipt, not IRQ revoke, ring cleanup,
     dma_unmap, XSK unmap, iommufd/VFIO unmap, iommu_unmap_fast, queued flush,
     page unpin, or refcount release.
+
+analysis/0056 + formal/0035 + validation/0055:
+  XSK/page-pool stale completion quarantine substrate mapped and modeled.
+  source substrate:
+    ice AF_XDP xsk_tx_completed and xsk_buff_free paths
+    AF_XDP CQ reservation/submission and free-list return
+    page_pool recycle/return/dma-sync/scrub paths
+  safe TLC:
+    11 generated states, 11 distinct states, depth 11
+  unsafe counterexamples:
+    XSK CQ submit after revoke
+    XSK free-list return after revoke
+    page-pool recycle after revoke
+    packet return before DMA receipt
+    PageOwner transfer before quarantine
+    packet return without generation reset
+    double return
+    queue reassignment before settlement
+  design rule:
+    packet memory return is a quarantine/generation-reset settlement, not
+    xsk_tx_completed(), xsk_buff_free(), page_pool recycle, or DMA receipt
+    alone.
 ```
 
 ## Core Architecture

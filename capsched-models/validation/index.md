@@ -60,6 +60,7 @@ Updated: 2026-06-29
 | 0052 | Safe model passed; unsafe models produced expected counterexamples | VF IRQ Revoke Ownership TLC |
 | 0053 | Safe model passed; unsafe models produced expected counterexamples | Monitor IRQ Route Invalidation TLC |
 | 0054 | Safe model passed; unsafe models produced expected counterexamples | Monitor DMA/IOMMU Invalidation TLC |
+| 0055 | Safe model passed; unsafe models produced expected counterexamples | XSK and Page-Pool Quarantine TLC |
 
 ## Principles
 

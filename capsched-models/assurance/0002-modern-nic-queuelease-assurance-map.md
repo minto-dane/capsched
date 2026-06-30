@@ -65,6 +65,9 @@ validation/0053-monitor-irq-route-invalidation-tlc.md
 
 formal/0034-monitor-dma-iommu-invalidation-model/
 validation/0054-monitor-dma-iommu-invalidation-tlc.md
+
+formal/0035-xsk-pagepool-quarantine-model/
+validation/0055-xsk-pagepool-quarantine-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -76,9 +79,11 @@ analysis/0051-linux-queue-descriptor-ledger-observation-plan.md
 analysis/0052-ice-modern-nic-queuelease-source-map.md
 analysis/0053-ice-modern-nic-revoke-source-map.md
 analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md
+analysis/0056-xsk-pagepool-quarantine-source-map.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
+analysis/xsk-pagepool-quarantine-source-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -317,6 +322,7 @@ Evidence:
 Model:
   formal/0029, validation/0048
   formal/0034, validation/0054
+  formal/0035, validation/0055
 
 Source:
   analysis/0052 maps dma_map_single(), skb_frag_dma_map(),
@@ -324,6 +330,8 @@ Source:
   AF_XDP descriptor batch fetch.
   analysis/0055 maps ice teardown, DMA API, IOMMU core, iommufd, VFIO type1,
   and arch-IOMMU invalidation anchors for revoke ordering.
+  analysis/0056 maps XSK completion, XSK free-list return, page-pool recycle,
+  and packet generation reset hazards.
 
 Readiness:
   validation/0047 records page-pool-ownership and xsk-ownership as high
@@ -339,6 +347,8 @@ no page-pool ownership provenance
 no XSK/UMEM ownership provenance
 no real monitor-backed DMA invalidation receipt implementation
 no real IOMMU invalidation latency/order proof
+no real stale XSK/page-pool quarantine implementation
+no packet generation reset/retag implementation
 ```
 
 Forbidden claim:
@@ -349,6 +359,8 @@ Domain-authorized.
 Do not treat IRQ invalidation, dma_unmap_*(), xsk_pool_dma_unmap(),
 iommu_unmap_fast(), queued IOVA flush, iommufd IOAS unmap, VFIO unmap callback,
 or page unpin/refcount release as PageOwner transfer safety.
+Do not treat xsk_tx_completed(), xsk_buff_free(), or page_pool recycle as
+safe packet memory return after revoke.
 ```
 
 ### DEV-NIC-005: Completion Settlement
@@ -369,10 +381,12 @@ Evidence:
 Model:
   formal/0028, validation/0046
   formal/0029, validation/0048
+  formal/0035, validation/0055
 
 Source:
   analysis/0052 maps ice_napi_poll(), ice_clean_tx_irq(),
   ice_clean_rx_irq(), consume/free paths, and ice clean tracepoints.
+  analysis/0056 maps AF_XDP CQ submission and packet-memory return paths.
 
 Readiness:
   validation/0047 classifies CompletionSettlement as partial_gap_recorded.
@@ -385,6 +399,7 @@ no completion ledger id
 no submit-class settlement correlation
 no service BudgetTicket or service budget rule
 no proof that completion cannot deliver after revoke
+no stale XSK completion quarantine implementation
 ```
 
 Forbidden claim:
@@ -549,6 +564,7 @@ Model:
   formal/0032, validation/0052
   formal/0033, validation/0053
   formal/0034, validation/0054
+  formal/0035, validation/0055
 
 Source:
   analysis/0052 records reset/down/service paths as future revoke anchors.
@@ -556,6 +572,8 @@ Source:
   XDP/AF_XDP/representor/service anchors.
   analysis/0055 maps the DMA/IOMMU/MemoryView invalidation substrate and its
   forbidden shortcuts.
+  analysis/0056 maps XSK/page-pool stale completion and packet memory return
+  substrate.
 
 Readiness:
   validation/0047 classifies RevokeSemantics as not_ready_future_capsched.
@@ -579,6 +597,10 @@ Refinement:
   PASID fence, outstanding DMA drain, stale completion quarantine, and old
   MemoryView unmap are all present before PageOwner transfer, page return, or
   queue reassignment.
+  validation/0055 models stale XSK/page-pool completion quarantine. Safe TLC
+  passes only when old XSK CQ completion, XSK free-list return, page-pool
+  recycle, PageOwner transfer, packet generation reset, and queue reassignment
+  are separated after revoke.
 ```
 
 Protection missing:
@@ -592,6 +614,7 @@ no stale service-work cancellation proof
 no monitor-backed implementation of VF IRQ route invalidation
 no monitor-backed IRQ route invalidation receipt implementation
 no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation
+no stale XSK/page-pool quarantine or packet generation reset implementation
 ```
 
 Forbidden claim:
@@ -647,6 +670,7 @@ DEV-001 modern NIC refinement:
   model-supported for monitor IRQ route invalidation receipt semantics
   model-supported for monitor DMA/IOMMU/MemoryView invalidation receipt
   semantics
+  model-supported for stale XSK/page-pool quarantine semantics
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -688,9 +712,10 @@ A behavior-changing prototype is not allowed until it has at least:
 2. typed SubmitLedger and DescriptorLedger representation
 3. explicit MemoryView/IOMMU ownership boundary for DMA packet memory
    including an invalidation receipt before PageOwner transfer
-4. QueueControl and RepresentorForward split
-5. service work classification and carrier/merge policy
-6. revoke/drain/quarantine model
-7. clear statement that Linux-only evidence is compatibility/prototype
+4. stale XSK/page-pool completion quarantine and packet generation reset rule
+5. QueueControl and RepresentorForward split
+6. service work classification and carrier/merge policy
+7. revoke/drain/quarantine model
+8. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

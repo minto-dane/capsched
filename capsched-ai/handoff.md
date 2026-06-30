@@ -37,8 +37,8 @@ hard gaps:
   no old/new queue epoch handoff proof
 
 next focused risk:
-  stale XSK/page-pool completion quarantine and packet memory return semantics
-  after QueueLease revoke.
+  RepresentorForward lower QueueLease derivation, revoke, and handoff
+  semantics across bridge/FDB/VLAN/TC paths.
 ```
 
 That focused VF IRQ model is now checked:
@@ -120,9 +120,33 @@ design rule:
   device-domain/PASID fence, outstanding DMA drain, stale completion
   quarantine, and old MemoryView unmap.
 
+analysis/0056 + formal/0035 + validation/0055:
+  XSK/page-pool stale completion quarantine substrate mapped and modeled.
+  source substrate:
+    ice AF_XDP Tx completion and cleanup xsk_tx_completed() paths
+    ice xsk_buff_free() cleanup paths
+    AF_XDP CQ reservation/submission and XSK free-list return
+    page_pool recycle/return/dma-sync/scrub paths
+  safe TLC:
+    11 generated states, 11 distinct states, depth 11
+  unsafe counterexamples:
+    XSK CQ submit after revoke
+    XSK free-list return after revoke
+    page-pool recycle after revoke
+    packet return before DMA receipt
+    PageOwner transfer before quarantine
+    packet return without generation reset
+    double return
+    queue reassignment before settlement
+  design rule:
+    packet memory return is not xsk_tx_completed(), xsk_buff_free(),
+    page_pool recycle, or DMA receipt alone. It needs stale completion
+    classification, XSK/page-pool quarantine or explicit policy delivery,
+    generation reset/retag, and a single settlement path.
+
 next focused risk:
-  stale XSK/page-pool completion quarantine and packet memory return semantics
-  after QueueLease revoke.
+  RepresentorForward lower QueueLease derivation, revoke, and handoff
+  semantics across bridge/FDB/VLAN/TC paths.
 ```
 The current scheduler-authority refinement frontier is now:
 

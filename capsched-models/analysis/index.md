@@ -61,6 +61,7 @@ Updated: 2026-06-29
 | 0053 | Draft revoke source map | Intel ice Modern NIC Revoke Source Map |
 | 0054 | Draft source map with model gate | Monitor IRQ Route Invalidation Source Map |
 | 0055 | Draft source map with model gate | Monitor DMA/IOMMU and MemoryView Invalidation Source Map |
+| 0056 | Draft source map with model gate | XSK and Page-Pool Quarantine Source Map |
 
 ## Planned Analysis Notes
 
@@ -86,3 +87,4 @@ Updated: 2026-06-29
 | `ice-modern-nic-revoke-source-map-v1.json` | Draft source map | Machine-readable modern NIC revoke/drain/quarantine source map for ice paths |
 | `monitor-irq-route-invalidation-source-map-v1.json` | Draft source map | Machine-readable IRQ route invalidation mapping across ice, VFIO, iommufd, MSI/MSI-X, and interrupt remapping |
 | `monitor-dma-iommu-memoryview-invalidation-source-map-v1.json` | Draft source map | Machine-readable DMA/IOMMU/MemoryView invalidation mapping across ice, DMA API, IOMMU core, iommufd, VFIO, and arch IOMMU backends |
+| `xsk-pagepool-quarantine-source-map-v1.json` | Draft source map | Machine-readable stale XSK/page-pool completion quarantine and packet memory return map |
