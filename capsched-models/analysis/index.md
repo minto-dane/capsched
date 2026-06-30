@@ -78,6 +78,7 @@ Updated: 2026-06-30
 | 0070 | Draft implementation-facing sketch comparison with model gate | Local Monitor Admission Carrier Sketch Comparison |
 | 0071 | Draft reference ABI sketch with model gate | Direct-Call Reference ABI Sketch |
 | 0072 | Draft throughput refinement sketch with model gate | Monitor-Owned Ring Refinement Sketch |
+| 0073 | Draft combined carrier plan with model gate | Combined Direct-Call and Ring Admission Carrier Plan |
 
 ## Planned Analysis Notes
 
@@ -120,3 +121,4 @@ Updated: 2026-06-30
 | `local-monitor-admission-carrier-sketch-comparison-v1.json` | Draft sketch comparison | Machine-readable direct-call-first versus monitor-owned-ring-first carrier sketch comparison |
 | `direct-call-reference-abi-sketch-v1.json` | Draft reference ABI sketch | Machine-readable direct-call reference semantics for monitor entry, request copy, replay, ledger, response handle, shadow refresh, and revoke |
 | `monitor-owned-ring-refinement-sketch-v1.json` | Draft throughput refinement sketch | Machine-readable monitor-owned ring refinement semantics for slot claim, slot epochs, batch boundaries, response publication, drain, and DoS accounting |
+| `combined-admission-carriers-plan-v1.json` | Draft combined carrier plan | Machine-readable direct-call plus monitor-owned-ring admission carrier semantics for shared attempt, replay, ledger, shadow, fallback, and revoke ordering |

@@ -249,7 +249,9 @@
         "E-DEV-MNIC-043",
         "E-DEV-MNIC-044",
         "E-DEV-MNIC-045",
-        "E-DEV-MNIC-046"
+        "E-DEV-MNIC-046",
+        "E-DEV-MNIC-047",
+        "E-DEV-MNIC-048"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -607,7 +609,9 @@
         "E-DEV-MNIC-043",
         "E-DEV-MNIC-044",
         "E-DEV-MNIC-045",
-        "E-DEV-MNIC-046"
+        "E-DEV-MNIC-046",
+        "E-DEV-MNIC-047",
+        "E-DEV-MNIC-048"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1315,6 +1319,26 @@
       "limitation": "Finite model checks monitor-owned ring refinement constraints for slot authority, monitor claim, post-claim mutation, slot generation, batch epoch crossing, replay-before-ledger, response ownership, shadow source, revoke drain, and ring-full non-authority; it is not ABI layout or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-047",
+      "kind": "analysis_combined_carrier_plan",
+      "record": "capsched-models/analysis/0073-combined-admission-carriers-plan.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines combined direct-call plus monitor-owned-ring admission carrier semantics for shared monitor attempts, replay namespace, receipt ledger, shadow generation, fallback terminality, revoke ordering, timeout handling, and carrier selection; it is not ABI layout, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-048",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0072-combined-admission-carriers-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks combined-carrier constraints for monitor-owned attempt ids, shared replay, shared ledger, shared shadow generation, duplicate fallback success, response-without-ledger, epoch split, revoke across both carriers, and ring-full non-authority; it is not ABI layout, implementation, performance, liveness, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1402,6 +1426,7 @@
     "Ring batching can weaken monitor-owned response, replay, receipt ledger, revoke, or shadow invalidation semantics.",
     "A direct-call reference ABI sketch is a selected binary ABI, Linux stub, monitor implementation, performance result, or production protection proof.",
     "Monitor-owned ring refinement permits Linux ring slots, Linux response publication, Linux-only slot generations, or ring-full/drop accounting to become authority.",
+    "Combined direct-call plus monitor-owned-ring carrier planning permits separate replay namespaces, carrier-local receipt ledgers, carrier-local shadow generations, duplicate fallback success, or one-carrier revoke completion.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1483,7 +1508,9 @@
         "E-DEV-MNIC-043",
         "E-DEV-MNIC-044",
         "E-DEV-MNIC-045",
-        "E-DEV-MNIC-046"
+        "E-DEV-MNIC-046",
+        "E-DEV-MNIC-047",
+        "E-DEV-MNIC-048"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1497,7 +1524,8 @@
         "Semantic monitor ABI candidate model before carrier or binary layout selection.",
         "Direct-call versus monitor-owned-ring implementation-facing sketch comparison.",
         "Direct-call reference ABI sketch before binary layout or implementation.",
-        "Monitor-owned ring refinement sketch before binary layout or implementation."
+        "Monitor-owned ring refinement sketch before binary layout or implementation.",
+        "Combined direct-call plus monitor-owned-ring carrier plan before binary layout or implementation."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

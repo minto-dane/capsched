@@ -326,6 +326,19 @@ Monitor-owned ring refinement sketch:
   model-supported refinement semantics only, not ABI layout, implementation,
   performance, or protection evidence.
 
+Combined admission carrier plan:
+  analysis/0073 and validation/0072 define and check the combined direct-call
+  plus monitor-owned-ring carrier semantics. Safe TLC passed with 52 generated
+  states, 46 distinct states, and depth 17. Unsafe configs produced expected
+  counterexamples for carrier-local attempt ids, carrier-local ledgers,
+  carrier-local shadow generation, duplicate direct/ring fallback success,
+  carrier/ledger epoch split, response without shared ledger, revoke stopping
+  only one carrier, revoke complete with direct in-flight calls, revoke
+  complete with ring pending state, ring-full accounting as monitor failure,
+  and separate carrier-local replay. This is model-supported carrier-join
+  semantics only, not ABI layout, implementation, performance, liveness, or
+  protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

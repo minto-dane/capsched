@@ -1,0 +1,204 @@
+{
+  "id": "combined-admission-carriers-plan-v1",
+  "analysis": "0073-combined-admission-carriers-plan",
+  "status": "draft_combined_carrier_plan_with_model_gate",
+  "date": "2026-06-30",
+  "abi_semantics": "LocalMonitorAdmissionABI-v0",
+  "purpose": "Combine the direct-call reference carrier and monitor-owned ring throughput carrier under one monitor-owned admission attempt semantics.",
+  "non_goals": [
+    "binary ABI layout",
+    "direct-call trap mechanism",
+    "ring memory layout",
+    "doorbell mechanism",
+    "interrupt mechanism",
+    "Linux stub placement",
+    "monitor implementation",
+    "cryptographic seal format",
+    "performance benchmark",
+    "production protection claim"
+  ],
+  "canonical_attempt": {
+    "owner": "local_hypertag_monitor",
+    "created_after": [
+      "direct_call_monitor_entry_and_monitor_owned_request_copy",
+      "ring_monitor_slot_claim_and_monitor_owned_frozen_slot_image"
+    ],
+    "carrier_ids_are_authority": false,
+    "required_fields": [
+      "attempt_id",
+      "attempt_epoch",
+      "carrier_kind",
+      "carrier_observation_id",
+      "request_class",
+      "request_nonce",
+      "replay_window_id",
+      "monitor_id",
+      "monitor_epoch",
+      "cluster_lease_id",
+      "cluster_epoch",
+      "root_management_epoch",
+      "node_id",
+      "service_domain_id",
+      "service_domain_epoch",
+      "target_domain_id",
+      "target_domain_epoch",
+      "device_root_id",
+      "device_root_epoch",
+      "local_lease_id",
+      "local_lease_epoch",
+      "request_image_generation",
+      "receipt_ledger_row_id",
+      "response_epoch",
+      "shadow_generation"
+    ]
+  },
+  "shared_replay_namespace": {
+    "owner": "local_hypertag_monitor",
+    "carrier_in_key": false,
+    "minimum_key_fields": [
+      "monitor_id",
+      "monitor_epoch",
+      "replay_window_id",
+      "request_nonce",
+      "request_class",
+      "local_lease_id",
+      "local_lease_epoch",
+      "service_domain_id",
+      "service_domain_epoch",
+      "target_domain_id",
+      "target_domain_epoch",
+      "device_root_id",
+      "device_root_epoch"
+    ],
+    "rules": [
+      "at_most_one_success_receipt_across_direct_and_ring_for_one_key",
+      "carrier_local_replay_tables_are_not_authority",
+      "linux_ring_generation_is_not_replay_protection",
+      "ring_full_before_monitor_claim_does_not_consume_replay",
+      "fallback_after_monitor_claim_or_entry_must_query_serialize_or_reject_against_shared_replay"
+    ]
+  },
+  "shared_receipt_ledger": {
+    "owner": "local_hypertag_monitor",
+    "applies_to": [
+      "direct_call_response",
+      "ring_response"
+    ],
+    "success_requires": [
+      "canonical_monitor_attempt",
+      "monitor_owned_frozen_request_image",
+      "shared_replay_consume",
+      "epoch_validation",
+      "monitor_owned_ledger_row",
+      "monitor_owned_response"
+    ],
+    "forbidden": [
+      "direct_private_success_ledger",
+      "ring_private_success_ledger",
+      "linux_service_domain_success_ledger",
+      "carrier_local_response_as_receipt",
+      "two_success_rows_for_one_replay_key"
+    ]
+  },
+  "shared_shadow_generation": {
+    "owner": "local_hypertag_monitor",
+    "allowed_sources": [
+      "monitor_response_handle",
+      "monitor_receipt_query",
+      "monitor_owned_shadow_generation",
+      "monitor_owned_ledger_row"
+    ],
+    "forbidden_sources": [
+      "direct_request_buffer",
+      "direct_response_buffer_without_ledger",
+      "ring_slot_payload",
+      "ring_producer_state",
+      "ring_response_cache_without_monitor_response_epoch",
+      "carrier_local_generation_counter"
+    ]
+  },
+  "fallback_semantics": {
+    "allowed_before_authority_consumed": [
+      "ring_full_before_monitor_claim_to_direct_call",
+      "ring_unavailable_to_direct_call",
+      "direct_congestion_to_later_ring_request_when_monitor_policy_allows"
+    ],
+    "constrained_after_authority_consumed": [
+      "ring_claim_pending_then_direct_fallback_must_not_mint_second_success",
+      "direct_in_flight_then_ring_fallback_must_not_mint_second_success",
+      "terminal_failure_for_same_replay_key_cannot_later_become_success"
+    ],
+    "timeout_semantics": [
+      "missing_ring_response_is_unknown_until_monitor_ledger_or_query_resolves_it",
+      "claimed_or_possibly_claimed_ring_slot_requires_query_cancel_or_supersede_under_monitor_control",
+      "same_nonce_with_different_frozen_payload_digest_fails_terminally_or_as_replay_mismatch"
+    ],
+    "fallback_is_bypass_lane": false
+  },
+  "shared_revoke_order": [
+    "mark_revoke_started_for_local_lease_epoch",
+    "stop_old_epoch_direct_admission",
+    "stop_old_epoch_ring_admission",
+    "embargo_new_receipts_for_old_epoch",
+    "drain_or_reject_relevant_direct_inflight_calls",
+    "drain_or_invalidate_relevant_ring_claimed_slots",
+    "drain_or_invalidate_relevant_ring_pending_responses",
+    "revoke_derived_queue_dma_irq_ledger_endpoint_receipts",
+    "invalidate_shared_shadow_generation",
+    "write_revoke_complete_ledger_row"
+  ],
+  "multi_cluster_fields": [
+    "root_management_epoch",
+    "cluster_epoch",
+    "node_id",
+    "monitor_id",
+    "monitor_epoch",
+    "local_lease_id",
+    "local_lease_epoch"
+  ],
+  "performance_metadata_not_authority": [
+    "queue_depth",
+    "ring_full_count",
+    "drop_count",
+    "batch_size",
+    "transition_cost",
+    "service_latency",
+    "carrier_preference"
+  ],
+  "carrier_selection_guidance": {
+    "direct_call": [
+      "reference_path",
+      "low_volume_query_control_revoke_ring_health_operations",
+      "emergency_shadow_refresh_still_budgeted_and_monitor_validated"
+    ],
+    "monitor_owned_ring": [
+      "high_churn_queuelease_dma_irq_endpoint_receipt_minting",
+      "batched_local_admission",
+      "service_domain_admission_bursts"
+    ]
+  },
+  "revoke_latency_requirements": [
+    "bounded_batch_quanta",
+    "priority_control_or_revoke_lane_or_equivalent_monitor_preemption",
+    "monitor_invalidatable_pending_responses",
+    "no_dependence_on_compromised_linux_consuming_responses"
+  ],
+  "invariants": [
+    "no_carrier_local_admission_authority",
+    "no_carrier_local_replay_namespace",
+    "no_carrier_local_success_ledger",
+    "no_carrier_local_shadow_generation",
+    "no_response_without_shared_monitor_ledger",
+    "no_success_without_canonical_monitor_attempt",
+    "no_success_without_shared_replay_consume",
+    "no_duplicate_success_across_direct_ring_fallback_for_one_replay_key",
+    "no_fallback_after_claim_or_entry_bypassing_shared_replay_state",
+    "no_ring_full_or_drop_accounting_as_monitor_terminal_authority_before_claim",
+    "no_old_epoch_admission_on_either_carrier_after_revoke_start",
+    "no_revoke_complete_before_both_carriers_stop_old_epoch_admission",
+    "no_revoke_complete_before_direct_inflight_calls_drain_or_reject",
+    "no_revoke_complete_before_ring_claimed_slots_and_pending_responses_drain",
+    "no_revoke_complete_before_derived_receipts_revoke_and_shadow_invalidation",
+    "no_epoch_split_between_carrier_visible_request_and_monitor_ledger_row"
+  ]
+}

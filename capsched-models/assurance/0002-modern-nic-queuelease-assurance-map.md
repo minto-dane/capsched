@@ -110,6 +110,9 @@ validation/0070-direct-call-reference-abi-tlc.md
 
 formal/0049-monitor-owned-ring-refinement-model/
 validation/0071-monitor-owned-ring-refinement-tlc.md
+
+formal/0050-combined-admission-carriers-model/
+validation/0072-combined-admission-carriers-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -138,6 +141,7 @@ analysis/0069-local-monitor-admission-abi-semantics.md
 analysis/0070-local-monitor-admission-carrier-sketch-comparison.md
 analysis/0071-direct-call-reference-abi-sketch.md
 analysis/0072-monitor-owned-ring-refinement-sketch.md
+analysis/0073-combined-admission-carriers-plan.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -158,6 +162,7 @@ analysis/local-monitor-admission-abi-semantics-v0.json
 analysis/local-monitor-admission-carrier-sketch-comparison-v1.json
 analysis/direct-call-reference-abi-sketch-v1.json
 analysis/monitor-owned-ring-refinement-sketch-v1.json
+analysis/combined-admission-carriers-plan-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -170,6 +175,7 @@ validation/0068-local-monitor-admission-abi-tlc.md
 validation/0069-monitor-admission-carrier-sketch-tlc.md
 validation/0070-direct-call-reference-abi-tlc.md
 validation/0071-monitor-owned-ring-refinement-tlc.md
+validation/0072-combined-admission-carriers-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
@@ -309,6 +315,14 @@ MonitorOwnedRingRefinement:
   monitor-owned response publication, shadow refresh from monitor state only,
   pending slot/response drain before revoke complete, and ring full/drop
   accounting as availability state only.
+
+CombinedAdmissionCarriers:
+  direct-call and monitor-owned ring carriers are joined under one
+  monitor-owned admission attempt semantics. They share replay namespace,
+  receipt ledger, shadow generation, fallback terminality, and revoke ordering.
+  Carrier-local attempt ids, replay tables, ledgers, shadow generations,
+  response caches, epoch splits, and ring-full/drop accounting must not become
+  admission authority.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It

@@ -90,24 +90,24 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Monitor-owned ring refinement sketch. Analysis/0072 defines Linux-writable
-  request carrier slots, monitor-owned slot claim/epoch/generation, frozen
-  request images, batch epoch boundaries, replay consume before ledger write,
-  monitor-owned response publication, shadow refresh from monitor state only,
-  pending slot/response drain before revoke complete, and ring full/drop DoS
-  accounting as availability state only. Formal/0049 plus validation/0071 safe
-  TLC passed with 21 generated states, 19 distinct states, and depth 18. Unsafe
-  configs reject Linux slot authority, response before monitor claim,
-  post-claim mutation, slot reuse without generation advance, batch epoch
-  crossing, ledger before replay consume, Linux response publication, shadow
-  from ring state, revoke with pending claimed slot, revoke with pending
-  response, and ring-full/drop as success authority.
+  Combined direct-call plus monitor-owned-ring admission carrier plan.
+  Analysis/0073 defines canonical monitor-owned admission attempts, shared
+  replay namespace, shared receipt ledger, shared shadow generation, fallback
+  semantics including timeout-as-unknown and monitor-mediated query/cancel/
+  supersede after possible ring claim, carrier selection guidance, revoke
+  latency requirements, and revoke ordering across both carriers. Formal/0050
+  plus validation/0072 safe TLC passed with 52 generated states, 46 distinct
+  states, and depth 17. Unsafe configs reject carrier-local attempt ids,
+  carrier-local ledgers, carrier-local shadow generations, duplicate direct/
+  ring fallback success, carrier/ledger epoch split, response without shared
+  ledger, revoke stopping only one carrier, revoke complete with direct
+  in-flight calls, revoke complete with ring pending state, ring-full
+  accounting as monitor failure, and separate carrier-local replay.
 
 next focused risk:
-  Define the combined direct-call plus monitor-owned-ring ABI plan, including
-  fallback semantics, shared receipt ledger, shared replay namespace, shared
-  shadow generation, and revoke ordering across both carriers, without selecting
-  binary layout or implementing it.
+  Define implementation-facing ABI layout and carrier-selection requirements
+  for the first concrete local monitor admission carrier, likely direct-call
+  reference first, without selecting binary packing or implementing code.
 ```
 
 That focused VF IRQ model is now checked:

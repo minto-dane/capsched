@@ -28,6 +28,7 @@
     "monitor_admission_carrier_sketch": "model_checked",
     "direct_call_reference_abi": "model_checked",
     "monitor_owned_ring_refinement": "model_checked",
+    "combined_admission_carriers": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -709,6 +710,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks ring refinement constraints for Linux slot non-authority, monitor response claim, mutation after claim, slot generation, batch epoch, replay-before-ledger, response publication, shadow source, revoke drain, and ring-full accounting; it is not ABI layout or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-047",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0073-combined-admission-carriers-plan.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines combined direct-call plus monitor-owned-ring carrier semantics for shared attempt ids, replay, ledger, shadow generation, fallback, timeout handling, and revoke ordering; it is not ABI layout, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-048",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0072-combined-admission-carriers-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks combined-carrier constraints for monitor-owned attempt ids, shared replay, shared ledger, shared shadow generation, duplicate fallback success, response-without-ledger, epoch split, two-carrier revoke, and ring-full non-authority; it is not ABI layout, implementation, performance, liveness, or protection evidence."
     }
   ],
   "subclaims": [
@@ -951,7 +988,8 @@
     "semantic monitor ABI candidate refinement before choosing a binary ABI, carrier, Linux stub, or monitor implementation",
     "direct-call versus monitor-owned-ring carrier sketch comparison before choosing implementation-facing ABI layout",
     "direct-call reference ABI sketch before binary layout, Linux stub, or monitor implementation",
-    "monitor-owned ring refinement sketch before binary layout, Linux stub, or monitor implementation"
+    "monitor-owned ring refinement sketch before binary layout, Linux stub, or monitor implementation",
+    "combined direct-call plus monitor-owned-ring carrier plan before binary layout, Linux stub, or monitor implementation"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",
@@ -968,6 +1006,7 @@
     "ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation as LocalDomainDeviceLease authority",
     "raw PF/VF/IOMMU/MSI/devlink authority exposed to target Domains",
     "audit-only monitor calls after Linux side effects",
+    "carrier-local replay namespace, receipt ledger, shadow generation, or fallback success as admission authority",
     "per-packet monitor traps as the normal data path"
   ]
 }

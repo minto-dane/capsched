@@ -92,22 +92,23 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Monitor-owned ring refinement sketch. Analysis/0072 and formal/0049 define
-  Linux-writable request carrier slots, monitor slot claim/epoch/generation,
-  frozen request validation, stable batch epochs, replay consume before ledger,
-  monitor response publication, shadow refresh from monitor state only, pending
-  slot/response drain before revoke complete, and ring full/drop accounting as
-  availability state only. Validation/0071 safe TLC passed with 21 generated
-  states, 19 distinct states, and depth 18; unsafe configs reject slot
-  authority, response before claim, post-claim mutation, slot reuse without
-  generation, batch epoch crossing, replay shortcut, Linux response
-  publication, ring-derived shadow, revoke drain shortcuts, and ring-full
-  authority.
+  Combined direct-call plus monitor-owned-ring admission carrier plan.
+  Analysis/0073 and formal/0050 define canonical monitor-owned admission
+  attempts, shared replay namespace, shared receipt ledger, shared shadow
+  generation, fallback terminality, timeout-as-unknown handling, carrier
+  selection guidance, revoke latency requirements, and revoke ordering across
+  both carriers. Validation/0072 safe TLC passed with 52 generated states, 46
+  distinct states, and depth 17; unsafe configs reject carrier-local attempt
+  ids, carrier-local ledgers, carrier-local shadow generations, duplicate
+  direct/ring fallback success, carrier/ledger epoch split, response without
+  shared ledger, one-carrier revoke completion, revoke with direct in-flight
+  calls, revoke with ring pending state, ring-full monitor failure, and
+  carrier-local replay.
 
 next focused risk:
-  Define the combined direct-call plus monitor-owned-ring ABI plan. Both
-  carriers must share receipt ledger, replay namespace, shadow generation, and
-  revoke ordering.
+  Define implementation-facing ABI layout and carrier-selection requirements
+  for the first concrete local monitor admission carrier, likely direct-call
+  reference first, without selecting binary packing or implementing code.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
