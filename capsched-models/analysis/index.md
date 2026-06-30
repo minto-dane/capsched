@@ -70,6 +70,7 @@ Updated: 2026-06-30
 | 0062 | Draft implementation-readiness map with model gate | Modern NIC HyperTag Readiness Probe Map |
 | 0063 | Draft observation ledger | Modern NIC HyperTag Observation Ledger |
 | 0064 | Draft external-gap map with model gate | Local Domain Device Lease Compilation |
+| 0065 | Draft observation contract | Local Domain Device Lease Observation Contract |
 
 ## Planned Analysis Notes
 
@@ -104,3 +105,4 @@ Updated: 2026-06-30
 | `modern-nic-hypertag-readiness-probe-map-v1.json` | Draft readiness map | Machine-readable observation-only probe and inert-stub mapping for modern NIC HyperTag receipts/carriers |
 | `modern-nic-hypertag-observation-ledger-v1.json` | Draft observation ledger seed | Machine-readable source-anchor seed for the modern NIC HyperTag observation ledger runner |
 | `local-domain-device-lease-compilation-v1.json` | Draft external-gap map | Machine-readable root-management/local monitor compilation boundary for LocalDomainDeviceLease |
+| `local-domain-device-lease-observation-contract-v1.json` | Draft observation contract | Machine-readable LocalDomainDeviceLease row contract, dependency rules, safety flags, and forbidden authority collapses |

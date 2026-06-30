@@ -77,10 +77,15 @@ latest completed focused risk:
   authority, stale epochs, wrong service/target Domains, queue receipt before
   local lease, and audit-only compile.
 
+latest completed focused risk:
+  LocalDomainDeviceLease observation contract. Analysis/0065 defines the
+  pre-monitor row shape and dependency rules. Validation/0064 ran the validator:
+  10 rows, 7 dependency rules, 0 dependency errors, 0 safety-flag violations,
+  and 9 forbidden authority collapses.
+
 next focused risk:
-  Define the root-management/local monitor observation contract for
-  LocalDomainDeviceLease rows before any distributed lease or monitor
-  implementation.
+  Map a root-management/local monitor admission protocol to the observation
+  contract before any inert Linux probe/stub proposal or monitor implementation.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

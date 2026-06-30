@@ -69,6 +69,7 @@ Updated: 2026-06-30
 | 0061 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC HyperTag Readiness Gate TLC |
 | 0062 | Executed; observation-only source ledger emitted | Modern NIC HyperTag Observation Ledger Result |
 | 0063 | Safe model passed; unsafe models produced expected counterexamples | Local Domain Device Lease TLC |
+| 0064 | Executed; observation contract validated | Local Domain Device Lease Observation Contract Result |
 
 ## Principles
 

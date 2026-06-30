@@ -72,11 +72,18 @@ latest completed risk:
   wrong service/target Domains, queue receipt before local lease, and audit-only
   monitor calls cannot stand in for a monitor-minted LocalDomainDeviceLease.
 
+latest completed risk:
+  LocalDomainDeviceLease observation contract. Analysis/0065 defines 10
+  pre-monitor rows from ClusterLease issue through local lease revoke, required
+  fields, safety flags, dependency rules, and forbidden authority collapses.
+  Validation/0064 executed the contract runner with row_count=10,
+  dependency_rule_count=7, dependency_errors=0, safety_flag_violations=0, and
+  forbidden_authority_collapse_count=9.
+
 next focused risk:
-  Define the root-management/local monitor observation contract for
-  LocalDomainDeviceLease rows, including cluster lease epoch, local monitor
-  epoch, service Domain, target Domain, device root, DMA MemoryView, IRQ route,
-  root budget, compile result, revocation status, and safety flags.
+  Map a root-management/local monitor admission protocol to the
+  LocalDomainDeviceLease observation contract before any inert Linux probe/stub
+  proposal or monitor implementation.
 ```
 
 That focused VF IRQ model is now checked:

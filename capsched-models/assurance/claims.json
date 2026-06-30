@@ -233,7 +233,9 @@
         "E-DEV-MNIC-027",
         "E-DEV-MNIC-028",
         "E-DEV-MNIC-029",
-        "E-DEV-MNIC-030"
+        "E-DEV-MNIC-030",
+        "E-DEV-MNIC-031",
+        "E-DEV-MNIC-032"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -575,7 +577,9 @@
         "E-CLUSTER-001",
         "E-CLUSTER-002",
         "E-DEV-MNIC-029",
-        "E-DEV-MNIC-030"
+        "E-DEV-MNIC-030",
+        "E-DEV-MNIC-031",
+        "E-DEV-MNIC-032"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1123,6 +1127,26 @@
       "limitation": "Finite model checks local monitor lease compilation semantics and rejects remote ClusterLease direct use, scheduler placement as authority, service admission minting, Linux device registration authority, stale cluster epoch, wrong service/target Domains, queue receipt before local lease, and audit-only compile; it is not monitor, driver, IOMMU, IRQ, or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-031",
+      "kind": "analysis_observation_contract",
+      "record": "capsched-models/analysis/0065-local-domain-device-lease-observation-contract.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines the pre-monitor row contract for root-management/local monitor LocalDomainDeviceLease observation evidence; it is not implementation or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-032",
+      "kind": "observation_contract_validation",
+      "record": "capsched-models/validation/0064-local-domain-device-lease-observation-contract-result.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Validates required fields, dependency rules, and safety flags for the LocalDomainDeviceLease observation contract; it does not validate a real monitor, root-management plane, device root, receipt minting, or protection."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1269,13 +1293,16 @@
         "E-DEV-MNIC-025",
         "E-DEV-MNIC-026",
         "E-DEV-MNIC-029",
-        "E-DEV-MNIC-030"
+        "E-DEV-MNIC-030",
+        "E-DEV-MNIC-031",
+        "E-DEV-MNIC-032"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
         "Inert type/stub scaffolding with no behavior change.",
         "Machine-readable receipt/carrier coverage ledger.",
-        "Root-management/local monitor observation contract for LocalDomainDeviceLease fields."
+        "Root-management/local monitor observation contract for LocalDomainDeviceLease fields.",
+        "No-behavior-change validator for LocalDomainDeviceLease contract dependencies and safety flags."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

@@ -109,6 +109,7 @@ analysis/0061-modern-nic-hypertag-interface-map.md
 analysis/0062-modern-nic-hypertag-readiness-probe-map.md
 analysis/0063-modern-nic-hypertag-observation-ledger.md
 analysis/0064-local-domain-device-lease-compilation.md
+analysis/0065-local-domain-device-lease-observation-contract.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -121,13 +122,16 @@ analysis/modern-nic-hypertag-interface-map-v1.json
 analysis/modern-nic-hypertag-readiness-probe-map-v1.json
 analysis/modern-nic-hypertag-observation-ledger-v1.json
 analysis/local-domain-device-lease-compilation-v1.json
+analysis/local-domain-device-lease-observation-contract-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
 validation/0062-modern-nic-hypertag-observation-ledger-result.md
+validation/0064-local-domain-device-lease-observation-contract-result.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
+validation/run-local-domain-device-lease-observation-contract.sh
 ```
 
 Top-level assurance evidence:
@@ -201,6 +205,15 @@ LocalDomainDeviceLease:
   HyperTag Monitor must compile a node-local device lease before any
   DeviceRoot, VF epoch, QueueLease, DMA, IRQ, ledger, or typed endpoint receipt
   can be minted.
+
+LocalDomainDeviceLeaseObservationContract:
+  a future root-management/local monitor ledger must preserve separate rows for
+  cluster lease issue, node receive, cluster check, service admission,
+  device-root binding, target epoch/budget check, local lease compile, receipt
+  request, endpoint delivery, and revoke. The contract remains
+  observation_only=true, authority_claim=false, monitor_verified=false,
+  behavior_change=false, and protection_claim=false until a real monitor
+  exists.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -744,6 +757,10 @@ Refinement:
   revocation, service Domain admission matches the lease, monitor-owned device
   root binding exists, target Domain epoch and root budget are fresh, and the
   local monitor mints the LocalDomainDeviceLease before queue/DMA/IRQ receipts.
+  validation/0064 validates the LocalDomainDeviceLease observation contract.
+  The runner emits 10 rows, checks 7 dependency rules, reports 0 dependency
+  errors, reports 0 safety-flag violations, and preserves 9 forbidden authority
+  collapses for pre-monitor planning.
   validation/0055 models stale XSK/page-pool completion quarantine. Safe TLC
   passes only when old XSK CQ completion, XSK free-list return, page-pool
   recycle, PageOwner transfer, packet generation reset, and queue reassignment
@@ -838,6 +855,8 @@ DEV-001 modern NIC refinement:
   model-supported for implementation-readiness gate ordering
   model-supported for LocalDomainDeviceLease root-management/local monitor
   compilation semantics
+  observation-contract validated for LocalDomainDeviceLease root-management/
+  local monitor row shape and dependency rules
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -869,6 +888,8 @@ root-management/local monitor observation-contract planning for
 LocalDomainDeviceLease rows, including lease epoch, service/target Domain,
 device root, DMA MemoryView, IRQ route, root budget, compile result, and
 revocation status fields
+root-management/local monitor admission-protocol planning that consumes the
+LocalDomainDeviceLease observation contract without claiming enforcement
 ```
 
 Still forbidden:

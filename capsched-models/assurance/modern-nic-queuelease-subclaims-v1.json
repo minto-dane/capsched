@@ -20,6 +20,7 @@
     "hypertag_readiness_gate": "model_checked_readiness_only",
     "hypertag_observation_ledger": "observation_only",
     "local_domain_device_lease_compilation": "model_checked",
+    "local_domain_device_lease_observation_contract": "observation_contract_validated",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -413,6 +414,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks local monitor compilation semantics and rejects ClusterLease direct use, scheduler placement authority, service admission minting, Linux device registration authority, stale epochs, wrong service/target Domains, queue receipt before local lease, and audit-only compile; it is not monitor, driver, IOMMU, IRQ, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-031",
+      "class": "observation_only",
+      "path": "capsched-models/analysis/0065-local-domain-device-lease-observation-contract.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines the root-management/local monitor row contract, dependency sequence, safety flags, and forbidden authority collapses for LocalDomainDeviceLease observation evidence; it is not monitor implementation."
+    },
+    {
+      "id": "E-DEV-MNIC-032",
+      "class": "observation_only",
+      "path": "capsched-models/validation/0064-local-domain-device-lease-observation-contract-result.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Validates the observation contract with 10 rows, 7 dependency rules, 0 dependency errors, 0 safety-flag violations, and 9 forbidden authority collapses; it is not protection evidence."
     }
   ],
   "subclaims": [
@@ -647,7 +684,8 @@
     "VF epoch handoff planning that names mailbox embargo, VF epoch bump, VSI generation, QueueLease generation, DMA/IRQ receipts, FDIR context clearing, and service replay authorization",
     "HyperTag interface planning that names monitor-owned roots, service Domain policy-only authority, typed target endpoints, receipt minting, local cluster lease compilation, and no per-packet monitor trap",
     "implementation planning that names subclaim coverage",
-    "root-management/local monitor observation-contract planning for LocalDomainDeviceLease rows, including cluster epoch, local monitor epoch, service Domain, target Domain, device root, DMA MemoryView, IRQ route, root budget, compile result, and revocation status"
+    "root-management/local monitor observation-contract planning for LocalDomainDeviceLease rows, including cluster epoch, local monitor epoch, service Domain, target Domain, device root, DMA MemoryView, IRQ route, root budget, compile result, and revocation status",
+    "root-management/local monitor admission-protocol planning that consumes the LocalDomainDeviceLease observation contract without claiming enforcement"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",

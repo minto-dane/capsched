@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "local-domain-device-lease-modeled",
+    "current_phase": "local-domain-device-lease-observation-contract-validated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. N-091 resolved the LocalDomainDeviceLease gap as an external root-management/local monitor compilation boundary, not a Linux source-anchor gap. Analysis/0064 and local-domain-device-lease-compilation-v1.json define ClusterLease, ServiceAdmission, DeviceRootBinding, and LocalDomainDeviceLease boundaries. Formal/0042 and validation/0063 checked the tiny finite model: safe TLC passed with 10 generated states, 9 distinct states, and depth 9; unsafe configs produced expected counterexamples for remote ClusterLease direct use, scheduler placement as authority, service admission minting, Linux device registration as authority, stale cluster epoch, wrong service Domain, wrong target Domain, queue receipt before local lease, and audit-only compile. This is model-supported semantics only, not monitor implementation or production protection evidence. The current hard gaps remain: no actual HyperTag Monitor implementation; no root-management/local monitor LocalDomainDeviceLease compile implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is N-092: define the root-management/local monitor observation contract for LocalDomainDeviceLease rows before any distributed lease or monitor implementation.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. N-091 resolved the LocalDomainDeviceLease gap as an external root-management/local monitor compilation boundary, not a Linux source-anchor gap. N-092 defined and validated the LocalDomainDeviceLease observation contract. Analysis/0065 plus local-domain-device-lease-observation-contract-v1.json define 10 pre-monitor rows from ClusterLease issue through local lease revoke, 7 dependency rules, required fields, safety flags, and 9 forbidden authority collapses. Validation/0064 executed run-local-domain-device-lease-observation-contract.sh: row_count=10, dependency_rule_count=7, dependency_errors=0, safety_flag_violations=0, forbidden_authority_collapse_count=9. This is observation-contract readiness only, not monitor implementation or production protection evidence. The current hard gaps remain: no actual HyperTag Monitor implementation; no root-management/local monitor LocalDomainDeviceLease compile implementation; no monitor receipt minting implementation; no service/driver Domain split implementation; no QueueTag or queue epoch root implementation; no typed SubmitLedger/DescriptorLedger/CompletionSettlement implementation; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no VF mailbox carrier implementation; no VF identity epoch, VSI generation, mailbox embargo, or service replay handoff implementation. No behavior-changing queue, workqueue, driver, monitor, or scheduler enforcement is approved. Next focused risk is N-093: map a root-management/local monitor admission protocol to the observation contract before any inert Linux probe/stub proposal or monitor implementation.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -395,7 +395,12 @@
     "local_domain_device_lease_model": "capsched/capsched-models/formal/0042-local-domain-device-lease-model/README.md",
     "local_domain_device_lease_tla": "capsched/capsched-models/formal/0042-local-domain-device-lease-model/LocalDomainDeviceLease.tla",
     "local_domain_device_lease_validation": "capsched/capsched-models/validation/0063-local-domain-device-lease-tlc.md",
-    "local_domain_device_lease_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/local-domain-device-lease-20260630T050201Z"
+    "local_domain_device_lease_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/local-domain-device-lease-20260630T050201Z",
+    "local_domain_device_lease_observation_contract": "capsched/capsched-models/analysis/0065-local-domain-device-lease-observation-contract.md",
+    "local_domain_device_lease_observation_contract_json": "capsched/capsched-models/analysis/local-domain-device-lease-observation-contract-v1.json",
+    "local_domain_device_lease_observation_runner": "capsched/capsched-models/validation/run-local-domain-device-lease-observation-contract.sh",
+    "local_domain_device_lease_observation_result": "capsched/capsched-models/validation/0064-local-domain-device-lease-observation-contract-result.md",
+    "local_domain_device_lease_observation_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/local-domain-device-lease-observation-contract/20260630T051105Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1734,9 +1739,19 @@
     {
       "id": "N-092",
       "text": "Define the root-management/local monitor observation contract for LocalDomainDeviceLease rows, including ledger fields, revocation/epoch evidence, and non-behavior-changing validation before any distributed lease or monitor implementation.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created analysis/0065 plus local-domain-device-lease-observation-contract-v1.json and validation/run-local-domain-device-lease-observation-contract.sh, then executed validation/0064. The contract defines 10 pre-monitor rows, 7 dependency rules, required fields, readiness safety flags, and 9 forbidden authority collapses. Runner result 20260630T051105Z: row_count=10, dependency_rule_count=7, dependency_errors=0, safety_flag_violations=0, forbidden_authority_collapse_count=9. No implementation or protection claim is made.",
       "blocked_by": [
         "N-091"
+      ]
+    },
+    {
+      "id": "N-093",
+      "text": "Map a root-management/local monitor admission protocol to the LocalDomainDeviceLease observation contract, including failure modes, revocation ordering, and service/target Domain mismatch handling, before any inert Linux probe/stub proposal or monitor implementation.",
+      "status": "pending",
+      "blocked_by": [
+        "N-092"
       ]
     }
   ],

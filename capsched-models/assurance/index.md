@@ -88,6 +88,9 @@ Model-supported areas:
   authority, service admission minting, Linux device registration as authority,
   stale cluster epochs, wrong service/target Domains, queue receipt before
   local lease, and audit-only compile
+- LocalDomainDeviceLease observation-contract row shape, dependency checks, and
+  readiness safety flags for future root-management/local monitor admission
+  evidence
 
 Prototype-evidenced areas:
 
@@ -227,6 +230,14 @@ LocalDomainDeviceLease compilation model:
   target Domain, queue receipt before local lease, and audit-only compile. This
   is model-supported semantics only, not monitor implementation or protection
   evidence.
+
+LocalDomainDeviceLease observation contract:
+  analysis/0065 and validation/0064 define and validate the pre-monitor row
+  contract for root-management/local monitor admission evidence. The runner
+  emitted 10 rows, checked 7 dependency rules, found 0 dependency errors, found
+  0 safety-flag violations, and preserved 9 forbidden authority collapses. This
+  is observation-contract readiness only, not monitor implementation or
+  protection evidence.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
