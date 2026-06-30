@@ -126,6 +126,11 @@ Prototype-evidenced areas:
 - source-only direct-call overlay drift checker output with 34 ok rows, 7
   expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic
   recheck-required rows, and no authority/protection claims
+- source-only project source-map drift checker output with 515 extracted anchor
+  rows, 481 path/pattern-ok rows, 13 preserved gap rows, 1 missing symbol, 1
+  missing pattern, 19 line-only semantic-recheck rows, 3 unsupported
+  extractions, recursive boolean safety-field scan, `content_source=git_HEAD_objects`,
+  and explicit `semantic_validation=false`
 
 Open production gaps:
 
@@ -426,6 +431,20 @@ Direct-call source-only inventory runner:
   This is source-only prototype evidence, not tracefs runtime coverage,
   monitor verification, ABI approval, or protection evidence.
 
+Project source-map drift checker:
+  validation/0080 executed the project-level source-map drift checker against
+  legacy machine-readable source maps and the latest direct-call overlay seed.
+  The run emitted 515 anchor rows: 481 path/pattern-ok rows, 13 preserved gaps,
+  1 missing symbol for `ice_alloc_vfs` in
+  `drivers/net/ethernet/intel/ice/ice_sriov.c`, 1 missing descriptive pattern,
+  19 line-only semantic-recheck rows, and 3 unsupported extractions. It used
+  `git HEAD` objects rather than mutable worktree contents and preserved
+  source_only=true, source path/pattern only, semantic_validation=false,
+  authority_claim=false,
+  monitor_verified=false, and protection_claim=false. This is upstream drift
+  triage evidence only, not semantic validation, runtime coverage, monitor
+  verification, ABI approval, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -450,6 +469,8 @@ Forbidden:
   authority, behavior approval, ABI selection, or protection evidence.
   Do not treat a source-only inventory contract as tracefs execution, runtime
   coverage, monitor verification, or permission to add public tracepoint ABI.
+  Do not treat project source-map drift `ok_rows` as semantic validation or
+  production protection evidence.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

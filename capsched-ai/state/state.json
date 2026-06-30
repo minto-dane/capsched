@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-overlay-drift-checker-executed",
+    "current_phase": "project-source-map-drift-checker-executed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-107 created and executed the source-only direct-call overlay drift checker. The checker capsched-models/traceability/check-direct-call-overlay-drift.sh consumed the N-106 overlay seed and emitted drift-ledger.tsv, drift-ledger.json, stale-or-gap.tsv, summary.txt, and metadata.txt under build/traceability-drift/20260630T230822Z. Result: 41 seed rows, 41 anchor rows, 34 ok rows, 7 expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic_recheck_required rows, and 0 safety-flag violations. The run did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection. Next focused risk is N-108: generalize from direct-call seed checking to a project-level traceability ledger/checker that can ingest older source-map families while preserving ADR-0007/0008 constraints.",
+    "current_focus": "N-108 created, audited, strengthened, and executed the source-only project source-map drift checker. The checker capsched-models/traceability/check-project-source-map-drift.sh scanned 15 machine-readable source-map/ledger artifacts plus the latest direct-call overlay seed and emitted project-anchor-ledger.tsv, project-anchor-ledger.json, stale-or-gap.tsv, unsupported-extractions.tsv, summary.txt, and metadata.txt under build/traceability-project-drift/20260630T232802Z. Result: 515 extracted anchors, 481 path/pattern-ok rows, 13 preserved gap rows, 0 path changes, 1 missing symbol, 1 missing pattern, 19 line-only semantic-recheck rows, 3 unsupported extractions, recursive boolean safety-field scan with 0 violations, content_source=git_HEAD_objects, source_path_pattern_only=true, semantic_validation=false, and no Linux modification, root requirement, tracefs write, probe attachment, public tracepoint ABI, authority claim, monitor verification, or protection claim. Next focused risk is N-109: normalize legacy source-map families into a central overlay ledger with explicit match predicates without rewriting N-series history or treating source anchors as authority.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -486,7 +486,10 @@
     "direct_call_inventory_overlay_seed": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T230536Z/overlay-seed.json",
     "direct_call_overlay_drift_checker": "capsched/capsched-models/traceability/check-direct-call-overlay-drift.sh",
     "direct_call_overlay_drift_result": "capsched/capsched-models/validation/0079-direct-call-overlay-drift-checker-result.md",
-    "direct_call_overlay_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-drift/20260630T230822Z"
+    "direct_call_overlay_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-drift/20260630T230822Z",
+    "project_source_map_drift_checker": "capsched/capsched-models/traceability/check-project-source-map-drift.sh",
+    "project_source_map_drift_result": "capsched/capsched-models/validation/0080-project-source-map-drift-checker-result.md",
+    "project_source_map_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T232802Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1986,9 +1989,19 @@
     {
       "id": "N-108",
       "text": "Generalize the direct-call drift checker into a project-level traceability ledger/checker that can ingest older source-map families and classify upstream drift without rewriting N-series history or treating source anchors as authority.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-107"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created, audited, strengthened, and executed capsched-models/traceability/check-project-source-map-drift.sh as a source-only project drift checker. Final run 20260630T232802Z scanned 15 machine-readable source-map/ledger artifacts plus the latest direct-call overlay seed, emitted 515 anchor rows with 481 path/pattern-ok rows, 13 preserved gap rows, 0 path changes, 1 missing symbol for ice_alloc_vfs, 1 missing descriptive pattern, 19 line-only semantic-recheck rows, 3 unsupported extractions, recursive boolean safety-field scan with 0 violations, content_source=git_HEAD_objects, source_path_pattern_only=true, and semantic_validation=false. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection."
+    },
+    {
+      "id": "N-109",
+      "text": "Normalize legacy source-map families into a central overlay ledger that links artifacts, semantic ids, Linux anchors, recorded/current commits, drift status, explicit match predicates, evidence class, unsupported claims, and required semantic recheck without rewriting N-series history or treating source anchors as authority.",
+      "status": "pending",
+      "blocked_by": [
+        "N-108"
       ]
     }
   ],

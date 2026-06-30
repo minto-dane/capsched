@@ -1479,3 +1479,36 @@ root-domain, housekeeping, and hotplug constraints.
 Cluster leases should compile into local SchedContexts and EndpointCaps;
 do not build a shared mutable distributed kernel as the first architecture.
 ```
+
+Latest traceability state:
+
+```text
+N-108 completed:
+  project source-map drift checker
+
+checker:
+  capsched-models/traceability/check-project-source-map-drift.sh
+
+run:
+  build/traceability-project-drift/20260630T232802Z
+
+summary:
+  15 machine-readable source-map/ledger artifacts scanned
+  515 extracted anchors
+  481 path/pattern-ok rows
+  13 gap rows preserved as gaps
+  1 symbol-missing row requiring semantic recheck
+  1 descriptive pattern-missing row
+  19 line-only semantic-recheck rows
+  3 unsupported extractions preserved as unsupported
+  recursive boolean safety-field scan with 0 violations
+  content_source=git_HEAD_objects
+  source_path_pattern_only=true
+  semantic_validation=false
+
+next:
+  N-109 central overlay ledger normalization for legacy source-map families.
+```
+
+Do not treat project source-map drift `ok_rows` as semantic validation,
+monitor verification, or production protection evidence.

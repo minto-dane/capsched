@@ -1636,3 +1636,42 @@ base: 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
 current commit: 7cf0b1e415bcead8a2079c8be94a9d41aad7d462
 current subject: sched/capsched: Add type-only authority scaffolding
 ```
+
+Latest traceability work:
+
+```text
+N-108 completed:
+  capsched-models/traceability/check-project-source-map-drift.sh
+
+latest run:
+  build/traceability-project-drift/20260630T232802Z
+
+result:
+  json_artifacts_scanned=15
+  anchor_rows=515
+  ok_rows=481
+  gap_rows=13
+  symbol_missing_rows=1
+  pattern_missing_rows=1
+  semantic_recheck_required_rows=19
+  unsupported_extraction_rows=3
+  safety_flag_violations=0
+  content_source=git_HEAD_objects
+  source_path_pattern_only=true
+  semantic_validation=false
+
+important drift:
+  ice_alloc_vfs in drivers/net/ethernet/intel/ice/ice_sriov.c is missing as a
+  symbol; current source uses ice_create_vf_entries() for the relevant
+  allocation region, so the old source-map anchor needs semantic recheck.
+
+important caution:
+  line-only anchors are semantic_recheck_required, not ok merely because the
+  file exists.
+
+next:
+  N-109 normalize legacy source-map families into a central overlay ledger.
+```
+
+Do not read N-108 `ok_rows` as semantic validation, monitor verification, or
+protection evidence. It is path/pattern drift triage only.

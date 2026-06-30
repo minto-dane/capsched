@@ -129,7 +129,14 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  generalize the N-107 direct-call drift checker into a project-level
-  traceability ledger/checker, or create a separate privileged tracefs runbook
-  before any tracefs execution, direct-call carrier, or public tracepoint patch
+  normalize legacy source-map families into a central overlay ledger using the
+  project-level drift checker output. The ledger must preserve gap rows,
+  line-only semantic recheck rows, and explicit match predicates. A separate
+  privileged tracefs runbook is required before any tracefs execution,
+  direct-call carrier, or public tracepoint patch.
+
+Current blocker to behavior-changing Linux patches:
+  validation/0080 is path/pattern drift evidence only, not semantic validation,
+  authority, monitor verification, ABI approval, runtime coverage, or
+  production protection evidence.
 ```

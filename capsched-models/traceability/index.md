@@ -24,6 +24,7 @@ Instead, it explains how to read them together.
 | `0001-n-series-overlay-policy.md` | Human-readable policy for N-series overlay traceability and Linux drift handling. |
 | `overlay-row-schema-v1.json` | Machine-readable row schema for future N/artifact/Linux/claim crosswalk ledgers. |
 | `check-direct-call-overlay-drift.sh` | Source-only drift checker for N-106 direct-call overlay seed rows. |
+| `check-project-source-map-drift.sh` | Source-only project-level drift checker for legacy source-map families and direct-call overlay seeds. |
 
 ## Latest Direct-Call Drift Check
 
@@ -44,6 +45,40 @@ safety_flag_violations=0
 
 This is source-only drift evidence, not authority, monitor verification, or
 protection evidence.
+
+## Latest Project Source-Map Drift Check
+
+Validation/0080 executed the project-level source-map drift checker against
+legacy machine-readable source maps and the latest direct-call overlay seed:
+
+```text
+run: build/traceability-project-drift/20260630T232802Z
+json_artifacts_scanned=15
+anchor_rows=515
+ok_rows=481
+gap_rows=13
+path_changed_rows=0
+symbol_missing_rows=1
+pattern_missing_rows=1
+semantic_recheck_required_rows=19
+unsupported_extraction_rows=3
+safety_flag_violations=0
+safety_scan_scope=recursive_boolean_safety_fields_in_scanned_json
+content_source=git_HEAD_objects
+source_path_pattern_only=true
+semantic_validation=false
+```
+
+The one missing symbol is `ice_alloc_vfs` in
+`drivers/net/ethernet/intel/ice/ice_sriov.c`; current source shows the relevant
+VF allocation region under `ice_create_vf_entries()`, so that legacy anchor
+requires semantic recheck. The 19 semantic-recheck rows are line-only anchors
+that are no longer treated as evidence merely because the file exists. Gap rows
+and unsupported rows are preserved, not converted into authority or removed
+obligations.
+
+The `ok_rows` count is path/pattern drift evidence only; it is not semantic
+validation of those source regions.
 
 ## Existing Indexes
 
