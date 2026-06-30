@@ -169,6 +169,31 @@ public_abi=false
 Any row that changes these defaults must explain the non-forgeable root,
 threat-model link, invariant link, validation evidence, and assurance approval.
 
+## Long-Horizon Fields
+
+Future overlay ledgers should record how a row relates to the long-horizon
+target:
+
+```text
+target_layer:
+  L0 | L1 | L2 | L3 | L4 | L5
+
+long_horizon_invariant:
+  invariant or claim shape preserved by this work
+
+future_monitor_responsibility:
+  monitor-owned authority that Linux must not fake
+
+linux_placeholder_status:
+  inert | source_only | observation_only | prototype_only | none
+
+forbidden_shortcut:
+  what this row must not be used to claim
+```
+
+This keeps a small Linux implementation slice tied to the full CapSched-H
+target without letting the slice overclaim protection.
+
 ## Existing Linux-Kernel Correspondence
 
 The project already has many Linux-kernel correspondence artifacts, including:

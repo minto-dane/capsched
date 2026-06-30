@@ -28,6 +28,12 @@ monitor verification, and no protection claim. Existing source maps are
 topic-local; a central drift-aware N/artifact/Linux/claim ledger remains a
 pending traceability build-out.
 
+ADR-0008 adds the long-horizon-first implementation rule. L0 and all later
+slices are designed backward from the final monitor-backed CapSched-H target.
+Small Linux hooks remain desirable for upstream tracking, but they must preserve
+the shape of HyperTag Monitor authority, Domain epochs, MemoryViews, root CPU
+budgets, IOMMU/queue ownership, async provenance, and service-domain boundaries.
+
 Modern NIC QueueLease/revoke status:
 
 ```text

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "overlay-traceability-policy-fixed",
+    "current_phase": "long-horizon-first-implementation-policy-fixed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "ADR-0007 now fixes overlay traceability for the N-series and Linux anchors. N-* remains a chronological work ledger for both N-001 through N-105 and N-106 onward; semantic interpretation lives in overlay rows under capsched-models/traceability. Linux source anchors must carry checked commits and default to authority_claim=false, monitor_verified=false, and protection_claim=false. Existing analysis/source-map indexes are useful topic-local maps, but a central N-to-artifact-to-Linux-to-claim drift-aware ledger is not complete yet. N-106 remains pending: broaden the source-only direct-call inventory and keep it within the same overlay traceability policy, still without root, tracefs writes, probe attachment, Linux modification, public tracepoint ABI, runtime coverage claims, or protection claims.",
+    "current_focus": "ADR-0008 now fixes long-horizon-first implementation posture. Every slice, including L0, is designed backward from the monitor-backed datacenter OS target rather than as a local scheduler-only experiment. Small Linux changes remain desirable for upstream tracking, but patch-surface minimization is only a maintainability tactic and must not weaken the threat model or collapse future HyperTag Monitor authority into Linux-global mutable state. ADR-0007 still governs overlay traceability: N-* remains chronological, Linux anchors are non-authoritative by default, and a central N-to-artifact-to-Linux-to-claim drift ledger remains incomplete. N-106 remains pending: broaden source-only direct-call inventory under both ADR-0007 and ADR-0008.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -672,7 +672,8 @@
     "Do not claim hypervisor replacement without monitor-enforced memory, CPU, IOMMU, queue, epoch, and domain roots.",
     "Do not treat validation as pass/fail plumbing; validation must support semantic security claims.",
     "Do not treat TLC completion as the project objective; use TLC as one source of semantic evidence for the security and efficiency goals.",
-    "Every future Linux patch must name the assurance claim and gate it supports."
+    "Every future Linux patch must name the assurance claim and gate it supports.",
+    "Every implementation slice, including L0, must preserve the shape of the long-horizon monitor-backed CapSched-H target; a thin Linux hook is acceptable only when it does not weaken final invariants or hide authority in Linux-global mutable state."
   ],
   "planned_tracks": [
     {

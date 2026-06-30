@@ -96,3 +96,25 @@ anchor still exists:
 meaning still matches:
   semantic recheck required when source changed
 ```
+
+## Long-Horizon Rule
+
+ADR-0008 fixes the implementation posture:
+
+```text
+small slice:
+  acceptable
+
+short-horizon security model:
+  rejected
+
+thin Linux hook:
+  maintainability tactic
+
+thin Linux hook as authority substitute:
+  rejected
+```
+
+Future overlay rows for implementation-facing work should say which L5/L4/L3
+invariant shape they preserve and which future HyperTag Monitor authority is
+still external.

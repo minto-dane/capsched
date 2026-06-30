@@ -1,6 +1,6 @@
 # Decision Index
 
-Updated: 2026-06-27
+Updated: 2026-06-30
 
 | ID | Status | Title |
 | --- | --- | --- |
@@ -11,3 +11,4 @@ Updated: 2026-06-27
 | ADR-0005 | Accepted | Use git.kernel.org torvalds/linux as upstream Linux base |
 | ADR-0006 | Accepted | Use invariant-driven design with tag-indexed evidence |
 | ADR-0007 | Accepted | Use overlay traceability for N-series and Linux anchors |
+| ADR-0008 | Accepted | Implement from the long-horizon target backward |

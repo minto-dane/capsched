@@ -1,6 +1,6 @@
 # AI Operating Protocol
 
-Updated: 2026-06-25
+Updated: 2026-06-30
 
 This file defines how AI sessions should maintain project continuity.
 
@@ -53,6 +53,24 @@ Before implementation, read upstream code and write focused investigation notes.
 Tie findings to file paths, function names, and CapSched invariants.
 
 Do not use speculative patch maps as accepted implementation plans.
+
+## Long-Horizon Implementation Discipline
+
+All implementation work is designed from the monitor-backed datacenter OS target
+backward. A small Linux slice is acceptable only when it preserves the shape of
+the long-horizon invariants.
+
+For any behavior-changing Linux patch proposal, record:
+
+- which L5/L4/L3 invariant it preserves
+- which future HyperTag Monitor responsibility remains external
+- which Linux-only placeholder must not be treated as authority
+- which async, memory, IOMMU, queue, or cluster obligation remains open
+- which protection claims are explicitly forbidden
+
+Patch-surface minimization is a maintainability tactic. It is not permission to
+weaken the threat model or collapse monitor-backed authority into Linux-global
+mutable state.
 
 ## Traceability Discipline
 

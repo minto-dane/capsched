@@ -29,6 +29,14 @@ monitor_verified=false
 protection_claim=false
 ```
 
+ADR-0008 fixes the implementation posture. Every slice, including L0, is
+designed backward from the long-horizon monitor-backed datacenter OS target.
+Small Linux patches are still preferred for upstream tracking, but thin hooks
+are a maintainability tactic, not a weakened security objective. A Linux-only
+placeholder must not hide authority that belongs to future HyperTag Monitor
+receipts, Domain epochs, MemoryViews, root budgets, IOMMU roots, queue leases,
+or service-domain provenance.
+
 Modern NIC QueueLease/service-work analysis has reached a model-supported but
 not implementation-approved gate for Intel `ice`:
 
