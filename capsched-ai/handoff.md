@@ -37,8 +37,28 @@ hard gaps:
   no old/new queue epoch handoff proof
 
 next focused risk:
-  model VF IRQ ownership and synchronization exception semantics before any
-  ice behavior change.
+  map monitor-backed IRQ route invalidation across ice, VFIO/iommufd, MSI-X,
+  and interrupt-remapping substrate before any driver or monitor implementation
+  plan.
+```
+
+That focused VF IRQ model is now checked:
+
+```text
+formal/0032 + validation/0052:
+  safe TLC passed with 25 generated states, 22 distinct states, depth 6
+  unsafe counterexamples:
+    VF host-sync assumption
+    stale completion after revoke
+    reassignment without owner-specific IRQ quiescence
+    host-owned reassignment without synchronize_irq()
+    monitor-owned reassignment without monitor invalidation
+
+design rule:
+  ICE_VSI_VF synchronize_irq skip is not a QueueLease revoke proof.
+  Host-owned, VF-owned, and monitor-owned IRQ quiescence must be separated.
+  CapSched-H needs monitor-visible IRQ route invalidation or a separately
+  modeled VF route handoff before queue reassignment.
 ```
 The current scheduler-authority refinement frontier is now:
 

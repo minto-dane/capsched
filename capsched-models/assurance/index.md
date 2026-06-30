@@ -67,6 +67,7 @@ Model-supported areas:
 - XDP and AF_XDP memory ownership
 - QueueControl and RepresentorForward separation
 - modern NIC queue revoke/drain/quarantine semantics
+- VF IRQ revoke ownership and synchronization-exception semantics
 
 Prototype-evidenced areas:
 
@@ -104,6 +105,13 @@ Observation-only:
   ice revoke readiness found 8 tracepoint rows, 31 source anchors, 10
   obligation readiness rows, and 8 high-severity gaps. Every row remains
   observation_only=true, authority_claim=false, and monitor_verified=false.
+
+VF IRQ revoke model:
+  safe TLC passed with 25 generated states and 22 distinct states. Unsafe
+  configs produced expected counterexamples for VF host-sync assumption, stale
+  completion after revoke, reassignment without owner-specific IRQ quiescence,
+  host-owned reassignment without synchronize_irq(), and monitor-owned
+  reassignment without monitor invalidation.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production

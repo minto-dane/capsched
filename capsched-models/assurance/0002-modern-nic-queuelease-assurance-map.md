@@ -56,6 +56,9 @@ validation/0049-queuecontrol-representor-tlc.md
 
 formal/0031-modern-nic-queue-revoke-model/
 validation/0050-modern-nic-queue-revoke-tlc.md
+
+formal/0032-vf-irq-revoke-ownership-model/
+validation/0052-vf-irq-revoke-ownership-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -528,6 +531,7 @@ Model:
   formal/0029, validation/0048
   formal/0030, validation/0049
   formal/0031, validation/0050
+  formal/0032, validation/0052
 
 Source:
   analysis/0052 records reset/down/service paths as future revoke anchors.
@@ -539,6 +543,11 @@ Readiness:
   validation/0051 emits formal/0031 obligation coverage for ice revoke paths
   with tracepoint_rows=8, source_anchor_rows=31, and gap_rows=8. Every row is
   observation_only=true, authority_claim=false, and monitor_verified=false.
+
+Refinement:
+  validation/0052 models the ICE_VSI_VF synchronize_irq exception as a typed
+  IRQ-ownership hazard. Safe TLC passes only when host-owned IRQ, VF-owned IRQ,
+  and monitor-owned IRQ quiescence are separated before queue reassignment.
 ```
 
 Protection missing:
@@ -549,6 +558,7 @@ no queue drain/quarantine implementation
 no DMA/IOMMU/IRQ invalidation order proof
 no outstanding ledger cleanup proof
 no stale service-work cancellation proof
+no monitor-backed implementation of VF IRQ route invalidation
 ```
 
 Forbidden claim:
@@ -600,6 +610,7 @@ Current gate result:
 ```text
 DEV-001 modern NIC refinement:
   model-supported for authority-class separation
+  model-supported for VF IRQ ownership separation
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness

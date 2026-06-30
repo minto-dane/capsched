@@ -57,6 +57,7 @@ Updated: 2026-06-29
 | 0049 | Safe model passed; unsafe models produced expected counterexamples | QueueControl and RepresentorForward TLC |
 | 0050 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC Queue Revoke TLC |
 | 0051 | Executed; high-severity semantic gaps remain | ice Revoke Readiness Result |
+| 0052 | Safe model passed; unsafe models produced expected counterexamples | VF IRQ Revoke Ownership TLC |
 
 ## Principles
 

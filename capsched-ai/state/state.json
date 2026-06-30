@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "ice-revoke-readiness-checked",
+    "current_phase": "vf-irq-revoke-ownership-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0051 adds an observation-only ice revoke readiness checker for formal/0031 obligations. Final run /media/nia/scsiusb/dev/linux-cap/build/ice-revoke-readiness/20260630T002344Z found tracepoint_rows=8, tracepoint_missing_rows=0, source_anchor_rows=31, source_anchor_missing_rows=0, obligation_readiness_rows=10, and gap_rows=8. Every readiness row is observation_only=true, authority_claim=false, and monitor_verified=false. Useful anchors exist for submit blocking, IRQ masking/synchronize paths, NAPI disable, ring stop/clean, DMA unmap/free, XSK cleanup/completion, reset/devlink down/up, representor stop, service work, and queue enable/rebuild. The hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-owned IOMMU/MemoryView invalidation; no stale XSK/page-pool completion quarantine distinction; no VF IRQ ownership proof for the synchronize_irq exception; no RepresentorForward-to-lower-QueueLease revoke proof; no service work carrier or service/caller authority intersection; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Validation/0051 adds observation-only ice revoke readiness for formal/0031 obligations. Validation/0052 adds the VF IRQ Revoke Ownership model for the ICE_VSI_VF synchronize_irq exception: safe TLC passed with 25 generated states, 22 distinct states, and depth 6; five unsafe configs produced expected counterexamples for VF host-sync assumption, completion after revoke, reassignment without owner-specific IRQ quiescence, host-owned reassignment without synchronize_irq(), and monitor-owned reassignment without monitor invalidation. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-owned IOMMU/MemoryView invalidation; no production monitor IRQ route invalidation; no stale XSK/page-pool completion quarantine implementation; no RepresentorForward-to-lower-QueueLease revoke proof; no service work carrier or service/caller authority intersection; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -321,7 +321,11 @@
     "ice_modern_nic_revoke_source_map_json": "capsched/capsched-models/analysis/ice-modern-nic-revoke-source-map-v1.json",
     "ice_revoke_readiness_runner": "capsched/capsched-models/validation/run-ice-revoke-readiness.sh",
     "ice_revoke_readiness_result": "capsched/capsched-models/validation/0051-ice-revoke-readiness-result.md",
-    "ice_revoke_readiness_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/ice-revoke-readiness/20260630T002344Z"
+    "ice_revoke_readiness_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/ice-revoke-readiness/20260630T002344Z",
+    "vf_irq_revoke_ownership_model": "capsched/capsched-models/formal/0032-vf-irq-revoke-ownership-model/README.md",
+    "vf_irq_revoke_ownership_tla": "capsched/capsched-models/formal/0032-vf-irq-revoke-ownership-model/VFIrqRevokeOwnership.tla",
+    "vf_irq_revoke_ownership_validation": "capsched/capsched-models/validation/0052-vf-irq-revoke-ownership-tlc.md",
+    "vf_irq_revoke_ownership_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/vf-irq-revoke-ownership-20260630T003143Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1540,9 +1544,19 @@
     {
       "id": "N-080",
       "text": "Model VF IRQ ownership and synchronization exception semantics for monitor-backed QueueLease revoke, separating host-owned, VF-owned, and monitor-owned interrupt completion authority before any ice behavior change.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-29",
+      "partial_progress": "Created formal/0032 VFIrqRevokeOwnership and validation/0052. Safe TLC passed with 25 generated states, 22 distinct states, and depth 6. Unsafe configs produced expected counterexamples for VF host-sync assumption, completion after revoke, reassignment without owner-specific IRQ quiescence, host-owned reassignment without synchronize_irq(), and monitor-owned reassignment without monitor invalidation. The design consequence is that the ICE_VSI_VF synchronize_irq skip is not a proof of QueueLease revoke safety; CapSched-H needs monitor-visible IRQ route invalidation or a separately modeled VF route handoff.",
       "blocked_by": [
         "N-079"
+      ]
+    },
+    {
+      "id": "N-081",
+      "text": "Map a monitor-backed IRQ route invalidation protocol to Linux ice, VFIO/iommufd, MSI-X, and interrupt-remapping substrate before any driver or monitor implementation plan.",
+      "status": "pending",
+      "blocked_by": [
+        "N-080"
       ]
     }
   ],

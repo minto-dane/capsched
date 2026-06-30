@@ -44,7 +44,22 @@ do not claim:
   authority.
 
 next focused risk:
-  VF IRQ ownership and synchronize_irq exception modeling.
+  monitor-backed IRQ route invalidation protocol mapping.
+
+formal/0032 + validation/0052:
+  VF IRQ ownership model checked.
+  safe TLC:
+    25 generated states, 22 distinct states, depth 6
+  unsafe counterexamples:
+    VF path assumes host synchronize_irq()
+    stale completion after revoke
+    reassignment without owner-specific IRQ quiescence
+    host-owned reassignment without synchronize_irq()
+    monitor-owned reassignment without monitor invalidation
+  design rule:
+    ICE_VSI_VF synchronize_irq skip is not QueueLease revoke safety. It must be
+    covered by monitor-visible IRQ route invalidation or a separately modeled
+    VF-owned route protocol.
 ```
 
 ## Core Architecture

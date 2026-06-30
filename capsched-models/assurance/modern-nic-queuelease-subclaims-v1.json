@@ -8,6 +8,7 @@
     "linux_source_anchors": "source_observed",
     "trace_readiness": "observation_only",
     "revoke_readiness": "observation_only",
+    "vf_irq_revoke_ownership": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -117,6 +118,15 @@
         "DEV-NIC-010"
       ],
       "limitation": "Observation-only formal/0031 obligation coverage for ice revoke paths; authority_claim=false and monitor_verified=false."
+    },
+    {
+      "id": "E-DEV-MNIC-009",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0052-vf-irq-revoke-ownership-tlc.md",
+      "supports": [
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks host/VF/monitor IRQ quiescence separation; not real interrupt-remapping or monitor enforcement evidence."
     }
   ],
   "subclaims": [
@@ -257,7 +267,8 @@
         "queue drain/quarantine implementation",
         "DMA/IOMMU/IRQ invalidation order proof",
         "outstanding ledger cleanup proof",
-        "stale service-work cancellation proof"
+        "stale service-work cancellation proof",
+        "monitor-backed VF IRQ route invalidation implementation"
       ],
       "forbidden": [
         "queue revocation inferred from Linux netdev down/reset alone"

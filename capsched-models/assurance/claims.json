@@ -211,7 +211,8 @@
         "E-DEV-MNIC-005",
         "E-DEV-MNIC-006",
         "E-DEV-MNIC-007",
-        "E-DEV-MNIC-008"
+        "E-DEV-MNIC-008",
+        "E-DEV-MNIC-009"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -398,7 +399,8 @@
         "E-DEV-MNIC-005",
         "E-DEV-MNIC-006",
         "E-DEV-MNIC-007",
-        "E-DEV-MNIC-008"
+        "E-DEV-MNIC-008",
+        "E-DEV-MNIC-009"
       ],
       "gaps": [
         "No queue revoke epoch implementation.",
@@ -732,6 +734,16 @@
         "DEV-NIC-010"
       ],
       "limitation": "Every readiness row is observation_only=true, authority_claim=false, and monitor_verified=false; high-severity gaps remain for queue epoch, typed ledgers, IOMMU root, VF IRQ synchronization, XSK quarantine, representor lower lease, service carrier, and epoch handoff."
+    },
+    {
+      "id": "E-DEV-MNIC-009",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0052-vf-irq-revoke-ownership-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks IRQ ownership separation for revoke; it is not MSI-X, interrupt-remapping, VFIO/iommufd, or monitor implementation evidence."
     },
     {
       "id": "E-L0-002",
