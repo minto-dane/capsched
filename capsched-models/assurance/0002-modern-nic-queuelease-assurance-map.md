@@ -59,6 +59,9 @@ validation/0050-modern-nic-queue-revoke-tlc.md
 
 formal/0032-vf-irq-revoke-ownership-model/
 validation/0052-vf-irq-revoke-ownership-tlc.md
+
+formal/0033-monitor-irq-route-invalidation-model/
+validation/0053-monitor-irq-route-invalidation-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -532,6 +535,7 @@ Model:
   formal/0030, validation/0049
   formal/0031, validation/0050
   formal/0032, validation/0052
+  formal/0033, validation/0053
 
 Source:
   analysis/0052 records reset/down/service paths as future revoke anchors.
@@ -548,6 +552,10 @@ Refinement:
   validation/0052 models the ICE_VSI_VF synchronize_irq exception as a typed
   IRQ-ownership hazard. Safe TLC passes only when host-owned IRQ, VF-owned IRQ,
   and monitor-owned IRQ quiescence are separated before queue reassignment.
+  validation/0053 models monitor-backed IRQ route invalidation across VFIO
+  eventfd, Linux IRQ/MSI allocation, iommufd isolated MSI, IRTE clear, IEC
+  flush, and posted interrupt state. Safe TLC passes only when a full
+  invalidation receipt exists before queue reassignment.
 ```
 
 Protection missing:
@@ -559,6 +567,7 @@ no DMA/IOMMU/IRQ invalidation order proof
 no outstanding ledger cleanup proof
 no stale service-work cancellation proof
 no monitor-backed implementation of VF IRQ route invalidation
+no monitor-backed IRQ route invalidation receipt implementation
 ```
 
 Forbidden claim:
@@ -611,6 +620,7 @@ Current gate result:
 DEV-001 modern NIC refinement:
   model-supported for authority-class separation
   model-supported for VF IRQ ownership separation
+  model-supported for monitor IRQ route invalidation receipt semantics
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness

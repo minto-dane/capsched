@@ -9,6 +9,7 @@
     "trace_readiness": "observation_only",
     "revoke_readiness": "observation_only",
     "vf_irq_revoke_ownership": "model_checked",
+    "monitor_irq_route_invalidation": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -127,6 +128,15 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks host/VF/monitor IRQ quiescence separation; not real interrupt-remapping or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-010",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0053-monitor-irq-route-invalidation-tlc.md",
+      "supports": [
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks full route invalidation receipt semantics; not real hardware or monitor enforcement evidence."
     }
   ],
   "subclaims": [
@@ -268,7 +278,8 @@
         "DMA/IOMMU/IRQ invalidation order proof",
         "outstanding ledger cleanup proof",
         "stale service-work cancellation proof",
-        "monitor-backed VF IRQ route invalidation implementation"
+        "monitor-backed VF IRQ route invalidation implementation",
+        "monitor-backed IRQ route invalidation receipt implementation"
       ],
       "forbidden": [
         "queue revocation inferred from Linux netdev down/reset alone"

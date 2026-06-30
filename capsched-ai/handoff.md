@@ -37,9 +37,8 @@ hard gaps:
   no old/new queue epoch handoff proof
 
 next focused risk:
-  map monitor-backed IRQ route invalidation across ice, VFIO/iommufd, MSI-X,
-  and interrupt-remapping substrate before any driver or monitor implementation
-  plan.
+  model monitor-owned DMA/IOMMU and MemoryView invalidation ordering so IRQ
+  route invalidation cannot be mistaken for DMA reachability revocation.
 ```
 
 That focused VF IRQ model is now checked:
@@ -59,6 +58,31 @@ design rule:
   Host-owned, VF-owned, and monitor-owned IRQ quiescence must be separated.
   CapSched-H needs monitor-visible IRQ route invalidation or a separately
   modeled VF route handoff before queue reassignment.
+```
+
+The monitor IRQ route invalidation map/model is now checked:
+
+```text
+analysis/0054:
+  maps ice, VFIO PCI, iommufd, PCI/MSI, generic MSI domain, and x86 Intel
+  interrupt-remapping source anchors.
+
+formal/0033 + validation/0053:
+  safe TLC passed with 14 generated states, 12 distinct states, depth 8
+  unsafe counterexamples:
+    unsafe interrupt override / allow_unsafe_interrupts-style route
+    VFIO eventfd delivery after revoke
+    reassignment without invalidation receipt
+    receipt without interrupt-entry-cache flush
+    receipt with posted interrupt state
+    receipt with eventfd still live
+
+design rule:
+  IRQ revoked is not eventfd detached, free_irq(), pci_free_irq_vectors(),
+  irq_remapping_enabled, or IRTE clear alone. It needs a monitor-visible
+  receipt covering isolated MSI, route tag/epoch, delivery endpoint quarantine,
+  Linux IRQ/MSI teardown, IRTE/equivalent clear, IEC/equivalent flush, and
+  posted interrupt teardown.
 ```
 The current scheduler-authority refinement frontier is now:
 

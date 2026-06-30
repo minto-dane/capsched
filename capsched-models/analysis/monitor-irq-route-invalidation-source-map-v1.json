@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-29",
+  "scope": "monitor-backed IRQ route invalidation source map for CapSched QueueLease revoke",
+  "status": "source_observed_only",
+  "authority_root": {
+    "required": "monitor-owned IrqRouteTag and IrqRouteEpoch",
+    "not_authority": [
+      "Linux irq number",
+      "VFIO eventfd",
+      "MSI-X vector index",
+      "ice q_vector",
+      "iommufd object reachability",
+      "irq_remapping_enabled alone"
+    ]
+  },
+  "source_anchors": [
+    {
+      "id": "IRQ-ICE-001",
+      "component": "ice",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_main.c",
+        "drivers/net/ethernet/intel/ice/ice_lib.c",
+        "drivers/net/ethernet/intel/ice/ice_irq.c",
+        "drivers/net/ethernet/intel/ice/ice_sriov.c"
+      ],
+      "symbols": [
+        "ice_vsi_req_irq_msix",
+        "ice_vsi_dis_irq",
+        "ice_vsi_free_irq",
+        "ice_virt_get_irqs",
+        "ice_virt_free_irqs"
+      ],
+      "supports": [
+        "driver_irq_masking",
+        "host_irq_teardown_observation",
+        "vf_virtual_irq_range_observation"
+      ],
+      "limitation": "ICE_VSI_VF paths skip host synchronize_irq/free_irq handling; not monitor route invalidation proof."
+    },
+    {
+      "id": "IRQ-VFIO-001",
+      "component": "vfio-pci",
+      "files": [
+        "drivers/vfio/pci/vfio_pci_intrs.c"
+      ],
+      "symbols": [
+        "vfio_msihandler",
+        "vfio_msi_enable",
+        "vfio_msi_alloc_irq",
+        "vfio_msi_set_vector_signal",
+        "vfio_msi_disable"
+      ],
+      "supports": [
+        "eventfd_delivery_observation",
+        "linux_irq_handler_observation",
+        "irq_bypass_observation"
+      ],
+      "limitation": "VFIO eventfd detach and free_irq are not physical route invalidation roots."
+    },
+    {
+      "id": "IRQ-IOMMUFD-001",
+      "component": "iommufd",
+      "files": [
+        "drivers/iommu/iommufd/device.c",
+        "drivers/iommu/iommufd/driver.c",
+        "drivers/iommu/iommu.c"
+      ],
+      "symbols": [
+        "allow_unsafe_interrupts",
+        "iommu_group_has_isolated_msi",
+        "iommufd_sw_msi_install",
+        "iommufd_sw_msi"
+      ],
+      "supports": [
+        "isolated_msi_predicate",
+        "unsafe_interrupts_hard_reject",
+        "sw_msi_mapping_observation"
+      ],
+      "limitation": "isolated MSI is a necessary predicate, not a monitor-owned route epoch."
+    },
+    {
+      "id": "IRQ-MSI-001",
+      "component": "generic-msi",
+      "files": [
+        "drivers/pci/msi/api.c",
+        "kernel/irq/msi.c"
+      ],
+      "symbols": [
+        "pci_msix_alloc_irq_at",
+        "pci_msix_free_irq",
+        "pci_alloc_irq_vectors",
+        "pci_free_irq_vectors",
+        "msi_domain_free_irqs_range_locked",
+        "irq_domain_deactivate_irq"
+      ],
+      "supports": [
+        "linux_msi_vector_allocation",
+        "linux_msi_vector_free",
+        "irq_domain_deactivation_observation"
+      ],
+      "limitation": "MSI free/deactivate must be paired with lower route invalidation and flush."
+    },
+    {
+      "id": "IRQ-IR-001",
+      "component": "x86-intel-irq-remapping",
+      "files": [
+        "drivers/iommu/irq_remapping.c",
+        "drivers/iommu/intel/irq_remapping.c"
+      ],
+      "symbols": [
+        "irq_remapping_enabled",
+        "alloc_irte",
+        "set_msi_sid",
+        "modify_irte",
+        "clear_entries",
+        "qi_flush_iec",
+        "intel_irq_remapping_deactivate"
+      ],
+      "supports": [
+        "irte_identity_observation",
+        "source_id_verification_observation",
+        "route_clear_observation",
+        "interrupt_entry_cache_flush_observation"
+      ],
+      "limitation": "IRTE operations are Linux-owned unless the monitor owns or verifies the route tag, epoch, and invalidation receipt."
+    }
+  ],
+  "required_invariants": [
+    "No isolated MSI, no production QueueLease route",
+    "No IrqRouteTag, no queue delivery",
+    "No fresh IrqRouteEpoch, no eventfd or host delivery",
+    "No route invalidation receipt, no queue reassignment",
+    "No IRTE clear without interrupt-entry-cache flush",
+    "No VFIO eventfd delivery after route revoke unless quarantined",
+    "No posted interrupt descriptor survives old queue epoch",
+    "No allow_unsafe_interrupts in production protection claim"
+  ],
+  "forbidden_claims": [
+    "VFIO eventfd detach proves route invalidation",
+    "free_irq proves monitor-grade route invalidation",
+    "pci_free_irq_vectors proves stale interrupt delivery impossible",
+    "irq_remapping_enabled alone proves QueueLease route safety",
+    "allow_unsafe_interrupts is acceptable for production CapSched-H"
+  ],
+  "next_model": "formal/0033-monitor-irq-route-invalidation-model"
+}

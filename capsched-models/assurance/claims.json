@@ -212,7 +212,8 @@
         "E-DEV-MNIC-006",
         "E-DEV-MNIC-007",
         "E-DEV-MNIC-008",
-        "E-DEV-MNIC-009"
+        "E-DEV-MNIC-009",
+        "E-DEV-MNIC-010"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -400,7 +401,8 @@
         "E-DEV-MNIC-006",
         "E-DEV-MNIC-007",
         "E-DEV-MNIC-008",
-        "E-DEV-MNIC-009"
+        "E-DEV-MNIC-009",
+        "E-DEV-MNIC-010"
       ],
       "gaps": [
         "No queue revoke epoch implementation.",
@@ -744,6 +746,16 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks IRQ ownership separation for revoke; it is not MSI-X, interrupt-remapping, VFIO/iommufd, or monitor implementation evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-010",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0053-monitor-irq-route-invalidation-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks route invalidation receipt semantics across eventfd, Linux IRQ/MSI, IRTE/IEC flush, isolated MSI, and posted state; it is not monitor or hardware implementation evidence."
     },
     {
       "id": "E-L0-002",

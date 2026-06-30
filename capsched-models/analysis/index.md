@@ -59,6 +59,7 @@ Updated: 2026-06-29
 | 0051 | Draft observation-only plan | Linux Queue/Descriptor Ledger Observation Plan |
 | 0052 | Draft modern NIC source map | Intel ice Modern NIC QueueLease Source Map |
 | 0053 | Draft revoke source map | Intel ice Modern NIC Revoke Source Map |
+| 0054 | Draft source map with model gate | Monitor IRQ Route Invalidation Source Map |
 
 ## Planned Analysis Notes
 
@@ -82,3 +83,4 @@ Updated: 2026-06-29
 | `queue-descriptor-ledger-tags-v1.json` | Draft observation schema | Machine-readable observation-only queue/descriptor ledger event and tag contract |
 | `ice-modern-nic-queuelease-source-map-v1.json` | Draft source map | Machine-readable modern NIC QueueLease mapping for ice SKB/XDP/AF_XDP/devlink/representor paths |
 | `ice-modern-nic-revoke-source-map-v1.json` | Draft source map | Machine-readable modern NIC revoke/drain/quarantine source map for ice paths |
+| `monitor-irq-route-invalidation-source-map-v1.json` | Draft source map | Machine-readable IRQ route invalidation mapping across ice, VFIO, iommufd, MSI/MSI-X, and interrupt remapping |

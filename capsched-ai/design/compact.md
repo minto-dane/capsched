@@ -44,7 +44,7 @@ do not claim:
   authority.
 
 next focused risk:
-  monitor-backed IRQ route invalidation protocol mapping.
+  monitor-owned DMA/IOMMU and MemoryView invalidation ordering.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -60,6 +60,27 @@ formal/0032 + validation/0052:
     ICE_VSI_VF synchronize_irq skip is not QueueLease revoke safety. It must be
     covered by monitor-visible IRQ route invalidation or a separately modeled
     VF-owned route protocol.
+
+analysis/0054 + formal/0033 + validation/0053:
+  monitor IRQ route invalidation substrate mapped and modeled.
+  source substrate:
+    ice IRQ mask/free paths
+    VFIO eventfd/request_irq/free_irq paths
+    iommufd isolated-MSI and allow_unsafe_interrupts paths
+    PCI/MSI allocation/free paths
+    generic MSI domain deactivate/free
+    Intel IRTE clear + qi_flush_iec
+  safe TLC:
+    14 generated states, 12 distinct states, depth 8
+  unsafe counterexamples:
+    unsafe interrupt override
+    eventfd delivery after revoke
+    reassignment without receipt
+    receipt without IEC flush
+    receipt with posted interrupt state
+    receipt with eventfd still live
+  design rule:
+    IRQ revoke is a monitor-visible receipt, not any one Linux teardown call.
 ```
 
 ## Core Architecture

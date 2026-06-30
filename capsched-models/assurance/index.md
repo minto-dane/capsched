@@ -68,6 +68,7 @@ Model-supported areas:
 - QueueControl and RepresentorForward separation
 - modern NIC queue revoke/drain/quarantine semantics
 - VF IRQ revoke ownership and synchronization-exception semantics
+- monitor IRQ route invalidation receipt semantics
 
 Prototype-evidenced areas:
 
@@ -112,6 +113,12 @@ VF IRQ revoke model:
   completion after revoke, reassignment without owner-specific IRQ quiescence,
   host-owned reassignment without synchronize_irq(), and monitor-owned
   reassignment without monitor invalidation.
+
+Monitor IRQ route invalidation model:
+  safe TLC passed with 14 generated states and 12 distinct states. Unsafe
+  configs produced expected counterexamples for unsafe interrupt override,
+  stale eventfd delivery, reassignment without receipt, receipt without IEC
+  flush, receipt with posted state, and receipt with eventfd still live.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
