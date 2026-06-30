@@ -92,23 +92,24 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call schema compatibility gate. Analysis/0075 and formal/0052 define
-  DirectCallSemanticSchema-v0 as a semantic candidate, schema objects,
-  negotiation acceptance rules, field criticality, canonical digest/replay
-  binding, downgrade rejection, response/ledger schema requirements, error
-  namespace categories, and carrier-neutral schema namespaces for future ring
-  compatibility. Validation/0074 safe TLC passed with 37 generated states, 28
-  distinct states, and depth 14; unsafe configs reject caller minimum
-  downgrade, critical optional ignore, direct-only schema namespace, ignored
-  optional authority, missing required feature, monitor minimum downgrade,
-  stripped safety feature, incompatible response/ledger schemas, shadow from
-  unsupported response, transport observation as receipt, unknown mandatory
-  accept, unknown success code, and unsupported schema accept.
+  Direct-call attachment/readiness gate. Analysis/0076 and formal/0053 define
+  the no-code Linux/monitor attachment boundary for direct-call carrier
+  readiness: candidate attachment rows, monitor responsibilities, safety flags,
+  inert stub constraints, failure-injection containment, trace/source
+  observability, and future ring compatibility. Implementation/0008 records
+  that no Linux behavior-changing patch is approved. Validation/0075 safe TLC
+  passed with 11 generated states, 10 distinct states, and depth 10; unsafe
+  configs reject missing row coverage, authority claims, monitor verification,
+  behavior change, user ABI, public tracepoint ABI, protection claims,
+  authorizing or behavior-changing stubs, probe authority, Linux ledger/
+  response minting, shadow refresh from timeout or return code, live
+  fault-injection effects, raw handle exposure, and direct-only
+  ring-incompatible namespaces.
 
 next focused risk:
-  Define a no-code direct-call Linux/monitor attachment and readiness map for
-  the schema-compatible carrier boundary before any Linux stub, monitor
-  implementation, or binary layout is selected.
+  Define the direct-call no-code trace/source inventory runner contract and
+  validation plan for existing Linux source/tracing anchors, without adding
+  Linux code or public tracepoints.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

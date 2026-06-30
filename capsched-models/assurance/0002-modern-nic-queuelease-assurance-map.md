@@ -119,6 +119,9 @@ validation/0073-direct-call-carrier-requirements-tlc.md
 
 formal/0052-direct-call-schema-compatibility-model/
 validation/0074-direct-call-schema-compatibility-tlc.md
+
+formal/0053-direct-call-attachment-readiness-model/
+validation/0075-direct-call-attachment-readiness-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -150,6 +153,7 @@ analysis/0072-monitor-owned-ring-refinement-sketch.md
 analysis/0073-combined-admission-carriers-plan.md
 analysis/0074-direct-call-carrier-requirements.md
 analysis/0075-direct-call-schema-compatibility.md
+analysis/0076-direct-call-attachment-readiness.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -173,6 +177,7 @@ analysis/monitor-owned-ring-refinement-sketch-v1.json
 analysis/combined-admission-carriers-plan-v1.json
 analysis/direct-call-carrier-requirements-v1.json
 analysis/direct-call-schema-compatibility-v1.json
+analysis/direct-call-attachment-readiness-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -188,8 +193,10 @@ validation/0071-monitor-owned-ring-refinement-tlc.md
 validation/0072-combined-admission-carriers-tlc.md
 validation/0073-direct-call-carrier-requirements-tlc.md
 validation/0074-direct-call-schema-compatibility-tlc.md
+validation/0075-direct-call-attachment-readiness-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
+implementation/0008-direct-call-attachment-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
 validation/run-local-domain-device-lease-observation-contract.sh
 ```
@@ -351,6 +358,14 @@ DirectCallSchemaCompatibility:
   fields, critical unknown optional fields, missing required features, stripped
   safety features, incompatible response/ledger/error schemas, unknown success
   codes, transport observations as receipts, and direct-only schema namespaces.
+
+DirectCallAttachmentReadiness:
+  direct-call Linux/monitor attachment rows are allowed only as no-code
+  observation or inert readiness planning. They must not change behavior, mint
+  Linux-owned ledger rows or response handles, refresh shadow state from
+  timeout or return code, expose raw handles, create ABI, claim monitor
+  verification, claim protection, or create a direct-only namespace that cannot
+  refine into the future monitor-owned ring.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -1009,6 +1024,7 @@ DEV-001 modern NIC refinement:
   model-supported for LocalDomainDeviceLease admission failure and revoke
   ordering semantics
   model-supported for local monitor admission interface boundary semantics
+  model-supported for no-code direct-call attachment readiness
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -1046,6 +1062,10 @@ failure-mode and revoke-ordering refinement for root-management/local monitor
 admission before any monitor ABI or Linux stub is selected
 local monitor admission interface boundary refinement before choosing monitor
 ABI, Linux service-domain stubs, or typed endpoint carriers
+direct-call no-code trace/source inventory planning that preserves
+observation_only=true, behavior_change=false, authority_claim=false,
+monitor_verified=false, public_tracepoint_abi=false, user_abi=false, and
+protection_claim=false
 ```
 
 Still forbidden:
@@ -1065,6 +1085,9 @@ raw PF/VF/IOMMU/MSI/devlink authority exposed to target Domains
 audit-only monitor calls after Linux side effects
 using ClusterLease text, scheduler placement, service-domain admission, Linux
 PCI/devlink/IOMMU registration, or tracefs observation as LocalDomainDeviceLease
+using direct-call attachment rows, trace/source inventory, inert stubs,
+timeouts, or Linux-visible shadows as authority, ABI selection, monitor
+verification, or protection evidence
 per-packet monitor traps as the normal data path
 ```
 
@@ -1098,10 +1121,14 @@ A behavior-changing prototype is not allowed until it has at least:
     the monitor slow path
 12. HyperTag readiness gate proof that probes/stubs are observation-only,
     coverage-complete, inert, raw-endpoint-free, and not protection evidence
-13. review of the LocalDomainDeviceLease external gap before any distributed
+13. direct-call attachment-readiness proof that no-code rows and inert stubs
+    cannot authorize, change behavior, mint Linux ledger/response state,
+    refresh shadow state from timeout or return code, expose raw handles, create
+    user/public tracepoint ABI, claim monitor verification, or claim protection
+14. review of the LocalDomainDeviceLease external gap before any distributed
     lease or cluster-local monitor claim; ClusterLease, scheduler placement,
     service admission, Linux device registration, and tracefs observation are
     not LocalDomainDeviceLease authority
-14. clear statement that Linux-only evidence is compatibility/prototype
+15. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

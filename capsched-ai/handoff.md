@@ -90,24 +90,24 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call schema compatibility gate. Analysis/0075 defines
-  DirectCallSemanticSchema-v0 as a semantic candidate, schema objects,
-  negotiation acceptance rules, mandatory/optional/forbidden field handling,
-  canonical digest/replay binding, downgrade rejection, response schema fields,
-  ledger schema fields, error namespace categories, and ring-forward
-  compatibility. Formal/0052 plus validation/0074 safe TLC passed with 37
-  generated states, 28 distinct states, and depth 14. Unsafe configs reject
-  caller minimum downgrade, critical optional ignore, direct-only schema
-  namespace, ignored optional authority, missing required feature, monitor
-  minimum downgrade, stripped required safety feature, incompatible response/
-  ledger schemas, shadow from unsupported response, transport observation as
-  receipt, unknown mandatory accept, unknown success code, and unsupported
-  schema accept.
+  Direct-call attachment/readiness gate. Analysis/0076 defines no-code
+  Linux/monitor attachment rows, monitor-side responsibilities, readiness
+  safety flags, inert stub constraints, failure-injection boundaries,
+  trace/source observability, and future ring compatibility for the
+  schema-compatible direct-call carrier boundary. Implementation/0008 records
+  that no Linux behavior-changing patch is approved. Formal/0053 plus
+  validation/0075 safe TLC passed with 11 generated states, 10 distinct states,
+  and depth 10. Unsafe configs reject missing row coverage, authority claims,
+  monitor verification claims, behavior changes, user ABI, public tracepoint
+  ABI, protection claims, authorizing or behavior-changing stubs, probe
+  authority, Linux ledger/response minting, shadow refresh from timeout or
+  return code, live fault-injection effects, raw handle exposure, and
+  direct-only ring-incompatible namespaces.
 
 next focused risk:
-  Define a no-code direct-call Linux/monitor attachment and readiness map for
-  the schema-compatible carrier boundary before any Linux stub, monitor
-  implementation, or binary layout is selected.
+  Define the direct-call no-code trace/source inventory runner contract and
+  validation plan for existing Linux source/tracing anchors, without adding
+  Linux code or public tracepoints.
 ```
 
 That focused VF IRQ model is now checked:

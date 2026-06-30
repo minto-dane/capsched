@@ -31,6 +31,7 @@
     "combined_admission_carriers": "model_checked",
     "direct_call_carrier_requirements": "model_checked",
     "direct_call_schema_compatibility": "model_checked",
+    "direct_call_attachment_readiness": "model_checked_readiness_only",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -820,6 +821,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks schema compatibility constraints for unsupported schema rejection, monitor/caller minimum downgrade rejection, mandatory/critical optional fields, ignored optional non-authority, required features, safety-feature downgrade rejection, response/ledger compatibility, unknown success rejection, transport non-authority, and carrier-neutral schema namespace; it is not numeric schema assignment, binary encoding, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-053",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0076-direct-call-attachment-readiness.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines no-code direct-call Linux/monitor attachment rows, monitor responsibilities, readiness safety flags, inert stub constraints, failure-injection boundaries, and ring compatibility requirements; it is not a Linux patch, monitor implementation, binary ABI, user ABI, public tracepoint ABI, behavior change, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-054",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0075-direct-call-attachment-readiness-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks no-code direct-call attachment-readiness constraints and rejects missing row coverage, authority claims, monitor verification claims, behavior changes, user ABI, public tracepoint ABI, protection claims, authorizing or behavior-changing stubs, probe authority, Linux ledger/response minting, shadow refresh from timeout, live fault-injection effects, raw handle exposure, and direct-only ring incompatibility; it is not implementation, performance, liveness, or protection evidence."
     }
   ],
   "subclaims": [
@@ -1065,7 +1102,8 @@
     "monitor-owned ring refinement sketch before binary layout, Linux stub, or monitor implementation",
     "combined direct-call plus monitor-owned-ring carrier plan before binary layout, Linux stub, or monitor implementation",
     "direct-call carrier requirements gate before binary layout, Linux stub, or monitor implementation",
-    "direct-call semantic schema compatibility gate before binary layout, Linux stub, or monitor implementation"
+    "direct-call semantic schema compatibility gate before binary layout, Linux stub, or monitor implementation",
+    "direct-call no-code attachment-readiness gate before Linux stub, monitor implementation, binary layout, user ABI, public tracepoint ABI, or protection claim"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",
@@ -1085,6 +1123,7 @@
     "carrier-local replay namespace, receipt ledger, shadow generation, or fallback success as admission authority",
     "direct-call carrier selection, Linux timeout, or carrier sequence number as monitor approval or replay authority",
     "unsupported schema, schema downgrade, unknown mandatory field, unknown success code, or transport observation as admission authority",
+    "direct-call attachment rows, trace/source inventory, inert stubs, timeouts, or Linux-visible shadows as authority, ABI selection, monitor verification, or protection evidence",
     "per-packet monitor traps as the normal data path"
   ]
 }

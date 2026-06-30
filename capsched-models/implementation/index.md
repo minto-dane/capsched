@@ -39,6 +39,11 @@ Candidate implementation plans:
   - Purpose: define the observation-only probe and inert-stub gate for the
     monitor-backed modern NIC path before any behavior-changing QueueLease,
     DMA, IRQ, VF, representor, offload, or service-work enforcement.
+- `0008-direct-call-attachment-readiness-gate.md`
+  - Status: proposed gate, no Linux patch approved yet.
+  - Purpose: define the no-code Linux/monitor attachment-readiness gate before
+    any direct-call carrier, monitor implementation, binary ABI, public
+    tracepoint ABI, user ABI, or production protection claim.
 
 Validated formal inputs:
 
@@ -85,6 +90,11 @@ Validated formal inputs:
   - Status: checked with two TLC runs.
   - Pressure: queue submit, DMA mapping, IRQ delivery, epoch, and budget are
     one lease boundary; Linux shadow queue/IOMMU state is not authority.
+- `formal/0053-direct-call-attachment-readiness-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: direct-call readiness must remain observation-only and inert;
+    Linux-side probes, stubs, timeouts, shadows, or source rows cannot become
+    authority, monitor verification, ABI, behavior change, or protection.
 
 Known future branch names:
 
@@ -112,6 +122,6 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  no-code trace run plan using existing scheduler tracepoints and dynamic
-  ftrace before any Slice 0C Linux patch
+  no-code direct-call trace/source inventory using existing source anchors and
+  tracing before any direct-call carrier or public tracepoint patch
 ```

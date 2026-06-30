@@ -98,6 +98,11 @@ Model-supported areas:
   Linux service Domain carriage, monitor-only response minting, replay
   rejection, failure termination, receipt-gated endpoint delivery, revoke
   completion ordering, and raw-handle non-exposure
+- direct-call attachment/readiness semantics, including no-code Linux/monitor
+  attachment rows, observation-only status, inert stub constraints, failure
+  injection containment, schema/ledger/shadow/ring references, and explicit
+  rejection of authority, monitor verification, ABI, behavior-change, and
+  protection claims
 
 Prototype-evidenced areas:
 
@@ -368,6 +373,19 @@ Direct-call schema compatibility gate:
   Linux stub, monitor implementation, performance, liveness, or protection
   evidence.
 
+Direct-call attachment readiness gate:
+  analysis/0076 and validation/0075 define and check the no-code Linux/monitor
+  attachment-readiness boundary for direct-call carrier work. Safe TLC passed
+  with 11 generated states, 10 distinct states, and depth 10. Unsafe configs
+  produced expected counterexamples for missing row coverage, authority claims,
+  monitor verification claims, behavior changes, user ABI, public tracepoint
+  ABI, protection claims, authorizing or behavior-changing stubs, probes as
+  authority, Linux ledger/response minting, shadow refresh from timeout or
+  return code, live fault-injection effects, raw handle exposure, and
+  direct-only ring-incompatible namespaces. This is no-code readiness evidence
+  only, not a Linux patch, monitor implementation, binary ABI, user ABI, public
+  tracepoint ABI, performance, liveness, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -387,6 +405,9 @@ Forbidden:
   Do not treat root-management ClusterLease text, scheduler placement,
   service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs
   observation as a LocalDomainDeviceLease.
+  Do not treat direct-call attachment rows, probes, inert stubs, trace runners,
+  Linux timeouts, Linux-visible shadows, or schema coverage as monitor
+  authority, behavior approval, ABI selection, or protection evidence.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

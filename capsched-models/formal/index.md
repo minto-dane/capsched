@@ -58,6 +58,7 @@ Updated: 2026-06-30
 | 0050 | Checked with safe pass and expected unsafe counterexamples | Combined Admission Carriers Model |
 | 0051 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Carrier Requirements Model |
 | 0052 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Schema Compatibility Model |
+| 0053 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Attachment Readiness Model |
 
 ## Planned
 

@@ -80,6 +80,7 @@ Updated: 2026-06-30
 | 0072 | Safe model passed; unsafe models produced expected counterexamples | Combined Admission Carriers TLC |
 | 0073 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Carrier Requirements TLC |
 | 0074 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Schema Compatibility TLC |
+| 0075 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Attachment Readiness TLC |
 
 ## Principles
 

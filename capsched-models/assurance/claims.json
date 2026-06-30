@@ -255,7 +255,9 @@
         "E-DEV-MNIC-049",
         "E-DEV-MNIC-050",
         "E-DEV-MNIC-051",
-        "E-DEV-MNIC-052"
+        "E-DEV-MNIC-052",
+        "E-DEV-MNIC-053",
+        "E-DEV-MNIC-054"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -619,7 +621,9 @@
         "E-DEV-MNIC-049",
         "E-DEV-MNIC-050",
         "E-DEV-MNIC-051",
-        "E-DEV-MNIC-052"
+        "E-DEV-MNIC-052",
+        "E-DEV-MNIC-053",
+        "E-DEV-MNIC-054"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1387,6 +1391,26 @@
       "limitation": "Finite model checks schema compatibility constraints for unsupported schema rejection, monitor/caller minimum downgrade rejection, mandatory/critical optional field handling, ignored optional non-authority, required feature coverage, safety-feature downgrade rejection, response/ledger compatibility, unknown success rejection, transport non-authority, and carrier-neutral schema namespace; it is not numeric schema assignment, binary encoding, implementation, performance, liveness, or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-053",
+      "kind": "analysis_attachment_readiness",
+      "record": "capsched-models/analysis/0076-direct-call-attachment-readiness.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines no-code direct-call Linux/monitor attachment rows, monitor responsibilities, readiness safety flags, inert stub constraints, failure-injection boundaries, and ring compatibility requirements; it is not a Linux patch, monitor implementation, binary ABI, user ABI, public tracepoint ABI, behavior change, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-054",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0075-direct-call-attachment-readiness-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks no-code attachment-readiness constraints and rejects authority claims, monitor verification claims, behavior changes, user ABI, public tracepoint ABI, protection claims, authorizing or behavior-changing stubs, probe authority, Linux ledger/response minting, shadow refresh from timeout, live fault-injection effects, raw handle exposure, and direct-only ring incompatibility; it is not implementation, performance, liveness, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1477,6 +1501,7 @@
     "Combined direct-call plus monitor-owned-ring carrier planning permits separate replay namespaces, carrier-local receipt ledgers, carrier-local shadow generations, duplicate fallback success, or one-carrier revoke completion.",
     "Direct-call carrier requirements select a binary ABI, permit validation before bounded monitor copy/freeze, treat Linux timeout as monitor terminality, or create direct-only replay, ledger, or shadow namespaces.",
     "Direct-call schema compatibility permits unsupported schema acceptance, downgrade of monitor/caller minimums, unknown mandatory fields, unknown success codes, transport observations as receipts, or direct-only schema namespaces.",
+    "Direct-call attachment readiness permits behavior change, user ABI, public tracepoint ABI, Linux ledger/response minting, Linux shadow refresh from timeout or return code, probe/stub authority, raw handle exposure, monitor verification claims, or protection claims.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1564,7 +1589,9 @@
         "E-DEV-MNIC-049",
         "E-DEV-MNIC-050",
         "E-DEV-MNIC-051",
-        "E-DEV-MNIC-052"
+        "E-DEV-MNIC-052",
+        "E-DEV-MNIC-053",
+        "E-DEV-MNIC-054"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1581,13 +1608,15 @@
         "Monitor-owned ring refinement sketch before binary layout or implementation.",
         "Combined direct-call plus monitor-owned-ring carrier plan before binary layout or implementation.",
         "Direct-call carrier requirements gate before binary layout or implementation.",
-        "Direct-call semantic schema compatibility gate before binary layout or implementation."
+        "Direct-call semantic schema compatibility gate before binary layout or implementation.",
+        "Direct-call no-code attachment readiness gate before Linux stub, monitor implementation, binary layout, user ABI, public tracepoint ABI, or protection claim."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",
         "Probe or stub treated as authority.",
         "Readiness evidence described as protection evidence.",
-        "ClusterLease, scheduler placement, service admission, Linux device registration, or tracefs observation treated as LocalDomainDeviceLease authority."
+        "ClusterLease, scheduler placement, service admission, Linux device registration, or tracefs observation treated as LocalDomainDeviceLease authority.",
+        "Direct-call attachment rows, trace/source inventory, inert stubs, timeouts, or Linux-visible shadows treated as monitor authority, behavior approval, ABI selection, or protection evidence."
       ]
     },
     {
