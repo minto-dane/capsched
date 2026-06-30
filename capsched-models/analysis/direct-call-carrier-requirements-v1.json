@@ -1,0 +1,229 @@
+{
+  "id": "direct-call-carrier-requirements-v1",
+  "analysis": "0074-direct-call-carrier-requirements",
+  "status": "draft_implementation_facing_carrier_requirements_with_model_gate",
+  "date": "2026-06-30",
+  "recommended_first_carrier": "direct-call reference carrier",
+  "non_goals": [
+    "binary field packing",
+    "endianness",
+    "alignment",
+    "C struct definitions",
+    "syscall number",
+    "VMX/EL2/SMC/HVC mechanism",
+    "register convention",
+    "shared page layout",
+    "cryptographic handle format",
+    "Linux source file placement",
+    "monitor source tree",
+    "performance budget",
+    "production protection claim"
+  ],
+  "carrier_selection": {
+    "direct_call": [
+      "reference_control_carrier",
+      "low_volume_query_revoke_ring_health_operations",
+      "implementation_bringup_carrier"
+    ],
+    "monitor_owned_ring": [
+      "later_high_throughput_carrier",
+      "admission_bursts",
+      "batchable_derived_receipt_minting"
+    ],
+    "forbidden": [
+      "direct_call_emergency_path_bypasses_replay_or_budget_checks",
+      "ring_future_compatibility_weakens_direct_call_requirements",
+      "carrier_kind_in_authority_replay_namespace",
+      "carrier_selection_result_treated_as_monitor_approval"
+    ]
+  },
+  "request_envelope_semantic_groups": {
+    "version": [
+      "abi_version",
+      "request_class",
+      "request_flags",
+      "declared_semantic_length",
+      "field_presence_or_typed_null_map"
+    ],
+    "freshness": [
+      "request_id",
+      "request_nonce",
+      "replay_window_id",
+      "expected_monitor_epoch"
+    ],
+    "cluster_local_authority": [
+      "monitor_id",
+      "cluster_lease_id",
+      "cluster_epoch",
+      "root_management_epoch",
+      "node_id",
+      "local_lease_id",
+      "local_lease_epoch"
+    ],
+    "caller_service_target": [
+      "caller_domain_id",
+      "caller_domain_epoch",
+      "service_domain_id",
+      "service_domain_epoch",
+      "target_domain_id",
+      "target_domain_epoch"
+    ],
+    "device_resource": [
+      "device_root_id",
+      "device_root_epoch",
+      "requested_receipt_classes",
+      "requested_revoke_scope",
+      "budget_charge_class"
+    ],
+    "canonicalization": [
+      "request_digest_or_monitor_computed_digest",
+      "payload_schema_id",
+      "payload_semantic_generation"
+    ]
+  },
+  "request_envelope_properties": [
+    "bounded_monitor_copy",
+    "no_unbounded_linux_pointer_chasing",
+    "no_semantic_dependence_on_c_padding",
+    "no_implicit_ambient_defaults",
+    "typed_nulls_for_irrelevant_fields",
+    "unknown_request_classes_fail_closed",
+    "unknown_mandatory_fields_fail_closed",
+    "unsupported_optional_fields_ignored_only_if_explicitly_marked_optional"
+  ],
+  "copy_freeze_order": [
+    "linux_places_request_in_linux_visible_carrier_memory",
+    "monitor_entry_begins",
+    "monitor_bounds_checks_declared_length_against_maximum_class_length",
+    "monitor_copies_request_bytes_into_monitor_owned_image",
+    "monitor_canonicalizes_typed_fields_from_copied_image",
+    "monitor_computes_or_verifies_request_digest_over_canonical_semantics",
+    "monitor_validates_fields_epochs_policy_and_replay",
+    "linux_post_copy_mutation_cannot_affect_decision"
+  ],
+  "replay_key_minimum_fields": [
+    "monitor_id",
+    "monitor_epoch",
+    "replay_window_id",
+    "request_nonce",
+    "request_class",
+    "canonical_request_digest",
+    "local_lease_id",
+    "local_lease_epoch",
+    "service_domain_id",
+    "service_domain_epoch",
+    "target_domain_id",
+    "target_domain_epoch",
+    "device_root_id",
+    "device_root_epoch"
+  ],
+  "replay_requirements": [
+    "same_nonce_same_authority_scope_at_most_one_success",
+    "same_nonce_different_canonical_digest_terminal_failure_or_replay_mismatch",
+    "carrier_local_sequence_numbers_are_audit_metadata_only"
+  ],
+  "ledger_row_semantic_fields": [
+    "ledger_row_id",
+    "ledger_row_epoch",
+    "attempt_id",
+    "attempt_epoch",
+    "request_class",
+    "canonical_request_digest",
+    "replay_key_or_replay_result",
+    "response_class",
+    "terminal_failure_reason",
+    "receipt_id_set",
+    "receipt_epoch_set",
+    "shadow_generation",
+    "revoke_epoch",
+    "carrier_kind_for_audit",
+    "budget_charge_result",
+    "monitor_epoch"
+  ],
+  "response_handle_semantics": [
+    "monitor_sealed_or_monitor_queryable_reference",
+    "ledger_row_id",
+    "ledger_row_epoch",
+    "attempt_id",
+    "attempt_epoch",
+    "response_class",
+    "replay_result",
+    "receipt_class_summary",
+    "shadow_generation",
+    "monitor_epoch",
+    "revoke_epoch_where_relevant",
+    "carrier_kind_for_audit_only"
+  ],
+  "terminal_monitor_outcomes": [
+    "malformed_request",
+    "unsupported_abi_version",
+    "unknown_request_class",
+    "field_presence_or_type_mismatch",
+    "stale_monitor_epoch",
+    "stale_cluster_or_root_epoch",
+    "stale_service_domain_epoch",
+    "stale_target_domain_epoch",
+    "stale_device_root_epoch",
+    "stale_local_lease_epoch",
+    "replay_rejected",
+    "same_nonce_digest_mismatch",
+    "policy_denied",
+    "budget_denied",
+    "revoke_in_progress",
+    "cancelled_by_monitor",
+    "superseded_by_monitor"
+  ],
+  "transport_observations": [
+    "linux_timeout",
+    "linux_buffer_fault_before_monitor_copy",
+    "carrier_unavailable_before_monitor_entry",
+    "local_retry_before_monitor_attempt"
+  ],
+  "shadow_allowed_sources": [
+    "response_handle_backed_by_monitor_ledger_row",
+    "monitor_receipt_query",
+    "monitor_shadow_generation",
+    "monitor_revoke_query"
+  ],
+  "shadow_forbidden_sources": [
+    "request_buffer",
+    "direct_call_return_code_without_ledger_reference",
+    "linux_timeout",
+    "carrier_local_sequence",
+    "future_ring_slot_generation"
+  ],
+  "control_lane_operations": [
+    "query_receipt",
+    "query_shadow_generation",
+    "start_revoke",
+    "cancel_or_supersede_possible_in_flight_attempt",
+    "query_carrier_health",
+    "query_ring_state_once_ring_exists"
+  ],
+  "forward_compatible_ring_constraints": [
+    "carrier_kind_is_audit_metadata_only",
+    "attempt_ids_are_monitor_owned_and_carrier_neutral",
+    "replay_namespace_is_carrier_neutral",
+    "ledger_row_shape_is_carrier_neutral",
+    "shadow_generation_is_carrier_neutral",
+    "error_classes_distinguish_monitor_terminality_from_transport_observations",
+    "timeout_remains_unknown_until_monitor_state_resolves_it",
+    "ring_claim_equivalent_to_direct_monitor_entry_for_attempt_creation",
+    "ring_frozen_slot_image_equivalent_to_direct_monitor_copied_image"
+  ],
+  "invariants": [
+    "no_validation_from_linux_mutable_memory",
+    "no_monitor_decision_before_bounded_copy_freeze",
+    "no_request_success_from_carrier_selection_alone",
+    "no_success_without_canonical_monitor_attempt",
+    "no_success_without_shared_replay_consume",
+    "no_same_nonce_different_digest_success",
+    "no_response_handle_without_monitor_ledger_state",
+    "no_shadow_refresh_without_monitor_ledger_query_and_shared_shadow_generation",
+    "no_linux_timeout_as_terminal_monitor_failure",
+    "no_transport_observation_as_receipt_authority",
+    "no_control_revoke_priority_bypass_of_replay_budget_or_epoch_checks",
+    "no_carrier_local_sequence_number_as_replay_authority",
+    "no_future_ring_incompatibility_from_direct_call_only_replay_ledger_or_shadow_namespaces"
+  ]
+}

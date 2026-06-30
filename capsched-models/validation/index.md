@@ -78,6 +78,7 @@ Updated: 2026-06-30
 | 0070 | Safe model passed; unsafe models produced expected counterexamples | Direct Call Reference ABI TLC |
 | 0071 | Safe model passed; unsafe models produced expected counterexamples | Monitor-Owned Ring Refinement TLC |
 | 0072 | Safe model passed; unsafe models produced expected counterexamples | Combined Admission Carriers TLC |
+| 0073 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Carrier Requirements TLC |
 
 ## Principles
 

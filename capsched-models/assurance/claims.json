@@ -251,7 +251,9 @@
         "E-DEV-MNIC-045",
         "E-DEV-MNIC-046",
         "E-DEV-MNIC-047",
-        "E-DEV-MNIC-048"
+        "E-DEV-MNIC-048",
+        "E-DEV-MNIC-049",
+        "E-DEV-MNIC-050"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -611,7 +613,9 @@
         "E-DEV-MNIC-045",
         "E-DEV-MNIC-046",
         "E-DEV-MNIC-047",
-        "E-DEV-MNIC-048"
+        "E-DEV-MNIC-048",
+        "E-DEV-MNIC-049",
+        "E-DEV-MNIC-050"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1339,6 +1343,26 @@
       "limitation": "Finite model checks combined-carrier constraints for monitor-owned attempt ids, shared replay, shared ledger, shared shadow generation, duplicate fallback success, response-without-ledger, epoch split, revoke across both carriers, and ring-full non-authority; it is not ABI layout, implementation, performance, liveness, or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-049",
+      "kind": "analysis_direct_call_carrier_requirements",
+      "record": "capsched-models/analysis/0074-direct-call-carrier-requirements.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines implementation-facing direct-call carrier requirements for request envelope groups, bounded copy/freeze, replay key fields, ledger row semantics, response handle semantics, error classes, shared shadow generation, control lane behavior, and future ring compatibility; it is not binary ABI layout, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-050",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0073-direct-call-carrier-requirements-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks direct-call carrier requirements for bounded copy-before-validation, carrier selection non-authority, replay-before-ledger, same-nonce digest mismatch, response ledger backing, shared shadow generation, timeout non-terminality, transport non-authority, control priority non-bypass, carrier sequence non-replay authority, and carrier-neutral namespaces; it is not binary ABI layout, implementation, performance, liveness, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1427,6 +1451,7 @@
     "A direct-call reference ABI sketch is a selected binary ABI, Linux stub, monitor implementation, performance result, or production protection proof.",
     "Monitor-owned ring refinement permits Linux ring slots, Linux response publication, Linux-only slot generations, or ring-full/drop accounting to become authority.",
     "Combined direct-call plus monitor-owned-ring carrier planning permits separate replay namespaces, carrier-local receipt ledgers, carrier-local shadow generations, duplicate fallback success, or one-carrier revoke completion.",
+    "Direct-call carrier requirements select a binary ABI, permit validation before bounded monitor copy/freeze, treat Linux timeout as monitor terminality, or create direct-only replay, ledger, or shadow namespaces.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1510,7 +1535,9 @@
         "E-DEV-MNIC-045",
         "E-DEV-MNIC-046",
         "E-DEV-MNIC-047",
-        "E-DEV-MNIC-048"
+        "E-DEV-MNIC-048",
+        "E-DEV-MNIC-049",
+        "E-DEV-MNIC-050"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1525,7 +1552,8 @@
         "Direct-call versus monitor-owned-ring implementation-facing sketch comparison.",
         "Direct-call reference ABI sketch before binary layout or implementation.",
         "Monitor-owned ring refinement sketch before binary layout or implementation.",
-        "Combined direct-call plus monitor-owned-ring carrier plan before binary layout or implementation."
+        "Combined direct-call plus monitor-owned-ring carrier plan before binary layout or implementation.",
+        "Direct-call carrier requirements gate before binary layout or implementation."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

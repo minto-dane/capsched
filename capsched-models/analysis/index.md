@@ -79,6 +79,7 @@ Updated: 2026-06-30
 | 0071 | Draft reference ABI sketch with model gate | Direct-Call Reference ABI Sketch |
 | 0072 | Draft throughput refinement sketch with model gate | Monitor-Owned Ring Refinement Sketch |
 | 0073 | Draft combined carrier plan with model gate | Combined Direct-Call and Ring Admission Carrier Plan |
+| 0074 | Draft implementation-facing carrier requirements with model gate | Direct-Call Carrier Requirements Gate |
 
 ## Planned Analysis Notes
 
@@ -122,3 +123,4 @@ Updated: 2026-06-30
 | `direct-call-reference-abi-sketch-v1.json` | Draft reference ABI sketch | Machine-readable direct-call reference semantics for monitor entry, request copy, replay, ledger, response handle, shadow refresh, and revoke |
 | `monitor-owned-ring-refinement-sketch-v1.json` | Draft throughput refinement sketch | Machine-readable monitor-owned ring refinement semantics for slot claim, slot epochs, batch boundaries, response publication, drain, and DoS accounting |
 | `combined-admission-carriers-plan-v1.json` | Draft combined carrier plan | Machine-readable direct-call plus monitor-owned-ring admission carrier semantics for shared attempt, replay, ledger, shadow, fallback, and revoke ordering |
+| `direct-call-carrier-requirements-v1.json` | Draft implementation-facing requirements | Machine-readable direct-call carrier requirements for request envelopes, bounded copy, replay keys, ledger rows, response handles, errors, shadow generation, control lane, and future ring compatibility |

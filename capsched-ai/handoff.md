@@ -90,24 +90,25 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Combined direct-call plus monitor-owned-ring admission carrier plan.
-  Analysis/0073 defines canonical monitor-owned admission attempts, shared
-  replay namespace, shared receipt ledger, shared shadow generation, fallback
-  semantics including timeout-as-unknown and monitor-mediated query/cancel/
-  supersede after possible ring claim, carrier selection guidance, revoke
-  latency requirements, and revoke ordering across both carriers. Formal/0050
-  plus validation/0072 safe TLC passed with 52 generated states, 46 distinct
-  states, and depth 17. Unsafe configs reject carrier-local attempt ids,
-  carrier-local ledgers, carrier-local shadow generations, duplicate direct/
-  ring fallback success, carrier/ledger epoch split, response without shared
-  ledger, revoke stopping only one carrier, revoke complete with direct
-  in-flight calls, revoke complete with ring pending state, ring-full
-  accounting as monitor failure, and separate carrier-local replay.
+  Direct-call carrier requirements gate. Analysis/0074 defines direct-call
+  reference-first carrier selection, request envelope semantic groups, bounded
+  monitor copy/freeze, replay key requirements, ledger row semantics, response
+  handle semantics, terminal monitor error classes versus transport
+  observations, shared shadow generation, control/revoke lane requirements, and
+  future ring compatibility through carrier-neutral replay/ledger/shadow
+  namespaces. Formal/0051 plus validation/0073 safe TLC passed with 26
+  generated states, 22 distinct states, and depth 20. Unsafe configs reject
+  carrier selection as approval, carrier sequence as replay authority, control
+  priority bypass, direct-only namespaces, ledger before replay, response
+  without ledger, same-nonce different-digest success, shadow without shared
+  generation, success without canonical attempt, Linux timeout as monitor
+  failure, transport observation as receipt, and validation before bounded
+  copy/freeze.
 
 next focused risk:
-  Define implementation-facing ABI layout and carrier-selection requirements
-  for the first concrete local monitor admission carrier, likely direct-call
-  reference first, without selecting binary packing or implementing code.
+  Define the direct-call semantic schema candidate and version/fail-closed
+  compatibility rules before binary packing, Linux stub, monitor
+  implementation, or ring layout selection.
 ```
 
 That focused VF IRQ model is now checked:

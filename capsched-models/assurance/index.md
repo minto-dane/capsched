@@ -339,6 +339,20 @@ Combined admission carrier plan:
   semantics only, not ABI layout, implementation, performance, liveness, or
   protection evidence.
 
+Direct-call carrier requirements gate:
+  analysis/0074 and validation/0073 define and check implementation-facing
+  requirements for using direct-call as the first concrete local monitor
+  admission carrier. Safe TLC passed with 26 generated states, 22 distinct
+  states, and depth 20. Unsafe configs produced expected counterexamples for
+  carrier selection as approval, carrier sequence as replay authority, control
+  priority bypass, direct-only replay/ledger/shadow namespaces, ledger before
+  replay, response without ledger, same-nonce different-digest success, shadow
+  refresh without shared generation, success without canonical attempt, Linux
+  timeout as monitor failure, transport observation as receipt, and validation
+  before bounded copy/freeze. This is model-supported implementation-facing
+  requirements only, not binary ABI layout, C struct definition, Linux stub,
+  monitor implementation, performance, liveness, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

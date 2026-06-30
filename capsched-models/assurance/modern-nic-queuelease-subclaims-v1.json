@@ -29,6 +29,7 @@
     "direct_call_reference_abi": "model_checked",
     "monitor_owned_ring_refinement": "model_checked",
     "combined_admission_carriers": "model_checked",
+    "direct_call_carrier_requirements": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -746,6 +747,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks combined-carrier constraints for monitor-owned attempt ids, shared replay, shared ledger, shared shadow generation, duplicate fallback success, response-without-ledger, epoch split, two-carrier revoke, and ring-full non-authority; it is not ABI layout, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-049",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0074-direct-call-carrier-requirements.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines implementation-facing direct-call carrier requirements for request envelope groups, bounded copy/freeze, replay keys, ledger rows, response handles, error classes, shadow generation, control lane, and future ring compatibility; it is not binary ABI layout, implementation, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-050",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0073-direct-call-carrier-requirements-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks direct-call carrier requirements for copy-before-validation, carrier selection non-authority, replay-before-ledger, digest mismatch, response ledger backing, shared shadow generation, timeout non-terminality, transport non-authority, control priority non-bypass, carrier sequence non-authority, and carrier-neutral namespaces; it is not binary ABI layout, implementation, performance, liveness, or protection evidence."
     }
   ],
   "subclaims": [
@@ -989,7 +1026,8 @@
     "direct-call versus monitor-owned-ring carrier sketch comparison before choosing implementation-facing ABI layout",
     "direct-call reference ABI sketch before binary layout, Linux stub, or monitor implementation",
     "monitor-owned ring refinement sketch before binary layout, Linux stub, or monitor implementation",
-    "combined direct-call plus monitor-owned-ring carrier plan before binary layout, Linux stub, or monitor implementation"
+    "combined direct-call plus monitor-owned-ring carrier plan before binary layout, Linux stub, or monitor implementation",
+    "direct-call carrier requirements gate before binary layout, Linux stub, or monitor implementation"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",
@@ -1007,6 +1045,7 @@
     "raw PF/VF/IOMMU/MSI/devlink authority exposed to target Domains",
     "audit-only monitor calls after Linux side effects",
     "carrier-local replay namespace, receipt ledger, shadow generation, or fallback success as admission authority",
+    "direct-call carrier selection, Linux timeout, or carrier sequence number as monitor approval or replay authority",
     "per-packet monitor traps as the normal data path"
   ]
 }

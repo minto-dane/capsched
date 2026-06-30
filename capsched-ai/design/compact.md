@@ -92,23 +92,23 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Combined direct-call plus monitor-owned-ring admission carrier plan.
-  Analysis/0073 and formal/0050 define canonical monitor-owned admission
-  attempts, shared replay namespace, shared receipt ledger, shared shadow
-  generation, fallback terminality, timeout-as-unknown handling, carrier
-  selection guidance, revoke latency requirements, and revoke ordering across
-  both carriers. Validation/0072 safe TLC passed with 52 generated states, 46
-  distinct states, and depth 17; unsafe configs reject carrier-local attempt
-  ids, carrier-local ledgers, carrier-local shadow generations, duplicate
-  direct/ring fallback success, carrier/ledger epoch split, response without
-  shared ledger, one-carrier revoke completion, revoke with direct in-flight
-  calls, revoke with ring pending state, ring-full monitor failure, and
-  carrier-local replay.
+  Direct-call carrier requirements gate. Analysis/0074 and formal/0051 define
+  direct-call reference-first carrier selection, request envelope semantic
+  groups, bounded monitor copy/freeze, replay keys, ledger rows, response
+  handles, terminal monitor error classes versus transport observations, shared
+  shadow generation, control/revoke lane requirements, and carrier-neutral
+  namespaces for future ring compatibility. Validation/0073 safe TLC passed
+  with 26 generated states, 22 distinct states, and depth 20; unsafe configs
+  reject carrier selection as approval, carrier sequence replay authority,
+  control priority bypass, direct-only namespaces, ledger before replay,
+  response without ledger, same-nonce different-digest success, shadow without
+  shared generation, success without attempt, timeout as monitor failure,
+  transport observation as receipt, and validation before bounded copy/freeze.
 
 next focused risk:
-  Define implementation-facing ABI layout and carrier-selection requirements
-  for the first concrete local monitor admission carrier, likely direct-call
-  reference first, without selecting binary packing or implementing code.
+  Define the direct-call semantic schema candidate and version/fail-closed
+  compatibility rules before binary packing, Linux stub, monitor
+  implementation, or ring layout selection.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

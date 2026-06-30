@@ -56,6 +56,7 @@ Updated: 2026-06-30
 | 0048 | Checked with safe pass and expected unsafe counterexamples | Direct Call Reference ABI Model |
 | 0049 | Checked with safe pass and expected unsafe counterexamples | Monitor-Owned Ring Refinement Model |
 | 0050 | Checked with safe pass and expected unsafe counterexamples | Combined Admission Carriers Model |
+| 0051 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Carrier Requirements Model |
 
 ## Planned
 
