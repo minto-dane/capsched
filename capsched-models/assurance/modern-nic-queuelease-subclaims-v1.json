@@ -19,6 +19,7 @@
     "hypertag_service_split": "model_checked",
     "hypertag_readiness_gate": "model_checked_readiness_only",
     "hypertag_observation_ledger": "observation_only",
+    "local_domain_device_lease_compilation": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -376,6 +377,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Static runner emitted 37 rows with 36 available anchors, 1 expected LocalDomainDeviceLease external gap, and 0 safety flag violations; it is source observation only."
+    },
+    {
+      "id": "E-DEV-MNIC-029",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0064-local-domain-device-lease-compilation.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines the root-management/local monitor boundary for LocalDomainDeviceLease; it is not a Linux source anchor, monitor implementation, or protection claim."
+    },
+    {
+      "id": "E-DEV-MNIC-030",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0063-local-domain-device-lease-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks local monitor compilation semantics and rejects ClusterLease direct use, scheduler placement authority, service admission minting, Linux device registration authority, stale epochs, wrong service/target Domains, queue receipt before local lease, and audit-only compile; it is not monitor, driver, IOMMU, IRQ, or protection evidence."
     }
   ],
   "subclaims": [
@@ -609,7 +646,8 @@
     "VF mailbox carrier planning that names queue config, DMA ring base, IRQ route, queue budget, FDIR, async context, and revoke proofs",
     "VF epoch handoff planning that names mailbox embargo, VF epoch bump, VSI generation, QueueLease generation, DMA/IRQ receipts, FDIR context clearing, and service replay authorization",
     "HyperTag interface planning that names monitor-owned roots, service Domain policy-only authority, typed target endpoints, receipt minting, local cluster lease compilation, and no per-packet monitor trap",
-    "implementation planning that names subclaim coverage"
+    "implementation planning that names subclaim coverage",
+    "root-management/local monitor observation-contract planning for LocalDomainDeviceLease rows, including cluster epoch, local monitor epoch, service Domain, target Domain, device root, DMA MemoryView, IRQ route, root budget, compile result, and revocation status"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",
@@ -623,6 +661,7 @@
     "vf_id equality, ice_vf pointer reachability, ICE_VF_STATE_ACTIVE/DIS, lan_vsi_idx/ctrl_vsi_idx stability, or VPINT/VPLAN programming success as VF epoch handoff authority",
     "service Domain minting monitor receipts",
     "Linux DMA/IRQ state as monitor receipts",
+    "ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation as LocalDomainDeviceLease authority",
     "raw PF/VF/IOMMU/MSI/devlink authority exposed to target Domains",
     "audit-only monitor calls after Linux side effects",
     "per-packet monitor traps as the normal data path"

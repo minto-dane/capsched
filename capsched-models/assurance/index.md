@@ -83,6 +83,11 @@ Model-supported areas:
   limited to observation-only probes and inert stubs
 - modern NIC HyperTag observation-ledger source-anchor emission with readiness
   safety flags preserved
+- LocalDomainDeviceLease root-management/local monitor compilation semantics,
+  explicitly rejecting remote lease direct use, scheduler placement as
+  authority, service admission minting, Linux device registration as authority,
+  stale cluster epochs, wrong service/target Domains, queue receipt before
+  local lease, and audit-only compile
 
 Prototype-evidenced areas:
 
@@ -212,6 +217,17 @@ Modern NIC HyperTag observation ledger:
   outside upstream Linux and remains a high-severity root-management/local
   monitor compilation gap.
 
+LocalDomainDeviceLease compilation model:
+  analysis/0064 and validation/0063 resolve the N-090 missing row as an
+  external design boundary, not as a Linux source-anchor gap. Safe TLC passed
+  with 10 generated states, 9 distinct states, and depth 9. Unsafe configs
+  produced expected counterexamples for remote ClusterLease direct use,
+  scheduler placement as authority, service admission minting, Linux device
+  registration as authority, stale cluster epoch, wrong service Domain, wrong
+  target Domain, queue receipt before local lease, and audit-only compile. This
+  is model-supported semantics only, not monitor implementation or protection
+  evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -228,6 +244,9 @@ Forbidden:
   devlink handle exposure as QueueLease authority, Domain ownership, receipt
   minting, or revoke authority. Do not treat an observation probe, inert stub,
   readiness ledger, or successful readiness TLC run as production protection.
+  Do not treat root-management ClusterLease text, scheduler placement,
+  service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs
+  observation as a LocalDomainDeviceLease.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

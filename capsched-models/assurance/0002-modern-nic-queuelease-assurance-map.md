@@ -86,6 +86,9 @@ validation/0060-modern-nic-hypertag-split-tlc.md
 
 formal/0041-modern-nic-readiness-gate-model/
 validation/0061-modern-nic-readiness-gate-tlc.md
+
+formal/0042-local-domain-device-lease-model/
+validation/0063-local-domain-device-lease-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -105,6 +108,7 @@ analysis/0060-ice-vf-epoch-handoff-source-map.md
 analysis/0061-modern-nic-hypertag-interface-map.md
 analysis/0062-modern-nic-hypertag-readiness-probe-map.md
 analysis/0063-modern-nic-hypertag-observation-ledger.md
+analysis/0064-local-domain-device-lease-compilation.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -116,6 +120,7 @@ analysis/ice-vf-epoch-handoff-source-map-v1.json
 analysis/modern-nic-hypertag-interface-map-v1.json
 analysis/modern-nic-hypertag-readiness-probe-map-v1.json
 analysis/modern-nic-hypertag-observation-ledger-v1.json
+analysis/local-domain-device-lease-compilation-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -189,6 +194,13 @@ ReadinessGate:
   every required receipt/carrier maps to observation-only probes or inert stubs;
   probes and stubs are not authority, do not change behavior, do not expose raw
   endpoints, and do not justify protection claims
+
+LocalDomainDeviceLease:
+  root-management ClusterLease, scheduler placement, service Domain admission,
+  and Linux device registration are not local queue authority. The local
+  HyperTag Monitor must compile a node-local device lease before any
+  DeviceRoot, VF epoch, QueueLease, DMA, IRQ, ledger, or typed endpoint receipt
+  can be minted.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -727,6 +739,11 @@ Refinement:
   the current Linux source tree. It records 37 rows, 36 available anchors, 1
   expected missing LocalDomainDeviceLease row, 1 high-severity gap, and 0
   safety-flag violations.
+  validation/0063 models LocalDomainDeviceLease compilation. Safe TLC passes
+  only when a received ClusterLease is checked for signature, epoch, and
+  revocation, service Domain admission matches the lease, monitor-owned device
+  root binding exists, target Domain epoch and root budget are fresh, and the
+  local monitor mints the LocalDomainDeviceLease before queue/DMA/IRQ receipts.
   validation/0055 models stale XSK/page-pool completion quarantine. Safe TLC
   passes only when old XSK CQ completion, XSK free-list return, page-pool
   recycle, PageOwner transfer, packet generation reset, and queue reassignment
@@ -819,6 +836,8 @@ DEV-001 modern NIC refinement:
   model-supported for HyperTag Monitor/service Domain/target endpoint split
   semantics
   model-supported for implementation-readiness gate ordering
+  model-supported for LocalDomainDeviceLease root-management/local monitor
+  compilation semantics
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -846,6 +865,10 @@ HyperTag readiness planning that maps receipt/carrier rows to observation-only
 Linux probes or inert stubs, with authority_claim=false and behavior_change=false
 privileged no-code tracefs run using the emitted tracefs plan, if operator
 approval/root execution is available
+root-management/local monitor observation-contract planning for
+LocalDomainDeviceLease rows, including lease epoch, service/target Domain,
+device root, DMA MemoryView, IRQ route, root budget, compile result, and
+revocation status fields
 ```
 
 Still forbidden:
@@ -863,6 +886,8 @@ service Domain minting monitor receipts
 Linux DMA/IRQ state as monitor receipts
 raw PF/VF/IOMMU/MSI/devlink authority exposed to target Domains
 audit-only monitor calls after Linux side effects
+using ClusterLease text, scheduler placement, service-domain admission, Linux
+PCI/devlink/IOMMU registration, or tracefs observation as LocalDomainDeviceLease
 per-packet monitor traps as the normal data path
 ```
 
@@ -897,7 +922,9 @@ A behavior-changing prototype is not allowed until it has at least:
 12. HyperTag readiness gate proof that probes/stubs are observation-only,
     coverage-complete, inert, raw-endpoint-free, and not protection evidence
 13. review of the LocalDomainDeviceLease external gap before any distributed
-    lease or cluster-local monitor claim
+    lease or cluster-local monitor claim; ClusterLease, scheduler placement,
+    service admission, Linux device registration, and tracefs observation are
+    not LocalDomainDeviceLease authority
 14. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

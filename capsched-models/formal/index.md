@@ -47,6 +47,7 @@ Updated: 2026-06-30
 | 0039 | Checked with safe pass and expected unsafe counterexamples | VF Epoch Handoff Model |
 | 0040 | Checked with safe pass and expected unsafe counterexamples | Modern NIC HyperTag Split Model |
 | 0041 | Checked with safe pass and expected unsafe counterexamples | Modern NIC HyperTag Readiness Gate Model |
+| 0042 | Checked with safe pass and expected unsafe counterexamples | Local Domain Device Lease Model |
 
 ## Planned
 

@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "id": "local-domain-device-lease-compilation-v1",
+  "analysis": "0064-local-domain-device-lease-compilation.md",
+  "date": "2026-06-30",
+  "purpose": "Resolve the LocalDomainDeviceLease external gap by defining the root-management and local monitor compilation boundary for monitor-backed device leases.",
+  "boundary": {
+    "in_linux_upstream": false,
+    "resolved_by_tracefs": false,
+    "requires_root_management_contract": true,
+    "requires_local_monitor_compilation": true,
+    "behavior_change_approved": false,
+    "protection_claim": false
+  },
+  "objects": [
+    {
+      "id": "ClusterLease",
+      "owner": "root_management_domain",
+      "meaning": "Cluster-level policy statement for tenant, target Domain, service Domain, device, queue class, budget, and epoch.",
+      "not_authority_for": [
+        "local queue use",
+        "DMA reachability",
+        "IRQ route delivery",
+        "typed endpoint exposure"
+      ],
+      "forbidden_shortcuts": [
+        "signed text used directly",
+        "control-plane database row used directly",
+        "scheduler placement used directly",
+        "orchestrator assignment used directly"
+      ]
+    },
+    {
+      "id": "LocalDomainDeviceLease",
+      "owner": "hypertag_monitor",
+      "meaning": "Local monitor-owned root tying node, local monitor epoch, service Domain, target Domain, device root, VF/SF/queue namespace, queue classes, DMA MemoryView boundary, IRQ route namespace, root budget, and cluster lease epoch.",
+      "required_before": [
+        "DeviceRootReceipt",
+        "VfEpochReceipt",
+        "QueueLeaseReceipt",
+        "DmaMemoryViewReceipt",
+        "IrqRouteReceipt",
+        "LedgerRootReceipt",
+        "typed endpoint carrier issuance"
+      ],
+      "forbidden_shortcuts": [
+        "ClusterLease",
+        "ServiceAdmission",
+        "DeviceRootBinding",
+        "Linux PCI probe",
+        "devlink registration",
+        "IOMMU attach trace",
+        "audit-only monitor log"
+      ]
+    },
+    {
+      "id": "ServiceAdmission",
+      "owner": "root_management_domain",
+      "meaning": "Service/driver Domain selection and permission to request monitor actions for a device.",
+      "cannot_mint": [
+        "LocalDomainDeviceLease",
+        "QueueLeaseReceipt",
+        "DmaMemoryViewReceipt",
+        "IrqRouteReceipt"
+      ]
+    },
+    {
+      "id": "DeviceRootBinding",
+      "owner": "hypertag_monitor",
+      "meaning": "Monitor-owned binding for PCI RID/PASID or equivalent device identity to service Domain mediation.",
+      "forbidden_shortcuts": [
+        "PCI probe success",
+        "devlink registration",
+        "VFIO group ownership",
+        "IOMMU attach trace"
+      ]
+    }
+  ],
+  "safe_flow": [
+    "RootManagementIssueClusterLease",
+    "ReceiveClusterLeaseOnNode",
+    "MonitorCheckClusterSignatureEpochRevocation",
+    "RootManagementAdmitServiceDomain",
+    "MonitorConfirmDeviceRootBinding",
+    "MonitorCheckTargetDomainEpochAndBudget",
+    "MonitorCompileLocalDomainDeviceLease",
+    "ServiceDomainRequestDeviceReceipts",
+    "TargetDomainReceiveTypedEndpoints"
+  ],
+  "unsafe_shortcuts": [
+    "remote_cluster_lease_direct_use",
+    "scheduler_placement_as_authority",
+    "service_domain_admission_as_monitor_authority",
+    "linux_device_registration_as_monitor_authority",
+    "iommu_attach_trace_as_device_root",
+    "stale_cluster_epoch",
+    "wrong_service_domain",
+    "wrong_target_domain",
+    "queue_receipt_before_local_lease",
+    "audit_only_monitor_call"
+  ],
+  "required_observation_fields": [
+    "cluster_lease_id",
+    "cluster_epoch",
+    "root_management_epoch",
+    "node_id",
+    "local_monitor_epoch",
+    "service_domain_id",
+    "target_domain_id",
+    "device_root_id",
+    "device_root_epoch",
+    "allowed_queue_classes",
+    "dma_memoryview_policy_id",
+    "irq_route_policy_id",
+    "root_budget_id",
+    "compiled_local_lease_id",
+    "compiled_local_lease_epoch",
+    "compile_result",
+    "revocation_status",
+    "observation_only",
+    "authority_claim",
+    "monitor_verified",
+    "behavior_change",
+    "protection_claim"
+  ],
+  "pre_monitor_observation_flags": {
+    "observation_only": true,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "behavior_change": false,
+    "protection_claim": false
+  },
+  "decision": {
+    "next_non_behavior_changing_step": "root_management_local_monitor_admission_model",
+    "privileged_tracefs_run_useful_for": "Linux-side source-path visibility only",
+    "privileged_tracefs_run_not_useful_for": "LocalDomainDeviceLease authority"
+  }
+}

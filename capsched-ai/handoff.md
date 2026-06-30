@@ -64,10 +64,19 @@ latest completed risk:
   rows emitted, 36 available anchors, 1 expected LocalDomainDeviceLease gap, and
   0 safety-flag violations.
 
+latest completed risk:
+  LocalDomainDeviceLease external gap resolution. Analysis/0064 defines the
+  root-management/local monitor compilation boundary, and formal/0042 plus
+  validation/0063 model-check that ClusterLease text, scheduler placement,
+  service-domain admission, Linux device registration, stale cluster epochs,
+  wrong service/target Domains, queue receipt before local lease, and audit-only
+  monitor calls cannot stand in for a monitor-minted LocalDomainDeviceLease.
+
 next focused risk:
-  Resolve the LocalDomainDeviceLease external gap and choose the next
-  non-behavior-changing step: privileged no-code tracefs run, inert Linux
-  probe/stub proposal, or root-management/local monitor admission model.
+  Define the root-management/local monitor observation contract for
+  LocalDomainDeviceLease rows, including cluster lease epoch, local monitor
+  epoch, service Domain, target Domain, device root, DMA MemoryView, IRQ route,
+  root budget, compile result, revocation status, and safety flags.
 ```
 
 That focused VF IRQ model is now checked:

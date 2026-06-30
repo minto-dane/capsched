@@ -231,7 +231,9 @@
         "E-DEV-MNIC-025",
         "E-DEV-MNIC-026",
         "E-DEV-MNIC-027",
-        "E-DEV-MNIC-028"
+        "E-DEV-MNIC-028",
+        "E-DEV-MNIC-029",
+        "E-DEV-MNIC-030"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -245,6 +247,7 @@
         "No VF identity epoch and reassignment handoff implementation.",
         "No HyperTag monitor interface or service/driver Domain split implementation.",
         "No observation-only modern NIC HyperTag probe/stub Linux patch.",
+        "No root-management/local monitor LocalDomainDeviceLease compilation implementation.",
         "No DMA attack tests."
       ],
       "forbidden_l0": true
@@ -570,12 +573,15 @@
       "claim": "Cluster-wide authority compiles into node-local Domain epoch, SchedContext, EndpointCap, BudgetTicket, and QueueLease state before local use.",
       "evidence": [
         "E-CLUSTER-001",
-        "E-CLUSTER-002"
+        "E-CLUSTER-002",
+        "E-DEV-MNIC-029",
+        "E-DEV-MNIC-030"
       ],
       "gaps": [
         "No cluster control plane.",
         "No signed lease format.",
         "No node admission path.",
+        "No LocalDomainDeviceLease compile implementation.",
         "No migration/rebalancing policy."
       ],
       "forbidden_l0": false
@@ -1097,6 +1103,26 @@
       "limitation": "Static runner emitted 37 ledger rows with 36 available source anchors, 1 expected LocalDomainDeviceLease external gap, and 0 safety flag violations; all rows remain observation_only=true, authority_claim=false, monitor_verified=false, behavior_change=false, and protection_claim=false."
     },
     {
+      "id": "E-DEV-MNIC-029",
+      "kind": "analysis_readiness_gate",
+      "record": "capsched-models/analysis/0064-local-domain-device-lease-compilation.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines LocalDomainDeviceLease as a root-management/local monitor compilation boundary outside upstream Linux; it is not a Linux source anchor, implementation, or protection claim."
+    },
+    {
+      "id": "E-DEV-MNIC-030",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0063-local-domain-device-lease-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks local monitor lease compilation semantics and rejects remote ClusterLease direct use, scheduler placement as authority, service admission minting, Linux device registration authority, stale cluster epoch, wrong service/target Domains, queue receipt before local lease, and audit-only compile; it is not monitor, driver, IOMMU, IRQ, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1177,6 +1203,7 @@
     "Packet memory can be returned to a Domain after revoke without stale-completion quarantine and generation reset.",
     "BPF or sched_ext is the production root for No RunCap, no run.",
     "Cluster-wide leases are directly executable.",
+    "Root-management ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation is a LocalDomainDeviceLease.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1240,17 +1267,21 @@
       "title": "Modern NIC HyperTag readiness gate",
       "evidence": [
         "E-DEV-MNIC-025",
-        "E-DEV-MNIC-026"
+        "E-DEV-MNIC-026",
+        "E-DEV-MNIC-029",
+        "E-DEV-MNIC-030"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
         "Inert type/stub scaffolding with no behavior change.",
-        "Machine-readable receipt/carrier coverage ledger."
+        "Machine-readable receipt/carrier coverage ledger.",
+        "Root-management/local monitor observation contract for LocalDomainDeviceLease fields."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",
         "Probe or stub treated as authority.",
-        "Readiness evidence described as protection evidence."
+        "Readiness evidence described as protection evidence.",
+        "ClusterLease, scheduler placement, service admission, Linux device registration, or tracefs observation treated as LocalDomainDeviceLease authority."
       ]
     },
     {

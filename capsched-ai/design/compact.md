@@ -68,10 +68,19 @@ latest completed focused risk:
   rows emitted, 36 available anchors, 1 expected LocalDomainDeviceLease gap, and
   0 safety-flag violations.
 
+latest completed focused risk:
+  LocalDomainDeviceLease external gap resolution. Analysis/0064 and formal/0042
+  treat it as root-management/local monitor compilation, not a Linux source
+  anchor. Validation/0063 safe TLC passed with 10 generated states, 9 distinct
+  states, and depth 9. Unsafe configs reject ClusterLease direct use, scheduler
+  placement authority, service admission minting, Linux device registration
+  authority, stale epochs, wrong service/target Domains, queue receipt before
+  local lease, and audit-only compile.
+
 next focused risk:
-  Resolve the LocalDomainDeviceLease external gap and choose the next
-  non-behavior-changing step: privileged no-code tracefs run, inert Linux
-  probe/stub proposal, or root-management/local monitor admission model.
+  Define the root-management/local monitor observation contract for
+  LocalDomainDeviceLease rows before any distributed lease or monitor
+  implementation.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
