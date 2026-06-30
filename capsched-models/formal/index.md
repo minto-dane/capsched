@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-06-27
+Updated: 2026-06-29
 
 ## Current Formal Records
 
@@ -36,8 +36,11 @@ Updated: 2026-06-27
 | 0028 | Checked with safe pass and expected unsafe counterexamples | Modern NIC QueueLease Model |
 | 0029 | Checked with safe pass and expected unsafe counterexamples | XDP and AF_XDP Memory Ownership Model |
 | 0030 | Checked with safe pass and expected unsafe counterexamples | QueueControl and RepresentorForward Model |
+| 0031 | Checked with safe pass and expected unsafe counterexamples | Modern NIC Queue Revoke Model |
 
 ## Planned
 
-1. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
+1. Modern NIC queue revoke/drain/quarantine source map against `ice` reset,
+   down, NAPI, IRQ, DMA, XDP, AF_XDP, representor, and service paths.
+2. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

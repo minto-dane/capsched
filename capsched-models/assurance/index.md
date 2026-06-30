@@ -66,6 +66,7 @@ Model-supported areas:
 - modern NIC QueueLease authority-class separation
 - XDP and AF_XDP memory ownership
 - QueueControl and RepresentorForward separation
+- modern NIC queue revoke/drain/quarantine semantics
 
 Prototype-evidenced areas:
 

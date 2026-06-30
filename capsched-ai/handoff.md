@@ -486,13 +486,38 @@ assurance/0002:
     do not treat netdev/ring/q_vector/devlink/representor/tracepoint/workqueue
     state as modern NIC QueueLease authority; do not collapse SKB, XDP,
     AF_XDP, control, representor, and service classes into one capability.
+
+formal/0031 + validation/0050:
+  Modern NIC queue revoke model checked
+  model:
+    formal/0031-modern-nic-queue-revoke-model/ModernNicQueueRevoke.tla
+  validation:
+    validation/0050-modern-nic-queue-revoke-tlc.md
+  safe result:
+    PASS, 7 generated states, 7 distinct states, depth 5
+  unsafe counterexamples:
+    submit after revoke
+    completion delivery after revoke
+    QueueControl after revoke
+    RepresentorForward after revoke
+    service work after revoke
+    ledger clear before DMA drain
+    queue reassignment before drain/quarantine
+    queue reassignment without IOMMU/IRQ invalidation
+    quarantined delivery
+  key rule:
+    revoke is not netdev down/reset. Revoke means block new submit, bump queue
+    epoch, mask IRQ, drain or quarantine typed outstanding state, invalidate
+    IOMMU/DMA reachability, prevent stale completion/control/representor/service
+    effects, and only then reassign under a new epoch.
 ```
 
-Next work remains modeling-first: model modern NIC queue revoke, drain, and
-quarantine semantics before any behavior-changing device hook. The older
-post-exec gaps also remain: eventfd kernel signal provenance, epoll
-delivery/watched-endpoint correlation, io_uring fixed-file consumption, and
-execfd handoff before behavior-changing endpoint hooks.
+Next work remains modeling-first: map formal/0031 obligations back to concrete
+Intel ice reset/down/NAPI/IRQ/DMA/XDP/AF_XDP/representor/service paths before
+any behavior-changing device hook. The older post-exec gaps also remain:
+eventfd kernel signal provenance, epoll delivery/watched-endpoint correlation,
+io_uring fixed-file consumption, and execfd handoff before behavior-changing
+endpoint hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

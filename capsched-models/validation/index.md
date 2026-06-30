@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-06-27
+Updated: 2026-06-29
 
 ## Current Validation Records
 
@@ -55,6 +55,7 @@ Updated: 2026-06-27
 | 0047 | Executed; high-severity semantic gaps remain | ice Modern NIC Readiness Result |
 | 0048 | Safe model passed; unsafe models produced expected counterexamples | XDP and AF_XDP Memory Ownership TLC |
 | 0049 | Safe model passed; unsafe models produced expected counterexamples | QueueControl and RepresentorForward TLC |
+| 0050 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC Queue Revoke TLC |
 
 ## Principles
 

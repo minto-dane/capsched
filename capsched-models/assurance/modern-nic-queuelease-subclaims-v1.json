@@ -88,6 +88,15 @@
         "DEV-NIC-010"
       ],
       "limitation": "Every readiness row is observation_only=true, authority_claim=false, and monitor_verified=false."
+    },
+    {
+      "id": "E-DEV-MNIC-006",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0050-modern-nic-queue-revoke-tlc.md",
+      "supports": [
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks revoke/drain/quarantine semantics; it is not real hardware or monitor enforcement evidence."
     }
   ],
   "subclaims": [
@@ -224,8 +233,8 @@
       "status": "model_supported_but_not_ready",
       "claim": "Queue revoke invalidates submit, descriptor, DMA, completion, control, representor, and service work paths before reuse or delivery.",
       "protection_missing": [
-        "queue revoke epoch",
-        "queue drain/quarantine state",
+        "queue revoke epoch implementation",
+        "queue drain/quarantine implementation",
         "DMA/IOMMU/IRQ invalidation order proof",
         "outstanding ledger cleanup proof",
         "stale service-work cancellation proof"

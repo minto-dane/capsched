@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "modern-nic-queuelease-assurance-mapped",
+    "current_phase": "modern-nic-queue-revoke-model-checked",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. The modern NIC QueueLease evidence chain is consolidated in assurance/0002 and modern-nic-queuelease-subclaims-v1.json. DEV-001 now has DEV-NIC-001 through DEV-NIC-010 subclaims covering QueueBind, typed submit classes, DescriptorLedger, DMA packet memory ownership, CompletionSettlement, QueueControl, RepresentorForward, ServiceWork/async provenance, RevokeSemantics, and Linux substrate compatibility. Formal/0028 plus validation/0046 model-check the modern NIC QueueLease class split; validation/0047 is observation-only ice readiness with 19 tracepoint rows, 40 source anchors, 11 class readiness rows, and 12 high-severity semantic gaps; formal/0029 plus validation/0048 model-check XDP page-pool and AF_XDP XSK/UMEM memory ownership; formal/0030 plus validation/0049 model-check QueueControl and RepresentorForward derivation. The resulting gate says modern NIC authority-class separation is model-supported, Intel ice anchors are source-observed, trace readiness is observation-only, production protection is not evidenced, and implementation is not approved. No behavior-changing queue, workqueue, or driver enforcement is approved. The next high-value gap is queue revoke/drain/quarantine semantics for outstanding submit, descriptor, DMA, completion, control, representor, and service work.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. The modern NIC QueueLease evidence chain is consolidated in assurance/0002 and modern-nic-queuelease-subclaims-v1.json. DEV-001 now has DEV-NIC-001 through DEV-NIC-010 subclaims covering QueueBind, typed submit classes, DescriptorLedger, DMA packet memory ownership, CompletionSettlement, QueueControl, RepresentorForward, ServiceWork/async provenance, RevokeSemantics, and Linux substrate compatibility. Formal/0031 plus validation/0050 model-check modern NIC queue revoke/drain/quarantine semantics: safe TLC passed with 7 generated states, 7 distinct states, depth 5; nine unsafe configs produced expected counterexamples for submit after revoke, completion delivery after revoke, QueueControl after revoke, RepresentorForward after revoke, service work after revoke, ledger clear before DMA drain, reassignment before drain/quarantine, reassignment without IOMMU/IRQ invalidation, and quarantined delivery. The resulting rule is that revoke means block new submit, bump queue epoch, mask IRQ, drain or quarantine typed outstanding state, invalidate IOMMU/DMA reachability, prevent stale completion/control/representor/service effects, and only then reassign under a new epoch. This is still model-supported and not production protection evidence. No behavior-changing queue, workqueue, or driver enforcement is approved. The next high-value gap is mapping formal/0031 obligations back to concrete ice reset/down/NAPI/IRQ/DMA/XDP/AF_XDP/representor/service paths.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -311,7 +311,11 @@
     "queuecontrol_representor_validation": "capsched/capsched-models/validation/0049-queuecontrol-representor-tlc.md",
     "queuecontrol_representor_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/queuecontrol-representor-20260627T114912Z",
     "modern_nic_queuelease_assurance_map": "capsched/capsched-models/assurance/0002-modern-nic-queuelease-assurance-map.md",
-    "modern_nic_queuelease_assurance_json": "capsched/capsched-models/assurance/modern-nic-queuelease-subclaims-v1.json"
+    "modern_nic_queuelease_assurance_json": "capsched/capsched-models/assurance/modern-nic-queuelease-subclaims-v1.json",
+    "modern_nic_queue_revoke_model": "capsched/capsched-models/formal/0031-modern-nic-queue-revoke-model/README.md",
+    "modern_nic_queue_revoke_tla": "capsched/capsched-models/formal/0031-modern-nic-queue-revoke-model/ModernNicQueueRevoke.tla",
+    "modern_nic_queue_revoke_validation": "capsched/capsched-models/validation/0050-modern-nic-queue-revoke-tlc.md",
+    "modern_nic_queue_revoke_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/modern-nic-queue-revoke-20260630T001016Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1500,9 +1504,19 @@
     {
       "id": "N-077",
       "text": "Model modern NIC queue revoke, drain, and quarantine semantics so outstanding submit, descriptor, DMA, completion, QueueControl, RepresentorForward, and service work cannot survive epoch revoke.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-29",
+      "partial_progress": "Created formal/0031 ModernNicQueueRevoke and validation/0050. Safe TLC passed with 7 generated states, 7 distinct states, and depth 5. Nine unsafe configs produced expected counterexamples for submit after revoke, completion after revoke, control after revoke, representor after revoke, service after revoke, ledger clear before DMA drain, reassignment before drain/quarantine, reassignment without IOMMU/IRQ invalidation, and quarantined delivery.",
       "blocked_by": [
         "N-076"
+      ]
+    },
+    {
+      "id": "N-078",
+      "text": "Map formal/0031 revoke, drain, and quarantine proof obligations back to Intel ice reset/down/NAPI/IRQ/DMA/XDP/AF_XDP/representor/service source paths before any queue behavior change.",
+      "status": "pending",
+      "blocked_by": [
+        "N-077"
       ]
     }
   ],

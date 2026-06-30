@@ -53,6 +53,9 @@ validation/0048-xdp-afxdp-memory-ownership-tlc.md
 
 formal/0030-queuecontrol-representor-model/
 validation/0049-queuecontrol-representor-tlc.md
+
+formal/0031-modern-nic-queue-revoke-model/
+validation/0050-modern-nic-queue-revoke-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -521,6 +524,7 @@ Model:
   formal/0028, validation/0046
   formal/0029, validation/0048
   formal/0030, validation/0049
+  formal/0031, validation/0050
 
 Source:
   analysis/0052 records reset/down/service paths as future revoke anchors.
@@ -532,8 +536,8 @@ Readiness:
 Protection missing:
 
 ```text
-no queue revoke epoch
-no queue drain/quarantine state
+no queue revoke epoch implementation
+no queue drain/quarantine implementation
 no DMA/IOMMU/IRQ invalidation order proof
 no outstanding ledger cleanup proof
 no stale service-work cancellation proof

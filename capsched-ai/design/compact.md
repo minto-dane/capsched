@@ -430,6 +430,20 @@ assurance/0002
     SKB, XDP, XDP_TX, AF_XDP, QueueControl, RepresentorForward, and ServiceWork
     into one capability.
 
+formal/0031 + validation/0050
+  Modern NIC queue revoke model:
+  safe TLC passed with 7 generated states, 7 distinct states, and depth 5.
+  Unsafe configs produced expected counterexamples for submit after revoke,
+  completion after revoke, QueueControl after revoke, RepresentorForward after
+  revoke, service work after revoke, ledger clear before DMA drain, reassignment
+  before drain/quarantine, reassignment without IOMMU/IRQ invalidation, and
+  quarantined delivery.
+  Rule:
+    revoke is not netdev down/reset. Revoke means block new submit, bump queue
+    epoch, mask IRQ, drain or quarantine typed outstanding state, invalidate
+    IOMMU/DMA reachability, block stale completion/control/representor/service
+    effects, and only then reassign under a new epoch.
+
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
   cross-Domain/shared futex wait needs FutexWaitCap, wake needs FutexWakeCap,

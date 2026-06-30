@@ -360,6 +360,8 @@ Current evidence:
 - `validation/0048-xdp-afxdp-memory-ownership-tlc.md`
 - `formal/0030-queuecontrol-representor-model/`
 - `validation/0049-queuecontrol-representor-tlc.md`
+- `formal/0031-modern-nic-queue-revoke-model/`
+- `validation/0050-modern-nic-queue-revoke-tlc.md`
 - `assurance/0002-modern-nic-queuelease-assurance-map.md`
 
 Modern NIC subclaims:
