@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-06-29
+Updated: 2026-06-30
 
 Read this first when resuming the project.
 
@@ -14,8 +14,8 @@ been committed in that Linux repository as inert `CONFIG_CAPSCHED` scaffolding.
 Slice 0B has also been committed as type-only authority scaffolding in
 `include/linux/capsched.h` and `kernel/sched/capsched.c`. No behavior-changing
 scheduler patch points are accepted yet.
-Modern NIC QueueLease revoke analysis has reached an observation-only readiness
-gate for Intel `ice`:
+Modern NIC QueueLease/service-work analysis has reached a model-supported but
+not implementation-approved gate for Intel `ice`:
 
 ```text
 validation/0051:
@@ -33,12 +33,18 @@ hard gaps:
   no stale XSK/page-pool completion quarantine distinction
   no VF IRQ ownership proof for the synchronize_irq exception
   no lower QueueLease proof for representor revoke
-  no service work carrier or service/caller authority intersection
+  no typed service-work carrier implementation
+  no service/caller budget charging rule
+  no reset/rebuild replay reauthorization implementation
   no old/new queue epoch handoff proof
 
-next focused risk:
+latest completed risk:
   Modern NIC ServiceWork carrier and service/caller authority intersection
   for reset/PTP/DPLL/eswitch/LAG/firmware/maintenance work.
+
+next focused risk:
+  VF mailbox QueueControl/DMA/IRQ carrier semantics, especially
+  VIRTCHNL_OP_CONFIG_VSI_QUEUES and related queue/IRQ/budget/FDIR operations.
 ```
 
 That focused VF IRQ model is now checked:
@@ -170,9 +176,39 @@ analysis/0057 + formal/0036 + validation/0056:
     QueueLease carrier, and TC/switchdev offload needs QueueControl/Offload
     authority plus stale-rule invalidation on revoke.
 
+analysis/0058 + formal/0037 + validation/0057:
+  Modern NIC ServiceWork carrier substrate mapped and modeled.
+  source substrate:
+    ice_service_task_schedule() coalesces pf->serv_task through
+    ICE_SERVICE_SCHED
+    ice_service_task() processes reset, AdminQ, MailboxQ, SidebandQ, MDD,
+    VFLR, filters, FDir, watchdog, and aux-device events
+    VF virtchnl queue-control handlers configure queue DMA addresses, IRQ
+    maps, queue bandwidth/quanta, and FDIR-like effects
+    PTP/DPLL deferred workers and bridge/eswitch/LAG work apply service or
+    caller-visible control/offload effects
+  safe TLC:
+    29 generated states, 18 distinct states, depth 5
+  unsafe counterexamples:
+    service-worker ambient queue effects
+    VF mailbox effect without a carrier
+    coalesced service loop using last-caller authority
+    PTP control without a carrier
+    DPLL control without a carrier
+    bridge/offload effect without policy and control authority
+    LAG rebind without fresh lower QueueLease
+    reset/rebuild replay after revoke without fresh authorization
+  design rule:
+    worker identity, ICE_SERVICE_SCHED, virtchnl opcode allowlists, PTP/DPLL
+    callback reachability, bridge/FDB events, LAG lower_dev rewrites, and reset
+    replay are not caller, queue, control, offload, DMA, IRQ, or lower
+    QueueLease authority. Authority is per-effect service/caller intersection
+    plus fresh epochs and budget.
+
 next focused risk:
-  Modern NIC ServiceWork carrier and service/caller authority intersection
-  for reset/PTP/DPLL/eswitch/LAG/firmware/maintenance work.
+  VF mailbox QueueControl/DMA/IRQ carrier semantics. The highest-risk source
+  anchor is ice_vc_cfg_qs_msg() copying VF-provided DMA ring addresses into
+  queue state before queue enable/configuration.
 ```
 The current scheduler-authority refinement frontier is now:
 
@@ -688,17 +724,18 @@ analysis/0053:
     or CompletionSettlement id; no monitor-owned IOMMU/MemoryView invalidation;
     no stale XSK/page-pool completion quarantine distinction; no VF IRQ
     ownership proof for the synchronize_irq exception; no
-    RepresentorForward-to-lower-QueueLease revoke proof; no service work carrier
-    or service/caller authority intersection; no old/new epoch reassignment
-    proof.
+    RepresentorForward-to-lower-QueueLease revoke proof; no typed service-work
+    carrier implementation; no service/caller budget charging rule; no
+    reset/rebuild replay reauthorization implementation; no old/new epoch
+    reassignment proof.
 ```
 
-Next work remains observation-first: design an observation-only ice revoke
-trace/readiness checker that emits formal/0031 obligation coverage without
-claiming authority or protection. The older post-exec gaps also remain: eventfd
-kernel signal provenance, epoll delivery/watched-endpoint correlation, io_uring
-fixed-file consumption, and execfd handoff before behavior-changing endpoint
-hooks.
+Next work remains analysis-first: map and model VF mailbox QueueControl,
+DMA ring-address, IRQ-route, queue-budget, and FDIR/offload carrier semantics
+before any behavior-changing driver or workqueue hook. The older post-exec gaps
+also remain: eventfd kernel signal provenance, epoll delivery/watched-endpoint
+correlation, io_uring fixed-file consumption, and execfd handoff before
+behavior-changing endpoint hooks.
 The source-analysis pass has been expanded through policy front-ends, mutable
 kernel state, dangerous surfaces, network/socket endpoints, io_uring registered
 resources, BPF programmable policy boundaries, scheduler topology/cluster

@@ -1,6 +1,6 @@
 # Assurance Case Index
 
-Updated: 2026-06-29
+Updated: 2026-06-30
 
 ## Purpose
 
@@ -72,6 +72,8 @@ Model-supported areas:
 - monitor DMA/IOMMU/MemoryView invalidation receipt semantics
 - stale XSK/page-pool completion quarantine semantics
 - representor-to-lower QueueLease derivation semantics
+- modern NIC service-work carrier and service/caller authority intersection
+  semantics
 
 Prototype-evidenced areas:
 
@@ -149,12 +151,23 @@ Representor lower QueueLease model:
   lower_dev change, forwarding with stale lower_dev, forwarding after revoke,
   and representor stop as lower QueueLease revoke.
 
+Modern NIC ServiceWork carrier model:
+  safe TLC passed with 29 generated states and 18 distinct states. Unsafe
+  configs produced expected counterexamples for service-worker ambient queue
+  effects, VF mailbox effects without a carrier, coalesced-loop last-caller
+  authority, PTP control without a carrier, DPLL control without a carrier,
+  bridge/offload effects without policy and control authority, LAG rebind
+  without fresh lower QueueLease, and reset/rebuild replay after revoke without
+  fresh authorization.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
   Linux-owned DMA unmap, queued IOMMU flush, iommufd IOAS unmap, VFIO unmap
   callback, xsk_tx_completed(), xsk_buff_free(), page-pool recycle,
   representor stop, bridge FDB/VLAN success, TC redirect target, metadata_dst,
-  or devlink reload as QueueLease authority or revoke authority. Do not
-  implement behavior-changing QueueLease enforcement from this evidence alone.
+  devlink reload, worker identity, ICE_SERVICE_SCHED, virtchnl allowlists,
+  PTP/DPLL callback reachability, LAG lower_dev rewrites, or reset/rebuild
+  replay as QueueLease authority or revoke authority. Do not implement
+  behavior-changing QueueLease enforcement from this evidence alone.
 ```

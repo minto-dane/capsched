@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-06-29",
+  "updated": "2026-06-30",
   "project": {
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "monitor-dma-iommu-invalidation-modeled",
+    "current_phase": "modern-nic-servicework-carrier-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0057 maps representor lower QueueLease derivation across ice representor xmit, metadata_dst lower_dev binding, dev_queue_xmit, bridge/FDB/VLAN/switchdev, TC/BPF redirect, TC flower offload, and LAG lower_dev updates. Validation/0056 adds the Representor Lower QueueLease model: safe TLC passed with 14 generated states, 8 distinct states, and depth 4; eight unsafe configs produced expected counterexamples for representor netdev-only lower forwarding, bridge FDB as lower lease, VLAN as lower lease, TC/offload rule install without control authority, TC/offload stale destination, LAG stale lower_dev forwarding, forwarding after revoke, and representor stop as lower QueueLease revoke. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no service work carrier or service/caller authority intersection; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved.",
+    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only. Analysis/0058 maps Intel ice service task coalescing, reset/AdminQ/MailboxQ, VF virtchnl queue-control, PTP, DPLL, bridge/eswitch, LAG, GNSS, and reset/rebuild replay substrate as service-work carrier hazards. Validation/0057 adds the Modern NIC ServiceWork Carrier model: safe TLC passed with 29 generated states, 18 distinct states, and depth 5; eight unsafe configs produced expected counterexamples for service-worker ambient queue effects, VF mailbox effects without a carrier, coalesced-loop last-caller authority, PTP control without a carrier, DPLL control without a carrier, bridge/offload effects without policy and control authority, LAG rebind without fresh lower QueueLease, and reset/rebuild replay after revoke without fresh authorization. The current hard gaps remain: no QueueTag or queue epoch root; no typed SubmitLedger/DescriptorLedger/CompletionSettlement id; no monitor-backed IRQ route invalidation receipt implementation; no monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation; no stale XSK/page-pool quarantine implementation; no packet generation reset/retag implementation; no implemented RepresentorForwardCap/lower QueueLease carrier; no TC/offload stale-rule removal receipt; no typed service-work carrier implementation; no service/caller budget charging rule; no reset/rebuild replay reauthorization implementation; no old/new epoch reassignment proof. No behavior-changing queue, workqueue, or driver enforcement is approved. Next focused risk is VF mailbox QueueControl/DMA/IRQ carrier semantics.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -353,7 +353,13 @@
     "representor_lower_queuelease_model": "capsched/capsched-models/formal/0036-representor-lower-queuelease-model/README.md",
     "representor_lower_queuelease_tla": "capsched/capsched-models/formal/0036-representor-lower-queuelease-model/RepresentorLowerQueueLease.tla",
     "representor_lower_queuelease_validation": "capsched/capsched-models/validation/0056-representor-lower-queuelease-tlc.md",
-    "representor_lower_queuelease_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/representor-lower-queuelease-20260630T014001Z"
+    "representor_lower_queuelease_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/representor-lower-queuelease-20260630T014001Z",
+    "ice_servicework_carrier_source_map": "capsched/capsched-models/analysis/0058-ice-servicework-carrier-source-map.md",
+    "ice_servicework_carrier_source_map_json": "capsched/capsched-models/analysis/ice-servicework-carrier-source-map-v1.json",
+    "modern_nic_servicework_carrier_model": "capsched/capsched-models/formal/0037-modern-nic-servicework-carrier-model/README.md",
+    "modern_nic_servicework_carrier_tla": "capsched/capsched-models/formal/0037-modern-nic-servicework-carrier-model/ModernNicServiceWork.tla",
+    "modern_nic_servicework_carrier_validation": "capsched/capsched-models/validation/0057-modern-nic-servicework-carrier-tlc.md",
+    "modern_nic_servicework_carrier_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/modern-nic-servicework-carrier-20260630T015518Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1622,9 +1628,19 @@
     {
       "id": "N-085",
       "text": "Model modern NIC ServiceWork carrier and service/caller authority intersection for reset, PTP, DPLL, eswitch, LAG, firmware, and maintenance work so internal driver service work cannot create ambient caller or queue authority.",
-      "status": "pending",
+      "status": "completed",
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created analysis/0058 plus ice-servicework-carrier-source-map-v1.json, then formal/0037 ModernNicServiceWork and validation/0057. The source map separates service maintenance, VF mailbox request work, domain request control work, external policy event work, and merged service loops from caller, QueueLease, QueueControl, Offload, PTP/DPLL, DMA, IRQ, and lower-lease authority. Safe TLC passed with 29 generated states, 18 distinct states, and depth 5. Unsafe configs produced expected counterexamples for service-worker ambient queue effects, VF mailbox effects without a carrier, coalesced-loop last-caller authority, PTP control without a carrier, DPLL control without a carrier, bridge/offload effects without policy/control authority, LAG rebind without fresh lower QueueLease, and reset/rebuild replay after revoke without fresh authorization.",
       "blocked_by": [
         "N-084"
+      ]
+    },
+    {
+      "id": "N-086",
+      "text": "Map and model VF mailbox QueueControl, DMA ring-address, IRQ-route, queue-budget, and FDIR/offload carrier semantics so virtchnl validation cannot stand in for Domain authority when ice configures queues for a VF.",
+      "status": "pending",
+      "blocked_by": [
+        "N-085"
       ]
     }
   ],

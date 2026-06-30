@@ -1,0 +1,396 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-30",
+  "scope": "Intel ice ServiceWork carrier, service/caller authority intersection, and deferred driver control effects",
+  "status": "source_observed_only",
+  "authority_root": {
+    "required": "service Domain authority plus per-effect caller/request carrier when the effect is caller-derived; QueueLease, QueueControl, Offload, PTP, DPLL, IRQ, DMA, and budget authorities remain separate",
+    "not_authority": [
+      "workqueue reachability",
+      "kthread worker identity",
+      "ICE_SERVICE_SCHED pending bit",
+      "timer reschedule",
+      "firmware or interrupt event delivery",
+      "virtchnl opcode allowlist",
+      "VF active bit",
+      "queue id range check",
+      "PTP clock callback reachability",
+      "DPLL subsystem callback reachability",
+      "switchdev FDB notification",
+      "bridge aging event",
+      "LAG netdev notifier event",
+      "lower_dev rewrite"
+    ]
+  },
+  "work_classes": [
+    {
+      "name": "ServiceMaintenanceWork",
+      "authority": [
+        "service_domain_authority",
+        "service_budget",
+        "maintenance_class_allowlist",
+        "device_epoch_freshness"
+      ],
+      "examples": [
+        "watchdog",
+        "health maintenance",
+        "PTP cached PHC update",
+        "DPLL periodic state acquisition",
+        "GNSS polling",
+        "firmware/AdminQ housekeeping without caller effect"
+      ],
+      "forbidden_effects": [
+        "caller-attributed queue effect",
+        "caller-attributed DMA/IOMMU effect",
+        "caller-attributed IRQ route effect",
+        "caller-attributed offload effect",
+        "caller-attributed control effect"
+      ]
+    },
+    {
+      "name": "VFMailboxRequestWork",
+      "authority": [
+        "service_domain_authority",
+        "vf_domain_request_carrier",
+        "vf_epoch",
+        "queue_control_or_queue_lease",
+        "dma_memoryview_iommu_authority",
+        "irq_route_authority",
+        "queue_budget_or_rate_authority"
+      ],
+      "examples": [
+        "VIRTCHNL_OP_CONFIG_VSI_QUEUES",
+        "VIRTCHNL_OP_ENABLE_QUEUES",
+        "VIRTCHNL_OP_DISABLE_QUEUES",
+        "VIRTCHNL_OP_CONFIG_IRQ_MAP",
+        "VIRTCHNL_OP_CONFIG_QUEUE_BW",
+        "VIRTCHNL_OP_CONFIG_QUANTA",
+        "VIRTCHNL_OP_ADD_FDIR_FILTER",
+        "VIRTCHNL_OP_DEL_FDIR_FILTER"
+      ],
+      "forbidden_shortcut": "virtchnl validation or opcode allowlist as QueueLease/QueueControl authority"
+    },
+    {
+      "name": "DomainRequestControlWork",
+      "authority": [
+        "caller_control_carrier",
+        "service_domain_authority",
+        "endpoint_control_cap",
+        "fresh_caller_epoch",
+        "fresh_service_epoch",
+        "service_budget_or_caller_charged_service_budget"
+      ],
+      "examples": [
+        "PTP settime",
+        "PTP adjtime",
+        "PTP perout/extts",
+        "hwtstamp configuration",
+        "DPLL pin state change",
+        "TX reference clock switch"
+      ],
+      "forbidden_shortcut": "PTP/DPLL worker identity as caller control authority"
+    },
+    {
+      "name": "ExternalPolicyEventWork",
+      "authority": [
+        "fresh_policy_event_generation",
+        "offload_control_authority",
+        "lower_queuelease_binding_when_lower_queue_effect_exists",
+        "stale_rule_invalidation_or_rebind_receipt"
+      ],
+      "examples": [
+        "switchdev FDB add/delete",
+        "bridge aging update",
+        "LAG netdev event",
+        "representor lower_dev rebind",
+        "TC/switchdev offload replay"
+      ],
+      "forbidden_shortcut": "policy event as lower QueueLease authority"
+    },
+    {
+      "name": "MergedServiceLoop",
+      "authority": [
+        "service_authority_for_loop",
+        "per_effect_authority_check",
+        "explicit_merge_semantics_for_caller_derived_effects"
+      ],
+      "examples": [
+        "pf->serv_task"
+      ],
+      "forbidden_shortcut": "single mutable last-caller carrier for coalesced service work"
+    }
+  ],
+  "source_anchors": [
+    {
+      "id": "ICE-SW-001",
+      "component": "primary-service-task-coalescing",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_main.c"
+      ],
+      "symbols": [
+        "ice_service_task_schedule",
+        "ice_service_task_complete",
+        "ice_service_task_stop",
+        "ice_service_timer",
+        "ice_service_task"
+      ],
+      "lines": [
+        "1667-1672",
+        "1679-1685",
+        "1695-1706",
+        "1726-1731",
+        "2292-2378"
+      ],
+      "supports": [
+        "merged_service_loop_observation",
+        "ICE_SERVICE_SCHED_coalescing_observation",
+        "worker_context_execution_observation"
+      ],
+      "limitation": "No typed caller carrier or per-effect authority intersection is present."
+    },
+    {
+      "id": "ICE-SW-002",
+      "component": "reset-adminq-mailbox-firmware-events",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_main.c"
+      ],
+      "symbols": [
+        "ice_prepare_for_reset",
+        "ice_reset_subtask",
+        "__ice_clean_ctrlq",
+        "ice_clean_adminq_subtask",
+        "ice_clean_mailboxq_subtask",
+        "ice_clean_sbq_subtask",
+        "ice_misc_intr"
+      ],
+      "lines": [
+        "535-621",
+        "674-743",
+        "1418-1564",
+        "1586-1606",
+        "1613-1628",
+        "1635-1658",
+        "3097-3222"
+      ],
+      "supports": [
+        "firmware_event_fact_observation",
+        "control_queue_drain_observation",
+        "reset_rebuild_service_replay_observation"
+      ],
+      "limitation": "Firmware/interrupt delivery is not caller authority and reset replay is not fresh reauthorization."
+    },
+    {
+      "id": "ICE-SW-003",
+      "component": "vf-mailbox-virtchnl-queue-control",
+      "files": [
+        "drivers/net/ethernet/intel/ice/virt/virtchnl.c",
+        "drivers/net/ethernet/intel/ice/virt/allowlist.c",
+        "drivers/net/ethernet/intel/ice/virt/queues.c"
+      ],
+      "symbols": [
+        "ice_vc_process_vf_msg",
+        "ice_vc_is_opcode_allowed",
+        "ice_vc_ena_qs_msg",
+        "ice_vc_dis_qs_msg",
+        "ice_vc_cfg_irq_map_msg",
+        "ice_vc_cfg_q_bw",
+        "ice_vc_cfg_q_quanta",
+        "ice_vc_cfg_qs_msg"
+      ],
+      "lines": [
+        "virtchnl.c:2736-2935",
+        "allowlist.c:26-95",
+        "queues.c:234-312",
+        "queues.c:361-451",
+        "queues.c:513-581",
+        "queues.c:593-665",
+        "queues.c:677-739",
+        "queues.c:749-914"
+      ],
+      "supports": [
+        "vf_request_processed_in_service_context",
+        "queue_dma_address_configuration_observation",
+        "irq_map_configuration_observation",
+        "queue_budget_rate_configuration_observation"
+      ],
+      "limitation": "virtchnl validation and allowlists do not provide non-forgeable VF Domain carrier, DMA MemoryView proof, IRQ route proof, or QueueLease epoch proof."
+    },
+    {
+      "id": "ICE-SW-004",
+      "component": "ptp-timestamp-control-and-maintenance",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_ptp.c",
+        "drivers/net/ethernet/intel/ice/ice_ptp.h",
+        "drivers/net/ethernet/intel/ice/ice_main.c"
+      ],
+      "symbols": [
+        "ice_ptp_reset_cached_phctime",
+        "ice_ptp_wait_for_offsets",
+        "ice_ptp_port_phy_restart",
+        "ice_ptp_gpio_enable",
+        "ice_ptp_settime64",
+        "ice_ptp_adjtime",
+        "ice_ptp_hwtstamp_set",
+        "ice_ptp_periodic_work",
+        "ice_ptp_queue_work",
+        "ice_ptp_init_work",
+        "ice_ptp_release",
+        "ndo_hwtstamp_set"
+      ],
+      "lines": [
+        "ice_ptp.c:976-1004",
+        "ice_ptp.c:1133-1163",
+        "ice_ptp.c:1213-1255",
+        "ice_ptp.c:1828-1864",
+        "ice_ptp.c:1897-1939",
+        "ice_ptp.c:1966-1997",
+        "ice_ptp.c:2279-2296",
+        "ice_ptp.c:2852-2867",
+        "ice_ptp.c:2877-2881",
+        "ice_ptp.c:3212-3230",
+        "ice_ptp.c:3391-3423",
+        "ice_main.c:9813-9814"
+      ],
+      "supports": [
+        "ptp_periodic_service_work_observation",
+        "ptp_user_visible_control_callback_observation",
+        "ptp_deferred_worker_observation"
+      ],
+      "limitation": "PTP worker identity and ptp_clock callback reachability are not caller control authority."
+    },
+    {
+      "id": "ICE-SW-005",
+      "component": "dpll-synce-control-and-maintenance",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_dpll.c",
+        "drivers/net/ethernet/intel/ice/ice_dpll.h"
+      ],
+      "symbols": [
+        "ice_dpll_txclk_work",
+        "ice_dpll_txclk_state_on_dpll_set",
+        "ice_dpll_periodic_work",
+        "ice_dpll_pin_notify_work",
+        "ice_dpll_init_fwnode_pins",
+        "ice_dpll_init_worker",
+        "ice_dpll_deinit_worker",
+        "ice_dpll_deinit"
+      ],
+      "lines": [
+        "ice_dpll.c:2637-2691",
+        "ice_dpll.c:2709-2754",
+        "ice_dpll.c:3178-3182",
+        "ice_dpll.c:3646-3654",
+        "ice_dpll.c:3935",
+        "ice_dpll.c:4248-4261",
+        "ice_dpll.c:4229-4234",
+        "ice_dpll.c:4850",
+        "ice_dpll.h:171-175"
+      ],
+      "supports": [
+        "dpll_periodic_service_work_observation",
+        "dpll_deferred_user_control_observation",
+        "tx_reference_clock_switch_work_observation"
+      ],
+      "limitation": "DPLL lifecycle guards and worker queues are not caller control authority."
+    },
+    {
+      "id": "ICE-SW-006",
+      "component": "eswitch-bridge-offload-work",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_eswitch_br.c"
+      ],
+      "symbols": [
+        "ice_eswitch_br_fdb_event_work",
+        "ice_eswitch_br_fdb_work_alloc",
+        "ice_eswitch_br_update_work",
+        "ice_eswitch_br_offloads_init"
+      ],
+      "lines": [
+        "475-505",
+        "508-534",
+        "577",
+        "1276-1285",
+        "1303",
+        "1336-1338"
+      ],
+      "supports": [
+        "per_event_fdb_work_observation",
+        "delayed_bridge_aging_work_observation",
+        "offload_policy_event_observation"
+      ],
+      "limitation": "FDB events and bridge aging are policy facts, not OffloadCap or lower QueueLease authority."
+    },
+    {
+      "id": "ICE-SW-007",
+      "component": "lag-event-work-and-lower-dev-rebind",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_lag.c",
+        "drivers/net/ethernet/intel/ice/ice_main.c"
+      ],
+      "symbols": [
+        "ice_lag_config_eswitch",
+        "ice_lag_process_event",
+        "ice_lag_event_handler",
+        "ice_lag_wq"
+      ],
+      "lines": [
+        "ice_lag.c:116-125",
+        "ice_lag.c:2209-2278",
+        "ice_lag.c:2287-2363",
+        "ice_lag.c:2361",
+        "ice_main.c:5873-5877"
+      ],
+      "supports": [
+        "netdev_event_snapshot_work_observation",
+        "representor_lower_dev_rewrite_observation",
+        "lag_lower_rebind_requirement"
+      ],
+      "limitation": "LAG events and lower_dev rewrite do not preserve lower QueueLease authority without a fresh rebind."
+    },
+    {
+      "id": "ICE-SW-008",
+      "component": "gnss-service-work",
+      "files": [
+        "drivers/net/ethernet/intel/ice/ice_gnss.c"
+      ],
+      "symbols": [
+        "ice_gnss_read",
+        "ice_gnss_struct_init",
+        "ice_gnss_open",
+        "ice_gnss_close",
+        "ice_gnss_exit"
+      ],
+      "lines": [
+        "156",
+        "171-185",
+        "221",
+        "244",
+        "366-375"
+      ],
+      "supports": [
+        "gnss_service_polling_observation",
+        "kthread_delayed_work_lifecycle_observation"
+      ],
+      "limitation": "GNSS is not queue authority, but exposed service endpoints still need service accounting and provenance if delegated to Domains."
+    }
+  ],
+  "required_invariants": [
+    "No service-only worker may produce queue, DMA, IRQ, offload, or caller control effects",
+    "No VF mailbox request may configure queues, DMA ring addresses, IRQ maps, bandwidth, quanta, RSS/VLAN/FDIR, or PTP state without a VF/Domain request carrier and endpoint-specific authority",
+    "No merged service loop may authorize effects by a mutable last caller",
+    "No PTP or DPLL deferred worker may apply caller-requested control changes without a live caller control carrier",
+    "No bridge or switchdev event may install or replay hardware rules without OffloadCap, policy generation, and lower QueueLease binding where needed",
+    "No LAG lower_dev rewrite may preserve representor lower QueueLease authority without a fresh lower rebind",
+    "No reset, rebuild, or service replay after revoke may restore old queue/offload/PTP state without fresh epoch and endpoint reauthorization"
+  ],
+  "forbidden_claims": [
+    "pf->serv_task is a safe ambient authority root",
+    "ICE_SERVICE_SCHED coalescing preserves caller provenance",
+    "virtchnl allowlists are QueueLease authority",
+    "VF active state is Domain authority",
+    "PTP/DPLL worker identity is user control authority",
+    "switchdev/FDB/LAG policy events are lower QueueLease authority",
+    "reset/rebuild replay is automatically safe after revoke"
+  ],
+  "next_model": "formal/0037-modern-nic-servicework-carrier-model"
+}

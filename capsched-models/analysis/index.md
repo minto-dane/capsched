@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-06-29
+Updated: 2026-06-30
 
 ## Current Analysis Notes
 
@@ -63,6 +63,7 @@ Updated: 2026-06-29
 | 0055 | Draft source map with model gate | Monitor DMA/IOMMU and MemoryView Invalidation Source Map |
 | 0056 | Draft source map with model gate | XSK and Page-Pool Quarantine Source Map |
 | 0057 | Draft source map with model gate | Representor Lower QueueLease Source Map |
+| 0058 | Draft source map with model gate | ICE ServiceWork Carrier Source Map |
 
 ## Planned Analysis Notes
 
@@ -90,3 +91,4 @@ Updated: 2026-06-29
 | `monitor-dma-iommu-memoryview-invalidation-source-map-v1.json` | Draft source map | Machine-readable DMA/IOMMU/MemoryView invalidation mapping across ice, DMA API, IOMMU core, iommufd, VFIO, and arch IOMMU backends |
 | `xsk-pagepool-quarantine-source-map-v1.json` | Draft source map | Machine-readable stale XSK/page-pool completion quarantine and packet memory return map |
 | `representor-lower-queuelease-source-map-v1.json` | Draft source map | Machine-readable representor forwarding, bridge/FDB/VLAN/TC offload, and lower QueueLease derivation map |
+| `ice-servicework-carrier-source-map-v1.json` | Draft source map | Machine-readable ICE service-work carrier, coalescing, VF mailbox, PTP/DPLL, eswitch, LAG, and reset/rebuild authority map |

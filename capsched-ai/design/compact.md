@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-06-29
+Updated: 2026-06-30
 
 ## Project
 
@@ -43,9 +43,13 @@ do not claim:
   reload, representor stop, or service work cancellation as QueueLease revoke
   authority.
 
-next focused risk:
+latest completed focused risk:
   Modern NIC ServiceWork carrier and service/caller authority intersection
   for reset/PTP/DPLL/eswitch/LAG/firmware/maintenance work.
+
+next focused risk:
+  VF mailbox QueueControl/DMA/IRQ carrier semantics, especially
+  VIRTCHNL_OP_CONFIG_VSI_QUEUES and related queue/IRQ/budget/FDIR operations.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -153,6 +157,32 @@ analysis/0057 + formal/0036 + validation/0056:
     or representor queue stop. It needs a frozen RepresentorForward-to-lower
     QueueLease carrier; hardware offload needs QueueControl/Offload authority
     and stale-rule invalidation on revoke.
+
+analysis/0058 + formal/0037 + validation/0057:
+  ICE ServiceWork carrier substrate mapped and modeled.
+  source substrate:
+    ice service-task coalescing via ICE_SERVICE_SCHED and queue_work()
+    reset/AdminQ/MailboxQ/SidebandQ firmware event handling
+    VF virtchnl queue-control, queue DMA address, IRQ map, bandwidth/quanta,
+      and FDIR-like paths
+    PTP/DPLL deferred control and maintenance workers
+    bridge/eswitch/LAG/GNSS service work and reset/rebuild replay
+  safe TLC:
+    29 generated states, 18 distinct states, depth 5
+  unsafe counterexamples:
+    service-worker ambient queue effect
+    VF mailbox effect without a carrier
+    coalesced loop last-caller authority
+    PTP control without a carrier
+    DPLL control without a carrier
+    bridge/offload effect without policy/control authority
+    LAG rebind without fresh lower QueueLease
+    reset/rebuild replay after revoke without fresh authorization
+  design rule:
+    service worker execution is service authority, not caller authority. A
+    caller-derived effect needs a typed carrier, effect-specific cap, fresh
+    epochs, QueueLease/QueueControl/Offload/PTP/DPLL/DMA/IRQ/lower-lease
+    authority as applicable, and service or caller-charged budget.
 ```
 
 ## Core Architecture
@@ -587,7 +617,8 @@ analysis/0053
   source-observed only. Hard gaps remain for QueueTag/epoch, typed ledgers,
   monitor DMA/IOMMU/MemoryView receipt implementation, stale XSK/page-pool
   quarantine, VF IRQ ownership, RepresentorForward lower-QueueLease revoke,
-  service carrier, and old/new epoch reassignment proof.
+  typed service-work carrier implementation, service/caller budget charging,
+  reset/rebuild replay reauthorization, and old/new epoch reassignment proof.
 
 analysis/0035 + formal/0018 + validation/0030
   Shared futex endpoint boundary:
@@ -642,13 +673,14 @@ sleep should use task-local resumable-run state. Endpoint/shared futex waits
 need endpoint-specific carriers. Workqueue and kthread_work need work item
 carriers, not ambient worker authority.
 
-Next near-term sequence:
+Next project-wide sequence:
 
 ```text
-1. Refine wider endpoint capability models for fd/file/socket/resource
-   operations.
-2. Refine exec process-generation semantics.
-3. Only then consider a behavior-changing L0 runnable admission slice.
+1. Map and model VF mailbox QueueControl/DMA/IRQ carrier semantics in ice.
+2. Keep all NIC work analysis/model-only until monitor-backed roots and typed
+   carriers exist.
+3. Return to wider endpoint capability models and exec/resource inheritance
+   before any behavior-changing L0 runnable admission slice.
 ```
 
 ## Assurance Root

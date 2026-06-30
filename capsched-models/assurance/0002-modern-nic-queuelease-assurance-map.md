@@ -2,7 +2,7 @@
 
 Status: Active consolidation, no implementation approved
 
-Date: 2026-06-29
+Date: 2026-06-30
 
 Parent claim:
 
@@ -71,6 +71,9 @@ validation/0055-xsk-pagepool-quarantine-tlc.md
 
 formal/0036-representor-lower-queuelease-model/
 validation/0056-representor-lower-queuelease-tlc.md
+
+formal/0037-modern-nic-servicework-carrier-model/
+validation/0057-modern-nic-servicework-carrier-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -84,11 +87,13 @@ analysis/0053-ice-modern-nic-revoke-source-map.md
 analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md
 analysis/0056-xsk-pagepool-quarantine-source-map.md
 analysis/0057-representor-lower-queuelease-source-map.md
+analysis/0058-ice-servicework-carrier-source-map.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
 analysis/xsk-pagepool-quarantine-source-map-v1.json
 analysis/representor-lower-queuelease-source-map-v1.json
+analysis/ice-servicework-carrier-source-map-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -537,11 +542,15 @@ Evidence:
 Model:
   formal/0028, validation/0046
   formal/0017, validation/0029
+  formal/0037, validation/0057
 
 Source:
   analysis/0045, analysis/0046, analysis/0047, and analysis/0052 map workqueue
   pending coalescing, worker callback execution, origin taxonomy, and ice
   service/reset/eswitch/PTP anchors.
+  analysis/0058 maps ice service task coalescing, reset/AdminQ/MailboxQ,
+  VF virtchnl queue-control, PTP, DPLL, bridge/eswitch, LAG, and GNSS work
+  as service-work carrier and per-effect authority hazards.
 
 Readiness:
   validation/0047 classifies ServiceWork as source_only_gap_recorded.
@@ -554,6 +563,8 @@ no typed service work carrier
 no merge policy for coalesced work
 no service/caller authority intersection
 no cancellation/quarantine rule for stale queued work
+no service-domain budget charging rule
+no reset/rebuild replay reauthorization implementation
 ```
 
 Forbidden claim:
@@ -562,6 +573,10 @@ Forbidden claim:
 Do not make generic workqueue execution a CapSched authority hook. Only
 Domain-derived async work should require typed carriers; kernel-internal work
 must remain service/kernel classified until proved otherwise.
+Do not treat worker identity, ICE_SERVICE_SCHED, virtchnl allowlists, PTP/DPLL
+callback reachability, bridge/FDB events, LAG lower_dev rewrites, or reset
+rebuild replay as caller, queue, control, offload, or lower QueueLease
+authority.
 ```
 
 ### DEV-NIC-009: Revoke Semantics
@@ -695,6 +710,8 @@ DEV-001 modern NIC refinement:
   model-supported for monitor DMA/IOMMU/MemoryView invalidation receipt
   semantics
   model-supported for stale XSK/page-pool quarantine semantics
+  model-supported for modern NIC ServiceWork carrier and service/caller
+  authority intersection semantics
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -740,6 +757,7 @@ A behavior-changing prototype is not allowed until it has at least:
 5. QueueControl and RepresentorForward split
 6. service work classification and carrier/merge policy
 7. revoke/drain/quarantine model
-8. clear statement that Linux-only evidence is compatibility/prototype
+8. reset/rebuild replay reauthorization and stale service-work cancellation
+9. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

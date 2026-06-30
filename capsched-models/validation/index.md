@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-06-29
+Updated: 2026-06-30
 
 ## Current Validation Records
 
@@ -62,6 +62,7 @@ Updated: 2026-06-29
 | 0054 | Safe model passed; unsafe models produced expected counterexamples | Monitor DMA/IOMMU Invalidation TLC |
 | 0055 | Safe model passed; unsafe models produced expected counterexamples | XSK and Page-Pool Quarantine TLC |
 | 0056 | Safe model passed; unsafe models produced expected counterexamples | Representor Lower QueueLease TLC |
+| 0057 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC ServiceWork Carrier TLC |
 
 ## Principles
 

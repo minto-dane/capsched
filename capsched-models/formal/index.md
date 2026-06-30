@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-06-29
+Updated: 2026-06-30
 
 ## Current Formal Records
 
@@ -42,6 +42,7 @@ Updated: 2026-06-29
 | 0034 | Checked with safe pass and expected unsafe counterexamples | Monitor DMA/IOMMU Invalidation Model |
 | 0035 | Checked with safe pass and expected unsafe counterexamples | XSK and Page-Pool Quarantine Model |
 | 0036 | Checked with safe pass and expected unsafe counterexamples | Representor Lower QueueLease Model |
+| 0037 | Checked with safe pass and expected unsafe counterexamples | Modern NIC ServiceWork Carrier Model |
 
 ## Planned
 
