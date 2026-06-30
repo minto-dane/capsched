@@ -257,7 +257,9 @@
         "E-DEV-MNIC-051",
         "E-DEV-MNIC-052",
         "E-DEV-MNIC-053",
-        "E-DEV-MNIC-054"
+        "E-DEV-MNIC-054",
+        "E-DEV-MNIC-055",
+        "E-DEV-MNIC-056"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -623,7 +625,9 @@
         "E-DEV-MNIC-051",
         "E-DEV-MNIC-052",
         "E-DEV-MNIC-053",
-        "E-DEV-MNIC-054"
+        "E-DEV-MNIC-054",
+        "E-DEV-MNIC-055",
+        "E-DEV-MNIC-056"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1411,6 +1415,26 @@
       "limitation": "Finite model checks no-code attachment-readiness constraints and rejects authority claims, monitor verification claims, behavior changes, user ABI, public tracepoint ABI, protection claims, authorizing or behavior-changing stubs, probe authority, Linux ledger/response minting, shadow refresh from timeout, live fault-injection effects, raw handle exposure, and direct-only ring incompatibility; it is not implementation, performance, liveness, or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-055",
+      "kind": "analysis_inventory_contract",
+      "record": "capsched-models/analysis/0077-direct-call-trace-source-inventory-contract.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Defines a source-only direct-call trace/source inventory runner contract with output fields, seed rows, safety flags, stop conditions, and optional tracefs-plan boundary; it is not a runner implementation, Linux patch, tracefs execution, ABI, monitor implementation, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-056",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0076-direct-call-inventory-contract-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks source-only inventory constraints and rejects Linux modification, source-only root requirement, tracefs writes, public tracepoint ABI, probe attachment, incomplete outputs, missing safety flags, missing anchors as no obligation, source or trace observations as authority, runtime observation claims, raw handle exposure, monitor verification claims, protection claims, and behavior changes; it is not implementation, runtime coverage, performance, liveness, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1502,6 +1526,7 @@
     "Direct-call carrier requirements select a binary ABI, permit validation before bounded monitor copy/freeze, treat Linux timeout as monitor terminality, or create direct-only replay, ledger, or shadow namespaces.",
     "Direct-call schema compatibility permits unsupported schema acceptance, downgrade of monitor/caller minimums, unknown mandatory fields, unknown success codes, transport observations as receipts, or direct-only schema namespaces.",
     "Direct-call attachment readiness permits behavior change, user ABI, public tracepoint ABI, Linux ledger/response minting, Linux shadow refresh from timeout or return code, probe/stub authority, raw handle exposure, monitor verification claims, or protection claims.",
+    "Direct-call source inventory permits Linux modification, root requirement in source-only mode, tracefs writes in source-only mode, probe attachment, public tracepoint ABI creation, source/trace observations as authority, runtime observation claims, raw handle exposure, monitor verification claims, or protection claims.",
     "TLC completion alone proves the datacenter OS goal."
   ],
   "gates": [
@@ -1591,7 +1616,9 @@
         "E-DEV-MNIC-051",
         "E-DEV-MNIC-052",
         "E-DEV-MNIC-053",
-        "E-DEV-MNIC-054"
+        "E-DEV-MNIC-054",
+        "E-DEV-MNIC-055",
+        "E-DEV-MNIC-056"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1609,14 +1636,16 @@
         "Combined direct-call plus monitor-owned-ring carrier plan before binary layout or implementation.",
         "Direct-call carrier requirements gate before binary layout or implementation.",
         "Direct-call semantic schema compatibility gate before binary layout or implementation.",
-        "Direct-call no-code attachment readiness gate before Linux stub, monitor implementation, binary layout, user ABI, public tracepoint ABI, or protection claim."
+        "Direct-call no-code attachment readiness gate before Linux stub, monitor implementation, binary layout, user ABI, public tracepoint ABI, or protection claim.",
+        "Direct-call source-only inventory contract before runner implementation, tracefs execution, Linux stub, public tracepoint ABI, or protection claim."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",
         "Probe or stub treated as authority.",
         "Readiness evidence described as protection evidence.",
         "ClusterLease, scheduler placement, service admission, Linux device registration, or tracefs observation treated as LocalDomainDeviceLease authority.",
-        "Direct-call attachment rows, trace/source inventory, inert stubs, timeouts, or Linux-visible shadows treated as monitor authority, behavior approval, ABI selection, or protection evidence."
+        "Direct-call attachment rows, trace/source inventory, inert stubs, timeouts, or Linux-visible shadows treated as monitor authority, behavior approval, ABI selection, or protection evidence.",
+        "Source-only direct-call inventory treated as runtime coverage, tracefs execution, monitor verification, or permission to create public tracepoint ABI."
       ]
     },
     {

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-attachment-readiness-modeled",
+    "current_phase": "direct-call-inventory-contract-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Linux Slice 0B remains applied and build-validated as commit 7cf0b1e415bcead8a2079c8be94a9d41aad7d462. Slice 0C remains observation-only and no behavior-changing scheduler, queue, workqueue, driver, monitor, ABI, or public tracepoint patch is approved. N-103 now defines the no-code direct-call Linux/monitor attachment and readiness boundary for the schema-compatible carrier. Analysis/0076 plus direct-call-attachment-readiness-v1.json name candidate attachment rows, monitor-side responsibilities, required safety flags, inert stub constraints, failure-injection boundaries, trace/source observability, and future ring compatibility. Implementation/0008 records the gate: allowed future work is no-code trace/source inventory, readiness ledger, or inert compile-only helper shapes only; forbidden work includes behavior change, user ABI, public tracepoint ABI, authority fields in hot objects, Linux ledger/response minting, Linux shadow refresh from timeout or return code, raw handle exposure, monitor verification claims, or production protection claims. Formal/0053 and validation/0075 checked the finite model: safe TLC passed with 11 generated states, 10 distinct states, and depth 10; unsafe configs produced expected counterexamples for missing row coverage, authority claims, monitor verification claims, behavior changes, user ABI, public tracepoint ABI, protection claims, authorizing or behavior-changing stubs, probe authority, Linux ledger/response minting, shadow from timeout, live fault-injection effects, raw handle exposure, and direct-only ring-incompatible namespaces. This is no-code readiness evidence only, not a Linux patch, direct-call trap mechanism, monitor implementation, binary ABI, performance evidence, liveness proof, or production protection evidence. The hard gaps remain all monitor roots and real enforcement: no HyperTag Monitor, no root-management/local monitor LocalDomainDeviceLease compile implementation, no monitor receipt minting, no service/driver Domain split, no QueueTag/queue epoch roots, no typed SubmitLedger, DescriptorLedger, or CompletionSettlement, no monitor-backed IRQ or DMA/IOMMU/MemoryView invalidation receipts, no stale XSK/page-pool quarantine, no packet generation reset/retag, no RepresentorForwardCap, no typed service-work carrier, no service/caller budget charging, no reset/rebuild replay reauthorization, and no VF mailbox or VF epoch handoff implementation. Next focused risk is N-104: define the direct-call no-code trace/source inventory runner contract and validation plan for existing Linux source/tracing anchors, without adding Linux code or public tracepoints.",
+    "current_focus": "N-104 now defines the direct-call no-code trace/source inventory runner contract for existing Linux source/tracing anchors. Analysis/0077 plus direct-call-trace-source-inventory-contract-v1.json define source-only default mode, required outputs, required row fields, seed rows mapped to N-103 attachment classes, safety flags, stop conditions, and the boundary between source-only inventory and optional future tracefs-plan suggestions. Formal/0054 and validation/0076 checked the finite model: safe TLC passed with 6 generated states, 5 distinct states, and depth 5; unsafe configs produced expected counterexamples for source anchors as authority, behavior change, Linux modification, missing anchor as no obligation, monitor verification, incomplete outputs, probe attachment, protection claim, public tracepoint ABI, raw handle exposure, source-only root requirement, runtime observation claim, missing safety flags, trace plan as authority, and tracefs writes. This is a runner contract only, not a runner implementation, Linux patch, tracefs execution, QEMU run, ABI, monitor implementation, performance evidence, liveness proof, or protection evidence. No behavior changing scheduler, queue, workqueue, driver, monitor, ABI, or public tracepoint patch is approved. Next focused risk is N-105: implement and run the source-only direct-call inventory runner under the N-104 contract, without modifying Linux, requiring root, writing tracefs, attaching probes, or creating public tracepoint ABI.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -467,7 +467,13 @@
     "direct_call_attachment_readiness_tla": "capsched/capsched-models/formal/0053-direct-call-attachment-readiness-model/DirectCallAttachmentReadiness.tla",
     "direct_call_attachment_readiness_validation": "capsched/capsched-models/validation/0075-direct-call-attachment-readiness-tlc.md",
     "direct_call_attachment_readiness_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-attachment-readiness-20260630T213615Z",
-    "direct_call_attachment_readiness_gate": "capsched/capsched-models/implementation/0008-direct-call-attachment-readiness-gate.md"
+    "direct_call_attachment_readiness_gate": "capsched/capsched-models/implementation/0008-direct-call-attachment-readiness-gate.md",
+    "direct_call_trace_source_inventory_contract": "capsched/capsched-models/analysis/0077-direct-call-trace-source-inventory-contract.md",
+    "direct_call_trace_source_inventory_contract_json": "capsched/capsched-models/analysis/direct-call-trace-source-inventory-contract-v1.json",
+    "direct_call_inventory_contract_model": "capsched/capsched-models/formal/0054-direct-call-inventory-contract-model/README.md",
+    "direct_call_inventory_contract_tla": "capsched/capsched-models/formal/0054-direct-call-inventory-contract-model/DirectCallInventoryContract.tla",
+    "direct_call_inventory_contract_validation": "capsched/capsched-models/validation/0076-direct-call-inventory-contract-tlc.md",
+    "direct_call_inventory_contract_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-inventory-contract-20260630T215029Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1926,9 +1932,19 @@
     {
       "id": "N-104",
       "text": "Define the direct-call no-code trace/source inventory runner contract and validation plan for existing Linux source/tracing anchors, without adding Linux code or public tracepoints.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-103"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created analysis/0077 plus direct-call-trace-source-inventory-contract-v1.json, formal/0054 DirectCallInventoryContract, and validation/0076. The contract keeps source-only inventory separate from optional future tracefs plans, requires complete row fields and safety flags, records missing future anchors as gaps, and rejects Linux modification, root requirement, tracefs writes, public tracepoint ABI, probe attachment, source/trace authority, runtime observation claims, raw handle exposure, monitor verification, protection, and behavior change. Safe TLC passed with 6 generated states, 5 distinct states, depth 5; 15 unsafe configs produced expected counterexamples."
+    },
+    {
+      "id": "N-105",
+      "text": "Implement and execute the source-only direct-call trace/source inventory runner under the N-104 contract, emitting ledger, tracefs-plan, gaps, and summary without modifying Linux, requiring root, writing tracefs, attaching probes, or creating public tracepoint ABI.",
+      "status": "pending",
+      "blocked_by": [
+        "N-104"
       ]
     }
   ],

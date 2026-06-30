@@ -122,6 +122,9 @@ validation/0074-direct-call-schema-compatibility-tlc.md
 
 formal/0053-direct-call-attachment-readiness-model/
 validation/0075-direct-call-attachment-readiness-tlc.md
+
+formal/0054-direct-call-inventory-contract-model/
+validation/0076-direct-call-inventory-contract-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -154,6 +157,7 @@ analysis/0073-combined-admission-carriers-plan.md
 analysis/0074-direct-call-carrier-requirements.md
 analysis/0075-direct-call-schema-compatibility.md
 analysis/0076-direct-call-attachment-readiness.md
+analysis/0077-direct-call-trace-source-inventory-contract.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -178,6 +182,7 @@ analysis/combined-admission-carriers-plan-v1.json
 analysis/direct-call-carrier-requirements-v1.json
 analysis/direct-call-schema-compatibility-v1.json
 analysis/direct-call-attachment-readiness-v1.json
+analysis/direct-call-trace-source-inventory-contract-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
@@ -194,6 +199,7 @@ validation/0072-combined-admission-carriers-tlc.md
 validation/0073-direct-call-carrier-requirements-tlc.md
 validation/0074-direct-call-schema-compatibility-tlc.md
 validation/0075-direct-call-attachment-readiness-tlc.md
+validation/0076-direct-call-inventory-contract-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 implementation/0008-direct-call-attachment-readiness-gate.md
@@ -366,6 +372,15 @@ DirectCallAttachmentReadiness:
   timeout or return code, expose raw handles, create ABI, claim monitor
   verification, claim protection, or create a direct-only namespace that cannot
   refine into the future monitor-owned ring.
+
+DirectCallInventoryContract:
+  a future direct-call source inventory runner must default to source-only
+  mode. It may emit current source anchors, future semantic gaps, and tracefs
+  plan suggestions, but it must not modify Linux, require root, write tracefs,
+  attach probes, create public tracepoint ABI, hide missing anchors as
+  unnecessary, treat source or trace observations as authority, claim runtime
+  observation, expose raw handles, claim monitor verification, claim protection,
+  or change behavior.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -1025,6 +1040,7 @@ DEV-001 modern NIC refinement:
   ordering semantics
   model-supported for local monitor admission interface boundary semantics
   model-supported for no-code direct-call attachment readiness
+  model-supported for no-code direct-call trace/source inventory contract
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -1066,6 +1082,9 @@ direct-call no-code trace/source inventory planning that preserves
 observation_only=true, behavior_change=false, authority_claim=false,
 monitor_verified=false, public_tracepoint_abi=false, user_abi=false, and
 protection_claim=false
+source-only inventory runner implementation planning that emits only current
+source anchors, future gaps, and optional tracefs-plan suggestions; privileged
+tracefs execution requires a separate validation record
 ```
 
 Still forbidden:
@@ -1088,6 +1107,9 @@ PCI/devlink/IOMMU registration, or tracefs observation as LocalDomainDeviceLease
 using direct-call attachment rows, trace/source inventory, inert stubs,
 timeouts, or Linux-visible shadows as authority, ABI selection, monitor
 verification, or protection evidence
+using source-only inventory as runtime trace coverage, requiring root in
+source-only mode, writing tracefs in source-only mode, attaching probes, or
+creating public tracepoint ABI
 per-packet monitor traps as the normal data path
 ```
 
@@ -1125,10 +1147,13 @@ A behavior-changing prototype is not allowed until it has at least:
     cannot authorize, change behavior, mint Linux ledger/response state,
     refresh shadow state from timeout or return code, expose raw handles, create
     user/public tracepoint ABI, claim monitor verification, or claim protection
-14. review of the LocalDomainDeviceLease external gap before any distributed
+14. direct-call source inventory contract that keeps source-only scanning,
+    tracefs-plan suggestions, future gaps, output safety flags, and non-claims
+    separate before any runner implementation or tracefs execution
+15. review of the LocalDomainDeviceLease external gap before any distributed
     lease or cluster-local monitor claim; ClusterLease, scheduler placement,
     service admission, Linux device registration, and tracefs observation are
     not LocalDomainDeviceLease authority
-15. clear statement that Linux-only evidence is compatibility/prototype
+16. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

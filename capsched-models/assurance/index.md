@@ -103,6 +103,12 @@ Model-supported areas:
   injection containment, schema/ledger/shadow/ring references, and explicit
   rejection of authority, monitor verification, ABI, behavior-change, and
   protection claims
+- direct-call trace/source inventory contract semantics, including source-only
+  default mode, complete output rows, missing future anchors as gaps, tracefs
+  entries as future-plan suggestions, and explicit rejection of Linux
+  modification, root requirement, tracefs writes, probe attachment, public
+  tracepoint ABI, authority, monitor verification, behavior change, raw handle
+  exposure, and protection claims
 
 Prototype-evidenced areas:
 
@@ -386,6 +392,19 @@ Direct-call attachment readiness gate:
   only, not a Linux patch, monitor implementation, binary ABI, user ABI, public
   tracepoint ABI, performance, liveness, or protection evidence.
 
+Direct-call trace/source inventory contract:
+  analysis/0077 and validation/0076 define and check the no-code source-only
+  inventory contract for existing Linux source/tracing anchors. Safe TLC passed
+  with 6 generated states, 5 distinct states, and depth 5. Unsafe configs
+  produced expected counterexamples for source anchors as authority, behavior
+  change, Linux modification, missing anchor as no obligation, monitor
+  verification, incomplete outputs, probe attachment, protection claim, public
+  tracepoint ABI, raw handle exposure, source-only root requirement, runtime
+  observation claim, missing safety flags, trace plan as authority, and tracefs
+  writes. This is runner-contract evidence only, not a runner implementation,
+  Linux patch, tracefs execution, QEMU run, ABI, performance, liveness, or
+  protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -408,6 +427,8 @@ Forbidden:
   Do not treat direct-call attachment rows, probes, inert stubs, trace runners,
   Linux timeouts, Linux-visible shadows, or schema coverage as monitor
   authority, behavior approval, ABI selection, or protection evidence.
+  Do not treat a source-only inventory contract as tracefs execution, runtime
+  coverage, monitor verification, or permission to add public tracepoint ABI.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

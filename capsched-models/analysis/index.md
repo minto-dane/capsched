@@ -82,6 +82,7 @@ Updated: 2026-06-30
 | 0074 | Draft implementation-facing carrier requirements with model gate | Direct-Call Carrier Requirements Gate |
 | 0075 | Draft semantic schema candidate with model gate | Direct-Call Semantic Schema and Compatibility |
 | 0076 | Draft no-code attachment/readiness map with model gate | Direct-Call Attachment Readiness Map |
+| 0077 | Draft no-code inventory contract with model gate | Direct-Call Trace/Source Inventory Contract |
 
 ## Planned Analysis Notes
 
@@ -128,3 +129,4 @@ Updated: 2026-06-30
 | `direct-call-carrier-requirements-v1.json` | Draft implementation-facing requirements | Machine-readable direct-call carrier requirements for request envelopes, bounded copy, replay keys, ledger rows, response handles, errors, shadow generation, control lane, and future ring compatibility |
 | `direct-call-schema-compatibility-v1.json` | Draft semantic schema candidate | Machine-readable direct-call schema compatibility rules for schema negotiation, field criticality, downgrade rejection, response/ledger/error schemas, and ring-compatible namespaces |
 | `direct-call-attachment-readiness-v1.json` | Draft no-code attachment/readiness map | Machine-readable direct-call Linux/monitor attachment rows, safety flags, monitor responsibilities, inert stub constraints, failure-injection boundaries, and ring compatibility requirements |
+| `direct-call-trace-source-inventory-contract-v1.json` | Draft no-code inventory contract | Machine-readable source-only direct-call inventory runner contract, seed rows, output schema, safety flags, stop conditions, and optional tracefs-plan boundary |

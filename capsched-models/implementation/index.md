@@ -95,6 +95,13 @@ Validated formal inputs:
   - Pressure: direct-call readiness must remain observation-only and inert;
     Linux-side probes, stubs, timeouts, shadows, or source rows cannot become
     authority, monitor verification, ABI, behavior change, or protection.
+- `formal/0054-direct-call-inventory-contract-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: a direct-call source inventory runner must default to read-only
+    source mode and cannot modify Linux, require root, write tracefs, attach
+    probes, create public tracepoint ABI, treat observations as authority,
+    claim runtime coverage, expose raw handles, claim monitor verification, or
+    claim protection.
 
 Known future branch names:
 
@@ -122,6 +129,6 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  no-code direct-call trace/source inventory using existing source anchors and
-  tracing before any direct-call carrier or public tracepoint patch
+  source-only direct-call inventory runner under the N-104 contract before any
+  tracefs execution, direct-call carrier, or public tracepoint patch
 ```

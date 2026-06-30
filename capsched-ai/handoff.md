@@ -90,24 +90,22 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call attachment/readiness gate. Analysis/0076 defines no-code
-  Linux/monitor attachment rows, monitor-side responsibilities, readiness
-  safety flags, inert stub constraints, failure-injection boundaries,
-  trace/source observability, and future ring compatibility for the
-  schema-compatible direct-call carrier boundary. Implementation/0008 records
-  that no Linux behavior-changing patch is approved. Formal/0053 plus
-  validation/0075 safe TLC passed with 11 generated states, 10 distinct states,
-  and depth 10. Unsafe configs reject missing row coverage, authority claims,
-  monitor verification claims, behavior changes, user ABI, public tracepoint
-  ABI, protection claims, authorizing or behavior-changing stubs, probe
-  authority, Linux ledger/response minting, shadow refresh from timeout or
-  return code, live fault-injection effects, raw handle exposure, and
-  direct-only ring-incompatible namespaces.
+  Direct-call source inventory contract. Analysis/0077 defines the source-only
+  direct-call trace/source inventory contract, required outputs, required row
+  fields, seed rows mapped to N-103 attachment classes, safety flags, stop
+  conditions, and the separation between source-only inventory and optional
+  future tracefs-plan suggestions. Formal/0054 plus validation/0076 safe TLC
+  passed with 6 generated states, 5 distinct states, and depth 5. Unsafe
+  configs reject source anchors as authority, behavior change, Linux
+  modification, missing anchor as no obligation, monitor verification,
+  incomplete outputs, probe attachment, protection claim, public tracepoint
+  ABI, raw handle exposure, source-only root requirement, runtime observation
+  claim, missing safety flags, trace plan as authority, and tracefs writes.
 
 next focused risk:
-  Define the direct-call no-code trace/source inventory runner contract and
-  validation plan for existing Linux source/tracing anchors, without adding
-  Linux code or public tracepoints.
+  Implement and execute the source-only direct-call trace/source inventory
+  runner under the N-104 contract, without modifying Linux, requiring root,
+  writing tracefs, attaching probes, or creating public tracepoint ABI.
 ```
 
 That focused VF IRQ model is now checked:
