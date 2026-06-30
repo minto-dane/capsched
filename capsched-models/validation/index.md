@@ -82,6 +82,7 @@ Updated: 2026-06-30
 | 0074 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Schema Compatibility TLC |
 | 0075 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Attachment Readiness TLC |
 | 0076 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Inventory Contract TLC |
+| 0077 | Executed; source-only inventory emitted | Direct-Call Inventory Runner Result |
 
 ## Principles
 

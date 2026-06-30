@@ -125,6 +125,7 @@ validation/0075-direct-call-attachment-readiness-tlc.md
 
 formal/0054-direct-call-inventory-contract-model/
 validation/0076-direct-call-inventory-contract-tlc.md
+validation/0077-direct-call-inventory-run-result.md
 ```
 
 Source-observed and readiness evidence:
@@ -200,6 +201,7 @@ validation/0073-direct-call-carrier-requirements-tlc.md
 validation/0074-direct-call-schema-compatibility-tlc.md
 validation/0075-direct-call-attachment-readiness-tlc.md
 validation/0076-direct-call-inventory-contract-tlc.md
+validation/0077-direct-call-inventory-run-result.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 implementation/0008-direct-call-attachment-readiness-gate.md
@@ -381,6 +383,14 @@ DirectCallInventoryContract:
   unnecessary, treat source or trace observations as authority, claim runtime
   observation, expose raw handles, claim monitor verification, claim protection,
   or change behavior.
+
+DirectCallInventoryRunner:
+  the first runner execution emitted 10 rows from the current Linux source tree:
+  3 current inert CapSched anchors, 6 future direct-call gaps, and 1 trace-plan
+  row. Safety flag violations were zero. The run remained source-only, did not
+  require root, did not write tracefs, did not attach probes, did not modify
+  Linux, did not create public tracepoint ABI, and did not claim authority,
+  monitor verification, or protection.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -1041,6 +1051,8 @@ DEV-001 modern NIC refinement:
   model-supported for local monitor admission interface boundary semantics
   model-supported for no-code direct-call attachment readiness
   model-supported for no-code direct-call trace/source inventory contract
+  source-only direct-call inventory runner executed with zero safety-flag
+  violations
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -1085,6 +1097,8 @@ protection_claim=false
 source-only inventory runner implementation planning that emits only current
 source anchors, future gaps, and optional tracefs-plan suggestions; privileged
 tracefs execution requires a separate validation record
+source-only inventory broadening for additional existing trace event source
+declarations and symbol candidates, preserving N-104 safety flags
 ```
 
 Still forbidden:

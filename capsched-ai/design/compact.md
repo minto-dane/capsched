@@ -92,22 +92,19 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call source inventory contract. Analysis/0077 and formal/0054 define
-  the source-only direct-call trace/source inventory contract, required outputs,
-  row fields, seed rows, safety flags, stop conditions, and the boundary between
-  source-only inventory and optional future tracefs-plan suggestions.
-  Validation/0076 safe TLC passed with 6 generated states, 5 distinct states,
-  and depth 5; unsafe configs reject source anchors as authority, behavior
-  change, Linux modification, missing anchor as no obligation, monitor
-  verification, incomplete outputs, probe attachment, protection claim, public
-  tracepoint ABI, raw handle exposure, source-only root requirement, runtime
-  observation claim, missing safety flags, trace plan as authority, and tracefs
-  writes.
+  Direct-call source-only inventory runner. Validation/0077 executed
+  run-direct-call-inventory.sh. Run 20260630T215918Z emitted 10 ledger rows,
+  with 3 current inert CapSched anchors, 6 future direct-call gaps, 1 trace-plan
+  row, 7 total gap rows, and 0 safety-flag violations. The run remained
+  source-only: no Linux modification, no root requirement, no tracefs writes, no
+  probe attachment, no public tracepoint ABI, no authority claim, no monitor
+  verification claim, and no protection claim.
 
 next focused risk:
-  Implement and execute the source-only direct-call trace/source inventory
-  runner under the N-104 contract, without modifying Linux, requiring root,
-  writing tracefs, attaching probes, or creating public tracepoint ABI.
+  Broaden the source-only direct-call inventory to check additional existing
+  trace event source declarations and symbol candidates, still without root,
+  tracefs writes, probe attachment, Linux modification, public tracepoint ABI,
+  runtime coverage claims, or protection claims.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

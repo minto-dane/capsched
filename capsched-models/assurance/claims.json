@@ -259,7 +259,8 @@
         "E-DEV-MNIC-053",
         "E-DEV-MNIC-054",
         "E-DEV-MNIC-055",
-        "E-DEV-MNIC-056"
+        "E-DEV-MNIC-056",
+        "E-DEV-MNIC-057"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -627,7 +628,8 @@
         "E-DEV-MNIC-053",
         "E-DEV-MNIC-054",
         "E-DEV-MNIC-055",
-        "E-DEV-MNIC-056"
+        "E-DEV-MNIC-056",
+        "E-DEV-MNIC-057"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1435,6 +1437,16 @@
       "limitation": "Finite model checks source-only inventory constraints and rejects Linux modification, source-only root requirement, tracefs writes, public tracepoint ABI, probe attachment, incomplete outputs, missing safety flags, missing anchors as no obligation, source or trace observations as authority, runtime observation claims, raw handle exposure, monitor verification claims, protection claims, and behavior changes; it is not implementation, runtime coverage, performance, liveness, or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-057",
+      "kind": "source_only_runner_result",
+      "record": "capsched-models/validation/0077-direct-call-inventory-run-result.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Runner emitted 10 source-only rows with 3 current anchors, 6 future gaps, 1 trace-plan row, 0 safety flag violations, and no Linux modification, root requirement, tracefs write, probe attachment, public tracepoint ABI, authority claim, monitor verification, or protection claim; it is not tracefs runtime coverage, ABI approval, monitor implementation, performance, liveness, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1618,7 +1630,8 @@
         "E-DEV-MNIC-053",
         "E-DEV-MNIC-054",
         "E-DEV-MNIC-055",
-        "E-DEV-MNIC-056"
+        "E-DEV-MNIC-056",
+        "E-DEV-MNIC-057"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
@@ -1637,7 +1650,8 @@
         "Direct-call carrier requirements gate before binary layout or implementation.",
         "Direct-call semantic schema compatibility gate before binary layout or implementation.",
         "Direct-call no-code attachment readiness gate before Linux stub, monitor implementation, binary layout, user ABI, public tracepoint ABI, or protection claim.",
-        "Direct-call source-only inventory contract before runner implementation, tracefs execution, Linux stub, public tracepoint ABI, or protection claim."
+        "Direct-call source-only inventory contract before runner implementation, tracefs execution, Linux stub, public tracepoint ABI, or protection claim.",
+        "Direct-call source-only inventory runner execution and broadening, preserving no-root, no-tracefs-write, no-probe, no-public-tracepoint-ABI, and no-protection-claim rules."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

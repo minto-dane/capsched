@@ -90,22 +90,20 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call source inventory contract. Analysis/0077 defines the source-only
-  direct-call trace/source inventory contract, required outputs, required row
-  fields, seed rows mapped to N-103 attachment classes, safety flags, stop
-  conditions, and the separation between source-only inventory and optional
-  future tracefs-plan suggestions. Formal/0054 plus validation/0076 safe TLC
-  passed with 6 generated states, 5 distinct states, and depth 5. Unsafe
-  configs reject source anchors as authority, behavior change, Linux
-  modification, missing anchor as no obligation, monitor verification,
-  incomplete outputs, probe attachment, protection claim, public tracepoint
-  ABI, raw handle exposure, source-only root requirement, runtime observation
-  claim, missing safety flags, trace plan as authority, and tracefs writes.
+  Direct-call source-only inventory runner. Validation/0077 executed
+  capsched-models/validation/run-direct-call-inventory.sh against the current
+  Linux source tree. Run 20260630T215918Z emitted 10 ledger rows: 3 current
+  inert CapSched anchors, 6 future direct-call gaps, and 1 trace-plan row.
+  There were 0 safety-flag violations. The run preserved source_only=true,
+  requires_privilege=false, writes_tracefs=false, attaches_probes=false,
+  modifies_linux=false, public_tracepoint_abi=false, authority_claim=false,
+  monitor_verified=false, and protection_claim=false.
 
 next focused risk:
-  Implement and execute the source-only direct-call trace/source inventory
-  runner under the N-104 contract, without modifying Linux, requiring root,
-  writing tracefs, attaching probes, or creating public tracepoint ABI.
+  Broaden the source-only direct-call inventory to check additional existing
+  trace event source declarations and symbol candidates, still without root,
+  tracefs writes, probe attachment, Linux modification, public tracepoint ABI,
+  runtime coverage claims, or protection claims.
 ```
 
 That focused VF IRQ model is now checked:

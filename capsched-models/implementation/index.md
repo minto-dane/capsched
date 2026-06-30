@@ -129,6 +129,7 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  source-only direct-call inventory runner under the N-104 contract before any
-  tracefs execution, direct-call carrier, or public tracepoint patch
+  either broaden source-only direct-call inventory or create a separate
+  privileged tracefs runbook before any tracefs execution, direct-call carrier,
+  or public tracepoint patch
 ```

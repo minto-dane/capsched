@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-inventory-contract-modeled",
+    "current_phase": "direct-call-inventory-runner-executed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -203,7 +203,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-104 now defines the direct-call no-code trace/source inventory runner contract for existing Linux source/tracing anchors. Analysis/0077 plus direct-call-trace-source-inventory-contract-v1.json define source-only default mode, required outputs, required row fields, seed rows mapped to N-103 attachment classes, safety flags, stop conditions, and the boundary between source-only inventory and optional future tracefs-plan suggestions. Formal/0054 and validation/0076 checked the finite model: safe TLC passed with 6 generated states, 5 distinct states, and depth 5; unsafe configs produced expected counterexamples for source anchors as authority, behavior change, Linux modification, missing anchor as no obligation, monitor verification, incomplete outputs, probe attachment, protection claim, public tracepoint ABI, raw handle exposure, source-only root requirement, runtime observation claim, missing safety flags, trace plan as authority, and tracefs writes. This is a runner contract only, not a runner implementation, Linux patch, tracefs execution, QEMU run, ABI, monitor implementation, performance evidence, liveness proof, or protection evidence. No behavior changing scheduler, queue, workqueue, driver, monitor, ABI, or public tracepoint patch is approved. Next focused risk is N-105: implement and run the source-only direct-call inventory runner under the N-104 contract, without modifying Linux, requiring root, writing tracefs, attaching probes, or creating public tracepoint ABI.",
+    "current_focus": "N-105 implemented and executed the source-only direct-call trace/source inventory runner under the N-104 contract. The runner is capsched-models/validation/run-direct-call-inventory.sh. Validation/0077 records run 20260630T215918Z under build/direct-call-inventory. It emitted 10 ledger rows, 3 current inert CapSched anchors, 6 future direct-call gaps, 1 trace-plan row, 7 total gap rows, and 0 safety-flag violations. The run preserved source_only=true, requires_privilege=false, writes_tracefs=false, attaches_probes=false, modifies_linux=false, public_tracepoint_abi=false, authority_claim=false, monitor_verified=false, and protection_claim=false. This is source-only runner evidence, not tracefs runtime coverage, monitor verification, ABI approval, performance evidence, liveness proof, or production protection evidence. Linux remains unchanged. Next focused risk is N-106: broaden the source-only direct-call inventory to check more existing trace event source declarations and symbol candidates, still without root, tracefs writes, probe attachment, Linux modification, public tracepoint ABI, or protection claims.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -473,7 +473,10 @@
     "direct_call_inventory_contract_model": "capsched/capsched-models/formal/0054-direct-call-inventory-contract-model/README.md",
     "direct_call_inventory_contract_tla": "capsched/capsched-models/formal/0054-direct-call-inventory-contract-model/DirectCallInventoryContract.tla",
     "direct_call_inventory_contract_validation": "capsched/capsched-models/validation/0076-direct-call-inventory-contract-tlc.md",
-    "direct_call_inventory_contract_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-inventory-contract-20260630T215029Z"
+    "direct_call_inventory_contract_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-inventory-contract-20260630T215029Z",
+    "direct_call_inventory_runner": "capsched/capsched-models/validation/run-direct-call-inventory.sh",
+    "direct_call_inventory_result": "capsched/capsched-models/validation/0077-direct-call-inventory-run-result.md",
+    "direct_call_inventory_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T215918Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1942,9 +1945,19 @@
     {
       "id": "N-105",
       "text": "Implement and execute the source-only direct-call trace/source inventory runner under the N-104 contract, emitting ledger, tracefs-plan, gaps, and summary without modifying Linux, requiring root, writing tracefs, attaching probes, or creating public tracepoint ABI.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-104"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Implemented capsched-models/validation/run-direct-call-inventory.sh and executed it as source-only inventory. Run 20260630T215918Z emitted 10 ledger rows, 3 available current anchors, 6 future gaps, 1 trace-plan row, 7 gap rows, and 0 safety flag violations. The runner did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection."
+    },
+    {
+      "id": "N-106",
+      "text": "Broaden the source-only direct-call inventory to check additional existing trace event source declarations and symbol candidates, still without root, tracefs writes, probe attachment, Linux modification, public tracepoint ABI, runtime coverage claims, or protection claims.",
+      "status": "pending",
+      "blocked_by": [
+        "N-105"
       ]
     }
   ],

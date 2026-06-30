@@ -33,6 +33,7 @@
     "direct_call_schema_compatibility": "model_checked",
     "direct_call_attachment_readiness": "model_checked_readiness_only",
     "direct_call_inventory_contract": "model_checked_readiness_only",
+    "direct_call_inventory_runner": "source_only_executed",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -894,6 +895,24 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks source-only inventory constraints and rejects Linux modification, source-only root requirement, tracefs writes, public tracepoint ABI, probe attachment, incomplete outputs, missing safety flags, missing anchors as no obligation, source or trace observations as authority, runtime observation claims, raw handle exposure, monitor verification claims, protection claims, and behavior changes; it is not implementation, runtime coverage, performance, liveness, or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-057",
+      "class": "observation_only",
+      "path": "capsched-models/validation/0077-direct-call-inventory-run-result.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Source-only runner emitted 10 rows with 3 current anchors, 6 future gaps, 1 trace-plan row, 7 gap rows, and 0 safety flag violations. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection."
     }
   ],
   "subclaims": [
@@ -1141,7 +1160,8 @@
     "direct-call carrier requirements gate before binary layout, Linux stub, or monitor implementation",
     "direct-call semantic schema compatibility gate before binary layout, Linux stub, or monitor implementation",
     "direct-call no-code attachment-readiness gate before Linux stub, monitor implementation, binary layout, user ABI, public tracepoint ABI, or protection claim",
-    "direct-call source-only inventory contract before runner implementation, tracefs execution, Linux stub, public tracepoint ABI, or protection claim"
+    "direct-call source-only inventory contract before runner implementation, tracefs execution, Linux stub, public tracepoint ABI, or protection claim",
+    "direct-call source-only inventory runner execution and broadening while preserving no-root, no-tracefs-write, no-probe, no-public-tracepoint-ABI, and no-protection-claim rules"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",

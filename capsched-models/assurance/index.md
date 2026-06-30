@@ -115,6 +115,9 @@ Prototype-evidenced areas:
 - inert `CONFIG_CAPSCHED` build scaffolding
 - type-only authority names in Linux
 - build compatibility for `CONFIG_CAPSCHED=n` and `CONFIG_CAPSCHED=y`
+- source-only direct-call inventory runner output with no Linux modification,
+  no root requirement, no tracefs writes, no probe attachment, no public
+  tracepoint ABI, and no authority/protection claims
 
 Open production gaps:
 
@@ -404,6 +407,16 @@ Direct-call trace/source inventory contract:
   writes. This is runner-contract evidence only, not a runner implementation,
   Linux patch, tracefs execution, QEMU run, ABI, performance, liveness, or
   protection evidence.
+
+Direct-call source-only inventory runner:
+  validation/0077 executed the N-104 runner contract against the current Linux
+  source tree. The run emitted 10 ledger rows: 3 current anchors, 6 future gaps,
+  1 trace-plan row, 7 total gap rows, and 0 safety-flag violations. The result
+  preserved source_only=true, requires_privilege=false, writes_tracefs=false,
+  attaches_probes=false, modifies_linux=false, public_tracepoint_abi=false,
+  authority_claim=false, monitor_verified=false, and protection_claim=false.
+  This is source-only prototype evidence, not tracefs runtime coverage,
+  monitor verification, ABI approval, or protection evidence.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
