@@ -260,7 +260,8 @@
         "E-DEV-MNIC-054",
         "E-DEV-MNIC-055",
         "E-DEV-MNIC-056",
-        "E-DEV-MNIC-057"
+        "E-DEV-MNIC-057",
+        "E-DEV-MNIC-058"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -629,7 +630,8 @@
         "E-DEV-MNIC-054",
         "E-DEV-MNIC-055",
         "E-DEV-MNIC-056",
-        "E-DEV-MNIC-057"
+        "E-DEV-MNIC-057",
+        "E-DEV-MNIC-058"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1447,6 +1449,16 @@
       "limitation": "Runner emitted 10 source-only rows with 3 current anchors, 6 future gaps, 1 trace-plan row, 0 safety flag violations, and no Linux modification, root requirement, tracefs write, probe attachment, public tracepoint ABI, authority claim, monitor verification, or protection claim; it is not tracefs runtime coverage, ABI approval, monitor implementation, performance, liveness, or protection evidence."
     },
     {
+      "id": "E-DEV-MNIC-058",
+      "kind": "source_only_runner_result",
+      "record": "capsched-models/validation/0078-direct-call-inventory-expansion-result.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Runner emitted 41 source-only rows with 34 available anchors, 19 existing trace event declaration rows, 12 symbol candidate rows, 6 future gaps, 1 trace-plan row, 0 safety flag violations, and 41 overlay seed rows. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, runtime coverage, or protection; it is not ABI approval, monitor implementation, performance, liveness, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1631,7 +1643,8 @@
         "E-DEV-MNIC-054",
         "E-DEV-MNIC-055",
         "E-DEV-MNIC-056",
-        "E-DEV-MNIC-057"
+        "E-DEV-MNIC-057",
+        "E-DEV-MNIC-058"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",

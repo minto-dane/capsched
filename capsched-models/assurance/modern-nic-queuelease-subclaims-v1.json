@@ -34,6 +34,7 @@
     "direct_call_attachment_readiness": "model_checked_readiness_only",
     "direct_call_inventory_contract": "model_checked_readiness_only",
     "direct_call_inventory_runner": "source_only_executed",
+    "direct_call_inventory_expansion": "source_only_executed",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -913,6 +914,24 @@
         "DEV-NIC-010"
       ],
       "limitation": "Source-only runner emitted 10 rows with 3 current anchors, 6 future gaps, 1 trace-plan row, 7 gap rows, and 0 safety flag violations. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection."
+    },
+    {
+      "id": "E-DEV-MNIC-058",
+      "class": "observation_only",
+      "path": "capsched-models/validation/0078-direct-call-inventory-expansion-result.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Source-only runner emitted 41 rows with 34 available anchors, 19 existing trace event declarations, 12 symbol candidates, 6 future gaps, 1 trace-plan row, and 41 overlay seed rows. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, runtime coverage, or protection."
     }
   ],
   "subclaims": [

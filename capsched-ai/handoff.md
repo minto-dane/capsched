@@ -113,20 +113,20 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call source-only inventory runner. Validation/0077 executed
+  Direct-call source-only inventory expansion. Validation/0078 executed
   capsched-models/validation/run-direct-call-inventory.sh against the current
-  Linux source tree. Run 20260630T215918Z emitted 10 ledger rows: 3 current
-  inert CapSched anchors, 6 future direct-call gaps, and 1 trace-plan row.
-  There were 0 safety-flag violations. The run preserved source_only=true,
+  Linux source tree. Run 20260630T230536Z emitted 41 ledger rows: 34 available
+  anchors, 19 existing trace event declaration rows, 12 symbol candidate rows,
+  6 future gaps, 1 trace-plan row, and 41 overlay seed rows. There were 0
+  safety-flag violations. The run preserved source_only=true,
   requires_privilege=false, writes_tracefs=false, attaches_probes=false,
   modifies_linux=false, public_tracepoint_abi=false, authority_claim=false,
   monitor_verified=false, and protection_claim=false.
 
 next focused risk:
-  Broaden the source-only direct-call inventory to check additional existing
-  trace event source declarations and symbol candidates, still without root,
-  tracefs writes, probe attachment, Linux modification, public tracepoint ABI,
-  runtime coverage claims, or protection claims.
+  Create a drift-aware traceability ledger/checker from the N-106 overlay seed
+  so upstream Linux updates can classify path, symbol/pattern, blob, and
+  semantic-recheck drift without turning source anchors into authority.
 ```
 
 That focused VF IRQ model is now checked:

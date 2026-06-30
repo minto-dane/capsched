@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "long-horizon-first-implementation-policy-fixed",
+    "current_phase": "direct-call-inventory-expanded",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "ADR-0008 now fixes long-horizon-first implementation posture. Every slice, including L0, is designed backward from the monitor-backed datacenter OS target rather than as a local scheduler-only experiment. Small Linux changes remain desirable for upstream tracking, but patch-surface minimization is only a maintainability tactic and must not weaken the threat model or collapse future HyperTag Monitor authority into Linux-global mutable state. ADR-0007 still governs overlay traceability: N-* remains chronological, Linux anchors are non-authoritative by default, and a central N-to-artifact-to-Linux-to-claim drift ledger remains incomplete. N-106 remains pending: broaden source-only direct-call inventory under both ADR-0007 and ADR-0008.",
+    "current_focus": "N-106 broadened the source-only direct-call inventory under ADR-0007 and ADR-0008. The runner capsched-models/validation/run-direct-call-inventory.sh now emits 41 ledger rows, 34 available source anchors, 19 existing trace event declaration rows, 12 symbol candidate rows, 6 future gaps, 1 trace-plan row, 7 gap rows, 0 safety-flag violations, and 41 overlay seed rows. Validation/0078 records run 20260630T230536Z under build/direct-call-inventory. The run stayed source-only: no Linux modification, no root requirement, no tracefs write, no probe attachment, no public tracepoint ABI, no runtime coverage claim, no authority claim, no monitor verification, and no protection claim. Linux remains unchanged. Next focused risk is N-107: turn the N-106 overlay seed into a drift-aware traceability ledger/checker that can mark path, symbol/pattern, blob, and semantic recheck status after upstream Linux updates without turning source anchors into authority.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -480,7 +480,10 @@
     "direct_call_inventory_contract_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-inventory-contract-20260630T215029Z",
     "direct_call_inventory_runner": "capsched/capsched-models/validation/run-direct-call-inventory.sh",
     "direct_call_inventory_result": "capsched/capsched-models/validation/0077-direct-call-inventory-run-result.md",
-    "direct_call_inventory_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T215918Z"
+    "direct_call_inventory_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T215918Z",
+    "direct_call_inventory_expansion_result": "capsched/capsched-models/validation/0078-direct-call-inventory-expansion-result.md",
+    "direct_call_inventory_expansion_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T230536Z",
+    "direct_call_inventory_overlay_seed": "/media/nia/scsiusb/dev/linux-cap/build/direct-call-inventory/20260630T230536Z/overlay-seed.json"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1960,9 +1963,19 @@
     {
       "id": "N-106",
       "text": "Broaden the source-only direct-call inventory to check additional existing trace event source declarations and symbol candidates, and keep any new rows compatible with ADR-0007 overlay traceability, still without root, tracefs writes, probe attachment, Linux modification, public tracepoint ABI, runtime coverage claims, or protection claims.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-105"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Updated and executed run-direct-call-inventory.sh as a source-only expansion. Run 20260630T230536Z emitted 41 ledger rows, 34 available anchors, 19 existing trace event declaration rows, 12 symbol candidate rows, 6 future gaps, 1 trace-plan row, 7 gap rows, 0 safety flag violations, and 41 overlay seed rows. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim runtime coverage, authority, monitor verification, or protection."
+    },
+    {
+      "id": "N-107",
+      "text": "Create a drift-aware traceability ledger/checker from the N-106 overlay seed that can be rerun after upstream Linux updates to classify path, symbol/pattern, blob, and semantic recheck status while preserving source_only, authority_claim=false, monitor_verified=false, and protection_claim=false.",
+      "status": "pending",
+      "blocked_by": [
+        "N-106"
       ]
     }
   ],

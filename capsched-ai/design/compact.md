@@ -106,19 +106,19 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call source-only inventory runner. Validation/0077 executed
-  run-direct-call-inventory.sh. Run 20260630T215918Z emitted 10 ledger rows,
-  with 3 current inert CapSched anchors, 6 future direct-call gaps, 1 trace-plan
-  row, 7 total gap rows, and 0 safety-flag violations. The run remained
-  source-only: no Linux modification, no root requirement, no tracefs writes, no
-  probe attachment, no public tracepoint ABI, no authority claim, no monitor
-  verification claim, and no protection claim.
+  Direct-call source-only inventory expansion. Validation/0078 executed
+  run-direct-call-inventory.sh. Run 20260630T230536Z emitted 41 ledger rows,
+  with 34 available anchors, 19 existing trace event declaration rows, 12 symbol
+  candidate rows, 6 future gaps, 1 trace-plan row, 7 total gap rows, 41 overlay
+  seed rows, and 0 safety-flag violations. The run remained source-only: no
+  Linux modification, no root requirement, no tracefs writes, no probe
+  attachment, no public tracepoint ABI, no runtime coverage claim, no authority
+  claim, no monitor verification claim, and no protection claim.
 
 next focused risk:
-  Broaden the source-only direct-call inventory to check additional existing
-  trace event source declarations and symbol candidates, still without root,
-  tracefs writes, probe attachment, Linux modification, public tracepoint ABI,
-  runtime coverage claims, or protection claims.
+  Create a drift-aware traceability ledger/checker from the N-106 overlay seed.
+  It must classify upstream path/symbol/pattern/blob drift and semantic recheck
+  needs without treating source anchors as authority.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

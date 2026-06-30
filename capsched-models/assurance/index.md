@@ -118,6 +118,11 @@ Prototype-evidenced areas:
 - source-only direct-call inventory runner output with no Linux modification,
   no root requirement, no tracefs writes, no probe attachment, no public
   tracepoint ABI, and no authority/protection claims
+- source-only direct-call inventory expansion with 19 existing trace event
+  declaration rows, 12 symbol candidate rows, and 41 overlay seed rows, still
+  with no Linux modification, root requirement, tracefs write, probe
+  attachment, public tracepoint ABI, runtime coverage, authority claim, monitor
+  verification, or protection claim
 
 Open production gaps:
 

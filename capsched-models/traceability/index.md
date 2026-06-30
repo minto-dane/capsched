@@ -41,7 +41,9 @@ Existing indexes already cover artifact lists and some source-anchor inventories
 
 The project already has many Linux source maps, especially for scheduler,
 workqueue, io_uring, modern NIC, IOMMU, VFIO, and direct-call readiness work.
-What is missing is a central machine-readable overlay ledger that can answer:
+The N-106 direct-call inventory expansion emits `overlay-seed.json` as a local
+source-only seed. What is still missing is a central machine-readable overlay
+ledger that can answer across the whole project:
 
 ```text
 N item
