@@ -89,6 +89,9 @@ validation/0061-modern-nic-readiness-gate-tlc.md
 
 formal/0042-local-domain-device-lease-model/
 validation/0063-local-domain-device-lease-tlc.md
+
+formal/0043-local-domain-device-lease-admission-model/
+validation/0065-local-domain-device-lease-admission-tlc.md
 ```
 
 Source-observed and readiness evidence:
@@ -110,6 +113,7 @@ analysis/0062-modern-nic-hypertag-readiness-probe-map.md
 analysis/0063-modern-nic-hypertag-observation-ledger.md
 analysis/0064-local-domain-device-lease-compilation.md
 analysis/0065-local-domain-device-lease-observation-contract.md
+analysis/0066-local-domain-device-lease-admission-protocol.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -123,11 +127,13 @@ analysis/modern-nic-hypertag-readiness-probe-map-v1.json
 analysis/modern-nic-hypertag-observation-ledger-v1.json
 analysis/local-domain-device-lease-compilation-v1.json
 analysis/local-domain-device-lease-observation-contract-v1.json
+analysis/local-domain-device-lease-admission-protocol-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
 validation/0062-modern-nic-hypertag-observation-ledger-result.md
 validation/0064-local-domain-device-lease-observation-contract-result.md
+validation/0065-local-domain-device-lease-admission-tlc.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
 validation/run-modern-nic-hypertag-observation-ledger.sh
@@ -214,6 +220,13 @@ LocalDomainDeviceLeaseObservationContract:
   observation_only=true, authority_claim=false, monitor_verified=false,
   behavior_change=false, and protection_claim=false until a real monitor
   exists.
+
+LocalDomainDeviceLeaseAdmission:
+  admission failures are terminal for that attempt; local lease compile requires
+  checked cluster lease, matching service Domain, monitor-owned device root,
+  matching target Domain, target epoch/root budget, and local monitor compile.
+  Revoke requires new receipt embargo, derived receipt revoke, and local lease
+  revoke completion before reuse.
 ```
 
 The `ice` source map gives useful Linux anchors for each of these classes. It
@@ -761,6 +774,12 @@ Refinement:
   The runner emits 10 rows, checks 7 dependency rules, reports 0 dependency
   errors, reports 0 safety-flag violations, and preserves 9 forbidden authority
   collapses for pre-monitor planning.
+  validation/0065 models LocalDomainDeviceLease admission protocol failure and
+  revoke ordering. Safe TLC passes with 29 generated states, 21 distinct states,
+  and depth 14. Unsafe configs reject compile after failed cluster checks,
+  compile with service mismatch, compile with target mismatch, receipt before
+  local lease, new receipt during revoke, local lease reuse before revoke
+  completion, and audit-only admission/revoke acceptance.
   validation/0055 models stale XSK/page-pool completion quarantine. Safe TLC
   passes only when old XSK CQ completion, XSK free-list return, page-pool
   recycle, PageOwner transfer, packet generation reset, and queue reassignment
@@ -857,6 +876,8 @@ DEV-001 modern NIC refinement:
   compilation semantics
   observation-contract validated for LocalDomainDeviceLease root-management/
   local monitor row shape and dependency rules
+  model-supported for LocalDomainDeviceLease admission failure and revoke
+  ordering semantics
   source-observed for Intel ice anchors
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
@@ -890,6 +911,8 @@ device root, DMA MemoryView, IRQ route, root budget, compile result, and
 revocation status fields
 root-management/local monitor admission-protocol planning that consumes the
 LocalDomainDeviceLease observation contract without claiming enforcement
+failure-mode and revoke-ordering refinement for root-management/local monitor
+admission before any monitor ABI or Linux stub is selected
 ```
 
 Still forbidden:

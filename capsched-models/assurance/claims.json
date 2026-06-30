@@ -235,7 +235,9 @@
         "E-DEV-MNIC-029",
         "E-DEV-MNIC-030",
         "E-DEV-MNIC-031",
-        "E-DEV-MNIC-032"
+        "E-DEV-MNIC-032",
+        "E-DEV-MNIC-033",
+        "E-DEV-MNIC-034"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -579,7 +581,9 @@
         "E-DEV-MNIC-029",
         "E-DEV-MNIC-030",
         "E-DEV-MNIC-031",
-        "E-DEV-MNIC-032"
+        "E-DEV-MNIC-032",
+        "E-DEV-MNIC-033",
+        "E-DEV-MNIC-034"
       ],
       "gaps": [
         "No cluster control plane.",
@@ -1147,6 +1151,26 @@
       "limitation": "Validates required fields, dependency rules, and safety flags for the LocalDomainDeviceLease observation contract; it does not validate a real monitor, root-management plane, device root, receipt minting, or protection."
     },
     {
+      "id": "E-DEV-MNIC-033",
+      "kind": "analysis_protocol_map",
+      "record": "capsched-models/analysis/0066-local-domain-device-lease-admission-protocol.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Maps admission failure and revoke ordering requirements to the LocalDomainDeviceLease contract; it is not a monitor ABI, root-management implementation, or protection claim."
+    },
+    {
+      "id": "E-DEV-MNIC-034",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0065-local-domain-device-lease-admission-tlc.md",
+      "supports": [
+        "DEV-001",
+        "CLUSTER-001"
+      ],
+      "limitation": "Finite model checks admission failure terminality, service/target mismatch rejection, receipt ordering, revoke receipt embargo, no reuse before revoke completion, and audit-only rejection; it is not monitor, driver, cluster, or protection evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -1295,14 +1319,17 @@
         "E-DEV-MNIC-029",
         "E-DEV-MNIC-030",
         "E-DEV-MNIC-031",
-        "E-DEV-MNIC-032"
+        "E-DEV-MNIC-032",
+        "E-DEV-MNIC-033",
+        "E-DEV-MNIC-034"
       ],
       "allowed": [
         "Observation-only probe or no-code trace runner design.",
         "Inert type/stub scaffolding with no behavior change.",
         "Machine-readable receipt/carrier coverage ledger.",
         "Root-management/local monitor observation contract for LocalDomainDeviceLease fields.",
-        "No-behavior-change validator for LocalDomainDeviceLease contract dependencies and safety flags."
+        "No-behavior-change validator for LocalDomainDeviceLease contract dependencies and safety flags.",
+        "Admission-protocol model for failure and revoke ordering."
       ],
       "forbidden": [
         "Behavior-changing QueueLease, DMA, IRQ, VF, representor, offload, or service-work enforcement.",

@@ -21,6 +21,7 @@
     "hypertag_observation_ledger": "observation_only",
     "local_domain_device_lease_compilation": "model_checked",
     "local_domain_device_lease_observation_contract": "observation_contract_validated",
+    "local_domain_device_lease_admission_protocol": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -450,6 +451,42 @@
         "DEV-NIC-010"
       ],
       "limitation": "Validates the observation contract with 10 rows, 7 dependency rules, 0 dependency errors, 0 safety-flag violations, and 9 forbidden authority collapses; it is not protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-033",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0066-local-domain-device-lease-admission-protocol.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines the admission protocol sequence, failure terminality, mismatch handling, and revoke ordering before monitor ABI or Linux stub selection; it is not implementation evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-034",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0065-local-domain-device-lease-admission-tlc.md",
+      "supports": [
+        "DEV-NIC-001",
+        "DEV-NIC-002",
+        "DEV-NIC-003",
+        "DEV-NIC-004",
+        "DEV-NIC-005",
+        "DEV-NIC-006",
+        "DEV-NIC-007",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Finite model checks local lease admission failure and revoke ordering semantics; it is not root-management, monitor, driver, IOMMU, IRQ, or protection evidence."
     }
   ],
   "subclaims": [
@@ -685,7 +722,8 @@
     "HyperTag interface planning that names monitor-owned roots, service Domain policy-only authority, typed target endpoints, receipt minting, local cluster lease compilation, and no per-packet monitor trap",
     "implementation planning that names subclaim coverage",
     "root-management/local monitor observation-contract planning for LocalDomainDeviceLease rows, including cluster epoch, local monitor epoch, service Domain, target Domain, device root, DMA MemoryView, IRQ route, root budget, compile result, and revocation status",
-    "root-management/local monitor admission-protocol planning that consumes the LocalDomainDeviceLease observation contract without claiming enforcement"
+    "root-management/local monitor admission-protocol planning that consumes the LocalDomainDeviceLease observation contract without claiming enforcement",
+    "failure-mode and revoke-ordering refinement for root-management/local monitor admission before any monitor ABI or Linux stub is selected"
   ],
   "forbidden_next_work": [
     "behavior-changing NIC enforcement patches",

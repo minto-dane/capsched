@@ -91,6 +91,9 @@ Model-supported areas:
 - LocalDomainDeviceLease observation-contract row shape, dependency checks, and
   readiness safety flags for future root-management/local monitor admission
   evidence
+- LocalDomainDeviceLease admission protocol failure and revoke ordering
+  semantics, including terminal rejection, mismatch handling, receipt embargo,
+  and no reuse before revoke completion
 
 Prototype-evidenced areas:
 
@@ -238,6 +241,16 @@ LocalDomainDeviceLease observation contract:
   0 safety-flag violations, and preserved 9 forbidden authority collapses. This
   is observation-contract readiness only, not monitor implementation or
   protection evidence.
+
+LocalDomainDeviceLease admission protocol:
+  analysis/0066 and validation/0065 map the root-management/local monitor
+  admission protocol to the observation contract. Safe TLC passed with 29
+  generated states, 21 distinct states, and depth 14. Unsafe configs produced
+  expected counterexamples for compile after failed cluster checks, compile
+  with service mismatch, compile with target mismatch, receipt before local
+  lease, new receipt during revoke, local lease reuse before revoke completion,
+  and audit-only admission/revoke acceptance. This is model-supported semantics
+  only, not root-management, monitor, or protection evidence.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production

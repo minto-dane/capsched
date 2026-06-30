@@ -80,10 +80,18 @@ latest completed risk:
   dependency_rule_count=7, dependency_errors=0, safety_flag_violations=0, and
   forbidden_authority_collapse_count=9.
 
+latest completed risk:
+  LocalDomainDeviceLease admission protocol. Analysis/0066 maps happy path,
+  terminal failure paths, service/target mismatch handling, and revoke ordering
+  to the observation contract. Formal/0043 plus validation/0065 safe TLC passed
+  with 29 generated states, 21 distinct states, and depth 14. Unsafe configs
+  reject compile after failed cluster checks, compile with service mismatch,
+  compile with target mismatch, receipt before local lease, new receipt during
+  revoke, reuse before revoke completion, and audit-only acceptance.
+
 next focused risk:
-  Map a root-management/local monitor admission protocol to the
-  LocalDomainDeviceLease observation contract before any inert Linux probe/stub
-  proposal or monitor implementation.
+  Define the local monitor admission interface boundary map before any monitor
+  ABI, inert Linux probe/stub proposal, or implementation.
 ```
 
 That focused VF IRQ model is now checked:

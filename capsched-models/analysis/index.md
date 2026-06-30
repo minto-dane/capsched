@@ -71,6 +71,7 @@ Updated: 2026-06-30
 | 0063 | Draft observation ledger | Modern NIC HyperTag Observation Ledger |
 | 0064 | Draft external-gap map with model gate | Local Domain Device Lease Compilation |
 | 0065 | Draft observation contract | Local Domain Device Lease Observation Contract |
+| 0066 | Draft admission protocol with model gate | Local Domain Device Lease Admission Protocol |
 
 ## Planned Analysis Notes
 
@@ -106,3 +107,4 @@ Updated: 2026-06-30
 | `modern-nic-hypertag-observation-ledger-v1.json` | Draft observation ledger seed | Machine-readable source-anchor seed for the modern NIC HyperTag observation ledger runner |
 | `local-domain-device-lease-compilation-v1.json` | Draft external-gap map | Machine-readable root-management/local monitor compilation boundary for LocalDomainDeviceLease |
 | `local-domain-device-lease-observation-contract-v1.json` | Draft observation contract | Machine-readable LocalDomainDeviceLease row contract, dependency rules, safety flags, and forbidden authority collapses |
+| `local-domain-device-lease-admission-protocol-v1.json` | Draft admission protocol | Machine-readable root-management/local monitor admission path, failure modes, revoke ordering, and invariant list |

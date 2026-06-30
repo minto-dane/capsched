@@ -48,6 +48,7 @@ Updated: 2026-06-30
 | 0040 | Checked with safe pass and expected unsafe counterexamples | Modern NIC HyperTag Split Model |
 | 0041 | Checked with safe pass and expected unsafe counterexamples | Modern NIC HyperTag Readiness Gate Model |
 | 0042 | Checked with safe pass and expected unsafe counterexamples | Local Domain Device Lease Model |
+| 0043 | Checked with safe pass and expected unsafe counterexamples | Local Domain Device Lease Admission Model |
 
 ## Planned
 

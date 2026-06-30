@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "id": "local-domain-device-lease-admission-protocol-v1",
+  "analysis": "0066-local-domain-device-lease-admission-protocol.md",
+  "date": "2026-06-30",
+  "purpose": "Map a root-management/local monitor admission protocol to the LocalDomainDeviceLease observation contract, including failure modes, revoke ordering, and forbidden authority collapses.",
+  "status": {
+    "behavior_change_approved": false,
+    "monitor_implementation_present": false,
+    "protection_claim": false
+  },
+  "actors": [
+    "root_management",
+    "local_hypertag_monitor",
+    "linux_service_domain",
+    "target_domain"
+  ],
+  "happy_path": [
+    "IssueClusterLease",
+    "ReceiveClusterLeaseOnNode",
+    "MonitorCheckClusterLease",
+    "RootManagementAdmitServiceDomain",
+    "MonitorBindDeviceRoot",
+    "MonitorCheckTargetEpochBudget",
+    "MonitorCompileLocalDomainDeviceLease",
+    "ServiceDomainRequestDeviceReceipts",
+    "TargetDomainReceiveTypedEndpoints",
+    "MonitorRequestRevoke",
+    "MonitorEmbargoNewReceipts",
+    "MonitorRevokeDerivedReceipts",
+    "MonitorCompleteRevoke"
+  ],
+  "failure_paths": [
+    {
+      "id": "bad_cluster_signature",
+      "terminal": true,
+      "forbidden_after_failure": [
+        "MonitorCompileLocalDomainDeviceLease",
+        "ServiceDomainRequestDeviceReceipts",
+        "TargetDomainReceiveTypedEndpoints"
+      ]
+    },
+    {
+      "id": "stale_cluster_epoch",
+      "terminal": true,
+      "forbidden_after_failure": [
+        "MonitorCompileLocalDomainDeviceLease",
+        "ServiceDomainRequestDeviceReceipts",
+        "TargetDomainReceiveTypedEndpoints"
+      ]
+    },
+    {
+      "id": "cluster_lease_revoked",
+      "terminal": true,
+      "forbidden_after_failure": [
+        "MonitorCompileLocalDomainDeviceLease",
+        "ServiceDomainRequestDeviceReceipts",
+        "TargetDomainReceiveTypedEndpoints"
+      ]
+    },
+    {
+      "id": "service_domain_mismatch",
+      "terminal": true,
+      "forbidden_after_failure": [
+        "MonitorCompileLocalDomainDeviceLease",
+        "ServiceDomainRequestDeviceReceipts",
+        "TargetDomainReceiveTypedEndpoints"
+      ]
+    },
+    {
+      "id": "device_root_missing",
+      "terminal": true,
+      "forbidden_after_failure": [
+        "MonitorCompileLocalDomainDeviceLease",
+        "ServiceDomainRequestDeviceReceipts",
+        "TargetDomainReceiveTypedEndpoints"
+      ]
+    },
+    {
+      "id": "target_domain_mismatch",
+      "terminal": true,
+      "forbidden_after_failure": [
+        "MonitorCompileLocalDomainDeviceLease",
+        "ServiceDomainRequestDeviceReceipts",
+        "TargetDomainReceiveTypedEndpoints"
+      ]
+    },
+    {
+      "id": "target_epoch_or_budget_invalid",
+      "terminal": true,
+      "forbidden_after_failure": [
+        "MonitorCompileLocalDomainDeviceLease",
+        "ServiceDomainRequestDeviceReceipts",
+        "TargetDomainReceiveTypedEndpoints"
+      ]
+    }
+  ],
+  "revoke_ordering": [
+    "MonitorRequestRevoke",
+    "MonitorEmbargoNewReceipts",
+    "MonitorRevokeDerivedReceipts",
+    "MonitorCompleteRevoke"
+  ],
+  "forbidden_revoke_shortcuts": [
+    "new receipt after revoke request",
+    "typed endpoint delivery after revoke request",
+    "local lease reuse before revoke completion",
+    "audit-only revoke completion"
+  ],
+  "non_authority_inputs": [
+    "ClusterLease text",
+    "scheduler placement",
+    "service Domain admission",
+    "Linux PCI probe",
+    "Linux devlink registration",
+    "Linux IOMMU attach trace",
+    "Linux cgroup/root budget shadow",
+    "receipt request log",
+    "typed endpoint delivery log",
+    "audit-only monitor log"
+  ],
+  "required_invariants": [
+    "NoLocalLeaseAfterRejection",
+    "NoLocalLeaseWithoutCheckedClusterLease",
+    "NoLocalLeaseWithoutMatchingServiceDomain",
+    "NoLocalLeaseWithoutMonitorDeviceRoot",
+    "NoLocalLeaseWithoutMatchingTargetDomain",
+    "NoLocalLeaseWithoutTargetEpochBudget",
+    "NoReceiptBeforeLocalLease",
+    "NoEndpointBeforeLocalLease",
+    "NoNewReceiptDuringRevoke",
+    "NoReuseBeforeRevokeComplete",
+    "NoAuditOnlyAdmissionOrRevoke"
+  ],
+  "observation_contract": "local-domain-device-lease-observation-contract-v1.json"
+}
