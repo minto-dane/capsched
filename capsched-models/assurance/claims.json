@@ -229,7 +229,9 @@
         "E-DEV-MNIC-023",
         "E-DEV-MNIC-024",
         "E-DEV-MNIC-025",
-        "E-DEV-MNIC-026"
+        "E-DEV-MNIC-026",
+        "E-DEV-MNIC-027",
+        "E-DEV-MNIC-028"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -529,7 +531,9 @@
         "E-DEV-MNIC-017",
         "E-DEV-MNIC-019",
         "E-DEV-MNIC-021",
-        "E-DEV-MNIC-023"
+        "E-DEV-MNIC-023",
+        "E-DEV-MNIC-027",
+        "E-DEV-MNIC-028"
       ],
       "gaps": [
         "All observed state is Linux-mutable.",
@@ -1071,6 +1075,26 @@
         "DEV-001"
       ],
       "limitation": "Finite model checks readiness-gate ordering and rejects behavior approval before gate satisfaction, probe-as-authority, non-inert stubs, missing coverage, raw endpoint stubs, and protection claims; it is not real Linux patch compatibility or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-027",
+      "kind": "analysis_observation_ledger",
+      "record": "capsched-models/analysis/0063-modern-nic-hypertag-observation-ledger.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines the observation-only source-anchor ledger and no-code runner shape for modern NIC HyperTag receipt/carrier rows; it is not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-028",
+      "kind": "observation_only_readiness",
+      "record": "capsched-models/validation/0062-modern-nic-hypertag-observation-ledger-result.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Static runner emitted 37 ledger rows with 36 available source anchors, 1 expected LocalDomainDeviceLease external gap, and 0 safety flag violations; all rows remain observation_only=true, authority_claim=false, monitor_verified=false, behavior_change=false, and protection_claim=false."
     },
     {
       "id": "E-L0-002",

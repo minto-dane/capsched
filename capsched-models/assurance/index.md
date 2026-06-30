@@ -81,6 +81,8 @@ Model-supported areas:
   and receipt-minting split semantics
 - modern NIC HyperTag implementation-readiness gate semantics, explicitly
   limited to observation-only probes and inert stubs
+- modern NIC HyperTag observation-ledger source-anchor emission with readiness
+  safety flags preserved
 
 Prototype-evidenced areas:
 
@@ -98,7 +100,8 @@ Open production gaps:
 - real IOMMU, IRQ, and queue revocation
 - monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, and typed
   queue ledger roots
-- observation-only modern NIC HyperTag probe/stub patch or no-code trace runner
+- privileged modern NIC HyperTag no-code tracefs run or observation-only Linux
+  probe/stub patch
 - service-domain TCB reduction
 - exploit-containment and cost-efficiency evaluation
 
@@ -201,6 +204,13 @@ Modern NIC HyperTag readiness gate model:
   satisfaction, probe-as-authority, non-inert stubs, missing receipt/carrier
   coverage, raw endpoint exposure through stubs, and protection claims from
   readiness evidence.
+
+Modern NIC HyperTag observation ledger:
+  validation/0062 emitted 37 observation-ledger rows from the current Linux
+  source tree, with 36 available anchors, 1 expected missing row, and 0 safety
+  flag violations. The only missing row is LocalDomainDeviceLease, which is
+  outside upstream Linux and remains a high-severity root-management/local
+  monitor compilation gap.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production

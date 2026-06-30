@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "id": "modern-nic-hypertag-observation-ledger-v1",
+  "analysis": "0063-modern-nic-hypertag-observation-ledger.md",
+  "date": "2026-06-30",
+  "purpose": "Concrete observation-only ledger seed for modern NIC HyperTag receipt/carrier source anchors and no-code trace planning.",
+  "global_constraints": {
+    "observation_only": true,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "behavior_change": false,
+    "protection_claim": false
+  },
+  "output_files": [
+    "observation-ledger.tsv",
+    "tracefs-plan.txt",
+    "semantic-gaps.tsv",
+    "summary.txt"
+  ],
+  "receipt_or_carrier_rows": [
+    {
+      "id": "LocalDomainDeviceLease",
+      "expected_linux_status": "not_in_linux",
+      "minimal_anchors": [
+        "external root-management admission",
+        "external monitor local lease compilation"
+      ],
+      "forbidden_shortcut": "signed cluster lease text or scheduler placement is not local monitor authority"
+    },
+    {
+      "id": "DeviceRootReceipt",
+      "minimal_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_main.c:.probe = ice_probe",
+        "drivers/net/ethernet/intel/ice/ice_main.c:pci_register_driver",
+        "drivers/net/ethernet/intel/ice/devlink/devlink.c:ice_devlink_register",
+        "include/trace/events/iommu.h:attach_device_to_domain"
+      ],
+      "forbidden_shortcut": "PCI, devlink, or IOMMU visibility is not DeviceRootReceipt"
+    },
+    {
+      "id": "VfEpochReceipt",
+      "minimal_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_vf_lib.c:ice_get_vf_by_id",
+        "drivers/net/ethernet/intel/ice/ice_vf_lib.c:ice_reset_vf",
+        "drivers/net/ethernet/intel/ice/ice_vf_lib.h:ICE_VF_STATE_ACTIVE",
+        "drivers/net/ethernet/intel/ice/ice_vf_lib.h:ICE_VF_STATE_DIS"
+      ],
+      "forbidden_shortcut": "vf_id, ice_vf reachability, state bits, or reset completion is not VF epoch authority"
+    },
+    {
+      "id": "QueueLeaseReceipt",
+      "minimal_anchors": [
+        "drivers/net/ethernet/intel/ice/ice.h:struct ice_vsi",
+        "drivers/net/ethernet/intel/ice/ice.h:struct ice_q_vector",
+        "drivers/net/ethernet/intel/ice/ice_base.c:netif_napi_add_config",
+        "drivers/net/ethernet/intel/ice/virt/queues.c:ice_vc_cfg_qs_msg",
+        "drivers/net/ethernet/intel/ice/ice_base.c:ice_qp_dis"
+      ],
+      "forbidden_shortcut": "ring, q_vector, NAPI, VF queue id, or queue disable visibility is not QueueLeaseReceipt"
+    },
+    {
+      "id": "DmaMemoryViewReceipt",
+      "minimal_anchors": [
+        "drivers/net/ethernet/intel/ice/virt/queues.c:dma_ring_addr",
+        "drivers/net/ethernet/intel/ice/ice_base.c:ice_setup_tx_ctx",
+        "drivers/net/ethernet/intel/ice/ice_base.c:ice_setup_rx_ctx",
+        "include/trace/events/dma.h:dma_map",
+        "include/trace/events/dma.h:dma_unmap",
+        "include/trace/events/iommu.h:map",
+        "include/trace/events/iommu.h:unmap",
+        "drivers/net/ethernet/intel/ice/ice_xsk.c:xsk_tx_completed",
+        "net/core/page_pool.c:page_pool_put"
+      ],
+      "forbidden_shortcut": "Linux DMA/IOMMU/XSK/page-pool visibility is not DmaMemoryViewReceipt"
+    },
+    {
+      "id": "IrqRouteReceipt",
+      "minimal_anchors": [
+        "drivers/net/ethernet/intel/ice/virt/queues.c:ice_vc_cfg_irq_map_msg",
+        "include/trace/events/irq.h:irq_handler_entry",
+        "include/trace/events/irq.h:irq_handler_exit",
+        "include/trace/events/iommu.h:attach_device_to_domain"
+      ],
+      "forbidden_shortcut": "vector mapping, IRQ handler visibility, or teardown is not IrqRouteReceipt"
+    },
+    {
+      "id": "LedgerRootReceipt",
+      "minimal_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_txrx.c:next_to_watch",
+        "drivers/net/ethernet/intel/ice/ice_txrx.c:writel_relaxed",
+        "drivers/net/ethernet/intel/ice/ice_trace.h:ice_clean_tx_irq",
+        "drivers/net/ethernet/intel/ice/ice_trace.h:ice_clean_rx_irq",
+        "drivers/net/ethernet/intel/ice/ice_xsk.c:xsk_tx_completed",
+        "net/core/page_pool.c:page_pool_put"
+      ],
+      "forbidden_shortcut": "ring index, tracepoint visibility, NAPI context, or worker context is not a ledger root"
+    },
+    {
+      "id": "TypedEndpointCarriers",
+      "minimal_anchors": [
+        "drivers/net/ethernet/intel/ice/virt/virtchnl.c:ice_vc_process_vf_msg",
+        "drivers/net/ethernet/intel/ice/virt/queues.c:ice_vc_cfg_qs_msg",
+        "drivers/net/ethernet/intel/ice/virt/queues.c:ice_vc_cfg_irq_map_msg",
+        "drivers/net/ethernet/intel/ice/virt/queues.c:ice_vc_cfg_q_bw",
+        "drivers/net/ethernet/intel/ice/virt/fdir.c:ice_vc_add_fdir_fltr",
+        "drivers/net/ethernet/intel/ice/ice_eswitch.c:ice_eswitch_port_start_xmit",
+        "drivers/net/ethernet/intel/ice/ice_tc_lib.c:ice_add_cls_flower",
+        "drivers/net/ethernet/intel/ice/ice_main.c:ice_service_task"
+      ],
+      "forbidden_shortcut": "virtchnl validation, callback reachability, or service worker identity is not endpoint authority"
+    },
+    {
+      "id": "RevokeAndHandoffReceipts",
+      "minimal_anchors": [
+        "drivers/net/ethernet/intel/ice/ice_base.c:ice_qp_dis",
+        "drivers/net/ethernet/intel/ice/ice_vf_lib.c:ice_reset_vf",
+        "drivers/net/ethernet/intel/ice/virt/fdir.c:ctx_done",
+        "drivers/net/ethernet/intel/ice/ice_xsk.c:xsk_buff_free",
+        "drivers/net/ethernet/intel/ice/virt/virtchnl.c:ice_vc_process_vf_msg"
+      ],
+      "forbidden_shortcut": "reset completion, service completion, ring cleanup, packet free, or mailbox state is not revoke/handoff safety"
+    }
+  ],
+  "tracefs_plan_is_not_executed_by_runner": true
+}

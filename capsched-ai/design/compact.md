@@ -63,9 +63,15 @@ latest completed focused risk:
   probes, inert stubs, and no behavior-changing approval before gate
   satisfaction.
 
+latest completed focused risk:
+  Modern NIC HyperTag observation ledger and no-code source runner, with 37
+  rows emitted, 36 available anchors, 1 expected LocalDomainDeviceLease gap, and
+  0 safety-flag violations.
+
 next focused risk:
-  Design the observation-only Linux probe/stub ledger and no-code trace runner
-  for the modern NIC HyperTag path without behavior-changing patches.
+  Resolve the LocalDomainDeviceLease external gap and choose the next
+  non-behavior-changing step: privileged no-code tracefs run, inert Linux
+  probe/stub proposal, or root-management/local monitor admission model.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -300,6 +306,26 @@ analysis/0062 + implementation/0007 + formal/0041 + validation/0061:
   design rule:
     readiness may scope a future observation patch; it is not a monitor receipt,
     authority, implementation, or production protection claim.
+
+analysis/0063 + validation/0062:
+  Modern NIC HyperTag observation ledger and no-code source runner emitted.
+  latest run:
+    build/modern-nic-hypertag-observation-ledger/20260630T044602Z
+  result:
+    ledger_rows=37
+    available_rows=36
+    missing_rows=1
+    gap_rows=1
+    safety_flag_violations=0
+  flags:
+    observation_only=true
+    authority_claim=false
+    monitor_verified=false
+    behavior_change=false
+    protection_claim=false
+  only missing row:
+    LocalDomainDeviceLease is external to upstream Linux; root-management and
+    local monitor compilation observation remains a high-severity gap.
 ```
 
 ## Core Architecture

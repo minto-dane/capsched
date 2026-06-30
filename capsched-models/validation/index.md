@@ -67,6 +67,7 @@ Updated: 2026-06-30
 | 0059 | Safe model passed; unsafe models produced expected counterexamples | VF Epoch Handoff TLC |
 | 0060 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC HyperTag Split TLC |
 | 0061 | Safe model passed; unsafe models produced expected counterexamples | Modern NIC HyperTag Readiness Gate TLC |
+| 0062 | Executed; observation-only source ledger emitted | Modern NIC HyperTag Observation Ledger Result |
 
 ## Principles
 

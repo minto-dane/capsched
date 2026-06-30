@@ -59,9 +59,15 @@ latest completed risk:
   probes, inert stubs, and no behavior-changing approval before gate
   satisfaction.
 
+latest completed risk:
+  Modern NIC HyperTag observation ledger and no-code source runner, with 37
+  rows emitted, 36 available anchors, 1 expected LocalDomainDeviceLease gap, and
+  0 safety-flag violations.
+
 next focused risk:
-  Design the observation-only Linux probe/stub ledger and no-code trace runner
-  for the modern NIC HyperTag path without behavior-changing patches.
+  Resolve the LocalDomainDeviceLease external gap and choose the next
+  non-behavior-changing step: privileged no-code tracefs run, inert Linux
+  probe/stub proposal, or root-management/local monitor admission model.
 ```
 
 That focused VF IRQ model is now checked:
@@ -341,10 +347,32 @@ analysis/0062 + implementation/0007 + formal/0041 + validation/0061:
     a probe or stub may help find future receipt consumption points, but cannot
     be a receipt, authority, monitor verification, or protection claim.
 
+analysis/0063 + validation/0062:
+  Modern NIC HyperTag observation ledger and no-code source runner added.
+  runner:
+    validation/run-modern-nic-hypertag-observation-ledger.sh
+  latest run:
+    build/modern-nic-hypertag-observation-ledger/20260630T044602Z
+  result:
+    ledger_rows=37
+    available_rows=36
+    missing_rows=1
+    gap_rows=1
+    safety_flag_violations=0
+    observation_only=true
+    authority_claim=false
+    monitor_verified=false
+    behavior_change=false
+    protection_claim=false
+  only missing row:
+    LocalDomainDeviceLease is outside upstream Linux and remains a high-severity
+    external root-management/local monitor compilation gap.
+
 next focused risk:
-  Design the observation-only Linux probe/stub ledger and no-code trace runner
-  for the modern NIC HyperTag path. This should select the smallest source
-  anchors and validation commands, still with no behavior-changing patches.
+  Resolve the LocalDomainDeviceLease external gap and choose whether the next
+  step is a privileged no-code tracefs run, an inert Linux probe/stub proposal,
+  or a root-management/local monitor admission model. No behavior-changing Linux
+  patch is approved.
 ```
 The current scheduler-authority refinement frontier is now:
 

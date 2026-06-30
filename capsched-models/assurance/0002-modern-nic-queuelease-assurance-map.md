@@ -104,6 +104,7 @@ analysis/0059-ice-vf-mailbox-carrier-source-map.md
 analysis/0060-ice-vf-epoch-handoff-source-map.md
 analysis/0061-modern-nic-hypertag-interface-map.md
 analysis/0062-modern-nic-hypertag-readiness-probe-map.md
+analysis/0063-modern-nic-hypertag-observation-ledger.md
 analysis/ice-modern-nic-queuelease-source-map-v1.json
 analysis/ice-modern-nic-revoke-source-map-v1.json
 analysis/monitor-dma-iommu-memoryview-invalidation-source-map-v1.json
@@ -114,11 +115,14 @@ analysis/ice-vf-mailbox-carrier-source-map-v1.json
 analysis/ice-vf-epoch-handoff-source-map-v1.json
 analysis/modern-nic-hypertag-interface-map-v1.json
 analysis/modern-nic-hypertag-readiness-probe-map-v1.json
+analysis/modern-nic-hypertag-observation-ledger-v1.json
 validation/0045-queue-descriptor-ledger-observation-plan.md
 validation/0047-ice-modern-nic-readiness-result.md
 validation/0051-ice-revoke-readiness-result.md
+validation/0062-modern-nic-hypertag-observation-ledger-result.md
 
 implementation/0007-modern-nic-hypertag-readiness-gate.md
+validation/run-modern-nic-hypertag-observation-ledger.sh
 ```
 
 Top-level assurance evidence:
@@ -719,6 +723,10 @@ Refinement:
   only when receipt/carrier inventory, observation probe mapping, observation-
   only probe classification, inert stubs, no raw endpoint exposure, model gate,
   and assurance linkage are all present before behavior-changing approval.
+  validation/0062 emits the first modern NIC HyperTag observation ledger from
+  the current Linux source tree. It records 37 rows, 36 available anchors, 1
+  expected missing LocalDomainDeviceLease row, 1 high-severity gap, and 0
+  safety-flag violations.
   validation/0055 models stale XSK/page-pool completion quarantine. Safe TLC
   passes only when old XSK CQ completion, XSK free-list return, page-pool
   recycle, PageOwner transfer, packet generation reset, and queue reassignment
@@ -815,6 +823,7 @@ DEV-001 modern NIC refinement:
   observation-only for trace/readiness
   observation-only for selected ice revoke readiness
   readiness-only for HyperTag probe/stub planning
+  observation-only for modern NIC HyperTag source-anchor ledger emission
   not protection-evidenced
   not implementation-approved
 ```
@@ -835,6 +844,8 @@ policy-only authority, typed target endpoints, receipt minting, and no
 per-packet monitor trap
 HyperTag readiness planning that maps receipt/carrier rows to observation-only
 Linux probes or inert stubs, with authority_claim=false and behavior_change=false
+privileged no-code tracefs run using the emitted tracefs plan, if operator
+approval/root execution is available
 ```
 
 Still forbidden:
@@ -885,6 +896,8 @@ A behavior-changing prototype is not allowed until it has at least:
     the monitor slow path
 12. HyperTag readiness gate proof that probes/stubs are observation-only,
     coverage-complete, inert, raw-endpoint-free, and not protection evidence
-13. clear statement that Linux-only evidence is compatibility/prototype
+13. review of the LocalDomainDeviceLease external gap before any distributed
+    lease or cluster-local monitor claim
+14. clear statement that Linux-only evidence is compatibility/prototype
    evidence, not hypervisor-grade protection evidence
 ```

@@ -18,6 +18,7 @@
     "vf_epoch_handoff": "model_checked",
     "hypertag_service_split": "model_checked",
     "hypertag_readiness_gate": "model_checked_readiness_only",
+    "hypertag_observation_ledger": "observation_only",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -357,6 +358,24 @@
         "DEV-NIC-010"
       ],
       "limitation": "Finite model checks implementation-readiness gate ordering and rejects behavior approval, probe-as-authority, non-inert stubs, missing coverage, raw endpoint stubs, and protection claims; it is not real Linux compatibility or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-027",
+      "class": "readiness_gate",
+      "path": "capsched-models/analysis/0063-modern-nic-hypertag-observation-ledger.md",
+      "supports": [
+        "DEV-NIC-010"
+      ],
+      "limitation": "Defines the source-anchor ledger and no-code runner shape; it is observation planning, not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-028",
+      "class": "observation_only",
+      "path": "capsched-models/validation/0062-modern-nic-hypertag-observation-ledger-result.md",
+      "supports": [
+        "DEV-NIC-010"
+      ],
+      "limitation": "Static runner emitted 37 rows with 36 available anchors, 1 expected LocalDomainDeviceLease external gap, and 0 safety flag violations; it is source observation only."
     }
   ],
   "subclaims": [
