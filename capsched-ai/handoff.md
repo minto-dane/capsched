@@ -42,9 +42,12 @@ latest completed risk:
   Modern NIC ServiceWork carrier and service/caller authority intersection
   for reset/PTP/DPLL/eswitch/LAG/firmware/maintenance work.
 
+latest completed risk:
+  VF mailbox QueueControl/DMA/IRQ/budget/FDIR carrier semantics.
+
 next focused risk:
-  VF mailbox QueueControl/DMA/IRQ carrier semantics, especially
-  VIRTCHNL_OP_CONFIG_VSI_QUEUES and related queue/IRQ/budget/FDIR operations.
+  VF identity epoch and SR-IOV/VF reset/reassignment handoff so old vf_id, VSI,
+  queue, IRQ, DMA, or FDIR state cannot carry authority into a new Domain.
 ```
 
 That focused VF IRQ model is now checked:
@@ -209,6 +212,37 @@ next focused risk:
   VF mailbox QueueControl/DMA/IRQ carrier semantics. The highest-risk source
   anchor is ice_vc_cfg_qs_msg() copying VF-provided DMA ring addresses into
   queue state before queue enable/configuration.
+
+analysis/0059 + formal/0038 + validation/0058:
+  VF mailbox queue/DMA/IRQ/budget/FDIR carrier substrate mapped and modeled.
+  source substrate:
+    ice_vc_process_vf_msg() validates virtchnl messages and opcode allowlists
+    ice_vc_cfg_qs_msg() copies VF-provided tx/rx dma_ring_addr into ring state
+    ice_setup_tx_ctx() and ice_setup_rx_ctx() put ring->dma into HW queue base
+    ice_vc_cfg_irq_map_msg() maps VF vectors to queue interrupts
+    ice_vc_cfg_q_bw() and ice_vc_cfg_q_quanta() program queue shaping
+    ice_vc_add_fdir_fltr()/del plus ctx_irq/ctx_done complete asynchronously
+  safe TLC:
+    42 generated states, 23 distinct states, depth 7
+  unsafe counterexamples:
+    virtchnl validation/opcode allowlist as queue authority
+    DMA ring base without MemoryView/IOMMU authority
+    queue enable without frozen queue config
+    IRQ map without route authority
+    queue budget/quanta without budget authority
+    FDIR write without OffloadCap
+    FDIR completion without frozen context
+    queue/FDIR effects after revoke
+  design rule:
+    VF mailbox effects need VFRequestCarrier plus effect-specific
+    QueueConfig, QueueEnable, IrqRoute, QueueBudget, or FdirOffload carrier.
+    virtchnl validation, opcode allowlist, dma_ring_addr, queue/vector checks,
+    QoS caps, and FDIR ctx_done are not authority.
+
+next focused risk:
+  VF identity epoch and SR-IOV/VF reset/reassignment handoff. This targets the
+  old/new epoch gap: reused vf_id, VSI, queue, IRQ, DMA, or FDIR state must not
+  carry old Domain authority into a new assignment.
 ```
 The current scheduler-authority refinement frontier is now:
 

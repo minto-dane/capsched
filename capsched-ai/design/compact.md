@@ -47,9 +47,12 @@ latest completed focused risk:
   Modern NIC ServiceWork carrier and service/caller authority intersection
   for reset/PTP/DPLL/eswitch/LAG/firmware/maintenance work.
 
+latest completed focused risk:
+  VF mailbox QueueControl/DMA/IRQ/budget/FDIR carrier semantics.
+
 next focused risk:
-  VF mailbox QueueControl/DMA/IRQ carrier semantics, especially
-  VIRTCHNL_OP_CONFIG_VSI_QUEUES and related queue/IRQ/budget/FDIR operations.
+  VF identity epoch and SR-IOV/VF reset/reassignment handoff so old vf_id, VSI,
+  queue, IRQ, DMA, or FDIR state cannot carry authority into a new Domain.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -183,6 +186,31 @@ analysis/0058 + formal/0037 + validation/0057:
     caller-derived effect needs a typed carrier, effect-specific cap, fresh
     epochs, QueueLease/QueueControl/Offload/PTP/DPLL/DMA/IRQ/lower-lease
     authority as applicable, and service or caller-charged budget.
+
+analysis/0059 + formal/0038 + validation/0058:
+  ICE VF mailbox carrier substrate mapped and modeled.
+  source substrate:
+    virtchnl validation and opcode allowlists in ice_vc_process_vf_msg()
+    VF-provided tx/rx dma_ring_addr copied in ice_vc_cfg_qs_msg()
+    ring->dma packed into Tx/Rx hardware queue context in ice_base.c
+    VF vector-to-queue IRQ mapping in ice_vc_cfg_irq_map_msg()
+    queue bandwidth/quanta programming in ice_vc_cfg_q_bw()/cfg_q_quanta()
+    FDIR add/delete and ctx_irq/ctx_done async completion
+  safe TLC:
+    42 generated states, 23 distinct states, depth 7
+  unsafe counterexamples:
+    virtchnl validation/opcode allowlist as authority
+    DMA ring base without MemoryView/IOMMU authority
+    queue enable without frozen queue config
+    IRQ map without route authority
+    queue budget/quanta without budget authority
+    FDIR write without OffloadCap
+    FDIR completion without frozen context
+    effects after revoke
+  design rule:
+    VF mailbox validity is not authority. Queue config, DMA ring base, queue
+    enable, IRQ map, queue budget/quanta, FDIR write, and FDIR async completion
+    each need an explicit carrier and fresh epoch.
 ```
 
 ## Core Architecture
@@ -676,10 +704,11 @@ carriers, not ambient worker authority.
 Next project-wide sequence:
 
 ```text
-1. Map and model VF mailbox QueueControl/DMA/IRQ carrier semantics in ice.
-2. Keep all NIC work analysis/model-only until monitor-backed roots and typed
+1. Use analysis/0059 + formal/0038 as the VF mailbox carrier gate.
+2. Map and model VF identity epoch and reset/reassignment handoff in ice.
+3. Keep all NIC work analysis/model-only until monitor-backed roots and typed
    carriers exist.
-3. Return to wider endpoint capability models and exec/resource inheritance
+4. Return to wider endpoint capability models and exec/resource inheritance
    before any behavior-changing L0 runnable admission slice.
 ```
 

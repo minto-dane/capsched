@@ -1,0 +1,308 @@
+{
+  "schema_version": 1,
+  "date": "2026-06-30",
+  "scope": "Intel ice VF mailbox QueueControl, DMA ring-address, IRQ route, queue budget, and FDIR/offload carrier semantics",
+  "status": "source_observed_only",
+  "authority_root": {
+    "required": "service Domain authority plus VF/Domain request carrier and operation-specific QueueLease, QueueControl, DMA MemoryView, IRQ route, QueueBudget, or Offload authority",
+    "not_authority": [
+      "virtchnl_vc_validate_vf_msg success",
+      "ice_vc_is_opcode_allowed success",
+      "vf object reachability",
+      "vf->cfg_lock serialization",
+      "ICE_VF_STATE_ACTIVE",
+      "ICE_VF_VSI_ID equality",
+      "queue id range validation",
+      "ring length validation",
+      "vector id range validation",
+      "driver_caps negotiation",
+      "opcodes_allowlist bit",
+      "rxq_ena bit",
+      "txq_ena bit",
+      "ICE_VF_STATE_QS_ENA",
+      "FDIR ctx_irq valid bit",
+      "FDIR ctx_done valid bit",
+      "FDIR timer or IRQ completion",
+      "service task flush"
+    ]
+  },
+  "carrier_classes": [
+    {
+      "name": "VFRequestCarrier",
+      "required_fields": [
+        "vf_domain_id",
+        "vf_id",
+        "vf_epoch",
+        "request_sequence_or_mailbox_generation",
+        "virtchnl_opcode",
+        "payload_digest",
+        "service_domain_id",
+        "service_epoch",
+        "service_budget_or_caller_charged_ticket"
+      ],
+      "forbidden_shortcut": "VF object reachability, active state, cfg_lock, virtchnl validation, or opcode allowlist as request authority"
+    },
+    {
+      "name": "QueueConfigCarrier",
+      "required_fields": [
+        "vf_request_carrier",
+        "queuelease_id",
+        "queue_epoch",
+        "tx_rx_queue_ids",
+        "ring_length",
+        "descriptor_ring_dma_address_class",
+        "dma_memoryview_iommu_receipt",
+        "queuecontrol_authority"
+      ],
+      "forbidden_shortcut": "valid queue id, valid ring length, or dma_ring_addr field as DMA MemoryView authority"
+    },
+    {
+      "name": "QueueEnableCarrier",
+      "required_fields": [
+        "vf_request_carrier",
+        "queuelease_id",
+        "queue_epoch",
+        "prior_queue_config_generation",
+        "irq_route_status_if_interrupts_enabled"
+      ],
+      "forbidden_shortcut": "rxq_ena, txq_ena, ICE_VF_STATE_QS_ENA, or successful queue stop as QueueLease authority"
+    },
+    {
+      "name": "IrqRouteCarrier",
+      "required_fields": [
+        "vf_request_carrier",
+        "irq_route_id",
+        "irq_route_epoch",
+        "vf_vector_id",
+        "queue_bitmap",
+        "event_delivery_endpoint_or_isolated_msi_route",
+        "interrupt_remapping_receipt_when_production_backed"
+      ],
+      "forbidden_shortcut": "vector_id range check, q_vector lookup, or ice_cfg_interrupt success as IRQ route ownership"
+    },
+    {
+      "name": "QueueBudgetCarrier",
+      "required_fields": [
+        "vf_request_carrier",
+        "queuelease_id",
+        "queue_epoch",
+        "budget_or_rate_authority",
+        "traffic_class",
+        "peak_committed_limits_or_quanta_profile"
+      ],
+      "forbidden_shortcut": "QoS caps, rate fields, or traffic class checks as queue budget authority"
+    },
+    {
+      "name": "FdirOffloadCarrier",
+      "required_fields": [
+        "vf_request_carrier",
+        "offload_or_queuecontrol_cap",
+        "rule_generation",
+        "flow_id",
+        "destination_queue_or_action_digest",
+        "ctrl_vsi_generation",
+        "async_completion_context_id"
+      ],
+      "forbidden_shortcut": "FDIR rule validation, ctx_irq, ctx_done, timer, IRQ, or service flush as frozen OffloadCap"
+    }
+  ],
+  "source_anchors": [
+    {
+      "id": "ICE-VF-MBX-001",
+      "component": "vf-mailbox-ingress",
+      "files": [
+        "drivers/net/ethernet/intel/ice/virt/virtchnl.c"
+      ],
+      "symbols": [
+        "ice_vc_process_vf_msg",
+        "virtchnl_vc_validate_vf_msg",
+        "ice_vc_is_opcode_allowed"
+      ],
+      "lines": [
+        "2736-2935",
+        "2771-2778",
+        "2789"
+      ],
+      "supports": [
+        "vf_object_reachability_observation",
+        "virtchnl_validation_observation",
+        "opcode_allowlist_observation",
+        "operation_dispatch_observation"
+      ],
+      "limitation": "No non-forgeable VF Domain request carrier, service budget carrier, or operation-specific authority root is present."
+    },
+    {
+      "id": "ICE-VF-MBX-002",
+      "component": "resource-negotiation-and-allowlist",
+      "files": [
+        "drivers/net/ethernet/intel/ice/virt/virtchnl.c",
+        "drivers/net/ethernet/intel/ice/virt/allowlist.c"
+      ],
+      "symbols": [
+        "ice_vc_get_vf_res_msg",
+        "ice_vc_set_caps_allowlist",
+        "ice_vc_set_working_allowlist",
+        "ice_vc_is_opcode_allowed"
+      ],
+      "lines": [
+        "virtchnl.c:250-352",
+        "allowlist.c:31-37",
+        "allowlist.c:82-95",
+        "allowlist.c:123-134"
+      ],
+      "supports": [
+        "driver_caps_negotiation_observation",
+        "working_queue_irq_opcode_allowlist_observation",
+        "fdir_opcode_allowlist_observation",
+        "qos_opcode_allowlist_observation"
+      ],
+      "limitation": "Caps and allowlists are compatibility policy inputs, not QueueLease, QueueControl, QueueBudget, IRQ, DMA, or Offload authority."
+    },
+    {
+      "id": "ICE-VF-MBX-003",
+      "component": "queue-config-and-dma-ring-base",
+      "files": [
+        "drivers/net/ethernet/intel/ice/virt/queues.c",
+        "drivers/net/ethernet/intel/ice/ice_base.c"
+      ],
+      "symbols": [
+        "ice_vc_cfg_qs_msg",
+        "ice_setup_tx_ctx",
+        "ice_setup_rx_ctx",
+        "ice_vsi_cfg_txq"
+      ],
+      "lines": [
+        "queues.c:749-914",
+        "queues.c:812",
+        "queues.c:833",
+        "ice_base.c:343-381",
+        "ice_base.c:460-525",
+        "ice_base.c:1039-1080"
+      ],
+      "supports": [
+        "vf_provided_dma_ring_address_copy_observation",
+        "tx_context_dma_base_observation",
+        "rx_context_dma_base_observation",
+        "queue_context_programming_observation"
+      ],
+      "limitation": "Queue validation does not prove DMA MemoryView/IOMMU ownership or QueueLease freshness."
+    },
+    {
+      "id": "ICE-VF-MBX-004",
+      "component": "queue-enable-disable",
+      "files": [
+        "drivers/net/ethernet/intel/ice/virt/queues.c"
+      ],
+      "symbols": [
+        "ice_vc_ena_qs_msg",
+        "ice_vc_dis_qs_msg",
+        "ice_vf_ena_rxq_interrupt",
+        "ice_vf_ena_txq_interrupt"
+      ],
+      "lines": [
+        "234-312",
+        "361-451",
+        "199-226"
+      ],
+      "supports": [
+        "queue_enable_observation",
+        "queue_disable_observation",
+        "interrupt_cause_enable_observation",
+        "rxq_txq_enabled_bitmap_observation"
+      ],
+      "limitation": "Enabled bits and disable success are Linux state and not QueueLease epoch or revoke proof."
+    },
+    {
+      "id": "ICE-VF-MBX-005",
+      "component": "irq-route-map",
+      "files": [
+        "drivers/net/ethernet/intel/ice/virt/queues.c"
+      ],
+      "symbols": [
+        "ice_vc_cfg_irq_map_msg",
+        "ice_cfg_interrupt",
+        "ice_cfg_rxq_interrupt",
+        "ice_cfg_txq_interrupt"
+      ],
+      "lines": [
+        "463-504",
+        "513-581"
+      ],
+      "supports": [
+        "vf_vector_queue_map_observation",
+        "q_vector_assignment_observation",
+        "queue_interrupt_programming_observation"
+      ],
+      "limitation": "Vector and queue range validation does not prove monitor-backed IRQ route ownership."
+    },
+    {
+      "id": "ICE-VF-MBX-006",
+      "component": "queue-budget-and-quanta",
+      "files": [
+        "drivers/net/ethernet/intel/ice/virt/queues.c"
+      ],
+      "symbols": [
+        "ice_vc_cfg_q_bw",
+        "ice_vf_cfg_qs_bw",
+        "ice_vc_cfg_q_quanta",
+        "ice_vf_cfg_q_quanta_profile"
+      ],
+      "lines": [
+        "70-112",
+        "129-150",
+        "593-665",
+        "677-739"
+      ],
+      "supports": [
+        "vf_queue_rate_request_observation",
+        "queue_bandwidth_hw_programming_observation",
+        "quanta_profile_programming_observation"
+      ],
+      "limitation": "QoS opcode allowance and queue id checks are not queue budget authority."
+    },
+    {
+      "id": "ICE-VF-MBX-007",
+      "component": "fdir-offload-and-async-completion",
+      "files": [
+        "drivers/net/ethernet/intel/ice/virt/fdir.c",
+        "drivers/net/ethernet/intel/ice/virt/fdir.h"
+      ],
+      "symbols": [
+        "ice_vc_validate_fdir_fltr",
+        "ice_vc_add_fdir_fltr",
+        "ice_vc_del_fdir_fltr",
+        "ice_vc_fdir_set_irq_ctx",
+        "ice_vc_fdir_irq_handler",
+        "ice_vf_fdir_timer",
+        "ice_flush_fdir_ctx"
+      ],
+      "lines": [
+        "fdir.c:1223-1245",
+        "fdir.c:1436",
+        "fdir.c:1453-1525",
+        "fdir.c:1801-1866",
+        "fdir.c:1880-1907",
+        "fdir.c:2085-2242",
+        "fdir.c:2311-2419",
+        "fdir.h:17-40"
+      ],
+      "supports": [
+        "fdir_rule_validation_observation",
+        "fdir_hardware_write_observation",
+        "fdir_async_context_observation",
+        "fdir_service_flush_observation"
+      ],
+      "limitation": "FDIR ctx_irq/ctx_done does not carry a frozen OffloadCap or VF request carrier."
+    }
+  ],
+  "required_model_rejections": [
+    "queue config authorized by virtchnl validation and opcode allowlist alone",
+    "DMA ring base programmed without MemoryView/IOMMU authority",
+    "queue enable before fresh QueueLease and queue config generation",
+    "IRQ map programmed without IRQ route authority",
+    "queue budget/quanta programmed without budget authority",
+    "FDIR hardware rule installed without OffloadCap",
+    "FDIR async completion accepted without frozen request context",
+    "queue or FDIR effect after VF/queue revoke without fresh reauthorization"
+  ]
+}

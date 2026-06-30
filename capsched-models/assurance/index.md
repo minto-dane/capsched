@@ -74,6 +74,7 @@ Model-supported areas:
 - representor-to-lower QueueLease derivation semantics
 - modern NIC service-work carrier and service/caller authority intersection
   semantics
+- VF mailbox queue/DMA/IRQ/budget/FDIR carrier semantics
 
 Prototype-evidenced areas:
 
@@ -160,6 +161,15 @@ Modern NIC ServiceWork carrier model:
   without fresh lower QueueLease, and reset/rebuild replay after revoke without
   fresh authorization.
 
+VF mailbox carrier model:
+  safe TLC passed with 42 generated states and 23 distinct states. Unsafe
+  configs produced expected counterexamples for virtchnl validation as queue
+  authority, DMA ring base programming without MemoryView/IOMMU authority,
+  queue enable without frozen queue configuration, IRQ map without route
+  authority, queue budget/quanta programming without budget authority, FDIR
+  write without OffloadCap, FDIR completion without frozen context, and effects
+  after revoke.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -168,6 +178,7 @@ Forbidden:
   representor stop, bridge FDB/VLAN success, TC redirect target, metadata_dst,
   devlink reload, worker identity, ICE_SERVICE_SCHED, virtchnl allowlists,
   PTP/DPLL callback reachability, LAG lower_dev rewrites, or reset/rebuild
-  replay as QueueLease authority or revoke authority. Do not implement
-  behavior-changing QueueLease enforcement from this evidence alone.
+  replay, VF-provided dma_ring_addr, queue id checks, vector id checks, QoS
+  caps, or FDIR ctx_done as QueueLease authority or revoke authority. Do not
+  implement behavior-changing QueueLease enforcement from this evidence alone.
 ```

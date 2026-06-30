@@ -221,7 +221,9 @@
         "E-DEV-MNIC-015",
         "E-DEV-MNIC-016",
         "E-DEV-MNIC-017",
-        "E-DEV-MNIC-018"
+        "E-DEV-MNIC-018",
+        "E-DEV-MNIC-019",
+        "E-DEV-MNIC-020"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -307,7 +309,9 @@
         "E-DEV-MNIC-011",
         "E-DEV-MNIC-012",
         "E-DEV-MNIC-013",
-        "E-DEV-MNIC-014"
+        "E-DEV-MNIC-014",
+        "E-DEV-MNIC-019",
+        "E-DEV-MNIC-020"
       ],
       "gaps": [
         "No monitor-backed MemoryView for packet pages.",
@@ -317,7 +321,8 @@
         "No real monitor-backed DMA invalidation receipt implementation.",
         "No real IOMMU invalidation latency or ordering proof.",
         "No stale XSK/page-pool quarantine implementation.",
-        "No packet generation reset or retag implementation."
+        "No packet generation reset or retag implementation.",
+        "No VF mailbox QueueConfigCarrier or DMA ring-address carrier implementation."
       ],
       "forbidden_l0": true
     },
@@ -356,14 +361,18 @@
         "E-DEV-MNIC-004",
         "E-DEV-MNIC-005",
         "E-DEV-MNIC-015",
-        "E-DEV-MNIC-016"
+        "E-DEV-MNIC-016",
+        "E-DEV-MNIC-019",
+        "E-DEV-MNIC-020"
       ],
       "gaps": [
         "No QueueControlCap.",
         "No monitor QueueTag check.",
         "No VF/SF lifecycle authority model.",
         "No devlink policy proof.",
-        "No TC/switchdev OffloadCap or rule-generation proof."
+        "No TC/switchdev OffloadCap or rule-generation proof.",
+        "No VF mailbox QueueControl carrier implementation.",
+        "No VF mailbox queue budget/quanta carrier implementation."
       ],
       "forbidden_l0": true
     },
@@ -403,7 +412,9 @@
         "E-DEV-MNIC-004",
         "E-DEV-MNIC-005",
         "E-DEV-MNIC-017",
-        "E-DEV-MNIC-018"
+        "E-DEV-MNIC-018",
+        "E-DEV-MNIC-019",
+        "E-DEV-MNIC-020"
       ],
       "gaps": [
         "No typed service work carrier.",
@@ -411,7 +422,8 @@
         "No service/caller authority intersection.",
         "No cancellation/quarantine rule for stale queued work.",
         "No service-domain budget charging rule.",
-        "No reset/rebuild replay reauthorization implementation."
+        "No reset/rebuild replay reauthorization implementation.",
+        "No frozen VF request carrier propagation into async FDIR completion."
       ],
       "forbidden_l0": true
     },
@@ -439,7 +451,9 @@
         "E-DEV-MNIC-015",
         "E-DEV-MNIC-016",
         "E-DEV-MNIC-017",
-        "E-DEV-MNIC-018"
+        "E-DEV-MNIC-018",
+        "E-DEV-MNIC-019",
+        "E-DEV-MNIC-020"
       ],
       "gaps": [
         "No queue revoke epoch implementation.",
@@ -452,7 +466,8 @@
         "No stale XSK/page-pool quarantine or packet generation reset implementation.",
         "No representor lower QueueLease invalidation or TC/offload stale-rule removal receipt implementation.",
         "No service-work carrier merge policy proof.",
-        "No reset/rebuild replay reauthorization proof."
+        "No reset/rebuild replay reauthorization proof.",
+        "No VF mailbox request carrier and async FDIR context implementation."
       ],
       "forbidden_l0": true
     },
@@ -468,7 +483,8 @@
         "E-DEV-MNIC-011",
         "E-DEV-MNIC-013",
         "E-DEV-MNIC-015",
-        "E-DEV-MNIC-017"
+        "E-DEV-MNIC-017",
+        "E-DEV-MNIC-019"
       ],
       "gaps": [
         "All observed state is Linux-mutable.",
@@ -901,6 +917,33 @@
       "limitation": "Finite model checks service/caller authority intersection, per-effect carriers, coalesced service-loop merge hazards, PTP/DPLL control carriers, bridge/LAG/offload lower-lease requirements, and reset/rebuild replay freshness; it is not real driver or monitor enforcement evidence."
     },
     {
+      "id": "E-DEV-MNIC-019",
+      "kind": "analysis_source_map",
+      "record": "capsched-models/analysis/0059-ice-vf-mailbox-carrier-source-map.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-004",
+        "DEV-NIC-006",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Maps ice VF mailbox queue config, VF-provided descriptor-ring DMA address, queue enable, IRQ map, queue bandwidth/quanta, FDIR offload, and FDIR async completion substrate; it is source observation, not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-020",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0058-vf-mailbox-carrier-tlc.md",
+      "supports": [
+        "DEV-001",
+        "DEV-NIC-004",
+        "DEV-NIC-006",
+        "DEV-NIC-008",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks VF mailbox request, QueueControl, DMA ring-address, IRQ route, queue budget, FDIR offload, async completion, and revoke carrier separation; it is not real virtchnl, ice, IOMMU, MSI-X, or monitor enforcement evidence."
+    },
+    {
       "id": "E-L0-002",
       "kind": "linux_build_validation",
       "record": "capsched-models/validation/0014-l0-slice0b-build-run.md",
@@ -969,6 +1012,10 @@
     "Worker identity, ICE_SERVICE_SCHED, virtchnl opcode allowlists, PTP/DPLL callback reachability, bridge/FDB events, LAG lower_dev rewrites, or reset/rebuild replay create service-work carrier authority.",
     "Coalesced service work can use a mutable last-caller carrier as authority.",
     "VF mailbox queue/control effects can be authorized by virtchnl validation without a VF/Domain request carrier, DMA MemoryView proof, IRQ route proof, and QueueLease or QueueControl epoch.",
+    "VF-provided dma_ring_addr plus queue/ring validation is DMA MemoryView authority.",
+    "Vector id checks, q_vector lookup, or ice_cfg_interrupt success is monitor-backed IRQ route authority.",
+    "QoS caps, queue id checks, traffic class checks, or queue rate fields are queue budget authority.",
+    "FDIR ctx_irq, ctx_done, timer completion, IRQ completion, or service flush is frozen OffloadCap or VF request carrier authority.",
     "Linux netdev down/reset proves monitor-grade queue revoke.",
     "IRQ route invalidation proves DMA reachability revocation.",
     "dma_unmap_*(), xsk_pool_dma_unmap(), iommufd IOAS unmap, VFIO unmap callback, iommu_unmap_fast(), queued IOVA flush, page unpin, or refcount release proves monitor-grade PageOwner transfer safety.",

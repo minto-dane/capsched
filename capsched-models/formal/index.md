@@ -43,6 +43,7 @@ Updated: 2026-06-30
 | 0035 | Checked with safe pass and expected unsafe counterexamples | XSK and Page-Pool Quarantine Model |
 | 0036 | Checked with safe pass and expected unsafe counterexamples | Representor Lower QueueLease Model |
 | 0037 | Checked with safe pass and expected unsafe counterexamples | Modern NIC ServiceWork Carrier Model |
+| 0038 | Checked with safe pass and expected unsafe counterexamples | VF Mailbox Carrier Model |
 
 ## Planned
 

@@ -14,6 +14,7 @@
     "xsk_pagepool_quarantine": "model_checked",
     "representor_lower_queuelease": "model_checked",
     "servicework_carrier": "model_checked",
+    "vf_mailbox_carrier": "model_checked",
     "production_protection": "not_evidenced",
     "implementation_approved": false
   },
@@ -229,6 +230,31 @@
         "DEV-NIC-009"
       ],
       "limitation": "Finite model checks service/caller authority intersection, per-effect carriers, coalesced service-loop merge hazards, PTP/DPLL control carriers, bridge/LAG/offload lower-lease requirements, and reset/rebuild replay freshness; not real driver or monitor enforcement evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-019",
+      "class": "source_observed",
+      "path": "capsched-models/analysis/0059-ice-vf-mailbox-carrier-source-map.md",
+      "supports": [
+        "DEV-NIC-004",
+        "DEV-NIC-006",
+        "DEV-NIC-008",
+        "DEV-NIC-009",
+        "DEV-NIC-010"
+      ],
+      "limitation": "Source map for ice VF mailbox queue config, VF-provided descriptor-ring DMA address, queue enable, IRQ map, queue bandwidth/quanta, FDIR offload, and FDIR async completion substrate; not authority or protection evidence."
+    },
+    {
+      "id": "E-DEV-MNIC-020",
+      "class": "model_checked",
+      "path": "capsched-models/validation/0058-vf-mailbox-carrier-tlc.md",
+      "supports": [
+        "DEV-NIC-004",
+        "DEV-NIC-006",
+        "DEV-NIC-008",
+        "DEV-NIC-009"
+      ],
+      "limitation": "Finite model checks VF mailbox request, QueueControl, DMA ring-address, IRQ route, queue budget, FDIR offload, async completion, and revoke carrier separation; not real virtchnl, ice, IOMMU, MSI-X, or monitor enforcement evidence."
     }
   ],
   "subclaims": [
@@ -291,7 +317,8 @@
         "real monitor-backed DMA invalidation receipt implementation",
         "real IOMMU invalidation latency/order proof",
         "stale XSK/page-pool quarantine implementation",
-        "packet generation reset/retag implementation"
+        "packet generation reset/retag implementation",
+        "VF mailbox QueueConfigCarrier and DMA ring-address carrier implementation"
       ],
       "forbidden": [
         "Linux DMA mapping success as Domain authorization proof",
@@ -299,7 +326,8 @@
         "dma_unmap_* or xsk_pool_dma_unmap return as DMA revocation proof",
         "iommu_unmap_fast or queued IOVA flush as stale-translation invalidation proof",
         "iommufd IOAS unmap or VFIO dma_unmap callback as PageOwner transfer proof",
-        "xsk_tx_completed, xsk_buff_free, or page_pool recycle as packet return proof"
+        "xsk_tx_completed, xsk_buff_free, or page_pool recycle as packet return proof",
+        "VF-provided dma_ring_addr plus queue/ring validation as DMA MemoryView authority"
       ]
     },
     {
@@ -329,13 +357,17 @@
         "monitor QueueTag check",
         "VF/SF lifecycle authority model",
         "devlink policy proof",
-        "TC/switchdev OffloadCap and rule-generation proof"
+        "TC/switchdev OffloadCap and rule-generation proof",
+        "VF mailbox QueueControl carrier implementation",
+        "VF mailbox queue budget/quanta carrier implementation"
       ],
       "forbidden": [
         "QueueControl authorized by RunCap",
         "QueueControl authorized by plain netdev reachability",
         "QueueControl authorized by CAP_NET_ADMIN alone",
-        "TC/switchdev hardware rule install treated as plain RepresentorForward"
+        "TC/switchdev hardware rule install treated as plain RepresentorForward",
+        "virtchnl validation or opcode allowlist as QueueControl authority",
+        "QoS caps, queue id checks, or traffic class checks as queue budget authority"
       ]
     },
     {
@@ -370,7 +402,8 @@
         "service/caller authority intersection",
         "stale queued work cancellation",
         "service-domain budget charging rule",
-        "reset/rebuild replay reauthorization implementation"
+        "reset/rebuild replay reauthorization implementation",
+        "frozen VF request carrier propagation into async FDIR completion"
       ],
       "forbidden": [
         "generic workqueue execution as a CapSched authority hook",
@@ -380,7 +413,8 @@
         "virtchnl opcode allowlist as QueueLease or QueueControl authority",
         "PTP/DPLL callback reachability as caller control authority",
         "bridge/FDB/switchdev/LAG event as OffloadCap or lower QueueLease authority",
-        "reset/rebuild replay after revoke without fresh reauthorization"
+        "reset/rebuild replay after revoke without fresh reauthorization",
+        "FDIR ctx_irq or ctx_done as frozen request authority"
       ]
     },
     {
@@ -400,7 +434,8 @@
         "monitor-backed IRQ route invalidation receipt implementation",
         "monitor-backed DMA/IOMMU/MemoryView invalidation receipt implementation",
         "stale XSK/page-pool quarantine and packet generation reset implementation",
-        "representor lower QueueLease invalidation and TC/offload rule removal receipt implementation"
+        "representor lower QueueLease invalidation and TC/offload rule removal receipt implementation",
+        "VF mailbox request carrier and async FDIR context implementation"
       ],
       "forbidden": [
         "queue revocation inferred from Linux netdev down/reset alone",
@@ -408,7 +443,8 @@
         "PageOwner transfer or packet page return before DMA receipt",
         "normal XSK CQ completion or page-pool recycle after revoke",
         "representor netdev queue stop treated as lower QueueLease revoke",
-        "TC/switchdev stale hardware rule left live after lower QueueLease revoke"
+        "TC/switchdev stale hardware rule left live after lower QueueLease revoke",
+        "VF mailbox queue, IRQ, budget, or FDIR effect after revoke without fresh authorization"
       ]
     },
     {
@@ -435,6 +471,7 @@
     "XSK/page-pool quarantine implementation planning that names packet generation reset",
     "representor lower QueueLease derivation planning that names metadata, bridge, TC, and LAG proof events",
     "service-work carrier planning that names per-effect carriers, merge semantics, and reset/rebuild reauthorization",
+    "VF mailbox carrier planning that names queue config, DMA ring base, IRQ route, queue budget, FDIR, async context, and revoke proofs",
     "implementation planning that names subclaim coverage"
   ],
   "forbidden_next_work": [
@@ -444,6 +481,7 @@
     "IOMMU/QueueLease protection claims without monitor-backed ownership",
     "collapsed SKB/XDP/AF_XDP/control/representor/service capability",
     "representor netdev, bridge FDB/VLAN, TC redirect target, or metadata_dst as lower QueueLease authority",
-    "worker identity, ICE_SERVICE_SCHED, virtchnl allowlists, PTP/DPLL callback reachability, LAG lower_dev rewrite, or reset/rebuild replay as service-work carrier authority"
+    "worker identity, ICE_SERVICE_SCHED, virtchnl allowlists, PTP/DPLL callback reachability, LAG lower_dev rewrite, or reset/rebuild replay as service-work carrier authority",
+    "virtchnl validation, opcode allowlist, VF-provided dma_ring_addr, queue id check, vector id check, QoS caps, or FDIR ctx_done as VF mailbox carrier authority"
   ]
 }
