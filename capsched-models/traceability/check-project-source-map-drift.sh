@@ -142,6 +142,8 @@ def candidate_files_with_pattern(files, pattern):
     return found
 
 def classify(path, pattern=None, line_or_range=None, match_kind="path", recorded_commit=None, recorded_blob=None):
+    if match_kind == "gap":
+        return "gap", "gap_or_future_anchor_preserved", None, None
     if not path or path == "none":
         return "gap", "gap_or_future_anchor_preserved", None, None
 

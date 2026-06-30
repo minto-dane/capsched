@@ -13,7 +13,7 @@ capsched/capsched-models/traceability/check-project-source-map-drift.sh
 Run directory:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T232802Z
+/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T233617Z
 ```
 
 Output files:
@@ -32,8 +32,8 @@ metadata.txt
 ```text
 json_artifacts_scanned=15
 anchor_rows=515
-ok_rows=481
-gap_rows=13
+ok_rows=480
+gap_rows=14
 path_changed_rows=0
 symbol_missing_rows=1
 pattern_missing_rows=1
@@ -69,11 +69,11 @@ The checker ingested existing machine-readable source-map and ledger artifacts,
 plus the latest direct-call overlay seed, and produced a central source-anchor
 drift ledger.
 
-The 481 ok rows mean the mechanically extracted source paths and, where
+The 480 ok rows mean the mechanically extracted source paths and, where
 precise enough, symbols or patterns still match the current Linux tree.
 They do not mean the source semantics were validated.
 
-The 13 gap rows are preserved gaps or trace-plan rows. They are not removed
+The 14 gap rows are preserved gaps or trace-plan rows. They are not removed
 obligations.
 
 The 19 semantic-recheck rows are line-only anchors. The checker now refuses to

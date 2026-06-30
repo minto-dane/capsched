@@ -23,8 +23,10 @@ Instead, it explains how to read them together.
 | --- | --- |
 | `0001-n-series-overlay-policy.md` | Human-readable policy for N-series overlay traceability and Linux drift handling. |
 | `overlay-row-schema-v1.json` | Machine-readable row schema for future N/artifact/Linux/claim crosswalk ledgers. |
+| `project-overlay-ledger-row-schema-v1.json` | Machine-readable row schema for generated project-level overlay ledger rows. |
 | `check-direct-call-overlay-drift.sh` | Source-only drift checker for N-106 direct-call overlay seed rows. |
 | `check-project-source-map-drift.sh` | Source-only project-level drift checker for legacy source-map families and direct-call overlay seeds. |
+| `build-project-overlay-ledger.sh` | Source-only normalizer from project drift rows to central overlay ledger rows. |
 
 ## Latest Direct-Call Drift Check
 
@@ -52,11 +54,11 @@ Validation/0080 executed the project-level source-map drift checker against
 legacy machine-readable source maps and the latest direct-call overlay seed:
 
 ```text
-run: build/traceability-project-drift/20260630T232802Z
+run: build/traceability-project-drift/20260630T233617Z
 json_artifacts_scanned=15
 anchor_rows=515
-ok_rows=481
-gap_rows=13
+ok_rows=480
+gap_rows=14
 path_changed_rows=0
 symbol_missing_rows=1
 pattern_missing_rows=1
@@ -79,6 +81,36 @@ obligations.
 
 The `ok_rows` count is path/pattern drift evidence only; it is not semantic
 validation of those source regions.
+
+## Latest Project Overlay Ledger
+
+Validation/0081 executed the project overlay ledger normalizer against the
+latest project source-map drift output:
+
+```text
+run: build/traceability-overlay/20260630T233634Z
+input_rows=515
+overlay_rows=515
+ok_rows=480
+gap_rows=14
+path_changed_rows=0
+symbol_missing_rows=1
+pattern_missing_rows=1
+semantic_recheck_required_rows=19
+needs_semantic_recheck_rows=21
+path_only_rows=67
+line_only_rows=19
+symbol_rows=378
+pattern_rows=37
+gap_match_rows=14
+safety_flag_violations=0
+semantic_validation=false
+n_series_rewrite=false
+```
+
+This generated ledger is the central overlay view for current source-map drift
+state. It is still source-only: it does not support monitor verification,
+runtime coverage, authority, ABI approval, or production protection.
 
 ## Existing Indexes
 

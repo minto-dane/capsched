@@ -1644,13 +1644,13 @@ N-108 completed:
   capsched-models/traceability/check-project-source-map-drift.sh
 
 latest run:
-  build/traceability-project-drift/20260630T232802Z
+  build/traceability-project-drift/20260630T233617Z
 
 result:
   json_artifacts_scanned=15
   anchor_rows=515
-  ok_rows=481
-  gap_rows=13
+  ok_rows=480
+  gap_rows=14
   symbol_missing_rows=1
   pattern_missing_rows=1
   semantic_recheck_required_rows=19
@@ -1670,8 +1670,32 @@ important caution:
   file exists.
 
 next:
-  N-109 normalize legacy source-map families into a central overlay ledger.
+  N-109 completed central overlay ledger normalization.
 ```
 
 Do not read N-108 `ok_rows` as semantic validation, monitor verification, or
 protection evidence. It is path/pattern drift triage only.
+
+Latest overlay ledger normalization:
+
+```text
+N-109 completed:
+  capsched-models/traceability/build-project-overlay-ledger.sh
+
+latest run:
+  build/traceability-overlay/20260630T233634Z
+
+result:
+  overlay_rows=515
+  ok_rows=480
+  gap_rows=14
+  needs_semantic_recheck_rows=21
+  line_only_rows=19
+  symbol_rows=378
+  pattern_rows=37
+  n_series_rewrite=false
+  semantic_validation=false
+
+next:
+  N-110 define semantic recheck workflow for the 21 non-ok/non-gap rows.
+```

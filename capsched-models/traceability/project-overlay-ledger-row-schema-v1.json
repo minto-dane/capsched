@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "title": "CapSched project overlay ledger row schema",
+  "purpose": "Normalize heterogeneous source-map and drift rows into a central source-only overlay ledger without rewriting N-series history.",
+  "row_shape": {
+    "row_id": "stable row id for this generated overlay ledger",
+    "map_version": "v1",
+    "mapped_on": "YYYY-MM-DD",
+    "n_ids": [
+      "N id for the normalization work, not the historical semantic work item"
+    ],
+    "artifact_paths": [
+      "source artifact path from the input drift row"
+    ],
+    "relation": "anchors",
+    "evidence_class": "source_only",
+    "source_context": {
+      "input_row_id": "project drift row id",
+      "input_anchor_id": "source-map row id or context",
+      "source_context": "path within the source artifact",
+      "extraction_kind": "how the source anchor was extracted",
+      "forbidden_upgrade": "why this row cannot become authority"
+    },
+    "semantic_ids": {
+      "req": [],
+      "thr": [],
+      "inv": [],
+      "des": [
+        "ADR-0007",
+        "ADR-0008"
+      ],
+      "model": [],
+      "val": [
+        "capsched-models/validation/0080-project-source-map-drift-checker-result.md"
+      ],
+      "linux": [
+        "LINUX-PROJECT-xxxx"
+      ],
+      "patch": [],
+      "claim": []
+    },
+    "long_horizon": {
+      "target_layer": "unspecified_by_normalizer",
+      "long_horizon_invariant": "source anchors are traceability, not authority",
+      "future_monitor_responsibility": "must be supplied by layer-specific design, not inferred from source maps",
+      "linux_placeholder_status": "source_only",
+      "forbidden_shortcuts": [
+        "source_anchor_as_authority",
+        "ok_row_as_semantic_validation",
+        "missing_anchor_as_obligation_removal"
+      ]
+    },
+    "linux_anchors": [
+      {
+        "linux_id": "LINUX-PROJECT-xxxx",
+        "source_path": "linux repository relative path or none",
+        "symbol_or_pattern": "symbol, source pattern, or none",
+        "line_or_range": "line, range, or none",
+        "match_kind": "path_only | line_only | symbol | pattern | gap",
+        "anchor_kind": "source anchor class from input",
+        "extraction_kind": "source extraction class",
+        "recorded_commit": "optional git sha",
+        "current_commit": "git sha",
+        "recorded_blob_oid": "optional git object id",
+        "current_blob_oid": "optional git object id",
+        "git_object_type": "blob | tree | none",
+        "path_exists": "true | false",
+        "pattern_present": "true | false | not_applicable",
+        "drift_status": "ok | gap | path_changed | symbol_missing | pattern_missing | semantic_recheck_required | unknown",
+        "reason": "classification reason",
+        "semantic_recheck_required": "true | false"
+      }
+    ],
+    "supported_claims": [],
+    "not_supported_claims": [
+      "source anchors provide authority",
+      "path/pattern ok implies semantic validation",
+      "monitor verification occurred",
+      "runtime coverage occurred",
+      "production protection exists"
+    ],
+    "safety_flags": {
+      "authority_claim": false,
+      "monitor_verified": false,
+      "protection_claim": false,
+      "behavior_change": false,
+      "public_abi": false
+    },
+    "confidence": "high | medium | low",
+    "status": "active | needs_semantic_recheck | gap",
+    "next_action": "normalize_only | semantic_recheck | preserve_gap"
+  },
+  "hard_rules": [
+    "The ledger is an interpretation layer over historical artifacts; it must not rewrite N-series history.",
+    "Every row remains source_only unless a separate validation artifact changes the evidence class.",
+    "A gap row is preserved as a gap and does not remove the semantic obligation.",
+    "Line-only anchors require semantic recheck and must not be counted as semantic matches.",
+    "ok means the declared source predicate was checked, not that the design is safe."
+  ]
+}

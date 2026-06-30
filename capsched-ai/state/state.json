@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "project-source-map-drift-checker-executed",
+    "current_phase": "project-overlay-ledger-normalized",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-108 created, audited, strengthened, and executed the source-only project source-map drift checker. The checker capsched-models/traceability/check-project-source-map-drift.sh scanned 15 machine-readable source-map/ledger artifacts plus the latest direct-call overlay seed and emitted project-anchor-ledger.tsv, project-anchor-ledger.json, stale-or-gap.tsv, unsupported-extractions.tsv, summary.txt, and metadata.txt under build/traceability-project-drift/20260630T232802Z. Result: 515 extracted anchors, 481 path/pattern-ok rows, 13 preserved gap rows, 0 path changes, 1 missing symbol, 1 missing pattern, 19 line-only semantic-recheck rows, 3 unsupported extractions, recursive boolean safety-field scan with 0 violations, content_source=git_HEAD_objects, source_path_pattern_only=true, semantic_validation=false, and no Linux modification, root requirement, tracefs write, probe attachment, public tracepoint ABI, authority claim, monitor verification, or protection claim. Next focused risk is N-109: normalize legacy source-map families into a central overlay ledger with explicit match predicates without rewriting N-series history or treating source anchors as authority.",
+    "current_focus": "N-109 normalized the audited N-108 project source-map drift output into a central source-only overlay ledger. build-project-overlay-ledger.sh consumed build/traceability-project-drift/20260630T233617Z/project-anchor-ledger.json and emitted project-overlay-ledger.json, project-overlay-ledger.tsv, semantic-recheck.tsv, gaps.tsv, summary.txt, and metadata.txt under build/traceability-overlay/20260630T233634Z. Result: 515 overlay rows, 480 ok rows, 14 gap rows, 0 path changes, 1 missing symbol, 1 missing pattern, 19 semantic_recheck_required rows, 21 needs_semantic_recheck rows, explicit match_kind/next_action fields, safety_flag_violations=0, source_only=true, semantic_validation=false, n_series_rewrite=false, and no authority, monitor verification, or protection claim. Next focused risk is N-110: define a semantic recheck workflow for the 21 rows that cannot be used for implementation decisions from path/pattern drift alone.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -489,7 +489,11 @@
     "direct_call_overlay_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-drift/20260630T230822Z",
     "project_source_map_drift_checker": "capsched/capsched-models/traceability/check-project-source-map-drift.sh",
     "project_source_map_drift_result": "capsched/capsched-models/validation/0080-project-source-map-drift-checker-result.md",
-    "project_source_map_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T232802Z"
+    "project_source_map_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T233617Z",
+    "project_overlay_ledger_schema": "capsched/capsched-models/traceability/project-overlay-ledger-row-schema-v1.json",
+    "project_overlay_ledger_builder": "capsched/capsched-models/traceability/build-project-overlay-ledger.sh",
+    "project_overlay_ledger_result": "capsched/capsched-models/validation/0081-project-overlay-ledger-normalization-result.md",
+    "project_overlay_ledger_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T233634Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1994,14 +1998,24 @@
         "N-107"
       ],
       "completed_on": "2026-06-30",
-      "partial_progress": "Created, audited, strengthened, and executed capsched-models/traceability/check-project-source-map-drift.sh as a source-only project drift checker. Final run 20260630T232802Z scanned 15 machine-readable source-map/ledger artifacts plus the latest direct-call overlay seed, emitted 515 anchor rows with 481 path/pattern-ok rows, 13 preserved gap rows, 0 path changes, 1 missing symbol for ice_alloc_vfs, 1 missing descriptive pattern, 19 line-only semantic-recheck rows, 3 unsupported extractions, recursive boolean safety-field scan with 0 violations, content_source=git_HEAD_objects, source_path_pattern_only=true, and semantic_validation=false. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection."
+      "partial_progress": "Created, audited, strengthened, and executed capsched-models/traceability/check-project-source-map-drift.sh as a source-only project drift checker. Final run 20260630T233617Z scanned 15 machine-readable source-map/ledger artifacts plus the latest direct-call overlay seed, emitted 515 anchor rows with 480 path/pattern-ok rows, 14 preserved gap rows, 0 path changes, 1 missing symbol for ice_alloc_vfs, 1 missing descriptive pattern, 19 line-only semantic-recheck rows, 3 unsupported extractions, recursive boolean safety-field scan with 0 violations, content_source=git_HEAD_objects, source_path_pattern_only=true, and semantic_validation=false. It did not modify Linux, require root, write tracefs, attach probes, create public tracepoint ABI, or claim authority, monitor verification, or protection."
     },
     {
       "id": "N-109",
       "text": "Normalize legacy source-map families into a central overlay ledger that links artifacts, semantic ids, Linux anchors, recorded/current commits, drift status, explicit match predicates, evidence class, unsupported claims, and required semantic recheck without rewriting N-series history or treating source anchors as authority.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-108"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created project-overlay-ledger-row-schema-v1.json and build-project-overlay-ledger.sh, then executed the normalizer on the audited N-108 drift output. Run 20260630T233634Z emitted 515 central overlay rows, 480 ok rows, 14 gap rows, 21 needs_semantic_recheck rows, explicit match_kind and next_action fields, safety_flag_violations=0, source_only=true, semantic_validation=false, and n_series_rewrite=false. No Linux source, tracefs, probe, ABI, authority, monitor verification, or protection claim was created."
+    },
+    {
+      "id": "N-110",
+      "text": "Define a semantic recheck workflow for the 21 central overlay rows that are not path/pattern-ok, including line-only anchors, missing symbols, descriptive non-literal patterns, and preserved plan/gap rows, without treating the recheck process as authority, runtime coverage, or protection evidence.",
+      "status": "pending",
+      "blocked_by": [
+        "N-109"
       ]
     }
   ],

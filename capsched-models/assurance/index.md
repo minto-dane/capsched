@@ -127,10 +127,13 @@ Prototype-evidenced areas:
   expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic
   recheck-required rows, and no authority/protection claims
 - source-only project source-map drift checker output with 515 extracted anchor
-  rows, 481 path/pattern-ok rows, 13 preserved gap rows, 1 missing symbol, 1
+  rows, 480 path/pattern-ok rows, 14 preserved gap rows, 1 missing symbol, 1
   missing pattern, 19 line-only semantic-recheck rows, 3 unsupported
   extractions, recursive boolean safety-field scan, `content_source=git_HEAD_objects`,
   and explicit `semantic_validation=false`
+- source-only project overlay ledger normalization output with 515 overlay rows,
+  explicit match predicates, 21 rows needing semantic recheck, 14 preserved
+  gaps, `n_series_rewrite=false`, and no authority/protection claims
 
 Open production gaps:
 
@@ -434,7 +437,7 @@ Direct-call source-only inventory runner:
 Project source-map drift checker:
   validation/0080 executed the project-level source-map drift checker against
   legacy machine-readable source maps and the latest direct-call overlay seed.
-  The run emitted 515 anchor rows: 481 path/pattern-ok rows, 13 preserved gaps,
+  The run emitted 515 anchor rows: 480 path/pattern-ok rows, 14 preserved gaps,
   1 missing symbol for `ice_alloc_vfs` in
   `drivers/net/ethernet/intel/ice/ice_sriov.c`, 1 missing descriptive pattern,
   19 line-only semantic-recheck rows, and 3 unsupported extractions. It used
@@ -444,6 +447,16 @@ Project source-map drift checker:
   monitor_verified=false, and protection_claim=false. This is upstream drift
   triage evidence only, not semantic validation, runtime coverage, monitor
   verification, ABI approval, or protection evidence.
+
+Project overlay ledger normalizer:
+  validation/0081 normalized the project drift rows into 515 central overlay
+  rows with explicit source artifact, source context, Linux anchor id, match
+  kind, drift status, evidence class, unsupported claims, and next action. It
+  produced 21 `needs_semantic_recheck` rows and 14 preserved gap rows. The run
+  preserved source_only=true, semantic_validation=false, n_series_rewrite=false,
+  authority_claim=false, monitor_verified=false, and protection_claim=false.
+  This is traceability normalization evidence only, not implementation approval
+  or protection evidence.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
