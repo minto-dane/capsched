@@ -280,4 +280,14 @@ Current source-map refresh target:
   Linux patch approval. The refresh should update analysis/0025, analysis/0026,
   analysis/0028, and the formal/0012 mapping before any scheduler authority
   patch movement.
+
+Current scheduler authority refresh:
+  analysis/0025, analysis/0026, analysis/0028, formal/0012 README,
+  linux-scheduler-authority-core-refresh-v1.json, and validation/0105 now
+  refresh scheduler_authority_core against upstream
+  665159e246749578d4e4bfe106ee3b74edcdab18. The existing formal/0012 model was
+  rechecked with 126113 generated states, 17344 distinct states, and depth 21.
+  No scheduler authority patch is approved. The next implementation-facing
+  pressure is model decomposition around donor/current budget charging,
+  TASK_WAKING failure boundary, and selected-state class retry semantics.
 ```

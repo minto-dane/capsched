@@ -1,8 +1,10 @@
 # Formal 0012: Linux Scheduler Authority Model
 
-Status: Checked for tiny finite model
+Status: Checked for tiny finite model; source-map refresh applied
 
 Date: 2026-06-27
+
+Updated: 2026-07-01
 
 ## Purpose
 
@@ -97,6 +99,50 @@ analysis/0029-fork-exec-exit-identity-propagation-map.md
 Those maps identify the Linux code paths that this model is abstracting over.
 Any future implementation candidate must refine both the model and the source
 maps before changing scheduler behavior.
+
+## Source-Map Refresh 2026-07-01
+
+N-134 refreshes the source mapping without changing this TLA model.
+
+Current upstream anchors are recorded in:
+
+```text
+analysis/0025-linux-scheduler-authority-state-machine.md
+analysis/0026-scheduler-hook-proof-obligation-matrix.md
+analysis/0028-tick-runtime-budget-source-map.md
+analysis/linux-scheduler-authority-core-refresh-v1.json
+```
+
+The existing model still abstracts over the refreshed source as follows:
+
+```text
+RemotePendingWake:
+  ttwu_queue_wakelist(), sched_ttwu_pending(), ttwu_do_activate()
+
+FrozenRunnable / Queued:
+  try_to_wake_up(), ttwu_do_activate(), activate_task(), enqueue_task()
+
+CurrentContinuation:
+  try_to_wake_up() p == current path
+
+DelayedQueued:
+  ttwu_runnable() delayed re-enqueue
+
+MigratingQueued:
+  select_task_rq(), is_cpu_allowed(), move_queued_task(), migration_cpu_stop()
+
+Selected:
+  __pick_next_task() fair fast path, class iteration, RETRY_TASK restart
+
+Running:
+  __schedule() and monitor-style runToken activation
+
+Budget:
+  sched_tick(), task_sched_runtime(), class update_curr/task_tick paths
+```
+
+No Linux code, ABI, tracepoint, hook, or runtime behavior is approved by this
+refresh.
 
 ## Run
 

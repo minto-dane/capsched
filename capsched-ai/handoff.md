@@ -230,11 +230,25 @@ latest completed risk:
   primary target, Linux patch approval, runtime claim, protection claim, and
   async Linux name movement.
 
+latest completed risk:
+  Scheduler authority core source-only refresh. Analysis/0025, analysis/0026,
+  analysis/0028, formal/0012 README, linux-scheduler-authority-core-refresh-v1.json,
+  and validation/0105 now map current upstream scheduler anchors. JSON check
+  confirms 25 anchors, 8 refreshed rules, 4 updated artifacts, and 12/12 safety
+  flags false. Existing formal/0012 was rechecked: 126113 states generated,
+  17344 distinct states, 0 states left on queue, depth 21, exit 0. Key refreshed
+  rules: enqueue_task is assertion/not fail-capable hook; TASK_WAKING after
+  state write needs lost-wakeup model; current wake is continuation, not RunCap
+  mint; delayed reenqueue is not authority mint; sched_tick charges rq->donor;
+  pick validation must cover fast path/retry/class iteration/sched_ext; switch
+  activation needs fail-closed DomainTag model.
+
 next focused risk:
-  Refresh scheduler_authority_core source-only: analysis/0025, analysis/0026,
-  analysis/0028, and formal/0012 mapping. Do not add direct-call stubs, ABI,
-  tracepoints, workqueue integration, io_uring integration, async carrier Linux
-  names, or behavior-changing patches.
+  Decompose/strengthen LinuxSchedulerAuthority around donor/current budget
+  charging, TASK_WAKING failure boundary, and selected-state class retry
+  semantics. Do not add direct-call stubs, ABI, tracepoints, workqueue
+  integration, io_uring integration, async carrier Linux names, or
+  behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:

@@ -1,8 +1,10 @@
 # Analysis 0025: Linux Scheduler Authority State Machine
 
-Status: Draft state machine, no implementation approved
+Status: Draft state machine, source-only refresh applied, no implementation approved
 
 Date: 2026-06-27
+
+Updated: 2026-07-01
 
 Linux source:
 
@@ -10,7 +12,69 @@ Linux source:
 repo: /media/nia/scsiusb/dev/linux-cap/linux
 branch: capsched-linux-l0
 commit: 7cf0b1e415bcead8a2079c8be94a9d41aad7d462
+source refresh ref: upstream/master 665159e246749578d4e4bfe106ee3b74edcdab18
+refresh gate: validation/0103, validation/0104
 ```
+
+## Source-Only Refresh 2026-07-01
+
+This refresh updates the scheduler authority map against current
+`upstream/master` without changing Linux code.
+
+Current upstream anchors:
+
+| Authority transition | Current upstream anchor |
+| --- | --- |
+| Generic enqueue custody | `kernel/sched/core.c:2172 enqueue_task()` |
+| Activate task into runqueue custody | `kernel/sched/core.c:2219 activate_task()` |
+| Delayed queued wake | `kernel/sched/core.c:3865 ttwu_runnable()` |
+| Wake activation | `kernel/sched/core.c:3805 ttwu_do_activate()` |
+| Wake queue dispatch | `kernel/sched/core.c:4067 ttwu_queue()` |
+| Normal wake admission | `kernel/sched/core.c:4251 try_to_wake_up()` |
+| New task initial wake | `kernel/sched/core.c:4941 wake_up_new_task()` |
+| CPU placement selection | `kernel/sched/core.c:3614 select_task_rq()` |
+| CPU placement compatibility | `kernel/sched/core.c:2501 is_cpu_allowed()` |
+| Queued migration | `kernel/sched/core.c:2546 move_queued_task()` |
+| Migration stopper | `kernel/sched/core.c:2611 migration_cpu_stop()` |
+| Runtime read freshness | `kernel/sched/core.c:5674 task_sched_runtime()` |
+| Tick/runtime pressure | `kernel/sched/core.c:5762 sched_tick()` |
+| Selected use | `kernel/sched/core.c:6124 __pick_next_task()` |
+| Switch activation boundary | `kernel/sched/core.c:7061 __schedule()` |
+| Public schedule entry | `kernel/sched/core.c:7316 schedule()` |
+
+Refreshed source observations:
+
+```text
+enqueue_task() remains void and mutates uclamp, class enqueue, PSI,
+sched_info, and sched_core state. It is still an assertion/refinement point,
+not a safe fail-capable hook without rollback modeling.
+
+activate_task() calls enqueue_task() before writing p->on_rq =
+TASK_ON_RQ_QUEUED. A future CapSched hook must not treat on_rq alone as proof
+that authority was frozen.
+
+try_to_wake_up() still has a current-task special case that avoids normal
+enqueue custody and must remain CurrentContinuation, not new RunCap admission.
+
+try_to_wake_up() still writes TASK_WAKING before the queue/activation path.
+Any fail-capable admission after that point requires a lost-wakeup and rollback
+model.
+
+ttwu_runnable() still handles already-queued tasks and can re-enqueue delayed
+state with ENQUEUE_DELAYED. This is not authority minting.
+
+sched_tick() accounts through rq->donor. Any budget model that charges only
+rq->curr is stale.
+
+__pick_next_task() still has fair fast path, RETRY_TASK restart, active class
+iteration, sched_ext interaction, and put_prev_set_next_task() before return.
+
+__schedule() remains the switch-commit region where fail-closed DomainTag and
+MemoryView activation must be modeled before behavior-changing patches.
+```
+
+This refresh does not approve a Linux patch. It only updates the source-map
+contract for the next scheduler authority modeling step.
 
 ## Purpose
 

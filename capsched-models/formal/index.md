@@ -17,7 +17,7 @@ Updated: 2026-07-01
 | 0009 | Checked after counterexample-driven fix | Direct Map and TLB Revocation Model |
 | 0010 | Checked after counterexample-driven fix | Page Cache Overlay Conflict Model |
 | 0011 | Checked with two TLC runs | Queue Lease and IOMMU Boundary Model |
-| 0012 | Checked for tiny finite model | Linux Scheduler Authority Model |
+| 0012 | Rechecked after source-map refresh | Linux Scheduler Authority Model |
 | 0013 | Checked with safe pass and expected unsafe counterexamples | Scheduler Admission Failure Model |
 | 0014 | Checked with safe pass and expected unsafe counterexamples | F1 Admission Data Model |
 | 0015 | Checked with safe pass and expected unsafe counterexamples | Wake Authority Preparation Model |

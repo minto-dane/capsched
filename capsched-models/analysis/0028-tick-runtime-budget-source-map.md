@@ -1,8 +1,10 @@
 # Analysis 0028: Tick and Runtime Budget Source Map
 
-Status: Draft source map, no implementation approved
+Status: Draft source map, source-only refresh applied, no implementation approved
 
 Date: 2026-06-27
+
+Updated: 2026-07-01
 
 Linux source:
 
@@ -10,6 +12,49 @@ Linux source:
 repo: /media/nia/scsiusb/dev/linux-cap/linux
 branch: capsched-linux-l0
 commit: 7cf0b1e415bcead8a2079c8be94a9d41aad7d462
+source refresh ref: upstream/master 665159e246749578d4e4bfe106ee3b74edcdab18
+```
+
+## Source-Only Refresh 2026-07-01
+
+This refresh keeps the budget source map aligned with current upstream source.
+It does not approve a budget hook.
+
+Current runtime anchors:
+
+| Runtime surface | Current upstream anchor |
+| --- | --- |
+| Runtime read freshness | `kernel/sched/core.c:5674 task_sched_runtime()` |
+| Generic tick | `kernel/sched/core.c:5762 sched_tick()` |
+| Fair update | `kernel/sched/fair.c:1985 update_curr()` |
+| Fair tick | `kernel/sched/fair.c:14851 task_tick_fair()` |
+| RT update | `kernel/sched/rt.c:974 update_curr_rt()` |
+| RT tick | `kernel/sched/rt.c:2540 task_tick_rt()` |
+| Deadline update | `kernel/sched/deadline.c:2128 update_curr_dl()` |
+| Deadline tick | `kernel/sched/deadline.c:2876 task_tick_dl()` |
+| sched_ext update | `kernel/sched/ext/ext.c:1321 update_curr_scx()` |
+| sched_ext generic tick | `kernel/sched/ext/ext.c:3480 scx_tick()` |
+| sched_ext task tick | `kernel/sched/ext/ext.c:3505 task_tick_scx()` |
+
+Refreshed budget rule:
+
+```text
+sched_tick() still uses rq->donor as the accounted task. CapSched budget
+charging must define whether authority is charged to donor, current, both, or
+an explicit proxy-execution relation. A current-only budget model is rejected.
+```
+
+This strengthens the existing split:
+
+```text
+Linux accounting:
+  useful L0 measurement and compatibility source
+
+SchedContext:
+  typed budget authority object
+
+HyperTag Monitor:
+  root budget and fail-closed production enforcement
 ```
 
 ## Purpose

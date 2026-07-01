@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "id": "linux-scheduler-authority-core-refresh-v1",
+  "analysis": "scheduler-authority-core-source-only-refresh",
+  "status": "source_only_refresh_complete",
+  "date": "2026-07-01",
+  "inputs": {
+    "target_selection": "analysis/0088-linux-source-map-refresh-target-selection.md",
+    "target_selection_json": "analysis/linux-source-map-refresh-target-selection-v1.json",
+    "freshness_gate_validation": "validation/0103-linux-source-drift-freshness-gate.md",
+    "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462"
+  },
+  "updated_artifacts": [
+    "analysis/0025-linux-scheduler-authority-state-machine.md",
+    "analysis/0026-scheduler-hook-proof-obligation-matrix.md",
+    "analysis/0028-tick-runtime-budget-source-map.md",
+    "formal/0012-linux-scheduler-authority-model/README.md"
+  ],
+  "anchor_count": 25,
+  "anchors": [
+    {
+      "id": "enqueue_task",
+      "path": "kernel/sched/core.c",
+      "line": 2172,
+      "authority_role": "enqueue_assertion",
+      "source_only_meaning": "void enqueue custody mutation; not fail-capable without rollback model"
+    },
+    {
+      "id": "activate_task",
+      "path": "kernel/sched/core.c",
+      "line": 2219,
+      "authority_role": "frozen_to_queued",
+      "source_only_meaning": "calls enqueue_task before writing on_rq queued"
+    },
+    {
+      "id": "is_cpu_allowed",
+      "path": "kernel/sched/core.c",
+      "line": 2501,
+      "authority_role": "placement_compatibility",
+      "source_only_meaning": "hotplug, migration-disabled, kthread, and per-CPU kthread compatibility rules"
+    },
+    {
+      "id": "move_queued_task",
+      "path": "kernel/sched/core.c",
+      "line": 2546,
+      "authority_role": "queued_migration",
+      "source_only_meaning": "deactivate, set_task_cpu, activate under rq lock handoff"
+    },
+    {
+      "id": "migration_cpu_stop",
+      "path": "kernel/sched/core.c",
+      "line": 2611,
+      "authority_role": "placement_refresh",
+      "source_only_meaning": "stopper-based migration completion"
+    },
+    {
+      "id": "select_task_rq",
+      "path": "kernel/sched/core.c",
+      "line": 3614,
+      "authority_role": "wake_placement",
+      "source_only_meaning": "class placement selection and fallback behavior"
+    },
+    {
+      "id": "ttwu_do_activate",
+      "path": "kernel/sched/core.c",
+      "line": 3805,
+      "authority_role": "wake_activation",
+      "source_only_meaning": "activate_task, wakeup_preempt, ttwu_do_wakeup"
+    },
+    {
+      "id": "ttwu_runnable",
+      "path": "kernel/sched/core.c",
+      "line": 3865,
+      "authority_role": "already_runnable_wake",
+      "source_only_meaning": "already queued/delayed wake path; must not mint RunCap"
+    },
+    {
+      "id": "ttwu_queue",
+      "path": "kernel/sched/core.c",
+      "line": 4067,
+      "authority_role": "wake_queue_dispatch",
+      "source_only_meaning": "wakelist fast path or locked activation"
+    },
+    {
+      "id": "try_to_wake_up",
+      "path": "kernel/sched/core.c",
+      "line": 4251,
+      "authority_role": "wake_admission",
+      "source_only_meaning": "current continuation, TASK_WAKING write, placement, queue"
+    },
+    {
+      "id": "wake_up_new_task",
+      "path": "kernel/sched/core.c",
+      "line": 4941,
+      "authority_role": "spawn_initialization",
+      "source_only_meaning": "initial TASK_RUNNING, select_task_rq, activate_task"
+    },
+    {
+      "id": "task_sched_runtime",
+      "path": "kernel/sched/core.c",
+      "line": 5674,
+      "authority_role": "runtime_read_freshness",
+      "source_only_meaning": "read-side runtime freshness, not enforcement boundary"
+    },
+    {
+      "id": "sched_tick",
+      "path": "kernel/sched/core.c",
+      "line": 5762,
+      "authority_role": "budget_charge",
+      "source_only_meaning": "tick accounting uses rq->donor"
+    },
+    {
+      "id": "__pick_next_task",
+      "path": "kernel/sched/core.c",
+      "line": 6124,
+      "authority_role": "pick_validation",
+      "source_only_meaning": "fair fast path, class iteration, RETRY_TASK, sched_ext interaction"
+    },
+    {
+      "id": "__schedule",
+      "path": "kernel/sched/core.c",
+      "line": 7061,
+      "authority_role": "switch_activation",
+      "source_only_meaning": "switch-commit region requiring fail-closed DomainTag model before hooks"
+    },
+    {
+      "id": "schedule",
+      "path": "kernel/sched/core.c",
+      "line": 7316,
+      "authority_role": "schedule_entry",
+      "source_only_meaning": "public schedule entry into __schedule"
+    },
+    {
+      "id": "fair_update_curr",
+      "path": "kernel/sched/fair.c",
+      "line": 1985,
+      "authority_role": "class_runtime",
+      "source_only_meaning": "CFS runtime accounting substrate"
+    },
+    {
+      "id": "fair_task_tick",
+      "path": "kernel/sched/fair.c",
+      "line": 14851,
+      "authority_role": "class_tick",
+      "source_only_meaning": "CFS tick substrate"
+    },
+    {
+      "id": "rt_update_curr",
+      "path": "kernel/sched/rt.c",
+      "line": 974,
+      "authority_role": "class_runtime",
+      "source_only_meaning": "RT runtime/throttling compatibility substrate"
+    },
+    {
+      "id": "rt_task_tick",
+      "path": "kernel/sched/rt.c",
+      "line": 2540,
+      "authority_role": "class_tick",
+      "source_only_meaning": "RT tick substrate"
+    },
+    {
+      "id": "dl_update_curr",
+      "path": "kernel/sched/deadline.c",
+      "line": 2128,
+      "authority_role": "class_runtime",
+      "source_only_meaning": "Deadline runtime compatibility substrate"
+    },
+    {
+      "id": "dl_task_tick",
+      "path": "kernel/sched/deadline.c",
+      "line": 2876,
+      "authority_role": "class_tick",
+      "source_only_meaning": "Deadline tick substrate"
+    },
+    {
+      "id": "scx_update_curr",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 1321,
+      "authority_role": "sched_ext_runtime",
+      "source_only_meaning": "sched_ext runtime policy substrate, not production root"
+    },
+    {
+      "id": "scx_tick",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3480,
+      "authority_role": "sched_ext_tick",
+      "source_only_meaning": "sched_ext tick and stall/fallback pressure"
+    },
+    {
+      "id": "scx_task_tick",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3505,
+      "authority_role": "sched_ext_task_tick",
+      "source_only_meaning": "sched_ext task tick callback and BPF policy interaction substrate"
+    }
+  ],
+  "refreshed_rules": [
+    "enqueue_task_is_assertion_not_fail_capable_hook",
+    "task_waking_after_state_write_requires_lost_wakeup_model",
+    "current_wake_is_continuation_not_new_runcap",
+    "delayed_reenqueue_is_not_authority_mint",
+    "placement_refines_linux_hotplug_and_kthread_exceptions",
+    "sched_tick_charges_donor_not_blind_current",
+    "pick_validation_must_cover_fast_path_retry_class_iteration_sched_ext",
+    "switch_activation_requires_fail_closed_domain_activation_model"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "task_struct_patch": false,
+    "enqueue_hook": false,
+    "pick_hook": false,
+    "switch_hook": false,
+    "budget_hook": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_verified": false,
+    "behavior_change": false,
+    "production_protection": false
+  }
+}

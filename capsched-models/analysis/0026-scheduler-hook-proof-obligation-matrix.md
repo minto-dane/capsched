@@ -1,8 +1,10 @@
 # Analysis 0026: Scheduler Hook Proof Obligation Matrix
 
-Status: Draft obligation matrix, no implementation approved
+Status: Draft obligation matrix, source-only refresh applied, no implementation approved
 
 Date: 2026-06-27
+
+Updated: 2026-07-01
 
 ## Purpose
 
@@ -11,6 +13,65 @@ for future hook candidates.
 
 It is not a patch plan. It is a gate: any future patch touching runnable
 authority must satisfy or explicitly defer these obligations.
+
+## Source-Only Refresh 2026-07-01
+
+Refresh input:
+
+```text
+target selection: analysis/0088
+freshness gate: validation/0103
+upstream ref: 665159e246749578d4e4bfe106ee3b74edcdab18
+selected target: scheduler_authority_core
+```
+
+The proof-obligation matrix remains a gate, not a patch plan.
+
+Updated pressure from current upstream source:
+
+```text
+admission_freeze:
+  try_to_wake_up() writes TASK_WAKING before queue/activation. A failure after
+  that write is unsafe without a lost-wakeup/rollback model.
+
+enqueue_assertion:
+  enqueue_task() is still void and mutates uclamp, class state, PSI,
+  sched_info, and sched_core. Treat it as nofail/assertion unless a full class
+  rollback model exists.
+
+placement_refresh:
+  select_task_rq(), is_cpu_allowed(), move_queued_task(), and migration_cpu_stop()
+  remain separate obligations. CapSched placement must refine Linux hotplug,
+  migration-disabled, kthread, and per-CPU kthread exceptions.
+
+pick_validation:
+  __pick_next_task() still has fair fast path, RETRY_TASK restart, active class
+  iteration, sched_ext interaction, and put_prev_set_next_task(). Pick failure
+  must not corrupt class accounting or selected state.
+
+switch_activation:
+  __schedule() remains the switch-commit region. A monitor activation failure
+  cannot return as an ordinary scheduler error after committing the wrong
+  active Domain.
+
+budget_charge:
+  sched_tick() charges/accounting work through rq->donor. Budget proof must
+  model donor/current intentionally, not assume current-only execution.
+```
+
+Patch movement remains blocked:
+
+```text
+no task_struct authority field use
+no enqueue hook
+no pick hook
+no switch hook
+no budget hook
+no tracepoint ABI
+no direct-call stub
+no monitor call
+no behavior change
+```
 
 ## Candidate Roles
 

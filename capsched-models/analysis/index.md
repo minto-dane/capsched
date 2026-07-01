@@ -30,10 +30,10 @@ Updated: 2026-07-01
 | 0022 | Draft methodology, revised after critical review | Behavior Tagging Methodology for Mechanical Design Selection |
 | 0023 | Review complete, schema v2 required | Critical Review of Behavior Tagging Before Schema Finalization |
 | 0024 | Accepted analysis direction | Invariant-Driven Design and the Role of Tags |
-| 0025 | Draft state machine | Linux Scheduler Authority State Machine |
-| 0026 | Draft obligation matrix | Scheduler Hook Proof Obligation Matrix |
+| 0025 | Draft state machine, source-only refresh applied | Linux Scheduler Authority State Machine |
+| 0026 | Draft obligation matrix, source-only refresh applied | Scheduler Hook Proof Obligation Matrix |
 | 0027 | Draft schema and v2 retagging complete for gap analysis | Schema v2 Derived from the Scheduler Authority Model |
-| 0028 | Draft source map | Tick and Runtime Budget Source Map |
+| 0028 | Draft source map, source-only refresh applied | Tick and Runtime Budget Source Map |
 | 0029 | Draft source map | Fork, Clone, Exec, and Exit Identity Propagation Map |
 | 0030 | Draft boundary map | TASK_WAKING Failability Boundary Map |
 | 0031 | Draft dependency map with TLC-backed design filter | F1 Admission-Freeze Data Dependencies |
@@ -152,3 +152,4 @@ Updated: 2026-07-01
 | `linux-upstream-drift-maintenance-review-v1.json` | Current-source maintenance gate | Machine-readable upstream drift, merge-tree, no-patch decision, future no-behavior patch gate, drift classes, unsafe patterns, and safety flags for N-131 |
 | `linux-source-drift-model-freshness-gate-v1.json` | Automation contract | Machine-readable watch groups, affected artifacts, stale-if-changed rules, blocked patch classes, and non-claim constraints for N-132 |
 | `linux-source-map-refresh-target-selection-v1.json` | Target selection | Machine-readable candidate comparison and source-only scheduler_authority_core refresh target selection for N-133 |
+| `linux-scheduler-authority-core-refresh-v1.json` | Source-only refresh contract | Machine-readable scheduler authority anchors, refreshed rules, updated artifacts, and safety flags for N-134 |

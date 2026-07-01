@@ -182,9 +182,17 @@ latest completed focused risk:
   false. Safe TLC passed with 6 generated states, 6 distinct states, and depth
   6; 7 unsafe configs produced expected counterexamples.
 
+latest completed focused risk:
+  Scheduler authority core source-only refresh. Analysis/0025, analysis/0026,
+  analysis/0028, formal/0012 README, JSON refresh contract, and validation/0105
+  now map current upstream scheduler anchors. JSON check: 25 anchors, 8
+  refreshed rules, 4 updated artifacts, 12/12 safety flags false. formal/0012
+  recheck: 126113 generated states, 17344 distinct states, depth 21, exit 0.
+
 next focused risk:
-  Refresh scheduler_authority_core source-only: analysis/0025, analysis/0026,
-  analysis/0028, and formal/0012 mapping.
+  Decompose/strengthen LinuxSchedulerAuthority around donor/current budget
+  charging, TASK_WAKING failure boundary, and selected-state class retry
+  semantics.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
