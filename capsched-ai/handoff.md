@@ -113,21 +113,22 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Project source-map semantic recheck cleanup. Validation/0084 completed the
-  line-only anchor recheck after N-111. Latest runs are project drift
-  build/traceability-project-drift/20260630T235533Z, overlay
-  build/traceability-overlay/20260630T235558Z, and semantic queue
-  build/semantic-recheck/20260630T235623Z. Result: 515 anchors, 501 ok rows,
-  14 preserved gap rows, 0 missing symbols, 0 missing patterns, 0 line-only
-  rows, 0 semantic recheck items, 14 gap-preservation items, and 0 safety-flag
-  violations. The run preserved source_only=true, semantic_validation=false,
+  Project gap classification. Validation/0085 ran
+  capsched-models/traceability/classify-project-gaps.sh. Run
+  build/traceability-gap-classification/20260701T000823Z classified the 14
+  preserved gap/plan rows into 7 semantic direct-call gap groups: 5
+  high-severity future Linux/internal anchors, 1 test-only failure-injection
+  surface, and 1 trace-only observation plan. Result: duplicate_groups=7,
+  unknown_gap_rows=0, safety_flag_violations=0, source_only=true,
+  semantic_validation=false, implementation_approval=false,
   authority_claim=false, monitor_verified=false, and protection_claim=false.
 
 next focused risk:
-  Classify the remaining 14 preserved gap/plan rows into future Linux anchors,
-  external monitor/root-management anchors, trace-plan rows, or intentionally
-  unsupported extractions without treating any gap as removed obligation or
-  implementation approval.
+  Define a direct-call gap-closure design/model for the five high-severity
+  future Linux/internal anchor groups: request envelope, direct-call
+  entry/backend, schema negotiation, response-handle shadow refresh, and control
+  revoke lane. Do not add direct-call stubs, ABI, tracepoints, or behavior
+  changes from classification evidence alone.
 ```
 
 That focused VF IRQ model is now checked:
@@ -1728,5 +1729,32 @@ result:
 next:
   N-111 completed first semantic recheck batch.
   N-112 completed line-only anchor recheck.
-  N-113 should classify the remaining 14 preserved gap/plan rows.
+  N-113 completed preserved gap/plan classification.
+  N-114 should define direct-call gap-closure design/model for the five
+  high-severity future Linux/internal anchor groups.
+```
+
+Latest project gap classification:
+
+```text
+N-113 completed:
+  capsched-models/traceability/classify-project-gaps.sh
+
+latest run:
+  build/traceability-gap-classification/20260701T000823Z
+
+result:
+  gap_rows=14
+  semantic_gap_groups=7
+  duplicate_groups=7
+  future_linux_anchor_groups=5
+  future_test_anchor_groups=1
+  trace_plan_groups=1
+  unknown_gap_rows=0
+  safety_flag_violations=0
+  semantic_validation=false
+  implementation_approval=false
+
+next:
+  N-114 direct-call gap-closure design/model before any stub/ABI/patch.
 ```

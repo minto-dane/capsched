@@ -141,6 +141,10 @@ Prototype-evidenced areas:
   missing descriptive pattern from the active queue
 - source-only semantic recheck line-only batch removed the remaining 19
   line-only anchors from the active queue
+- source-only project gap classification output grouped the 14 preserved
+  gap/plan rows into 7 semantic direct-call gap groups: 5 high-severity future
+  Linux/internal anchors, 1 test-only failure-injection surface, and 1
+  trace-only observation plan
 
 Open production gaps:
 
@@ -480,6 +484,16 @@ Semantic recheck batch 1:
   is now empty, with 14 preserved gap/plan rows remaining. This is source-anchor
   cleanup, not runtime coverage, monitor verification, or protection evidence.
 
+Project gap classification:
+  validation/0085 classified the 14 preserved gap/plan rows into 7 semantic
+  direct-call gap groups. Five are high-severity future Linux/internal anchors
+  that still require monitor-owned direct-call semantics before implementation:
+  request envelope, direct-call entry/backend, schema negotiation,
+  response-handle shadow refresh, and control revoke lane. One is test-only
+  failure injection, and one is trace-only observation. This is gap
+  classification, not gap resolution, implementation approval, runtime
+  coverage, monitor verification, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -508,6 +522,9 @@ Forbidden:
   production protection evidence.
   Do not treat an empty semantic recheck queue as production semantic review or
   as resolution of preserved gap/plan rows.
+  Do not treat project gap classification as gap resolution, direct-call ABI
+  approval, monitor verification, or permission to add behavior-changing
+  direct-call stubs.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

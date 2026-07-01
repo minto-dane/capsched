@@ -129,15 +129,16 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  classify the remaining 14 preserved gap/plan rows after N-112. Each gap must
-  become a future Linux anchor, external monitor/root-management anchor,
-  trace-plan row, or intentionally unsupported extraction before it can affect
-  an implementation gate. A separate privileged tracefs runbook is required
-  before any tracefs execution, direct-call carrier, or public tracepoint patch.
+  define a direct-call gap-closure design/model for the five high-severity
+  future Linux/internal anchor groups classified by validation/0085:
+  request envelope, direct-call entry/backend, schema negotiation,
+  response-handle shadow refresh, and control revoke lane. A separate
+  privileged tracefs runbook is required before any tracefs execution,
+  direct-call carrier, or public tracepoint patch.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0084 are source-only
-  drift/normalization/recheck evidence only. They improve traceability, but they
-  are not monitor verification, ABI approval, runtime coverage, behavior-change
-  approval, or production protection evidence.
+  validation/0080 through validation/0085 are source-only
+  drift/normalization/recheck/classification evidence only. They improve
+  traceability, but they are not monitor verification, ABI approval, runtime
+  coverage, behavior-change approval, or production protection evidence.
 ```

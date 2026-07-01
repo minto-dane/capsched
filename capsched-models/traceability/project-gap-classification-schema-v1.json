@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "title": "CapSched project gap classification schema",
+  "purpose": "Classify preserved project overlay gap rows into semantic gap groups without treating gaps as removed obligations, implementation approval, runtime coverage, monitor verification, or protection evidence.",
+  "row_shape": {
+    "gap_row_id": "stable row id in generated gap classification output",
+    "overlay_row_id": "source overlay row id",
+    "linux_id": "Linux anchor id from the overlay row",
+    "artifact_path": "source artifact that produced the gap",
+    "semantic_gap_id": "deduplicated semantic gap group id",
+    "semantic_gap_name": "human readable group name",
+    "gap_class": "future_linux_anchor | future_test_anchor | trace_plan_row | external_monitor_anchor | unsupported_extraction | unknown_gap",
+    "source_layer": "direct_call_linux_placeholder | direct_call_test_surface | trace_observation_plan | external_monitor_or_root_management | unknown",
+    "anchor_kind": "future_gap | existing_trace_catalog_plan | other",
+    "source_path": "Linux path or none",
+    "symbol_or_pattern": "source symbol/pattern or none",
+    "required_resolution": "what must exist before the gap can influence implementation",
+    "blocked_claims": [
+      "claims that remain forbidden while this gap exists"
+    ],
+    "external_monitor_dependency": "true if resolving this row depends on monitor/root-owned semantics",
+    "duplicate_group_key": "stable key used to group duplicate rows",
+    "source_only": true,
+    "semantic_validation": false,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "protection_claim": false
+  },
+  "group_shape": {
+    "semantic_gap_id": "deduplicated semantic gap group id",
+    "semantic_gap_name": "human readable group name",
+    "row_count": "number of overlay rows in the group",
+    "gap_class": "dominant group class",
+    "severity": "high | medium | low",
+    "required_resolution": "semantic resolution before implementation use",
+    "blocked_claims": [
+      "claims blocked by this group"
+    ],
+    "representative_rows": [
+      "overlay row ids"
+    ]
+  },
+  "hard_rules": [
+    "A gap row remains an obligation or future anchor until a separate artifact resolves it.",
+    "Duplicate gap rows must be grouped by semantic gap id rather than counted as independent design problems.",
+    "A future Linux anchor is not authority; monitor-owned admission, epochs, replay, receipts, and revoke ordering remain external obligations.",
+    "A trace-plan row is not runtime coverage and does not approve tracefs execution or public tracepoint ABI.",
+    "A test/fault-injection gap must not change live monitor or Linux decisions."
+  ]
+}

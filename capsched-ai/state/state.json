@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "semantic-recheck-line-only-completed",
+    "current_phase": "project-gap-classification-completed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-112 completed the line-only semantic recheck batch. e1000e, ice, and usbnet source-map line-only anchors were replaced with symbol-bearing anchors or corrected symbol-bearing line anchors, with corresponding human-readable notes synchronized. Follow-up runs: project drift build/traceability-project-drift/20260630T235533Z, overlay build/traceability-overlay/20260630T235558Z, semantic queue build/semantic-recheck/20260630T235623Z. Result: ok_rows=501, gap_rows=14, semantic_recheck_required_rows=0, needs_semantic_recheck_rows=0, semantic_recheck_items=0, line_only_anchor_items=0, source_only=true, semantic_validation=false, and no Linux behavior change, authority, monitor verification, runtime coverage, ABI, or protection claim. Next focused risk is N-113: classify the remaining 14 preserved gap/plan rows.",
+    "current_focus": "N-113 completed preserved project gap classification. classify-project-gaps.sh grouped the remaining 14 gap/plan rows into 7 semantic direct-call gap groups: 5 high-severity future Linux/internal anchors, 1 test-only failure-injection surface, and 1 trace-only observation plan. Run: build/traceability-gap-classification/20260701T000823Z. Result: duplicate_groups=7, unknown_gap_rows=0, safety_flag_violations=0, source_only=true, semantic_validation=false, implementation_approval=false, and no Linux behavior change, authority, monitor verification, runtime coverage, ABI, or protection claim. Next focused risk is N-114: define direct-call gap-closure design/model for the five high-severity future Linux/internal anchor groups before any stub, ABI, tracepoint, or behavior-changing patch.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -499,7 +499,12 @@
     "semantic_recheck_queue_result": "capsched/capsched-models/validation/0082-semantic-recheck-queue-result.md",
     "semantic_recheck_queue_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260630T235623Z",
     "semantic_recheck_batch1_result": "capsched/capsched-models/validation/0083-semantic-recheck-batch1-result.md",
-    "semantic_recheck_line_only_result": "capsched/capsched-models/validation/0084-semantic-recheck-line-only-result.md"
+    "semantic_recheck_line_only_result": "capsched/capsched-models/validation/0084-semantic-recheck-line-only-result.md",
+    "project_gap_classification_schema": "capsched/capsched-models/traceability/project-gap-classification-schema-v1.json",
+    "project_gap_classification_workflow": "capsched/capsched-models/traceability/gap-classification-workflow-v1.md",
+    "project_gap_classification_builder": "capsched/capsched-models/traceability/classify-project-gaps.sh",
+    "project_gap_classification_result": "capsched/capsched-models/validation/0085-project-gap-classification-result.md",
+    "project_gap_classification_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-gap-classification/20260701T000823Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2049,9 +2054,19 @@
     {
       "id": "N-113",
       "text": "Classify the remaining 14 preserved gap/plan rows into future Linux anchors, external monitor/root-management anchors, trace-plan rows, or intentionally unsupported extractions without treating gaps as removed obligations or implementation approval.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-112"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Created project-gap-classification-schema-v1.json, gap-classification-workflow-v1.md, and classify-project-gaps.sh, then executed the classifier. Run build/traceability-gap-classification/20260701T000823Z classified 14 preserved gap rows into 7 semantic direct-call gap groups: 5 high-severity future Linux/internal anchor groups, 1 future test-only failure-injection group, and 1 trace-only observation plan group. It found 0 unknown gaps and 0 safety-flag violations and preserved source_only=true, semantic_validation=false, implementation_approval=false, authority_claim=false, monitor_verified=false, and protection_claim=false."
+    },
+    {
+      "id": "N-114",
+      "text": "Define a direct-call gap-closure design/model for the five high-severity future Linux/internal anchor groups from N-113 before any direct-call stub, ABI, tracepoint, or behavior-changing Linux patch.",
+      "status": "pending",
+      "blocked_by": [
+        "N-113"
       ]
     }
   ],

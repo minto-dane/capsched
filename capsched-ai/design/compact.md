@@ -106,18 +106,19 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Project source-map semantic recheck cleanup. Validation/0084 completed the
-  line-only anchor recheck. Latest runs: project drift
-  build/traceability-project-drift/20260630T235533Z, overlay
-  build/traceability-overlay/20260630T235558Z, semantic queue
-  build/semantic-recheck/20260630T235623Z. Result: 515 anchors, 501 ok rows,
-  14 preserved gaps, 0 missing symbols, 0 missing patterns, 0 line-only rows,
-  0 semantic recheck items, and 0 safety-flag violations. The run remained
-  source-only and made no authority, monitor verification, ABI, runtime
-  coverage, behavior-change, or protection claim.
+  Project gap classification. Validation/0085 ran classify-project-gaps.sh.
+  Run build/traceability-gap-classification/20260701T000823Z classified 14
+  preserved gap/plan rows into 7 semantic direct-call gap groups: 5
+  high-severity future Linux/internal anchors, 1 test-only failure-injection
+  surface, and 1 trace-only observation plan. No unknown gaps or safety-flag
+  violations. The run remained source-only and made no authority, monitor
+  verification, ABI, runtime coverage, behavior-change, implementation
+  approval, or protection claim.
 
 next focused risk:
-  Classify the remaining 14 preserved gap/plan rows under ADR-0007/0008.
+  Define a direct-call gap-closure design/model for the five high-severity
+  future Linux/internal anchor groups before any stub, ABI, tracepoint, or
+  behavior-changing patch.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1555,5 +1556,29 @@ summary:
 next:
   N-111 completed first semantic recheck batch.
   N-112 completed line-only anchor recheck.
-  N-113 should classify the remaining 14 preserved gap/plan rows.
+  N-113 completed preserved gap/plan classification.
+  N-114 should define direct-call gap-closure design/model.
+```
+
+Latest project gap classification:
+
+```text
+N-113 completed:
+  classify-project-gaps.sh
+
+run:
+  build/traceability-gap-classification/20260701T000823Z
+
+summary:
+  14 preserved gap rows
+  7 semantic direct-call gap groups
+  5 high-severity future Linux/internal anchor groups
+  1 test-only failure-injection group
+  1 trace-only observation group
+  0 unknown gaps
+  semantic_validation=false
+  implementation_approval=false
+
+next:
+  N-114 direct-call gap-closure design/model.
 ```

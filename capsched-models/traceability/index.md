@@ -24,11 +24,14 @@ Instead, it explains how to read them together.
 | `0001-n-series-overlay-policy.md` | Human-readable policy for N-series overlay traceability and Linux drift handling. |
 | `overlay-row-schema-v1.json` | Machine-readable row schema for future N/artifact/Linux/claim crosswalk ledgers. |
 | `project-overlay-ledger-row-schema-v1.json` | Machine-readable row schema for generated project-level overlay ledger rows. |
+| `project-gap-classification-schema-v1.json` | Machine-readable schema for classifying preserved project gaps into semantic groups. |
 | `check-direct-call-overlay-drift.sh` | Source-only drift checker for N-106 direct-call overlay seed rows. |
 | `check-project-source-map-drift.sh` | Source-only project-level drift checker for legacy source-map families and direct-call overlay seeds. |
 | `build-project-overlay-ledger.sh` | Source-only normalizer from project drift rows to central overlay ledger rows. |
 | `semantic-recheck-workflow-v1.md` | Source-only workflow for reviewing weak source anchors. |
 | `build-semantic-recheck-queue.sh` | Source-only queue builder for semantic recheck and gap-preservation items. |
+| `gap-classification-workflow-v1.md` | Source-only workflow for classifying preserved gap rows without resolving them. |
+| `classify-project-gaps.sh` | Source-only classifier that groups preserved project gaps by semantic gap id. |
 
 ## Latest Direct-Call Drift Check
 
@@ -157,6 +160,29 @@ usbnet source-map line-only anchors -> symbol-bearing anchors
 This removed the remaining active semantic recheck rows. It did not validate
 runtime behavior, monitor authority, ABI approval, behavior-changing Linux
 patches, or production protection.
+
+## Latest Project Gap Classification
+
+Validation/0085 classified the remaining preserved gap/plan rows:
+
+```text
+run: build/traceability-gap-classification/20260701T000823Z
+gap_rows=14
+semantic_gap_groups=7
+duplicate_groups=7
+future_linux_anchor_groups=5
+future_test_anchor_groups=1
+trace_plan_groups=1
+unknown_gap_rows=0
+safety_flag_violations=0
+semantic_validation=false
+implementation_approval=false
+```
+
+The 14 rows collapse into 7 direct-call semantic gap groups. Five are
+high-severity future Linux/internal anchors that still depend on monitor-owned
+direct-call semantics; one is a test-only failure-injection surface; one is a
+trace-only observation plan. None are implementation approval.
 
 ## Existing Indexes
 
