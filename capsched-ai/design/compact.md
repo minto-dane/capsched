@@ -262,10 +262,23 @@ latest completed focused risk:
   protection claim. JSON: 48 anchors, 11 compatibility obligations, 9
   authority rejections, 10 unsafe cases, 14/14 safety flags false.
 
+latest completed focused risk:
+  F1 admission-freeze refresh gate. Analysis/0096, formal/0074, JSON gate, and
+  validation/0113 refresh the wake publication boundary. RunCap/FrozenRunUse
+  resolution must finish before TASK_WAKING, remote wake-list publication, or
+  enqueue-visible state; after publication only cheap validation or fail-closed
+  handling without lost wakeup is allowed. Safe TLC: 44 generated states, 24
+  distinct, depth 7. Unsafe configs reject TASK_WAKING/wake_list/enqueue before
+  freeze, running with incomplete frozen tuple, raw cap after publication, heavy
+  post-publication lookup, late lost-wakeup denial, placement authority, current
+  continuation mint, fork ambient authority, and protection claim. JSON: 20
+  anchors, 11 frozen tuple requirements, 5 publication boundaries, 8 path
+  classes, 15 authority rejections, 15 unsafe cases, 14/14 safety flags false.
+
 next focused risk:
-  F1 admission-freeze data dependency refresh, monitor timer architecture
-  substrate comparison, and server epoch plus deadline CBS/GRUB integration
-  into the wider LinuxSchedulerAuthority model.
+  Monitor timer architecture substrate comparison, and server epoch plus
+  deadline CBS/GRUB plus F1 admission-freeze integration into the wider
+  LinuxSchedulerAuthority model.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

@@ -101,14 +101,17 @@ Updated: 2026-07-01
 | 0093 | Draft monitor-root budget event model with TLC-backed design filter | Monitor Root Budget Timer |
 | 0094 | Draft model gate with TLC-backed design filter | Server Epoch Relation |
 | 0095 | Draft model gate with TLC-backed design filter | Deadline CBS/GRUB Compatibility |
+| 0096 | Draft model gate with TLC-backed design filter | F1 Admission-Freeze Refresh |
 
 ## Planned Analysis Notes
 
-1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
-2. Broker BudgetTicket and service Domain charging map.
-3. Workqueue origin QEMU stack-trace observation runner.
-4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
-5. Queue/descriptor trace-only patch map only if readiness gaps require it.
+1. Monitor timer architecture substrate comparison for x86 VMX-root and arm64 EL2.
+2. Server epoch, deadline CBS/GRUB, and F1 admission-freeze integration into the wider LinuxSchedulerAuthority model.
+3. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
+4. Broker BudgetTicket and service Domain charging map.
+5. Workqueue origin QEMU stack-trace observation runner.
+6. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+7. Queue/descriptor trace-only patch map only if readiness gaps require it.
 
 ## Behavior Tag Artifacts
 
@@ -167,3 +170,4 @@ Updated: 2026-07-01
 | `monitor-root-budget-timer-v1.json` | Draft monitor-root budget event model | Machine-readable monitor-owned root budget timer contract for N-139 |
 | `server-epoch-relation-v1.json` | Draft model gate | Machine-readable server-kind/server-epoch freshness contract for N-140 |
 | `deadline-cbs-grub-compat-v1.json` | Draft model gate | Machine-readable Linux SCHED_DEADLINE CBS/GRUB compatibility and authority-separation contract for N-141 |
+| `f1-admission-freeze-refresh-v1.json` | Draft model gate | Machine-readable F1 wake publication and FrozenRunUse boundary contract for N-142 |

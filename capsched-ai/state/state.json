@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "deadline-cbs-grub-compat-gate-complete",
+    "current_phase": "f1-admission-freeze-refresh-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-141 deadline CBS/GRUB compatibility gate is complete. Added analysis/0095, formal/0073 DeadlineCbsGrubCompat, deadline-cbs-grub-compat-v1.json, and validation/0112. The gate models Linux SCHED_DEADLINE admission, CBS runtime/replenishment, GRUB reclaim, inactive timers, dynamic sched_getattr, and overrun notification as compatibility policy or observation surfaces, not CapSched authority or monitor root budget. Safe TLC passed with 70 generated states, 27 distinct states, 0 left on queue, depth 10. Unsafe configs produced expected counterexamples for admission minting run authority, CBS replenish minting run authority, GRUB minting monitor budget, DL runtime as monitor budget, inactive timer authority, dynamic sched_getattr authority, overrun notification as enforcement, run without DL admission, run while CBS-throttled, and protection claim without implementation. JSON check confirmed 48 anchors, 11 compatibility obligations, 9 authority rejections, 10 unsafe cases, and 14/14 safety flags false. Assurance evidence E-SCHED-DL-COMPAT-001 supports EXEC-001/BUDGET-001/COMPAT-001 only as model evidence. This is not deadline hook implementation, Linux hook approval, runtime coverage, ABI approval/change, behavior change, monitor verification, or production protection. Next focused risks are F1 admission-freeze data dependency refresh, monitor timer architecture substrate comparison, and integration of server epoch relation plus deadline CBS/GRUB into the wider LinuxSchedulerAuthority model.",
+    "current_focus": "N-142 F1 admission-freeze refresh gate is complete. Added analysis/0096, formal/0074 F1AdmissionFreezeRefresh, f1-admission-freeze-refresh-v1.json, and validation/0113. Upstream freshness was checked with git fetch upstream master and observed 0 commits after upstream 665159e246749578d4e4bfe106ee3b74edcdab18. The gate refreshes the wake publication boundary: fail-capable RunCap/FrozenRunUse authority resolution must finish before TASK_WAKING, remote wake-list publication, or enqueue-visible state; after publication only cheap freshness validation or fail-closed handling without lost wakeup is allowed. Safe TLC passed with 44 generated states, 24 distinct states, 0 left on queue, depth 7. Unsafe configs produced expected counterexamples for TASK_WAKING before freeze, wake_list before freeze, enqueue before freeze, running with missing generation, Domain epoch, SchedContext, placement, or root budget, raw cap after publication, heavy lookup after publication, late denial that loses wakeup, placement-as-authority, current continuation mint, fork ambient authority, and protection claim without implementation. JSON check confirmed 20 anchors, 11 frozen tuple requirements, 5 publication boundaries, 8 path classifications, 15 authority rejections, 15 unsafe cases, and 14/14 safety flags false. Assurance evidence E-SCHED-F1-FREEZE-001 supports EXEC-001/BUDGET-001/COMPAT-001 only as model evidence. This is not an F1 hook implementation, task-field approval, runtime coverage, ABI approval/change, behavior change, monitor verification, or production protection. Next focused risks are monitor timer architecture substrate comparison and integration of server epoch relation plus deadline CBS/GRUB plus F1 admission-freeze into the wider LinuxSchedulerAuthority model.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -657,7 +657,13 @@
     "deadline_cbs_grub_compat_model": "capsched/capsched-models/formal/0073-deadline-cbs-grub-compat-model/README.md",
     "deadline_cbs_grub_compat_tla": "capsched/capsched-models/formal/0073-deadline-cbs-grub-compat-model/DeadlineCbsGrubCompat.tla",
     "deadline_cbs_grub_compat_validation": "capsched/capsched-models/validation/0112-deadline-cbs-grub-compat-tlc.md",
-    "deadline_cbs_grub_compat_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/deadline-cbs-grub-compat-20260701T205812Z"
+    "deadline_cbs_grub_compat_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/deadline-cbs-grub-compat-20260701T205812Z",
+    "f1_admission_freeze_refresh_analysis": "capsched/capsched-models/analysis/0096-f1-admission-freeze-refresh.md",
+    "f1_admission_freeze_refresh_json": "capsched/capsched-models/analysis/f1-admission-freeze-refresh-v1.json",
+    "f1_admission_freeze_refresh_model": "capsched/capsched-models/formal/0074-f1-admission-freeze-refresh-model/README.md",
+    "f1_admission_freeze_refresh_tla": "capsched/capsched-models/formal/0074-f1-admission-freeze-refresh-model/F1AdmissionFreezeRefresh.tla",
+    "f1_admission_freeze_refresh_validation": "capsched/capsched-models/validation/0113-f1-admission-freeze-refresh-tlc.md",
+    "f1_admission_freeze_refresh_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/f1-admission-freeze-refresh-20260701T211426Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "id": "f1-admission-freeze-refresh-v1",
+  "analysis": "analysis/0096-f1-admission-freeze-refresh.md",
+  "status": "draft_model_gate",
+  "date": "2026-07-01",
+  "inputs": {
+    "previous_f1_analysis": "analysis/0031-f1-admission-freeze-data-dependencies.md",
+    "scheduler_authority_refinement": "analysis/0089-scheduler-authority-refinement-gate.md",
+    "runtime_charge_subject": "analysis/0090-runtime-charge-subject-map.md",
+    "scheduler_server_ticket": "analysis/0091-scheduler-server-ticket-map.md",
+    "monitor_root_budget_timer": "analysis/0093-monitor-root-budget-timer.md",
+    "server_epoch_relation": "analysis/0094-server-epoch-relation.md",
+    "deadline_cbs_grub_compat": "analysis/0095-deadline-cbs-grub-compatibility.md",
+    "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+    "freshness_check": "git fetch upstream master observed zero commits after upstream_commit on 2026-07-01"
+  },
+  "purpose": "Refresh the F1 admission-freeze boundary so fail-capable RunCap authority resolution happens before TASK_WAKING, wake_list, or enqueue-visible publication, and only cheap freshness validation remains after publication.",
+  "source_anchors": [
+    {
+      "id": "try_to_wake_up_contract",
+      "path": "kernel/sched/core.c",
+      "line": 4215,
+      "meaning": "wakeup changes task state and may enqueue"
+    },
+    {
+      "id": "pi_lock_stabilizes_scheduler_fields",
+      "path": "kernel/sched/core.c",
+      "line": 4231,
+      "meaning": "p->pi_lock stabilizes sched_class, cpus_ptr, and sched_task_group"
+    },
+    {
+      "id": "current_self_wake",
+      "path": "kernel/sched/core.c",
+      "line": 4258,
+      "meaning": "current wake path is continuation, not fresh authority mint"
+    },
+    {
+      "id": "f1_state_match",
+      "path": "kernel/sched/core.c",
+      "line": 4292,
+      "meaning": "state match under p->pi_lock precedes publication"
+    },
+    {
+      "id": "already_runnable_shortcut",
+      "path": "kernel/sched/core.c",
+      "line": 4322,
+      "meaning": "on-rq runnable continuation can complete without new enqueue"
+    },
+    {
+      "id": "task_waking_publication",
+      "path": "kernel/sched/core.c",
+      "line": 4357,
+      "meaning": "TASK_WAKING is the primary irreversible wake publication"
+    },
+    {
+      "id": "remote_wakelist_after_publication",
+      "path": "kernel/sched/core.c",
+      "line": 4378,
+      "meaning": "remote wakelist may be published after TASK_WAKING"
+    },
+    {
+      "id": "post_publication_select_task_rq",
+      "path": "kernel/sched/core.c",
+      "line": 4393,
+      "meaning": "CPU selection occurs after TASK_WAKING"
+    },
+    {
+      "id": "post_publication_set_task_cpu",
+      "path": "kernel/sched/core.c",
+      "line": 4400,
+      "meaning": "migration state mutation occurs after TASK_WAKING"
+    },
+    {
+      "id": "post_publication_ttwu_queue",
+      "path": "kernel/sched/core.c",
+      "line": 4415,
+      "meaning": "queueing consumes already-frozen authority"
+    },
+    {
+      "id": "select_task_rq_lock_contract",
+      "path": "kernel/sched/core.c",
+      "line": 3610,
+      "meaning": "placement uses stable cpus_ptr and fallback constraints"
+    },
+    {
+      "id": "ttwu_do_activate",
+      "path": "kernel/sched/core.c",
+      "line": 3805,
+      "meaning": "activate_task then TASK_RUNNING finalizes wake"
+    },
+    {
+      "id": "ttwu_runnable",
+      "path": "kernel/sched/core.c",
+      "line": 3865,
+      "meaning": "already queued/delayed path is continuation"
+    },
+    {
+      "id": "sched_ttwu_pending",
+      "path": "kernel/sched/core.c",
+      "line": 3891,
+      "meaning": "remote pending wake consumer performs activation"
+    },
+    {
+      "id": "ttwu_queue_wakelist",
+      "path": "kernel/sched/core.c",
+      "line": 4056,
+      "meaning": "wakelist is Linux carrier only"
+    },
+    {
+      "id": "ttwu_queue",
+      "path": "kernel/sched/core.c",
+      "line": 4067,
+      "meaning": "post-publication local activation path"
+    },
+    {
+      "id": "wake_up_new_task",
+      "path": "kernel/sched/core.c",
+      "line": 4935,
+      "meaning": "initial runnable publication and enqueue"
+    },
+    {
+      "id": "wake_q_ready_at_add",
+      "path": "include/linux/sched/wake_q.h",
+      "line": 31,
+      "meaning": "task must be ready at wake_q_add"
+    },
+    {
+      "id": "wake_q_add_contract",
+      "path": "kernel/sched/core.c",
+      "line": 1116,
+      "meaning": "wake_q_add is used as if wake_up_process"
+    },
+    {
+      "id": "wake_up_q_execution",
+      "path": "kernel/sched/core.c",
+      "line": 1156,
+      "meaning": "wake_up_q later calls wake_up_process"
+    }
+  ],
+  "frozen_tuple_requirements": [
+    "task_generation",
+    "process_generation_if_relevant",
+    "domain_id_or_shadow",
+    "domain_epoch",
+    "run_cap_epoch",
+    "sched_context_id",
+    "sched_context_epoch",
+    "placement_snapshot",
+    "monitor_root_budget_or_ticket_reference",
+    "preallocated_frozen_run_use_storage",
+    "evidence_class_no_l0_overclaim"
+  ],
+  "publication_boundaries": [
+    "TASK_WAKING",
+    "remote_wake_list",
+    "enqueue_visible_state",
+    "wake_q_add_logical_readiness",
+    "wake_up_new_task_initial_enqueue"
+  ],
+  "path_classification": [
+    {
+      "path": "sleeping_task_wake",
+      "required_rule": "freeze_before_TASK_WAKING"
+    },
+    {
+      "path": "remote_wakelist",
+      "required_rule": "wakelist_carries_no_raw_cap; frozen_tuple_already_exists"
+    },
+    {
+      "path": "local_ttwu_queue",
+      "required_rule": "activation_consumes_pre_frozen_authority"
+    },
+    {
+      "path": "wake_q",
+      "required_rule": "authority_ready_at_wake_q_add; wake_up_q_not_first_discovery"
+    },
+    {
+      "path": "wake_up_new_task",
+      "required_rule": "SpawnCap_or_admission_freeze_before_initial_enqueue"
+    },
+    {
+      "path": "current_self_wake",
+      "required_rule": "continuation_of_existing_authority_not_new_mint"
+    },
+    {
+      "path": "already_runnable",
+      "required_rule": "existing_queued_or_running_authority_not_new_mint"
+    },
+    {
+      "path": "placement_fallback_hotplug",
+      "required_rule": "placement_constraint_not_authority"
+    }
+  ],
+  "post_publication_allowed_operations": [
+    "cheap_epoch_generation_validation",
+    "cheap_cpu_subset_validation",
+    "cheap_budget_ticket_freshness_validation",
+    "fail_closed_without_lost_wakeup",
+    "monitor_activation_validation_of_existing_sealed_token"
+  ],
+  "authority_rejections": [
+    "task_waking_before_frozen_use",
+    "wake_list_before_frozen_use",
+    "enqueue_before_frozen_use",
+    "run_missing_task_generation",
+    "run_missing_domain_epoch",
+    "run_missing_sched_context",
+    "run_missing_placement_snapshot",
+    "run_missing_root_budget_ticket",
+    "raw_cap_handle_after_publication",
+    "heavy_lookup_after_publication",
+    "late_denial_that_loses_wakeup",
+    "placement_as_authority",
+    "current_continuation_as_authority_mint",
+    "fork_initial_run_as_ambient_authority",
+    "protection_claim_without_monitor_evidence"
+  ],
+  "unsafe_cases": [
+    "UnsafeTaskWakingBeforeFreeze",
+    "UnsafeWakeListBeforeFreeze",
+    "UnsafeEnqueueBeforeFreeze",
+    "UnsafeRunMissingGeneration",
+    "UnsafeRunMissingDomainEpoch",
+    "UnsafeRunMissingSchedContext",
+    "UnsafeRunMissingPlacement",
+    "UnsafeRunMissingBudget",
+    "UnsafeRawCapAfterPublication",
+    "UnsafeHeavyLookupAfterPublication",
+    "UnsafeLateDenyLostWake",
+    "UnsafePlacementAuthority",
+    "UnsafeCurrentContinuationMint",
+    "UnsafeForkAmbientAuthority",
+    "UnsafeProtectionClaim"
+  ],
+  "safety_flags": {
+    "linux_hook_approved": false,
+    "task_field_approved": false,
+    "scheduler_behavior_change": false,
+    "public_abi_approved": false,
+    "monitor_call_abi_approved": false,
+    "tracepoint_abi_approved": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "authority_claim": false,
+    "task_waking_late_denial_allowed": false,
+    "raw_cap_after_publication_allowed": false,
+    "allocation_in_f1_allowed": false,
+    "heavy_lookup_after_publication_allowed": false
+  }
+}

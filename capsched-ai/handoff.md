@@ -343,11 +343,29 @@ latest completed risk:
   false. Assurance evidence E-SCHED-DL-COMPAT-001 supports EXEC-001,
   BUDGET-001, and COMPAT-001 only as model evidence.
 
+latest completed risk:
+  F1 admission-freeze refresh gate. Analysis/0096, formal/0074,
+  f1-admission-freeze-refresh-v1.json, and validation/0113 refresh the Linux
+  wake publication boundary against current upstream. Fail-capable RunCap and
+  FrozenRunUse resolution must finish before TASK_WAKING, remote wake-list
+  publication, or enqueue-visible state. After publication only cheap freshness
+  validation or fail-closed handling without lost wakeup is allowed. Safe TLC
+  passed with 44 generated states, 24 distinct states, 0 states left on queue,
+  depth 7. Unsafe configs reject TASK_WAKING before freeze, wake_list before
+  freeze, enqueue before freeze, running with missing generation, Domain epoch,
+  SchedContext, placement, or root budget, raw cap after publication, heavy
+  lookup after publication, late denial that loses wakeup, placement-as-authority,
+  current continuation mint, fork ambient authority, and protection claim
+  without implementation. JSON check confirms 20 anchors, 11 frozen tuple
+  requirements, 5 publication boundaries, 8 path classifications, 15 authority
+  rejections, 15 unsafe cases, and 14/14 safety flags false. Assurance evidence
+  E-SCHED-F1-FREEZE-001 supports EXEC-001, BUDGET-001, and COMPAT-001 only as
+  model evidence.
+
 next focused risk:
-  F1 admission-freeze data dependency refresh, monitor timer architecture
-  substrate comparison for x86 VMX-root and arm64 EL2, and integration of the
-  server epoch relation plus deadline CBS/GRUB compatibility into the wider
-  LinuxSchedulerAuthority model. Do
+  Monitor timer architecture substrate comparison for x86 VMX-root and arm64
+  EL2, and integration of the server epoch relation plus deadline CBS/GRUB plus
+  F1 admission-freeze into the wider LinuxSchedulerAuthority model. Do
   not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
   integration, async carrier Linux names, budget hooks, or behavior-changing
   patches.

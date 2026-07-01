@@ -373,4 +373,18 @@ Current deadline CBS/GRUB compatibility gate:
   CBS-throttled, and protection claim without implementation. No deadline hook,
   scheduler hook, budget hook, ABI change, tracepoint ABI, behavior change, or
   production protection is approved.
+
+Current F1 admission-freeze refresh gate:
+  analysis/0096, formal/0074, f1-admission-freeze-refresh-v1.json, and
+  validation/0113 now refresh the wake publication boundary against current
+  upstream. Safe TLC passed with 44 generated states, 24 distinct states, and
+  depth 7. Unsafe configs produced expected counterexamples for TASK_WAKING
+  before freeze, wake_list before freeze, enqueue before freeze, running with
+  missing generation, Domain epoch, SchedContext, placement, or root budget,
+  raw cap handles after publication, heavy lookup after publication, late
+  denial that loses a wakeup, placement-as-authority, current continuation
+  mint, fork ambient authority, and protection claim without implementation.
+  No F1 hook, scheduler hook, task field, ABI, monitor ABI, tracepoint ABI,
+  behavior change, runtime coverage, monitor verification, or production
+  protection is approved.
 ```

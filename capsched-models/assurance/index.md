@@ -141,6 +141,11 @@ Model-supported areas:
   CBS runtime/replenishment, GRUB reclaim, inactive timers, dynamic
   sched_getattr, and overrun notification constrain or observe scheduling but
   cannot mint CapSched authority or monitor root budget
+- F1 admission-freeze wake publication semantics, checking that TASK_WAKING,
+  remote wake-list publication, and enqueue-visible state require pre-frozen
+  authority, while raw cap handles, heavy post-publication lookup, late
+  lost-wakeup denial, placement authority, current continuation minting, fork
+  ambient authority, and protection overclaims are rejected
 - runtime coverage gate semantics, checking that future trace-only runtime
   coverage cannot be accepted without current, donor, proxy relation, server
   relation, evidence class, and non-claim boundaries, and that sched_stat,

@@ -75,7 +75,8 @@
         "E-SCHED-REFINE-001",
         "E-SCHED-SERVER-001",
         "E-SCHED-SERVER-EPOCH-001",
-        "E-SCHED-DL-COMPAT-001"
+        "E-SCHED-DL-COMPAT-001",
+        "E-SCHED-F1-FREEZE-001"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
@@ -85,7 +86,8 @@
         "No trace/runtime coverage for current, donor, and proxy execution paths.",
         "No wakeup/migration/remote wake coverage.",
         "No server epoch field or lifecycle invalidation implementation.",
-        "No deadline CBS/GRUB integration hook or runtime coverage."
+        "No deadline CBS/GRUB integration hook or runtime coverage.",
+        "No F1 admission-freeze hook, task storage, or wake_q/wakelist runtime coverage."
       ],
       "forbidden_l0": false
     },
@@ -103,7 +105,8 @@
         "E-SCHED-RUNTIME-001",
         "E-SCHED-SERVER-001",
         "E-SCHED-SERVER-EPOCH-001",
-        "E-SCHED-DL-COMPAT-001"
+        "E-SCHED-DL-COMPAT-001",
+        "E-SCHED-F1-FREEZE-001"
       ],
       "gaps": [
         "No Linux accounting integration.",
@@ -114,6 +117,7 @@
         "No monitor root budget timer implementation.",
         "No server epoch relation integration with monitor root budget receipts.",
         "No deadline CBS/GRUB integration with monitor root budget receipts.",
+        "No F1 root-budget ticket freeze implementation or runtime coverage.",
         "No service-domain debit/refund policy."
       ],
       "forbidden_l0": true
@@ -676,12 +680,14 @@
         "E-L0-002",
         "E-MAP-001",
         "E-SCHED-COVERAGE-001",
-        "E-SCHED-DL-COMPAT-001"
+        "E-SCHED-DL-COMPAT-001",
+        "E-SCHED-F1-FREEZE-001"
       ],
       "gaps": [
         "No boot/runtime evidence.",
         "No runtime trace execution under the N-138 current/donor/proxy/server contract.",
         "No deadline CBS/GRUB runtime compatibility trace under CapSched hooks.",
+        "No F1 wake publication runtime compatibility trace under CapSched hooks.",
         "No scheduler behavior patch yet.",
         "No workload compatibility matrix."
       ],
@@ -1561,6 +1567,17 @@
         "COMPAT-001"
       ],
       "limitation": "Finite model gate checks Linux SCHED_DEADLINE CBS/GRUB compatibility and authority separation; it is not a deadline hook implementation, runtime coverage, ABI approval, monitor verification, or production protection evidence."
+    },
+    {
+      "id": "E-SCHED-F1-FREEZE-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0113-f1-admission-freeze-refresh-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "BUDGET-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite model gate checks F1 wake publication and FrozenRunUse boundary semantics; it is not an F1 hook implementation, runtime coverage, monitor ABI approval, monitor verification, or production protection evidence."
     },
     {
       "id": "E-SCHED-COVERAGE-001",
