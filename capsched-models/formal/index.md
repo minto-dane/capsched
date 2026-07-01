@@ -77,12 +77,13 @@ Updated: 2026-07-01
 | 0069 | Checked with safe pass and expected unsafe counterexamples | Scheduler Server Ticket Model |
 | 0070 | Checked with safe pass and expected unsafe counterexamples | Runtime Coverage Gate Model |
 | 0071 | Checked with safe pass and expected unsafe counterexamples | Monitor Root Budget Timer Model |
+| 0072 | Checked with safe pass and expected unsafe counterexamples | Server Epoch Relation Model |
 
 ## Planned
 
-1. Server epoch relation to replenish/swap/stop in a larger scheduler authority model.
-2. Deadline CBS/GRUB compatibility source refresh before behavior hooks.
-3. F1 admission-freeze data dependency refresh against current upstream.
-4. Monitor timer architecture substrate comparison for x86 VMX-root and arm64 EL2 after the semantic model is stable.
+1. Deadline CBS/GRUB compatibility source refresh before behavior hooks.
+2. F1 admission-freeze data dependency refresh against current upstream.
+3. Monitor timer architecture substrate comparison for x86 VMX-root and arm64 EL2 after the semantic model is stable.
+4. Server epoch relation integration into the wider LinuxSchedulerAuthority model.
 5. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

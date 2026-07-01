@@ -144,6 +144,8 @@ Current evidence:
 - `validation/0106-scheduler-authority-refinement-gate-tlc.md`
 - `formal/0069-scheduler-server-ticket-model/`
 - `validation/0108-scheduler-server-ticket-tlc.md`
+- `formal/0072-server-epoch-relation-model/`
+- `validation/0111-server-epoch-relation-tlc.md`
 - `implementation/0001-l0-runnable-lease-implementation-plan.md`
 - Slice 0B type names: `capsched_run_cap`, `capsched_sched_ctx`,
   `capsched_frozen_run_use`
@@ -158,6 +160,7 @@ Open gaps:
 - no trace/runtime coverage for current, donor, and proxy execution paths
 - no runtime coverage for server-picked lower-class tasks
 - no root budget monitor timer
+- no server epoch field or lifecycle invalidation implementation
 
 Forbidden L0 claim:
 
@@ -191,6 +194,8 @@ Current evidence:
 - `validation/0109-runtime-coverage-gate-tlc.md`
 - `formal/0071-monitor-root-budget-timer-model/`
 - `validation/0110-monitor-root-budget-timer-tlc.md`
+- `formal/0072-server-epoch-relation-model/`
+- `validation/0111-server-epoch-relation-tlc.md`
 - Slice 0B type name: `capsched_budget_ticket`
 
 Open gaps:
@@ -201,6 +206,7 @@ Open gaps:
   deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution
 - no actual trace runtime coverage run under the N-138 contract
 - no monitor root budget timer binding to server tickets
+- no server epoch relation integration with monitor root budget receipts
 - no service-domain budget debit/refund policy
 - no overload/DoS measurement
 
@@ -600,6 +606,7 @@ Open gaps:
 | E-SCHED-SERVER-001 | TLA validation | `validation/0108-scheduler-server-ticket-tlc.md` | EXEC, BUDGET |
 | E-SCHED-COVERAGE-001 | TLA validation | `validation/0109-runtime-coverage-gate-tlc.md` | BUDGET, COMPAT |
 | E-MONITOR-TIMER-001 | TLA validation | `validation/0110-monitor-root-budget-timer-tlc.md` | ACT, BUDGET |
+| E-SCHED-SERVER-EPOCH-001 | TLA validation | `validation/0111-server-epoch-relation-tlc.md` | EXEC, BUDGET |
 | E-ACT-001 | TLA validation | `validation/0007-domain-monitor-activation-tlc.md` | ACT |
 | E-CLUSTER-001 | Negative/stress record | `validation/0008-cluster-lease-full-systemd-tlc-run.md` | CLUSTER limitation |
 | E-CLUSTER-002 | TLA validation | `validation/0009-cluster-authority-decomposition-tlc.md` | CLUSTER, REVOKE |

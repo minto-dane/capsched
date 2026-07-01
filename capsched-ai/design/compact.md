@@ -237,10 +237,23 @@ latest completed focused risk:
   claim. JSON: 25 anchors, 12 monitor event requirements, 10 unsafe cases,
   12/12 safety flags false.
 
+latest completed focused risk:
+  Server epoch relation gate. Analysis/0094, formal/0072, JSON gate, and
+  validation/0111 model server-kind/server-epoch freshness across DL/fair/ext
+  server start, stop, replenish, parameter update, attach, detach, swap, and
+  CPU teardown. Safe TLC: 107 generated states, 32 distinct, depth 6. Unsafe
+  configs reject stale ticket after replenish, ticket surviving server swap,
+  server-kind mismatch after swap, ticket surviving stop, pick without fresh
+  ticket, lower task without authority, Linux runtime authority, parameter
+  update keeping a ticket, CPU teardown keeping a running ticket, and
+  protection claim. JSON: 44 anchors, 13 epoch boundaries, 8 fresh ticket
+  requirements, 10 unsafe cases, 13/13 safety flags false.
+
 next focused risk:
-  Server epoch relation to replenish/swap/stop in a larger scheduler authority
-  model, deadline CBS/GRUB compatibility source refresh, F1 admission-freeze
-  data dependency refresh, and monitor timer architecture substrate comparison.
+  Deadline CBS/GRUB compatibility source refresh, F1 admission-freeze data
+  dependency refresh, monitor timer architecture substrate comparison, and
+  server epoch relation integration into the wider LinuxSchedulerAuthority
+  model.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

@@ -311,11 +311,26 @@ latest completed risk:
   evidence E-MONITOR-TIMER-001 supports ACT-001 and BUDGET-001 only as model
   evidence.
 
+latest completed risk:
+  Server epoch relation gate. Analysis/0094, formal/0072,
+  server-epoch-relation-v1.json, and validation/0111 now refine server-borrow
+  authority across Linux DL/fair/ext server lifecycle changes. Safe TLC passed
+  with 107 generated states, 32 distinct states, 0 states left on queue, depth
+  6. Unsafe configs produced expected counterexamples for stale ticket after
+  replenish, ticket surviving server swap, server-kind mismatch after swap,
+  ticket surviving stop, pick without fresh ticket, lower task without
+  authority, Linux runtime as authority, parameter update keeping a ticket, CPU
+  teardown keeping a running ticket, and protection claim without
+  implementation. JSON check confirms 44 source anchors, 13 server epoch
+  boundaries, 8 fresh ticket requirements, 10 unsafe cases, and 13/13 safety
+  flags false. Assurance evidence E-SCHED-SERVER-EPOCH-001 supports EXEC-001
+  and BUDGET-001 only as model evidence.
+
 next focused risk:
-  Server epoch relation to replenish/swap/stop in a larger scheduler authority
-  model, deadline CBS/GRUB compatibility source refresh before behavior hooks,
-  F1 admission-freeze data dependency refresh, and monitor timer architecture
-  substrate comparison for x86 VMX-root and arm64 EL2. Do
+  Deadline CBS/GRUB compatibility source refresh before behavior hooks, F1
+  admission-freeze data dependency refresh, monitor timer architecture
+  substrate comparison for x86 VMX-root and arm64 EL2, and integration of the
+  server epoch relation into the wider LinuxSchedulerAuthority model. Do
   not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
   integration, async carrier Linux names, budget hooks, or behavior-changing
   patches.

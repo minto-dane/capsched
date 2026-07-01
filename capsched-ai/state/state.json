@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "monitor-root-budget-timer-gate-complete",
+    "current_phase": "server-epoch-relation-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-139 monitor root budget timer gate is complete. Added analysis/0093, formal/0071 MonitorRootBudgetTimer, monitor-root-budget-timer-v1.json, and validation/0110. The gate models Linux timer/accounting as non-authoritative and requires monitor-owned timer/deadline, remaining monitor root budget, sealed RunToken, and fresh Domain epoch before running. Safe TLC passed with 78 generated states, 37 distinct states, 0 left on queue, depth 7. Unsafe configs produced expected counterexamples for running without monitor timer, running without root budget, Linux timer as root authority, overrun after budget expiry, Linux charge as monitor charge, activation without sealed token, running after epoch revoke, running after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation. JSON check confirmed 25 anchors, 12 monitor event requirements, 10 unsafe cases, and 12/12 safety flags false. Assurance evidence E-MONITOR-TIMER-001 supports ACT-001/BUDGET-001 only as model evidence. This is not monitor implementation, Linux hook approval, runtime coverage, ABI approval, architecture timer path implementation, behavior change, or production protection. Next focused risks are server epoch relation to replenish/swap/stop in a larger scheduler authority model, deadline CBS/GRUB compatibility source refresh, F1 admission-freeze data dependency refresh, and monitor timer architecture substrate comparison.",
+    "current_focus": "N-140 server epoch relation gate is complete. Added analysis/0094, formal/0072 ServerEpochRelation, server-epoch-relation-v1.json, and validation/0111. The gate models server-kind/server-epoch freshness across Linux DL/fair/ext server start, stop, replenish, parameter update, attach, detach, swap, and CPU teardown. Safe TLC passed with 107 generated states, 32 distinct states, 0 left on queue, depth 6. Unsafe configs produced expected counterexamples for stale ticket after replenish, ticket surviving server swap, server-kind mismatch after swap, ticket surviving stop, pick without fresh ticket, lower task without authority, Linux runtime as authority, parameter update keeping a ticket, CPU teardown keeping a running ticket, and protection claim without implementation. JSON check confirmed 44 anchors, 13 server epoch boundaries, 8 fresh ticket requirements, 10 unsafe cases, and 13/13 safety flags false. Assurance evidence E-SCHED-SERVER-EPOCH-001 supports EXEC-001/BUDGET-001 only as model evidence. This is not server-epoch implementation, Linux hook approval, runtime coverage, ABI approval, behavior change, monitor verification, or production protection. Next focused risks are deadline CBS/GRUB compatibility source refresh, F1 admission-freeze data dependency refresh, monitor timer architecture substrate comparison, and integration of server epoch relation into the wider LinuxSchedulerAuthority model.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -645,7 +645,13 @@
     "monitor_root_budget_timer_model": "capsched/capsched-models/formal/0071-monitor-root-budget-timer-model/README.md",
     "monitor_root_budget_timer_tla": "capsched/capsched-models/formal/0071-monitor-root-budget-timer-model/MonitorRootBudgetTimer.tla",
     "monitor_root_budget_timer_validation": "capsched/capsched-models/validation/0110-monitor-root-budget-timer-tlc.md",
-    "monitor_root_budget_timer_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/monitor-root-budget-timer-20260701T202836Z"
+    "monitor_root_budget_timer_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/monitor-root-budget-timer-20260701T202836Z",
+    "server_epoch_relation_analysis": "capsched/capsched-models/analysis/0094-server-epoch-relation.md",
+    "server_epoch_relation_json": "capsched/capsched-models/analysis/server-epoch-relation-v1.json",
+    "server_epoch_relation_model": "capsched/capsched-models/formal/0072-server-epoch-relation-model/README.md",
+    "server_epoch_relation_tla": "capsched/capsched-models/formal/0072-server-epoch-relation-model/ServerEpochRelation.tla",
+    "server_epoch_relation_validation": "capsched/capsched-models/validation/0111-server-epoch-relation-tlc.md",
+    "server_epoch_relation_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/server-epoch-relation-20260701T204438Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

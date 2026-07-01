@@ -345,4 +345,17 @@ Current monitor root budget timer gate:
   without implementation. No monitor timer implementation, Linux hook, budget
   hook, scheduler hook, ABI, runtime test, behavior change, or production
   protection is approved.
+
+Current server epoch relation gate:
+  analysis/0094, formal/0072, server-epoch-relation-v1.json, and
+  validation/0111 now refine N-137 so fair/ext/DL server lifecycle changes
+  cannot extend stale ServerBorrowTicket authority. Safe TLC passed with 107
+  generated states, 32 distinct states, and depth 6. Unsafe configs produced
+  expected counterexamples for stale ticket after replenish, ticket surviving
+  server swap, server-kind mismatch after swap, ticket surviving stop, pick
+  without fresh ticket, lower task without authority, Linux runtime as
+  authority, parameter update keeping a ticket, CPU teardown keeping a running
+  ticket, and protection claim without implementation. No server-epoch field,
+  scheduler hook, budget hook, tracepoint ABI, behavior change, or production
+  protection is approved.
 ```

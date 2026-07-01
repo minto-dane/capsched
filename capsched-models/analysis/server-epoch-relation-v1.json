@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "id": "server-epoch-relation-v1",
+  "analysis": "analysis/0094-server-epoch-relation.md",
+  "status": "draft_model_gate",
+  "date": "2026-07-01",
+  "inputs": {
+    "scheduler_server_ticket": "analysis/0091-scheduler-server-ticket-map.md",
+    "runtime_coverage_gate": "analysis/0092-runtime-coverage-gate.md",
+    "monitor_root_budget_timer": "analysis/0093-monitor-root-budget-timer.md",
+    "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462"
+  },
+  "purpose": "Define the server-kind and server-epoch freshness relation required so Linux DL/fair/ext server lifecycle changes cannot extend or reinterpret stale server-borrow tickets.",
+  "source_anchors": [
+    {
+      "id": "dl_server_interface",
+      "path": "kernel/sched/sched.h",
+      "line": 366,
+      "meaning": "server API and lifecycle contract"
+    },
+    {
+      "id": "server_pick_field",
+      "path": "include/linux/sched.h",
+      "line": 739,
+      "meaning": "server_pick_task field selects lower-class work"
+    },
+    {
+      "id": "trace_replenish_decl",
+      "path": "include/trace/events/sched.h",
+      "line": 908,
+      "meaning": "replenish trace visibility, not authority"
+    },
+    {
+      "id": "trace_server_start_decl",
+      "path": "include/trace/events/sched.h",
+      "line": 917,
+      "meaning": "start trace visibility, not authority"
+    },
+    {
+      "id": "trace_server_stop_decl",
+      "path": "include/trace/events/sched.h",
+      "line": 921,
+      "meaning": "stop trace visibility, not authority"
+    },
+    {
+      "id": "replenish_new_period",
+      "path": "kernel/sched/deadline.c",
+      "line": 724,
+      "meaning": "runtime/deadline refresh is an epoch boundary"
+    },
+    {
+      "id": "replenish_entity",
+      "path": "kernel/sched/deadline.c",
+      "line": 799,
+      "meaning": "CBS replenish is an epoch boundary"
+    },
+    {
+      "id": "dl_server_timer",
+      "path": "kernel/sched/deadline.c",
+      "line": 1140,
+      "meaning": "timer drives replenish or idle-stop lifecycle"
+    },
+    {
+      "id": "dl_server_timer_update_curr",
+      "path": "kernel/sched/deadline.c",
+      "line": 1159,
+      "meaning": "donor update before timer decision is accounting"
+    },
+    {
+      "id": "dl_server_timer_idle_stop",
+      "path": "kernel/sched/deadline.c",
+      "line": 1162,
+      "meaning": "idle timer can stop server"
+    },
+    {
+      "id": "dl_server_timer_replenish_enqueue",
+      "path": "kernel/sched/deadline.c",
+      "line": 1186,
+      "meaning": "timer enqueue replenish boundary"
+    },
+    {
+      "id": "dl_runtime_exceeded",
+      "path": "kernel/sched/deadline.c",
+      "line": 1501,
+      "meaning": "runtime exhaustion throttles server/task"
+    },
+    {
+      "id": "dl_server_fallback_replenish",
+      "path": "kernel/sched/deadline.c",
+      "line": 1519,
+      "meaning": "server fallback replenish is still an epoch boundary"
+    },
+    {
+      "id": "dl_server_update",
+      "path": "kernel/sched/deadline.c",
+      "line": 1584,
+      "meaning": "server runtime accounting, not ticket refresh"
+    },
+    {
+      "id": "dl_server_state_comment",
+      "path": "kernel/sched/deadline.c",
+      "line": 1654,
+      "meaning": "documented server lifecycle transitions"
+    },
+    {
+      "id": "dl_server_start",
+      "path": "kernel/sched/deadline.c",
+      "line": 1795,
+      "meaning": "server active interval start"
+    },
+    {
+      "id": "dl_server_active_set",
+      "path": "kernel/sched/deadline.c",
+      "line": 1813,
+      "meaning": "Linux mutable active bit"
+    },
+    {
+      "id": "dl_server_stop",
+      "path": "kernel/sched/deadline.c",
+      "line": 1819,
+      "meaning": "stop invalidates live ticket"
+    },
+    {
+      "id": "dl_server_active_clear",
+      "path": "kernel/sched/deadline.c",
+      "line": 1831,
+      "meaning": "inactive server cannot carry live ticket"
+    },
+    {
+      "id": "sched_init_fair_server_params",
+      "path": "kernel/sched/deadline.c",
+      "line": 1860,
+      "meaning": "initial fair server parameter setup"
+    },
+    {
+      "id": "sched_init_ext_server_params",
+      "path": "kernel/sched/deadline.c",
+      "line": 1871,
+      "meaning": "initial ext server parameter setup"
+    },
+    {
+      "id": "sched_init_ext_server_detach",
+      "path": "kernel/sched/deadline.c",
+      "line": 1882,
+      "meaning": "detached ext server has no live ticket"
+    },
+    {
+      "id": "dl_server_apply_params",
+      "path": "kernel/sched/deadline.c",
+      "line": 1905,
+      "meaning": "parameter update is an epoch boundary"
+    },
+    {
+      "id": "dl_server_params_runtime_reset",
+      "path": "kernel/sched/deadline.c",
+      "line": 1936,
+      "meaning": "runtime/deadline state reset"
+    },
+    {
+      "id": "dl_server_detach_stops",
+      "path": "kernel/sched/deadline.c",
+      "line": 1993,
+      "meaning": "detach stops active server before bandwidth removal"
+    },
+    {
+      "id": "dl_server_attach_start",
+      "path": "kernel/sched/deadline.c",
+      "line": 2056,
+      "meaning": "attach can start server after missed transition"
+    },
+    {
+      "id": "dl_server_swap_bw",
+      "path": "kernel/sched/deadline.c",
+      "line": 2093,
+      "meaning": "server bandwidth swap boundary"
+    },
+    {
+      "id": "dl_server_swap_detach_attach",
+      "path": "kernel/sched/deadline.c",
+      "line": 2107,
+      "meaning": "old server detached and new server attached"
+    },
+    {
+      "id": "dl_server_swap_start",
+      "path": "kernel/sched/deadline.c",
+      "line": 2119,
+      "meaning": "attach side may start a new active interval"
+    },
+    {
+      "id": "enqueue_dl_replenish",
+      "path": "kernel/sched/deadline.c",
+      "line": 2431,
+      "meaning": "ENQUEUE_REPLENISH calls replenish"
+    },
+    {
+      "id": "server_pick_task",
+      "path": "kernel/sched/deadline.c",
+      "line": 2827,
+      "meaning": "nested server pick selects lower task"
+    },
+    {
+      "id": "server_pick_empty_stop",
+      "path": "kernel/sched/deadline.c",
+      "line": 2830,
+      "meaning": "empty nested pick stops server"
+    },
+    {
+      "id": "fair_server_update",
+      "path": "kernel/sched/fair.c",
+      "line": 2019,
+      "meaning": "fair server runtime update"
+    },
+    {
+      "id": "fair_server_start",
+      "path": "kernel/sched/fair.c",
+      "line": 7891,
+      "meaning": "fair server start on first queued fair task"
+    },
+    {
+      "id": "fair_server_pick",
+      "path": "kernel/sched/fair.c",
+      "line": 9957,
+      "meaning": "fair lower-class pick"
+    },
+    {
+      "id": "ext_server_update",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 1336,
+      "meaning": "sched_ext server runtime update"
+    },
+    {
+      "id": "ext_server_start",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 2042,
+      "meaning": "sched_ext server start on first queued ext task"
+    },
+    {
+      "id": "ext_server_pick",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3235,
+      "meaning": "sched_ext lower-class pick"
+    },
+    {
+      "id": "ext_fair_swap",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 6099,
+      "meaning": "ext server reservation swapped back to fair"
+    },
+    {
+      "id": "ext_server_attach",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 7169,
+      "meaning": "sched_ext enable attaches ext server"
+    },
+    {
+      "id": "fair_server_detach",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 7347,
+      "meaning": "sched_ext switched-all detaches fair server"
+    },
+    {
+      "id": "debug_server_param_update",
+      "path": "kernel/sched/debug.c",
+      "line": 423,
+      "meaning": "debug stop/apply/start sequence"
+    },
+    {
+      "id": "cpu_teardown_server_stop",
+      "path": "kernel/sched/core.c",
+      "line": 8846,
+      "meaning": "dying CPU stops fair/ext servers"
+    },
+    {
+      "id": "idle_server_update",
+      "path": "kernel/sched/idle.c",
+      "line": 563,
+      "meaning": "idle accounting can drive server lifecycle"
+    }
+  ],
+  "server_epoch_boundaries": [
+    "server_start",
+    "server_stop",
+    "server_timer_replenish",
+    "server_timer_idle_stop",
+    "runtime_exceeded_replenish",
+    "new_period_replenish",
+    "server_parameter_update",
+    "server_attach",
+    "server_detach",
+    "server_swap",
+    "debug_stop_apply_start",
+    "cpu_teardown_stop",
+    "server_kind_change"
+  ],
+  "fresh_ticket_requirements": [
+    "ticket_live",
+    "ticket_server_kind_matches_current_server_kind",
+    "ticket_server_epoch_matches_current_server_epoch",
+    "server_active",
+    "lower_task_authority_live",
+    "monitor_root_budget_live",
+    "Linux_server_runtime_not_authority",
+    "trace_observation_not_protection"
+  ],
+  "unsafe_cases": [
+    "stale_ticket_after_replenish_runs",
+    "ticket_survives_server_swap",
+    "server_kind_mismatch_after_swap",
+    "ticket_survives_stop",
+    "pick_without_fresh_ticket",
+    "lower_task_without_authority",
+    "Linux_runtime_as_ticket_or_budget_authority",
+    "parameter_update_keeps_ticket",
+    "CPU_teardown_keeps_running_ticket",
+    "protection_claim_without_implementation"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "budget_hook": false,
+    "scheduler_hook": false,
+    "server_epoch_implemented": false,
+    "monitor_timer_implemented": false,
+    "monitor_verified": false,
+    "tracefs_executed": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "public_tracepoint_abi": false,
+    "behavior_change": false,
+    "authority_claim": false,
+    "production_protection": false
+  }
+}
