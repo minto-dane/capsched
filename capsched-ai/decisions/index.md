@@ -13,3 +13,4 @@ Updated: 2026-07-01
 | ADR-0007 | Accepted | Use overlay traceability for N-series and Linux anchors |
 | ADR-0008 | Accepted | Implement from the long-horizon target backward |
 | ADR-0009 | Accepted | Async carrier API direction |
+| ADR-0010 | Accepted | Private superproject and Linux patch queue |

@@ -9,6 +9,30 @@ Read this first when resuming the project.
 The workspace is `/media/nia/scsiusb/dev/linux-cap`.
 The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched`.
 
+Private GitHub publication is now a superproject:
+
+```text
+superproject:
+  https://github.com/minto-dane/linux-cap
+
+project state/model repo:
+  https://github.com/minto-dane/capsched
+
+Linux patch queue repo:
+  https://github.com/minto-dane/capsched-linux
+```
+
+ADR-0010 fixes the publication policy. `capsched-linux` is not a full Linux
+history mirror. It stores upstream base metadata, the private CapSched Linux
+patch series, and a recreate script. The local full Linux working tree remains
+under `linux/`, but it is not committed into the superproject.
+
+Recreate local Linux from the superproject with:
+
+```sh
+./linux-patches/scripts/recreate-capsched-linux-l0.sh ./linux
+```
+
 Upstream Linux has been fetched into sibling repository `linux/`. Slice 0A has
 been committed in that Linux repository as inert `CONFIG_CAPSCHED` scaffolding.
 Slice 0B has also been committed as type-only authority scaffolding in

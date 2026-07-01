@@ -20,6 +20,22 @@ now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
 type-only authority scaffolding, both with no task layout or scheduler behavior
 changes.
 
+Private GitHub publication uses a superproject:
+
+```text
+minto-dane/linux-cap:
+  private superproject
+
+minto-dane/capsched:
+  private project-control/model/state repo
+
+minto-dane/capsched-linux:
+  private Linux patch queue, not a full Linux history mirror
+```
+
+ADR-0010 records this. The local full Linux tree stays under `linux/`; it is
+recreated from `linux-patches/` when cloning the superproject.
+
 ADR-0007 adds a project-wide traceability rule: `N-*` ids are only
 chronological work records, for both N-001 through N-105 and N-106 onward.
 Semantic interpretation is an overlay under `capsched-models/traceability/`.

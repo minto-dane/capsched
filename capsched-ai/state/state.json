@@ -10,8 +10,20 @@
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
       "branch": "main",
+      "private_remote": "https://github.com/minto-dane/capsched",
       "linux_ignored": false,
       "initial_state_committed": true
+    },
+    "github_publication": {
+      "status": "private_superproject_pushed",
+      "owner": "minto-dane",
+      "superproject": "https://github.com/minto-dane/linux-cap",
+      "project_control_repo": "https://github.com/minto-dane/capsched",
+      "linux_patch_queue_repo": "https://github.com/minto-dane/capsched-linux",
+      "linux_full_history_pushed": false,
+      "linux_publication_mode": "patch_queue",
+      "reason": "Full local Linux history push failed with GitHub HTTP 500 and is not required for the private delta; patch queue preserves the private commits against the recorded upstream base.",
+      "recreate_command": "./linux-patches/scripts/recreate-capsched-linux-l0.sh ./linux"
     },
     "layout": {
       "project_control_repo": "capsched",
@@ -28,7 +40,8 @@
       "implementation": "capsched/capsched-models/implementation",
       "assurance": "capsched/capsched-models/assurance",
       "traceability": "capsched/capsched-models/traceability",
-      "linux_source_repo": "linux"
+      "linux_source_repo": "linux",
+      "linux_patch_queue_repo": "linux-patches"
     },
     "linux_source": {
       "status": "fetched",
@@ -45,7 +58,8 @@
       "work_commit_subject": "sched/capsched: Add type-only authority scaffolding",
       "slice0a_status": "applied and build-validated: upstream baseline, CONFIG_CAPSCHED=n, and CONFIG_CAPSCHED=y vmlinux builds completed successfully under systemd user runner",
       "slice0b_status": "applied and build-validated: type-only authority scaffolding in include/linux/capsched.h and kernel/sched/capsched.c; CONFIG_CAPSCHED=n/y vmlinux builds completed successfully",
-      "private_remote": null,
+      "private_remote": "https://github.com/minto-dane/capsched-linux",
+      "private_remote_mode": "patch_queue_not_full_linux_history",
       "fetched_on": "2026-06-25"
     }
   },
