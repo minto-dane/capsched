@@ -1,6 +1,6 @@
 # Assurance Case Index
 
-Updated: 2026-06-30
+Updated: 2026-07-01
 
 ## Purpose
 
@@ -109,6 +109,11 @@ Model-supported areas:
   modification, root requirement, tracefs writes, probe attachment, public
   tracepoint ABI, authority, monitor verification, behavior change, raw handle
   exposure, and protection claims
+- direct-call async carrier API direction, choosing a shared internal
+  `capsched_async_carrier` semantic core with separate workqueue and io_uring
+  adapters, explicitly limited to no-behavior design direction and rejecting
+  generic async execution authority, ABI approval, monitor verification,
+  runtime coverage, behavior change, and protection claims
 
 Prototype-evidenced areas:
 

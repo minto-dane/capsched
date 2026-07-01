@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-06-30
+Updated: 2026-07-01
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -176,16 +176,25 @@ Next gate:
   placement gate from formal/0057. formal/0058 adds the typed async carrier
   model required before any generic workqueue or io_uring direct-call receipt
   consumption is allowed. implementation/0011 now translates formal/0058 into
-  an implementation-facing no-patch async-carrier gate. The next work should
-  use analysis/0082 and validation/0094 to choose whether a future no-behavior
-  code sketch should start as workqueue-only, io_uring-only, or a shared
-  internal async carrier type with per-subsystem adapters.
+  an implementation-facing no-patch async-carrier gate. ADR-0009 and
+  analysis/0083 choose the next no-behavior API sketch direction: a shared
+  internal `capsched_async_carrier` semantic core with separate workqueue and
+  io_uring adapters.
+
+Current API-sketch direction:
+  The shared core may carry only CapSched authority state: frozen caller
+  authority, caller BudgetTicket, opaque monitor receipt reference or derived
+  shadow, generation/epoch/revoke state, service/resource binding, and
+  settlement/release state. It must not become a generic async execution model,
+  public ABI, public tracepoint ABI, monitor verification claim, behavior
+  change, or production protection claim. Workqueue and io_uring lifetimes must
+  remain separate adapter contracts.
 
 Current blocker to behavior-changing Linux patches:
   validation/0080 through validation/0094 improve traceability and
   model/source-map the gap-closure, receipt-schema, receipt-consumer,
-  placement, async-carrier, source-map, lifetime, and gate artifacts, but they
-  are not Linux stub implementation, monitor verification, ABI approval,
-  runtime coverage, behavior-change approval, or production protection
-  evidence.
+  placement, async-carrier, source-map, lifetime, gate, and API-direction
+  artifacts, but they are not Linux stub implementation, monitor verification,
+  ABI approval, runtime coverage, behavior-change approval, or production
+  protection evidence.
 ```

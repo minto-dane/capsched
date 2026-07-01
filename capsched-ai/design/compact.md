@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-06-30
+Updated: 2026-07-01
 
 ## Project
 
@@ -113,8 +113,8 @@ latest completed focused risk:
   all rows and safety flags.
 
 next focused risk:
-  Model typed async carrier requirements before generic workqueue/io_uring
-  receipt consumption is allowed.
+  Draft the no-behavior shared capsched_async_carrier API sketch with
+  workqueue and io_uring adapter contracts.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1789,6 +1789,35 @@ validated:
 rule:
   Linux queue/worker/cancel/retry/completion/free state is not authority.
 
+N-124 completed:
+  ADR-0009
+  analysis/0083
+  api-direction-v1
+  validation/0095
+
+decision:
+  shared internal capsched_async_carrier semantic core
+  plus separate workqueue and io_uring adapters.
+
+core:
+  CapSched authority state only:
+    frozen caller authority
+    caller BudgetTicket
+    monitor receipt reference or shadow
+    generation/epoch/revoke state
+    service/resource binding
+    settlement/release state
+
+adapters:
+  workqueue covers queue_work false, delayed work, self-requeue, cancel/flush,
+  callback entry, and free.
+  io_uring covers SQE/request/resource storage, fixed resources, io-wq punt,
+  links, REQ_F_REISSUE, cancel, CQE, ref release, and free.
+
+still not:
+  Linux implementation, ABI, runtime coverage, monitor verification,
+  behavior change, or production protection.
+
 next:
-  N-124 choose no-behavior carrier API sketch direction.
+  N-125 no-behavior shared carrier API sketch.
 ```

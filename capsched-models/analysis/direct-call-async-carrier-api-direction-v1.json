@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "id": "direct-call-async-carrier-api-direction-v1",
+  "analysis": "0083-direct-call-async-carrier-api-direction",
+  "decision_record": "capsched-ai/decisions/ADR-0009-async-carrier-api-direction.md",
+  "status": "accepted_no_behavior_api_direction",
+  "date": "2026-07-01",
+  "selected_direction": "shared_internal_capsched_async_carrier_with_per_subsystem_adapters",
+  "related": {
+    "formal_model": "capsched-models/formal/0058-direct-call-async-carrier-model/",
+    "model_validation": "capsched-models/validation/0091-direct-call-async-carrier-tlc.md",
+    "implementation_gate": "capsched-models/implementation/0011-direct-call-async-carrier-gate.md",
+    "source_maps": [
+      "capsched-models/analysis/direct-call-async-workqueue-source-map-v1.json",
+      "capsched-models/analysis/direct-call-async-io-uring-source-map-v1.json"
+    ],
+    "lifetime_table": "capsched-models/analysis/direct-call-async-carrier-lifetime-table-v1.json",
+    "lifetime_validation": "capsched-models/validation/0094-direct-call-async-lifetime-table-result.md"
+  },
+  "options": [
+    {
+      "option_id": "workqueue_only_helper",
+      "decision": "rejected_as_main_direction",
+      "strengths": [
+        "small first surface",
+        "directly covers queue_work false and worker identity hazards"
+      ],
+      "risks": [
+        "bakes workqueue pending semantics into the carrier core",
+        "duplicates shared carrier semantics later for io_uring",
+        "does not naturally cover request reissue, linked requests, registered resources, or CQE delivery"
+      ],
+      "keep_as": "required_workqueue_adapter"
+    },
+    {
+      "option_id": "io_uring_only_request_carrier",
+      "decision": "rejected_as_main_direction",
+      "strengths": [
+        "natural request object",
+        "clear request and registered-resource lifetime pressure",
+        "covers a high-risk async syscall surface"
+      ],
+      "risks": [
+        "overfits authority semantics to SQE, io_kiocb, io-wq, CQE, and resource-ref mechanics",
+        "tempts false authority from req creds, req tctx, io_rsrc_node, CQE, cancel, or retry state",
+        "leaves generic service-domain workqueue provenance unresolved"
+      ],
+      "keep_as": "required_io_uring_adapter"
+    },
+    {
+      "option_id": "shared_internal_capsched_async_carrier_with_per_subsystem_adapters",
+      "decision": "selected",
+      "strengths": [
+        "keeps one CapSched authority vocabulary",
+        "reduces long-term dialect drift",
+        "keeps Linux subsystem churn local to adapters",
+        "lets workqueue and io_uring lifetime hazards remain explicit",
+        "matches the long-horizon thin-waist rule"
+      ],
+      "risks": [
+        "dangerous if shared means generic Linux async execution authority",
+        "dangerous if the core hides coalescing, retry, reissue, or completion hazards",
+        "dangerous if adapters treat existing Linux state as a receipt"
+      ],
+      "accepted_with_guardrails": true
+    }
+  ],
+  "core_contract": {
+    "scope": "capsched_authority_state_only",
+    "state_fields": [
+      "caller_domain_epoch_generation",
+      "frozen_caller_authority_ref",
+      "caller_budget_ticket_or_split_child_ticket",
+      "opaque_monitor_receipt_ref_or_derived_shadow",
+      "service_or_resource_authority_binding",
+      "carrier_generation",
+      "revoke_freshness_state",
+      "settlement_release_state"
+    ],
+    "operations": [
+      "freeze",
+      "bind",
+      "validate",
+      "revoke_check",
+      "settle",
+      "release"
+    ],
+    "must_not_include_subsystem_verbs": [
+      "enqueue",
+      "dispatch",
+      "issue_sqe",
+      "queue_work",
+      "complete_cqe",
+      "finish_work"
+    ]
+  },
+  "adapter_contracts": [
+    {
+      "adapter": "workqueue",
+      "required_hazards": [
+        "typed wrapper or container around Domain-originated struct work_struct",
+        "freeze before queue_work_on",
+        "queue_work_on false preserves the first carrier",
+        "mod_delayed_work_on preserves, rejects, or monitor-regenerates carrier state",
+        "self-requeue does not refresh receipt",
+        "cancel and flush are synchronization only",
+        "callback entry validates before service side effects",
+        "free waits for settlement and release ownership"
+      ]
+    },
+    {
+      "adapter": "io_uring",
+      "required_hazards": [
+        "carrier attached to explicit request or resource storage",
+        "freeze after SQE consumption and before side effects",
+        "fixed file and fixed buffer authority separated from io_rsrc_node liveness",
+        "validate before __io_issue_sqe",
+        "validate before io_wq_submit_work",
+        "linked requests have explicit carrier relationship",
+        "REQ_F_REISSUE does not refresh receipt",
+        "cancel state is not monitor revoke receipt",
+        "CQE is result delivery only",
+        "ref drop and free are not settlement proof"
+      ]
+    }
+  ],
+  "forbidden_authority_sources": [
+    "work_struct pointer",
+    "callback pointer",
+    "worker task identity",
+    "generic workqueue membership",
+    "pending bit",
+    "io_wq_work",
+    "io_kiocb existence",
+    "req_creds",
+    "req_tctx",
+    "io_rsrc_node liveness",
+    "registered fd existence",
+    "cancel flags",
+    "CQE",
+    "completion path",
+    "retry or reissue flag",
+    "Linux cleanup",
+    "ref drop",
+    "free path"
+  ],
+  "next_required_artifact": {
+    "id": "N-125",
+    "description": "Draft the no-behavior shared capsched_async_carrier API sketch with workqueue and io_uring adapter contracts.",
+    "must_remain_no_behavior": true
+  },
+  "safety_flags": {
+    "implementation_approval": false,
+    "linux_patch_approval": false,
+    "workqueue_integration": false,
+    "io_uring_integration": false,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "behavior_change": false,
+    "public_tracepoint_abi": false,
+    "abi_approval": false,
+    "protection_claim": false
+  }
+}
+

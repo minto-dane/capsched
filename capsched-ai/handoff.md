@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-06-30
+Updated: 2026-07-01
 
 Read this first when resuming the project.
 
@@ -122,9 +122,10 @@ latest completed risk:
   implementation approval or authority/protection claims.
 
 next focused risk:
-  Model typed async carrier requirements before any generic workqueue or
-  io_uring direct-call receipt consumption is allowed. Do not add direct-call
-  stubs, ABI, tracepoints, or behavior-changing patches.
+  Draft the no-behavior shared `capsched_async_carrier` API sketch with
+  workqueue and io_uring adapter contracts. Do not add direct-call stubs, ABI,
+  tracepoints, workqueue integration, io_uring integration, or
+  behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:
@@ -2076,9 +2077,43 @@ still not:
   monitor verification
   production protection
 
+N-124 completed:
+  ADR-0009-async-carrier-api-direction.md
+  analysis/0083-direct-call-async-carrier-api-direction.md
+  analysis/direct-call-async-carrier-api-direction-v1.json
+  validation/0095-direct-call-async-carrier-api-direction-result.md
+
+decision:
+  choose shared internal capsched_async_carrier semantic core
+  with per-subsystem workqueue and io_uring adapters.
+
+shared core:
+  frozen caller authority
+  caller BudgetTicket or split child ticket
+  opaque monitor receipt reference or derived shadow
+  caller Domain/epoch/generation
+  service or resource authority binding
+  carrier generation
+  revoke/freshness state
+  settlement/release state
+
+not shared:
+  workqueue pending/coalescing/delayed-work/callback/free mechanics
+  io_uring SQE/request/resource/io-wq/reissue/CQE/refcount mechanics
+
+hard guardrail:
+  shared core must not become generic async execution authority.
+
+still not:
+  Linux implementation
+  workqueue integration
+  io_uring integration
+  ABI approval
+  runtime coverage
+  behavior change
+  monitor verification
+  production protection
+
 next:
-  N-124 choose no-behavior carrier API sketch direction:
-    workqueue-only helper
-    io_uring-only request carrier helper
-    shared internal capsched_async_carrier with per-subsystem adapters
+  N-125 draft the no-behavior shared carrier API sketch with adapter contracts.
 ```
