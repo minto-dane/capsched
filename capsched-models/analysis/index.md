@@ -105,6 +105,7 @@ Updated: 2026-07-01
 | 0097 | Draft integration model gate with TLC-backed design filter | Scheduler Authority Integration Gate |
 | 0098 | Draft architecture-substrate model gate with TLC-backed design filter | Monitor Timer Architecture Substrate |
 | 0099 | Draft integration model gate with TLC-backed design filter | Placement, Affinity, and Hotplug Integration Gate |
+| 0100 | Draft hook-placement model gate with TLC-backed design filter | Final Run/Move Revalidation Hook Placement Gate |
 
 ## Planned Analysis Notes
 
@@ -175,3 +176,4 @@ Updated: 2026-07-01
 | `scheduler-authority-integration-gate-v1.json` | Draft integration model gate | Machine-readable integrated scheduler execution gate for N-143 |
 | `monitor-timer-architecture-substrate-v1.json` | Draft architecture-substrate model gate | Machine-readable x86 VMX-root, arm64 EL2, KVM guest timer, Linux timer, and pKVM stage-2 substitution rejection contract for N-144 |
 | `placement-affinity-hotplug-integration-gate-v1.json` | Draft integration model gate | Machine-readable placement, affinity, cpuset, hotplug, class-selection, sched_ext, core-scheduling, and Linux-exception integration gate for N-145 |
+| `final-run-move-revalidation-hook-placement-gate-v1.json` | Draft hook-placement model gate | Machine-readable final run/move tuple-consumption boundary, stale tuple rejection, and Linux selected/move non-authority contract for N-146 |

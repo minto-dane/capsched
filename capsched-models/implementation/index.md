@@ -4,20 +4,20 @@ Updated: 2026-07-01
 
 No behavior-changing implementation patch points are accepted yet.
 
-Current placement/affinity/hotplug integration gate:
+Current final run/move revalidation hook-placement gate:
 
-- `analysis/0099-placement-affinity-hotplug-integration-gate.md`
+- `analysis/0100-final-run-move-revalidation-hook-placement-gate.md`
   - Status: model-supported design gate, no Linux patch approved yet.
-  - Purpose: require ordinary Domain execution to revalidate the intersection
-    of RunCap/SchedContext CPU envelope, current Linux mask, active CPU mask,
-    monitor CPU binding, and MemoryView CPU binding across affinity, cpuset,
-    hotplug, class-selection, sched_ext, core-scheduling, and Linux-exception
-    paths.
-- `formal/0077-placement-affinity-hotplug-integration-gate-model/`
+  - Purpose: require ordinary Domain run commitment and queued-task movement
+    to consume a fresh final validation tuple that matches task generation,
+    Domain/SchedContext/RunCap epochs, move/core/sched_ext sequence, edge kind,
+    CPU, fresh allowed set, and pending-migration state.
+- `formal/0078-final-run-move-revalidation-hook-placement-gate-model/`
   - Status: checked with safe pass and expected unsafe counterexamples.
-  - Pressure: final run/move revalidation must cover more than wake/new/exec
-    placement. Linux fallback and selected CPU state remain compatibility
-    inputs, not authority.
+  - Pressure: a conceptual final run hook near `kernel/sched/core.c:7188` and
+    a shared move boundary near `kernel/sched/core.c:2546` are model pressure
+    points only. A veto-capable hook is not approved; retry/ineligibility,
+    locking, static-branch overhead, and class-state rollback remain open.
 
 Candidate implementation plans:
 

@@ -83,6 +83,7 @@ Updated: 2026-07-01
 | 0075 | Checked with safe pass and expected unsafe counterexamples | Scheduler Authority Integration Gate Model |
 | 0076 | Checked with safe pass and expected unsafe counterexamples | Monitor Timer Architecture Substrate Model |
 | 0077 | Checked with safe pass and expected unsafe counterexamples | Placement, Affinity, and Hotplug Integration Gate Model |
+| 0078 | Checked with safe pass and expected unsafe counterexamples | Final Run/Move Revalidation Hook Placement Gate Model |
 
 ## Planned
 

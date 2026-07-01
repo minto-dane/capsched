@@ -2123,3 +2123,52 @@ next:
   runtime coverage execution planning or final run/move revalidation hook
   placement analysis.
 ```
+
+N-146 completed:
+
+```text
+artifacts:
+  analysis/0100
+  final-run-move-revalidation-hook-placement-gate-v1.json
+  formal/0078
+  validation/0117
+
+purpose:
+  make final run/move authority a tuple-consumption boundary.
+
+rule:
+  CommitRun consumes a fresh Run tuple.
+  CommitMove consumes a fresh Move tuple.
+  A move tuple cannot run a task.
+  A run tuple cannot move a task.
+  The consumed tuple must match current task generation, Domain epoch,
+  SchedContext epoch, RunCap epoch, move sequence, core sequence, sched_ext
+  sequence, edge kind, CPU, fresh allowed set, and no-pending-migration state.
+
+safe TLC:
+  750 generated states
+  455 distinct states
+  depth 21
+
+unsafe:
+  39 expected counterexamples.
+  Rejected authority substitutes include pick_next_task, set_task_cpu,
+  move_queued_task, attach/detach, fair/RT/DL balancing, sched_ext DSQ
+  custody, core cached picks, proxy migration, hotplug push, migration stop,
+  Linux exceptions for ordinary Domain tasks, hook-after-rq->curr placement,
+  and non-claim overreach.
+
+implementation pressure:
+  conceptual run anchor: kernel/sched/core.c:7188 before rq->curr
+  conceptual move anchor: kernel/sched/core.c:2546 move_queued_task()
+  no hook is approved yet; veto/retry semantics remain open.
+
+assurance:
+  E-SCHED-RUN-MOVE-REVALIDATION-001 supports ACT-001, EXEC-001, and COMPAT-001
+  as model evidence only.
+
+still not:
+  Linux implementation, hook approval, ABI approval, runtime coverage, monitor
+  implementation, monitor verification, budget enforcement evidence, behavior
+  change, or production protection.
+```

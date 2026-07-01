@@ -174,6 +174,13 @@ Model-supported areas:
   while selected CPU state, cpuset fallback, force affinity, sched_ext, class
   selection, core scheduling, sched_exec, migrate-disable, per-cpu kthread
   exceptions, and protection overclaims are rejected as authority substitutes
+- final run/move revalidation hook-placement semantics, checking that ordinary
+  Domain run commitment and queued-task movement consume fresh validation
+  tuples matching task generation, Domain/SchedContext/RunCap epochs,
+  move/core/sched_ext sequences, edge kind, CPU, fresh allowed set, and
+  pending-migration state, while Linux pick/move/balance/dispatch/hotplug
+  machinery and hook-after-`rq->curr` placement are rejected as authority
+  substitutes
 
 Prototype-evidenced areas:
 

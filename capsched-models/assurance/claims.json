@@ -55,7 +55,8 @@
         "E-MONITOR-TIMER-001",
         "E-MONITOR-TIMER-ARCH-001",
         "E-SCHED-INTEGRATION-001",
-        "E-SCHED-PLACEMENT-INTEGRATION-001"
+        "E-SCHED-PLACEMENT-INTEGRATION-001",
+        "E-SCHED-RUN-MOVE-REVALIDATION-001"
       ],
       "gaps": [
         "No HyperTag Monitor.",
@@ -82,7 +83,8 @@
         "E-SCHED-DL-COMPAT-001",
         "E-SCHED-F1-FREEZE-001",
         "E-SCHED-INTEGRATION-001",
-        "E-SCHED-PLACEMENT-INTEGRATION-001"
+        "E-SCHED-PLACEMENT-INTEGRATION-001",
+        "E-SCHED-RUN-MOVE-REVALIDATION-001"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
@@ -94,7 +96,8 @@
         "No server epoch field or lifecycle invalidation implementation.",
         "No deadline CBS/GRUB integration hook or runtime coverage.",
         "No F1 admission-freeze hook, task storage, or wake_q/wakelist runtime coverage.",
-        "No integrated scheduler authority hook or runtime coverage."
+        "No integrated scheduler authority hook or runtime coverage.",
+        "No final run/move revalidation hook, retry/ineligibility semantics, or runtime coverage."
       ],
       "forbidden_l0": false
     },
@@ -694,7 +697,8 @@
         "E-SCHED-DL-COMPAT-001",
         "E-SCHED-F1-FREEZE-001",
         "E-SCHED-INTEGRATION-001",
-        "E-SCHED-PLACEMENT-INTEGRATION-001"
+        "E-SCHED-PLACEMENT-INTEGRATION-001",
+        "E-SCHED-RUN-MOVE-REVALIDATION-001"
       ],
       "gaps": [
         "No boot/runtime evidence.",
@@ -702,6 +706,7 @@
         "No deadline CBS/GRUB runtime compatibility trace under CapSched hooks.",
         "No F1 wake publication runtime compatibility trace under CapSched hooks.",
         "No integrated scheduler execution-edge runtime trace under CapSched hooks.",
+        "No final run/move revalidation runtime trace under CapSched hooks.",
         "No scheduler behavior patch yet.",
         "No workload compatibility matrix."
       ],
@@ -1645,6 +1650,17 @@
         "COMPAT-001"
       ],
       "limitation": "Finite placement integration model gate checks CPU-set intersection, grant provenance, affinity/cpuset/hotplug invalidation, monitor CPU binding, MemoryView CPU binding, and Linux placement non-authority; it is not Linux implementation, hook approval, runtime coverage, monitor verification, behavior change, or production protection."
+    },
+    {
+      "id": "E-SCHED-RUN-MOVE-REVALIDATION-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md",
+      "supports": [
+        "ACT-001",
+        "EXEC-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite final run/move revalidation model gate checks tuple consumption, stale tuple rejection, and Linux pick/move/balance/dispatch/hotplug/migration non-authority; it is not Linux implementation, hook approval, runtime coverage, monitor verification, budget enforcement evidence, behavior change, or production protection."
     }
   ],
   "counterexamples": [
@@ -1702,6 +1718,11 @@
       "id": "CEX-SCHED-PLACEMENT-INTEGRATION-001",
       "record": "capsched-models/validation/0116-placement-affinity-hotplug-integration-gate-tlc.md",
       "meaning": "Unsafe placement integration models show expected counterexamples for running without grant provenance, frozen placement, fresh placement epoch, current Linux mask, active CPU, monitor CPU binding, MemoryView CPU binding, or no-pending-migration state; selected CPU, class selection, sched_ext, core scheduling, sched_exec, fallback, force affinity, cpuset fallback, migrate-disable, per-cpu kthread exception, and protection overclaims."
+    },
+    {
+      "id": "CEX-SCHED-RUN-MOVE-REVALIDATION-001",
+      "record": "capsched-models/validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md",
+      "meaning": "Unsafe final run/move revalidation models show expected counterexamples for run or queued move without a matching consumed validation tuple, stale task generation, Domain epoch, SchedContext epoch, RunCap epoch, move/core/sched_ext sequence, edge kind, CPU, fresh set, or pending-migration state, move tuple used for run, run tuple used for move, hook-after-rq-current, Linux pick/move/balance/dispatch/hotplug/migration authority, Linux hook approval, behavior change, monitor verification, and protection overclaims."
     }
   ],
   "forbidden_claims": [
@@ -1723,6 +1744,8 @@
     "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",
     "Linux hrtick, sched_tick, hrtimer, NO_HZ remote tick, task_sched_runtime, or Linux runtime charge reports are monitor root budget enforcement.",
     "Linux placement, selected CPU state, cpuset fallback, force affinity, hotplug rescue, sched_ext dispatch, core scheduling, sched_exec, migrate-disable, or per-cpu kthread exception is CapSched authority.",
+    "Linux pick_next_task, set_task_cpu, move_queued_task, attach/detach, fair/RT/DL balancing, sched_ext DSQ custody, core cached picks, proxy migration, hotplug push, or migration stop can replace final CapSched run/move tuple revalidation.",
+    "Hook placement after rq->curr publication is a valid ordinary Domain run authority boundary.",
     "Monitor timer architecture-substrate modeling is monitor timer implementation, x86 VMX-root implementation, arm64 EL2 implementation, KVM or pKVM modification approval, monitor verification, or production protection.",
     "Linux netdev down/reset proves monitor-grade queue revoke.",
     "Linux netdev, ring, q_vector, devlink, representor, tracepoint, or workqueue state is modern NIC QueueLease authority.",

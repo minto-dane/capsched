@@ -2524,3 +2524,65 @@ next:
   Runtime coverage execution planning or final run/move revalidation hook
   placement analysis. No behavior-changing Linux patch is approved.
 ```
+
+Latest scheduler final run/move gate:
+
+```text
+N-146 completed:
+  analysis/0100-final-run-move-revalidation-hook-placement-gate.md
+  analysis/final-run-move-revalidation-hook-placement-gate-v1.json
+  formal/0078-final-run-move-revalidation-hook-placement-gate-model/
+  validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md
+
+purpose:
+  require final ordinary Domain run commitment and queued-task movement to
+  consume fresh validation tuples. Earlier placement or selected state is not
+  enough.
+
+tuple fields:
+  task generation
+  Domain epoch
+  SchedContext epoch
+  RunCap epoch
+  move sequence
+  core scheduling sequence
+  sched_ext DSQ/custody sequence
+  edge kind
+  run or destination CPU
+  fresh allowed set
+  pending migration state
+
+safe TLC:
+  750 generated states
+  455 distinct states
+  depth 21
+
+unsafe:
+  39 expected counterexamples.
+  Rejected hazards include missing/stale/wrong run or move tuples, tuple kind
+  and edge mismatch, stale task/domain/schedctx/runcap/move/core/scx state,
+  run/move outside fresh set, pending migration, empty intersection, hook after
+  rq->curr publication, Linux pick/move/balance/dispatch/hotplug/migration
+  authority, Linux hook approval, behavior change, monitor verification, and
+  protection overclaims.
+
+implementation pressure:
+  A conceptual final run revalidation point is near kernel/sched/core.c:7188,
+  before rq->curr publication at core.c:7201. The shared queued move pressure
+  point is move_queued_task() at kernel/sched/core.c:2546. These are not
+  approved patch points. A veto-capable hook still needs retry/ineligibility,
+  locking, static-branch overhead, and class-state rollback design.
+
+assurance:
+  E-SCHED-RUN-MOVE-REVALIDATION-001 supports ACT-001, EXEC-001, and COMPAT-001
+  only as model evidence.
+
+still not:
+  Linux implementation, scheduler hook approval, task-field approval, ABI
+  approval, runtime coverage, monitor implementation, monitor verification,
+  budget enforcement evidence, behavior change, or production protection.
+
+next:
+  Design the retry/ineligibility semantics for a possible final run hook and
+  shared move revalidation boundary, or run targeted runtime coverage planning.
+```
