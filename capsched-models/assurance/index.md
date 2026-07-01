@@ -191,6 +191,10 @@ Prototype-evidenced areas:
   anchors, 558 ok rows, 21 preserved gap rows, 0 missing symbols/patterns, 0
   semantic recheck rows, and 0 safety violations. The new async maps do not
   approve Linux code or convert generic async state into authority.
+- direct-call async carrier lifetime table with 22 no-patch obligation rows:
+  11 workqueue stages and 11 io_uring stages from allocation through free. It
+  preserves the rule that Linux queue, worker, cancel, retry, completion, ref
+  drop, and free state are not authority without typed carrier semantics.
 
 Open production gaps:
 

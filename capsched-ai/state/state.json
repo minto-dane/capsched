@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-async-source-mapped",
+    "current_phase": "direct-call-async-lifetime-table-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-122 completed source-only workqueue and io_uring maps against DCASYNC-007 and DCASYNC-008. analysis/0081 plus direct-call-async-workqueue-source-map-v1.json and direct-call-async-io-uring-source-map-v1.json record 37 current Linux anchors: 19 workqueue and 18 io_uring. validation/0093 records local JSON safety checks, project drift build/traceability-project-drift/20260701T025605Z with 579 anchors, 558 ok rows, 21 preserved gap rows, 0 missing symbols/patterns, 0 semantic recheck rows, 0 safety violations, overlay 20260701T025713Z, semantic queue 20260701T025731Z with 0 active recheck items, and gap classification 20260701T025747Z preserving the same 7 semantic gap groups. This is source-only traceability, not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-123: build a carrier lifetime table for workqueue and io_uring separately before any async carrier code proposal.",
+    "current_focus": "N-123 completed the no-patch async carrier lifetime table. analysis/0082 and direct-call-async-carrier-lifetime-table-v1.json define 22 obligation rows: 11 workqueue stages and 11 io_uring stages covering allocate, freeze, bind_service_or_resource, enqueue, coalesce_or_link, pending_protect, execute, cancel_or_revoke, retry_or_reissue, complete, and free. validation/0094 confirms 22/22 rows have known stages, source-map references, forbidden collapses, patch preconditions, and non-claim safety flags. The table preserves that Linux queue, worker, callback, cancel, retry, completion, ref-drop, and free state are not authority without typed carrier semantics. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-124: choose a no-behavior carrier API sketch direction: workqueue-only, io_uring-only, or shared internal capsched_async_carrier with subsystem adapters.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -540,7 +540,10 @@
     "direct_call_async_io_uring_source_map_json": "capsched/capsched-models/analysis/direct-call-async-io-uring-source-map-v1.json",
     "direct_call_async_source_map_validation": "capsched/capsched-models/validation/0093-direct-call-async-source-map-result.md",
     "project_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260701T025605Z",
-    "project_overlay_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260701T025713Z"
+    "project_overlay_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260701T025713Z",
+    "direct_call_async_carrier_lifetime_table": "capsched/capsched-models/analysis/0082-direct-call-async-carrier-lifetime-table.md",
+    "direct_call_async_carrier_lifetime_table_json": "capsched/capsched-models/analysis/direct-call-async-carrier-lifetime-table-v1.json",
+    "direct_call_async_carrier_lifetime_validation": "capsched/capsched-models/validation/0094-direct-call-async-lifetime-table-result.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2190,9 +2193,19 @@
     {
       "id": "N-123",
       "text": "Build a carrier lifetime table for workqueue and io_uring separately, covering allocate, freeze, enqueue, pending coalescing, execute, cancel, revoke, retry/reissue, complete, and free before any async carrier code proposal.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-122"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Added analysis/0082 and direct-call-async-carrier-lifetime-table-v1.json. The table has 22 no-patch obligation rows: 11 workqueue stages and 11 io_uring stages covering allocate, freeze, bind_service_or_resource, enqueue, coalesce_or_link, pending_protect, execute, cancel_or_revoke, retry_or_reissue, complete, and free. validation/0094 confirmed 22/22 rows have known stages, source-map references, forbidden collapses, patch preconditions, and non-claim safety flags. It preserves the rule that Linux queue, worker, callback, cancel, retry, completion, ref-drop, and free state are not authority without typed carrier semantics. No Linux patch, workqueue integration, io_uring integration, ABI, tracepoint, behavior change, monitor verification, runtime coverage, or protection claim is approved."
+    },
+    {
+      "id": "N-124",
+      "text": "Choose a no-behavior async carrier API sketch direction from the N-123 lifetime table: workqueue-only helper, io_uring-only request carrier helper, or shared internal capsched_async_carrier with per-subsystem adapters.",
+      "status": "pending",
+      "blocked_by": [
+        "N-123"
       ]
     }
   ],

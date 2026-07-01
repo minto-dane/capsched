@@ -87,6 +87,7 @@ Updated: 2026-06-30
 | 0079 | Draft monitor-owned receipt schema with model gate | Direct-Call Monitor Receipt Schema |
 | 0080 | Draft source-only map | Direct-Call Receipt Consumer Source Map |
 | 0081 | Draft source-only async carrier map | Direct-Call Async Workqueue and io_uring Source Map |
+| 0082 | Draft no-patch lifetime table | Direct-Call Async Carrier Lifetime Table |
 
 ## Planned Analysis Notes
 
@@ -138,3 +139,4 @@ Updated: 2026-06-30
 | `direct-call-receipt-consumer-source-map-v1.json` | Draft source map | Machine-readable Linux-facing receipt-consumer candidate/exclusion map for N-117, with 20 current source anchors and 7 preserved future gap/plan rows |
 | `direct-call-async-workqueue-source-map-v1.json` | Draft source map | Machine-readable generic workqueue async-carrier exclusion and typed-wrapper source map for N-122 |
 | `direct-call-async-io-uring-source-map-v1.json` | Draft source map | Machine-readable io_uring request/resource/io-wq async-carrier source map for N-122 |
+| `direct-call-async-carrier-lifetime-table-v1.json` | Draft lifetime table | Machine-readable workqueue/io_uring async carrier lifetime obligations for N-123 |

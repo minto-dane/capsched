@@ -177,13 +177,15 @@ Next gate:
   model required before any generic workqueue or io_uring direct-call receipt
   consumption is allowed. implementation/0011 now translates formal/0058 into
   an implementation-facing no-patch async-carrier gate. The next work should
-  use analysis/0081 and validation/0093 to build a carrier lifetime table for
-  workqueue and io_uring separately before any code proposal.
+  use analysis/0082 and validation/0094 to choose whether a future no-behavior
+  code sketch should start as workqueue-only, io_uring-only, or a shared
+  internal async carrier type with per-subsystem adapters.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0091 improve traceability and
+  validation/0080 through validation/0094 improve traceability and
   model/source-map the gap-closure, receipt-schema, receipt-consumer,
-  placement, async-carrier, and gate artifacts, but they are not Linux stub
-  implementation, monitor verification, ABI approval, runtime coverage,
-  behavior-change approval, or production protection evidence.
+  placement, async-carrier, source-map, lifetime, and gate artifacts, but they
+  are not Linux stub implementation, monitor verification, ABI approval,
+  runtime coverage, behavior-change approval, or production protection
+  evidence.
 ```

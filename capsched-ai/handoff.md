@@ -2035,3 +2035,50 @@ still not:
 next:
   N-123 carrier lifetime table before async carrier code.
 ```
+
+Latest direct-call async carrier lifetime table:
+
+```text
+N-123 completed:
+  analysis/0082-direct-call-async-carrier-lifetime-table.md
+  analysis/direct-call-async-carrier-lifetime-table-v1.json
+  validation/0094-direct-call-async-lifetime-table-result.md
+
+rows:
+  22 total obligation rows
+  11 workqueue stages
+  11 io_uring stages
+
+stages:
+  allocate
+  freeze
+  bind_service_or_resource
+  enqueue
+  coalesce_or_link
+  pending_protect
+  execute
+  cancel_or_revoke
+  retry_or_reissue
+  complete
+  free
+
+validation:
+  22/22 rows have known stages, source-map refs, forbidden collapses,
+  patch preconditions, and non-claim safety flags.
+
+still not:
+  Linux implementation
+  workqueue integration
+  io_uring integration
+  ABI approval
+  runtime coverage
+  behavior change
+  monitor verification
+  production protection
+
+next:
+  N-124 choose no-behavior carrier API sketch direction:
+    workqueue-only helper
+    io_uring-only request carrier helper
+    shared internal capsched_async_carrier with per-subsystem adapters
+```

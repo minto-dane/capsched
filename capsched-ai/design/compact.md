@@ -1768,3 +1768,27 @@ key rule:
 next:
   N-123 carrier lifetime table before code.
 ```
+
+Latest direct-call async carrier lifetime table:
+
+```text
+N-123 completed:
+  analysis/0082
+  lifetime-table-v1
+  validation/0094
+
+shape:
+  22 rows
+  workqueue: 11 stages
+  io_uring: 11 stages
+
+validated:
+  all rows have source refs, forbidden collapses, patch preconditions, and
+  non-claim flags.
+
+rule:
+  Linux queue/worker/cancel/retry/completion/free state is not authority.
+
+next:
+  N-124 choose no-behavior carrier API sketch direction.
+```

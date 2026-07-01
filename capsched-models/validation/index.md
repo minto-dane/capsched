@@ -99,6 +99,7 @@ Updated: 2026-06-30
 | 0091 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Async Carrier TLC |
 | 0092 | Executed; source-only async-carrier gate checked | Direct-Call Async Carrier Gate Result |
 | 0093 | Executed; source-only workqueue/io_uring maps checked | Direct-Call Async Source Map Result |
+| 0094 | Executed; no-patch lifetime table checked | Direct-Call Async Carrier Lifetime Table Result |
 
 ## Principles
 
