@@ -243,12 +243,24 @@ latest completed risk:
   pick validation must cover fast path/retry/class iteration/sched_ext; switch
   activation needs fail-closed DomainTag model.
 
+latest completed risk:
+  Scheduler authority refinement gate. Analysis/0089, formal/0067,
+  scheduler-authority-refinement-gate-v1.json, and validation/0106 now compose
+  the N-134 source refresh into a blocking gate for TASK_WAKING freeze,
+  donor/current/proxy budget subject separation, and selected-state settlement.
+  Safe TLC passed with 18 generated states, 14 distinct states, 0 states left
+  on queue, depth 7. Unsafe configs produced expected counterexamples for
+  TASK_WAKING before freeze, current-only proxy budget, run after retry, and
+  run without class settlement. JSON check confirms 17 source anchors, 4 unsafe
+  cases, and 13/13 safety flags false. Assurance evidence E-SCHED-REFINE-001
+  supports EXEC-001 and BUDGET-001 only as model evidence.
+
 next focused risk:
-  Decompose/strengthen LinuxSchedulerAuthority around donor/current budget
-  charging, TASK_WAKING failure boundary, and selected-state class retry
-  semantics. Do not add direct-call stubs, ABI, tracepoints, workqueue
-  integration, io_uring integration, async carrier Linux names, or
-  behavior-changing patches.
+  NoUnspecifiedRuntimeCharge: exact current/donor/proxy runtime charge
+  equations across CFS, RT, deadline, sched_ext, hrtick, task_sched_runtime,
+  cgroup CPU time, remote tick, and proxy execution. Do not add direct-call
+  stubs, ABI, tracepoints, workqueue integration, io_uring integration, async
+  carrier Linux names, or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:

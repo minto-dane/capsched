@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-06-30",
+  "updated": "2026-07-01",
   "scope": "CapSched-H production assurance case with Linux-only L0 prototype boundaries",
   "status_legend": {
     "open": "Required for the final goal but not established.",
@@ -69,12 +69,14 @@
       "claim": "A task cannot enter or remain executable without a live RunCap-derived FrozenRunUse, SchedContext, epoch, generation, CPU placement, and remaining budget.",
       "evidence": [
         "E-RUN-001",
+        "E-SCHED-REFINE-001",
         "E-L0-002"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
         "No wakeup/migration/remote wake coverage.",
         "No scheduler class coverage.",
+        "No trace/runtime coverage for current, donor, and proxy execution paths.",
         "No monitor timer."
       ],
       "forbidden_l0": false
@@ -86,11 +88,13 @@
       "title": "CPU and service execution stay within root budget",
       "claim": "Domain CPU use and service execution on behalf of callers are bounded by non-forgeable root budgets and caller-reserved BudgetTickets.",
       "evidence": [
-        "E-BUD-001"
+        "E-BUD-001",
+        "E-SCHED-REFINE-001"
       ],
       "gaps": [
         "No monitor root budget timer.",
         "No Linux accounting integration.",
+        "No exact current/donor/proxy runtime charge equation across CFS, RT, deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution.",
         "No service-domain debit/refund policy."
       ],
       "forbidden_l0": true
@@ -739,6 +743,16 @@
       "supports": [
         "BUDGET-001"
       ]
+    },
+    {
+      "id": "E-SCHED-REFINE-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0106-scheduler-authority-refinement-gate-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "BUDGET-001"
+      ],
+      "limitation": "Finite model gate checks TASK_WAKING freeze, donor/current/proxy budget collapse, and selected-state retry hazards; it is not Linux implementation, runtime coverage, monitor verification, or production protection evidence."
     },
     {
       "id": "E-ACT-001",
@@ -1506,6 +1520,11 @@
       "id": "NEG-CLUSTER-001",
       "record": "capsched-models/validation/0008-cluster-lease-full-systemd-tlc-run.md",
       "meaning": "Full ClusterLease integration TLC did not finish and is not a pass."
+    },
+    {
+      "id": "CEX-SCHED-REFINE-001",
+      "record": "capsched-models/validation/0106-scheduler-authority-refinement-gate-tlc.md",
+      "meaning": "Unsafe scheduler authority refinements show expected counterexamples for TASK_WAKING before freeze, current-only proxy budget, run after retry, and run without class settlement."
     }
   ],
   "forbidden_claims": [

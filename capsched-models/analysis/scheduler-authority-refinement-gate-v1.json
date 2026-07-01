@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "id": "scheduler-authority-refinement-gate-v1",
+  "status": "draft_model_gate_checked",
+  "date": "2026-07-01",
+  "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+  "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+  "analysis": "analysis/0089-scheduler-authority-refinement-gate.md",
+  "formal_model": "formal/0067-scheduler-authority-refinement-gate-model",
+  "validation": "validation/0106-scheduler-authority-refinement-gate-tlc.md",
+  "source_anchors": [
+    {
+      "id": "try_to_wake_up_state_match",
+      "path": "kernel/sched/core.c",
+      "line": 4295,
+      "symbol": "try_to_wake_up",
+      "obligation": "fail-capable admission after state match but before TASK_WAKING"
+    },
+    {
+      "id": "try_to_wake_up_task_waking",
+      "path": "kernel/sched/core.c",
+      "line": 4357,
+      "symbol": "try_to_wake_up",
+      "obligation": "post-TASK_WAKING ordinary failure is rejected without rollback model"
+    },
+    {
+      "id": "ttwu_runnable",
+      "path": "kernel/sched/core.c",
+      "line": 3865,
+      "symbol": "ttwu_runnable",
+      "obligation": "already-runnable wake does not mint RunCap"
+    },
+    {
+      "id": "enqueue_task",
+      "path": "kernel/sched/core.c",
+      "line": 2172,
+      "symbol": "enqueue_task",
+      "obligation": "noreturn assertion/refinement point unless rollback model exists"
+    },
+    {
+      "id": "sched_tick_donor",
+      "path": "kernel/sched/core.c",
+      "line": 5762,
+      "symbol": "sched_tick",
+      "obligation": "budget subject must account for rq->donor"
+    },
+    {
+      "id": "hrtick_donor",
+      "path": "kernel/sched/core.c",
+      "line": 907,
+      "symbol": "hrtick",
+      "obligation": "high-resolution tick task_tick also uses rq->donor"
+    },
+    {
+      "id": "task_sched_runtime_donor",
+      "path": "kernel/sched/core.c",
+      "line": 5674,
+      "symbol": "task_sched_runtime",
+      "obligation": "runtime freshness checks task_current_donor"
+    },
+    {
+      "id": "fair_update_se_runtime_split",
+      "path": "kernel/sched/fair.c",
+      "line": 1355,
+      "symbol": "update_se",
+      "obligation": "sum_exec_runtime and cgroup CPU time can charge different subjects under proxy execution"
+    },
+    {
+      "id": "task_current",
+      "path": "kernel/sched/sched.h",
+      "line": 2449,
+      "symbol": "task_current",
+      "obligation": "execution context is rq->curr"
+    },
+    {
+      "id": "task_current_donor",
+      "path": "kernel/sched/sched.h",
+      "line": 2460,
+      "symbol": "task_current_donor",
+      "obligation": "scheduling/accounting context is rq->donor"
+    },
+    {
+      "id": "find_proxy_task",
+      "path": "kernel/sched/core.c",
+      "line": 6871,
+      "symbol": "find_proxy_task",
+      "obligation": "proxy execution can separate donor from executable owner"
+    },
+    {
+      "id": "__pick_next_task",
+      "path": "kernel/sched/core.c",
+      "line": 6124,
+      "symbol": "__pick_next_task",
+      "obligation": "selected state must survive retry and class settlement"
+    },
+    {
+      "id": "pick_task_fair_retry",
+      "path": "kernel/sched/fair.c",
+      "line": 9912,
+      "symbol": "pick_task_fair",
+      "obligation": "newidle balance can return RETRY_TASK and invalidate selected-state assumptions"
+    },
+    {
+      "id": "do_pick_task_scx_retry",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3148,
+      "symbol": "do_pick_task_scx",
+      "obligation": "sched_ext pick can drop/re-pin rq lock and return RETRY_TASK after higher-class modification"
+    },
+    {
+      "id": "__schedule_proxy",
+      "path": "kernel/sched/core.c",
+      "line": 7151,
+      "symbol": "__schedule",
+      "obligation": "proxy path updates donor before executable task may differ"
+    },
+    {
+      "id": "__schedule_curr_commit",
+      "path": "kernel/sched/core.c",
+      "line": 7201,
+      "symbol": "__schedule",
+      "obligation": "rq->curr update is execution commit boundary"
+    },
+    {
+      "id": "task_tick_scx",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3505,
+      "symbol": "task_tick_scx",
+      "obligation": "sched_ext tick/slice state is not authority root"
+    }
+  ],
+  "invariants": [
+    "NoTaskWakingWithoutFrozenUse",
+    "NoRunWithoutFrozenUse",
+    "NoRunWithoutSettledSelection",
+    "NoRunWithoutDonorBudget",
+    "NoRunWithoutExecutorAuthority",
+    "NoProxyRunWithoutProxyTicket",
+    "NoFailClosedRunning"
+  ],
+  "unsafe_cases": [
+    "task_waking_without_freeze",
+    "current_only_proxy_budget",
+    "run_after_retry",
+    "run_without_class_settlement"
+  ],
+  "safety_flags": {
+    "linux_implementation": false,
+    "behavior_change": false,
+    "public_abi": false,
+    "tracepoint_abi": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "protection_claim": false,
+    "hook_approved": false,
+    "task_struct_field_use": false,
+    "enqueue_hook": false,
+    "pick_hook": false,
+    "switch_hook": false,
+    "budget_hook": false
+  },
+  "next_blocking_obligations": [
+    "NoUnspecifiedRuntimeCharge model for CFS/RT/DL/SCX/hrtick/task_sched_runtime/cgroup/proxy surfaces",
+    "runtime trace-only coverage for current/donor/proxy paths",
+    "F1 admission freeze data dependency refresh against current upstream",
+    "class/core/sched_ext selected-state source refresh if upstream drift changes",
+    "root monitor budget timer model before production budget claim"
+  ]
+}

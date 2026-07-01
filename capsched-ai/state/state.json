@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "scheduler-authority-core-source-refresh-complete",
+    "current_phase": "scheduler-authority-refinement-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-134 scheduler authority core source-only refresh is complete. Updated analysis/0025, analysis/0026, analysis/0028, formal/0012 README, added linux-scheduler-authority-core-refresh-v1.json, and validation/0105. The refresh records current upstream scheduler anchors at 665159e246749578d4e4bfe106ee3b74edcdab18 for enqueue_task, activate_task, is_cpu_allowed, move_queued_task, migration_cpu_stop, select_task_rq, ttwu_do_activate, ttwu_runnable, ttwu_queue, try_to_wake_up, wake_up_new_task, task_sched_runtime, sched_tick, __pick_next_task, __schedule, schedule, fair/rt/deadline/scx runtime and tick paths. JSON check confirmed 25 anchors, 8 refreshed rules, 4 updated artifacts, and 12/12 safety flags false. Existing formal/0012 LinuxSchedulerAuthority was rechecked: 126113 states generated, 17344 distinct states, 0 left on queue, depth 21, exit 0. Refreshed rules include enqueue_task as assertion not fail-capable hook, TASK_WAKING after state write requiring lost-wakeup model, current wake as continuation not RunCap mint, delayed reenqueue not authority mint, placement refining Linux hotplug/kthread exceptions, sched_tick charging rq->donor, pick validation covering fast path/retry/class iteration/sched_ext, and switch activation needing fail-closed DomainTag model. This is not Linux implementation, runtime coverage, ABI approval, monitor verification, behavior change, or production protection. Next focused risk is decomposing/strengthening LinuxSchedulerAuthority around donor/current budget charging, TASK_WAKING failure boundary, and selected-state class retry semantics before any scheduler authority patch movement.",
+    "current_focus": "N-135 scheduler authority refinement gate is complete. Added analysis/0089, formal/0067, scheduler-authority-refinement-gate-v1.json, and validation/0106. The gate composes the N-134 source refresh into three blocking obligations: FrozenRunUse before TASK_WAKING, donor/current/proxy budget subject separation, and class/core/proxy selected-state settlement before running. Safe TLC passed with 18 generated states, 14 distinct states, 0 left on queue, depth 7. Unsafe configs produced expected counterexamples: TASK_WAKING before freeze violated NoTaskWakingWithoutFrozenUse; current-only proxy budget violated NoRunWithoutDonorBudget; run after retry and run without class settlement violated NoRunWithoutSettledSelection. JSON check confirmed 17 source anchors, 4 unsafe cases, and 13/13 safety flags false. Assurance evidence E-SCHED-REFINE-001 now supports EXEC-001 and BUDGET-001 only as model evidence. This is not Linux implementation, runtime coverage, ABI approval, monitor verification, behavior change, or production protection. Next focused risk is NoUnspecifiedRuntimeCharge: exact current/donor/proxy runtime charge equations across CFS, RT, deadline, sched_ext, hrtick, task_sched_runtime, cgroup CPU time, remote tick, and proxy execution.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -615,7 +615,13 @@
     "linux_source_map_refresh_target_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/linux-source-map-refresh-target-20260701T193010Z",
     "linux_scheduler_authority_core_refresh_json": "capsched/capsched-models/analysis/linux-scheduler-authority-core-refresh-v1.json",
     "linux_scheduler_authority_core_refresh_validation": "capsched/capsched-models/validation/0105-linux-scheduler-authority-core-refresh.md",
-    "linux_scheduler_authority_core_refresh_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/linux-scheduler-authority-refresh-20260701T193728Z"
+    "linux_scheduler_authority_core_refresh_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/linux-scheduler-authority-refresh-20260701T193728Z",
+    "scheduler_authority_refinement_gate_analysis": "capsched/capsched-models/analysis/0089-scheduler-authority-refinement-gate.md",
+    "scheduler_authority_refinement_gate_json": "capsched/capsched-models/analysis/scheduler-authority-refinement-gate-v1.json",
+    "scheduler_authority_refinement_gate_model": "capsched/capsched-models/formal/0067-scheduler-authority-refinement-gate-model/README.md",
+    "scheduler_authority_refinement_gate_tla": "capsched/capsched-models/formal/0067-scheduler-authority-refinement-gate-model/SchedulerAuthorityRefinementGate.tla",
+    "scheduler_authority_refinement_gate_validation": "capsched/capsched-models/validation/0106-scheduler-authority-refinement-gate-tlc.md",
+    "scheduler_authority_refinement_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/scheduler-authority-refinement-gate-20260701T194752Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

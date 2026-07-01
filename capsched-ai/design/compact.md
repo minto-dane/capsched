@@ -189,10 +189,17 @@ latest completed focused risk:
   refreshed rules, 4 updated artifacts, 12/12 safety flags false. formal/0012
   recheck: 126113 generated states, 17344 distinct states, depth 21, exit 0.
 
+latest completed focused risk:
+  Scheduler authority refinement gate. Analysis/0089, formal/0067, JSON gate,
+  and validation/0106 compose TASK_WAKING freeze, donor/current/proxy budget,
+  and selected-state settlement. Safe TLC: 18 generated states, 14 distinct,
+  depth 7. Unsafe configs reject TASK_WAKING before freeze, current-only proxy
+  budget, run after retry, and run without class settlement. JSON: 17 anchors,
+  4 unsafe cases, 13/13 safety flags false.
+
 next focused risk:
-  Decompose/strengthen LinuxSchedulerAuthority around donor/current budget
-  charging, TASK_WAKING failure boundary, and selected-state class retry
-  semantics.
+  NoUnspecifiedRuntimeCharge across CFS/RT/DL/SCX/hrtick/task_sched_runtime/
+  cgroup/proxy runtime surfaces.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

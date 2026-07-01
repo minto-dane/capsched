@@ -72,10 +72,11 @@ Updated: 2026-07-01
 | 0064 | Checked with safe pass and expected unsafe counterexamples | Linux Upstream Maintenance Gate Model |
 | 0065 | Checked with safe pass and expected unsafe counterexamples | Linux Source-Drift Freshness Gate Model |
 | 0066 | Checked with safe pass and expected unsafe counterexamples | Linux Source-Map Refresh Target Model |
+| 0067 | Checked with safe pass and expected unsafe counterexamples | Scheduler Authority Refinement Gate Model |
 
 ## Planned
 
-1. Refresh `scheduler_authority_core` source maps source-only:
-   `analysis/0025`, `analysis/0026`, `analysis/0028`, and formal/0012 mapping.
-2. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
+1. Trace-only runtime coverage gate for current/donor/proxy scheduler paths.
+2. F1 admission-freeze data dependency refresh against current upstream.
+3. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

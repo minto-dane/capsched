@@ -137,6 +137,8 @@ Current evidence:
 
 - `formal/0002-runnable-lease-model/`
 - `validation/0001-runnable-lease-tlc.md`
+- `formal/0067-scheduler-authority-refinement-gate-model/`
+- `validation/0106-scheduler-authority-refinement-gate-tlc.md`
 - `implementation/0001-l0-runnable-lease-implementation-plan.md`
 - Slice 0B type names: `capsched_run_cap`, `capsched_sched_ctx`,
   `capsched_frozen_run_use`
@@ -148,6 +150,7 @@ Open gaps:
 - no scheduler class coverage
 - no wakeup/migration/remote wake coverage
 - no deadline/RT/CFS/core-scheduling interaction evidence
+- no trace/runtime coverage for current, donor, and proxy execution paths
 - no root budget monitor timer
 
 Forbidden L0 claim:
@@ -172,12 +175,16 @@ Current evidence:
 
 - `formal/0004-broker-budget-ticket-model/`
 - `validation/0006-broker-budget-ticket-tlc.md`
+- `formal/0067-scheduler-authority-refinement-gate-model/`
+- `validation/0106-scheduler-authority-refinement-gate-tlc.md`
 - Slice 0B type name: `capsched_budget_ticket`
 
 Open gaps:
 
 - no monitor root budget timer
 - no Linux accounting integration
+- no exact current/donor/proxy runtime charge equation across CFS, RT,
+  deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution
 - no service-domain budget debit/refund policy
 - no overload/DoS measurement
 
@@ -570,6 +577,7 @@ Open gaps:
 | E-L0-001 | Linux build validation | `validation/0004-l0-slice0-systemd-build-run.md` | COMPAT |
 | E-ENDP-001 | TLA validation | `validation/0005-endpoint-async-tlc.md` | ENDP, ASYNC |
 | E-BUD-001 | TLA validation | `validation/0006-broker-budget-ticket-tlc.md` | BUDGET |
+| E-SCHED-REFINE-001 | TLA validation | `validation/0106-scheduler-authority-refinement-gate-tlc.md` | EXEC, BUDGET |
 | E-ACT-001 | TLA validation | `validation/0007-domain-monitor-activation-tlc.md` | ACT |
 | E-CLUSTER-001 | Negative/stress record | `validation/0008-cluster-lease-full-systemd-tlc-run.md` | CLUSTER limitation |
 | E-CLUSTER-002 | TLA validation | `validation/0009-cluster-authority-decomposition-tlc.md` | CLUSTER, REVOKE |
@@ -587,6 +595,7 @@ Open gaps:
 | CEX-TLB-001 | `validation/0011` | Domain switch without flush/retag leaves stale TLB authority. |
 | CEX-PCACHE-001 | `validation/0012` | Per-overlay commit without base serialization permits stale commit. |
 | CEX-DEV-001 | `validation/0013` | IRQ aliasing across non-free queues must be forbidden. |
+| CEX-SCHED-REFINE-001 | `validation/0106` | TASK_WAKING before freeze, current-only proxy budget, run after retry, and run without class settlement are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
 | HAZ-ENDP-001 | `analysis/0015` | Socket endpoint checks cannot rely only on LSM because some paths reuse `sock_sendmsg_nosec()`. |
 

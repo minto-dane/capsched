@@ -111,6 +111,7 @@ Updated: 2026-07-01
 | 0103 | Source-drift runner executed; safe model passed; unsafe models produced expected counterexamples; JSON contracts checked | Linux Source-Drift Freshness Gate |
 | 0104 | Safe model passed; unsafe models produced expected counterexamples; target-selection JSON checked | Linux Source-Map Refresh Target Selection |
 | 0105 | Source-only refresh checked; existing authority model rechecked; JSON contract checked | Linux Scheduler Authority Core Refresh |
+| 0106 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Scheduler Authority Refinement Gate TLC |
 
 ## Principles
 

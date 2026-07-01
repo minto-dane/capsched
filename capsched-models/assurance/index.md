@@ -123,6 +123,10 @@ Model-supported areas:
   rejection, at-most-once settlement, release/Linux-cleanup separation, CQE and
   reissue non-authority, set-based authority intersection, Linux object
   non-authority, and evidence-class non-claims
+- scheduler authority refinement gate semantics, checking that TASK_WAKING
+  requires pre-frozen authority, proxy execution cannot use current-only budget,
+  selected state cannot run after retry, and class settlement is required before
+  execution
 
 Prototype-evidenced areas:
 

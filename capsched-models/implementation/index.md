@@ -290,4 +290,14 @@ Current scheduler authority refresh:
   No scheduler authority patch is approved. The next implementation-facing
   pressure is model decomposition around donor/current budget charging,
   TASK_WAKING failure boundary, and selected-state class retry semantics.
+
+Current scheduler authority refinement gate:
+  analysis/0089, formal/0067, scheduler-authority-refinement-gate-v1.json, and
+  validation/0106 now decompose that pressure into a blocking model gate. Safe
+  TLC passed with 18 generated states, 14 distinct states, and depth 7. Unsafe
+  configs produced expected counterexamples for TASK_WAKING before freeze,
+  current-only proxy budget, run after retry, and run without class settlement.
+  No scheduler authority patch is approved. The next implementation-facing
+  pressure is trace-only runtime coverage for current/donor/proxy paths and F1
+  admission-freeze data dependency refresh against current upstream.
 ```
