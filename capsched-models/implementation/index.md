@@ -55,6 +55,13 @@ Candidate implementation plans:
     receipt provenance, hot-path bounded-consumption, policy/lifecycle,
     generic async exclusion, future-gap, revoke/shadow, and evidence-class
     preconditions before any direct-call carrier patch.
+- `0011-direct-call-async-carrier-gate.md`
+  - Status: proposed implementation-facing gate, no Linux patch approved yet.
+  - Purpose: translate the DirectCallAsyncCarrier model into typed carrier,
+    pending coalescing, caller BudgetTicket, service/caller intersection,
+    monitor receipt provenance, revoke/stale-carrier, workqueue, io_uring, and
+    evidence-class preconditions before any async direct-call receipt carrier
+    patch.
 
 Validated formal inputs:
 
@@ -168,8 +175,10 @@ Next gate:
   gate for any direct-call carrier proposal. implementation/0010 now adds the
   placement gate from formal/0057. formal/0058 adds the typed async carrier
   model required before any generic workqueue or io_uring direct-call receipt
-  consumption is allowed. The next work should translate formal/0058 into an
-  implementation-facing no-patch async-carrier gate.
+  consumption is allowed. implementation/0011 now translates formal/0058 into
+  an implementation-facing no-patch async-carrier gate. The next work should
+  source-map workqueue and io_uring separately against DCASYNC-007 and
+  DCASYNC-008 before any code proposal.
 
 Current blocker to behavior-changing Linux patches:
   validation/0080 through validation/0091 improve traceability and

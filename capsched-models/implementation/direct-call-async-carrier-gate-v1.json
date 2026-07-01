@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "status": "proposed_gate_no_patch_approved",
+  "date": "2026-06-30",
+  "source_model": "capsched-models/formal/0058-direct-call-async-carrier-model/DirectCallAsyncCarrier.tla",
+  "validation": "capsched-models/validation/0091-direct-call-async-carrier-tlc.md",
+  "upstream_context": [
+    "analysis/0080-direct-call-receipt-consumer-source-map.md",
+    "analysis/direct-call-receipt-consumer-source-map-v1.json",
+    "implementation/0010-direct-call-receipt-consumer-placement-gate.md"
+  ],
+  "global_non_claims": [
+    "generic workqueue is CapSched-aware",
+    "io_uring workers are CapSched-aware",
+    "direct-call stubs exist",
+    "direct-call ABI is approved",
+    "public tracepoint ABI is approved",
+    "tracefs runtime coverage occurred",
+    "monitor verification occurred",
+    "behavior-changing Linux patches are approved",
+    "production protection exists"
+  ],
+  "gate_rows": [
+    {
+      "gate_id": "DCASYNC-001",
+      "name": "typed carrier identity",
+      "source_model_invariants": [
+        "AcceptedDesignRequiresAsyncCarrierSafety",
+        "WorkerIdentityIsNotAuthority"
+      ],
+      "related_async_surfaces": [
+        "workqueue",
+        "io_uring"
+      ],
+      "required_preconditions": [
+        "Domain-originated async work has a typed CapSched carrier distinct from raw work_struct",
+        "worker task identity is explicitly rejected as caller Domain authority",
+        "carrier lifetime is described from allocation through free"
+      ],
+      "forbidden_fallbacks": [
+        "worker current as caller authority",
+        "work_struct address as authority",
+        "callback function pointer as authority",
+        "generic queue membership as caller provenance"
+      ],
+      "patch_precondition": "patch proposal names the carrier object, ownership, lifetime, and retrieval path before touching worker execution"
+    },
+    {
+      "gate_id": "DCASYNC-002",
+      "name": "pending coalescing preservation",
+      "source_model_invariants": [
+        "PendingCarrierPreserved",
+        "CoalescedSecondCallerNeverReplacesCarrier",
+        "NoPendingOverwrite"
+      ],
+      "related_async_surfaces": [
+        "queue_work",
+        "work_struct pending state"
+      ],
+      "required_preconditions": [
+        "queue_work false path preserves the first carrier caller identity",
+        "queue_work false path preserves the first carrier BudgetTicket",
+        "queue_work false path preserves the first monitor receipt and generation",
+        "second caller handling is explicit and cannot overwrite saved authority"
+      ],
+      "forbidden_fallbacks": [
+        "overwrite caller fields on an already-pending work_struct",
+        "merge second caller authority into first carrier without a model",
+        "charge second caller budget for work it did not own",
+        "treat pending bit as caller-specific provenance"
+      ],
+      "patch_precondition": "patch proposal includes a pending-coalescing table for already pending, canceled, executing, and requeued work"
+    },
+    {
+      "gate_id": "DCASYNC-003",
+      "name": "caller BudgetTicket ownership",
+      "source_model_invariants": [
+        "BudgetTicketChargedToCaller"
+      ],
+      "related_async_surfaces": [
+        "worker execution",
+        "service work",
+        "io-wq"
+      ],
+      "required_preconditions": [
+        "caller-owned BudgetTicket or explicitly split child ticket exists before enqueue",
+        "settlement and overrun behavior are defined before endpoint side effects",
+        "service-only budget is insufficient for caller-originated work"
+      ],
+      "forbidden_fallbacks": [
+        "service-only budget as caller budget",
+        "worker kthread runtime as caller ticket",
+        "cgroup CPU accounting as capability budget",
+        "scheduler runtime charge as monitor-enforced budget"
+      ],
+      "patch_precondition": "patch proposal names caller ticket derivation, charge point, refund/cancel path, and overrun behavior"
+    },
+    {
+      "gate_id": "DCASYNC-004",
+      "name": "service and caller intersection",
+      "source_model_invariants": [
+        "NoServiceOnlyAuthority",
+        "CallerFrozenRequired",
+        "AcceptedDesignRequiresAsyncCarrierSafety"
+      ],
+      "related_async_surfaces": [
+        "service Domain work",
+        "workqueue callback",
+        "io_uring worker callback"
+      ],
+      "required_preconditions": [
+        "service authority is bound separately from caller frozen authority",
+        "effective authority is the intersection of service authority and caller frozen authority",
+        "endpoint side effects occur only after intersection succeeds"
+      ],
+      "forbidden_fallbacks": [
+        "service Domain allow result as full authority",
+        "caller credential snapshot as full authority",
+        "namespace membership as full authority",
+        "LSM allow result as frozen capability"
+      ],
+      "patch_precondition": "patch proposal includes an authority-intersection table before any side-effecting endpoint operation"
+    },
+    {
+      "gate_id": "DCASYNC-005",
+      "name": "monitor receipt provenance",
+      "source_model_invariants": [
+        "NoLinuxMintedReceipt"
+      ],
+      "related_async_surfaces": [
+        "receipt carrier",
+        "derived Linux shadow",
+        "direct-call response"
+      ],
+      "required_preconditions": [
+        "monitor-minted receipt reference is distinct from Linux shadow state",
+        "Linux carrier may hold opaque receipt references but cannot mint receipt authority",
+        "receipt generation and carrier generation are compared before consumption"
+      ],
+      "forbidden_fallbacks": [
+        "Linux helper return code as receipt",
+        "cached shadow as monitor receipt",
+        "timeout refresh as renewed receipt",
+        "pointer identity as receipt authority"
+      ],
+      "patch_precondition": "patch proposal separates monitor receipt identity, Linux shadow fields, and generation comparison fields"
+    },
+    {
+      "gate_id": "DCASYNC-006",
+      "name": "revoke and stale carrier rejection",
+      "source_model_invariants": [
+        "NoConsumeAfterRevoke",
+        "NoStaleCarrierExecution",
+        "RevokedCarrierRejectionSafe"
+      ],
+      "related_async_surfaces": [
+        "queued carrier",
+        "pending carrier",
+        "executing carrier",
+        "canceled carrier",
+        "retried carrier"
+      ],
+      "required_preconditions": [
+        "revoked pending carriers are rejected before worker execution",
+        "stale generation or epoch cannot reach endpoint side effects",
+        "cancel, retry, completion, and free ordering are defined"
+      ],
+      "forbidden_fallbacks": [
+        "worker receives stale carrier after revoke",
+        "local cleanup as monitor revoke completion",
+        "retry as renewed receipt",
+        "free path that races with worker carrier consumption"
+      ],
+      "patch_precondition": "patch proposal includes a revoke/cancel/retry/free state table and stale-carrier rejection path"
+    },
+    {
+      "gate_id": "DCASYNC-007",
+      "name": "workqueue patch boundary",
+      "source_model_invariants": [
+        "NoGenericWorkAuthority",
+        "PendingCarrierPreserved",
+        "WorkerIdentityIsNotAuthority"
+      ],
+      "related_async_surfaces": [
+        "kernel/workqueue.c",
+        "queue_work",
+        "process_one_work"
+      ],
+      "required_preconditions": [
+        "generic kernel-internal work remains excluded unless classified",
+        "Domain-originated work uses a typed carrier wrapper",
+        "workqueue source map exists before code review"
+      ],
+      "forbidden_fallbacks": [
+        "global workqueue hook treats all work as Domain-originated",
+        "kernel-internal work inherits arbitrary caller authority",
+        "work_struct pending state stores caller authority directly"
+      ],
+      "patch_precondition": "patch proposal includes a workqueue source map and an exclusion list for kernel-internal work"
+    },
+    {
+      "gate_id": "DCASYNC-008",
+      "name": "io_uring patch boundary",
+      "source_model_invariants": [
+        "WorkerIdentityIsNotAuthority",
+        "CallerFrozenRequired",
+        "NoServiceOnlyAuthority"
+      ],
+      "related_async_surfaces": [
+        "io_uring request",
+        "registered resource",
+        "io-wq worker"
+      ],
+      "required_preconditions": [
+        "io_uring requests carry typed provenance before worker execution",
+        "registered resources freeze authority at registration or explicit update",
+        "io-wq worker identity is not caller authority"
+      ],
+      "forbidden_fallbacks": [
+        "registered fd existence as frozen authority",
+        "io-wq worker current as caller Domain",
+        "completion success as receipt renewal"
+      ],
+      "patch_precondition": "patch proposal includes an io_uring source map for request, registered resource, worker, completion, cancel, and retry paths"
+    },
+    {
+      "gate_id": "DCASYNC-009",
+      "name": "evidence class split",
+      "source_model_invariants": [
+        "NoTraceCoverageClaim",
+        "NoAbiApproval",
+        "NoBehaviorChange",
+        "NoMonitorVerifiedClaim",
+        "NoProtectionClaim"
+      ],
+      "related_async_surfaces": [
+        "all"
+      ],
+      "required_preconditions": [
+        "source-only, formal, compile-only, trace-only, monitor-backed runtime, and production protection evidence are separately labeled",
+        "non-claims remain attached to every pre-patch artifact",
+        "patch proposal names the evidence class it intends to produce"
+      ],
+      "forbidden_fallbacks": [
+        "TLC pass as monitor verification",
+        "source anchor as runtime coverage",
+        "inert type as behavior approval",
+        "trace plan as public ABI",
+        "compile success as production protection"
+      ],
+      "patch_precondition": "patch proposal includes evidence-class table and explicit non-claims"
+    }
+  ],
+  "required_before_patch": [
+    "DCASYNC-001 through DCASYNC-009 satisfied or carried as explicit blockers",
+    "carrier storage lifetime for allocation, ownership, enqueue, coalescing, execution, cancellation, revoke, retry, completion, and free",
+    "pending-coalescing table for queue_work false behavior",
+    "worker retrieval path that rejects worker identity as authority",
+    "service/caller authority intersection table",
+    "caller BudgetTicket derivation, settlement, cancel/refund, and overrun behavior",
+    "monitor receipt versus Linux shadow field split",
+    "revoke/cancel/retry/free stale-carrier rejection table",
+    "separate workqueue and io_uring source maps before code review",
+    "evidence-class table with non-claims for ABI, tracepoints, runtime coverage, monitor verification, behavior change, and production protection"
+  ],
+  "safety_flags": {
+    "source_only": true,
+    "implementation_approval": false,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "behavior_change": false,
+    "public_tracepoint_abi": false,
+    "protection_claim": false
+  }
+}

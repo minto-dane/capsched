@@ -1955,3 +1955,40 @@ still not:
 next:
   N-121 implementation-facing no-patch async-carrier gate.
 ```
+
+Latest direct-call async-carrier gate:
+
+```text
+N-121 completed:
+  implementation/0011-direct-call-async-carrier-gate.md
+  implementation/direct-call-async-carrier-gate-v1.json
+  validation/0092-direct-call-async-carrier-gate-result.md
+
+gate rows:
+  DCASYNC-001 typed carrier identity
+  DCASYNC-002 pending coalescing preservation
+  DCASYNC-003 caller BudgetTicket ownership
+  DCASYNC-004 service/caller intersection
+  DCASYNC-005 monitor receipt provenance
+  DCASYNC-006 revoke/stale-carrier rejection
+  DCASYNC-007 workqueue patch boundary
+  DCASYNC-008 io_uring patch boundary
+  DCASYNC-009 evidence class split
+
+validation:
+  9/9 rows have required preconditions, forbidden fallbacks, and patch
+  preconditions.
+
+still not:
+  Linux implementation
+  workqueue integration
+  io_uring integration
+  ABI approval
+  runtime coverage
+  behavior change
+  monitor verification
+  production protection
+
+next:
+  N-122 source-map workqueue and io_uring separately before code.
+```

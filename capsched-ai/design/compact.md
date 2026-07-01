@@ -1716,3 +1716,30 @@ unsafe:
 next:
   N-121 no-patch async-carrier implementation gate.
 ```
+
+Latest direct-call async-carrier gate:
+
+```text
+N-121 completed:
+  implementation/0011
+  direct-call-async-carrier-gate-v1.json
+  validation/0092
+
+rows:
+  typed carrier identity
+  pending coalescing preservation
+  caller BudgetTicket ownership
+  service/caller intersection
+  monitor receipt provenance
+  revoke/stale-carrier rejection
+  workqueue boundary
+  io_uring boundary
+  evidence split
+
+non-claim:
+  still no Linux code, ABI approval, runtime coverage, behavior change,
+  monitor verification, or production protection.
+
+next:
+  N-122 workqueue/io_uring source maps before code.
+```

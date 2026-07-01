@@ -97,6 +97,7 @@ Updated: 2026-06-30
 | 0089 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Receipt Consumer Placement TLC |
 | 0090 | Executed; source-only placement gate checked | Direct-Call Receipt Consumer Placement Gate Result |
 | 0091 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Async Carrier TLC |
+| 0092 | Executed; source-only async-carrier gate checked | Direct-Call Async Carrier Gate Result |
 
 ## Principles
 

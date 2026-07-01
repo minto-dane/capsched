@@ -181,6 +181,11 @@ Prototype-evidenced areas:
   generic workqueue authority, pending work overwrite, worker identity
   authority, service-only authority, Linux-minted receipt, consume-after-revoke,
   and trace/ABI/runtime/monitor/protection overclaims are rejected.
+- implementation-facing direct-call async-carrier gate with 9 machine-readable
+  DCASYNC rows covering typed carrier identity, pending coalescing preservation,
+  caller BudgetTicket ownership, service/caller intersection, monitor receipt
+  provenance, revoke/stale-carrier rejection, workqueue boundary, io_uring
+  boundary, and evidence class split; still no Linux patch approved.
 
 Open production gaps:
 
