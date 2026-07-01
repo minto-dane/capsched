@@ -49,6 +49,12 @@ Candidate implementation plans:
   - Purpose: translate the DirectCallGapClosure model into required future
     Linux/monitor anchors, receipts, forbidden fallbacks, and validation
     evidence before any direct-call stub or ABI patch.
+- `0010-direct-call-receipt-consumer-placement-gate.md`
+  - Status: proposed implementation-facing gate, no Linux patch approved yet.
+  - Purpose: translate the DirectCallReceiptConsumerPlacement model into
+    receipt provenance, hot-path bounded-consumption, policy/lifecycle,
+    generic async exclusion, future-gap, revoke/shadow, and evidence-class
+    preconditions before any direct-call carrier patch.
 
 Validated formal inputs:
 
@@ -152,14 +158,15 @@ Current patch recommendation, not yet executed:
 ```text
 Next gate:
   use implementation/0009, analysis/0079, and analysis/0080 as the pre-patch
-  gate for any direct-call carrier proposal. The next work should turn the
-  formal/0057 placement model into an implementation-facing no-patch gate before
-  any Linux direct-call carrier, public tracepoint, or behavior-changing patch.
+  gate for any direct-call carrier proposal. implementation/0010 now adds the
+  placement gate from formal/0057. The next work should model the typed async
+  carrier required before any generic workqueue or io_uring direct-call
+  receipt consumption is allowed.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0089 improve traceability and model/source
-  map the gap-closure, receipt-schema, receipt-consumer, and placement gates,
-  but they are not Linux stub implementation, monitor verification, ABI
-  approval, runtime coverage, behavior-change approval, or production
+  validation/0080 through validation/0090 improve traceability and model/source
+  map the gap-closure, receipt-schema, receipt-consumer, placement, and gate
+  artifacts, but they are not Linux stub implementation, monitor verification,
+  ABI approval, runtime coverage, behavior-change approval, or production
   protection evidence.
 ```

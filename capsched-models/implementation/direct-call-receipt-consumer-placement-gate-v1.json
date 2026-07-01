@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "status": "proposed_gate_no_patch_approved",
+  "date": "2026-06-30",
+  "source_map": "capsched-models/analysis/direct-call-receipt-consumer-source-map-v1.json",
+  "source_model": "capsched-models/formal/0057-direct-call-receipt-consumer-placement-model/DirectCallReceiptConsumerPlacement.tla",
+  "validation": "capsched-models/validation/0089-direct-call-receipt-consumer-placement-tlc.md",
+  "global_non_claims": [
+    "direct-call stubs exist",
+    "direct-call ABI is approved",
+    "public tracepoint ABI is approved",
+    "tracefs runtime coverage occurred",
+    "monitor verification occurred",
+    "behavior-changing Linux patches are approved",
+    "production protection exists"
+  ],
+  "gate_rows": [
+    {
+      "gate_id": "DCPGATE-001",
+      "name": "receipt provenance root",
+      "source_model_invariants": [
+        "NoLinuxMintedReceipt",
+        "LinuxShadowIsNotAuthority"
+      ],
+      "source_map_rows": [
+        "DCRCV-001",
+        "DCRCV-002",
+        "DCRCV-003"
+      ],
+      "required_preconditions": [
+        "monitor-owned receipt minting remains external to Linux",
+        "Linux-visible shadows are derived cache records only",
+        "opaque types do not define receipt layout or authority"
+      ],
+      "forbidden_fallbacks": [
+        "Linux opaque id as monitor receipt",
+        "Linux cached shadow as response authority",
+        "helper return code as receipt"
+      ],
+      "patch_precondition": "concrete receipt carrier proposal names monitor-owned minting and Linux-only shadow fields separately"
+    },
+    {
+      "gate_id": "DCPGATE-002",
+      "name": "hot-path bounded consumption",
+      "source_model_invariants": [
+        "HotPathOnlyBoundedCheck",
+        "AcceptedPlacementRequiresSafePlacement"
+      ],
+      "source_map_rows": [
+        "DCRCV-004",
+        "DCRCV-005",
+        "DCRCV-006",
+        "DCRCV-007",
+        "DCRCV-008"
+      ],
+      "required_preconditions": [
+        "hot-path operation is a bounded generation, epoch, or shadow validity comparison",
+        "request copy and schema negotiation are not performed in hot path",
+        "no sleeping, allocation, tracefs dependency, or monitor receipt minting is introduced in pick/wake/enqueue/switch paths"
+      ],
+      "forbidden_fallbacks": [
+        "enqueue success as receipt",
+        "wakeup success as renewed response",
+        "pick result as schema acceptance",
+        "context switch completion as monitor activation proof"
+      ],
+      "patch_precondition": "hot-path proposal has bounded-operation proof and fallback behavior model before code review"
+    },
+    {
+      "gate_id": "DCPGATE-003",
+      "name": "policy and lifecycle separation",
+      "source_model_invariants": [
+        "PolicyLifecycleNotSchemaAuthority"
+      ],
+      "source_map_rows": [
+        "DCRCV-009",
+        "DCRCV-010",
+        "DCRCV-011",
+        "DCRCV-012",
+        "DCRCV-013",
+        "DCRCV-014",
+        "DCRCV-015",
+        "DCRCV-016"
+      ],
+      "required_preconditions": [
+        "policy/lifecycle paths list request fields they shape",
+        "policy/lifecycle paths list receipt fields they cannot decide",
+        "fork, exec, and exit identity propagation is modeled separately from receipt authority"
+      ],
+      "forbidden_fallbacks": [
+        "sched policy success as SchemaReceipt",
+        "cpuset intersection as monitor allowed CPU receipt",
+        "task_struct duplication as inherited monitor receipt",
+        "exec as Domain switch or receipt refresh",
+        "do_exit as RevokeReceipt"
+      ],
+      "patch_precondition": "request-shaping path has explicit monitor handoff and no schema-acceptance shortcut"
+    },
+    {
+      "gate_id": "DCPGATE-004",
+      "name": "generic async exclusion",
+      "source_model_invariants": [
+        "GenericAsyncExcluded"
+      ],
+      "source_map_rows": [
+        "DCRCV-017",
+        "DCRCV-018",
+        "DCRCV-019",
+        "DCRCV-020"
+      ],
+      "required_preconditions": [
+        "generic workqueue and io_uring worker paths are excluded by default",
+        "Domain-originated async work requires a separately modeled typed carrier",
+        "service authority and caller frozen authority intersection is modeled before allowing async consumption"
+      ],
+      "forbidden_fallbacks": [
+        "work_struct pending state as caller-specific receipt storage",
+        "worker task identity as caller Domain authority",
+        "io-wq loop as preserving direct-call receipt authority"
+      ],
+      "patch_precondition": "no generic async receipt consumer hook unless a typed carrier model and source map exist"
+    },
+    {
+      "gate_id": "DCPGATE-005",
+      "name": "future gap preservation",
+      "source_model_invariants": [
+        "FutureGapsNotImplemented"
+      ],
+      "source_map_rows": [
+        "DCRCV-021",
+        "DCRCV-022",
+        "DCRCV-023",
+        "DCRCV-024",
+        "DCRCV-025",
+        "DCRCV-026",
+        "DCRCV-027"
+      ],
+      "required_preconditions": [
+        "future gaps remain blockers until their own concrete gate exists",
+        "trace-only and test-only rows remain side gates",
+        "gap classification does not resolve implementation obligations"
+      ],
+      "forbidden_fallbacks": [
+        "future gap row as implemented helper",
+        "trace plan as runtime coverage",
+        "test hook as production path",
+        "source-map row as ABI approval"
+      ],
+      "patch_precondition": "each converted gap row must name a separate source anchor, monitor responsibility, and validation class"
+    },
+    {
+      "gate_id": "DCPGATE-006",
+      "name": "revoke and shadow invalidation",
+      "source_model_invariants": [
+        "NoConsumeAfterRevoke"
+      ],
+      "source_map_rows": [
+        "DCRCV-004",
+        "DCRCV-005",
+        "DCRCV-015",
+        "DCRCV-016",
+        "DCRCV-024",
+        "DCRCV-025"
+      ],
+      "required_preconditions": [
+        "stale Linux shadow invalidation is ordered after monitor revoke receipt",
+        "in-flight response handling is modeled before reuse",
+        "timeout and retry do not refresh authority"
+      ],
+      "forbidden_fallbacks": [
+        "cached status after revoke as valid response",
+        "local cleanup as revoke completion",
+        "timeout refresh as renewed response handle"
+      ],
+      "patch_precondition": "revoke ordering model covers stale shadow, in-flight response, timeout, retry, and re-entry"
+    },
+    {
+      "gate_id": "DCPGATE-007",
+      "name": "evidence class split",
+      "source_model_invariants": [
+        "NoTraceCoverageClaim",
+        "NoAbiApproval",
+        "NoBehaviorChange",
+        "NoMonitorVerifiedClaim",
+        "NoProtectionClaim"
+      ],
+      "source_map_rows": [
+        "all"
+      ],
+      "required_preconditions": [
+        "source-only, compile-only, trace-only, model, monitor-backed runtime, and production protection evidence are separately labeled",
+        "validation plan names which class each run belongs to",
+        "non-claims remain attached to every pre-patch artifact"
+      ],
+      "forbidden_fallbacks": [
+        "source-map ok row as semantic validation",
+        "TLC pass as monitor verification",
+        "trace plan as runtime coverage",
+        "inert stub as behavior approval",
+        "compile success as production protection"
+      ],
+      "patch_precondition": "patch proposal includes evidence-class table and explicit non-claims"
+    }
+  ],
+  "required_before_patch": [
+    "DCPGATE-001 through DCPGATE-007 satisfied or carried as explicit blockers",
+    "symbol/pattern source anchors for every current Linux surface",
+    "bounded-operation statement for any scheduler hot-path touch",
+    "request-shaping versus receipt-authority table for policy/lifecycle paths",
+    "typed-carrier model reference for any Domain-originated async path",
+    "revoke and stale-shadow failure table",
+    "evidence-class table with non-claims for ABI, tracepoints, runtime coverage, monitor verification, behavior change, and production protection"
+  ],
+  "safety_flags": {
+    "source_only": true,
+    "implementation_approval": false,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "behavior_change": false,
+    "public_tracepoint_abi": false,
+    "protection_claim": false
+  }
+}

@@ -170,6 +170,11 @@ Prototype-evidenced areas:
   cannot become schema or receipt authority, generic async workers remain
   excluded without typed carriers, future gaps stay gaps, and trace/ABI/runtime/
   monitor/protection overclaims are rejected.
+- implementation-facing direct-call receipt-consumer placement gate with 7
+  machine-readable DCPGATE rows covering receipt provenance root, hot-path
+  bounded consumption, policy/lifecycle separation, generic async exclusion,
+  future gap preservation, revoke/shadow invalidation, and evidence class split;
+  still no Linux patch approved.
 
 Open production gaps:
 

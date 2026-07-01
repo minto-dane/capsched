@@ -106,14 +106,15 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call receipt-consumer placement model. Formal/0057 and validation/0089
-  check bounded hot-path shadow use, policy/lifecycle separation, generic async
-  exclusion, future-gap preservation, and rejection of trace/ABI/runtime/
-  monitor/protection overclaims. Safe TLC passed with 10 generated states and
-  9 distinct states; 12 unsafe configs produced expected counterexamples.
+  Direct-call receipt-consumer placement gate. Implementation/0010 defines 7
+  DCPGATE rows for receipt provenance, bounded hot-path consumption,
+  policy/lifecycle separation, generic async exclusion, future gap preservation,
+  revoke/shadow invalidation, and evidence class split. Validation/0090 checked
+  all rows and safety flags.
 
 next focused risk:
-  Turn formal/0057 into an implementation-facing no-patch placement gate.
+  Model typed async carrier requirements before generic workqueue/io_uring
+  receipt consumption is allowed.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1667,5 +1668,26 @@ safe TLC:
   9 distinct states
 
 next:
-  N-119 implementation-facing no-patch placement gate.
+  N-119 completed implementation-facing no-patch placement gate.
+```
+
+Latest direct-call receipt-consumer placement gate:
+
+```text
+N-119 completed:
+  implementation/0010
+  direct-call-receipt-consumer-placement-gate-v1.json
+  validation/0090
+
+gate rows:
+  provenance
+  hot path
+  policy/lifecycle
+  async exclusion
+  future gaps
+  revoke/shadow
+  evidence split
+
+next:
+  N-120 typed async carrier model.
 ```

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-receipt-consumer-placement-modeled",
+    "current_phase": "direct-call-receipt-consumer-placement-gated",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-118 completed the DirectCallReceiptConsumerPlacement model. formal/0057 and validation/0089 model-check the placement rule derived from N-117: hot paths may only perform bounded monitor-owned shadow checks, policy/lifecycle paths cannot become schema or receipt authority, generic async workers remain excluded unless typed carriers are modeled, future gaps stay gaps, and trace/ABI/runtime/monitor/protection overclaims are rejected. Safe TLC passed with 10 generated states, 9 distinct states, and 0 queued states. Twelve unsafe configs produced expected invariant violations for Linux-minted receipt, Linux shadow authority, hot-path direct call, policy schema authority, generic async consume, future gap implemented, stale consume after revoke, trace coverage claim, ABI approval, behavior change, monitor verification claim, and protection claim. This is not Linux implementation, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-119: turn formal/0057 into an implementation-facing no-patch placement gate.",
+    "current_focus": "N-119 completed the implementation-facing no-patch direct-call receipt-consumer placement gate. implementation/0010 and direct-call-receipt-consumer-placement-gate-v1.json define 7 DCPGATE rows: receipt provenance root, hot-path bounded consumption, policy/lifecycle separation, generic async exclusion, future gap preservation, revoke/shadow invalidation, and evidence class split. validation/0090 confirms 7/7 gate rows have required preconditions, forbidden fallbacks, and patch preconditions, with implementation_approval=false, authority_claim=false, monitor_verified=false, behavior_change=false, public_tracepoint_abi=false, and protection_claim=false. This is not Linux implementation, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-120: model the typed async carrier required before any generic workqueue or io_uring direct-call receipt consumption is allowed.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -524,7 +524,10 @@
     "direct_call_receipt_consumer_placement_model": "capsched/capsched-models/formal/0057-direct-call-receipt-consumer-placement-model/README.md",
     "direct_call_receipt_consumer_placement_tla": "capsched/capsched-models/formal/0057-direct-call-receipt-consumer-placement-model/DirectCallReceiptConsumerPlacement.tla",
     "direct_call_receipt_consumer_placement_validation": "capsched/capsched-models/validation/0089-direct-call-receipt-consumer-placement-tlc.md",
-    "direct_call_receipt_consumer_placement_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-receipt-consumer-placement-20260701T023000Z"
+    "direct_call_receipt_consumer_placement_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-receipt-consumer-placement-20260701T023000Z",
+    "direct_call_receipt_consumer_placement_gate": "capsched/capsched-models/implementation/0010-direct-call-receipt-consumer-placement-gate.md",
+    "direct_call_receipt_consumer_placement_gate_json": "capsched/capsched-models/implementation/direct-call-receipt-consumer-placement-gate-v1.json",
+    "direct_call_receipt_consumer_placement_gate_validation": "capsched/capsched-models/validation/0090-direct-call-receipt-consumer-placement-gate-result.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2134,9 +2137,19 @@
     {
       "id": "N-119",
       "text": "Turn the N-118 receipt-consumer placement model into an implementation-facing no-patch gate with concrete preconditions for any future direct-call carrier patch.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-118"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Added implementation/0010-direct-call-receipt-consumer-placement-gate.md, implementation/direct-call-receipt-consumer-placement-gate-v1.json, and validation/0090. The gate has 7 DCPGATE rows covering receipt provenance root, hot-path bounded consumption, policy/lifecycle separation, generic async exclusion, future gap preservation, revoke/shadow invalidation, and evidence class split. validation/0090 confirmed 7/7 gate rows have required preconditions, forbidden fallbacks, and patch preconditions, with implementation_approval=false, authority_claim=false, monitor_verified=false, behavior_change=false, public_tracepoint_abi=false, and protection_claim=false. No Linux patch, ABI, tracepoint, behavior change, monitor verification, runtime coverage, or protection claim is approved."
+    },
+    {
+      "id": "N-120",
+      "text": "Model the typed async carrier required before any generic workqueue or io_uring direct-call receipt consumption is allowed, preserving service/caller authority intersection and pending-work coalescing safety.",
+      "status": "pending",
+      "blocked_by": [
+        "N-119"
       ]
     }
   ],

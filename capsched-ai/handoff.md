@@ -113,18 +113,18 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call receipt-consumer placement model. Formal/0057 and
-  validation/0089 check that hot paths are bounded shadow checks only,
-  policy/lifecycle paths cannot become schema or receipt authority, generic
-  async workers remain excluded without typed carriers, future gaps stay gaps,
-  and trace/ABI/runtime/monitor/protection overclaims are rejected. Safe TLC
-  passed with 10 generated states and 9 distinct states. Twelve unsafe configs
-  produced expected invariant violations.
+  Direct-call receipt-consumer placement gate. Implementation/0010 and
+  direct-call-receipt-consumer-placement-gate-v1.json define 7 DCPGATE rows:
+  receipt provenance root, hot-path bounded consumption, policy/lifecycle
+  separation, generic async exclusion, future gap preservation, revoke/shadow
+  invalidation, and evidence class split. Validation/0090 confirms all 7 rows
+  have preconditions, forbidden fallbacks, and patch preconditions, with no
+  implementation approval or authority/protection claims.
 
 next focused risk:
-  Turn formal/0057 into an implementation-facing no-patch placement gate before
-  any direct-call carrier patch. Do not add direct-call stubs, ABI, tracepoints,
-  or behavior-changing patches.
+  Model typed async carrier requirements before any generic workqueue or
+  io_uring direct-call receipt consumption is allowed. Do not add direct-call
+  stubs, ABI, tracepoints, or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:
@@ -1897,5 +1897,26 @@ unsafe counterexamples:
   protection claim
 
 next:
-  N-119 implementation-facing no-patch placement gate.
+  N-119 completed implementation-facing no-patch placement gate.
+```
+
+Latest direct-call receipt-consumer placement gate:
+
+```text
+N-119 completed:
+  implementation/0010-direct-call-receipt-consumer-placement-gate.md
+  implementation/direct-call-receipt-consumer-placement-gate-v1.json
+  validation/0090-direct-call-receipt-consumer-placement-gate-result.md
+
+gate rows:
+  DCPGATE-001 receipt provenance root
+  DCPGATE-002 hot-path bounded consumption
+  DCPGATE-003 policy and lifecycle separation
+  DCPGATE-004 generic async exclusion
+  DCPGATE-005 future gap preservation
+  DCPGATE-006 revoke and shadow invalidation
+  DCPGATE-007 evidence class split
+
+next:
+  N-120 typed async carrier model for workqueue/io_uring receipt safety.
 ```
