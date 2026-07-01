@@ -117,6 +117,7 @@ Updated: 2026-07-01
 | 0109 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Runtime Coverage Gate TLC |
 | 0110 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Monitor Root Budget Timer TLC |
 | 0111 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Server Epoch Relation TLC |
+| 0112 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Deadline CBS/GRUB Compatibility TLC |
 
 ## Principles
 

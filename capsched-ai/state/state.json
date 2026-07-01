@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "server-epoch-relation-gate-complete",
+    "current_phase": "deadline-cbs-grub-compat-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-140 server epoch relation gate is complete. Added analysis/0094, formal/0072 ServerEpochRelation, server-epoch-relation-v1.json, and validation/0111. The gate models server-kind/server-epoch freshness across Linux DL/fair/ext server start, stop, replenish, parameter update, attach, detach, swap, and CPU teardown. Safe TLC passed with 107 generated states, 32 distinct states, 0 left on queue, depth 6. Unsafe configs produced expected counterexamples for stale ticket after replenish, ticket surviving server swap, server-kind mismatch after swap, ticket surviving stop, pick without fresh ticket, lower task without authority, Linux runtime as authority, parameter update keeping a ticket, CPU teardown keeping a running ticket, and protection claim without implementation. JSON check confirmed 44 anchors, 13 server epoch boundaries, 8 fresh ticket requirements, 10 unsafe cases, and 13/13 safety flags false. Assurance evidence E-SCHED-SERVER-EPOCH-001 supports EXEC-001/BUDGET-001 only as model evidence. This is not server-epoch implementation, Linux hook approval, runtime coverage, ABI approval, behavior change, monitor verification, or production protection. Next focused risks are deadline CBS/GRUB compatibility source refresh, F1 admission-freeze data dependency refresh, monitor timer architecture substrate comparison, and integration of server epoch relation into the wider LinuxSchedulerAuthority model.",
+    "current_focus": "N-141 deadline CBS/GRUB compatibility gate is complete. Added analysis/0095, formal/0073 DeadlineCbsGrubCompat, deadline-cbs-grub-compat-v1.json, and validation/0112. The gate models Linux SCHED_DEADLINE admission, CBS runtime/replenishment, GRUB reclaim, inactive timers, dynamic sched_getattr, and overrun notification as compatibility policy or observation surfaces, not CapSched authority or monitor root budget. Safe TLC passed with 70 generated states, 27 distinct states, 0 left on queue, depth 10. Unsafe configs produced expected counterexamples for admission minting run authority, CBS replenish minting run authority, GRUB minting monitor budget, DL runtime as monitor budget, inactive timer authority, dynamic sched_getattr authority, overrun notification as enforcement, run without DL admission, run while CBS-throttled, and protection claim without implementation. JSON check confirmed 48 anchors, 11 compatibility obligations, 9 authority rejections, 10 unsafe cases, and 14/14 safety flags false. Assurance evidence E-SCHED-DL-COMPAT-001 supports EXEC-001/BUDGET-001/COMPAT-001 only as model evidence. This is not deadline hook implementation, Linux hook approval, runtime coverage, ABI approval/change, behavior change, monitor verification, or production protection. Next focused risks are F1 admission-freeze data dependency refresh, monitor timer architecture substrate comparison, and integration of server epoch relation plus deadline CBS/GRUB into the wider LinuxSchedulerAuthority model.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -651,7 +651,13 @@
     "server_epoch_relation_model": "capsched/capsched-models/formal/0072-server-epoch-relation-model/README.md",
     "server_epoch_relation_tla": "capsched/capsched-models/formal/0072-server-epoch-relation-model/ServerEpochRelation.tla",
     "server_epoch_relation_validation": "capsched/capsched-models/validation/0111-server-epoch-relation-tlc.md",
-    "server_epoch_relation_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/server-epoch-relation-20260701T204438Z"
+    "server_epoch_relation_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/server-epoch-relation-20260701T204438Z",
+    "deadline_cbs_grub_compat_analysis": "capsched/capsched-models/analysis/0095-deadline-cbs-grub-compatibility.md",
+    "deadline_cbs_grub_compat_json": "capsched/capsched-models/analysis/deadline-cbs-grub-compat-v1.json",
+    "deadline_cbs_grub_compat_model": "capsched/capsched-models/formal/0073-deadline-cbs-grub-compat-model/README.md",
+    "deadline_cbs_grub_compat_tla": "capsched/capsched-models/formal/0073-deadline-cbs-grub-compat-model/DeadlineCbsGrubCompat.tla",
+    "deadline_cbs_grub_compat_validation": "capsched/capsched-models/validation/0112-deadline-cbs-grub-compat-tlc.md",
+    "deadline_cbs_grub_compat_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/deadline-cbs-grub-compat-20260701T205812Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

@@ -78,12 +78,12 @@ Updated: 2026-07-01
 | 0070 | Checked with safe pass and expected unsafe counterexamples | Runtime Coverage Gate Model |
 | 0071 | Checked with safe pass and expected unsafe counterexamples | Monitor Root Budget Timer Model |
 | 0072 | Checked with safe pass and expected unsafe counterexamples | Server Epoch Relation Model |
+| 0073 | Checked with safe pass and expected unsafe counterexamples | Deadline CBS/GRUB Compatibility Model |
 
 ## Planned
 
-1. Deadline CBS/GRUB compatibility source refresh before behavior hooks.
-2. F1 admission-freeze data dependency refresh against current upstream.
-3. Monitor timer architecture substrate comparison for x86 VMX-root and arm64 EL2 after the semantic model is stable.
-4. Server epoch relation integration into the wider LinuxSchedulerAuthority model.
-5. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
+1. F1 admission-freeze data dependency refresh against current upstream.
+2. Monitor timer architecture substrate comparison for x86 VMX-root and arm64 EL2 after the semantic model is stable.
+3. Server epoch relation and deadline CBS/GRUB integration into the wider LinuxSchedulerAuthority model.
+4. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

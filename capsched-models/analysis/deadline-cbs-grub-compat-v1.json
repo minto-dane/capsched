@@ -1,0 +1,359 @@
+{
+  "schema_version": 1,
+  "id": "deadline-cbs-grub-compat-v1",
+  "analysis": "analysis/0095-deadline-cbs-grub-compatibility.md",
+  "status": "draft_model_gate",
+  "date": "2026-07-01",
+  "inputs": {
+    "runtime_charge_subject": "analysis/0090-runtime-charge-subject-map.md",
+    "scheduler_server_ticket": "analysis/0091-scheduler-server-ticket-map.md",
+    "monitor_root_budget_timer": "analysis/0093-monitor-root-budget-timer.md",
+    "server_epoch_relation": "analysis/0094-server-epoch-relation.md",
+    "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+    "freshness_check": "git fetch upstream master observed zero commits after upstream_commit on 2026-07-01"
+  },
+  "purpose": "Define the compatibility boundary for Linux SCHED_DEADLINE CBS/GRUB so admission, runtime, reclaim, inactive timers, and observation narrow scheduling but never mint CapSched authority or monitor root budget.",
+  "source_anchors": [
+    {
+      "id": "deadline_class_purpose",
+      "path": "kernel/sched/deadline.c",
+      "line": 5,
+      "meaning": "EDF + CBS is existing Linux policy"
+    },
+    {
+      "id": "sched_attr_deadline_fields",
+      "path": "include/uapi/linux/sched/types.h",
+      "line": 110,
+      "meaning": "runtime/deadline/period userspace ABI"
+    },
+    {
+      "id": "sched_flag_reclaim",
+      "path": "include/uapi/linux/sched.h",
+      "line": 140,
+      "meaning": "reclaim policy input"
+    },
+    {
+      "id": "sched_dl_flags",
+      "path": "kernel/sched/sched.h",
+      "line": 287,
+      "meaning": "DL flags include reclaim, overrun, and sugov"
+    },
+    {
+      "id": "dl_static_params",
+      "path": "include/linux/sched.h",
+      "line": 648,
+      "meaning": "static DL scheduling parameters"
+    },
+    {
+      "id": "dl_dynamic_params",
+      "path": "include/linux/sched.h",
+      "line": 659,
+      "meaning": "mutable remaining runtime and absolute deadline"
+    },
+    {
+      "id": "dl_mutable_flags",
+      "path": "include/linux/sched.h",
+      "line": 670,
+      "meaning": "throttle, yielded, non-contending, overrun, server flags"
+    },
+    {
+      "id": "dl_bw_root_domain",
+      "path": "kernel/sched/sched.h",
+      "line": 330,
+      "meaning": "root-domain admission accounting object"
+    },
+    {
+      "id": "dl_rq_grub_fields",
+      "path": "kernel/sched/sched.h",
+      "line": 907,
+      "meaning": "running_bw/this_bw/extra_bw/max_bw reclaim inputs"
+    },
+    {
+      "id": "dl_bw_capacity",
+      "path": "kernel/sched/deadline.c",
+      "line": 153,
+      "meaning": "capacity-based admission surface"
+    },
+    {
+      "id": "dl_overflow_check",
+      "path": "kernel/sched/deadline.c",
+      "line": 207,
+      "meaning": "admission overflow check"
+    },
+    {
+      "id": "running_bw_add",
+      "path": "kernel/sched/deadline.c",
+      "line": 214,
+      "meaning": "active utilization add"
+    },
+    {
+      "id": "running_bw_sub",
+      "path": "kernel/sched/deadline.c",
+      "line": 227,
+      "meaning": "active utilization subtract"
+    },
+    {
+      "id": "grub_active_state_comment",
+      "path": "kernel/sched/deadline.c",
+      "line": 348,
+      "meaning": "active/non-contending/inactive utilization semantics"
+    },
+    {
+      "id": "task_non_contending",
+      "path": "kernel/sched/deadline.c",
+      "line": 402,
+      "meaning": "block/exit inactive transition"
+    },
+    {
+      "id": "inactive_timer_arm",
+      "path": "kernel/sched/deadline.c",
+      "line": 459,
+      "meaning": "inactive timer tracks 0-lag"
+    },
+    {
+      "id": "task_contending",
+      "path": "kernel/sched/deadline.c",
+      "line": 466,
+      "meaning": "wakeup active-utilization restoration"
+    },
+    {
+      "id": "dl_rq_init",
+      "path": "kernel/sched/deadline.c",
+      "line": 519,
+      "meaning": "DL rq bandwidth accounting init"
+    },
+    {
+      "id": "offline_migration_bw_move",
+      "path": "kernel/sched/deadline.c",
+      "line": 680,
+      "meaning": "migration moves bandwidth accounting"
+    },
+    {
+      "id": "cbs_overflow_equation",
+      "path": "kernel/sched/deadline.c",
+      "line": 920,
+      "meaning": "CBS residual runtime/deadline rule"
+    },
+    {
+      "id": "revised_cbs_wakeup",
+      "path": "kernel/sched/deadline.c",
+      "line": 968,
+      "meaning": "constrained-deadline runtime reduction"
+    },
+    {
+      "id": "update_dl_entity",
+      "path": "kernel/sched/deadline.c",
+      "line": 1013,
+      "meaning": "wakeup may replenish or reduce DL runtime"
+    },
+    {
+      "id": "dl_runtime_exceeded",
+      "path": "kernel/sched/deadline.c",
+      "line": 1346,
+      "meaning": "local DL runtime exhaustion"
+    },
+    {
+      "id": "grub_reclaim",
+      "path": "kernel/sched/deadline.c",
+      "line": 1368,
+      "meaning": "GRUB reclaim changes local runtime consumption"
+    },
+    {
+      "id": "dl_scaled_delta_exec",
+      "path": "kernel/sched/deadline.c",
+      "line": 1388,
+      "meaning": "reclaim/capacity scaling"
+    },
+    {
+      "id": "update_curr_dl_se",
+      "path": "kernel/sched/deadline.c",
+      "line": 1416,
+      "meaning": "DL runtime depletion and throttling"
+    },
+    {
+      "id": "dl_runtime_decrement",
+      "path": "kernel/sched/deadline.c",
+      "line": 1437,
+      "meaning": "mutable runtime decremented"
+    },
+    {
+      "id": "deferred_server_background_depletion",
+      "path": "kernel/sched/deadline.c",
+      "line": 1450,
+      "meaning": "server can deplete runtime while throttled"
+    },
+    {
+      "id": "dl_throttle_path",
+      "path": "kernel/sched/deadline.c",
+      "line": 1501,
+      "meaning": "runtime exhaustion throttles local entity"
+    },
+    {
+      "id": "dl_overrun_notify",
+      "path": "kernel/sched/deadline.c",
+      "line": 1506,
+      "meaning": "overrun notification flag"
+    },
+    {
+      "id": "update_curr_dl",
+      "path": "kernel/sched/deadline.c",
+      "line": 2128,
+      "meaning": "donor DL runtime accounting"
+    },
+    {
+      "id": "inactive_task_timer",
+      "path": "kernel/sched/deadline.c",
+      "line": 2149,
+      "meaning": "0-lag timer callback"
+    },
+    {
+      "id": "enqueue_constrained_check",
+      "path": "kernel/sched/deadline.c",
+      "line": 2388,
+      "meaning": "constrained-deadline enqueue check"
+    },
+    {
+      "id": "enqueue_throttled_return",
+      "path": "kernel/sched/deadline.c",
+      "line": 2404,
+      "meaning": "throttled entity may not enqueue"
+    },
+    {
+      "id": "enqueue_wakeup_update",
+      "path": "kernel/sched/deadline.c",
+      "line": 2428,
+      "meaning": "wakeup updates DL entity"
+    },
+    {
+      "id": "enqueue_replenish",
+      "path": "kernel/sched/deadline.c",
+      "line": 2431,
+      "meaning": "ENQUEUE_REPLENISH calls replenish"
+    },
+    {
+      "id": "enqueue_timer_gate",
+      "path": "kernel/sched/deadline.c",
+      "line": 2443,
+      "meaning": "DL timer can delay enqueue"
+    },
+    {
+      "id": "dequeue_sleep_grub",
+      "path": "kernel/sched/deadline.c",
+      "line": 2472,
+      "meaning": "sleep/exit enters GRUB non-contending/inactive handling"
+    },
+    {
+      "id": "switched_from_dl",
+      "path": "kernel/sched/deadline.c",
+      "line": 3507,
+      "meaning": "leaving DL may preserve 0-lag accounting"
+    },
+    {
+      "id": "switched_to_dl",
+      "path": "kernel/sched/deadline.c",
+      "line": 3561,
+      "meaning": "entering DL cancels inactive timer"
+    },
+    {
+      "id": "sched_dl_overflow",
+      "path": "kernel/sched/deadline.c",
+      "line": 3776,
+      "meaning": "DL admission control"
+    },
+    {
+      "id": "sched_dl_overflow_update",
+      "path": "kernel/sched/deadline.c",
+      "line": 3802,
+      "meaning": "admission updates bandwidth accounting"
+    },
+    {
+      "id": "leave_dl_delayed_decrease",
+      "path": "kernel/sched/deadline.c",
+      "line": 3821,
+      "meaning": "leaving DL uses delayed 0-lag accounting"
+    },
+    {
+      "id": "__setparam_dl",
+      "path": "kernel/sched/deadline.c",
+      "line": 3842,
+      "meaning": "sched_attr copied into DL entity"
+    },
+    {
+      "id": "dynamic_sched_getattr",
+      "path": "kernel/sched/deadline.c",
+      "line": 3861,
+      "meaning": "read-side dynamic runtime/deadline"
+    },
+    {
+      "id": "__checkparam_dl",
+      "path": "kernel/sched/deadline.c",
+      "line": 3889,
+      "meaning": "parameter validity check"
+    },
+    {
+      "id": "sched_setattr_affinity_bw_gate",
+      "path": "kernel/sched/syscalls.c",
+      "line": 622,
+      "meaning": "affinity/root-domain/bandwidth compatibility gate"
+    },
+    {
+      "id": "sched_setattr_overflow_gate",
+      "path": "kernel/sched/syscalls.c",
+      "line": 648,
+      "meaning": "admission overflow failure point"
+    }
+  ],
+  "compatibility_obligations": [
+    "preserve_sched_attr_deadline_abi",
+    "preserve_sched_flag_reclaim_semantics",
+    "respect_root_domain_bandwidth_admission",
+    "respect_affinity_root_domain_gate",
+    "preserve_cbs_wakeup_rule",
+    "preserve_revised_cbs_constrained_deadline_rule",
+    "preserve_throttle_and_replenishment_timing",
+    "preserve_grub_active_noncontending_inactive_accounting",
+    "preserve_inactive_timer_zerolag_accounting",
+    "preserve_dl_migration_bandwidth_accounting",
+    "preserve_sugov_special_exclusion"
+  ],
+  "authority_rejections": [
+    "DL_admission_as_RunCap",
+    "CBS_replenish_as_RunCap_refresh",
+    "DL_runtime_as_monitor_budget",
+    "GRUB_reclaim_as_monitor_budget",
+    "inactive_timer_as_Domain_revoke_or_refresh_receipt",
+    "dynamic_sched_getattr_as_authority",
+    "dl_overrun_as_enforcement",
+    "DL_throttle_as_monitor_budget_proof",
+    "SCHED_FLAG_RECLAIM_as_permission_to_exceed_CapSched_budget"
+  ],
+  "unsafe_cases": [
+    "admission_mints_run",
+    "cbs_replenish_mints_run",
+    "grub_mints_monitor_budget",
+    "dl_runtime_as_monitor_budget",
+    "inactive_timer_refreshes_authority",
+    "dynamic_getattr_authority",
+    "overrun_notification_enforces",
+    "run_without_dl_admission",
+    "run_while_cbs_throttled",
+    "protection_claim_without_implementation"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "budget_hook": false,
+    "scheduler_hook": false,
+    "deadline_hook": false,
+    "server_epoch_implemented": false,
+    "monitor_timer_implemented": false,
+    "monitor_verified": false,
+    "tracefs_executed": false,
+    "runtime_coverage": false,
+    "abi_change": false,
+    "public_tracepoint_abi": false,
+    "behavior_change": false,
+    "authority_claim": false,
+    "production_protection": false
+  }
+}

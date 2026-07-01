@@ -146,6 +146,8 @@ Current evidence:
 - `validation/0108-scheduler-server-ticket-tlc.md`
 - `formal/0072-server-epoch-relation-model/`
 - `validation/0111-server-epoch-relation-tlc.md`
+- `formal/0073-deadline-cbs-grub-compat-model/`
+- `validation/0112-deadline-cbs-grub-compat-tlc.md`
 - `implementation/0001-l0-runnable-lease-implementation-plan.md`
 - Slice 0B type names: `capsched_run_cap`, `capsched_sched_ctx`,
   `capsched_frozen_run_use`
@@ -161,6 +163,7 @@ Open gaps:
 - no runtime coverage for server-picked lower-class tasks
 - no root budget monitor timer
 - no server epoch field or lifecycle invalidation implementation
+- no deadline CBS/GRUB integration hook or runtime coverage
 
 Forbidden L0 claim:
 
@@ -196,6 +199,8 @@ Current evidence:
 - `validation/0110-monitor-root-budget-timer-tlc.md`
 - `formal/0072-server-epoch-relation-model/`
 - `validation/0111-server-epoch-relation-tlc.md`
+- `formal/0073-deadline-cbs-grub-compat-model/`
+- `validation/0112-deadline-cbs-grub-compat-tlc.md`
 - Slice 0B type name: `capsched_budget_ticket`
 
 Open gaps:
@@ -207,6 +212,7 @@ Open gaps:
 - no actual trace runtime coverage run under the N-138 contract
 - no monitor root budget timer binding to server tickets
 - no server epoch relation integration with monitor root budget receipts
+- no deadline CBS/GRUB integration with monitor root budget receipts
 - no service-domain budget debit/refund policy
 - no overload/DoS measurement
 
@@ -513,6 +519,7 @@ Current evidence:
 
 - source analyses `0001` through `0018`
 - trace-only runtime coverage gate `validation/0109-runtime-coverage-gate-tlc.md`
+- deadline CBS/GRUB compatibility gate `validation/0112-deadline-cbs-grub-compat-tlc.md`
 - Slice 0A build validation `validation/0004-l0-slice0-systemd-build-run.md`
 - Slice 0B build validation `validation/0014-l0-slice0b-build-run.md`
 
@@ -521,6 +528,7 @@ Open gaps:
 - no boot/runtime evidence
 - no workload compatibility matrix
 - no runtime trace execution under the N-138 current/donor/proxy/server contract
+- no deadline CBS/GRUB runtime compatibility trace under CapSched hooks
 - no cgroup/cpuset/sched-class behavior patch
 - no user ABI compatibility test suite
 
@@ -607,6 +615,7 @@ Open gaps:
 | E-SCHED-COVERAGE-001 | TLA validation | `validation/0109-runtime-coverage-gate-tlc.md` | BUDGET, COMPAT |
 | E-MONITOR-TIMER-001 | TLA validation | `validation/0110-monitor-root-budget-timer-tlc.md` | ACT, BUDGET |
 | E-SCHED-SERVER-EPOCH-001 | TLA validation | `validation/0111-server-epoch-relation-tlc.md` | EXEC, BUDGET |
+| E-SCHED-DL-COMPAT-001 | TLA validation | `validation/0112-deadline-cbs-grub-compat-tlc.md` | EXEC, BUDGET, COMPAT |
 | E-ACT-001 | TLA validation | `validation/0007-domain-monitor-activation-tlc.md` | ACT |
 | E-CLUSTER-001 | Negative/stress record | `validation/0008-cluster-lease-full-systemd-tlc-run.md` | CLUSTER limitation |
 | E-CLUSTER-002 | TLA validation | `validation/0009-cluster-authority-decomposition-tlc.md` | CLUSTER, REVOKE |

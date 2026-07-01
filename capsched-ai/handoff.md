@@ -326,11 +326,28 @@ latest completed risk:
   flags false. Assurance evidence E-SCHED-SERVER-EPOCH-001 supports EXEC-001
   and BUDGET-001 only as model evidence.
 
+latest completed risk:
+  Deadline CBS/GRUB compatibility gate. Analysis/0095, formal/0073,
+  deadline-cbs-grub-compat-v1.json, and validation/0112 now model Linux
+  SCHED_DEADLINE admission, CBS runtime/replenishment, GRUB reclaim, inactive
+  timers, dynamic sched_getattr, and overrun notification as compatibility
+  policy or observation surfaces rather than CapSched authority. Safe TLC
+  passed with 70 generated states, 27 distinct states, 0 states left on queue,
+  depth 10. Unsafe configs produced expected counterexamples for admission
+  minting run authority, CBS replenish minting run authority, GRUB minting
+  monitor budget, DL runtime as monitor budget, inactive timer authority,
+  dynamic sched_getattr authority, overrun notification as enforcement, run
+  without DL admission, run while CBS-throttled, and protection claim without
+  implementation. JSON check confirms 48 source anchors, 11 compatibility
+  obligations, 9 authority rejections, 10 unsafe cases, and 14/14 safety flags
+  false. Assurance evidence E-SCHED-DL-COMPAT-001 supports EXEC-001,
+  BUDGET-001, and COMPAT-001 only as model evidence.
+
 next focused risk:
-  Deadline CBS/GRUB compatibility source refresh before behavior hooks, F1
-  admission-freeze data dependency refresh, monitor timer architecture
+  F1 admission-freeze data dependency refresh, monitor timer architecture
   substrate comparison for x86 VMX-root and arm64 EL2, and integration of the
-  server epoch relation into the wider LinuxSchedulerAuthority model. Do
+  server epoch relation plus deadline CBS/GRUB compatibility into the wider
+  LinuxSchedulerAuthority model. Do
   not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
   integration, async carrier Linux names, budget hooks, or behavior-changing
   patches.

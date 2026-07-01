@@ -358,4 +358,19 @@ Current server epoch relation gate:
   ticket, and protection claim without implementation. No server-epoch field,
   scheduler hook, budget hook, tracepoint ABI, behavior change, or production
   protection is approved.
+
+Current deadline CBS/GRUB compatibility gate:
+  analysis/0095, formal/0073, deadline-cbs-grub-compat-v1.json, and
+  validation/0112 now model Linux SCHED_DEADLINE admission, CBS runtime and
+  replenishment, GRUB reclaim, inactive timers, dynamic sched_getattr, and
+  overrun notification as compatibility policy or observation surfaces rather
+  than CapSched authority. Safe TLC passed with 70 generated states, 27
+  distinct states, and depth 10. Unsafe configs produced expected
+  counterexamples for admission minting run authority, CBS replenish minting
+  run authority, GRUB minting monitor budget, DL runtime as monitor budget,
+  inactive timer authority, dynamic sched_getattr authority, overrun
+  notification as enforcement, run without DL admission, run while
+  CBS-throttled, and protection claim without implementation. No deadline hook,
+  scheduler hook, budget hook, ABI change, tracepoint ABI, behavior change, or
+  production protection is approved.
 ```

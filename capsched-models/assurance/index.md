@@ -137,6 +137,10 @@ Model-supported areas:
 - server epoch relation semantics, checking that server start, stop, replenish,
   parameter update, detach, attach, fair/ext swap, and CPU teardown cannot
   extend or reinterpret stale server-borrow tickets
+- deadline CBS/GRUB compatibility semantics, checking that Linux DL admission,
+  CBS runtime/replenishment, GRUB reclaim, inactive timers, dynamic
+  sched_getattr, and overrun notification constrain or observe scheduling but
+  cannot mint CapSched authority or monitor root budget
 - runtime coverage gate semantics, checking that future trace-only runtime
   coverage cannot be accepted without current, donor, proxy relation, server
   relation, evidence class, and non-claim boundaries, and that sched_stat,

@@ -249,11 +249,23 @@ latest completed focused risk:
   protection claim. JSON: 44 anchors, 13 epoch boundaries, 8 fresh ticket
   requirements, 10 unsafe cases, 13/13 safety flags false.
 
+latest completed focused risk:
+  Deadline CBS/GRUB compatibility gate. Analysis/0095, formal/0073, JSON gate,
+  and validation/0112 model Linux SCHED_DEADLINE admission, CBS
+  runtime/replenishment, GRUB reclaim, inactive timers, dynamic sched_getattr,
+  and overrun notification as compatibility/observation, not authority. Safe
+  TLC: 70 generated states, 27 distinct, depth 10. Unsafe configs reject
+  admission minting run authority, CBS replenish minting run authority, GRUB
+  minting monitor budget, DL runtime as monitor budget, inactive timer
+  authority, dynamic sched_getattr authority, overrun notification as
+  enforcement, run without DL admission, run while CBS-throttled, and
+  protection claim. JSON: 48 anchors, 11 compatibility obligations, 9
+  authority rejections, 10 unsafe cases, 14/14 safety flags false.
+
 next focused risk:
-  Deadline CBS/GRUB compatibility source refresh, F1 admission-freeze data
-  dependency refresh, monitor timer architecture substrate comparison, and
-  server epoch relation integration into the wider LinuxSchedulerAuthority
-  model.
+  F1 admission-freeze data dependency refresh, monitor timer architecture
+  substrate comparison, and server epoch plus deadline CBS/GRUB integration
+  into the wider LinuxSchedulerAuthority model.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

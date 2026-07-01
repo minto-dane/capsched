@@ -74,7 +74,8 @@
         "E-RUN-001",
         "E-SCHED-REFINE-001",
         "E-SCHED-SERVER-001",
-        "E-SCHED-SERVER-EPOCH-001"
+        "E-SCHED-SERVER-EPOCH-001",
+        "E-SCHED-DL-COMPAT-001"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
@@ -83,7 +84,8 @@
         "No scheduler class coverage.",
         "No trace/runtime coverage for current, donor, and proxy execution paths.",
         "No wakeup/migration/remote wake coverage.",
-        "No server epoch field or lifecycle invalidation implementation."
+        "No server epoch field or lifecycle invalidation implementation.",
+        "No deadline CBS/GRUB integration hook or runtime coverage."
       ],
       "forbidden_l0": false
     },
@@ -100,7 +102,8 @@
         "E-SCHED-REFINE-001",
         "E-SCHED-RUNTIME-001",
         "E-SCHED-SERVER-001",
-        "E-SCHED-SERVER-EPOCH-001"
+        "E-SCHED-SERVER-EPOCH-001",
+        "E-SCHED-DL-COMPAT-001"
       ],
       "gaps": [
         "No Linux accounting integration.",
@@ -110,6 +113,7 @@
         "No monitor root budget timer binding to server tickets.",
         "No monitor root budget timer implementation.",
         "No server epoch relation integration with monitor root budget receipts.",
+        "No deadline CBS/GRUB integration with monitor root budget receipts.",
         "No service-domain debit/refund policy."
       ],
       "forbidden_l0": true
@@ -671,11 +675,13 @@
         "E-L0-001",
         "E-L0-002",
         "E-MAP-001",
-        "E-SCHED-COVERAGE-001"
+        "E-SCHED-COVERAGE-001",
+        "E-SCHED-DL-COMPAT-001"
       ],
       "gaps": [
         "No boot/runtime evidence.",
         "No runtime trace execution under the N-138 current/donor/proxy/server contract.",
+        "No deadline CBS/GRUB runtime compatibility trace under CapSched hooks.",
         "No scheduler behavior patch yet.",
         "No workload compatibility matrix."
       ],
@@ -1544,6 +1550,17 @@
         "BUDGET-001"
       ],
       "limitation": "Finite model gate checks server-kind/server-epoch freshness across replenish, swap, stop, parameter update, and CPU teardown; it is not a server-epoch implementation, runtime coverage, monitor verification, or production protection evidence."
+    },
+    {
+      "id": "E-SCHED-DL-COMPAT-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0112-deadline-cbs-grub-compat-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "BUDGET-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite model gate checks Linux SCHED_DEADLINE CBS/GRUB compatibility and authority separation; it is not a deadline hook implementation, runtime coverage, ABI approval, monitor verification, or production protection evidence."
     },
     {
       "id": "E-SCHED-COVERAGE-001",
