@@ -44,6 +44,11 @@ Candidate implementation plans:
   - Purpose: define the no-code Linux/monitor attachment-readiness gate before
     any direct-call carrier, monitor implementation, binary ABI, public
     tracepoint ABI, user ABI, or production protection claim.
+- `0009-direct-call-gap-closure-gate.md`
+  - Status: proposed implementation-facing gate, no Linux patch approved yet.
+  - Purpose: translate the DirectCallGapClosure model into required future
+    Linux/monitor anchors, receipts, forbidden fallbacks, and validation
+    evidence before any direct-call stub or ABI patch.
 
 Validated formal inputs:
 
@@ -102,6 +107,12 @@ Validated formal inputs:
     probes, create public tracepoint ABI, treat observations as authority,
     claim runtime coverage, expose raw handles, claim monitor verification, or
     claim protection.
+- `formal/0055-direct-call-gap-closure-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: high-severity direct-call gaps close only through monitor-owned
+    request image, replay, schema acceptance, response handle, epoch, and revoke
+    ordering; Linux stubs, wrappers, schema queries, timeouts, trace plans, or
+    test hooks cannot stand in for those authorities.
 
 Known future branch names:
 
@@ -129,12 +140,11 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  turn the N-114 DirectCallGapClosure model into an implementation-facing gate
-  that maps request envelope, direct-call entry/backend, schema negotiation,
-  response-handle shadow refresh, and control revoke lane to concrete future
-  Linux/monitor source anchors, required receipts, forbidden fallbacks, and
-  validation evidence. A separate privileged tracefs runbook is required before
-  any tracefs execution, direct-call carrier, or public tracepoint patch.
+  use implementation/0009 as the pre-patch gate for any direct-call carrier
+  proposal. The next work should either source-map candidate inert/no-code
+  Linux-facing surfaces or refine monitor-owned receipt schemas. A separate
+  privileged tracefs runbook is required before any tracefs execution,
+  direct-call carrier, or public tracepoint patch.
 
 Current blocker to behavior-changing Linux patches:
   validation/0080 through validation/0086 improve traceability and model the

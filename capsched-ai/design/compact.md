@@ -106,17 +106,15 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call gap closure model. Analysis/0078 and formal/0055 define that the
-  five high-severity direct-call gap groups close only through monitor-owned
-  request image, replay, schema acceptance, response handle, epoch, and revoke
-  ordering. Validation/0086 safe TLC passed with 6 generated states, 5 distinct
-  states, depth 5. Twelve unsafe configs produced expected counterexamples for
-  pre-closure stubs, Linux-as-authority shortcuts, trace/test overclaims,
-  ABI/behavior approval, monitor verification, and protection claims.
+  Direct-call implementation-facing gap closure gate. Implementation/0009 and
+  direct-call-gap-closure-gate-v1.json map DCGATE-004 through DCGATE-008 to
+  Linux-facing candidate surfaces, monitor-owned requirements, required
+  receipts, forbidden fallbacks, patch preconditions, and pre-patch evidence.
+  This remains no-patch/no-ABI/no-protection evidence.
 
 next focused risk:
-  Turn DirectCallGapClosure into an implementation-facing closure gate before
-  any direct-call stub, ABI, tracepoint, or behavior-changing patch.
+  Use the N-115 gate to source-map candidate inert/no-code Linux-facing
+  direct-call surfaces or refine monitor-owned receipt schemas.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1556,7 +1554,9 @@ next:
   N-112 completed line-only anchor recheck.
   N-113 completed preserved gap/plan classification.
   N-114 completed direct-call gap-closure design/model.
-  N-115 should produce the implementation-facing closure gate.
+  N-115 completed the implementation-facing closure gate.
+  N-116 should source-map candidate inert/no-code Linux-facing surfaces or
+  refine monitor-owned receipt schemas.
 ```
 
 Latest project gap classification:
@@ -1601,5 +1601,22 @@ unsafe counterexamples:
   and protection claims.
 
 next:
-  N-115 implementation-facing closure gate.
+  N-115 completed implementation-facing closure gate.
+```
+
+Latest direct-call implementation gate:
+
+```text
+N-115 completed:
+  implementation/0009
+  implementation/direct-call-gap-closure-gate-v1.json
+
+gate rows:
+  DCGATE-004..008 high-severity direct-call closure rows
+  DCGATE-009 test-only side gate
+  DCGATE-010 trace-only side gate
+
+next:
+  N-116 source-map candidate inert/no-code Linux-facing surfaces or refine
+  monitor-owned receipt schemas.
 ```

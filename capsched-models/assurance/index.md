@@ -149,6 +149,10 @@ Prototype-evidenced areas:
   direct-call gaps close only through monitor-owned request schema, replay,
   response handle, epoch, and revoke-ordering semantics, and not through Linux
   helpers, wrapper returns, schema queries, timeouts, trace plans, or test hooks
+- implementation-facing direct-call gap closure gate with machine-readable
+  DCGATE rows for request envelope, direct-call entry/backend, schema
+  negotiation, response shadow, and control revoke lane; still no Linux patch
+  approved
 
 Open production gaps:
 
@@ -508,6 +512,14 @@ Direct-call gap closure model:
   verification claim, and protection claim. This is a design gate, not a Linux
   implementation or production protection evidence.
 
+Direct-call gap closure implementation gate:
+  implementation/0009 and direct-call-gap-closure-gate-v1.json translate the
+  DirectCallGapClosure model into five pre-patch DCGATE rows. Each row names the
+  Linux-facing candidate surface, monitor-owned requirements, required receipts,
+  forbidden fallbacks, and patch preconditions. This is an implementation-facing
+  checklist, not patch approval, ABI approval, monitor verification, runtime
+  coverage, or protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -542,6 +554,9 @@ Forbidden:
   Do not treat the DirectCallGapClosure TLC pass as direct-call stub
   implementation, ABI approval, monitor verification, runtime coverage, or
   production protection.
+  Do not treat implementation/0009 or direct-call-gap-closure-gate-v1.json as
+  approval to add direct-call stubs, ABI, public tracepoints, or behavior
+  changes.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

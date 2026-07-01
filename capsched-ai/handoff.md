@@ -113,21 +113,18 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call gap closure model. Analysis/0078 and formal/0055 define that the
-  five high-severity direct-call gap groups close only through monitor-owned
-  request image, replay, schema acceptance, response handle, epoch, and revoke
-  ordering. Validation/0086 safe TLC passed with 6 generated states, 5 distinct
-  states, depth 5. Twelve unsafe configs produced expected counterexamples for
-  stub before gap closure, Linux canonical envelope, entry without monitor
-  schema, Linux schema decision, timeout shadow refresh, control revoke bypass,
-  trace plan as coverage, test hook live effect, ABI approval, behavior change,
-  monitor verification claim, and protection claim.
+  Direct-call implementation-facing gap closure gate. Implementation/0009 and
+  direct-call-gap-closure-gate-v1.json map DCGATE-004 through DCGATE-008 to
+  Linux-facing candidate surfaces, monitor-owned requirements, required
+  receipts, forbidden fallbacks, patch preconditions, and required pre-patch
+  evidence. It also records side gates for test-only failure injection and
+  trace-only observation. This is not patch approval, ABI approval, monitor
+  verification, runtime coverage, behavior change, or protection evidence.
 
 next focused risk:
-  Turn the DirectCallGapClosure model into an implementation-facing closure gate
-  that maps each high-severity gap to future Linux/monitor anchors, required
-  receipts, forbidden fallbacks, and validation evidence. Do not add direct-call
-  stubs, ABI, tracepoints, or behavior changes from this model alone.
+  Use the N-115 gate to source-map candidate inert/no-code Linux-facing
+  direct-call surfaces or refine monitor-owned receipt schemas. Do not add
+  direct-call stubs, ABI, tracepoints, or behavior changes from this gate alone.
 ```
 
 That focused VF IRQ model is now checked:
@@ -1730,7 +1727,9 @@ next:
   N-112 completed line-only anchor recheck.
   N-113 completed preserved gap/plan classification.
   N-114 completed direct-call gap-closure design/model.
-  N-115 should turn the model into an implementation-facing closure gate.
+  N-115 completed the implementation-facing closure gate.
+  N-116 should source-map candidate inert/no-code Linux-facing surfaces or
+  refine monitor-owned receipt schemas.
 ```
 
 Latest project gap classification:
@@ -1791,5 +1790,28 @@ unsafe counterexamples:
   protection claim
 
 next:
-  N-115 implementation-facing direct-call closure gate.
+  N-115 completed implementation-facing direct-call closure gate.
+```
+
+Latest direct-call implementation gate:
+
+```text
+N-115 completed:
+  implementation/0009-direct-call-gap-closure-gate.md
+  implementation/direct-call-gap-closure-gate-v1.json
+
+gate rows:
+  DCGATE-004 request envelope
+  DCGATE-005 direct-call entry/backend
+  DCGATE-006 schema negotiation
+  DCGATE-007 response shadow
+  DCGATE-008 control revoke lane
+
+side gates:
+  DCGATE-009 test-only failure injection
+  DCGATE-010 trace-only observation
+
+next:
+  N-116 source-map candidate inert/no-code Linux-facing surfaces or refine
+  monitor-owned receipt schemas.
 ```

@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "status": "proposed_gate_no_patch_approved",
+  "date": "2026-06-30",
+  "source_model": "capsched-models/formal/0055-direct-call-gap-closure-model/DirectCallGapClosure.tla",
+  "validation": "capsched-models/validation/0086-direct-call-gap-closure-tlc.md",
+  "global_non_claims": [
+    "direct-call stubs exist",
+    "ABI is approved",
+    "tracefs runtime coverage occurred",
+    "monitor verification occurred",
+    "behavior-changing Linux patches are approved",
+    "production protection exists"
+  ],
+  "gate_rows": [
+    {
+      "gate_id": "DCGATE-004",
+      "semantic_gap_id": "DCGAP-004-REQUEST-ENVELOPE",
+      "name": "request envelope builder",
+      "linux_surface_status": "future_internal_anchor_candidate",
+      "linux_surface_candidate": "internal request envelope builder",
+      "monitor_owned_requirements": [
+        "canonical request image",
+        "bounded copy source",
+        "request digest",
+        "replay key or nonce",
+        "caller Domain epoch"
+      ],
+      "required_receipts": [
+        "monitor accepted request image or terminal rejection"
+      ],
+      "forbidden_fallbacks": [
+        "Linux-built envelope as canonical monitor authority",
+        "Linux mutable request fields as post-copy authority"
+      ],
+      "patch_precondition": "monitor request schema and bounded-copy semantics modeled and source-anchored"
+    },
+    {
+      "gate_id": "DCGATE-005",
+      "semantic_gap_id": "DCGAP-005-DIRECT-CALL-ENTRY",
+      "name": "direct-call wrapper and arch backend",
+      "linux_surface_status": "future_internal_anchor_candidate",
+      "linux_surface_candidate": "arch-independent wrapper plus arch backend",
+      "monitor_owned_requirements": [
+        "entry and exit register contract",
+        "memory clobber contract",
+        "terminal failure ordering",
+        "replay consume before success"
+      ],
+      "required_receipts": [
+        "monitor entry result",
+        "terminal failure code or response handle"
+      ],
+      "forbidden_fallbacks": [
+        "wrapper return code as monitor approval",
+        "transport completion as receipt"
+      ],
+      "patch_precondition": "arch/backend contract modeled for at least one target architecture and source-anchored as inert or no-code candidate"
+    },
+    {
+      "gate_id": "DCGATE-006",
+      "semantic_gap_id": "DCGAP-006-SCHEMA-NEGOTIATION",
+      "name": "schema negotiation query path",
+      "linux_surface_status": "future_internal_anchor_candidate",
+      "linux_surface_candidate": "internal schema query/cache path",
+      "monitor_owned_requirements": [
+        "accepted schema version",
+        "required feature set",
+        "critical field handling",
+        "downgrade rejection"
+      ],
+      "required_receipts": [
+        "monitor schema acceptance or terminal incompatibility"
+      ],
+      "forbidden_fallbacks": [
+        "Linux-visible schema support as acceptance authority",
+        "ignored unknown critical fields"
+      ],
+      "patch_precondition": "schema compatibility model mapped to the concrete direct-call request/response field set"
+    },
+    {
+      "gate_id": "DCGATE-007",
+      "semantic_gap_id": "DCGAP-007-RESPONSE-SHADOW",
+      "name": "response-handle shadow refresh",
+      "linux_surface_status": "future_internal_anchor_candidate",
+      "linux_surface_candidate": "response-handle shadow/cache path",
+      "monitor_owned_requirements": [
+        "monitor-minted response handle",
+        "response handle generation",
+        "Domain epoch",
+        "timeout meaning",
+        "revoke invalidation ordering"
+      ],
+      "required_receipts": [
+        "monitor response handle",
+        "shadow generation update",
+        "revoke invalidation receipt"
+      ],
+      "forbidden_fallbacks": [
+        "timeout refresh as renewed authority",
+        "cached Linux shadow as monitor response"
+      ],
+      "patch_precondition": "response handle lifetime and revoke ordering modeled with stale-shadow counterexamples"
+    },
+    {
+      "gate_id": "DCGATE-008",
+      "semantic_gap_id": "DCGAP-008-CONTROL-REVOKE",
+      "name": "control revoke lane",
+      "linux_surface_status": "future_internal_anchor_candidate",
+      "linux_surface_candidate": "internal control/revoke lane",
+      "monitor_owned_requirements": [
+        "control priority bound",
+        "replay budget interaction",
+        "Domain epoch check",
+        "revoke completion receipt",
+        "no new response during revoke"
+      ],
+      "required_receipts": [
+        "monitor revoke accepted",
+        "monitor revoke complete"
+      ],
+      "forbidden_fallbacks": [
+        "control priority bypassing replay budget",
+        "control priority bypassing Domain epoch",
+        "Linux revoke state as monitor completion"
+      ],
+      "patch_precondition": "revoke ordering modeled with in-flight request, stale response, and retry cases"
+    }
+  ],
+  "side_gates": [
+    {
+      "gate_id": "DCGATE-009",
+      "name": "test-only failure injection",
+      "rule": "must be test/KUnit-style only and cannot affect live decisions"
+    },
+    {
+      "gate_id": "DCGATE-010",
+      "name": "trace-only observation",
+      "rule": "requires separate tracefs runbook; no runtime coverage or public tracepoint ABI claim"
+    }
+  ],
+  "required_before_patch": [
+    "machine-readable gate row for each DCGATE item",
+    "source-map anchors for proposed Linux-facing surfaces or explicit future gaps",
+    "monitor responsibility statement for every receipt, epoch, replay, schema, response, and revoke field",
+    "failure-mode table for reject, retry, timeout, revoke, stale response, schema mismatch, and replay collision",
+    "validation plan separating source-only, compile-only, trace-only, and monitor-backed evidence",
+    "explicit non-claims for ABI, runtime coverage, monitor verification, and production protection"
+  ],
+  "safety_flags": {
+    "source_only": true,
+    "implementation_approval": false,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "behavior_change": false,
+    "public_tracepoint_abi": false,
+    "protection_claim": false
+  }
+}
