@@ -15,13 +15,13 @@
     {
       "id": "e1000e.adapter",
       "type": "struct e1000_adapter",
-      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:192",
+      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:192 e1000_adapter",
       "authority_note": "Device/service container. It is not caller authority by itself."
     },
     {
       "id": "e1000e.ring",
       "type": "struct e1000_ring",
-      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:130",
+      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:154 e1000_ring",
       "state_fields": [
         "desc",
         "dma",
@@ -39,7 +39,7 @@
     {
       "id": "e1000e.buffer_info",
       "type": "struct e1000_buffer",
-      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:116",
+      "definition": "drivers/net/ethernet/intel/e1000e/e1000.h:132 e1000_buffer",
       "state_fields": [
         "dma",
         "skb",
@@ -55,8 +55,8 @@
   ],
   "data_plane": {
     "tx_submit": {
-      "netdev_op": "drivers/net/ethernet/intel/e1000e/netdev.c:7349",
-      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:5815",
+      "netdev_op": "drivers/net/ethernet/intel/e1000e/netdev.c:7349 e1000_xmit_frame",
+      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:5815 e1000_xmit_frame",
       "dma_map": [
         "drivers/net/ethernet/intel/e1000e/netdev.c:5605",
         "drivers/net/ethernet/intel/e1000e/netdev.c:5640"
@@ -67,7 +67,7 @@
         "drivers/net/ethernet/intel/e1000e/netdev.c:5722",
         "drivers/net/ethernet/intel/e1000e/netdev.c:5740"
       ],
-      "doorbell": "drivers/net/ethernet/intel/e1000e/netdev.c:5954",
+      "doorbell": "drivers/net/ethernet/intel/e1000e/netdev.c:5954 e1000_xmit_frame",
       "batching": [
         "netdev_xmit_more",
         "netif_xmit_stopped",
@@ -76,15 +76,15 @@
       "queuelease_rule": "QueueLease submit check belongs before DMA map, descriptor publication, and tail doorbell."
     },
     "tx_completion": {
-      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:1228",
+      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:1228 e1000_clean_tx_irq",
       "descriptor_done_loop": "drivers/net/ethernet/intel/e1000e/netdev.c:1244",
-      "completion_accounting": "drivers/net/ethernet/intel/e1000e/netdev.c:1279",
+      "completion_accounting": "drivers/net/ethernet/intel/e1000e/netdev.c:1279 e1000_clean_tx_irq",
       "queue_wake": "drivers/net/ethernet/intel/e1000e/netdev.c:1291",
       "service_work_on_hang": "drivers/net/ethernet/intel/e1000e/netdev.c:1305",
       "queuelease_rule": "Completion settles in-flight descriptors and queue accounting; it must not mint new caller authority."
     },
     "rx_completion": {
-      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:927",
+      "entry": "drivers/net/ethernet/intel/e1000e/netdev.c:927 e1000_clean_rx_irq",
       "descriptor_done_loop": "drivers/net/ethernet/intel/e1000e/netdev.c:947",
       "dma_unmap": "drivers/net/ethernet/intel/e1000e/netdev.c:970",
       "stack_delivery": [

@@ -16,7 +16,7 @@
     {
       "id": "ice.vsi",
       "type": "struct ice_vsi",
-      "definition": "drivers/net/ethernet/intel/ice/ice.h:334",
+      "definition": "drivers/net/ethernet/intel/ice/ice.h:334 ice_vsi",
       "fields": [
         "rx_rings",
         "tx_rings",
@@ -32,7 +32,7 @@
     {
       "id": "ice.q_vector",
       "type": "struct ice_q_vector",
-      "definition": "drivers/net/ethernet/intel/ice/ice.h:468",
+      "definition": "drivers/net/ethernet/intel/ice/ice.h:468 ice_q_vector",
       "fields": [
         "napi",
         "rx",
@@ -46,7 +46,7 @@
     {
       "id": "ice.rx_ring",
       "type": "struct ice_rx_ring",
-      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:277",
+      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:277 ice_rx_ring",
       "fields": [
         "page_pool",
         "q_vector",
@@ -63,7 +63,7 @@
     {
       "id": "ice.tx_ring",
       "type": "struct ice_tx_ring",
-      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:349",
+      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:349 ice_tx_ring",
       "fields": [
         "tail",
         "q_vector",
@@ -77,7 +77,7 @@
     {
       "id": "ice.tx_buf",
       "type": "struct ice_tx_buf",
-      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:96",
+      "definition": "drivers/net/ethernet/intel/ice/ice_txrx.h:97 ice_tx_buf",
       "fields": [
         "next_to_watch_or_rs_idx",
         "skb_or_xdp_frame_or_xdp_buff",
@@ -102,7 +102,7 @@
     "skb_tx": {
       "netdev_ops": "drivers/net/ethernet/intel/ice/ice_main.c:9777",
       "ndo_start_xmit": "drivers/net/ethernet/intel/ice/ice_main.c:9780",
-      "entry": "drivers/net/ethernet/intel/ice/ice_txrx.c:2273",
+      "entry": "drivers/net/ethernet/intel/ice/ice_txrx.c:2273 ice_start_xmit",
       "ring_select": "drivers/net/ethernet/intel/ice/ice_txrx.c:2284",
       "frame_ring": "drivers/net/ethernet/intel/ice/ice_txrx.c:2159",
       "driver_trace": "drivers/net/ethernet/intel/ice/ice_txrx.c:2168",
@@ -118,7 +118,7 @@
       "next_to_watch": "drivers/net/ethernet/intel/ice/ice_txrx.c:1508",
       "next_to_use": "drivers/net/ethernet/intel/ice/ice_txrx.c:1514",
       "bql": "drivers/net/ethernet/intel/ice/ice_txrx.c:1520",
-      "doorbell": "drivers/net/ethernet/intel/ice/ice_txrx.c:1567",
+      "doorbell": "drivers/net/ethernet/intel/ice/ice_txrx.c:1567 ice_tx_map",
       "queuelease_rule": "Check QueueLease before DMA map, descriptor publication, next_to_watch publication, and tail doorbell."
     },
     "xdp_tx": {

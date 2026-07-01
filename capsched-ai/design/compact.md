@@ -106,18 +106,18 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call overlay drift checker. Validation/0079 executed
-  check-direct-call-overlay-drift.sh against the N-106 overlay seed. Run
-  20260630T230822Z emitted 41 anchor rows, with 34 ok rows, 7 expected gap/plan
-  rows, 0 path changes, 0 missing patterns, 0 semantic recheck-required rows,
-  and 0 safety-flag violations. The run remained source-only: no Linux
-  modification, no root requirement, no tracefs writes, no probe attachment, no
-  public tracepoint ABI, no authority claim, no monitor verification claim, and
-  no protection claim.
+  Project source-map semantic recheck cleanup. Validation/0084 completed the
+  line-only anchor recheck. Latest runs: project drift
+  build/traceability-project-drift/20260630T235533Z, overlay
+  build/traceability-overlay/20260630T235558Z, semantic queue
+  build/semantic-recheck/20260630T235623Z. Result: 515 anchors, 501 ok rows,
+  14 preserved gaps, 0 missing symbols, 0 missing patterns, 0 line-only rows,
+  0 semantic recheck items, and 0 safety-flag violations. The run remained
+  source-only and made no authority, monitor verification, ABI, runtime
+  coverage, behavior-change, or protection claim.
 
 next focused risk:
-  Generalize direct-call drift checking into a project-level traceability
-  ledger/checker for older source-map families while preserving ADR-0007/0008.
+  Classify the remaining 14 preserved gap/plan rows under ADR-0007/0008.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1490,16 +1490,16 @@ checker:
   capsched-models/traceability/check-project-source-map-drift.sh
 
 run:
-  build/traceability-project-drift/20260630T234623Z
+  build/traceability-project-drift/20260630T235533Z
 
 summary:
   15 machine-readable source-map/ledger artifacts scanned
   515 extracted anchors
-  482 path/pattern-ok rows
+  501 path/pattern/symbol-ok rows
   14 gap rows preserved as gaps
-  1 symbol-missing row requiring semantic recheck
-  1 descriptive pattern-missing row
-  19 line-only semantic-recheck rows
+  0 symbol-missing rows
+  0 descriptive pattern-missing rows
+  0 line-only semantic-recheck rows
   3 unsupported extractions preserved as unsupported
   recursive boolean safety-field scan with 0 violations
   content_source=git_HEAD_objects
@@ -1520,19 +1520,20 @@ N-109 completed:
   build-project-overlay-ledger.sh
 
 run:
-  build/traceability-overlay/20260630T234640Z
+  build/traceability-overlay/20260630T235558Z
 
 summary:
   515 overlay rows
-  482 ok source path/pattern rows
+  501 ok source path/pattern/symbol rows
   14 preserved gap rows
-  19 needs_semantic_recheck rows
+  0 needs_semantic_recheck rows
   explicit match_kind and next_action fields
   semantic_validation=false
   n_series_rewrite=false
 
 next:
   N-110 completed semantic recheck workflow for non-ok/non-gap rows.
+  N-112 completed the active line-only recheck.
 ```
 
 Latest semantic recheck queue:
@@ -1543,15 +1544,16 @@ N-110 completed:
   build-semantic-recheck-queue.sh
 
 run:
-  build/semantic-recheck/20260630T234640Z
+  build/semantic-recheck/20260630T235623Z
 
 summary:
-  19 semantic recheck items
+  0 semantic recheck items
   14 gap-preservation items
-  19 line-only anchors
+  0 line-only anchors
   semantic_validation=false
 
 next:
   N-111 completed first semantic recheck batch.
-  N-112 line-only anchor recheck for remaining rows.
+  N-112 completed line-only anchor recheck.
+  N-113 should classify the remaining 14 preserved gap/plan rows.
 ```

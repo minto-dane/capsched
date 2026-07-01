@@ -129,14 +129,15 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  perform line-only anchor recheck for the remaining 19 queued rows, replacing
-  line numbers with symbols/patterns or explicit path-only downgrades. A
-  separate privileged tracefs runbook is required before any tracefs execution,
-  direct-call carrier, or public tracepoint patch.
+  classify the remaining 14 preserved gap/plan rows after N-112. Each gap must
+  become a future Linux anchor, external monitor/root-management anchor,
+  trace-plan row, or intentionally unsupported extraction before it can affect
+  an implementation gate. A separate privileged tracefs runbook is required
+  before any tracefs execution, direct-call carrier, or public tracepoint patch.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080, validation/0081, and validation/0082 are source-only
-  drift/normalization/queue evidence only, not completed semantic validation,
-  authority, monitor verification, ABI approval, runtime coverage, or production
-  protection evidence.
+  validation/0080 through validation/0084 are source-only
+  drift/normalization/recheck evidence only. They improve traceability, but they
+  are not monitor verification, ABI approval, runtime coverage, behavior-change
+  approval, or production protection evidence.
 ```

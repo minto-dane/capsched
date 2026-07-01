@@ -47,7 +47,7 @@ It does not approve an enforcement hook.
 `struct ice_vsi` owns arrays of rings and vectors:
 
 ```text
-drivers/net/ethernet/intel/ice/ice.h:334
+drivers/net/ethernet/intel/ice/ice.h:334 ice_vsi
   struct ice_vsi
 
 drivers/net/ethernet/intel/ice/ice.h:338-340
@@ -62,7 +62,7 @@ drivers/net/ethernet/intel/ice/ice.h:414
 `struct ice_q_vector` binds NAPI, interrupt index, and lists of Tx/Rx rings:
 
 ```text
-drivers/net/ethernet/intel/ice/ice.h:468
+drivers/net/ethernet/intel/ice/ice.h:468 ice_q_vector
   struct ice_q_vector
 
 drivers/net/ethernet/intel/ice/ice.h:481
@@ -79,7 +79,7 @@ drivers/net/ethernet/intel/ice/ice.h:493
 mutable queue state:
 
 ```text
-drivers/net/ethernet/intel/ice/ice_txrx.h:277
+drivers/net/ethernet/intel/ice/ice_txrx.h:277 ice_rx_ring
   struct ice_rx_ring
 
 drivers/net/ethernet/intel/ice/ice_txrx.h:280-305
@@ -88,7 +88,7 @@ drivers/net/ethernet/intel/ice/ice_txrx.h:280-305
 drivers/net/ethernet/intel/ice/ice_txrx.h:330-340
   next_to_use, next_to_clean, q_index
 
-drivers/net/ethernet/intel/ice/ice_txrx.h:349
+drivers/net/ethernet/intel/ice/ice_txrx.h:349 ice_tx_ring
   struct ice_tx_ring
 
 drivers/net/ethernet/intel/ice/ice_txrx.h:353-377
@@ -138,7 +138,7 @@ The ordinary SKB data plane starts at netdev ops:
 drivers/net/ethernet/intel/ice/ice_main.c:9780
   .ndo_start_xmit = ice_start_xmit
 
-drivers/net/ethernet/intel/ice/ice_txrx.c:2273
+drivers/net/ethernet/intel/ice/ice_txrx.c:2273 ice_start_xmit
   ice_start_xmit(skb, netdev)
 
 drivers/net/ethernet/intel/ice/ice_txrx.c:2284
@@ -189,7 +189,7 @@ drivers/net/ethernet/intel/ice/ice_txrx.c:1514
 drivers/net/ethernet/intel/ice/ice_txrx.c:1520
   __netdev_tx_sent_queue(..., netdev_xmit_more())
 
-drivers/net/ethernet/intel/ice/ice_txrx.c:1567
+drivers/net/ethernet/intel/ice/ice_txrx.c:1567 ice_tx_map
   writel_relaxed(i, tx_ring->tail)
 ```
 

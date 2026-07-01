@@ -13,13 +13,13 @@ capsched/capsched-models/traceability/build-project-overlay-ledger.sh
 Input:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T234623Z/project-anchor-ledger.json
+/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T235533Z/project-anchor-ledger.json
 ```
 
 Run directory:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T234640Z
+/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T235558Z
 ```
 
 Output files:
@@ -38,16 +38,16 @@ metadata.txt
 ```text
 input_rows=515
 overlay_rows=515
-ok_rows=482
+ok_rows=501
 gap_rows=14
 path_changed_rows=0
 symbol_missing_rows=0
 pattern_missing_rows=0
-semantic_recheck_required_rows=19
-needs_semantic_recheck_rows=19
+semantic_recheck_required_rows=0
+needs_semantic_recheck_rows=0
 path_only_rows=67
-line_only_rows=19
-symbol_rows=378
+line_only_rows=0
+symbol_rows=397
 pattern_rows=37
 gap_match_rows=14
 safety_flag_violations=0
@@ -104,6 +104,7 @@ production protection exists
 
 ## Design Consequence
 
-N-109 is satisfied as the first central overlay-ledger normalizer. The next safe
-step is to add a semantic recheck workflow for the 21 rows that need human or
-model-level review before they can inform implementation decisions.
+N-109 is satisfied as the first central overlay-ledger normalizer. The N-112
+rerun shows the active overlay has no line-only or missing-symbol/pattern
+semantic recheck rows. The remaining safe step is preserving and classifying the
+14 gap rows before they can influence implementation decisions.

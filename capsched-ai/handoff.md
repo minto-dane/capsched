@@ -113,19 +113,21 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call overlay drift checker. Validation/0079 executed
-  capsched-models/traceability/check-direct-call-overlay-drift.sh against the
-  N-106 overlay seed. Run 20260630T230822Z emitted 41 anchor rows: 34 ok rows,
-  7 expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic
-  recheck-required rows, and 0 safety-flag violations. The run preserved
-  source_only=true, requires_privilege=false, writes_tracefs=false,
-  attaches_probes=false, modifies_linux=false, public_tracepoint_abi=false,
+  Project source-map semantic recheck cleanup. Validation/0084 completed the
+  line-only anchor recheck after N-111. Latest runs are project drift
+  build/traceability-project-drift/20260630T235533Z, overlay
+  build/traceability-overlay/20260630T235558Z, and semantic queue
+  build/semantic-recheck/20260630T235623Z. Result: 515 anchors, 501 ok rows,
+  14 preserved gap rows, 0 missing symbols, 0 missing patterns, 0 line-only
+  rows, 0 semantic recheck items, 14 gap-preservation items, and 0 safety-flag
+  violations. The run preserved source_only=true, semantic_validation=false,
   authority_claim=false, monitor_verified=false, and protection_claim=false.
 
 next focused risk:
-  Generalize the direct-call drift checker into a project-level traceability
-  ledger/checker that can ingest older source-map families without rewriting
-  N-series history or treating source anchors as authority.
+  Classify the remaining 14 preserved gap/plan rows into future Linux anchors,
+  external monitor/root-management anchors, trace-plan rows, or intentionally
+  unsupported extractions without treating any gap as removed obligation or
+  implementation approval.
 ```
 
 That focused VF IRQ model is now checked:
@@ -1644,16 +1646,16 @@ N-108 completed:
   capsched-models/traceability/check-project-source-map-drift.sh
 
 latest run:
-  build/traceability-project-drift/20260630T234623Z
+  build/traceability-project-drift/20260630T235533Z
 
 result:
   json_artifacts_scanned=15
   anchor_rows=515
-  ok_rows=482
+  ok_rows=501
   gap_rows=14
   symbol_missing_rows=0
   pattern_missing_rows=0
-  semantic_recheck_required_rows=19
+  semantic_recheck_required_rows=0
   unsupported_extraction_rows=3
   safety_flag_violations=0
   content_source=git_HEAD_objects
@@ -1665,9 +1667,14 @@ resolved by N-111:
   inert translation unit was replaced with literal source pattern
   This translation unit is intentionally inert.
 
+resolved by N-112:
+  all remaining line-only anchors in e1000e, ice, and usbnet source maps were
+  replaced with symbol-bearing anchors or corrected symbol-bearing line
+  anchors.
+
 important caution:
-  line-only anchors are semantic_recheck_required, not ok merely because the
-  file exists.
+  bare line-only anchors are semantic_recheck_required, not ok merely because
+  the file exists.
 
 next:
   N-109 completed central overlay ledger normalization.
@@ -1683,15 +1690,15 @@ N-109 completed:
   capsched-models/traceability/build-project-overlay-ledger.sh
 
 latest run:
-  build/traceability-overlay/20260630T234640Z
+  build/traceability-overlay/20260630T235558Z
 
 result:
   overlay_rows=515
-  ok_rows=482
+  ok_rows=501
   gap_rows=14
-  needs_semantic_recheck_rows=19
-  line_only_rows=19
-  symbol_rows=378
+  needs_semantic_recheck_rows=0
+  line_only_rows=0
+  symbol_rows=397
   pattern_rows=37
   n_series_rewrite=false
   semantic_validation=false
@@ -1708,17 +1715,18 @@ N-110 completed:
   capsched-models/traceability/build-semantic-recheck-queue.sh
 
 latest run:
-  build/semantic-recheck/20260630T234640Z
+  build/semantic-recheck/20260630T235623Z
 
 result:
-  semantic_recheck_items=19
+  semantic_recheck_items=0
   gap_items=14
-  line_only_anchor_items=19
+  line_only_anchor_items=0
   symbol_missing_items=0
   pattern_missing_items=0
   semantic_validation=false
 
 next:
   N-111 completed first semantic recheck batch.
-  N-112 line-only anchor recheck for the remaining 19 rows.
+  N-112 completed line-only anchor recheck.
+  N-113 should classify the remaining 14 preserved gap/plan rows.
 ```

@@ -56,15 +56,15 @@ Validation/0080 executed the project-level source-map drift checker against
 legacy machine-readable source maps and the latest direct-call overlay seed:
 
 ```text
-run: build/traceability-project-drift/20260630T234623Z
+run: build/traceability-project-drift/20260630T235533Z
 json_artifacts_scanned=15
 anchor_rows=515
-ok_rows=482
+ok_rows=501
 gap_rows=14
 path_changed_rows=0
 symbol_missing_rows=0
 pattern_missing_rows=0
-semantic_recheck_required_rows=19
+semantic_recheck_required_rows=0
 unsupported_extraction_rows=3
 safety_flag_violations=0
 safety_scan_scope=recursive_boolean_safety_fields_in_scanned_json
@@ -73,10 +73,10 @@ source_path_pattern_only=true
 semantic_validation=false
 ```
 
-N-111 rechecked the previous missing symbol and descriptive pattern rows. The
-19 semantic-recheck rows are now line-only anchors that are not treated as
-evidence merely because the file exists. Gap rows and unsupported rows are
-preserved, not converted into authority or removed obligations.
+N-111 rechecked the previous missing symbol and descriptive pattern rows. N-112
+then replaced the remaining line-only anchors with symbol-bearing anchors.
+Gap rows and unsupported rows are preserved, not converted into authority or
+removed obligations.
 
 The `ok_rows` count is path/pattern drift evidence only; it is not semantic
 validation of those source regions.
@@ -87,19 +87,19 @@ Validation/0081 executed the project overlay ledger normalizer against the
 latest project source-map drift output:
 
 ```text
-run: build/traceability-overlay/20260630T234640Z
+run: build/traceability-overlay/20260630T235558Z
 input_rows=515
 overlay_rows=515
-ok_rows=482
+ok_rows=501
 gap_rows=14
 path_changed_rows=0
 symbol_missing_rows=0
 pattern_missing_rows=0
-semantic_recheck_required_rows=19
-needs_semantic_recheck_rows=19
+semantic_recheck_required_rows=0
+needs_semantic_recheck_rows=0
 path_only_rows=67
-line_only_rows=19
-symbol_rows=378
+line_only_rows=0
+symbol_rows=397
 pattern_rows=37
 gap_match_rows=14
 safety_flag_violations=0
@@ -117,11 +117,11 @@ Validation/0082 executed the semantic recheck queue builder against the latest
 project overlay ledger:
 
 ```text
-run: build/semantic-recheck/20260630T234640Z
+run: build/semantic-recheck/20260630T235623Z
 overlay_rows=515
-semantic_recheck_items=19
+semantic_recheck_items=0
 gap_items=14
-line_only_anchor_items=19
+line_only_anchor_items=0
 symbol_missing_items=0
 pattern_missing_items=0
 gap_or_plan_items=14
@@ -129,9 +129,9 @@ safety_flag_violations=0
 semantic_validation=false
 ```
 
-This is a review queue, not completed semantic review. It exists to prevent
-line-only anchors, missing symbols, descriptive patterns, and preserved gaps
-from being mistaken for implementation evidence.
+This queue is empty for active semantic recheck items. The 14 preserved
+gap/plan rows remain tracked separately so that missing future anchors are not
+mistaken for implementation evidence or silently dropped.
 
 ## Latest Semantic Recheck Batch
 
@@ -145,6 +145,18 @@ inert translation unit -> This translation unit is intentionally inert
 This removed the missing-symbol and missing-pattern rows from the active queue.
 It did not validate runtime behavior, monitor authority, or production
 protection.
+
+Validation/0084 then performed the line-only anchor recheck:
+
+```text
+e1000e source-map line-only anchors -> symbol-bearing anchors
+ice source-map line-only anchors -> symbol-bearing anchors
+usbnet source-map line-only anchors -> symbol-bearing anchors
+```
+
+This removed the remaining active semantic recheck rows. It did not validate
+runtime behavior, monitor authority, ABI approval, behavior-changing Linux
+patches, or production protection.
 
 ## Existing Indexes
 
@@ -161,11 +173,10 @@ Existing indexes already cover artifact lists and some source-anchor inventories
 
 ## Current Gap
 
-The project already has many Linux source maps, especially for scheduler,
-workqueue, io_uring, modern NIC, IOMMU, VFIO, and direct-call readiness work.
-The N-106 direct-call inventory expansion emits `overlay-seed.json` as a local
-source-only seed. What is still missing is a central machine-readable overlay
-ledger that can answer across the whole project:
+The project now has a generated central project overlay ledger for currently
+machine-readable source-map families. What is still missing is a durable,
+checked-in or reproducibly regenerated N-to-artifact-to-claim crosswalk that can
+answer across the whole project:
 
 ```text
 N item

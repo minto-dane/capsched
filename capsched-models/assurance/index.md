@@ -127,18 +127,20 @@ Prototype-evidenced areas:
   expected gap/plan rows, 0 path changes, 0 missing patterns, 0 semantic
   recheck-required rows, and no authority/protection claims
 - source-only project source-map drift checker output with 515 extracted anchor
-  rows, 482 path/pattern-ok rows, 14 preserved gap rows, 0 missing symbols, 0
-  missing patterns, 19 line-only semantic-recheck rows, 3 unsupported
+  rows, 501 path/pattern/symbol-ok rows, 14 preserved gap rows, 0 missing
+  symbols, 0 missing patterns, 0 line-only semantic-recheck rows, 3 unsupported
   extractions, recursive boolean safety-field scan, `content_source=git_HEAD_objects`,
   and explicit `semantic_validation=false`
 - source-only project overlay ledger normalization output with 515 overlay rows,
-  explicit match predicates, 19 rows needing semantic recheck, 14 preserved
+  explicit match predicates, 0 rows needing semantic recheck, 14 preserved
   gaps, `n_series_rewrite=false`, and no authority/protection claims
-- source-only semantic recheck queue output with 19 semantic recheck items, 14
-  gap-preservation items, explicit review classes/actions, and no completed
+- source-only semantic recheck queue output with 0 semantic recheck items, 14
+  gap-preservation items, explicit review classes/actions, and no production
   semantic validation or protection claims
 - source-only semantic recheck batch 1 removed the one missing symbol and one
   missing descriptive pattern from the active queue
+- source-only semantic recheck line-only batch removed the remaining 19
+  line-only anchors from the active queue
 
 Open production gaps:
 
@@ -442,8 +444,8 @@ Direct-call source-only inventory runner:
 Project source-map drift checker:
   validation/0080 executed the project-level source-map drift checker against
   legacy machine-readable source maps and the latest direct-call overlay seed.
-  The run emitted 515 anchor rows: 482 path/pattern-ok rows, 14 preserved gaps,
-  0 missing symbols, 0 missing patterns, 19 line-only semantic-recheck rows,
+  The latest run emitted 515 anchor rows: 501 path/pattern/symbol-ok rows,
+  14 preserved gaps, 0 missing symbols, 0 missing patterns, 0 line-only rows,
   and 3 unsupported extractions. It used
   `git HEAD` objects rather than mutable worktree contents and preserved
   source_only=true, source path/pattern only, semantic_validation=false,
@@ -456,26 +458,27 @@ Project overlay ledger normalizer:
   validation/0081 normalized the project drift rows into 515 central overlay
   rows with explicit source artifact, source context, Linux anchor id, match
   kind, drift status, evidence class, unsupported claims, and next action. It
-  produced 19 `needs_semantic_recheck` rows and 14 preserved gap rows. The run
+  produced 0 `needs_semantic_recheck` rows and 14 preserved gap rows. The run
   preserved source_only=true, semantic_validation=false, n_series_rewrite=false,
   authority_claim=false, monitor_verified=false, and protection_claim=false.
   This is traceability normalization evidence only, not implementation approval
   or protection evidence.
 
 Semantic recheck queue:
-  validation/0082 built a queue from the central overlay ledger: 19 semantic
-  recheck items and 14 gap-preservation items. The semantic recheck items are
-  19 line-only anchors.
+  validation/0082 built a queue from the central overlay ledger: 0 semantic
+  recheck items and 14 gap-preservation items after N-112.
   The queue records recommended review actions and forbidden claims. This is
-  workflow preparation only, not completed semantic validation or protection
+  workflow preparation only, not production semantic validation or protection
   evidence.
 
 Semantic recheck batch 1:
   validation/0083 rechecked the high-priority missing symbol and descriptive
   pattern rows. `ice_alloc_vfs` was updated to `ice_create_vf_entries`, and
   `inert translation unit` was replaced with the literal source pattern
-  `This translation unit is intentionally inert`. This is source-anchor cleanup,
-  not runtime coverage, monitor verification, or protection evidence.
+  `This translation unit is intentionally inert`. validation/0084 then
+  rechecked the remaining line-only anchors. The active semantic recheck queue
+  is now empty, with 14 preserved gap/plan rows remaining. This is source-anchor
+  cleanup, not runtime coverage, monitor verification, or protection evidence.
 
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
@@ -503,7 +506,8 @@ Forbidden:
   coverage, monitor verification, or permission to add public tracepoint ABI.
   Do not treat project source-map drift `ok_rows` as semantic validation or
   production protection evidence.
-  Do not treat the semantic recheck queue as completed semantic review.
+  Do not treat an empty semantic recheck queue as production semantic review or
+  as resolution of preserved gap/plan rows.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

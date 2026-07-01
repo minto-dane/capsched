@@ -13,7 +13,7 @@ capsched/capsched-models/traceability/check-project-source-map-drift.sh
 Run directory:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T234623Z
+/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T235533Z
 ```
 
 Output files:
@@ -32,12 +32,12 @@ metadata.txt
 ```text
 json_artifacts_scanned=15
 anchor_rows=515
-ok_rows=482
+ok_rows=501
 gap_rows=14
 path_changed_rows=0
 symbol_missing_rows=0
 pattern_missing_rows=0
-semantic_recheck_required_rows=19
+semantic_recheck_required_rows=0
 unsupported_extraction_rows=3
 safety_flag_violations=0
 safety_scan_scope=recursive_boolean_safety_fields_in_scanned_json
@@ -69,15 +69,17 @@ The checker ingested existing machine-readable source-map and ledger artifacts,
 plus the latest direct-call overlay seed, and produced a central source-anchor
 drift ledger.
 
-The 482 ok rows mean the mechanically extracted source paths and, where
+The 501 ok rows mean the mechanically extracted source paths and, where
 precise enough, symbols or patterns still match the current Linux tree.
 They do not mean the source semantics were validated.
 
 The 14 gap rows are preserved gaps or trace-plan rows. They are not removed
 obligations.
 
-The 19 semantic-recheck rows are line-only anchors. The checker now refuses to
-turn a historical line number into semantic evidence without a symbol or pattern.
+N-112 resolved the previous 19 line-only semantic-recheck rows by replacing
+them with symbol-bearing source anchors or corrected symbol-bearing line
+anchors. The checker still refuses to turn a bare historical line number into
+semantic evidence.
 
 The previous high-priority missing symbol and descriptive-pattern rows were
 rechecked in N-111 and now match current source:
@@ -115,21 +117,16 @@ production protection exists
 
 N-108 is satisfied as a first project-level, source-only drift checker.
 
-The next safe step is to normalize legacy source-map families into a central
-overlay ledger that records:
+The latest rerun after N-112 confirms that current source-map rows no longer
+contain line-only semantic recheck items. The remaining safe step is to classify
+the preserved gap rows without treating them as removed obligations:
 
 ```text
-artifact id
-semantic id
-Linux anchor id
-recorded commit/blob where available
-current drift status
-match predicate type
-evidence class
-explicit unsupported claims
-required semantic recheck
+future Linux anchor gap
+future monitor/root-management external anchor
+trace-plan row
+obsolete or intentionally unsupported extraction
 ```
 
-That normalization should preserve ADR-0007: N-series history remains
-chronological, and interpretation lives in overlay rows rather than by rewriting
-old N records.
+ADR-0007 still applies: N-series history remains chronological, and
+interpretation lives in overlay rows rather than by rewriting old N records.

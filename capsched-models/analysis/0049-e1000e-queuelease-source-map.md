@@ -45,7 +45,7 @@ No behavior-changing network or device hook is approved by this note.
 The main container is `struct e1000_adapter`:
 
 ```text
-drivers/net/ethernet/intel/e1000e/e1000.h:192
+drivers/net/ethernet/intel/e1000e/e1000.h:192 e1000_adapter
   struct e1000_adapter
 
 important fields:
@@ -104,14 +104,14 @@ work_struct:
 The netdev operation is:
 
 ```text
-drivers/net/ethernet/intel/e1000e/netdev.c:7349
+drivers/net/ethernet/intel/e1000e/netdev.c:7349 e1000_xmit_frame
   .ndo_start_xmit = e1000_xmit_frame
 ```
 
 The submit path begins at:
 
 ```text
-drivers/net/ethernet/intel/e1000e/netdev.c:5815
+drivers/net/ethernet/intel/e1000e/netdev.c:5815 e1000_xmit_frame
   e1000_xmit_frame(skb, netdev)
 ```
 
@@ -156,7 +156,7 @@ drivers/net/ethernet/intel/e1000e/netdev.c:5735-5742
 Finally, the driver may ring the device doorbell by writing the tail register:
 
 ```text
-drivers/net/ethernet/intel/e1000e/netdev.c:5954
+drivers/net/ethernet/intel/e1000e/netdev.c:5954 e1000_xmit_frame
   writel(tx_ring->next_to_use, tx_ring->tail)
 ```
 
@@ -184,7 +184,7 @@ The workqueue is not the submit authority root here. The ring is.
 TX completion is reclaimed by `e1000_clean_tx_irq()`:
 
 ```text
-drivers/net/ethernet/intel/e1000e/netdev.c:1228
+drivers/net/ethernet/intel/e1000e/netdev.c:1228 e1000_clean_tx_irq
   e1000_clean_tx_irq(tx_ring)
 ```
 
@@ -197,7 +197,7 @@ drivers/net/ethernet/intel/e1000e/netdev.c:1244-1277
   e1000_put_txbuf()
   tx_ring->next_to_clean = i
 
-drivers/net/ethernet/intel/e1000e/netdev.c:1279
+drivers/net/ethernet/intel/e1000e/netdev.c:1279 e1000_clean_tx_irq
   netdev_completed_queue(netdev, pkts_compl, bytes_compl)
 
 drivers/net/ethernet/intel/e1000e/netdev.c:1289-1292
@@ -230,7 +230,7 @@ RX completion is not caller-derived. The device writes descriptors and the
 driver consumes them in NAPI:
 
 ```text
-drivers/net/ethernet/intel/e1000e/netdev.c:927
+drivers/net/ethernet/intel/e1000e/netdev.c:927 e1000_clean_rx_irq
   e1000_clean_rx_irq(rx_ring, work_done, budget)
 
 drivers/net/ethernet/intel/e1000e/netdev.c:947-953

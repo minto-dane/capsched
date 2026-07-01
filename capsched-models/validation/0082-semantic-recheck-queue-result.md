@@ -19,13 +19,13 @@ capsched/capsched-models/traceability/semantic-recheck-workflow-v1.md
 Input:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T234640Z/project-overlay-ledger.json
+/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T235558Z/project-overlay-ledger.json
 ```
 
 Run directory:
 
 ```text
-/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260630T234640Z
+/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260630T235623Z
 ```
 
 Output files:
@@ -42,9 +42,9 @@ metadata.txt
 
 ```text
 overlay_rows=515
-semantic_recheck_items=19
+semantic_recheck_items=0
 gap_items=14
-line_only_anchor_items=19
+line_only_anchor_items=0
 symbol_missing_items=0
 pattern_missing_items=0
 gap_or_plan_items=14
@@ -66,16 +66,17 @@ semantic_validation=false
 The queue separates:
 
 ```text
-19 semantic recheck items:
-  19 line-only anchors
+0 semantic recheck items:
+  no active line-only, missing-symbol, or missing-pattern rows
 
 14 gap preservation items:
   future direct-call gaps
   trace-plan rows
 ```
 
-This makes the next review step explicit and prevents weak anchors from being
-silently counted as implementation evidence.
+This makes the next review step explicit: the semantic recheck queue is empty,
+and only preserved gap/plan rows remain. Those gaps are still obligations or
+future anchors, not implementation evidence.
 
 ## Non-Claims
 
@@ -93,5 +94,5 @@ production protection exists
 ## Design Consequence
 
 N-110 is satisfied as a queue/workflow preparation step. N-111 removed the two
-high-priority missing-symbol/pattern items; the remaining queue is line-only
-anchor recheck plus gap preservation.
+high-priority missing-symbol/pattern items, and N-112 removed the remaining
+line-only anchor recheck items. The remaining queue is gap preservation only.

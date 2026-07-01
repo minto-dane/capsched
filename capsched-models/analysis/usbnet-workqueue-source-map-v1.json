@@ -15,7 +15,7 @@
     {
       "id": "usbnet.struct_usbnet",
       "type": "struct usbnet",
-      "definition": "include/linux/usb/usbnet.h:20",
+      "definition": "include/linux/usb/usbnet.h:20 usbnet",
       "state_fields": [
         "udev",
         "intf",
@@ -38,7 +38,7 @@
     {
       "id": "usbnet.skb_data",
       "type": "struct skb_data",
-      "definition": "include/linux/usb/usbnet.h:245",
+      "definition": "include/linux/usb/usbnet.h:245 skb_data",
       "state_fields": [
         "urb",
         "dev",
@@ -180,7 +180,7 @@
   ],
   "caller_derived_submit_path": {
     "id": "usbnet.start_xmit",
-    "entry": "drivers/net/usb/usbnet.c:1395",
+    "entry": "drivers/net/usb/usbnet.c:1395 usbnet_start_xmit",
     "effects": [
       "tx_fixup",
       "usb_alloc_urb",

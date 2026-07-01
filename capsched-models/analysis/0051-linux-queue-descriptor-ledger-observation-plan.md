@@ -164,7 +164,7 @@ net/core/dev.c:4831
 net/core/dev.c:3888
   trace_net_dev_start_xmit(skb, dev)
 
-drivers/net/ethernet/intel/e1000e/netdev.c:5815
+drivers/net/ethernet/intel/e1000e/netdev.c:5815 e1000_xmit_frame
   e1000_xmit_frame(skb, netdev)
 
 drivers/net/ethernet/intel/e1000e/netdev.c:5585
@@ -185,16 +185,16 @@ drivers/net/ethernet/intel/e1000e/netdev.c:5719-5722
 drivers/net/ethernet/intel/e1000e/netdev.c:5742
   tx_ring->next_to_use = i
 
-drivers/net/ethernet/intel/e1000e/netdev.c:5954
+drivers/net/ethernet/intel/e1000e/netdev.c:5954 e1000_xmit_frame
   writel(tx_ring->next_to_use, tx_ring->tail)
 
-drivers/net/ethernet/intel/e1000e/netdev.c:1228
+drivers/net/ethernet/intel/e1000e/netdev.c:1228 e1000_clean_tx_irq
   e1000_clean_tx_irq(tx_ring)
 
 drivers/net/ethernet/intel/e1000e/netdev.c:1277
   tx_ring->next_to_clean = i
 
-drivers/net/ethernet/intel/e1000e/netdev.c:1279
+drivers/net/ethernet/intel/e1000e/netdev.c:1279 e1000_clean_tx_irq
   netdev_completed_queue(netdev, pkts_compl, bytes_compl)
 
 drivers/net/ethernet/intel/e1000e/netdev.c:2668

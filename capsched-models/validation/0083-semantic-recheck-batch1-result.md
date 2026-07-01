@@ -66,6 +66,9 @@ only missing descriptive pattern from the source-only drift ledger.
 The remaining semantic recheck queue consists of line-only anchors. Those still
 need replacement with symbol/pattern anchors or explicit path-only downgrades.
 
+N-112 completed that line-only follow-up; see validation/0084 for the current
+post-recheck queue state.
+
 ## Non-Claims
 
 This run does not support:
