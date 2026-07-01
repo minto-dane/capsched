@@ -129,16 +129,16 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  define a direct-call gap-closure design/model for the five high-severity
-  future Linux/internal anchor groups classified by validation/0085:
-  request envelope, direct-call entry/backend, schema negotiation,
-  response-handle shadow refresh, and control revoke lane. A separate
-  privileged tracefs runbook is required before any tracefs execution,
-  direct-call carrier, or public tracepoint patch.
+  turn the N-114 DirectCallGapClosure model into an implementation-facing gate
+  that maps request envelope, direct-call entry/backend, schema negotiation,
+  response-handle shadow refresh, and control revoke lane to concrete future
+  Linux/monitor source anchors, required receipts, forbidden fallbacks, and
+  validation evidence. A separate privileged tracefs runbook is required before
+  any tracefs execution, direct-call carrier, or public tracepoint patch.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0085 are source-only
-  drift/normalization/recheck/classification evidence only. They improve
-  traceability, but they are not monitor verification, ABI approval, runtime
-  coverage, behavior-change approval, or production protection evidence.
+  validation/0080 through validation/0086 improve traceability and model the
+  gap-closure gate, but they are not Linux stub implementation, monitor
+  verification, ABI approval, runtime coverage, behavior-change approval, or
+  production protection evidence.
 ```

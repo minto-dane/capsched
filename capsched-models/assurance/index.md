@@ -145,6 +145,10 @@ Prototype-evidenced areas:
   gap/plan rows into 7 semantic direct-call gap groups: 5 high-severity future
   Linux/internal anchors, 1 test-only failure-injection surface, and 1
   trace-only observation plan
+- DirectCallGapClosure model support for the rule that high-severity
+  direct-call gaps close only through monitor-owned request schema, replay,
+  response handle, epoch, and revoke-ordering semantics, and not through Linux
+  helpers, wrapper returns, schema queries, timeouts, trace plans, or test hooks
 
 Open production gaps:
 
@@ -494,6 +498,16 @@ Project gap classification:
   classification, not gap resolution, implementation approval, runtime
   coverage, monitor verification, or protection evidence.
 
+Direct-call gap closure model:
+  validation/0086 checked formal/0055 DirectCallGapClosure. The safe model
+  passed with 6 generated states, 5 distinct states, and depth 5. Unsafe
+  configs produced expected counterexamples for stub before gap closure,
+  Linux-built canonical envelope, entry without monitor schema, Linux schema
+  decision, timeout shadow refresh, control revoke bypass, trace plan as
+  coverage, test hook live effect, ABI approval, behavior change, monitor
+  verification claim, and protection claim. This is a design gate, not a Linux
+  implementation or production protection evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -525,6 +539,9 @@ Forbidden:
   Do not treat project gap classification as gap resolution, direct-call ABI
   approval, monitor verification, or permission to add behavior-changing
   direct-call stubs.
+  Do not treat the DirectCallGapClosure TLC pass as direct-call stub
+  implementation, ABI approval, monitor verification, runtime coverage, or
+  production protection.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

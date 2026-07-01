@@ -83,6 +83,7 @@ Updated: 2026-06-30
 | 0075 | Draft semantic schema candidate with model gate | Direct-Call Semantic Schema and Compatibility |
 | 0076 | Draft no-code attachment/readiness map with model gate | Direct-Call Attachment Readiness Map |
 | 0077 | Draft no-code inventory contract with model gate | Direct-Call Trace/Source Inventory Contract |
+| 0078 | Draft direct-call gap closure design with model gate | Direct-Call Gap Closure Design |
 
 ## Planned Analysis Notes
 

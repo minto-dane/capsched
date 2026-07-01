@@ -113,22 +113,21 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Project gap classification. Validation/0085 ran
-  capsched-models/traceability/classify-project-gaps.sh. Run
-  build/traceability-gap-classification/20260701T000823Z classified the 14
-  preserved gap/plan rows into 7 semantic direct-call gap groups: 5
-  high-severity future Linux/internal anchors, 1 test-only failure-injection
-  surface, and 1 trace-only observation plan. Result: duplicate_groups=7,
-  unknown_gap_rows=0, safety_flag_violations=0, source_only=true,
-  semantic_validation=false, implementation_approval=false,
-  authority_claim=false, monitor_verified=false, and protection_claim=false.
+  Direct-call gap closure model. Analysis/0078 and formal/0055 define that the
+  five high-severity direct-call gap groups close only through monitor-owned
+  request image, replay, schema acceptance, response handle, epoch, and revoke
+  ordering. Validation/0086 safe TLC passed with 6 generated states, 5 distinct
+  states, depth 5. Twelve unsafe configs produced expected counterexamples for
+  stub before gap closure, Linux canonical envelope, entry without monitor
+  schema, Linux schema decision, timeout shadow refresh, control revoke bypass,
+  trace plan as coverage, test hook live effect, ABI approval, behavior change,
+  monitor verification claim, and protection claim.
 
 next focused risk:
-  Define a direct-call gap-closure design/model for the five high-severity
-  future Linux/internal anchor groups: request envelope, direct-call
-  entry/backend, schema negotiation, response-handle shadow refresh, and control
-  revoke lane. Do not add direct-call stubs, ABI, tracepoints, or behavior
-  changes from classification evidence alone.
+  Turn the DirectCallGapClosure model into an implementation-facing closure gate
+  that maps each high-severity gap to future Linux/monitor anchors, required
+  receipts, forbidden fallbacks, and validation evidence. Do not add direct-call
+  stubs, ABI, tracepoints, or behavior changes from this model alone.
 ```
 
 That focused VF IRQ model is now checked:
@@ -1730,8 +1729,8 @@ next:
   N-111 completed first semantic recheck batch.
   N-112 completed line-only anchor recheck.
   N-113 completed preserved gap/plan classification.
-  N-114 should define direct-call gap-closure design/model for the five
-  high-severity future Linux/internal anchor groups.
+  N-114 completed direct-call gap-closure design/model.
+  N-115 should turn the model into an implementation-facing closure gate.
 ```
 
 Latest project gap classification:
@@ -1756,5 +1755,41 @@ result:
   implementation_approval=false
 
 next:
-  N-114 direct-call gap-closure design/model before any stub/ABI/patch.
+  N-114 completed direct-call gap-closure design/model.
+```
+
+Latest direct-call gap closure model:
+
+```text
+N-114 completed:
+  analysis/0078-direct-call-gap-closure-design.md
+  formal/0055-direct-call-gap-closure-model/DirectCallGapClosure.tla
+
+validation:
+  validation/0086-direct-call-gap-closure-tlc.md
+
+logs:
+  build/tlc/direct-call-gap-closure-20260701T001620Z
+
+safe TLC:
+  6 generated states
+  5 distinct states
+  depth 5
+
+unsafe counterexamples:
+  stub before gap closure
+  Linux canonical envelope
+  entry without monitor schema
+  Linux schema decision
+  timeout shadow refresh
+  control revoke bypass
+  trace plan as coverage
+  test hook live effect
+  ABI approval
+  behavior change
+  monitor verification claim
+  protection claim
+
+next:
+  N-115 implementation-facing direct-call closure gate.
 ```

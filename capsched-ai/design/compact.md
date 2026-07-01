@@ -106,19 +106,17 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Project gap classification. Validation/0085 ran classify-project-gaps.sh.
-  Run build/traceability-gap-classification/20260701T000823Z classified 14
-  preserved gap/plan rows into 7 semantic direct-call gap groups: 5
-  high-severity future Linux/internal anchors, 1 test-only failure-injection
-  surface, and 1 trace-only observation plan. No unknown gaps or safety-flag
-  violations. The run remained source-only and made no authority, monitor
-  verification, ABI, runtime coverage, behavior-change, implementation
-  approval, or protection claim.
+  Direct-call gap closure model. Analysis/0078 and formal/0055 define that the
+  five high-severity direct-call gap groups close only through monitor-owned
+  request image, replay, schema acceptance, response handle, epoch, and revoke
+  ordering. Validation/0086 safe TLC passed with 6 generated states, 5 distinct
+  states, depth 5. Twelve unsafe configs produced expected counterexamples for
+  pre-closure stubs, Linux-as-authority shortcuts, trace/test overclaims,
+  ABI/behavior approval, monitor verification, and protection claims.
 
 next focused risk:
-  Define a direct-call gap-closure design/model for the five high-severity
-  future Linux/internal anchor groups before any stub, ABI, tracepoint, or
-  behavior-changing patch.
+  Turn DirectCallGapClosure into an implementation-facing closure gate before
+  any direct-call stub, ABI, tracepoint, or behavior-changing patch.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1557,7 +1555,8 @@ next:
   N-111 completed first semantic recheck batch.
   N-112 completed line-only anchor recheck.
   N-113 completed preserved gap/plan classification.
-  N-114 should define direct-call gap-closure design/model.
+  N-114 completed direct-call gap-closure design/model.
+  N-115 should produce the implementation-facing closure gate.
 ```
 
 Latest project gap classification:
@@ -1580,5 +1579,27 @@ summary:
   implementation_approval=false
 
 next:
-  N-114 direct-call gap-closure design/model.
+  N-114 completed direct-call gap-closure design/model.
+```
+
+Latest direct-call gap closure model:
+
+```text
+N-114 completed:
+  analysis/0078
+  formal/0055 DirectCallGapClosure
+  validation/0086
+
+safe TLC:
+  6 generated states
+  5 distinct states
+  depth 5
+
+unsafe counterexamples:
+  12 expected violations covering pre-closure stubs, Linux-as-authority
+  shortcuts, trace/test overclaims, ABI/behavior approval, monitor verification,
+  and protection claims.
+
+next:
+  N-115 implementation-facing closure gate.
 ```

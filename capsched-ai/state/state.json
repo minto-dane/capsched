@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "project-gap-classification-completed",
+    "current_phase": "direct-call-gap-closure-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-113 completed preserved project gap classification. classify-project-gaps.sh grouped the remaining 14 gap/plan rows into 7 semantic direct-call gap groups: 5 high-severity future Linux/internal anchors, 1 test-only failure-injection surface, and 1 trace-only observation plan. Run: build/traceability-gap-classification/20260701T000823Z. Result: duplicate_groups=7, unknown_gap_rows=0, safety_flag_violations=0, source_only=true, semantic_validation=false, implementation_approval=false, and no Linux behavior change, authority, monitor verification, runtime coverage, ABI, or protection claim. Next focused risk is N-114: define direct-call gap-closure design/model for the five high-severity future Linux/internal anchor groups before any stub, ABI, tracepoint, or behavior-changing patch.",
+    "current_focus": "N-114 completed the direct-call gap-closure design/model. analysis/0078 and formal/0055 DirectCallGapClosure define that the five high-severity direct-call gaps close only through monitor-owned request image, replay, schema acceptance, response handle, epoch, and revoke ordering. validation/0086 safe TLC passed with 6 generated states, 5 distinct states, depth 5; 12 unsafe configs produced expected counterexamples for stub before closure, Linux canonical envelope, entry without monitor schema, Linux schema decision, timeout shadow refresh, control revoke bypass, trace plan as coverage, test hook live effect, ABI approval, behavior change, monitor verification, and protection claim. Next focused risk is N-115: turn this model into an implementation-facing direct-call closure gate before any stub, ABI, tracepoint, or behavior-changing patch.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -504,7 +504,12 @@
     "project_gap_classification_workflow": "capsched/capsched-models/traceability/gap-classification-workflow-v1.md",
     "project_gap_classification_builder": "capsched/capsched-models/traceability/classify-project-gaps.sh",
     "project_gap_classification_result": "capsched/capsched-models/validation/0085-project-gap-classification-result.md",
-    "project_gap_classification_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-gap-classification/20260701T000823Z"
+    "project_gap_classification_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-gap-classification/20260701T000823Z",
+    "direct_call_gap_closure_design": "capsched/capsched-models/analysis/0078-direct-call-gap-closure-design.md",
+    "direct_call_gap_closure_model": "capsched/capsched-models/formal/0055-direct-call-gap-closure-model/README.md",
+    "direct_call_gap_closure_tla": "capsched/capsched-models/formal/0055-direct-call-gap-closure-model/DirectCallGapClosure.tla",
+    "direct_call_gap_closure_validation": "capsched/capsched-models/validation/0086-direct-call-gap-closure-tlc.md",
+    "direct_call_gap_closure_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-gap-closure-20260701T001620Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2064,9 +2069,19 @@
     {
       "id": "N-114",
       "text": "Define a direct-call gap-closure design/model for the five high-severity future Linux/internal anchor groups from N-113 before any direct-call stub, ABI, tracepoint, or behavior-changing Linux patch.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-113"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Added analysis/0078 Direct-Call Gap Closure Design and formal/0055 DirectCallGapClosure. Safe TLC passed with 6 generated states, 5 distinct states, and depth 5. Twelve unsafe configs produced expected counterexamples for Linux stub before gap closure, Linux-built canonical envelope, entry without monitor schema, Linux schema decision, timeout shadow refresh, control revoke bypass, trace plan as runtime coverage, test hook live effect, ABI approval, behavior change, monitor verification claim, and protection claim. This is a design/model gate only, not Linux implementation, ABI approval, monitor verification, runtime coverage, or production protection."
+    },
+    {
+      "id": "N-115",
+      "text": "Turn the N-114 DirectCallGapClosure model into an implementation-facing direct-call closure gate mapping each high-severity gap to future Linux/monitor anchors, required receipts, forbidden fallbacks, and validation evidence.",
+      "status": "pending",
+      "blocked_by": [
+        "N-114"
       ]
     }
   ],
