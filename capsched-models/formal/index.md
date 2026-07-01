@@ -75,13 +75,13 @@ Updated: 2026-07-01
 | 0067 | Checked with safe pass and expected unsafe counterexamples | Scheduler Authority Refinement Gate Model |
 | 0068 | Checked with safe pass and expected unsafe counterexamples | Runtime Charge Subject Model |
 | 0069 | Checked with safe pass and expected unsafe counterexamples | Scheduler Server Ticket Model |
+| 0070 | Checked with safe pass and expected unsafe counterexamples | Runtime Coverage Gate Model |
 
 ## Planned
 
-1. Trace-only runtime coverage gate for current/donor/proxy/server paths.
-2. Monitor root budget timer event model.
-3. Server epoch relation to replenish/swap/stop in a larger scheduler authority model.
-4. Deadline CBS/GRUB compatibility source refresh before behavior hooks.
-5. F1 admission-freeze data dependency refresh against current upstream.
-6. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
+1. Monitor root budget timer event model.
+2. Server epoch relation to replenish/swap/stop in a larger scheduler authority model.
+3. Deadline CBS/GRUB compatibility source refresh before behavior hooks.
+4. F1 admission-freeze data dependency refresh against current upstream.
+5. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

@@ -97,6 +97,7 @@ Updated: 2026-07-01
 | 0089 | Draft model gate with TLC-backed design filter | Scheduler Authority Refinement Gate |
 | 0090 | Draft model gate with TLC-backed design filter | Runtime Charge Subject Map |
 | 0091 | Draft model gate with TLC-backed design filter | Scheduler Server Ticket Map |
+| 0092 | Draft trace-only coverage gate with TLC-backed design filter | Runtime Coverage Gate |
 
 ## Planned Analysis Notes
 
@@ -159,3 +160,4 @@ Updated: 2026-07-01
 | `scheduler-authority-refinement-gate-v1.json` | Draft model gate | Machine-readable TASK_WAKING, donor/current/proxy budget, and selected-state refinement gate for N-135 |
 | `runtime-charge-subject-v1.json` | Draft model gate | Machine-readable runtime charge subject map for N-136 |
 | `scheduler-server-ticket-v1.json` | Draft model gate | Machine-readable scheduler server-ticket source map and model contract for N-137 |
+| `runtime-coverage-gate-v1.json` | Draft trace-only coverage gate | Machine-readable current/donor/proxy/server runtime coverage contract for N-138 |

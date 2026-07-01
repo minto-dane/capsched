@@ -319,4 +319,17 @@ Current scheduler server-ticket gate:
   authority, SCX slice as root authority, server replenish without epoch,
   server stop with live ticket, and lower task without authority. No scheduler
   hook, budget hook, or behavior-changing patch is approved.
+
+Current runtime coverage gate:
+  analysis/0092, formal/0070, runtime-coverage-gate-v1.json, and
+  validation/0109 now define the trace-only coverage contract for
+  current/donor/proxy/server runtime paths. Safe TLC passed with 49 generated
+  states, 29 distinct states, and depth 6. Unsafe configs produced expected
+  counterexamples for missing current, missing donor, missing proxy relation,
+  missing server coverage, missing evidence class, sched_stat_runtime as
+  authority, remote tick as proxy coverage, trace evidence as protection,
+  server lifecycle-only coverage, and class runtime as root budget evidence.
+  No tracefs execution, tracepoint, public ABI, budget hook, scheduler hook,
+  runtime coverage result, monitor verification, behavior change, or production
+  protection is approved.
 ```

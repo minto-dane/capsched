@@ -134,6 +134,11 @@ Model-supported areas:
   requires a server-borrow ticket, fresh server epoch, live server state, lower
   task authority, and monitor root budget, while DL server runtime, RT
   bandwidth, and sched_ext slice state are not root authority
+- runtime coverage gate semantics, checking that future trace-only runtime
+  coverage cannot be accepted without current, donor, proxy relation, server
+  relation, evidence class, and non-claim boundaries, and that sched_stat,
+  remote tick, server lifecycle, class runtime, and trace evidence do not become
+  authority or production protection
 
 Prototype-evidenced areas:
 

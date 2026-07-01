@@ -91,12 +91,14 @@
       "claim": "Domain CPU use and service execution on behalf of callers are bounded by non-forgeable root budgets and caller-reserved BudgetTickets.",
       "evidence": [
         "E-BUD-001",
+        "E-SCHED-COVERAGE-001",
         "E-SCHED-REFINE-001",
         "E-SCHED-RUNTIME-001",
         "E-SCHED-SERVER-001"
       ],
       "gaps": [
         "No Linux accounting integration.",
+        "No actual trace runtime coverage run under the N-138 contract.",
         "No exact current/donor/proxy runtime charge equation across CFS, RT, deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution.",
         "No monitor root budget timer binding to server tickets.",
         "No monitor root budget timer.",
@@ -660,12 +662,14 @@
       "evidence": [
         "E-L0-001",
         "E-L0-002",
-        "E-MAP-001"
+        "E-MAP-001",
+        "E-SCHED-COVERAGE-001"
       ],
       "gaps": [
         "No boot/runtime evidence.",
-        "No workload compatibility matrix.",
-        "No scheduler behavior patch yet."
+        "No runtime trace execution under the N-138 current/donor/proxy/server contract.",
+        "No scheduler behavior patch yet.",
+        "No workload compatibility matrix."
       ],
       "forbidden_l0": false
     },
@@ -1522,6 +1526,16 @@
         "BUDGET-001"
       ],
       "limitation": "Finite model gate checks server-borrow ticket and class runtime non-authority; it is not Linux scheduler-hook implementation, runtime coverage, monitor timer evidence, or production protection evidence."
+    },
+    {
+      "id": "E-SCHED-COVERAGE-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0109-runtime-coverage-gate-tlc.md",
+      "supports": [
+        "BUDGET-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite model gate checks trace-only runtime coverage acceptance criteria for current/donor/proxy/server evidence and non-claims; it is not tracefs execution, runtime coverage, Linux implementation, monitor timer evidence, behavior change, or production protection evidence."
     }
   ],
   "counterexamples": [
@@ -1559,52 +1573,58 @@
       "id": "CEX-SCHED-SERVER-001",
       "record": "capsched-models/validation/0108-scheduler-server-ticket-tlc.md",
       "meaning": "Unsafe server-ticket models show expected counterexamples for server pick without ticket, server runtime as root authority, RT bandwidth as root, SCX slice as authority, stale server epoch, stopped server with live run, and lower task without authority."
+    },
+    {
+      "id": "CEX-SCHED-COVERAGE-001",
+      "record": "capsched-models/validation/0109-runtime-coverage-gate-tlc.md",
+      "meaning": "Unsafe runtime coverage models show expected counterexamples for missing current, missing donor, missing proxy relation, missing server coverage, missing evidence class, sched_stat_runtime as authority, remote tick as proxy coverage, trace coverage as protection, server lifecycle-only coverage, and class runtime as root budget evidence."
     }
   ],
   "forbidden_claims": [
-    "Linux-only L0 provides hypervisor-grade isolation.",
-    "task_struct Domain pointers create a hard security boundary.",
-    "RunCap is resource endpoint authority.",
-    "EndpointCap is CPU execution authority.",
-    "SchedContext budget is monitor root budget.",
-    "Linux page/slab/memcg/page-cache metadata is memory authority.",
-    "VFIO/iommufd Linux objects are production queue authority roots.",
-    "Linux netdev, ring, q_vector, devlink, representor, tracepoint, or workqueue state is modern NIC QueueLease authority.",
-    "SKB, XDP frame, XDP_TX page-pool, AF_XDP zero-copy, QueueControl, RepresentorForward, and ServiceWork can be collapsed into one queue capability.",
-    "XDP_TX or AF_XDP zero-copy can borrow SKB authority, generic netdev reachability, or ambient driver worker authority.",
-    "QueueControl can be authorized by RunCap, CAP_NET_ADMIN alone, or plain netdev reachability.",
-    "Representor netdev reachability is lower QueueLease authority.",
-    "Bridge FDB hit, VLAN allow, switchdev hwdom/offload mark, TC redirect target, or metadata_dst is lower QueueLease authority.",
-    "Representor netdev queue stop proves lower QueueLease revoke.",
-    "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",
-    "Worker identity, ICE_SERVICE_SCHED, virtchnl opcode allowlists, PTP/DPLL callback reachability, bridge/FDB events, LAG lower_dev rewrites, or reset/rebuild replay create service-work carrier authority.",
-    "Coalesced service work can use a mutable last-caller carrier as authority.",
-    "VF mailbox queue/control effects can be authorized by virtchnl validation without a VF/Domain request carrier, DMA MemoryView proof, IRQ route proof, and QueueLease or QueueControl epoch.",
-    "VF-provided dma_ring_addr plus queue/ring validation is DMA MemoryView authority.",
-    "Vector id checks, q_vector lookup, or ice_cfg_interrupt success is monitor-backed IRQ route authority.",
-    "QoS caps, queue id checks, traffic class checks, or queue rate fields are queue budget authority.",
-    "FDIR ctx_irq, ctx_done, timer completion, IRQ completion, or service flush is frozen OffloadCap or VF request carrier authority.",
-    "Linux netdev down/reset proves monitor-grade queue revoke.",
-    "IRQ route invalidation proves DMA reachability revocation.",
-    "dma_unmap_*(), xsk_pool_dma_unmap(), iommufd IOAS unmap, VFIO unmap callback, iommu_unmap_fast(), queued IOVA flush, page unpin, or refcount release proves monitor-grade PageOwner transfer safety.",
-    "Queue reassignment, packet page return, or new MemoryView mapping may occur before a DMA/IOMMU/MemoryView invalidation receipt.",
-    "xsk_tx_completed(), xsk_buff_free(), page_pool recycle, or page_pool return proves stale packet memory can be normally returned after revoke.",
-    "Packet memory can be returned to a Domain after revoke without stale-completion quarantine and generation reset.",
-    "BPF or sched_ext is the production root for No RunCap, no run.",
-    "Cluster-wide leases are directly executable.",
-    "Root-management ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation is a LocalDomainDeviceLease.",
-    "Linux service-domain queues, Linux-owned response stores, Linux-visible shadows, audit logs, ring slots, or raw driver handles are monitor receipt authority.",
-    "A semantic ABI candidate is a selected binary ABI, monitor call layout, Linux stub, shared-ring format, or production protection proof.",
-    "Choosing direct-call reference semantics means ring/batching is unnecessary for the datacenter performance target.",
-    "Ring batching can weaken monitor-owned response, replay, receipt ledger, revoke, or shadow invalidation semantics.",
     "A direct-call reference ABI sketch is a selected binary ABI, Linux stub, monitor implementation, performance result, or production protection proof.",
-    "Monitor-owned ring refinement permits Linux ring slots, Linux response publication, Linux-only slot generations, or ring-full/drop accounting to become authority.",
+    "A semantic ABI candidate is a selected binary ABI, monitor call layout, Linux stub, shared-ring format, or production protection proof.",
+    "BPF or sched_ext is the production root for No RunCap, no run.",
+    "Bridge FDB hit, VLAN allow, switchdev hwdom/offload mark, TC redirect target, or metadata_dst is lower QueueLease authority.",
+    "Choosing direct-call reference semantics means ring/batching is unnecessary for the datacenter performance target.",
+    "Cluster-wide leases are directly executable.",
+    "Coalesced service work can use a mutable last-caller carrier as authority.",
     "Combined direct-call plus monitor-owned-ring carrier planning permits separate replay namespaces, carrier-local receipt ledgers, carrier-local shadow generations, duplicate fallback success, or one-carrier revoke completion.",
+    "Direct-call attachment readiness permits behavior change, user ABI, public tracepoint ABI, Linux ledger/response minting, Linux shadow refresh from timeout or return code, probe/stub authority, raw handle exposure, monitor verification claims, or protection claims.",
     "Direct-call carrier requirements select a binary ABI, permit validation before bounded monitor copy/freeze, treat Linux timeout as monitor terminality, or create direct-only replay, ledger, or shadow namespaces.",
     "Direct-call schema compatibility permits unsupported schema acceptance, downgrade of monitor/caller minimums, unknown mandatory fields, unknown success codes, transport observations as receipts, or direct-only schema namespaces.",
-    "Direct-call attachment readiness permits behavior change, user ABI, public tracepoint ABI, Linux ledger/response minting, Linux shadow refresh from timeout or return code, probe/stub authority, raw handle exposure, monitor verification claims, or protection claims.",
     "Direct-call source inventory permits Linux modification, root requirement in source-only mode, tracefs writes in source-only mode, probe attachment, public tracepoint ABI creation, source/trace observations as authority, runtime observation claims, raw handle exposure, monitor verification claims, or protection claims.",
-    "TLC completion alone proves the datacenter OS goal."
+    "EndpointCap is CPU execution authority.",
+    "FDIR ctx_irq, ctx_done, timer completion, IRQ completion, or service flush is frozen OffloadCap or VF request carrier authority.",
+    "IRQ route invalidation proves DMA reachability revocation.",
+    "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",
+    "Linux netdev down/reset proves monitor-grade queue revoke.",
+    "Linux netdev, ring, q_vector, devlink, representor, tracepoint, or workqueue state is modern NIC QueueLease authority.",
+    "Linux page/slab/memcg/page-cache metadata is memory authority.",
+    "Linux service-domain queues, Linux-owned response stores, Linux-visible shadows, audit logs, ring slots, or raw driver handles are monitor receipt authority.",
+    "Linux-only L0 provides hypervisor-grade isolation.",
+    "Monitor-owned ring refinement permits Linux ring slots, Linux response publication, Linux-only slot generations, or ring-full/drop accounting to become authority.",
+    "Packet memory can be returned to a Domain after revoke without stale-completion quarantine and generation reset.",
+    "QoS caps, queue id checks, traffic class checks, or queue rate fields are queue budget authority.",
+    "Queue reassignment, packet page return, or new MemoryView mapping may occur before a DMA/IOMMU/MemoryView invalidation receipt.",
+    "QueueControl can be authorized by RunCap, CAP_NET_ADMIN alone, or plain netdev reachability.",
+    "Representor netdev queue stop proves lower QueueLease revoke.",
+    "Representor netdev reachability is lower QueueLease authority.",
+    "Ring batching can weaken monitor-owned response, replay, receipt ledger, revoke, or shadow invalidation semantics.",
+    "Root-management ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation is a LocalDomainDeviceLease.",
+    "RunCap is resource endpoint authority.",
+    "Runtime trace coverage, sched_stat_runtime, sched_switch, remote tick, or DL server lifecycle trace is monitor root budget enforcement or production protection evidence.",
+    "SKB, XDP frame, XDP_TX page-pool, AF_XDP zero-copy, QueueControl, RepresentorForward, and ServiceWork can be collapsed into one queue capability.",
+    "SchedContext budget is monitor root budget.",
+    "TLC completion alone proves the datacenter OS goal.",
+    "VF mailbox queue/control effects can be authorized by virtchnl validation without a VF/Domain request carrier, DMA MemoryView proof, IRQ route proof, and QueueLease or QueueControl epoch.",
+    "VF-provided dma_ring_addr plus queue/ring validation is DMA MemoryView authority.",
+    "VFIO/iommufd Linux objects are production queue authority roots.",
+    "Vector id checks, q_vector lookup, or ice_cfg_interrupt success is monitor-backed IRQ route authority.",
+    "Worker identity, ICE_SERVICE_SCHED, virtchnl opcode allowlists, PTP/DPLL callback reachability, bridge/FDB events, LAG lower_dev rewrites, or reset/rebuild replay create service-work carrier authority.",
+    "XDP_TX or AF_XDP zero-copy can borrow SKB authority, generic netdev reachability, or ambient driver worker authority.",
+    "dma_unmap_*(), xsk_pool_dma_unmap(), iommufd IOAS unmap, VFIO unmap callback, iommu_unmap_fast(), queued IOVA flush, page unpin, or refcount release proves monitor-grade PageOwner transfer safety.",
+    "task_struct Domain pointers create a hard security boundary.",
+    "xsk_tx_completed(), xsk_buff_free(), page_pool recycle, or page_pool return proves stale packet memory can be normally returned after revoke."
   ],
   "gates": [
     {

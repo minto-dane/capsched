@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "id": "runtime-coverage-gate-v1",
+  "analysis": "analysis/0092-runtime-coverage-gate.md",
+  "status": "draft_trace_only_coverage_gate",
+  "date": "2026-07-01",
+  "inputs": {
+    "runtime_charge_subject": "analysis/0090-runtime-charge-subject-map.md",
+    "scheduler_server_ticket": "analysis/0091-scheduler-server-ticket-map.md",
+    "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462"
+  },
+  "purpose": "Define the minimum trace-only runtime coverage evidence needed before runtime observations can support current/donor/proxy/server source coverage claims.",
+  "source_anchors": [
+    {
+      "id": "hrtick_donor_tick",
+      "path": "kernel/sched/core.c",
+      "line": 916,
+      "meaning": "hrtick calls the donor task's class tick"
+    },
+    {
+      "id": "task_sched_runtime_read",
+      "path": "kernel/sched/core.c",
+      "line": 5674,
+      "meaning": "task_sched_runtime is a read-side freshness path"
+    },
+    {
+      "id": "task_sched_runtime_donor_check",
+      "path": "kernel/sched/core.c",
+      "line": 5702,
+      "meaning": "read-side update only when queried task is current donor"
+    },
+    {
+      "id": "sched_tick_entry",
+      "path": "kernel/sched/core.c",
+      "line": 5762,
+      "meaning": "local tick runtime surface"
+    },
+    {
+      "id": "sched_tick_donor",
+      "path": "kernel/sched/core.c",
+      "line": 5778,
+      "meaning": "local tick captures rq->donor"
+    },
+    {
+      "id": "sched_tick_donor_task_tick",
+      "path": "kernel/sched/core.c",
+      "line": 5789,
+      "meaning": "local tick dispatches donor class task_tick"
+    },
+    {
+      "id": "sched_tick_remote_entry",
+      "path": "kernel/sched/core.c",
+      "line": 5849,
+      "meaning": "NO_HZ remote tick path"
+    },
+    {
+      "id": "sched_tick_remote_no_proxy_assumption",
+      "path": "kernel/sched/core.c",
+      "line": 5874,
+      "meaning": "remote tick asserts rq->curr equals rq->donor"
+    },
+    {
+      "id": "sched_tick_remote_curr_task_tick",
+      "path": "kernel/sched/core.c",
+      "line": 5885,
+      "meaning": "remote tick dispatches curr class task_tick"
+    },
+    {
+      "id": "cfs_update_se",
+      "path": "kernel/sched/fair.c",
+      "line": 1355,
+      "meaning": "CFS source of runtime delta"
+    },
+    {
+      "id": "cfs_running_current_account",
+      "path": "kernel/sched/fair.c",
+      "line": 1367,
+      "meaning": "CFS records rq->curr as running under proxy execution"
+    },
+    {
+      "id": "cfs_sched_stat_runtime",
+      "path": "kernel/sched/fair.c",
+      "line": 1375,
+      "meaning": "sched_stat_runtime receives running task"
+    },
+    {
+      "id": "cfs_donor_cgroup_account",
+      "path": "kernel/sched/fair.c",
+      "line": 1379,
+      "meaning": "cgroup CPU time is accounted against donor"
+    },
+    {
+      "id": "update_curr_common",
+      "path": "kernel/sched/fair.c",
+      "line": 1977,
+      "meaning": "class runtime delegates to donor entity"
+    },
+    {
+      "id": "fair_proxy_note",
+      "path": "kernel/sched/fair.c",
+      "line": 1988,
+      "meaning": "CFS current may be donor rather than actual running task"
+    },
+    {
+      "id": "fair_server_update",
+      "path": "kernel/sched/fair.c",
+      "line": 2019,
+      "meaning": "fair runtime may charge fair server state"
+    },
+    {
+      "id": "rt_update_curr",
+      "path": "kernel/sched/rt.c",
+      "line": 974,
+      "meaning": "RT runtime/throttling surface"
+    },
+    {
+      "id": "rt_bandwidth_time",
+      "path": "kernel/sched/rt.c",
+      "line": 998,
+      "meaning": "RT class-local bandwidth time"
+    },
+    {
+      "id": "rt_bandwidth_timer",
+      "path": "kernel/sched/rt.c",
+      "line": 1004,
+      "meaning": "RT bandwidth timer start after exceeded runtime"
+    },
+    {
+      "id": "dl_server_update_idle",
+      "path": "kernel/sched/deadline.c",
+      "line": 1578,
+      "meaning": "DL server idle accounting"
+    },
+    {
+      "id": "dl_server_update",
+      "path": "kernel/sched/deadline.c",
+      "line": 1584,
+      "meaning": "DL server runtime accounting"
+    },
+    {
+      "id": "dl_server_start",
+      "path": "kernel/sched/deadline.c",
+      "line": 1795,
+      "meaning": "DL server lifecycle start"
+    },
+    {
+      "id": "dl_server_stop",
+      "path": "kernel/sched/deadline.c",
+      "line": 1819,
+      "meaning": "DL server lifecycle stop"
+    },
+    {
+      "id": "dl_server_pick_lower",
+      "path": "kernel/sched/deadline.c",
+      "line": 2828,
+      "meaning": "DL server calls lower-class pick"
+    },
+    {
+      "id": "scx_update_curr",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 1321,
+      "meaning": "sched_ext runtime surface"
+    },
+    {
+      "id": "scx_slice_update",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 1330,
+      "meaning": "sched_ext slice decrement"
+    },
+    {
+      "id": "scx_ext_server_update",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 1336,
+      "meaning": "sched_ext runtime may update ext server"
+    },
+    {
+      "id": "scx_slice_refill_keep_prev",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3198,
+      "meaning": "sched_ext keep-prev slice refill"
+    },
+    {
+      "id": "scx_slice_refill_local_dsq",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3207,
+      "meaning": "sched_ext local-DSQ zero-slice refill"
+    },
+    {
+      "id": "ext_server_pick_task",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3235,
+      "meaning": "ext server lower-class pick"
+    },
+    {
+      "id": "trace_sched_stat_runtime",
+      "path": "include/trace/events/sched.h",
+      "line": 553,
+      "meaning": "public sched_stat_runtime lacks donor/proxy/server fields"
+    },
+    {
+      "id": "trace_sched_switch",
+      "path": "include/trace/events/sched.h",
+      "line": 220,
+      "meaning": "sched_switch gives prev/next, not runtime subject proof"
+    },
+    {
+      "id": "trace_sched_dl_server_start_stop",
+      "path": "include/trace/events/sched.h",
+      "line": 917,
+      "meaning": "DL server lifecycle trace declarations"
+    }
+  ],
+  "coverage_requirements": [
+    "surface_id",
+    "source_anchor_id",
+    "cpu",
+    "runtime_delta_or_event_type",
+    "executor_current_identity",
+    "donor_identity",
+    "proxy_relation_evidence_when_current_and_donor_may_differ",
+    "server_kind_and_epoch_relation_when_server_path_in_scope",
+    "server_lifecycle_and_runtime_relation_when_server_path_in_scope",
+    "class_runtime_surface",
+    "evidence_class",
+    "trace_only_non_claim_flags"
+  ],
+  "unsafe_cases": [
+    "accept_coverage_without_current",
+    "accept_coverage_without_donor",
+    "accept_proxy_coverage_without_relation",
+    "accept_server_coverage_without_lifecycle_runtime_epoch",
+    "accept_coverage_without_evidence_class",
+    "sched_stat_runtime_as_authority",
+    "remote_tick_as_proxy_coverage",
+    "trace_coverage_as_protection",
+    "server_lifecycle_only_as_full_coverage",
+    "class_runtime_as_root_budget_evidence"
+  ],
+  "safety_flags": {
+    "tracefs_executed": false,
+    "linux_patch_approved": false,
+    "tracepoint_added": false,
+    "public_tracepoint_abi": false,
+    "budget_hook": false,
+    "scheduler_hook": false,
+    "runtime_coverage": false,
+    "authority_claim": false,
+    "enforcement_claim": false,
+    "monitor_verified": false,
+    "behavior_change": false,
+    "production_protection": false
+  }
+}

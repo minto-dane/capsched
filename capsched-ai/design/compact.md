@@ -216,10 +216,20 @@ latest completed focused risk:
   stale server epoch, stopped server with live run, and lower task without
   authority. JSON: 17 anchors, 7 unsafe cases, 12/12 safety flags false.
 
+latest completed focused risk:
+  Runtime coverage gate. Analysis/0092, formal/0070, JSON gate, and
+  validation/0109 define trace-only current/donor/proxy/server runtime coverage
+  acceptance. Safe TLC: 49 generated states, 29 distinct, depth 6. Unsafe
+  configs reject missing current, missing donor, missing proxy relation,
+  missing server coverage, missing evidence class, sched_stat_runtime authority,
+  remote tick proxy coverage, trace protection claim, server lifecycle-only
+  coverage, and class runtime as root evidence. JSON: 33 anchors, 12 coverage
+  requirements, 10 unsafe cases, 12/12 safety flags false.
+
 next focused risk:
-  Trace-only current/donor/proxy/server runtime coverage, monitor root budget
-  timer event modeling, server epoch relation to replenish/swap/stop in a larger
-  scheduler authority model, and deadline CBS/GRUB compatibility source refresh.
+  Monitor root budget timer event modeling, server epoch relation to
+  replenish/swap/stop in a larger scheduler authority model, deadline CBS/GRUB
+  compatibility source refresh, and F1 admission-freeze data dependency refresh.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

@@ -281,11 +281,25 @@ latest completed risk:
   Assurance evidence E-SCHED-SERVER-001 supports EXEC-001 and BUDGET-001 only
   as model evidence.
 
+latest completed risk:
+  Runtime coverage gate. Analysis/0092, formal/0070,
+  runtime-coverage-gate-v1.json, and validation/0109 now define trace-only
+  coverage acceptance criteria for current/donor/proxy/server runtime paths.
+  Safe TLC passed with 49 generated states, 29 distinct states, 0 states left
+  on queue, depth 6. Unsafe configs produced expected counterexamples for
+  missing current, missing donor, missing proxy relation, missing server
+  coverage, missing evidence class, sched_stat_runtime as authority, remote
+  tick as proxy coverage, trace evidence as protection, server lifecycle-only
+  coverage, and class runtime as root budget evidence. JSON check confirms 33
+  source anchors, 12 coverage requirements, 10 unsafe cases, and 12/12 safety
+  flags false. Assurance evidence E-SCHED-COVERAGE-001 supports BUDGET-001 and
+  COMPAT-001 only as model evidence.
+
 next focused risk:
-  Trace-only runtime coverage for current/donor/proxy/server paths, monitor
-  root budget timer event modeling, server epoch relation to replenish/swap/stop
-  in a larger scheduler authority model, and deadline CBS/GRUB compatibility
-  source refresh before behavior hooks. Do
+  Monitor root budget timer event modeling, server epoch relation to
+  replenish/swap/stop in a larger scheduler authority model, deadline CBS/GRUB
+  compatibility source refresh before behavior hooks, and F1 admission-freeze
+  data dependency refresh. Do
   not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
   integration, async carrier Linux names, budget hooks, or behavior-changing
   patches.

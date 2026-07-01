@@ -114,6 +114,7 @@ Updated: 2026-07-01
 | 0106 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Scheduler Authority Refinement Gate TLC |
 | 0107 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Runtime Charge Subject TLC |
 | 0108 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Scheduler Server Ticket TLC |
+| 0109 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Runtime Coverage Gate TLC |
 
 ## Principles
 
