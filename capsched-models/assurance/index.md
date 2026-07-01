@@ -114,6 +114,10 @@ Model-supported areas:
   adapters, explicitly limited to no-behavior design direction and rejecting
   generic async execution authority, ABI approval, monitor verification,
   runtime coverage, behavior change, and protection claims
+- direct-call async carrier API sketch, defining a no-behavior internal
+  carrier core with single-assignment frozen fields, core/adapter ownership
+  boundaries, exactly-once settlement pressure, and separate workqueue/io_uring
+  adapter contracts, still without Linux implementation or protection evidence
 
 Prototype-evidenced areas:
 
@@ -618,6 +622,10 @@ Forbidden:
   Do not treat the DirectCallReceiptSchema TLC pass as monitor implementation,
   Linux direct-call implementation, ABI approval, runtime coverage, monitor
   verification, or production protection.
+  Do not treat ADR-0009, analysis/0083, implementation/0012, or validation/0096
+  as approval to add Linux async carrier code, workqueue integration, io_uring
+  integration, ABI, public tracepoints, runtime coverage, monitor verification,
+  behavior changes, or production protection claims.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

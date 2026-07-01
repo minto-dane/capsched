@@ -122,8 +122,8 @@ latest completed risk:
   implementation approval or authority/protection claims.
 
 next focused risk:
-  Draft the no-behavior shared `capsched_async_carrier` API sketch with
-  workqueue and io_uring adapter contracts. Do not add direct-call stubs, ABI,
+  Model the N-125 no-behavior `capsched_async_carrier` API sketch transition
+  ordering and adapter obligations. Do not add direct-call stubs, ABI,
   tracepoints, workqueue integration, io_uring integration, or
   behavior-changing patches.
 ```
@@ -2114,6 +2114,47 @@ still not:
   monitor verification
   production protection
 
+N-125 completed:
+  implementation/0012-direct-call-async-carrier-api-sketch.md
+  implementation/direct-call-async-carrier-api-sketch-v1.json
+  validation/0096-direct-call-async-carrier-api-sketch-result.md
+
+sketch:
+  internal opaque capsched_async_carrier core
+  operations: freeze, bind, validate, revoke_check, settle, release
+  8 authority fields
+  single-assignment frozen and bind tuples
+  core/adapter ownership boundary
+  exactly-once BudgetTicket/receipt settlement pressure
+  separate workqueue and io_uring adapter contracts
+
+added after subagent review:
+  release drops CapSched refs only, not Linux object lifetime.
+  rejected second-caller carrier must be settled/released exactly once.
+  effective authority must be modeled as set intersection.
+  io_uring obligations still need a dedicated refinement model.
+
+validation:
+  8 authority fields
+  6 core operations
+  2 adapter contracts
+  18 adapter steps
+  15 invariants
+  18 forbidden authority sources
+  14 patch preconditions
+  5 required future models
+  12/12 safety flags false
+
+still not:
+  Linux implementation
+  workqueue integration
+  io_uring integration
+  ABI approval
+  runtime coverage
+  behavior change
+  monitor verification
+  production protection
+
 next:
-  N-125 draft the no-behavior shared carrier API sketch with adapter contracts.
+  N-126 model the API sketch transition ordering and adapter obligations.
 ```

@@ -101,6 +101,7 @@ Updated: 2026-07-01
 | 0093 | Executed; source-only workqueue/io_uring maps checked | Direct-Call Async Source Map Result |
 | 0094 | Executed; no-patch lifetime table checked | Direct-Call Async Carrier Lifetime Table Result |
 | 0095 | Executed; no-behavior API direction checked | Direct-Call Async Carrier API Direction Result |
+| 0096 | Executed; no-behavior API sketch checked | Direct-Call Async Carrier API Sketch Result |
 
 ## Principles
 

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-async-api-direction-chosen",
+    "current_phase": "direct-call-async-api-sketch-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-124 chose the no-behavior async carrier API direction. ADR-0009, analysis/0083, direct-call-async-carrier-api-direction-v1.json, and validation/0095 select a shared internal capsched_async_carrier semantic core with separate workqueue and io_uring adapters. The shared core may carry only CapSched authority state: frozen caller authority, caller BudgetTicket, opaque monitor receipt reference or derived shadow, generation/epoch/revoke state, service/resource binding, and settlement/release state. Workqueue remains an adapter for typed wrapper, queue_work_on false, delayed-work retiming, self-requeue, cancel/flush, callback entry, and free. io_uring remains an adapter for SQE consumption, request/resource storage, fixed file/buffer authority, io-wq punt, linked requests, REQ_F_REISSUE, cancel, CQE, ref release, and free. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-125: draft the no-behavior shared carrier API sketch with adapter contracts.",
+    "current_focus": "N-125 completed the no-behavior shared capsched_async_carrier API sketch. implementation/0012 and direct-call-async-carrier-api-sketch-v1.json define an internal opaque carrier core with freeze, bind, validate, revoke_check, settle, and release; 8 authority fields; core/adapter ownership boundary; single-assignment frozen/bind tuples; exactly-once BudgetTicket/receipt settlement pressure; workqueue and io_uring adapter contracts; 15 invariants; 18 forbidden authority sources; 14 patch preconditions; 15 postponed items; 5 required future models; and 12/12 false safety flags. validation/0096 checks this structure. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-126: model the API sketch transition ordering and adapter obligations, especially io_uring refinement, settlement, generation/revoke interleavings, set-based authority intersection, and workqueue retiming/self-requeue choices.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -547,7 +547,10 @@
     "direct_call_async_carrier_api_direction_decision": "capsched/capsched-ai/decisions/ADR-0009-async-carrier-api-direction.md",
     "direct_call_async_carrier_api_direction": "capsched/capsched-models/analysis/0083-direct-call-async-carrier-api-direction.md",
     "direct_call_async_carrier_api_direction_json": "capsched/capsched-models/analysis/direct-call-async-carrier-api-direction-v1.json",
-    "direct_call_async_carrier_api_direction_validation": "capsched/capsched-models/validation/0095-direct-call-async-carrier-api-direction-result.md"
+    "direct_call_async_carrier_api_direction_validation": "capsched/capsched-models/validation/0095-direct-call-async-carrier-api-direction-result.md",
+    "direct_call_async_carrier_api_sketch": "capsched/capsched-models/implementation/0012-direct-call-async-carrier-api-sketch.md",
+    "direct_call_async_carrier_api_sketch_json": "capsched/capsched-models/implementation/direct-call-async-carrier-api-sketch-v1.json",
+    "direct_call_async_carrier_api_sketch_validation": "capsched/capsched-models/validation/0096-direct-call-async-carrier-api-sketch-result.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2217,9 +2220,19 @@
     {
       "id": "N-125",
       "text": "Draft the no-behavior shared capsched_async_carrier API sketch with workqueue and io_uring adapter contracts, preserving the N-124 direction and all non-claim safety flags.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-124"
+      ],
+      "completed_on": "2026-07-01",
+      "partial_progress": "Added implementation/0012-direct-call-async-carrier-api-sketch.md, implementation/direct-call-async-carrier-api-sketch-v1.json, and validation/0096. The sketch defines a no-behavior internal capsched_async_carrier semantic core with freeze, bind, validate, revoke_check, settle, and release operations; 8 authority fields; ownership boundaries that keep Linux object lifetime in adapters; single-assignment frozen/bind tuples; exactly-once settlement pressure; workqueue and io_uring adapter steps; 15 invariants; 18 forbidden authority sources; 14 patch preconditions; 15 postponed items; 5 required future models; and 12/12 false safety flags. Subagent review feedback was incorporated for immutable carrier fields, second-caller rejection cleanup, core release semantics, io_uring refinement obligations, BudgetTicket/receipt settlement, and set-based authority intersection. No Linux patch, workqueue integration, io_uring integration, ABI, tracepoint, behavior change, monitor verification, runtime coverage, or protection claim is approved."
+    },
+    {
+      "id": "N-126",
+      "text": "Model the N-125 async carrier API sketch transition ordering and adapter obligations before any Linux code proposal.",
+      "status": "pending",
+      "blocked_by": [
+        "N-125"
       ]
     }
   ],

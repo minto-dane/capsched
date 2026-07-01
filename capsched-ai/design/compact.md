@@ -113,8 +113,8 @@ latest completed focused risk:
   all rows and safety flags.
 
 next focused risk:
-  Draft the no-behavior shared capsched_async_carrier API sketch with
-  workqueue and io_uring adapter contracts.
+  Model the no-behavior capsched_async_carrier API sketch transition ordering
+  and adapter obligations.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1818,6 +1818,27 @@ still not:
   Linux implementation, ABI, runtime coverage, monitor verification,
   behavior change, or production protection.
 
+N-125 completed:
+  implementation/0012
+  api-sketch-v1
+  validation/0096
+
+sketch:
+  internal opaque capsched_async_carrier core
+  ops: freeze, bind, validate, revoke_check, settle, release
+  single-assignment frozen/bind tuples
+  core owns only CapSched refs; adapters own Linux lifetime.
+  settlement is exactly once.
+  workqueue/io_uring remain separate adapters.
+
+validated shape:
+  8 authority fields
+  18 adapter steps
+  15 invariants
+  18 forbidden authority sources
+  5 required future models
+  all safety flags false
+
 next:
-  N-125 no-behavior shared carrier API sketch.
+  N-126 model transition ordering and adapter obligations.
 ```

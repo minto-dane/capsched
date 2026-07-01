@@ -62,6 +62,12 @@ Candidate implementation plans:
     monitor receipt provenance, revoke/stale-carrier, workqueue, io_uring, and
     evidence-class preconditions before any async direct-call receipt carrier
     patch.
+- `0012-direct-call-async-carrier-api-sketch.md`
+  - Status: proposed no-behavior API sketch, no Linux patch approved yet.
+  - Purpose: define a narrow internal `capsched_async_carrier` semantic core
+    with freeze, bind, validate, revoke_check, settle, and release operations,
+    plus separate workqueue and io_uring adapter contracts before any Linux
+    code proposal.
 
 Validated formal inputs:
 
@@ -179,7 +185,10 @@ Next gate:
   an implementation-facing no-patch async-carrier gate. ADR-0009 and
   analysis/0083 choose the next no-behavior API sketch direction: a shared
   internal `capsched_async_carrier` semantic core with separate workqueue and
-  io_uring adapters.
+  io_uring adapters. implementation/0012 now sketches that no-behavior API
+  contract, including single-assignment frozen fields, core/adapter ownership
+  boundaries, exactly-once settlement pressure, workqueue and io_uring adapter
+  obligations, and required future model obligations.
 
 Current API-sketch direction:
   The shared core may carry only CapSched authority state: frozen caller
@@ -188,13 +197,16 @@ Current API-sketch direction:
   settlement/release state. It must not become a generic async execution model,
   public ABI, public tracepoint ABI, monitor verification claim, behavior
   change, or production protection claim. Workqueue and io_uring lifetimes must
-  remain separate adapter contracts.
+  remain separate adapter contracts. The next gate is to model this API sketch,
+  especially io_uring request/resource/reissue/CQE state, BudgetTicket/receipt
+  settlement, generation/epoch revoke interleavings, set-based authority
+  intersection, and workqueue delayed-work/self-requeue choices.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0094 improve traceability and
+  validation/0080 through validation/0096 improve traceability and
   model/source-map the gap-closure, receipt-schema, receipt-consumer,
-  placement, async-carrier, source-map, lifetime, gate, and API-direction
-  artifacts, but they are not Linux stub implementation, monitor verification,
-  ABI approval, runtime coverage, behavior-change approval, or production
-  protection evidence.
+  placement, async-carrier, source-map, lifetime, gate, API-direction, and API
+  sketch artifacts, but they are not Linux stub implementation, monitor
+  verification, ABI approval, runtime coverage, behavior-change approval, or
+  production protection evidence.
 ```

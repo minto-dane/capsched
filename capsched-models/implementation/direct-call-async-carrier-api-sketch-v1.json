@@ -1,0 +1,520 @@
+{
+  "schema_version": 1,
+  "id": "direct-call-async-carrier-api-sketch-v1",
+  "implementation": "0012-direct-call-async-carrier-api-sketch",
+  "status": "proposed_no_behavior_api_sketch",
+  "date": "2026-07-01",
+  "decision_input": "capsched-ai/decisions/ADR-0009-async-carrier-api-direction.md",
+  "direction_input": "capsched-models/analysis/direct-call-async-carrier-api-direction-v1.json",
+  "gate_input": "capsched-models/implementation/direct-call-async-carrier-gate-v1.json",
+  "core": {
+    "type_name": "struct capsched_async_carrier",
+    "visibility": "internal_opaque",
+    "scope": "capsched_authority_state_only",
+    "authority_fields": [
+      {
+        "field_id": "ASYNCFIELD-001",
+        "name": "caller_domain_epoch_generation",
+        "category": "identity_freshness",
+        "immutable_after_freeze": true,
+        "linux_minted_authority": false
+      },
+      {
+        "field_id": "ASYNCFIELD-002",
+        "name": "frozen_caller_authority_ref",
+        "category": "caller_authority",
+        "immutable_after_freeze": true,
+        "linux_minted_authority": false
+      },
+      {
+        "field_id": "ASYNCFIELD-003",
+        "name": "caller_budget_ticket_or_split_child_ticket",
+        "category": "budget",
+        "immutable_after_freeze": true,
+        "linux_minted_authority": false
+      },
+      {
+        "field_id": "ASYNCFIELD-004",
+        "name": "opaque_monitor_receipt_ref_or_derived_shadow",
+        "category": "monitor_receipt",
+        "immutable_after_freeze": true,
+        "linux_minted_authority": false
+      },
+      {
+        "field_id": "ASYNCFIELD-005",
+        "name": "service_or_resource_authority_binding",
+        "category": "service_resource_authority",
+        "immutable_after_bind": true,
+        "linux_minted_authority": false
+      },
+      {
+        "field_id": "ASYNCFIELD-006",
+        "name": "carrier_generation",
+        "category": "freshness",
+        "immutable_after_freeze": true,
+        "linux_minted_authority": false
+      },
+      {
+        "field_id": "ASYNCFIELD-007",
+        "name": "revoke_freshness_state",
+        "category": "revoke",
+        "mutable_only_by_explicit_revoke_check": true,
+        "linux_minted_authority": false
+      },
+      {
+        "field_id": "ASYNCFIELD-008",
+        "name": "settlement_release_state",
+        "category": "settlement",
+        "mutable_only_by_settle_or_release": true,
+        "linux_minted_authority": false
+      }
+    ],
+    "ownership_boundary": {
+      "core_owns_only": [
+        "caller_frozen_authority_ref",
+        "caller_budget_ticket_settlement_right",
+        "opaque_monitor_receipt_ref_or_derived_shadow",
+        "service_resource_binding_refs",
+        "freshness_state",
+        "settlement_state"
+      ],
+      "adapter_owns": [
+        "carrier_storage",
+        "linux_object_lifetime",
+        "locking",
+        "work_request_refs",
+        "cancel_flush_races",
+        "retry_reissue_mechanics",
+        "completion_cqe_delivery",
+        "final_memory_free"
+      ],
+      "release_must_not": [
+        "kfree",
+        "flush",
+        "cancel",
+        "complete_cqe",
+        "drop_io_kiocb_refs",
+        "put_registered_resources",
+        "treat_linux_cleanup_as_authority_settlement"
+      ]
+    },
+    "single_assignment": {
+      "immutable_after_freeze": [
+        "caller_domain_epoch_generation",
+        "frozen_caller_authority_ref",
+        "caller_budget_ticket_or_split_child_ticket",
+        "opaque_monitor_receipt_ref_or_derived_shadow",
+        "carrier_generation"
+      ],
+      "immutable_after_bind": [
+        "service_or_resource_authority_binding",
+        "operation_class",
+        "endpoint_or_resource_class"
+      ],
+      "mutable_only_by_named_operations": [
+        "revoke_freshness_state",
+        "settlement_release_state"
+      ],
+      "forbidden_overwriters": [
+        "queue_coalescing",
+        "delayed_work_retiming",
+        "self_requeue",
+        "io_wq_punt",
+        "retry",
+        "REQ_F_REISSUE",
+        "cancel",
+        "completion",
+        "ref_drop",
+        "free"
+      ]
+    },
+    "lifetime_helpers": [
+      {
+        "name": "create_empty",
+        "authority_granting": false,
+        "purpose": "allocate or initialize storage without authority"
+      },
+      {
+        "name": "get",
+        "authority_granting": false,
+        "purpose": "hold a lifetime reference without changing authority"
+      },
+      {
+        "name": "put",
+        "authority_granting": false,
+        "purpose": "drop a lifetime reference without settling authority"
+      },
+      {
+        "name": "destroy_empty_or_released",
+        "authority_granting": false,
+        "purpose": "free storage only after never-published discard or release"
+      }
+    ],
+    "operations": [
+      {
+        "op_id": "ASYNCOP-001",
+        "name": "freeze",
+        "subsystem_specific": false,
+        "required_inputs": [
+          "caller_domain_epoch_generation",
+          "frozen_caller_authority_ref",
+          "caller_budget_ticket_or_split_child_ticket",
+          "opaque_monitor_receipt_ref_or_derived_shadow",
+          "carrier_generation"
+        ],
+        "effects": [
+          "caller_side_fields_become_immutable_before_async_publication"
+        ],
+        "forbidden_fallbacks": [
+          "worker_current",
+          "work_struct_pointer",
+          "req_creds",
+          "req_tctx",
+          "missing_caller_budget_ticket",
+          "linux_minted_monitor_receipt"
+        ]
+      },
+      {
+        "op_id": "ASYNCOP-002",
+        "name": "bind",
+        "subsystem_specific": false,
+        "required_inputs": [
+          "service_or_resource_authority_binding",
+          "operation_class",
+          "endpoint_or_resource_class"
+        ],
+        "effects": [
+          "service_resource_authority_bound_separately_from_caller_authority"
+        ],
+        "forbidden_fallbacks": [
+          "service_authority_alone",
+          "caller_authority_alone",
+          "credential_snapshot_as_capability",
+          "namespace_membership_as_capability",
+          "lsm_allow_as_complete_capability"
+        ]
+      },
+      {
+        "op_id": "ASYNCOP-003",
+        "name": "validate",
+        "subsystem_specific": false,
+        "required_inputs": [
+          "carrier",
+          "current_domain_epoch_view",
+          "current_revoke_generation_view",
+          "adapter_execution_context"
+        ],
+        "effects": [
+          "reject_stale_or_revoked_before_side_effects",
+          "compute_service_resource_intersection_with_caller_frozen_authority",
+          "confirm_caller_budget_ticket_chargeable",
+          "confirm_receipt_generation_matches_carrier_generation"
+        ],
+        "forbidden_fallbacks": [
+          "worker_identity_validation",
+          "generic_queue_membership_validation",
+          "completion_or_cqe_validation",
+          "retry_or_reissue_as_receipt_renewal"
+        ]
+      },
+      {
+        "op_id": "ASYNCOP-004",
+        "name": "revoke_check",
+        "subsystem_specific": false,
+        "required_inputs": [
+          "carrier_generation",
+          "domain_epoch",
+          "revoke_generation",
+          "adapter_state_summary"
+        ],
+        "effects": [
+          "classify_usable_stale_rejected_or_requires_adapter_drain"
+        ],
+        "forbidden_fallbacks": [
+          "linux_cancel_as_monitor_revoke_completion",
+          "free_as_monitor_revoke_completion",
+          "ref_drop_as_monitor_revoke_completion",
+          "execute_stale_then_repair"
+        ]
+      },
+      {
+        "op_id": "ASYNCOP-005",
+        "name": "settle",
+        "subsystem_specific": false,
+        "required_inputs": [
+          "execution_outcome",
+          "caller_budget_ticket_charge_refund_state",
+          "receipt_consumption_state",
+          "adapter_completion_state_summary"
+        ],
+        "effects": [
+          "record_budget_and_receipt_settlement_before_final_release",
+          "settlement_exactly_once_across_success_failure_cancel_revoke_coalesce_rejection_retry_reissue_completion_free"
+        ],
+        "forbidden_fallbacks": [
+          "service_only_budget_charge",
+          "worker_kthread_runtime_as_caller_ticket",
+          "cgroup_cpu_accounting_as_capability_settlement",
+          "cqe_as_settlement_proof"
+        ]
+      },
+      {
+        "op_id": "ASYNCOP-006",
+        "name": "release",
+        "subsystem_specific": false,
+        "required_inputs": [
+          "settled_or_never_published_carrier",
+          "no_live_adapter_execution_reference"
+        ],
+        "effects": [
+          "drop_capsched_refs_after_settlement_or_safe_rejection"
+        ],
+        "forbidden_fallbacks": [
+          "free_path_as_authority_decision",
+          "free_path_racing_with_worker_validation",
+          "release_before_stale_or_revoke_outcome_known",
+          "release_coupled_to_linux_object_free_or_cqe_completion"
+        ]
+      }
+    ],
+    "forbidden_core_verbs": [
+      "enqueue",
+      "dispatch",
+      "queue_work",
+      "issue_sqe",
+      "complete_cqe",
+      "finish_work"
+    ]
+  },
+  "adapter_contracts": [
+    {
+      "adapter": "workqueue",
+      "scope": "typed_wrapper_for_domain_originated_work_only",
+      "not_global_hook": true,
+      "adapter_steps": [
+        {
+          "step_id": "WQAPI-001",
+          "name": "prepare",
+          "requires_core_ops": ["create_empty", "freeze", "bind"],
+          "rule": "create empty carrier, freeze caller, and bind service/resource authority before queue publication"
+        },
+        {
+          "step_id": "WQAPI-002",
+          "name": "queue",
+          "requires_core_ops": ["freeze", "bind"],
+          "rule": "publish immutable carrier before queue_work_on"
+        },
+        {
+          "step_id": "WQAPI-003",
+          "name": "queue_work_false",
+          "requires_core_ops": [],
+          "rule": "preserve first caller, first BudgetTicket, first receipt, and first carrier generation; second candidate remains caller_adapter_owned and must be rejected, settled, and released exactly once without transferring its budget or receipt"
+        },
+        {
+          "step_id": "WQAPI-004",
+          "name": "mod_delayed_work",
+          "requires_core_ops": [],
+          "rule": "preserve existing carrier, reject new caller, or use explicit monitor-approved regeneration path; silent merge forbidden"
+        },
+        {
+          "step_id": "WQAPI-005",
+          "name": "self_requeue",
+          "requires_core_ops": ["revoke_check"],
+          "rule": "does not refresh receipt, generation, or caller BudgetTicket"
+        },
+        {
+          "step_id": "WQAPI-006",
+          "name": "cancel_flush",
+          "requires_core_ops": ["revoke_check"],
+          "rule": "synchronization only; not monitor revoke receipt and not settlement proof"
+        },
+        {
+          "step_id": "WQAPI-007",
+          "name": "callback_entry",
+          "requires_core_ops": ["validate"],
+          "rule": "recover typed carrier through adapter container and validate before service side effects"
+        },
+        {
+          "step_id": "WQAPI-008",
+          "name": "free",
+          "requires_core_ops": ["settle", "release"],
+          "rule": "free only after settle/release or never-published discard"
+        }
+      ]
+    },
+    {
+      "adapter": "io_uring",
+      "scope": "explicit_request_or_resource_storage_only",
+      "not_generic_io_wq_hook": true,
+      "adapter_steps": [
+        {
+          "step_id": "IOAPI-001",
+          "name": "request_creation",
+          "requires_core_ops": ["create_empty"],
+          "rule": "no authority from allocation"
+        },
+        {
+          "step_id": "IOAPI-002",
+          "name": "sqe_consumption",
+          "requires_core_ops": ["freeze"],
+          "rule": "freeze after SQE is copied or consumed and before side effects"
+        },
+        {
+          "step_id": "IOAPI-003",
+          "name": "resource_binding",
+          "requires_core_ops": ["bind"],
+          "rule": "fixed file and buffer authority are frozen or generation-checked explicitly; io_rsrc_node liveness is not authority"
+        },
+        {
+          "step_id": "IOAPI-004",
+          "name": "inline_issue",
+          "requires_core_ops": ["validate"],
+          "rule": "validate before __io_issue_sqe side effects"
+        },
+        {
+          "step_id": "IOAPI-005",
+          "name": "io_wq_punt",
+          "requires_core_ops": ["validate"],
+          "rule": "publish immutable carrier before worker execution and validate before io_wq_submit_work side effects"
+        },
+        {
+          "step_id": "IOAPI-006",
+          "name": "linked_requests",
+          "requires_core_ops": ["freeze", "bind"],
+          "rule": "each request has a carrier or explicit child/split relationship; linkage is not authority inheritance"
+        },
+        {
+          "step_id": "IOAPI-007",
+          "name": "cancel",
+          "requires_core_ops": ["revoke_check"],
+          "rule": "Linux cancel state is matching/synchronization only, not monitor revoke receipt"
+        },
+        {
+          "step_id": "IOAPI-008",
+          "name": "reissue",
+          "requires_core_ops": ["revoke_check", "validate"],
+          "rule": "REQ_F_REISSUE preserves original carrier or uses explicit monitor-approved replacement; no implicit receipt refresh"
+        },
+        {
+          "step_id": "IOAPI-009",
+          "name": "completion_cqe",
+          "requires_core_ops": ["settle"],
+          "rule": "CQE is result delivery only, not monitor verification, receipt minting, or settlement proof; settlement-affecting completion must pass through carrier settlement state"
+        },
+        {
+          "step_id": "IOAPI-010",
+          "name": "resource_ref_release_free",
+          "requires_core_ops": ["release"],
+          "rule": "storage lifetime only; not EndpointCap revoke or receipt settlement"
+        }
+      ]
+    }
+  ],
+  "invariants": [
+    "carrier_identity_is_typed_not_raw_linux_object",
+    "freeze_before_async_publication",
+    "frozen_tuple_is_single_assignment",
+    "bind_tuple_is_single_assignment",
+    "immutable_caller_ticket_receipt_generation_after_freeze",
+    "service_resource_authority_bound_separately_from_caller_authority",
+    "effective_authority_is_set_intersection_and_subset_of_service_resource_and_caller_frozen",
+    "budget_charged_to_caller_ticket_or_split_child_ticket",
+    "budget_and_receipt_settlement_exactly_once",
+    "linux_cannot_mint_monitor_receipt",
+    "stale_or_revoked_carrier_rejected_before_side_effects",
+    "pending_coalescing_cannot_replace_first_carrier",
+    "retry_reissue_cannot_refresh_receipt_implicitly",
+    "cancel_flush_completion_ref_drop_free_are_not_revoke_or_settlement_proofs",
+    "source_model_trace_and_api_sketch_do_not_approve_behavior_or_protection"
+  ],
+  "forbidden_authority_sources": [
+    "work_struct_pointer",
+    "callback_pointer",
+    "worker_task_identity",
+    "generic_workqueue_membership",
+    "work_pending_bit",
+    "io_wq_work",
+    "io_kiocb_existence",
+    "req_creds",
+    "req_tctx",
+    "io_rsrc_node_liveness",
+    "registered_fd_existence",
+    "cancel_flags",
+    "cqe",
+    "completion_path",
+    "retry_or_reissue_flag",
+    "linux_cleanup",
+    "ref_drop",
+    "free_path"
+  ],
+  "patch_preconditions": [
+    "carrier_storage_location_named",
+    "owner_and_reference_lifetime_named",
+    "freeze_before_publication_ordering_named",
+    "single_assignment_mutability_table_named",
+    "adapter_retrieval_path_named",
+    "stale_revoked_rejection_path_named",
+    "service_caller_intersection_point_named",
+    "budget_charge_refund_overrun_path_named",
+    "second_caller_rejection_cleanup_named",
+    "exactly_once_settlement_table_named",
+    "set_based_authority_intersection_named",
+    "receipt_generation_comparison_named",
+    "cancel_retry_reissue_free_ordering_named",
+    "evidence_class_non_claim_flags_preserved"
+  ],
+  "postponed": [
+    "public_user_abi",
+    "public_tracepoint_abi",
+    "direct_call_monitor_stub_implementation",
+    "monitor_owned_ring_implementation",
+    "global_workqueue_integration",
+    "generic_io_wq_integration",
+    "task_struct_field_changes",
+    "scheduler_behavior_changes",
+    "lsm_cgroup_policy_frontend_integration",
+    "kunit_or_runtime_tests",
+    "production_protection_claims",
+    "multi_caller_merge_semantics",
+    "delayed_work_retiming_helpers_beyond_explicit_policy",
+    "full_linked_request_inheritance_rules",
+    "budget_overrun_refund_policy"
+  ],
+  "required_future_models": [
+    "io_uring_refinement_for_sqe_fixed_resources_inline_issue_io_wq_link_cancel_reissue_cqe_ref_release_free",
+    "budget_ticket_and_receipt_exactly_once_settlement_state_machine",
+    "monotonic_generation_epoch_revoke_interleavings",
+    "set_based_authority_intersection_model",
+    "workqueue_delayed_work_self_requeue_preserve_reject_regenerate_refinement"
+  ],
+  "red_flags": [
+    "cached_validated_boolean",
+    "core_holds_linux_object_refs",
+    "generic_ops_table",
+    "release_coupled_to_free_or_completion",
+    "second_caller_overwrite_on_pending_work",
+    "delayed_work_retiming_as_implicit_merge",
+    "REQ_F_REISSUE_as_receipt_refresh",
+    "CQE_cancel_refdrop_as_settlement_proof",
+    "public_or_global_hook_surface"
+  ],
+  "next_required_artifact": {
+    "id": "N-126",
+    "description": "Model the N-125 API sketch transition ordering and adapter obligations before any Linux code proposal.",
+    "must_remain_no_behavior": true
+  },
+  "safety_flags": {
+    "implementation_approval": false,
+    "linux_patch_approval": false,
+    "workqueue_integration": false,
+    "io_uring_integration": false,
+    "direct_call_stub_exists": false,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "behavior_change": false,
+    "public_tracepoint_abi": false,
+    "abi_approval": false,
+    "protection_claim": false
+  }
+}
