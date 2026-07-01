@@ -127,6 +127,9 @@ Model-supported areas:
   requires pre-frozen authority, proxy execution cannot use current-only budget,
   selected state cannot run after retry, and class settlement is required before
   execution
+- runtime charge subject semantics, checking that Linux runtime accounting
+  surfaces name current/donor/cgroup/class/monitor/proxy/observation roles and
+  do not turn class runtime or task_sched_runtime into authority
 
 Prototype-evidenced areas:
 

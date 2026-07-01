@@ -300,4 +300,13 @@ Current scheduler authority refinement gate:
   No scheduler authority patch is approved. The next implementation-facing
   pressure is trace-only runtime coverage for current/donor/proxy paths and F1
   admission-freeze data dependency refresh against current upstream.
+
+Current runtime charge subject gate:
+  analysis/0090, formal/0068, runtime-charge-subject-v1.json, and
+  validation/0107 now make NoUnspecifiedRuntimeCharge an explicit budget gate.
+  Safe TLC passed with 79 generated states, 48 distinct states, and depth 4.
+  Unsafe configs produced expected counterexamples for unspecified runtime
+  charge, class runtime as root authority, proxy runtime without ticket, remote
+  tick proxy authority, task_sched_runtime as authority, and CFS proxy without
+  donor/cgroup charge. No budget hook or scheduler authority patch is approved.
 ```

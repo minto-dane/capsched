@@ -95,6 +95,7 @@ Updated: 2026-07-01
 | 0087 | Automation contract drafted and executed | Linux Source-Drift Automation and Model-Freshness Gate |
 | 0088 | Target selected for source-only refresh | Linux Source-Map Refresh Target Selection |
 | 0089 | Draft model gate with TLC-backed design filter | Scheduler Authority Refinement Gate |
+| 0090 | Draft model gate with TLC-backed design filter | Runtime Charge Subject Map |
 
 ## Planned Analysis Notes
 
@@ -155,3 +156,4 @@ Updated: 2026-07-01
 | `linux-source-map-refresh-target-selection-v1.json` | Target selection | Machine-readable candidate comparison and source-only scheduler_authority_core refresh target selection for N-133 |
 | `linux-scheduler-authority-core-refresh-v1.json` | Source-only refresh contract | Machine-readable scheduler authority anchors, refreshed rules, updated artifacts, and safety flags for N-134 |
 | `scheduler-authority-refinement-gate-v1.json` | Draft model gate | Machine-readable TASK_WAKING, donor/current/proxy budget, and selected-state refinement gate for N-135 |
+| `runtime-charge-subject-v1.json` | Draft model gate | Machine-readable runtime charge subject map for N-136 |

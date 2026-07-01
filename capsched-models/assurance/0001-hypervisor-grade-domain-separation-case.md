@@ -177,6 +177,8 @@ Current evidence:
 - `validation/0006-broker-budget-ticket-tlc.md`
 - `formal/0067-scheduler-authority-refinement-gate-model/`
 - `validation/0106-scheduler-authority-refinement-gate-tlc.md`
+- `formal/0068-runtime-charge-subject-model/`
+- `validation/0107-runtime-charge-subject-tlc.md`
 - Slice 0B type name: `capsched_budget_ticket`
 
 Open gaps:
@@ -578,6 +580,7 @@ Open gaps:
 | E-ENDP-001 | TLA validation | `validation/0005-endpoint-async-tlc.md` | ENDP, ASYNC |
 | E-BUD-001 | TLA validation | `validation/0006-broker-budget-ticket-tlc.md` | BUDGET |
 | E-SCHED-REFINE-001 | TLA validation | `validation/0106-scheduler-authority-refinement-gate-tlc.md` | EXEC, BUDGET |
+| E-SCHED-RUNTIME-001 | TLA validation | `validation/0107-runtime-charge-subject-tlc.md` | BUDGET |
 | E-ACT-001 | TLA validation | `validation/0007-domain-monitor-activation-tlc.md` | ACT |
 | E-CLUSTER-001 | Negative/stress record | `validation/0008-cluster-lease-full-systemd-tlc-run.md` | CLUSTER limitation |
 | E-CLUSTER-002 | TLA validation | `validation/0009-cluster-authority-decomposition-tlc.md` | CLUSTER, REVOKE |
@@ -596,6 +599,7 @@ Open gaps:
 | CEX-PCACHE-001 | `validation/0012` | Per-overlay commit without base serialization permits stale commit. |
 | CEX-DEV-001 | `validation/0013` | IRQ aliasing across non-free queues must be forbidden. |
 | CEX-SCHED-REFINE-001 | `validation/0106` | TASK_WAKING before freeze, current-only proxy budget, run after retry, and run without class settlement are rejected. |
+| CEX-SCHED-RUNTIME-001 | `validation/0107` | Unspecified runtime charge, class runtime as root authority, proxy without ticket, remote tick proxy authority, task_sched_runtime authority, and CFS proxy without donor/cgroup charge are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
 | HAZ-ENDP-001 | `analysis/0015` | Socket endpoint checks cannot rely only on LSM because some paths reuse `sock_sendmsg_nosec()`. |
 

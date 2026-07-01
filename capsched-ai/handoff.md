@@ -255,12 +255,24 @@ latest completed risk:
   cases, and 13/13 safety flags false. Assurance evidence E-SCHED-REFINE-001
   supports EXEC-001 and BUDGET-001 only as model evidence.
 
+latest completed risk:
+  Runtime charge subject gate. Analysis/0090, formal/0068,
+  runtime-charge-subject-v1.json, and validation/0107 now model
+  NoUnspecifiedRuntimeCharge across scheduler runtime surfaces. Safe TLC passed
+  with 79 generated states, 48 distinct states, 0 states left on queue, depth
+  4. Unsafe configs produced expected counterexamples for unspecified runtime
+  charge, class runtime as root authority, proxy runtime without ticket, remote
+  tick proxy authority, task_sched_runtime as authority, and CFS proxy without
+  donor/cgroup charge. JSON check confirms 15 source anchors, 6 unsafe cases,
+  and 12/12 safety flags false. Assurance evidence E-SCHED-RUNTIME-001 supports
+  BUDGET-001 only as model evidence.
+
 next focused risk:
-  NoUnspecifiedRuntimeCharge: exact current/donor/proxy runtime charge
-  equations across CFS, RT, deadline, sched_ext, hrtick, task_sched_runtime,
-  cgroup CPU time, remote tick, and proxy execution. Do not add direct-call
-  stubs, ABI, tracepoints, workqueue integration, io_uring integration, async
-  carrier Linux names, or behavior-changing patches.
+  Trace-only runtime coverage for current/donor/proxy paths, RT/DL/sched_ext
+  server-ticket refinement, and monitor root budget timer event modeling. Do
+  not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
+  integration, async carrier Linux names, budget hooks, or behavior-changing
+  patches.
 ```
 
 That focused VF IRQ model is now checked:

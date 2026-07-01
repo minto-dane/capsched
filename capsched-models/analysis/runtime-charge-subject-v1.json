@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "id": "runtime-charge-subject-v1",
+  "status": "draft_model_gate_checked",
+  "date": "2026-07-01",
+  "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+  "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+  "analysis": "analysis/0090-runtime-charge-subject-map.md",
+  "formal_model": "formal/0068-runtime-charge-subject-model",
+  "validation": "validation/0107-runtime-charge-subject-tlc.md",
+  "source_anchors": [
+    {
+      "id": "hrtick",
+      "path": "kernel/sched/core.c",
+      "line": 907,
+      "symbol": "hrtick",
+      "charge_subject": "SchedulingDonor"
+    },
+    {
+      "id": "task_sched_runtime",
+      "path": "kernel/sched/core.c",
+      "line": 5674,
+      "symbol": "task_sched_runtime",
+      "charge_subject": "ObservationOnly"
+    },
+    {
+      "id": "sched_tick",
+      "path": "kernel/sched/core.c",
+      "line": 5762,
+      "symbol": "sched_tick",
+      "charge_subject": "SchedulingDonor"
+    },
+    {
+      "id": "sched_tick_remote",
+      "path": "kernel/sched/core.c",
+      "line": 5849,
+      "symbol": "sched_tick_remote",
+      "charge_subject": "ExecutorCurrentEqualsSchedulingDonor"
+    },
+    {
+      "id": "update_curr_common",
+      "path": "kernel/sched/fair.c",
+      "line": 1977,
+      "symbol": "update_curr_common",
+      "charge_subject": "SchedulingDonorEntity"
+    },
+    {
+      "id": "update_se",
+      "path": "kernel/sched/fair.c",
+      "line": 1355,
+      "symbol": "update_se",
+      "charge_subject": "ExecutorCurrentAndCgroupDonor"
+    },
+    {
+      "id": "update_curr_fair",
+      "path": "kernel/sched/fair.c",
+      "line": 1985,
+      "symbol": "update_curr",
+      "charge_subject": "FairDonorEntityWithProxyWarning"
+    },
+    {
+      "id": "task_tick_fair",
+      "path": "kernel/sched/fair.c",
+      "line": 14851,
+      "symbol": "task_tick_fair",
+      "charge_subject": "SchedulingDonorOrRemoteNoProxy"
+    },
+    {
+      "id": "update_curr_rt",
+      "path": "kernel/sched/rt.c",
+      "line": 974,
+      "symbol": "update_curr_rt",
+      "charge_subject": "SchedulingDonorAndClassRuntime"
+    },
+    {
+      "id": "task_tick_rt",
+      "path": "kernel/sched/rt.c",
+      "line": 2540,
+      "symbol": "task_tick_rt",
+      "charge_subject": "SchedulingDonorAndClassRuntime"
+    },
+    {
+      "id": "update_curr_dl",
+      "path": "kernel/sched/deadline.c",
+      "line": 2128,
+      "symbol": "update_curr_dl",
+      "charge_subject": "SchedulingDonorAndClassRuntime"
+    },
+    {
+      "id": "task_tick_dl",
+      "path": "kernel/sched/deadline.c",
+      "line": 2876,
+      "symbol": "task_tick_dl",
+      "charge_subject": "SchedulingDonorAndClassRuntime"
+    },
+    {
+      "id": "update_curr_scx",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 1321,
+      "symbol": "update_curr_scx",
+      "charge_subject": "SchedulingDonorAndExecutorSlice"
+    },
+    {
+      "id": "update_curr_idle",
+      "path": "kernel/sched/idle.c",
+      "line": 551,
+      "symbol": "update_curr_idle",
+      "charge_subject": "ObservationOnlyService"
+    },
+    {
+      "id": "put_prev_task_stop",
+      "path": "kernel/sched/stop_task.c",
+      "line": 61,
+      "symbol": "put_prev_task_stop",
+      "charge_subject": "ObservationOnlyService"
+    }
+  ],
+  "invariants": [
+    "NoUnspecifiedRuntimeCharge",
+    "NoClassRuntimeAsRootAuthority",
+    "NoProxyRuntimeWithoutTicket",
+    "NoRemoteTickProxyAuthority",
+    "NoObservationOnlyAsAuthority",
+    "NoCfsProxyWithoutDonorCgroup",
+    "NoFailClosedAccepted"
+  ],
+  "unsafe_cases": [
+    "unspecified_runtime_charge",
+    "class_runtime_as_root_authority",
+    "proxy_runtime_without_ticket",
+    "remote_tick_proxy_authority",
+    "task_sched_runtime_as_authority",
+    "cfs_proxy_missing_donor_cgroup"
+  ],
+  "safety_flags": {
+    "linux_implementation": false,
+    "behavior_change": false,
+    "public_abi": false,
+    "tracepoint_abi": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "protection_claim": false,
+    "hook_approved": false,
+    "budget_hook": false,
+    "class_runtime_root": false,
+    "task_sched_runtime_enforcement": false,
+    "current_only_proxy_budget": false
+  },
+  "next_blocking_obligations": [
+    "trace-only runtime coverage for current/donor/proxy paths",
+    "RT/DL/sched_ext server-ticket refinement",
+    "monitor root budget timer event model",
+    "budget overrun bound model under hostile Linux"
+  ]
+}

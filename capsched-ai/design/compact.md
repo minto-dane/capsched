@@ -197,9 +197,18 @@ latest completed focused risk:
   budget, run after retry, and run without class settlement. JSON: 17 anchors,
   4 unsafe cases, 13/13 safety flags false.
 
+latest completed focused risk:
+  Runtime charge subject gate. Analysis/0090, formal/0068, JSON gate, and
+  validation/0107 model NoUnspecifiedRuntimeCharge. Safe TLC: 79 generated
+  states, 48 distinct, depth 4. Unsafe configs reject unspecified runtime
+  charge, class runtime as root authority, proxy without ticket, remote-tick
+  proxy authority, task_sched_runtime authority, and CFS proxy without
+  donor/cgroup charge. JSON: 15 anchors, 6 unsafe cases, 12/12 safety flags
+  false.
+
 next focused risk:
-  NoUnspecifiedRuntimeCharge across CFS/RT/DL/SCX/hrtick/task_sched_runtime/
-  cgroup/proxy runtime surfaces.
+  Trace-only current/donor/proxy runtime coverage, RT/DL/SCX server-ticket
+  refinement, and monitor root budget timer event modeling.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

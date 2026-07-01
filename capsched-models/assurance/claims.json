@@ -89,7 +89,8 @@
       "claim": "Domain CPU use and service execution on behalf of callers are bounded by non-forgeable root budgets and caller-reserved BudgetTickets.",
       "evidence": [
         "E-BUD-001",
-        "E-SCHED-REFINE-001"
+        "E-SCHED-REFINE-001",
+        "E-SCHED-RUNTIME-001"
       ],
       "gaps": [
         "No monitor root budget timer.",
@@ -753,6 +754,15 @@
         "BUDGET-001"
       ],
       "limitation": "Finite model gate checks TASK_WAKING freeze, donor/current/proxy budget collapse, and selected-state retry hazards; it is not Linux implementation, runtime coverage, monitor verification, or production protection evidence."
+    },
+    {
+      "id": "E-SCHED-RUNTIME-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0107-runtime-charge-subject-tlc.md",
+      "supports": [
+        "BUDGET-001"
+      ],
+      "limitation": "Finite model gate checks runtime charge subject classification; it is not Linux budget-hook implementation, runtime coverage, monitor timer evidence, or production protection evidence."
     },
     {
       "id": "E-ACT-001",
@@ -1525,6 +1535,11 @@
       "id": "CEX-SCHED-REFINE-001",
       "record": "capsched-models/validation/0106-scheduler-authority-refinement-gate-tlc.md",
       "meaning": "Unsafe scheduler authority refinements show expected counterexamples for TASK_WAKING before freeze, current-only proxy budget, run after retry, and run without class settlement."
+    },
+    {
+      "id": "CEX-SCHED-RUNTIME-001",
+      "record": "capsched-models/validation/0107-runtime-charge-subject-tlc.md",
+      "meaning": "Unsafe runtime charge models show expected counterexamples for unspecified charge, class runtime as root authority, proxy without ticket, remote-tick proxy authority, task_sched_runtime authority, and CFS proxy without donor/cgroup charge."
     }
   ],
   "forbidden_claims": [
