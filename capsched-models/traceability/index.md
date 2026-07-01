@@ -55,15 +55,15 @@ protection evidence.
 
 ## Latest Project Source-Map Drift Check
 
-Validation/0080 executed the project-level source-map drift checker against
-legacy machine-readable source maps and the latest direct-call overlay seed:
+Validation/0088 refreshed the project-level source-map drift checker after
+adding the N-117 direct-call receipt-consumer source map:
 
 ```text
-run: build/traceability-project-drift/20260630T235533Z
-json_artifacts_scanned=15
-anchor_rows=515
-ok_rows=501
-gap_rows=14
+run: build/traceability-project-drift/20260701T020900Z
+json_artifacts_scanned=16
+anchor_rows=542
+ok_rows=521
+gap_rows=21
 path_changed_rows=0
 symbol_missing_rows=0
 pattern_missing_rows=0
@@ -78,23 +78,24 @@ semantic_validation=false
 
 N-111 rechecked the previous missing symbol and descriptive pattern rows. N-112
 then replaced the remaining line-only anchors with symbol-bearing anchors.
-Gap rows and unsupported rows are preserved, not converted into authority or
-removed obligations.
+N-117 added 20 current source anchors and 7 preserved future gap/plan rows for
+the receipt-consumer lens. Gap rows and unsupported rows are preserved, not
+converted into authority or removed obligations.
 
 The `ok_rows` count is path/pattern drift evidence only; it is not semantic
 validation of those source regions.
 
 ## Latest Project Overlay Ledger
 
-Validation/0081 executed the project overlay ledger normalizer against the
+Validation/0088 refreshed the project overlay ledger normalizer against the
 latest project source-map drift output:
 
 ```text
-run: build/traceability-overlay/20260630T235558Z
-input_rows=515
-overlay_rows=515
-ok_rows=501
-gap_rows=14
+run: build/traceability-overlay/20260701T020930Z
+input_rows=542
+overlay_rows=542
+ok_rows=521
+gap_rows=21
 path_changed_rows=0
 symbol_missing_rows=0
 pattern_missing_rows=0
@@ -103,8 +104,8 @@ needs_semantic_recheck_rows=0
 path_only_rows=67
 line_only_rows=0
 symbol_rows=397
-pattern_rows=37
-gap_match_rows=14
+pattern_rows=57
+gap_match_rows=21
 safety_flag_violations=0
 semantic_validation=false
 n_series_rewrite=false
@@ -116,23 +117,23 @@ runtime coverage, authority, ABI approval, or production protection.
 
 ## Latest Semantic Recheck Queue
 
-Validation/0082 executed the semantic recheck queue builder against the latest
+Validation/0088 refreshed the semantic recheck queue builder against the latest
 project overlay ledger:
 
 ```text
-run: build/semantic-recheck/20260630T235623Z
-overlay_rows=515
+run: build/semantic-recheck/20260701T020945Z
+overlay_rows=542
 semantic_recheck_items=0
-gap_items=14
+gap_items=21
 line_only_anchor_items=0
 symbol_missing_items=0
 pattern_missing_items=0
-gap_or_plan_items=14
+gap_or_plan_items=21
 safety_flag_violations=0
 semantic_validation=false
 ```
 
-This queue is empty for active semantic recheck items. The 14 preserved
+This queue is empty for active semantic recheck items. The 21 preserved
 gap/plan rows remain tracked separately so that missing future anchors are not
 mistaken for implementation evidence or silently dropped.
 
@@ -163,15 +164,18 @@ patches, or production protection.
 
 ## Latest Project Gap Classification
 
-Validation/0085 classified the remaining preserved gap/plan rows:
+Validation/0088 refreshed the preserved gap/plan classification after N-117:
 
 ```text
-run: build/traceability-gap-classification/20260701T000823Z
-gap_rows=14
+run: build/traceability-gap-classification/20260701T020955Z
+gap_rows=21
 semantic_gap_groups=7
 duplicate_groups=7
+future_linux_anchor_rows=15
 future_linux_anchor_groups=5
+future_test_anchor_rows=3
 future_test_anchor_groups=1
+trace_plan_rows=3
 trace_plan_groups=1
 unknown_gap_rows=0
 safety_flag_violations=0
@@ -179,10 +183,11 @@ semantic_validation=false
 implementation_approval=false
 ```
 
-The 14 rows collapse into 7 direct-call semantic gap groups. Five are
+The 21 rows collapse into the same 7 direct-call semantic gap groups. Five are
 high-severity future Linux/internal anchors that still depend on monitor-owned
 direct-call semantics; one is a test-only failure-injection surface; one is a
-trace-only observation plan. None are implementation approval.
+trace-only observation plan. N-117 adds a third source-map view of each group,
+not implementation approval.
 
 ## Existing Indexes
 

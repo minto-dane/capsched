@@ -163,9 +163,22 @@ GAPS = {
     },
 }
 
+DIRECT_CALL_RECEIPT_CONSUMER_TO_GAP = {
+    "021": "004",
+    "022": "005",
+    "023": "006",
+    "024": "007",
+    "025": "008",
+    "026": "009",
+    "027": "010",
+}
+
 def suffix_from(value):
     if not value:
         return None
+    m = re.search(r"DCRCV-(\d{3})", value)
+    if m and m.group(1) in DIRECT_CALL_RECEIPT_CONSUMER_TO_GAP:
+        return DIRECT_CALL_RECEIPT_CONSUMER_TO_GAP[m.group(1)]
     for pattern in (r"direct-call-inventory-(\d{3})", r"LINUX-DIRECTCALL-(\d{3})", r"overlay-direct-call-inventory-(\d{3})"):
         m = re.search(pattern, value)
         if m:

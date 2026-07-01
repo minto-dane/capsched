@@ -157,6 +157,14 @@ Prototype-evidenced areas:
   are derived cache records only, while monitor-owned receipts are required for
   request image, schema acceptance, entry result, response handle, and revoke
   completion
+- source-only direct-call receipt-consumer map with 27 rows: 20 current Linux
+  source anchors for inert namespace, scheduler hot-path candidates,
+  policy/lifecycle candidates, and async exclusion anchors, plus 7 preserved
+  future gap/plan rows. The refreshed project drift run has 542 anchor rows,
+  521 ok rows, 21 gap rows, 0 missing symbols/patterns, and no
+  authority/protection claims. Gap classification still collapses those 21 rows
+  into the same 7 semantic direct-call gap groups, so the added view does not
+  resolve any production obligation.
 
 Open production gaps:
 

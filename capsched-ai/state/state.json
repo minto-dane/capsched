@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-receipt-schema-modeled",
+    "current_phase": "direct-call-receipt-consumer-source-mapped",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-116 completed the monitor-owned direct-call receipt schema. analysis/0079 and formal/0056 define RequestImageReceipt, SchemaReceipt, EntryResultReceipt, ResponseHandleReceipt, and RevokeReceipt as monitor-owned receipt families; Linux-visible shadows are derived cache records only. validation/0087 safe TLC passed with 10 generated states, 9 distinct states, depth 9; 12 unsafe configs produced expected counterexamples for Linux-minted receipt, Linux schema acceptance, wrapper return as receipt, timeout shadow refresh, Linux shadow authority, response during revoke, revoke completion with in-flight response, trace-plan coverage, ABI approval, behavior change, monitor verification, and protection claim. Next focused risk is N-117: source-map candidate inert/no-code Linux-facing surfaces that consume opaque monitor receipts, still without approving stubs, ABI, tracepoints, or behavior-changing patches.",
+    "current_focus": "N-117 completed the source-only direct-call receipt-consumer source map. analysis/0080 and direct-call-receipt-consumer-source-map-v1.json map 27 Linux-facing rows: 20 current source anchors across inert CapSched namespace, scheduler hot-path candidates, policy/lifecycle candidates, and async exclusion anchors, plus 7 preserved future gap/plan rows. validation/0088 refreshed project drift, overlay, semantic queue, and gap classification: project drift run build/traceability-project-drift/20260701T020900Z has 542 anchors, 521 ok rows, 21 gap rows, 0 missing symbols/patterns, and 0 safety violations; classification run build/traceability-gap-classification/20260701T020955Z collapses the 21 gap rows into the same 7 semantic direct-call gap groups. This is not Linux implementation, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-118: model receipt-consumer placement/exclusion constraints before any direct-call carrier patch.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -489,22 +489,22 @@
     "direct_call_overlay_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-drift/20260630T230822Z",
     "project_source_map_drift_checker": "capsched/capsched-models/traceability/check-project-source-map-drift.sh",
     "project_source_map_drift_result": "capsched/capsched-models/validation/0080-project-source-map-drift-checker-result.md",
-    "project_source_map_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260630T235533Z",
+    "project_source_map_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260701T020900Z",
     "project_overlay_ledger_schema": "capsched/capsched-models/traceability/project-overlay-ledger-row-schema-v1.json",
     "project_overlay_ledger_builder": "capsched/capsched-models/traceability/build-project-overlay-ledger.sh",
     "project_overlay_ledger_result": "capsched/capsched-models/validation/0081-project-overlay-ledger-normalization-result.md",
-    "project_overlay_ledger_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260630T235558Z",
+    "project_overlay_ledger_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260701T020930Z",
     "semantic_recheck_workflow": "capsched/capsched-models/traceability/semantic-recheck-workflow-v1.md",
     "semantic_recheck_queue_builder": "capsched/capsched-models/traceability/build-semantic-recheck-queue.sh",
     "semantic_recheck_queue_result": "capsched/capsched-models/validation/0082-semantic-recheck-queue-result.md",
-    "semantic_recheck_queue_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260630T235623Z",
+    "semantic_recheck_queue_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260701T020945Z",
     "semantic_recheck_batch1_result": "capsched/capsched-models/validation/0083-semantic-recheck-batch1-result.md",
     "semantic_recheck_line_only_result": "capsched/capsched-models/validation/0084-semantic-recheck-line-only-result.md",
     "project_gap_classification_schema": "capsched/capsched-models/traceability/project-gap-classification-schema-v1.json",
     "project_gap_classification_workflow": "capsched/capsched-models/traceability/gap-classification-workflow-v1.md",
     "project_gap_classification_builder": "capsched/capsched-models/traceability/classify-project-gaps.sh",
     "project_gap_classification_result": "capsched/capsched-models/validation/0085-project-gap-classification-result.md",
-    "project_gap_classification_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-gap-classification/20260701T000823Z",
+    "project_gap_classification_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-gap-classification/20260701T020955Z",
     "direct_call_gap_closure_design": "capsched/capsched-models/analysis/0078-direct-call-gap-closure-design.md",
     "direct_call_gap_closure_model": "capsched/capsched-models/formal/0055-direct-call-gap-closure-model/README.md",
     "direct_call_gap_closure_tla": "capsched/capsched-models/formal/0055-direct-call-gap-closure-model/DirectCallGapClosure.tla",
@@ -517,7 +517,10 @@
     "direct_call_receipt_schema_model": "capsched/capsched-models/formal/0056-direct-call-receipt-schema-model/README.md",
     "direct_call_receipt_schema_tla": "capsched/capsched-models/formal/0056-direct-call-receipt-schema-model/DirectCallReceiptSchema.tla",
     "direct_call_receipt_schema_validation": "capsched/capsched-models/validation/0087-direct-call-receipt-schema-tlc.md",
-    "direct_call_receipt_schema_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-receipt-schema-20260701T003345Z"
+    "direct_call_receipt_schema_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-receipt-schema-20260701T003345Z",
+    "direct_call_receipt_consumer_source_map": "capsched/capsched-models/analysis/0080-direct-call-receipt-consumer-source-map.md",
+    "direct_call_receipt_consumer_source_map_json": "capsched/capsched-models/analysis/direct-call-receipt-consumer-source-map-v1.json",
+    "direct_call_receipt_consumer_validation": "capsched/capsched-models/validation/0088-direct-call-receipt-consumer-source-map-result.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2107,9 +2110,19 @@
     {
       "id": "N-117",
       "text": "Source-map candidate inert/no-code Linux-facing direct-call surfaces that consume opaque monitor receipts from N-116, still without approving direct-call stubs, ABI, tracepoints, or behavior-changing Linux patches.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-116"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Added analysis/0080 and direct-call-receipt-consumer-source-map-v1.json. The map records 27 rows: 20 current source anchors for inert namespace, scheduler hot-path candidates, policy/lifecycle candidates, and async exclusion anchors, plus 7 preserved future gap/plan rows. Updated classify-project-gaps.sh so DCRCV-021 through DCRCV-027 map back to DCGAP-004 through DCGAP-010. validation/0088 records jq safety checks and refreshed project drift/overlay/semantic queue/gap classification runs. Project drift has 542 anchors, 521 ok rows, 21 gap rows, 0 missing symbols/patterns, and 0 safety violations. Gap classification collapses 21 rows into the same 7 semantic groups. No Linux patch, ABI, tracepoint, behavior change, monitor verification, runtime coverage, or protection claim is approved."
+    },
+    {
+      "id": "N-118",
+      "text": "Model direct-call receipt-consumer placement and exclusion constraints from N-117 before any Linux direct-call carrier patch, with special focus on hot-path bounded checks, policy/lifecycle separation, and generic async exclusion.",
+      "status": "pending",
+      "blocked_by": [
+        "N-117"
       ]
     }
   ],

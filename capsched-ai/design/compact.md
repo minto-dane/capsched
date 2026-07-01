@@ -106,15 +106,15 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call monitor-owned receipt schema. Analysis/0079 and formal/0056
-  define five monitor-owned receipt families. Validation/0087 safe TLC passed
-  with 10 generated states, 9 distinct states, depth 9. Twelve unsafe configs
-  produced expected counterexamples for Linux-minted receipt/schema/entry/
-  response/revoke shortcuts and for ABI/runtime/protection overclaims.
+  Direct-call receipt-consumer source map. Analysis/0080 maps 27 rows: 20
+  current Linux source anchors and 7 preserved future gap/plan rows.
+  Validation/0088 refreshed drift/overlay/semantic queue/classification:
+  542 anchors, 521 ok rows, 21 gap rows, 0 missing symbols or patterns, and
+  0 safety violations. The 21 gaps collapse into the same 7 semantic
+  direct-call groups.
 
 next focused risk:
-  Source-map candidate inert/no-code Linux-facing direct-call surfaces that
-  consume opaque monitor receipts.
+  Model receipt-consumer placement/exclusion constraints from N-117.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1556,7 +1556,8 @@ next:
   N-114 completed direct-call gap-closure design/model.
   N-115 completed the implementation-facing closure gate.
   N-116 completed monitor-owned receipt schema/model.
-  N-117 should source-map candidate inert/no-code Linux-facing surfaces.
+  N-117 completed receipt-consumer source mapping.
+  N-118 should model receipt-consumer placement/exclusion constraints.
 ```
 
 Latest project gap classification:
@@ -1634,5 +1635,23 @@ safe TLC:
   depth 9
 
 next:
-  N-117 source-map Linux-facing receipt-consuming surfaces.
+  N-117 completed receipt-consumer source mapping.
+```
+
+Latest direct-call receipt-consumer source map:
+
+```text
+N-117 completed:
+  analysis/0080
+  direct-call-receipt-consumer-source-map-v1.json
+  validation/0088
+
+latest drift:
+  542 anchors
+  521 ok rows
+  21 gap rows
+  0 safety violations
+
+next:
+  N-118 model receipt-consumer placement/exclusion constraints.
 ```

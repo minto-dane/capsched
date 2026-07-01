@@ -145,16 +145,14 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  use implementation/0009 and analysis/0079 as the pre-patch gate for any
-  direct-call carrier proposal. The next work should source-map candidate
-  inert/no-code Linux-facing surfaces that consume opaque monitor receipts, or
-  refine monitor-side receipt lifecycle/failure schemas. A separate privileged
-  tracefs runbook is required before any tracefs execution, direct-call carrier,
-  or public tracepoint patch.
+  use implementation/0009, analysis/0079, and analysis/0080 as the pre-patch
+  gate for any direct-call carrier proposal. The next work should model the
+  receipt-consumer placement/exclusion constraints before any Linux direct-call
+  carrier, public tracepoint, or behavior-changing patch.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0087 improve traceability and model the
-  gap-closure/receipt-schema gates, but they are not Linux stub implementation,
-  monitor verification, ABI approval, runtime coverage, behavior-change
-  approval, or production protection evidence.
+  validation/0080 through validation/0088 improve traceability and model/source
+  map the gap-closure, receipt-schema, and receipt-consumer gates, but they are
+  not Linux stub implementation, monitor verification, ABI approval, runtime
+  coverage, behavior-change approval, or production protection evidence.
 ```

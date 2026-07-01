@@ -113,21 +113,18 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call monitor-owned receipt schema. Analysis/0079 and formal/0056
-  define RequestImageReceipt, SchemaReceipt, EntryResultReceipt,
-  ResponseHandleReceipt, and RevokeReceipt as monitor-owned receipt families.
-  Linux-visible shadows are derived cache records only. Validation/0087 safe
-  TLC passed with 10 generated states, 9 distinct states, depth 9. Twelve unsafe
-  configs produced expected counterexamples for Linux-minted receipt, Linux
-  schema acceptance, wrapper return as receipt, timeout shadow refresh, Linux
-  shadow authority, response during revoke, revoke completion with in-flight
-  response, trace-plan coverage, ABI approval, behavior change, monitor
-  verification claim, and protection claim.
+  Direct-call receipt-consumer source map. Analysis/0080 maps 27 rows: 20
+  current Linux source anchors for inert namespace, scheduler hot-path
+  candidates, policy/lifecycle candidates, and async exclusion anchors, plus 7
+  preserved future gap/plan rows. Validation/0088 refreshed drift, overlay,
+  semantic queue, and gap classification. Project drift has 542 anchors,
+  521 ok rows, 21 gap rows, 0 missing symbols or patterns, and 0 safety
+  violations. The 21 gaps collapse into the same 7 semantic direct-call groups.
 
 next focused risk:
-  Source-map candidate inert/no-code Linux-facing direct-call surfaces that
-  consume opaque monitor receipts from N-116. Do not add direct-call stubs, ABI,
-  tracepoints, or behavior-changing patches.
+  Model receipt-consumer placement/exclusion constraints from N-117 before any
+  direct-call carrier patch. Do not add direct-call stubs, ABI, tracepoints, or
+  behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:
@@ -1732,8 +1729,8 @@ next:
   N-114 completed direct-call gap-closure design/model.
   N-115 completed the implementation-facing closure gate.
   N-116 completed monitor-owned receipt schema/model.
-  N-117 should source-map candidate inert/no-code Linux-facing surfaces that
-  consume opaque monitor receipts.
+  N-117 completed receipt-consumer source mapping.
+  N-118 should model receipt-consumer placement/exclusion constraints.
 ```
 
 Latest project gap classification:
@@ -1841,5 +1838,34 @@ receipt families:
   RevokeReceipt
 
 next:
-  N-117 source-map Linux-facing surfaces that consume opaque receipts.
+  N-117 completed receipt-consumer source mapping.
+```
+
+Latest direct-call receipt-consumer source map:
+
+```text
+N-117 completed:
+  analysis/0080-direct-call-receipt-consumer-source-map.md
+  analysis/direct-call-receipt-consumer-source-map-v1.json
+  validation/0088-direct-call-receipt-consumer-source-map-result.md
+
+row shape:
+  27 total rows
+  20 current source anchors
+  7 preserved future gap/plan rows
+
+latest project drift:
+  build/traceability-project-drift/20260701T020900Z
+  542 anchors
+  521 ok rows
+  21 gap rows
+  0 missing symbols or patterns
+  0 safety violations
+
+latest gap classification:
+  build/traceability-gap-classification/20260701T020955Z
+  21 gap rows -> 7 semantic direct-call gap groups
+
+next:
+  N-118 model receipt-consumer placement/exclusion constraints.
 ```
