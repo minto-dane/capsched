@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-async-carrier-gated",
+    "current_phase": "direct-call-async-source-mapped",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-121 completed the implementation-facing no-patch async-carrier gate. implementation/0011 and direct-call-async-carrier-gate-v1.json define 9 DCASYNC rows: typed carrier identity, pending coalescing preservation, caller BudgetTicket ownership, service/caller intersection, monitor receipt provenance, revoke/stale-carrier rejection, workqueue patch boundary, io_uring patch boundary, and evidence class split. validation/0092 confirms 9/9 gate rows have required preconditions, forbidden fallbacks, and patch preconditions, with implementation_approval=false, authority_claim=false, monitor_verified=false, runtime_coverage=false, behavior_change=false, public_tracepoint_abi=false, and protection_claim=false. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-122: source-map workqueue and io_uring separately against DCASYNC-007 and DCASYNC-008 before any async carrier code proposal.",
+    "current_focus": "N-122 completed source-only workqueue and io_uring maps against DCASYNC-007 and DCASYNC-008. analysis/0081 plus direct-call-async-workqueue-source-map-v1.json and direct-call-async-io-uring-source-map-v1.json record 37 current Linux anchors: 19 workqueue and 18 io_uring. validation/0093 records local JSON safety checks, project drift build/traceability-project-drift/20260701T025605Z with 579 anchors, 558 ok rows, 21 preserved gap rows, 0 missing symbols/patterns, 0 semantic recheck rows, 0 safety violations, overlay 20260701T025713Z, semantic queue 20260701T025731Z with 0 active recheck items, and gap classification 20260701T025747Z preserving the same 7 semantic gap groups. This is source-only traceability, not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-123: build a carrier lifetime table for workqueue and io_uring separately before any async carrier code proposal.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -497,14 +497,14 @@
     "semantic_recheck_workflow": "capsched/capsched-models/traceability/semantic-recheck-workflow-v1.md",
     "semantic_recheck_queue_builder": "capsched/capsched-models/traceability/build-semantic-recheck-queue.sh",
     "semantic_recheck_queue_result": "capsched/capsched-models/validation/0082-semantic-recheck-queue-result.md",
-    "semantic_recheck_queue_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260701T020945Z",
+    "semantic_recheck_queue_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/semantic-recheck/20260701T025731Z",
     "semantic_recheck_batch1_result": "capsched/capsched-models/validation/0083-semantic-recheck-batch1-result.md",
     "semantic_recheck_line_only_result": "capsched/capsched-models/validation/0084-semantic-recheck-line-only-result.md",
     "project_gap_classification_schema": "capsched/capsched-models/traceability/project-gap-classification-schema-v1.json",
     "project_gap_classification_workflow": "capsched/capsched-models/traceability/gap-classification-workflow-v1.md",
     "project_gap_classification_builder": "capsched/capsched-models/traceability/classify-project-gaps.sh",
     "project_gap_classification_result": "capsched/capsched-models/validation/0085-project-gap-classification-result.md",
-    "project_gap_classification_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-gap-classification/20260701T020955Z",
+    "project_gap_classification_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-gap-classification/20260701T025747Z",
     "direct_call_gap_closure_design": "capsched/capsched-models/analysis/0078-direct-call-gap-closure-design.md",
     "direct_call_gap_closure_model": "capsched/capsched-models/formal/0055-direct-call-gap-closure-model/README.md",
     "direct_call_gap_closure_tla": "capsched/capsched-models/formal/0055-direct-call-gap-closure-model/DirectCallGapClosure.tla",
@@ -534,7 +534,13 @@
     "direct_call_async_carrier_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-async-carrier-20260701T023933Z",
     "direct_call_async_carrier_gate": "capsched/capsched-models/implementation/0011-direct-call-async-carrier-gate.md",
     "direct_call_async_carrier_gate_json": "capsched/capsched-models/implementation/direct-call-async-carrier-gate-v1.json",
-    "direct_call_async_carrier_gate_validation": "capsched/capsched-models/validation/0092-direct-call-async-carrier-gate-result.md"
+    "direct_call_async_carrier_gate_validation": "capsched/capsched-models/validation/0092-direct-call-async-carrier-gate-result.md",
+    "direct_call_async_workqueue_io_uring_source_map": "capsched/capsched-models/analysis/0081-direct-call-async-workqueue-io-uring-source-map.md",
+    "direct_call_async_workqueue_source_map_json": "capsched/capsched-models/analysis/direct-call-async-workqueue-source-map-v1.json",
+    "direct_call_async_io_uring_source_map_json": "capsched/capsched-models/analysis/direct-call-async-io-uring-source-map-v1.json",
+    "direct_call_async_source_map_validation": "capsched/capsched-models/validation/0093-direct-call-async-source-map-result.md",
+    "project_drift_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-project-drift/20260701T025605Z",
+    "project_overlay_latest_run": "/media/nia/scsiusb/dev/linux-cap/build/traceability-overlay/20260701T025713Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2174,9 +2180,19 @@
     {
       "id": "N-122",
       "text": "Source-map workqueue and io_uring separately against DCASYNC-007 and DCASYNC-008 before any async direct-call carrier code proposal.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-121"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Added analysis/0081 plus direct-call-async-workqueue-source-map-v1.json and direct-call-async-io-uring-source-map-v1.json. The maps record 19 workqueue anchors and 18 io_uring anchors for DCASYNC-007 and DCASYNC-008. Workqueue anchors show generic work_struct/pending/callback/worker/flush/cancel state is not authority and requires typed wrappers for Domain-originated work. io_uring anchors show io_kiocb and io_rsrc_node are plausible future storage anchors, but req->creds, req->tctx, io_wq_work, registered resources, cancel flags, CQEs, completion, and retry are not monitor receipt authority. validation/0093 recorded 37/37 new anchors ok in project drift, 0 new drift gaps, 0 semantic recheck items, 0 safety violations, and the same 7 preserved semantic gap groups. No Linux patch, workqueue integration, io_uring integration, ABI, tracepoint, behavior change, monitor verification, runtime coverage, or protection claim is approved."
+    },
+    {
+      "id": "N-123",
+      "text": "Build a carrier lifetime table for workqueue and io_uring separately, covering allocate, freeze, enqueue, pending coalescing, execute, cancel, revoke, retry/reissue, complete, and free before any async carrier code proposal.",
+      "status": "pending",
+      "blocked_by": [
+        "N-122"
       ]
     }
   ],

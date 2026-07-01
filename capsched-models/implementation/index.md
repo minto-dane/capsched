@@ -177,8 +177,8 @@ Next gate:
   model required before any generic workqueue or io_uring direct-call receipt
   consumption is allowed. implementation/0011 now translates formal/0058 into
   an implementation-facing no-patch async-carrier gate. The next work should
-  source-map workqueue and io_uring separately against DCASYNC-007 and
-  DCASYNC-008 before any code proposal.
+  use analysis/0081 and validation/0093 to build a carrier lifetime table for
+  workqueue and io_uring separately before any code proposal.
 
 Current blocker to behavior-changing Linux patches:
   validation/0080 through validation/0091 improve traceability and

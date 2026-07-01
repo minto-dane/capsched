@@ -1743,3 +1743,28 @@ non-claim:
 next:
   N-122 workqueue/io_uring source maps before code.
 ```
+
+Latest direct-call async source maps:
+
+```text
+N-122 completed:
+  analysis/0081
+  workqueue source map: 19 anchors
+  io_uring source map: 18 anchors
+  validation/0093
+
+drift:
+  579 anchors
+  558 ok
+  21 preserved gaps
+  0 semantic recheck
+  0 safety violations
+
+key rule:
+  workqueue generic state is not authority.
+  io_uring request/resource state is not authority unless future typed carrier
+  fields make it so.
+
+next:
+  N-123 carrier lifetime table before code.
+```

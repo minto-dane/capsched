@@ -1992,3 +1992,46 @@ still not:
 next:
   N-122 source-map workqueue and io_uring separately before code.
 ```
+
+Latest direct-call async source maps:
+
+```text
+N-122 completed:
+  analysis/0081-direct-call-async-workqueue-io-uring-source-map.md
+  analysis/direct-call-async-workqueue-source-map-v1.json
+  analysis/direct-call-async-io-uring-source-map-v1.json
+  validation/0093-direct-call-async-source-map-result.md
+
+rows:
+  workqueue: 19 current Linux anchors
+  io_uring: 18 current Linux anchors
+
+drift:
+  build/traceability-project-drift/20260701T025605Z
+  579 total anchors
+  558 ok rows
+  21 preserved gap rows
+  0 missing symbols/patterns
+  0 semantic recheck rows
+  0 safety violations
+
+meaning:
+  generic work_struct/pending/callback/worker/flush/cancel state is not
+  authority.
+  io_kiocb and io_rsrc_node are plausible future storage anchors, but current
+  req->creds, req->tctx, io_wq_work, registered-resource liveness, cancel flags,
+  CQEs, completion, and retry are not monitor receipt authority.
+
+still not:
+  Linux implementation
+  workqueue integration
+  io_uring integration
+  ABI approval
+  runtime coverage
+  behavior change
+  monitor verification
+  production protection
+
+next:
+  N-123 carrier lifetime table before async carrier code.
+```

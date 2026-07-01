@@ -186,6 +186,11 @@ Prototype-evidenced areas:
   caller BudgetTicket ownership, service/caller intersection, monitor receipt
   provenance, revoke/stale-carrier rejection, workqueue boundary, io_uring
   boundary, and evidence class split; still no Linux patch approved.
+- source-only direct-call async source maps for workqueue and io_uring with 37
+  current Linux anchors. Project drift run `20260701T025605Z` has 579 total
+  anchors, 558 ok rows, 21 preserved gap rows, 0 missing symbols/patterns, 0
+  semantic recheck rows, and 0 safety violations. The new async maps do not
+  approve Linux code or convert generic async state into authority.
 
 Open production gaps:
 
