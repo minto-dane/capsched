@@ -2073,3 +2073,53 @@ still not:
 next:
   placement/affinity/hotplug integration refresh.
 ```
+
+N-145 completed:
+
+```text
+artifacts:
+  analysis/0099
+  placement-affinity-hotplug-integration-gate-v1.json
+  formal/0077
+  validation/0116
+
+purpose:
+  integrate Linux placement, affinity, cpuset, hotplug, class selection,
+  sched_ext, core scheduling, and Linux exception paths with the scheduler
+  authority gate.
+
+critical correction:
+  A first boolean draft was rejected by subagent review as too weak.
+  The accepted model uses CPU sets and derives:
+
+    frozenAllowed =
+      capEnvelope ∩ linuxMask ∩ activeMask ∩ monitorCpuSet ∩ memoryViewCpuSet
+
+  Run authority is separated from placement and requires Domain/SchedContext/
+  RunCap grant provenance.
+
+safe TLC:
+  81 generated states
+  39 distinct states
+  depth 7
+
+unsafe:
+  20 expected counterexamples.
+  Rejected authority substitutes include selected CPU, class selection,
+  sched_ext selection/dispatch, core scheduling, sched_exec, cpuset fallback,
+  force affinity, fallback rq, migrate-disable, per-cpu kthread exception, and
+  protection overclaims.
+
+assurance:
+  E-SCHED-PLACEMENT-INTEGRATION-001 supports ACT-001, EXEC-001, and COMPAT-001
+  as model evidence only.
+
+still not:
+  Linux implementation, hook approval, ABI approval, runtime coverage, monitor
+  implementation, monitor verification, behavior change, or production
+  protection.
+
+next:
+  runtime coverage execution planning or final run/move revalidation hook
+  placement analysis.
+```

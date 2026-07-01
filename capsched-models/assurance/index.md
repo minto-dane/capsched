@@ -167,6 +167,13 @@ Model-supported areas:
   bounded-overrun binding, while Linux timers, KVM guest timers, KVM hrtimer
   fallbacks, pKVM stage-2 memory isolation, Linux/KVM deadline retiming, and
   protection overclaims are rejected
+- placement, affinity, and hotplug integration semantics, checking that
+  ordinary Domain execution requires RunCap/SchedContext/Domain grant
+  provenance plus a fresh CPU set derived from capability envelope, current
+  Linux mask, active CPU mask, monitor CPU binding, and MemoryView CPU binding,
+  while selected CPU state, cpuset fallback, force affinity, sched_ext, class
+  selection, core scheduling, sched_exec, migrate-disable, per-cpu kthread
+  exceptions, and protection overclaims are rejected as authority substitutes
 
 Prototype-evidenced areas:
 

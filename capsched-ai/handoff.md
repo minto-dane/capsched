@@ -2480,3 +2480,47 @@ still not:
 next:
   N-127 split io_uring and workqueue refinements before any Linux code proposal.
 ```
+
+Latest scheduler placement gate:
+
+```text
+N-145 completed:
+  analysis/0099-placement-affinity-hotplug-integration-gate.md
+  analysis/placement-affinity-hotplug-integration-gate-v1.json
+  formal/0077-placement-affinity-hotplug-integration-gate-model/
+  validation/0116-placement-affinity-hotplug-integration-gate-tlc.md
+
+important correction:
+  The first boolean draft was rejected by subagent review as too vacuous.
+  The checked model now uses finite CPU sets, explicit Domain/SchedContext/
+  RunCap grant provenance, derived frozenAllowed intersection, invalidation
+  from Running, fail-closed empty-intersection behavior, and ordinary-Domain
+  versus Linux-exception separation.
+
+safe TLC:
+  81 generated states
+  39 distinct states
+  depth 7
+
+unsafe configs:
+  20 expected counterexamples reject running without frozen placement, stale
+  placement epoch, current Linux mask, active CPU, monitor CPU binding,
+  MemoryView CPU binding, or no-pending-migration state, and reject selected
+  CPU, placement refresh, fallback expansion, force affinity, cpuset fallback,
+  class selection, sched_ext selection, core scheduling, sched_exec,
+  migrate-disable, per-cpu kthread exception, no-intersection running, and
+  protection overclaims as authority substitutes.
+
+assurance:
+  E-SCHED-PLACEMENT-INTEGRATION-001 supports ACT-001, EXEC-001, and COMPAT-001
+  only as model evidence.
+
+still not:
+  Linux implementation, scheduler hook, task-field approval, ABI approval,
+  runtime coverage, monitor implementation, monitor verification, behavior
+  change, or production protection.
+
+next:
+  Runtime coverage execution planning or final run/move revalidation hook
+  placement analysis. No behavior-changing Linux patch is approved.
+```

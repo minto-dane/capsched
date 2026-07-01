@@ -4,6 +4,21 @@ Updated: 2026-07-01
 
 No behavior-changing implementation patch points are accepted yet.
 
+Current placement/affinity/hotplug integration gate:
+
+- `analysis/0099-placement-affinity-hotplug-integration-gate.md`
+  - Status: model-supported design gate, no Linux patch approved yet.
+  - Purpose: require ordinary Domain execution to revalidate the intersection
+    of RunCap/SchedContext CPU envelope, current Linux mask, active CPU mask,
+    monitor CPU binding, and MemoryView CPU binding across affinity, cpuset,
+    hotplug, class-selection, sched_ext, core-scheduling, and Linux-exception
+    paths.
+- `formal/0077-placement-affinity-hotplug-integration-gate-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: final run/move revalidation must cover more than wake/new/exec
+    placement. Linux fallback and selected CPU state remain compatibility
+    inputs, not authority.
+
 Candidate implementation plans:
 
 - `0001-l0-runnable-lease-implementation-plan.md`

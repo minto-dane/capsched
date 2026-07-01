@@ -111,6 +111,8 @@ Current evidence:
 - `validation/0114-scheduler-authority-integration-gate-tlc.md`
 - `formal/0076-monitor-timer-architecture-substrate-model/`
 - `validation/0115-monitor-timer-architecture-substrate-tlc.md`
+- `formal/0077-placement-affinity-hotplug-integration-gate-model/`
+- `validation/0116-placement-affinity-hotplug-integration-gate-tlc.md`
 - Slice 0B type names: `capsched_run_token`, `capsched_memory_view`
 
 Open gaps:
@@ -157,6 +159,8 @@ Current evidence:
 - `validation/0113-f1-admission-freeze-refresh-tlc.md`
 - `formal/0075-scheduler-authority-integration-gate-model/`
 - `validation/0114-scheduler-authority-integration-gate-tlc.md`
+- `formal/0077-placement-affinity-hotplug-integration-gate-model/`
+- `validation/0116-placement-affinity-hotplug-integration-gate-tlc.md`
 - `implementation/0001-l0-runnable-lease-implementation-plan.md`
 - Slice 0B type names: `capsched_run_cap`, `capsched_sched_ctx`,
   `capsched_frozen_run_use`
@@ -546,6 +550,7 @@ Current evidence:
 - deadline CBS/GRUB compatibility gate `validation/0112-deadline-cbs-grub-compat-tlc.md`
 - F1 admission-freeze refresh gate `validation/0113-f1-admission-freeze-refresh-tlc.md`
 - scheduler authority integration gate `validation/0114-scheduler-authority-integration-gate-tlc.md`
+- placement/affinity/hotplug integration gate `validation/0116-placement-affinity-hotplug-integration-gate-tlc.md`
 - Slice 0A build validation `validation/0004-l0-slice0-systemd-build-run.md`
 - Slice 0B build validation `validation/0014-l0-slice0b-build-run.md`
 
@@ -643,6 +648,7 @@ Open gaps:
 | E-SCHED-COVERAGE-001 | TLA validation | `validation/0109-runtime-coverage-gate-tlc.md` | BUDGET, COMPAT |
 | E-MONITOR-TIMER-001 | TLA validation | `validation/0110-monitor-root-budget-timer-tlc.md` | ACT, BUDGET |
 | E-MONITOR-TIMER-ARCH-001 | TLA validation | `validation/0115-monitor-timer-architecture-substrate-tlc.md` | ACT, BUDGET |
+| E-SCHED-PLACEMENT-INTEGRATION-001 | TLA validation | `validation/0116-placement-affinity-hotplug-integration-gate-tlc.md` | ACT, EXEC, COMPAT |
 | E-SCHED-SERVER-EPOCH-001 | TLA validation | `validation/0111-server-epoch-relation-tlc.md` | EXEC, BUDGET |
 | E-SCHED-DL-COMPAT-001 | TLA validation | `validation/0112-deadline-cbs-grub-compat-tlc.md` | EXEC, BUDGET, COMPAT |
 | E-SCHED-F1-FREEZE-001 | TLA validation | `validation/0113-f1-admission-freeze-refresh-tlc.md` | EXEC, BUDGET, COMPAT |
@@ -672,6 +678,7 @@ Open gaps:
 | CEX-MONITOR-TIMER-ARCH-001 | `validation/0115` | Missing or wrong monitor architecture substrate, Linux hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2-as-timer, missing binding tuple, Linux/KVM/guest deadline retiming, NO_HZ control, Linux-minted receipts, and protection overclaims are rejected. |
 | CEX-SCHED-F1-FREEZE-001 | `validation/0113` | TASK_WAKING, wake_list, and enqueue before freeze; incomplete frozen tuple; raw cap after publication; heavy post-publication lookup; late lost-wakeup denial; placement/current/fork authority minting; and protection overclaims are rejected. |
 | CEX-SCHED-INTEGRATION-001 | `validation/0114` | Publication without frozen tuple; run without frozen tuple, selected settlement, server authority, deadline compatibility, or monitor root; Linux runtime/server runtime/deadline compatibility/placement authority; raw cap/heavy lookup after publication; fail-closed running; and protection overclaims are rejected. |
+| CEX-SCHED-PLACEMENT-INTEGRATION-001 | `validation/0116` | Running without grant provenance, frozen placement, fresh placement epoch, current Linux mask, active CPU, monitor CPU binding, MemoryView CPU binding, or no-pending-migration state; selected CPU, class selection, sched_ext, core scheduling, sched_exec, fallback, force affinity, cpuset fallback, migrate-disable, per-cpu kthread exception, and protection overclaims are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
 | HAZ-ENDP-001 | `analysis/0015` | Socket endpoint checks cannot rely only on LSM because some paths reuse `sock_sendmsg_nosec()`. |
 
@@ -681,6 +688,9 @@ Do not claim:
 
 ```text
 Linux-only L0 provides hypervisor-grade isolation.
+Linux placement, selected CPU state, cpuset fallback, force affinity, hotplug
+rescue, sched_ext dispatch, core scheduling, sched_exec, migrate-disable, or
+per-cpu kthread exception is CapSched authority.
 task_struct Domain pointers create a hard security boundary.
 RunCap is resource endpoint authority.
 EndpointCap is CPU execution authority.

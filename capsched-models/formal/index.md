@@ -82,11 +82,10 @@ Updated: 2026-07-01
 | 0074 | Checked with safe pass and expected unsafe counterexamples | F1 Admission-Freeze Refresh Model |
 | 0075 | Checked with safe pass and expected unsafe counterexamples | Scheduler Authority Integration Gate Model |
 | 0076 | Checked with safe pass and expected unsafe counterexamples | Monitor Timer Architecture Substrate Model |
+| 0077 | Checked with safe pass and expected unsafe counterexamples | Placement, Affinity, and Hotplug Integration Gate Model |
 
 ## Planned
 
-1. Placement refresh and affinity/hotplug integration refresh after the N-143
-   integration gate and N-144 timer-substrate gate.
-2. Runtime coverage execution under the N-138 contract after hook candidates are narrowed.
-3. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
+1. Runtime coverage execution under the N-138 contract after hook candidates are narrowed.
+2. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

@@ -54,7 +54,8 @@
         "E-L0-002",
         "E-MONITOR-TIMER-001",
         "E-MONITOR-TIMER-ARCH-001",
-        "E-SCHED-INTEGRATION-001"
+        "E-SCHED-INTEGRATION-001",
+        "E-SCHED-PLACEMENT-INTEGRATION-001"
       ],
       "gaps": [
         "No HyperTag Monitor.",
@@ -80,7 +81,8 @@
         "E-SCHED-SERVER-EPOCH-001",
         "E-SCHED-DL-COMPAT-001",
         "E-SCHED-F1-FREEZE-001",
-        "E-SCHED-INTEGRATION-001"
+        "E-SCHED-INTEGRATION-001",
+        "E-SCHED-PLACEMENT-INTEGRATION-001"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
@@ -691,7 +693,8 @@
         "E-SCHED-COVERAGE-001",
         "E-SCHED-DL-COMPAT-001",
         "E-SCHED-F1-FREEZE-001",
-        "E-SCHED-INTEGRATION-001"
+        "E-SCHED-INTEGRATION-001",
+        "E-SCHED-PLACEMENT-INTEGRATION-001"
       ],
       "gaps": [
         "No boot/runtime evidence.",
@@ -1631,6 +1634,17 @@
         "BUDGET-001"
       ],
       "limitation": "Architecture substrate model evidence only; not monitor timer implementation, x86 VMX-root implementation, arm64 EL2 implementation, Linux hook approval, ABI approval, runtime coverage, monitor verification, behavior change, or production protection."
+    },
+    {
+      "id": "E-SCHED-PLACEMENT-INTEGRATION-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0116-placement-affinity-hotplug-integration-gate-tlc.md",
+      "supports": [
+        "ACT-001",
+        "EXEC-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite placement integration model gate checks CPU-set intersection, grant provenance, affinity/cpuset/hotplug invalidation, monitor CPU binding, MemoryView CPU binding, and Linux placement non-authority; it is not Linux implementation, hook approval, runtime coverage, monitor verification, behavior change, or production protection."
     }
   ],
   "counterexamples": [
@@ -1683,6 +1697,11 @@
       "id": "CEX-MONITOR-TIMER-ARCH-001",
       "record": "capsched-models/validation/0115-monitor-timer-architecture-substrate-tlc.md",
       "meaning": "Unsafe monitor architecture-substrate models show expected counterexamples for missing or wrong monitor architecture substrate, Linux hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2-as-timer, missing binding tuple, Linux/KVM/guest deadline retiming, NO_HZ control, Linux-minted receipts, and protection overclaims."
+    },
+    {
+      "id": "CEX-SCHED-PLACEMENT-INTEGRATION-001",
+      "record": "capsched-models/validation/0116-placement-affinity-hotplug-integration-gate-tlc.md",
+      "meaning": "Unsafe placement integration models show expected counterexamples for running without grant provenance, frozen placement, fresh placement epoch, current Linux mask, active CPU, monitor CPU binding, MemoryView CPU binding, or no-pending-migration state; selected CPU, class selection, sched_ext, core scheduling, sched_exec, fallback, force affinity, cpuset fallback, migrate-disable, per-cpu kthread exception, and protection overclaims."
     }
   ],
   "forbidden_claims": [
@@ -1703,6 +1722,7 @@
     "IRQ route invalidation proves DMA reachability revocation.",
     "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",
     "Linux hrtick, sched_tick, hrtimer, NO_HZ remote tick, task_sched_runtime, or Linux runtime charge reports are monitor root budget enforcement.",
+    "Linux placement, selected CPU state, cpuset fallback, force affinity, hotplug rescue, sched_ext dispatch, core scheduling, sched_exec, migrate-disable, or per-cpu kthread exception is CapSched authority.",
     "Monitor timer architecture-substrate modeling is monitor timer implementation, x86 VMX-root implementation, arm64 EL2 implementation, KVM or pKVM modification approval, monitor verification, or production protection.",
     "Linux netdev down/reset proves monitor-grade queue revoke.",
     "Linux netdev, ring, q_vector, devlink, representor, tracepoint, or workqueue state is modern NIC QueueLease authority.",

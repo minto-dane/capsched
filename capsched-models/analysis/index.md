@@ -104,16 +104,15 @@ Updated: 2026-07-01
 | 0096 | Draft model gate with TLC-backed design filter | F1 Admission-Freeze Refresh |
 | 0097 | Draft integration model gate with TLC-backed design filter | Scheduler Authority Integration Gate |
 | 0098 | Draft architecture-substrate model gate with TLC-backed design filter | Monitor Timer Architecture Substrate |
+| 0099 | Draft integration model gate with TLC-backed design filter | Placement, Affinity, and Hotplug Integration Gate |
 
 ## Planned Analysis Notes
 
-1. Placement refresh and affinity/hotplug integration refresh after the N-143
-   integration gate and N-144 timer-substrate gate.
-2. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
-3. Broker BudgetTicket and service Domain charging map.
-4. Workqueue origin QEMU stack-trace observation runner.
-5. Slice 0C trace-only observation patch map only if schema/modeling requires it.
-6. Queue/descriptor trace-only patch map only if readiness gaps require it.
+1. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
+2. Broker BudgetTicket and service Domain charging map.
+3. Workqueue origin QEMU stack-trace observation runner.
+4. Slice 0C trace-only observation patch map only if schema/modeling requires it.
+5. Queue/descriptor trace-only patch map only if readiness gaps require it.
 
 ## Behavior Tag Artifacts
 
@@ -175,3 +174,4 @@ Updated: 2026-07-01
 | `f1-admission-freeze-refresh-v1.json` | Draft model gate | Machine-readable F1 wake publication and FrozenRunUse boundary contract for N-142 |
 | `scheduler-authority-integration-gate-v1.json` | Draft integration model gate | Machine-readable integrated scheduler execution gate for N-143 |
 | `monitor-timer-architecture-substrate-v1.json` | Draft architecture-substrate model gate | Machine-readable x86 VMX-root, arm64 EL2, KVM guest timer, Linux timer, and pKVM stage-2 substitution rejection contract for N-144 |
+| `placement-affinity-hotplug-integration-gate-v1.json` | Draft integration model gate | Machine-readable placement, affinity, cpuset, hotplug, class-selection, sched_ext, core-scheduling, and Linux-exception integration gate for N-145 |

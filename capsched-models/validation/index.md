@@ -121,6 +121,7 @@ Updated: 2026-07-01
 | 0113 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | F1 Admission-Freeze Refresh TLC |
 | 0114 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Scheduler Authority Integration Gate TLC |
 | 0115 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Monitor Timer Architecture Substrate TLC |
+| 0116 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Placement, Affinity, and Hotplug Integration Gate TLC |
 
 ## Principles
 
