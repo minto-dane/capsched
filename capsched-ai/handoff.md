@@ -161,11 +161,24 @@ latest completed risk:
   uring_cmd without endpoint authority, ABI approval, behavior change, monitor
   verification claim, and protection claim.
 
+latest completed risk:
+  Combined async-adapter precondition gate. Implementation/0013 and formal/0062
+  reconcile N-126, N-127, and N-128 before any candidate Linux async-carrier
+  patch proposal. Validation/0100 safe TLC passed with 10 generated states, 9
+  distinct states, and depth 9. Eleven unsafe configs reject candidate patch
+  before workqueue refinement, candidate patch before io_uring refinement,
+  broad N-126 model alone, shared core as generic async subsystem,
+  cross-adapter lifecycle collapse, Linux object authority, missing evidence
+  split, ABI approval, behavior change, monitor verification claim, and
+  protection claim. JSON gate check confirms 10/10 rows with required
+  preconditions, forbidden fallbacks, required evidence, and patch
+  preconditions; all safety flags remain false.
+
 next focused risk:
-  Build an implementation-facing combined async-adapter precondition gate that
-  reconciles N-127 and N-128 before any Linux code proposal. Do not add
-  direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
-  integration, or behavior-changing patches.
+  Draft a candidate Linux async-carrier patch plan only if it remains
+  no-behavior or explicitly carries unsatisfied behavior-change blockers. Do
+  not add direct-call stubs, ABI, tracepoints, workqueue integration,
+  io_uring integration, or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:

@@ -68,6 +68,11 @@ Candidate implementation plans:
     with freeze, bind, validate, revoke_check, settle, and release operations,
     plus separate workqueue and io_uring adapter contracts before any Linux
     code proposal.
+- `0013-combined-async-adapter-precondition-gate.md`
+  - Status: proposed implementation-facing gate, no Linux patch approved yet.
+  - Purpose: reconcile the shared async-carrier core with the dedicated
+    workqueue and io_uring refinement models before any candidate Linux async
+    carrier patch proposal.
 
 Validated formal inputs:
 
@@ -158,6 +163,21 @@ Validated formal inputs:
     object cleanup, no CQE settlement proof, no reissue receipt refresh,
     set-based authority intersection, no Linux object authority, and no
     ABI/runtime/monitor/protection overclaims.
+- `formal/0060-direct-call-workqueue-adapter-refinement-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: workqueue publication, queue_work false, delayed retime,
+    self-requeue, rescuer, cancel/flush, pending clear, caller budget, and
+    Linux work lifetime must not collapse into authority.
+- `formal/0061-direct-call-io-uring-adapter-refinement-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: SQE consume, resource generation, inline/io-wq issue, reissue,
+    cancel, CQE, linked requests, resource update, and uring_cmd must not
+    collapse into authority.
+- `formal/0062-combined-async-adapter-precondition-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: N-126 alone is not enough for a Linux candidate patch proposal;
+    both N-127 workqueue and N-128 io_uring adapter refinements plus evidence
+    split are required.
 
 Known future branch names:
 
@@ -209,14 +229,18 @@ Current API-sketch direction:
   especially io_uring request/resource/reissue/CQE state, BudgetTicket/receipt
   settlement, generation/epoch revoke interleavings, set-based authority
   intersection, and workqueue delayed-work/self-requeue choices. formal/0059
-  and validation/0097 now check this first transition-ordering gate; the next
-  refinement should split io_uring and workqueue adapter internals further.
+  and validation/0097 check this first transition-ordering gate. formal/0060
+  plus validation/0098 split the workqueue adapter internals. formal/0061 plus
+  validation/0099 split the io_uring adapter internals. implementation/0013,
+  formal/0062, and validation/0100 now add a combined precondition gate before
+  any candidate Linux async-carrier patch proposal.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0097 improve traceability and
+  validation/0080 through validation/0100 improve traceability and
   model/source-map the gap-closure, receipt-schema, receipt-consumer,
-  placement, async-carrier, source-map, lifetime, gate, API-direction, and API
-  sketch artifacts, but they are not Linux stub implementation, monitor
+  placement, async-carrier, source-map, lifetime, gate, API-direction, API
+  sketch, adapter-refinement, and combined-precondition artifacts, but they are
+  not Linux stub implementation, monitor
   verification, ABI approval, runtime coverage, behavior-change approval, or
   production protection evidence.
 ```

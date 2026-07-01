@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-io-uring-adapter-refinement-model-complete",
+    "current_phase": "combined-async-adapter-precondition-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-128 io_uring adapter refinement is complete as a model gate, following N-127 workqueue adapter refinement. Added analysis/0085, direct-call-io-uring-adapter-refinement-v1.json, formal/0061 DirectCallIoUringAdapter, and validation/0099. Safe TLC passed with 26 generated states, 24 distinct states, depth 15. Nineteen unsafe configs produced expected counterexamples for side effect before validate, immutable overwrite, io_kiocb authority, io_wq_work authority, req creds/tctx/SQPOLL authority, io_rsrc_node authority, reissue receipt refresh, CQE settlement proof, cancel as monitor revoke receipt, double settlement, release dropping Linux refs, stale execution after revoke, implicit linked-request authority, resource update mutating in-flight authority, uring_cmd without endpoint authority, ABI approval, behavior change, monitor verification claim, and protection claim. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is an implementation-facing combined async-adapter precondition gate that reconciles N-127 and N-128 before any Linux code proposal.",
+    "current_focus": "N-129 combined async-adapter precondition gate is complete. Added implementation/0013, combined-async-adapter-precondition-gate-v1.json, formal/0062 CombinedAsyncAdapterPrecondition, and validation/0100. Safe TLC passed with 10 generated states, 9 distinct states, depth 9. Eleven unsafe configs produced expected counterexamples for candidate patch before workqueue refinement, candidate patch before io_uring refinement, broad N-126 model alone, shared core as generic async subsystem, cross-adapter lifecycle collapse, Linux object authority, missing evidence split, ABI approval, behavior change, monitor verification claim, and protection claim. JSON gate check confirmed 10/10 rows with required preconditions, forbidden fallbacks, required evidence, and patch preconditions; all 10 safety flags remain false. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is a candidate Linux async-carrier patch plan only if it remains no-behavior or explicitly carries unsatisfied behavior-change blockers.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -580,7 +580,13 @@
     "direct_call_io_uring_adapter_model": "capsched/capsched-models/formal/0061-direct-call-io-uring-adapter-refinement-model/README.md",
     "direct_call_io_uring_adapter_tla": "capsched/capsched-models/formal/0061-direct-call-io-uring-adapter-refinement-model/DirectCallIoUringAdapter.tla",
     "direct_call_io_uring_adapter_validation": "capsched/capsched-models/validation/0099-direct-call-io-uring-adapter-tlc.md",
-    "direct_call_io_uring_adapter_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-io-uring-adapter-20260701T184003Z"
+    "direct_call_io_uring_adapter_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-io-uring-adapter-20260701T184003Z",
+    "combined_async_adapter_precondition_gate": "capsched/capsched-models/implementation/0013-combined-async-adapter-precondition-gate.md",
+    "combined_async_adapter_precondition_gate_json": "capsched/capsched-models/implementation/combined-async-adapter-precondition-gate-v1.json",
+    "combined_async_adapter_precondition_model": "capsched/capsched-models/formal/0062-combined-async-adapter-precondition-model/README.md",
+    "combined_async_adapter_precondition_tla": "capsched/capsched-models/formal/0062-combined-async-adapter-precondition-model/CombinedAsyncAdapterPrecondition.tla",
+    "combined_async_adapter_precondition_validation": "capsched/capsched-models/validation/0100-combined-async-adapter-precondition-tlc.md",
+    "combined_async_adapter_precondition_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/combined-async-adapter-precondition-20260701T184839Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

@@ -137,9 +137,17 @@ latest completed focused risk:
   states, 24 distinct states, and depth 15; 19 unsafe configs produced expected
   counterexamples.
 
+latest completed focused risk:
+  Combined async-adapter precondition gate. Implementation/0013 and formal/0062
+  reconcile the broad N-126 async-carrier sketch with N-127 workqueue and
+  N-128 io_uring refinements. Validation/0100 safe TLC passed with 10 generated
+  states, 9 distinct states, and depth 9; 11 unsafe configs produced expected
+  counterexamples. JSON gate check confirmed 10/10 rows complete and all 10
+  safety flags false.
+
 next focused risk:
-  Build a combined async-adapter precondition gate reconciling N-127 and N-128
-  before any Linux code proposal.
+  Draft a candidate Linux async-carrier patch plan only if it remains
+  no-behavior or explicitly carries unsatisfied behavior-change blockers.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "id": "combined-async-adapter-precondition-gate-v1",
+  "implementation": "0013-combined-async-adapter-precondition-gate",
+  "status": "proposed_implementation_facing_gate_no_patch_approved",
+  "date": "2026-07-01",
+  "inputs": {
+    "shared_api_sketch": "capsched-models/implementation/0012-direct-call-async-carrier-api-sketch.md",
+    "shared_api_model": "capsched-models/formal/0059-direct-call-async-carrier-api-sketch-model/README.md",
+    "shared_api_validation": "capsched-models/validation/0097-direct-call-async-carrier-api-sketch-tlc.md",
+    "workqueue_refinement": "capsched-models/analysis/0084-direct-call-workqueue-adapter-refinement.md",
+    "workqueue_model": "capsched-models/formal/0060-direct-call-workqueue-adapter-refinement-model/README.md",
+    "workqueue_validation": "capsched-models/validation/0098-direct-call-workqueue-adapter-tlc.md",
+    "io_uring_refinement": "capsched-models/analysis/0085-direct-call-io-uring-adapter-refinement.md",
+    "io_uring_model": "capsched-models/formal/0061-direct-call-io-uring-adapter-refinement-model/README.md",
+    "io_uring_validation": "capsched-models/validation/0099-direct-call-io-uring-adapter-tlc.md"
+  },
+  "global_non_claims": [
+    "linux_code_approved",
+    "workqueue_integration_approved",
+    "io_uring_integration_approved",
+    "direct_call_abi_approved",
+    "public_tracepoint_abi_approved",
+    "runtime_coverage",
+    "monitor_verified",
+    "behavior_change_approved",
+    "production_protection"
+  ],
+  "gate_rows": [
+    {
+      "gate_id": "DCADAPT-001",
+      "name": "shared core is authority state only",
+      "required_preconditions": [
+        "shared core operations are freeze, bind, revoke_check, validate, settle, and release",
+        "shared core carries only CapSched authority state",
+        "shared core excludes Linux subsystem lifecycle mechanics"
+      ],
+      "forbidden_fallbacks": [
+        "shared core as generic Linux async subsystem",
+        "global workqueue hook as authority",
+        "global io_uring hook as authority"
+      ],
+      "required_evidence": [
+        "implementation/0012",
+        "formal/0059",
+        "validation/0097"
+      ],
+      "patch_precondition": "candidate patch identifies shared-core fields and keeps subsystem mechanics in adapters"
+    },
+    {
+      "gate_id": "DCADAPT-002",
+      "name": "adapter mechanics stay separate",
+      "required_preconditions": [
+        "workqueue adapter obligations are tracked separately",
+        "io_uring adapter obligations are tracked separately",
+        "one adapter lifecycle cannot prove the other"
+      ],
+      "forbidden_fallbacks": [
+        "workqueue coalescing model used as io_uring proof",
+        "io_uring request model used as workqueue proof",
+        "single adapter proof used for both surfaces"
+      ],
+      "required_evidence": [
+        "analysis/0084",
+        "analysis/0085",
+        "formal/0060",
+        "formal/0061"
+      ],
+      "patch_precondition": "candidate patch states which adapter surface it touches and cites that surface's obligations"
+    },
+    {
+      "gate_id": "DCADAPT-003",
+      "name": "workqueue refinement is required",
+      "required_preconditions": [
+        "freeze before publication",
+        "queue_work false preserves first carrier",
+        "second candidate is rejected, settled, and released or explicitly modeled",
+        "delayed retime and self-requeue do not refresh receipts",
+        "worker and rescuer identity are not authority",
+        "cancel, flush, and pending clear are not monitor revoke receipts",
+        "caller BudgetTicket settlement is explicit",
+        "release is separate from Linux work lifetime"
+      ],
+      "forbidden_fallbacks": [
+        "raw work_struct authority",
+        "pending bit authority",
+        "callback pointer authority",
+        "kworker identity authority",
+        "cancel or flush as revoke proof",
+        "service-only budget"
+      ],
+      "required_evidence": [
+        "validation/0098"
+      ],
+      "patch_precondition": "workqueue-touching patch includes the N-127 obligation table"
+    },
+    {
+      "gate_id": "DCADAPT-004",
+      "name": "io_uring refinement is required",
+      "required_preconditions": [
+        "SQE is consumed before freeze",
+        "resource authority is bound separately from io_rsrc_node liveness",
+        "resource generation snapshot is preserved",
+        "inline issue and io-wq worker issue validate before side effects",
+        "REQ_F_REISSUE does not refresh receipts",
+        "CQE is not settlement proof",
+        "cancel is not monitor revoke receipt",
+        "linked requests do not inherit authority implicitly",
+        "resource updates do not mutate in-flight authority",
+        "uring_cmd requires typed endpoint authority"
+      ],
+      "forbidden_fallbacks": [
+        "io_kiocb authority",
+        "io_wq_work authority",
+        "req_creds authority",
+        "req_tctx authority",
+        "SQPOLL credentials authority",
+        "io_rsrc_node liveness authority",
+        "CQE proof",
+        "request free proof"
+      ],
+      "required_evidence": [
+        "validation/0099"
+      ],
+      "patch_precondition": "io_uring-touching patch includes the N-128 obligation table"
+    },
+    {
+      "gate_id": "DCADAPT-005",
+      "name": "effective authority is intersection",
+      "required_preconditions": [
+        "caller frozen authority is present",
+        "service or resource authority is bound separately",
+        "effective authority is subset of both inputs before side effects"
+      ],
+      "forbidden_fallbacks": [
+        "service-only authority",
+        "caller-only authority",
+        "credentials as capability",
+        "namespace as capability",
+        "cgroup membership as capability",
+        "LSM result as complete capability"
+      ],
+      "required_evidence": [
+        "formal/0058",
+        "formal/0059",
+        "formal/0060",
+        "formal/0061"
+      ],
+      "patch_precondition": "candidate patch names authority intersection point before endpoint side effects"
+    },
+    {
+      "gate_id": "DCADAPT-006",
+      "name": "budget and settlement are caller scoped",
+      "required_preconditions": [
+        "caller BudgetTicket or split child ticket exists before async publication",
+        "charge, refund, cancel, revoke, completion, retry, and rejected candidate settlement are explicit",
+        "settlement is at most once"
+      ],
+      "forbidden_fallbacks": [
+        "service-only budget",
+        "worker runtime",
+        "io-wq runtime",
+        "cgroup CPU accounting as BudgetTicket",
+        "CQE as settlement",
+        "free as settlement"
+      ],
+      "required_evidence": [
+        "validation/0098",
+        "validation/0099"
+      ],
+      "patch_precondition": "candidate patch includes BudgetTicket derivation and settlement table"
+    },
+    {
+      "gate_id": "DCADAPT-007",
+      "name": "revoke and freshness are not Linux cleanup",
+      "required_preconditions": [
+        "epoch, generation, and revoke state are checked before side effects",
+        "cancel, flush, pending clear, completion, CQE, ref drop, and free are lifecycle events only",
+        "stale carriers are rejected before endpoint side effects"
+      ],
+      "forbidden_fallbacks": [
+        "cleanup as revoke receipt",
+        "retry as receipt refresh",
+        "cancel as monitor proof",
+        "completion as monitor proof",
+        "free as stale rejection proof"
+      ],
+      "required_evidence": [
+        "formal/0060",
+        "formal/0061",
+        "validation/0098",
+        "validation/0099"
+      ],
+      "patch_precondition": "candidate patch includes revoke/freshness ordering for queued, executing, cancel, retry, completion, and free"
+    },
+    {
+      "gate_id": "DCADAPT-008",
+      "name": "source anchors and drift rules are required",
+      "required_preconditions": [
+        "candidate patch names touched Linux source anchors",
+        "source-only and semantic-validation flags remain explicit",
+        "traceability overlay preserves authority and protection non-claims"
+      ],
+      "forbidden_fallbacks": [
+        "stale source map as approval",
+        "line-only anchor as semantic validation",
+        "source observation as behavior approval",
+        "trace plan as runtime coverage"
+      ],
+      "required_evidence": [
+        "analysis/0081",
+        "analysis/0084",
+        "analysis/0085",
+        "traceability/index.md"
+      ],
+      "patch_precondition": "candidate patch includes drift-aware source-anchor update or explicit blocker"
+    },
+    {
+      "gate_id": "DCADAPT-009",
+      "name": "evidence classes remain separate",
+      "required_preconditions": [
+        "source maps, TLC models, build checks, traces, monitor tests, and production evidence remain separate claim classes",
+        "non-claims remain explicit in patch proposal"
+      ],
+      "forbidden_fallbacks": [
+        "TLC pass as runtime coverage",
+        "JSON gate pass as implementation approval",
+        "build pass as protection proof",
+        "QEMU smoke as monitor verification"
+      ],
+      "required_evidence": [
+        "validation/index.md",
+        "assurance/index.md"
+      ],
+      "patch_precondition": "candidate patch records evidence class and non-claims"
+    },
+    {
+      "gate_id": "DCADAPT-010",
+      "name": "candidate patch scope is narrow",
+      "required_preconditions": [
+        "candidate proposal states whether it touches shared core, workqueue adapter, io_uring adapter, or traceability only",
+        "behavior change remains blocked unless adapter-specific obligations are met",
+        "no production claim is attached to Linux-only prototype work"
+      ],
+      "forbidden_fallbacks": [
+        "behavior-changing enforcement from combined gate alone",
+        "public ABI from internal sketch",
+        "security boundary claim from Linux-only model"
+      ],
+      "required_evidence": [
+        "implementation/0013",
+        "formal/0062",
+        "validation/0100"
+      ],
+      "patch_precondition": "candidate patch may be drafted, but not approved, only after this gate is checked"
+    }
+  ],
+  "safety_flags": {
+    "implementation_approval": false,
+    "linux_code_approved": false,
+    "workqueue_integration_approved": false,
+    "io_uring_integration_approved": false,
+    "direct_call_abi_approved": false,
+    "public_tracepoint_abi": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "behavior_change": false,
+    "production_protection": false
+  }
+}

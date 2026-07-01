@@ -67,10 +67,11 @@ Updated: 2026-07-01
 | 0059 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Async Carrier API Sketch Model |
 | 0060 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Workqueue Adapter Refinement Model |
 | 0061 | Checked with safe pass and expected unsafe counterexamples | Direct-Call io_uring Adapter Refinement Model |
+| 0062 | Checked with safe pass and expected unsafe counterexamples | Combined Async Adapter Precondition Model |
 
 ## Planned
 
-1. Implementation-facing combined async-adapter precondition gate before any
-   async-carrier Linux code proposal.
+1. Candidate Linux async-carrier patch plan only if it remains no-behavior or
+   explicitly carries unsatisfied behavior-change blockers.
 2. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.
