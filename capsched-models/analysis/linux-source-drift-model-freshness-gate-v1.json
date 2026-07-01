@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "id": "linux-source-drift-model-freshness-gate-v1",
+  "analysis": "0087-linux-source-drift-automation-and-model-freshness",
+  "status": "automation_contract",
+  "date": "2026-07-01",
+  "runner": "capsched-models/validation/run-linux-source-drift-gate.sh",
+  "default_refs": {
+    "linux_dir": "linux",
+    "upstream_ref": "upstream/master",
+    "work_ref": "capsched-linux-l0",
+    "base_ref_strategy": "git merge-base upstream_ref work_ref"
+  },
+  "global_non_claims": {
+    "linux_patch_approval": false,
+    "behavior_change": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_verified": false,
+    "production_protection": false
+  },
+  "watch_groups": [
+    {
+      "group_id": "l0_footprint",
+      "purpose": "Current inert L0 patch footprint and patch-queue stability.",
+      "paths": [
+        "include/linux/capsched.h",
+        "init/Kconfig",
+        "kernel/sched/Makefile",
+        "kernel/sched/capsched.c"
+      ],
+      "drift_class_if_changed": "D2_direct_footprint_drift",
+      "stale_if_changed": true,
+      "blocked_until_refresh": [
+        "new_linux_patch",
+        "patch_queue_update",
+        "build_claim"
+      ],
+      "affected_artifacts": [
+        "implementation/0005-l0-slice0b-type-scaffolding.md",
+        "validation/0014-l0-slice0b-build-run.md",
+        "analysis/0086-linux-upstream-drift-maintenance-review.md"
+      ]
+    },
+    {
+      "group_id": "scheduler_authority_core",
+      "purpose": "RunCap, admission, pick, tick, switch, runtime accounting, and runnable authority assumptions.",
+      "paths": [
+        "include/linux/sched.h",
+        "kernel/sched/core.c",
+        "kernel/sched/sched.h",
+        "kernel/sched/fair.c",
+        "kernel/sched/deadline.c",
+        "kernel/sched/rt.c",
+        "kernel/sched/ext.c"
+      ],
+      "drift_class_if_changed": "D3_future_attachment_point_drift",
+      "stale_if_changed": true,
+      "blocked_until_refresh": [
+        "scheduler_hook_patch",
+        "task_struct_patch",
+        "runtime_budget_claim"
+      ],
+      "affected_artifacts": [
+        "analysis/0025-linux-scheduler-authority-state-machine.md",
+        "analysis/0026-scheduler-hook-proof-obligation-matrix.md",
+        "analysis/0028-tick-runtime-budget-source-map.md",
+        "formal/0012-linux-scheduler-authority-model/",
+        "validation/0024-linux-scheduler-authority-tlc.md"
+      ]
+    },
+    {
+      "group_id": "task_lifecycle_identity",
+      "purpose": "fork, clone, exec, exit, generation, and identity propagation assumptions.",
+      "paths": [
+        "kernel/fork.c",
+        "fs/exec.c",
+        "kernel/exit.c",
+        "include/linux/sched/task.h",
+        "include/linux/binfmts.h"
+      ],
+      "drift_class_if_changed": "D3_future_attachment_point_drift",
+      "stale_if_changed": true,
+      "blocked_until_refresh": [
+        "spawn_cap_patch",
+        "exec_generation_patch",
+        "task_lifecycle_patch"
+      ],
+      "affected_artifacts": [
+        "analysis/0029-fork-exec-exit-identity-propagation-map.md",
+        "analysis/0042-exec-generation-inheritance-semantics.md",
+        "analysis/0043-post-exec-resource-inheritance-classes.md"
+      ]
+    },
+    {
+      "group_id": "async_workqueue",
+      "purpose": "work_struct, queue_work coalescing, delayed/self-requeue, worker execution, rescuer, cancel, and flush assumptions.",
+      "paths": [
+        "kernel/workqueue.c",
+        "include/linux/workqueue.h"
+      ],
+      "drift_class_if_changed": "D4_semantic_drift",
+      "stale_if_changed": true,
+      "blocked_until_refresh": [
+        "workqueue_adapter_patch",
+        "async_carrier_linux_names",
+        "direct_call_async_carrier_patch"
+      ],
+      "affected_artifacts": [
+        "analysis/0034-workqueue-kthread-budgetticket-carrier.md",
+        "analysis/0045-workqueue-internal-redesign-boundary.md",
+        "analysis/0084-direct-call-workqueue-adapter-refinement.md",
+        "formal/0060-direct-call-workqueue-adapter-refinement-model/",
+        "validation/0098-direct-call-workqueue-adapter-tlc.md"
+      ]
+    },
+    {
+      "group_id": "async_io_uring",
+      "purpose": "io_kiocb, SQE consumption, io-wq punt, reissue, CQE, cancel, linked request, resource update, and uring_cmd assumptions.",
+      "paths": [
+        "io_uring"
+      ],
+      "drift_class_if_changed": "D4_semantic_drift",
+      "stale_if_changed": true,
+      "blocked_until_refresh": [
+        "io_uring_adapter_patch",
+        "async_carrier_linux_names",
+        "direct_call_async_carrier_patch"
+      ],
+      "affected_artifacts": [
+        "analysis/0012-io-uring-registered-resource-provenance.md",
+        "analysis/0085-direct-call-io-uring-adapter-refinement.md",
+        "formal/0061-direct-call-io-uring-adapter-refinement-model/",
+        "validation/0099-direct-call-io-uring-adapter-tlc.md"
+      ]
+    },
+    {
+      "group_id": "policy_frontend_security",
+      "purpose": "LSM, Landlock, credential, cgroup, namespace, and policy-front-end capability issuance assumptions.",
+      "paths": [
+        "security",
+        "include/linux/lsm_hook_defs.h",
+        "include/linux/lsm_hooks.h",
+        "include/linux/security.h",
+        "kernel/cgroup",
+        "include/linux/cgroup.h",
+        "kernel/nsproxy.c",
+        "include/linux/nsproxy.h",
+        "kernel/cred.c",
+        "include/linux/cred.h"
+      ],
+      "drift_class_if_changed": "D3_future_attachment_point_drift",
+      "stale_if_changed": true,
+      "blocked_until_refresh": [
+        "policy_frontend_patch",
+        "capability_issuance_claim"
+      ],
+      "affected_artifacts": [
+        "analysis/0004-existing-resource-controls-and-compatibility.md",
+        "analysis/0008-policy-frontends-and-capability-issuance.md"
+      ]
+    },
+    {
+      "group_id": "memory_and_mm_state",
+      "purpose": "MemoryView, page ownership, slab state, page-cache overlay, and per-domain mutable kernel-state assumptions.",
+      "paths": [
+        "mm",
+        "include/linux/mm.h",
+        "include/linux/slab.h",
+        "include/linux/page-flags.h",
+        "include/linux/pagemap.h"
+      ],
+      "drift_class_if_changed": "D4_semantic_drift",
+      "stale_if_changed": true,
+      "blocked_until_refresh": [
+        "memoryview_patch",
+        "page_owner_patch",
+        "per_domain_mm_claim"
+      ],
+      "affected_artifacts": [
+        "analysis/0017-mm-allocator-page-cache-domain-state-map.md",
+        "analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md",
+        "formal/0008-memory-ownership-model/",
+        "formal/0009-direct-map-tlb-model/",
+        "formal/0010-page-cache-overlay-model/"
+      ]
+    },
+    {
+      "group_id": "device_queue_iommu",
+      "purpose": "QueueLease, DMA/IOMMU, VFIO/iommufd, IRQ routing, NIC queues, and driver/service-domain assumptions.",
+      "paths": [
+        "drivers/vfio",
+        "drivers/iommu",
+        "include/linux/iommu.h",
+        "include/linux/iommufd.h",
+        "drivers/net/ethernet/intel/ice",
+        "net",
+        "include/linux/netdevice.h",
+        "include/linux/dma-mapping.h"
+      ],
+      "drift_class_if_changed": "D4_semantic_drift",
+      "stale_if_changed": true,
+      "blocked_until_refresh": [
+        "queuelease_patch",
+        "iommu_mapping_claim",
+        "device_queue_lease_claim"
+      ],
+      "affected_artifacts": [
+        "analysis/0016-device-iommu-queue-lease-map.md",
+        "analysis/0052-ice-modern-nic-queuelease-source-map.md",
+        "analysis/0054-monitor-irq-route-invalidation-source-map.md",
+        "analysis/0055-monitor-dma-iommu-memoryview-invalidation-source-map.md",
+        "formal/0011-queue-lease-model/"
+      ]
+    },
+    {
+      "group_id": "scheduler_nearby_non_intersecting",
+      "purpose": "Scheduler-nearby files that should be recorded but do not by themselves stale current CapSched authority models.",
+      "paths": [
+        "kernel/sched/cpufreq_schedutil.c"
+      ],
+      "drift_class_if_changed": "D1_nearby_non_intersecting_drift",
+      "stale_if_changed": false,
+      "blocked_until_refresh": [],
+      "affected_artifacts": [
+        "analysis/0086-linux-upstream-drift-maintenance-review.md"
+      ]
+    }
+  ],
+  "result_constraints": {
+    "clean_merge_tree_is_not_semantic_freshness": true,
+    "stale_group_blocks_patch_movement": true,
+    "no_concrete_consumer_blocks_async_carrier_linux_names": true,
+    "observation_failure_blocks_patch_movement": true,
+    "non_claims_required": true
+  }
+}

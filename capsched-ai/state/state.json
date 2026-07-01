@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "linux-upstream-maintenance-gate-complete",
+    "current_phase": "linux-source-drift-freshness-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-131 Linux upstream maintenance gate is complete. Added analysis/0086, linux-upstream-drift-maintenance-review-v1.json, formal/0064 LinuxUpstreamMaintenanceGate, and validation/0102. Upstream was fetched to 665159e246749, 340 commits after L0 base 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4. Watched-path drift observed only kernel/sched/cpufreq_schedutil.c, classified D1 nearby non-intersecting drift. merge-tree --write-tree upstream/master capsched-linux-l0 exited 0 with tree cda01cf9b8c171e29869170aa160ad0724cc9ad4. Safe TLC passed with 8 generated states, 8 distinct states, depth 8. Ten unsafe configs produced expected counterexamples for approval without need/fetch/watched-diff/merge-tree, behavior change, hook, ABI, object layout, runtime state, and protection claim. JSON gate check confirmed 12 future patch gate requirements, 5 drift classes, 11 unsafe patterns, and 12/12 safety flags false. Decision: do not add new Linux async-carrier patch now, including no-behavior opaque names; preserve low-drift L0 footprint. This is not Linux implementation, runtime coverage, ABI approval, monitor verification, behavior change, or production protection. Next focused risk is reusable source-drift automation and model-freshness gating for future upstream updates.",
+    "current_focus": "N-132 Linux source-drift freshness gate is complete. Added analysis/0087, linux-source-drift-model-freshness-gate-v1.json, validation/run-linux-source-drift-gate.sh, formal/0065 LinuxSourceDriftFreshnessGate, and validation/0103. The runner observed base 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4, upstream 665159e246749578d4e4bfe106ee3b74edcdab18, work 7cf0b1e415bcead8a2079c8be94a9d41aad7d462, 340 upstream commits, 1 watched change, 0 model-refresh-required groups, clean merge-tree, model_freshness=fresh, concrete_consumer_need=0, candidate_no_behavior_patch_reviewable=false, and linux_patch_approved=false. The only changed group is scheduler_nearby_non_intersecting for kernel/sched/cpufreq_schedutil.c. Safe TLC passed with 8 generated states, 8 distinct states, depth 8. Nine unsafe configs produced expected counterexamples for patch without observation, clean merge as freshness, stale model patch, missing watch map, new Linux names without consumer, behavior change, ABI, protection claim, and missing non-claims. The first TLC attempt exposed missing invariants for watch-map-required classification and non-claims-required freshness decision; the final model rejects both. This is not Linux implementation, runtime coverage, ABI approval, monitor verification, behavior change, or production protection. Next focused risk is applying this gate to the next concrete source-map refresh target before any Linux patch movement.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -598,7 +598,15 @@
     "linux_upstream_maintenance_gate_model": "capsched/capsched-models/formal/0064-linux-upstream-maintenance-gate-model/README.md",
     "linux_upstream_maintenance_gate_tla": "capsched/capsched-models/formal/0064-linux-upstream-maintenance-gate-model/LinuxUpstreamMaintenanceGate.tla",
     "linux_upstream_maintenance_gate_validation": "capsched/capsched-models/validation/0102-linux-upstream-maintenance-gate-tlc.md",
-    "linux_upstream_maintenance_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/linux-upstream-maintenance-gate-20260701T191114Z"
+    "linux_upstream_maintenance_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/linux-upstream-maintenance-gate-20260701T191114Z",
+    "linux_source_drift_freshness_analysis": "capsched/capsched-models/analysis/0087-linux-source-drift-automation-and-model-freshness.md",
+    "linux_source_drift_freshness_json": "capsched/capsched-models/analysis/linux-source-drift-model-freshness-gate-v1.json",
+    "linux_source_drift_runner": "capsched/capsched-models/validation/run-linux-source-drift-gate.sh",
+    "linux_source_drift_runner_result": "/media/nia/scsiusb/dev/linux-cap/build/source-drift/linux-source-drift-gate/20260701T193000Z",
+    "linux_source_drift_freshness_model": "capsched/capsched-models/formal/0065-linux-source-drift-freshness-gate-model/README.md",
+    "linux_source_drift_freshness_tla": "capsched/capsched-models/formal/0065-linux-source-drift-freshness-gate-model/LinuxSourceDriftFreshnessGate.tla",
+    "linux_source_drift_freshness_validation": "capsched/capsched-models/validation/0103-linux-source-drift-freshness-gate.md",
+    "linux_source_drift_freshness_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/linux-source-drift-freshness-gate-20260701T192135Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

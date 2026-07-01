@@ -265,4 +265,12 @@ Current Linux async-carrier patch decision:
   this is not enough to justify new Linux names without a concrete consumer.
   The next implementation-facing work is source-drift automation and a
   model-freshness gate, not a C declaration.
+
+Current upstream-following gate:
+  analysis/0087, validation/run-linux-source-drift-gate.sh, formal/0065, and
+  validation/0103 now provide the reusable source-drift/model-freshness gate.
+  The current run observed 340 upstream commits since the L0 base, one
+  non-stale watched change in kernel/sched/cpufreq_schedutil.c, no model
+  refresh requirement, a clean merge-tree, and no Linux patch approval. This is
+  the gate to rerun before source-map refreshes or any future patch proposal.
 ```

@@ -108,6 +108,7 @@ Updated: 2026-07-01
 | 0100 | Safe model passed; unsafe models produced expected counterexamples; JSON gate checked | Combined Async Adapter Precondition TLC |
 | 0101 | Safe model passed; unsafe models produced expected counterexamples; plan JSON checked | Linux Async Carrier Patch Scope TLC |
 | 0102 | Safe model passed; unsafe models produced expected counterexamples; maintenance JSON checked | Linux Upstream Maintenance Gate TLC |
+| 0103 | Source-drift runner executed; safe model passed; unsafe models produced expected counterexamples; JSON contracts checked | Linux Source-Drift Freshness Gate |
 
 ## Principles
 

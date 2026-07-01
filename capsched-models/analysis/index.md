@@ -92,6 +92,7 @@ Updated: 2026-07-01
 | 0084 | Draft refinement model input | Direct-Call Workqueue Adapter Refinement |
 | 0085 | Draft refinement model input | Direct-Call io_uring Adapter Refinement |
 | 0086 | Current-source review complete; no new Linux patch recommended | Linux Upstream Drift and Maintenance Review |
+| 0087 | Automation contract drafted and executed | Linux Source-Drift Automation and Model-Freshness Gate |
 
 ## Planned Analysis Notes
 
@@ -148,3 +149,4 @@ Updated: 2026-07-01
 | `direct-call-workqueue-adapter-refinement-v1.json` | Draft refinement model input | Machine-readable workqueue adapter state, transition, unsafe-case, and non-claim contract for N-127 |
 | `direct-call-io-uring-adapter-refinement-v1.json` | Draft refinement model input | Machine-readable io_uring adapter request/resource/worker/completion state, unsafe-case, and non-claim contract for N-128 |
 | `linux-upstream-drift-maintenance-review-v1.json` | Current-source maintenance gate | Machine-readable upstream drift, merge-tree, no-patch decision, future no-behavior patch gate, drift classes, unsafe patterns, and safety flags for N-131 |
+| `linux-source-drift-model-freshness-gate-v1.json` | Automation contract | Machine-readable watch groups, affected artifacts, stale-if-changed rules, blocked patch classes, and non-claim constraints for N-132 |

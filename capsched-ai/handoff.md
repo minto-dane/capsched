@@ -201,11 +201,27 @@ latest completed risk:
   12 future patch gate requirements, 5 drift classes, 11 unsafe patterns, and
   12/12 safety flags false.
 
+latest completed risk:
+  Linux source-drift freshness gate. Analysis/0087, the source-drift runner,
+  formal/0065, and validation/0103 turn upstream-following into a reusable
+  gate. The current runner observed 340 upstream commits since the L0 base, one
+  watched change in kernel/sched/cpufreq_schedutil.c under the
+  scheduler_nearby_non_intersecting group, zero model-refresh-required groups,
+  clean merge-tree, model_freshness=fresh, concrete_consumer_need=0,
+  candidate_no_behavior_patch_reviewable=false, and linux_patch_approved=false.
+  Validation/0103 safe TLC passed with 8 generated states, 8 distinct states,
+  and depth 8. Nine unsafe configs reject patch without observation, clean merge
+  as freshness, stale model patch, missing watch map, new Linux names without
+  consumer, behavior change, ABI, protection claim, and missing non-claims.
+  The first TLC attempt exposed missing invariants for watch-map-required
+  classification and non-claims-required freshness decision; the final model
+  rejects both.
+
 next focused risk:
-  Build reusable source-drift automation and model-freshness gates for future
-  upstream updates. Do not add direct-call stubs, ABI, tracepoints, workqueue
-  integration, io_uring integration, async carrier Linux names, or
-  behavior-changing patches.
+  Apply the source-drift freshness gate to the next concrete source-map refresh
+  target before any Linux patch movement. Do not add direct-call stubs, ABI,
+  tracepoints, workqueue integration, io_uring integration, async carrier Linux
+  names, or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:

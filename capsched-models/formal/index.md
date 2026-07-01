@@ -70,10 +70,11 @@ Updated: 2026-07-01
 | 0062 | Checked with safe pass and expected unsafe counterexamples | Combined Async Adapter Precondition Model |
 | 0063 | Checked with safe pass and expected unsafe counterexamples | Linux Async Carrier Patch Scope Model |
 | 0064 | Checked with safe pass and expected unsafe counterexamples | Linux Upstream Maintenance Gate Model |
+| 0065 | Checked with safe pass and expected unsafe counterexamples | Linux Source-Drift Freshness Gate Model |
 
 ## Planned
 
-1. Reusable source-drift automation and model-freshness gate for future
-   upstream updates.
+1. Apply the source-drift freshness gate to the next concrete source-map refresh
+   target before any Linux patch movement.
 2. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.
