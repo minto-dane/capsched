@@ -94,6 +94,7 @@ Updated: 2026-06-30
 | 0086 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Gap Closure TLC |
 | 0087 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Receipt Schema TLC |
 | 0088 | Executed; source-only receipt-consumer source map checked | Direct-Call Receipt Consumer Source Map Result |
+| 0089 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Receipt Consumer Placement TLC |
 
 ## Principles
 

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-receipt-consumer-source-mapped",
+    "current_phase": "direct-call-receipt-consumer-placement-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-117 completed the source-only direct-call receipt-consumer source map. analysis/0080 and direct-call-receipt-consumer-source-map-v1.json map 27 Linux-facing rows: 20 current source anchors across inert CapSched namespace, scheduler hot-path candidates, policy/lifecycle candidates, and async exclusion anchors, plus 7 preserved future gap/plan rows. validation/0088 refreshed project drift, overlay, semantic queue, and gap classification: project drift run build/traceability-project-drift/20260701T020900Z has 542 anchors, 521 ok rows, 21 gap rows, 0 missing symbols/patterns, and 0 safety violations; classification run build/traceability-gap-classification/20260701T020955Z collapses the 21 gap rows into the same 7 semantic direct-call gap groups. This is not Linux implementation, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-118: model receipt-consumer placement/exclusion constraints before any direct-call carrier patch.",
+    "current_focus": "N-118 completed the DirectCallReceiptConsumerPlacement model. formal/0057 and validation/0089 model-check the placement rule derived from N-117: hot paths may only perform bounded monitor-owned shadow checks, policy/lifecycle paths cannot become schema or receipt authority, generic async workers remain excluded unless typed carriers are modeled, future gaps stay gaps, and trace/ABI/runtime/monitor/protection overclaims are rejected. Safe TLC passed with 10 generated states, 9 distinct states, and 0 queued states. Twelve unsafe configs produced expected invariant violations for Linux-minted receipt, Linux shadow authority, hot-path direct call, policy schema authority, generic async consume, future gap implemented, stale consume after revoke, trace coverage claim, ABI approval, behavior change, monitor verification claim, and protection claim. This is not Linux implementation, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-119: turn formal/0057 into an implementation-facing no-patch placement gate.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -520,7 +520,11 @@
     "direct_call_receipt_schema_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-receipt-schema-20260701T003345Z",
     "direct_call_receipt_consumer_source_map": "capsched/capsched-models/analysis/0080-direct-call-receipt-consumer-source-map.md",
     "direct_call_receipt_consumer_source_map_json": "capsched/capsched-models/analysis/direct-call-receipt-consumer-source-map-v1.json",
-    "direct_call_receipt_consumer_validation": "capsched/capsched-models/validation/0088-direct-call-receipt-consumer-source-map-result.md"
+    "direct_call_receipt_consumer_validation": "capsched/capsched-models/validation/0088-direct-call-receipt-consumer-source-map-result.md",
+    "direct_call_receipt_consumer_placement_model": "capsched/capsched-models/formal/0057-direct-call-receipt-consumer-placement-model/README.md",
+    "direct_call_receipt_consumer_placement_tla": "capsched/capsched-models/formal/0057-direct-call-receipt-consumer-placement-model/DirectCallReceiptConsumerPlacement.tla",
+    "direct_call_receipt_consumer_placement_validation": "capsched/capsched-models/validation/0089-direct-call-receipt-consumer-placement-tlc.md",
+    "direct_call_receipt_consumer_placement_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-receipt-consumer-placement-20260701T023000Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2120,9 +2124,19 @@
     {
       "id": "N-118",
       "text": "Model direct-call receipt-consumer placement and exclusion constraints from N-117 before any Linux direct-call carrier patch, with special focus on hot-path bounded checks, policy/lifecycle separation, and generic async exclusion.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-117"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Added formal/0057 DirectCallReceiptConsumerPlacement and validation/0089. Safe TLC passed with 10 generated states, 9 distinct states, and 0 queued states. Twelve unsafe configs produced expected invariant violations for Linux-minted receipt, Linux shadow authority, hot-path direct call, policy schema authority, generic async consume, future gap implemented, stale consume after revoke, trace coverage claim, ABI approval, behavior change, monitor verification claim, and protection claim. The model keeps hot-path receipt consumers bounded, separates policy/lifecycle request shaping from schema authority, excludes generic async worker authority unless typed carriers are modeled, preserves future gaps, and rejects trace/ABI/runtime/monitor/protection overclaims. No Linux patch, ABI, tracepoint, behavior change, monitor verification, runtime coverage, or protection claim is approved."
+    },
+    {
+      "id": "N-119",
+      "text": "Turn the N-118 receipt-consumer placement model into an implementation-facing no-patch gate with concrete preconditions for any future direct-call carrier patch.",
+      "status": "pending",
+      "blocked_by": [
+        "N-118"
       ]
     }
   ],

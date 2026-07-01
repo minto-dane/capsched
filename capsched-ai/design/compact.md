@@ -106,15 +106,14 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call receipt-consumer source map. Analysis/0080 maps 27 rows: 20
-  current Linux source anchors and 7 preserved future gap/plan rows.
-  Validation/0088 refreshed drift/overlay/semantic queue/classification:
-  542 anchors, 521 ok rows, 21 gap rows, 0 missing symbols or patterns, and
-  0 safety violations. The 21 gaps collapse into the same 7 semantic
-  direct-call groups.
+  Direct-call receipt-consumer placement model. Formal/0057 and validation/0089
+  check bounded hot-path shadow use, policy/lifecycle separation, generic async
+  exclusion, future-gap preservation, and rejection of trace/ABI/runtime/
+  monitor/protection overclaims. Safe TLC passed with 10 generated states and
+  9 distinct states; 12 unsafe configs produced expected counterexamples.
 
 next focused risk:
-  Model receipt-consumer placement/exclusion constraints from N-117.
+  Turn formal/0057 into an implementation-facing no-patch placement gate.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1653,5 +1652,20 @@ latest drift:
   0 safety violations
 
 next:
-  N-118 model receipt-consumer placement/exclusion constraints.
+  N-118 completed receipt-consumer placement model.
+```
+
+Latest direct-call receipt-consumer placement model:
+
+```text
+N-118 completed:
+  formal/0057
+  validation/0089
+
+safe TLC:
+  10 generated states
+  9 distinct states
+
+next:
+  N-119 implementation-facing no-patch placement gate.
 ```

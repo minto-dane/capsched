@@ -165,6 +165,11 @@ Prototype-evidenced areas:
   authority/protection claims. Gap classification still collapses those 21 rows
   into the same 7 semantic direct-call gap groups, so the added view does not
   resolve any production obligation.
+- DirectCallReceiptConsumerPlacement model support for the rule that hot-path
+  receipt consumers are bounded shadow checks only, policy/lifecycle paths
+  cannot become schema or receipt authority, generic async workers remain
+  excluded without typed carriers, future gaps stay gaps, and trace/ABI/runtime/
+  monitor/protection overclaims are rejected.
 
 Open production gaps:
 

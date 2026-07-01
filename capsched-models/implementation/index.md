@@ -118,6 +118,12 @@ Validated formal inputs:
   - Pressure: future Linux-facing direct-call surfaces may consume opaque
     monitor receipts and derived shadows, but Linux cannot mint request, schema,
     entry, response, or revoke authority.
+- `formal/0057-direct-call-receipt-consumer-placement-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: receipt consumers must keep hot-path checks bounded, separate
+    policy/lifecycle request shaping from schema authority, exclude generic
+    async worker authority, preserve future gaps, and avoid ABI/runtime/
+    monitor/protection overclaims.
 
 Known future branch names:
 
@@ -146,13 +152,14 @@ Current patch recommendation, not yet executed:
 ```text
 Next gate:
   use implementation/0009, analysis/0079, and analysis/0080 as the pre-patch
-  gate for any direct-call carrier proposal. The next work should model the
-  receipt-consumer placement/exclusion constraints before any Linux direct-call
-  carrier, public tracepoint, or behavior-changing patch.
+  gate for any direct-call carrier proposal. The next work should turn the
+  formal/0057 placement model into an implementation-facing no-patch gate before
+  any Linux direct-call carrier, public tracepoint, or behavior-changing patch.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0088 improve traceability and model/source
-  map the gap-closure, receipt-schema, and receipt-consumer gates, but they are
-  not Linux stub implementation, monitor verification, ABI approval, runtime
-  coverage, behavior-change approval, or production protection evidence.
+  validation/0080 through validation/0089 improve traceability and model/source
+  map the gap-closure, receipt-schema, receipt-consumer, and placement gates,
+  but they are not Linux stub implementation, monitor verification, ABI
+  approval, runtime coverage, behavior-change approval, or production
+  protection evidence.
 ```

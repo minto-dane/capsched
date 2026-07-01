@@ -113,18 +113,18 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call receipt-consumer source map. Analysis/0080 maps 27 rows: 20
-  current Linux source anchors for inert namespace, scheduler hot-path
-  candidates, policy/lifecycle candidates, and async exclusion anchors, plus 7
-  preserved future gap/plan rows. Validation/0088 refreshed drift, overlay,
-  semantic queue, and gap classification. Project drift has 542 anchors,
-  521 ok rows, 21 gap rows, 0 missing symbols or patterns, and 0 safety
-  violations. The 21 gaps collapse into the same 7 semantic direct-call groups.
+  Direct-call receipt-consumer placement model. Formal/0057 and
+  validation/0089 check that hot paths are bounded shadow checks only,
+  policy/lifecycle paths cannot become schema or receipt authority, generic
+  async workers remain excluded without typed carriers, future gaps stay gaps,
+  and trace/ABI/runtime/monitor/protection overclaims are rejected. Safe TLC
+  passed with 10 generated states and 9 distinct states. Twelve unsafe configs
+  produced expected invariant violations.
 
 next focused risk:
-  Model receipt-consumer placement/exclusion constraints from N-117 before any
-  direct-call carrier patch. Do not add direct-call stubs, ABI, tracepoints, or
-  behavior-changing patches.
+  Turn formal/0057 into an implementation-facing no-patch placement gate before
+  any direct-call carrier patch. Do not add direct-call stubs, ABI, tracepoints,
+  or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:
@@ -1867,5 +1867,35 @@ latest gap classification:
   21 gap rows -> 7 semantic direct-call gap groups
 
 next:
-  N-118 model receipt-consumer placement/exclusion constraints.
+  N-118 completed receipt-consumer placement model.
+```
+
+Latest direct-call receipt-consumer placement model:
+
+```text
+N-118 completed:
+  formal/0057-direct-call-receipt-consumer-placement-model/
+  validation/0089-direct-call-receipt-consumer-placement-tlc.md
+
+safe TLC:
+  10 generated states
+  9 distinct states
+  0 states left on queue
+
+unsafe counterexamples:
+  Linux-minted receipt
+  Linux shadow authority
+  hot-path direct call
+  policy schema authority
+  generic async consume
+  future gap implemented
+  stale consume after revoke
+  trace coverage claim
+  ABI approval
+  behavior change
+  monitor verification claim
+  protection claim
+
+next:
+  N-119 implementation-facing no-patch placement gate.
 ```
