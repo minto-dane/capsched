@@ -68,10 +68,11 @@ Updated: 2026-07-01
 | 0060 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Workqueue Adapter Refinement Model |
 | 0061 | Checked with safe pass and expected unsafe counterexamples | Direct-Call io_uring Adapter Refinement Model |
 | 0062 | Checked with safe pass and expected unsafe counterexamples | Combined Async Adapter Precondition Model |
+| 0063 | Checked with safe pass and expected unsafe counterexamples | Linux Async Carrier Patch Scope Model |
 
 ## Planned
 
-1. Candidate Linux async-carrier patch plan only if it remains no-behavior or
-   explicitly carries unsatisfied behavior-change blockers.
+1. Separate no-behavior opaque type patch proposal only if it remains useful
+   after source-drift and maintenance review.
 2. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "id": "linux-async-carrier-candidate-patch-plan-v1",
+  "implementation": "0014-linux-async-carrier-candidate-patch-plan",
+  "status": "candidate_patch_plan_only_no_linux_patch_approved",
+  "date": "2026-07-01",
+  "inputs": {
+    "combined_gate": "capsched-models/implementation/0013-combined-async-adapter-precondition-gate.md",
+    "combined_gate_json": "capsched-models/implementation/combined-async-adapter-precondition-gate-v1.json",
+    "combined_model": "capsched-models/formal/0062-combined-async-adapter-precondition-model/README.md",
+    "combined_validation": "capsched-models/validation/0100-combined-async-adapter-precondition-tlc.md",
+    "workqueue_validation": "capsched-models/validation/0098-direct-call-workqueue-adapter-tlc.md",
+    "io_uring_validation": "capsched-models/validation/0099-direct-call-io-uring-adapter-tlc.md"
+  },
+  "current_linux_state": {
+    "branch": "capsched-linux-l0",
+    "behavior_changing_patch_points_accepted": false,
+    "inert_scaffolding_files": [
+      "include/linux/capsched.h",
+      "kernel/sched/capsched.c",
+      "kernel/sched/Makefile"
+    ],
+    "current_scaffolding_claim": "type_only_and_inert"
+  },
+  "allowed_patch_classes": [
+    {
+      "class_id": "ASYNC-PATCH-A",
+      "name": "no_linux_patch",
+      "allowed": true,
+      "behavior_change": false,
+      "description": "Continue source maps, models, traceability, and implementation planning only."
+    },
+    {
+      "class_id": "ASYNC-PATCH-B",
+      "name": "no_behavior_opaque_type_scaffolding",
+      "allowed": "candidate_only_requires_separate_patch_proposal",
+      "behavior_change": false,
+      "allowed_files": [
+        "include/linux/capsched.h"
+      ],
+      "strict_limits": [
+        "no_object_layout",
+        "no_allocation",
+        "no_refcounting",
+        "no_callable_function_prototypes",
+        "no_workqueue_include_or_hook",
+        "no_io_uring_include_or_hook",
+        "no_tracepoint",
+        "no_uapi",
+        "no_module_parameter",
+        "no_static_key",
+        "no_behavior_change"
+      ]
+    },
+    {
+      "class_id": "ASYNC-PATCH-C",
+      "name": "no_behavior_internal_stub_translation_unit",
+      "allowed": "candidate_only_low_priority_requires_separate_patch_proposal",
+      "behavior_change": false,
+      "allowed_files": [
+        "kernel/sched/capsched.c"
+      ],
+      "strict_limits": [
+        "no_exported_symbols",
+        "no_callable_hooks",
+        "no_scheduler_path_references",
+        "no_workqueue_references",
+        "no_io_uring_references",
+        "no_direct_call_monitor_entry",
+        "no_runtime_state"
+      ]
+    }
+  ],
+  "blocked_patch_classes": [
+    {
+      "class_id": "ASYNC-BLOCK-WQ",
+      "name": "workqueue_adapter_hook",
+      "blocked": true,
+      "requires_before_unblock": [
+        "typed_wrapper_lifetime_and_ownership",
+        "queue_work_false_first_carrier_preservation",
+        "second_caller_reject_settle_release",
+        "delayed_retime_and_self_requeue_rules",
+        "rescuer_execution_handling",
+        "cancel_flush_pending_clear_non_authority_proof",
+        "caller_budgetticket_settlement_table",
+        "locking_memory_ordering_review",
+        "kunit_fault_injection_plan",
+        "source_drift_update"
+      ]
+    },
+    {
+      "class_id": "ASYNC-BLOCK-IOU",
+      "name": "io_uring_adapter_hook",
+      "blocked": true,
+      "requires_before_unblock": [
+        "request_carrier_storage_lifetime",
+        "sqe_consume_before_freeze",
+        "fixed_resource_generation_snapshot",
+        "io_wq_punt_worker_issue_ordering",
+        "reissue_non_refresh_rule",
+        "cancel_cqe_free_non_authority_proof",
+        "linked_request_carrier_relation",
+        "resource_update_unregister_ordering",
+        "uring_cmd_typed_endpoint_classification",
+        "sqpoll_credential_non_authority_proof",
+        "locking_memory_ordering_review",
+        "kunit_fault_injection_plan",
+        "source_drift_update"
+      ]
+    },
+    {
+      "class_id": "ASYNC-BLOCK-ABI",
+      "name": "direct_call_or_monitor_abi",
+      "blocked": true,
+      "forbidden_surfaces": [
+        "binary_abi",
+        "uapi",
+        "public_tracepoint_abi",
+        "debugfs_control_surface",
+        "sysfs_control_surface",
+        "ioctl",
+        "syscall",
+        "module_parameter"
+      ]
+    },
+    {
+      "class_id": "ASYNC-BLOCK-BEHAVIOR",
+      "name": "behavior_changing_enforcement",
+      "blocked": true,
+      "forbidden_effects": [
+        "reject_workqueue_submission",
+        "change_io_uring_request_execution",
+        "charge_runtime_budgets",
+        "change_scheduler_decisions",
+        "activate_monitor_calls",
+        "claim_protection"
+      ]
+    }
+  ],
+  "required_review_before_no_behavior_patch": [
+    "touches_no_behavior_path",
+    "introduces_no_callable_function_prototype",
+    "introduces_no_public_or_private_abi",
+    "does_not_include_workqueue_or_io_uring_headers",
+    "build_expectations_documented_for_config_capsched_n_y",
+    "patch_queue_export_recreate_steps_planned",
+    "non_claims_present_in_commit_and_validation"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "workqueue_integration_approved": false,
+    "io_uring_integration_approved": false,
+    "direct_call_abi_approved": false,
+    "public_tracepoint_abi": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "behavior_change": false,
+    "production_protection": false
+  }
+}

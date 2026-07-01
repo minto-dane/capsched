@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "combined-async-adapter-precondition-gate-complete",
+    "current_phase": "linux-async-carrier-patch-scope-plan-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-129 combined async-adapter precondition gate is complete. Added implementation/0013, combined-async-adapter-precondition-gate-v1.json, formal/0062 CombinedAsyncAdapterPrecondition, and validation/0100. Safe TLC passed with 10 generated states, 9 distinct states, depth 9. Eleven unsafe configs produced expected counterexamples for candidate patch before workqueue refinement, candidate patch before io_uring refinement, broad N-126 model alone, shared core as generic async subsystem, cross-adapter lifecycle collapse, Linux object authority, missing evidence split, ABI approval, behavior change, monitor verification claim, and protection claim. JSON gate check confirmed 10/10 rows with required preconditions, forbidden fallbacks, required evidence, and patch preconditions; all 10 safety flags remain false. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is a candidate Linux async-carrier patch plan only if it remains no-behavior or explicitly carries unsatisfied behavior-change blockers.",
+    "current_focus": "N-130 Linux async-carrier patch scope plan is complete. Added implementation/0014, linux-async-carrier-candidate-patch-plan-v1.json, formal/0063 LinuxAsyncCarrierPatchScope, and validation/0101. Safe TLC passed with 9 generated states, 8 distinct states, depth 8. Twelve unsafe configs produced expected counterexamples for Linux patch approval, workqueue hook, io_uring hook, direct-call ABI, public tracepoint ABI, callable prototype, object layout, runtime state, workqueue/io_uring include dependency, behavior change, monitor verification claim, and protection claim. JSON plan check confirmed 3/3 allowed patch classes are no-behavior, 4/4 blocked patch classes remain blocked, 7 no-behavior review requirements, 10 workqueue blocker requirements, 13 io_uring blocker requirements, and 9/9 safety flags false. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is whether a separate no-behavior opaque type patch proposal is worthwhile after source-drift and maintenance review.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -586,7 +586,13 @@
     "combined_async_adapter_precondition_model": "capsched/capsched-models/formal/0062-combined-async-adapter-precondition-model/README.md",
     "combined_async_adapter_precondition_tla": "capsched/capsched-models/formal/0062-combined-async-adapter-precondition-model/CombinedAsyncAdapterPrecondition.tla",
     "combined_async_adapter_precondition_validation": "capsched/capsched-models/validation/0100-combined-async-adapter-precondition-tlc.md",
-    "combined_async_adapter_precondition_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/combined-async-adapter-precondition-20260701T184839Z"
+    "combined_async_adapter_precondition_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/combined-async-adapter-precondition-20260701T184839Z",
+    "linux_async_carrier_patch_scope_plan": "capsched/capsched-models/implementation/0014-linux-async-carrier-candidate-patch-plan.md",
+    "linux_async_carrier_patch_scope_plan_json": "capsched/capsched-models/implementation/linux-async-carrier-candidate-patch-plan-v1.json",
+    "linux_async_carrier_patch_scope_model": "capsched/capsched-models/formal/0063-linux-async-carrier-patch-scope-model/README.md",
+    "linux_async_carrier_patch_scope_tla": "capsched/capsched-models/formal/0063-linux-async-carrier-patch-scope-model/LinuxAsyncCarrierPatchScope.tla",
+    "linux_async_carrier_patch_scope_validation": "capsched/capsched-models/validation/0101-linux-async-carrier-patch-scope-tlc.md",
+    "linux_async_carrier_patch_scope_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/linux-async-carrier-patch-scope-20260701T185824Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

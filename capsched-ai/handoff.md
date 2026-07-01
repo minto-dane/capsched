@@ -174,11 +174,24 @@ latest completed risk:
   preconditions, forbidden fallbacks, required evidence, and patch
   preconditions; all safety flags remain false.
 
+latest completed risk:
+  Linux async-carrier patch scope plan. Implementation/0014 and formal/0063
+  define the only next Linux async-carrier work that may be considered.
+  Validation/0101 safe TLC passed with 9 generated states, 8 distinct states,
+  and depth 8. Twelve unsafe configs reject Linux patch approval, workqueue
+  hook, io_uring hook, direct-call ABI, public tracepoint ABI, callable
+  prototype, object layout, runtime state, workqueue/io_uring include
+  dependency, behavior change, monitor verification claim, and protection
+  claim. JSON plan check confirms 3/3 allowed patch classes are no-behavior,
+  4/4 blocked patch classes remain blocked, 7 no-behavior review requirements,
+  10 workqueue blocker requirements, 13 io_uring blocker requirements, and
+  9/9 safety flags false.
+
 next focused risk:
-  Draft a candidate Linux async-carrier patch plan only if it remains
-  no-behavior or explicitly carries unsatisfied behavior-change blockers. Do
-  not add direct-call stubs, ABI, tracepoints, workqueue integration,
-  io_uring integration, or behavior-changing patches.
+  Decide whether a separate no-behavior opaque type patch proposal is worth the
+  maintenance cost after source-drift and patch-queue review. Do not add
+  direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
+  integration, or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:

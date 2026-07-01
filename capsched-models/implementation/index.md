@@ -73,6 +73,12 @@ Candidate implementation plans:
   - Purpose: reconcile the shared async-carrier core with the dedicated
     workqueue and io_uring refinement models before any candidate Linux async
     carrier patch proposal.
+- `0014-linux-async-carrier-candidate-patch-plan.md`
+  - Status: candidate patch plan only, no Linux patch approved yet.
+  - Purpose: define the only next Linux async-carrier work that may be
+    considered: no Linux patch, or a separately reviewed no-behavior opaque
+    type scaffolding proposal; behavior-changing workqueue/io_uring hooks
+    remain blocked.
 
 Validated formal inputs:
 
@@ -178,6 +184,12 @@ Validated formal inputs:
   - Pressure: N-126 alone is not enough for a Linux candidate patch proposal;
     both N-127 workqueue and N-128 io_uring adapter refinements plus evidence
     split are required.
+- `formal/0063-linux-async-carrier-patch-scope-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: a candidate patch plan is not Linux patch approval; workqueue
+    hooks, io_uring hooks, callable prototypes, object layout, runtime state,
+    ABI, behavior change, monitor verification, and protection claims remain
+    rejected.
 
 Known future branch names:
 

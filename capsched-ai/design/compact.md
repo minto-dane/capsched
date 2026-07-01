@@ -145,9 +145,16 @@ latest completed focused risk:
   counterexamples. JSON gate check confirmed 10/10 rows complete and all 10
   safety flags false.
 
+latest completed focused risk:
+  Linux async-carrier patch scope plan. Implementation/0014 and formal/0063
+  keep the next Linux-facing work at plan/no-behavior scope. Validation/0101
+  safe TLC passed with 9 generated states, 8 distinct states, and depth 8; 12
+  unsafe configs produced expected counterexamples. JSON plan check confirmed
+  3 no-behavior allowed classes, 4 blocked classes, and 9/9 safety flags false.
+
 next focused risk:
-  Draft a candidate Linux async-carrier patch plan only if it remains
-  no-behavior or explicitly carries unsatisfied behavior-change blockers.
+  Decide whether a separate no-behavior opaque type patch proposal is worth the
+  maintenance cost after source-drift and patch-queue review.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

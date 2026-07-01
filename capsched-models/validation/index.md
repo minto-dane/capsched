@@ -106,6 +106,7 @@ Updated: 2026-07-01
 | 0098 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Workqueue Adapter TLC |
 | 0099 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call io_uring Adapter TLC |
 | 0100 | Safe model passed; unsafe models produced expected counterexamples; JSON gate checked | Combined Async Adapter Precondition TLC |
+| 0101 | Safe model passed; unsafe models produced expected counterexamples; plan JSON checked | Linux Async Carrier Patch Scope TLC |
 
 ## Principles
 
