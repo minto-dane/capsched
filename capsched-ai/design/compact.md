@@ -1691,3 +1691,28 @@ gate rows:
 next:
   N-120 typed async carrier model.
 ```
+
+Latest direct-call async carrier model:
+
+```text
+N-120 completed:
+  formal/0058
+  validation/0091
+
+critical fix before commit:
+  subagent found pending coalescing and revoke handling were too flag-like.
+  final model tracks caller/ticket/receipt/generation identity and rejects
+  stale revoked pending carriers before worker execution.
+
+safe TLC:
+  15 generated states
+  13 distinct states
+  depth 12
+
+unsafe:
+  15 expected counterexamples, including PendingCarrierPreserved and
+  NoStaleCarrierExecution.
+
+next:
+  N-121 no-patch async-carrier implementation gate.
+```

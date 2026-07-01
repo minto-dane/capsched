@@ -175,6 +175,12 @@ Prototype-evidenced areas:
   bounded consumption, policy/lifecycle separation, generic async exclusion,
   future gap preservation, revoke/shadow invalidation, and evidence class split;
   still no Linux patch approved.
+- DirectCallAsyncCarrier model support for the rule that Domain-originated
+  async receipt consumption requires a typed carrier carrying caller frozen
+  authority, service authority, caller budget ticket, and monitor receipt;
+  generic workqueue authority, pending work overwrite, worker identity
+  authority, service-only authority, Linux-minted receipt, consume-after-revoke,
+  and trace/ABI/runtime/monitor/protection overclaims are rejected.
 
 Open production gaps:
 

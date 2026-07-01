@@ -63,6 +63,7 @@ Updated: 2026-06-30
 | 0055 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Gap Closure Model |
 | 0056 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Receipt Schema Model |
 | 0057 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Receipt Consumer Placement Model |
+| 0058 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Async Carrier Model |
 
 ## Planned
 

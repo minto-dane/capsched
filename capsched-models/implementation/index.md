@@ -130,6 +130,13 @@ Validated formal inputs:
     policy/lifecycle request shaping from schema authority, exclude generic
     async worker authority, preserve future gaps, and avoid ABI/runtime/
     monitor/protection overclaims.
+- `formal/0058-direct-call-async-carrier-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: Domain-originated async direct-call receipt use requires a typed
+    carrier with caller frozen authority, service authority, caller budget
+    ticket, and monitor receipt. Generic workqueue authority, pending
+    work-struct overwrite, worker identity authority, service-only execution,
+    Linux-minted receipt, and consume-after-revoke semantics are rejected.
 
 Known future branch names:
 
@@ -159,14 +166,15 @@ Current patch recommendation, not yet executed:
 Next gate:
   use implementation/0009, analysis/0079, and analysis/0080 as the pre-patch
   gate for any direct-call carrier proposal. implementation/0010 now adds the
-  placement gate from formal/0057. The next work should model the typed async
-  carrier required before any generic workqueue or io_uring direct-call
-  receipt consumption is allowed.
+  placement gate from formal/0057. formal/0058 adds the typed async carrier
+  model required before any generic workqueue or io_uring direct-call receipt
+  consumption is allowed. The next work should translate formal/0058 into an
+  implementation-facing no-patch async-carrier gate.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0090 improve traceability and model/source
-  map the gap-closure, receipt-schema, receipt-consumer, placement, and gate
-  artifacts, but they are not Linux stub implementation, monitor verification,
-  ABI approval, runtime coverage, behavior-change approval, or production
-  protection evidence.
+  validation/0080 through validation/0091 improve traceability and
+  model/source-map the gap-closure, receipt-schema, receipt-consumer,
+  placement, async-carrier, and gate artifacts, but they are not Linux stub
+  implementation, monitor verification, ABI approval, runtime coverage,
+  behavior-change approval, or production protection evidence.
 ```

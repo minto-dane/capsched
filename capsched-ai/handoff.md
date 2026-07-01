@@ -1920,3 +1920,38 @@ gate rows:
 next:
   N-120 typed async carrier model for workqueue/io_uring receipt safety.
 ```
+
+Latest direct-call async carrier model:
+
+```text
+N-120 completed:
+  formal/0058 DirectCallAsyncCarrier
+  validation/0091
+
+subagent review fix:
+  first draft was too flag-like for pending coalescing and revoke handling.
+  final model has explicit callerA/callerB, ticketA/ticketB, receiptA/receiptB,
+  carrier generation preservation, coalesced-second-caller rejection, and a
+  revoked-pending-carrier terminal rejection path.
+
+safe TLC:
+  build/tlc/direct-call-async-carrier-20260701T023933Z
+  15 generated states
+  13 distinct states
+  depth 12
+
+unsafe counterexamples:
+  15 expected violations, including PendingCarrierPreserved for pending carrier
+  replacement and NoStaleCarrierExecution for stale revoked execution.
+
+still not:
+  Linux implementation
+  ABI approval
+  runtime coverage
+  behavior change
+  monitor verification
+  production protection
+
+next:
+  N-121 implementation-facing no-patch async-carrier gate.
+```
