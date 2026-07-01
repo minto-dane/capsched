@@ -84,6 +84,7 @@ Updated: 2026-06-30
 | 0076 | Draft no-code attachment/readiness map with model gate | Direct-Call Attachment Readiness Map |
 | 0077 | Draft no-code inventory contract with model gate | Direct-Call Trace/Source Inventory Contract |
 | 0078 | Draft direct-call gap closure design with model gate | Direct-Call Gap Closure Design |
+| 0079 | Draft monitor-owned receipt schema with model gate | Direct-Call Monitor Receipt Schema |
 
 ## Planned Analysis Notes
 
@@ -131,3 +132,4 @@ Updated: 2026-06-30
 | `direct-call-schema-compatibility-v1.json` | Draft semantic schema candidate | Machine-readable direct-call schema compatibility rules for schema negotiation, field criticality, downgrade rejection, response/ledger/error schemas, and ring-compatible namespaces |
 | `direct-call-attachment-readiness-v1.json` | Draft no-code attachment/readiness map | Machine-readable direct-call Linux/monitor attachment rows, safety flags, monitor responsibilities, inert stub constraints, failure-injection boundaries, and ring compatibility requirements |
 | `direct-call-trace-source-inventory-contract-v1.json` | Draft no-code inventory contract | Machine-readable source-only direct-call inventory runner contract, seed rows, output schema, safety flags, stop conditions, and optional tracefs-plan boundary |
+| `direct-call-monitor-receipt-schema-v1.json` | Draft monitor-owned receipt schema | Machine-readable direct-call receipt families for request image, schema, entry result, response handle, and revoke completion |

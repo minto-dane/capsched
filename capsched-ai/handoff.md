@@ -113,18 +113,21 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call implementation-facing gap closure gate. Implementation/0009 and
-  direct-call-gap-closure-gate-v1.json map DCGATE-004 through DCGATE-008 to
-  Linux-facing candidate surfaces, monitor-owned requirements, required
-  receipts, forbidden fallbacks, patch preconditions, and required pre-patch
-  evidence. It also records side gates for test-only failure injection and
-  trace-only observation. This is not patch approval, ABI approval, monitor
-  verification, runtime coverage, behavior change, or protection evidence.
+  Direct-call monitor-owned receipt schema. Analysis/0079 and formal/0056
+  define RequestImageReceipt, SchemaReceipt, EntryResultReceipt,
+  ResponseHandleReceipt, and RevokeReceipt as monitor-owned receipt families.
+  Linux-visible shadows are derived cache records only. Validation/0087 safe
+  TLC passed with 10 generated states, 9 distinct states, depth 9. Twelve unsafe
+  configs produced expected counterexamples for Linux-minted receipt, Linux
+  schema acceptance, wrapper return as receipt, timeout shadow refresh, Linux
+  shadow authority, response during revoke, revoke completion with in-flight
+  response, trace-plan coverage, ABI approval, behavior change, monitor
+  verification claim, and protection claim.
 
 next focused risk:
-  Use the N-115 gate to source-map candidate inert/no-code Linux-facing
-  direct-call surfaces or refine monitor-owned receipt schemas. Do not add
-  direct-call stubs, ABI, tracepoints, or behavior changes from this gate alone.
+  Source-map candidate inert/no-code Linux-facing direct-call surfaces that
+  consume opaque monitor receipts from N-116. Do not add direct-call stubs, ABI,
+  tracepoints, or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:
@@ -1728,8 +1731,9 @@ next:
   N-113 completed preserved gap/plan classification.
   N-114 completed direct-call gap-closure design/model.
   N-115 completed the implementation-facing closure gate.
-  N-116 should source-map candidate inert/no-code Linux-facing surfaces or
-  refine monitor-owned receipt schemas.
+  N-116 completed monitor-owned receipt schema/model.
+  N-117 should source-map candidate inert/no-code Linux-facing surfaces that
+  consume opaque monitor receipts.
 ```
 
 Latest project gap classification:
@@ -1812,6 +1816,30 @@ side gates:
   DCGATE-010 trace-only observation
 
 next:
-  N-116 source-map candidate inert/no-code Linux-facing surfaces or refine
-  monitor-owned receipt schemas.
+  N-116 completed monitor-owned receipt schema/model.
+```
+
+Latest direct-call receipt schema:
+
+```text
+N-116 completed:
+  analysis/0079-direct-call-monitor-receipt-schema.md
+  analysis/direct-call-monitor-receipt-schema-v1.json
+  formal/0056-direct-call-receipt-schema-model/DirectCallReceiptSchema.tla
+  validation/0087-direct-call-receipt-schema-tlc.md
+
+safe TLC:
+  10 generated states
+  9 distinct states
+  depth 9
+
+receipt families:
+  RequestImageReceipt
+  SchemaReceipt
+  EntryResultReceipt
+  ResponseHandleReceipt
+  RevokeReceipt
+
+next:
+  N-117 source-map Linux-facing surfaces that consume opaque receipts.
 ```

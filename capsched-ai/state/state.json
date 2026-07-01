@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-gap-closure-gate-defined",
+    "current_phase": "direct-call-receipt-schema-modeled",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -207,7 +207,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-115 completed the implementation-facing direct-call gap closure gate. implementation/0009 and direct-call-gap-closure-gate-v1.json map the five high-severity direct-call gap groups to Linux-facing candidate surfaces, monitor-owned requirements, required receipts, forbidden fallbacks, patch preconditions, and non-claims. This is not patch approval, ABI approval, monitor verification, runtime coverage, behavior change, or protection evidence. Next focused risk is N-116: source-map candidate inert/no-code Linux-facing surfaces or refine monitor-owned receipt schemas before any direct-call carrier patch.",
+    "current_focus": "N-116 completed the monitor-owned direct-call receipt schema. analysis/0079 and formal/0056 define RequestImageReceipt, SchemaReceipt, EntryResultReceipt, ResponseHandleReceipt, and RevokeReceipt as monitor-owned receipt families; Linux-visible shadows are derived cache records only. validation/0087 safe TLC passed with 10 generated states, 9 distinct states, depth 9; 12 unsafe configs produced expected counterexamples for Linux-minted receipt, Linux schema acceptance, wrapper return as receipt, timeout shadow refresh, Linux shadow authority, response during revoke, revoke completion with in-flight response, trace-plan coverage, ABI approval, behavior change, monitor verification, and protection claim. Next focused risk is N-117: source-map candidate inert/no-code Linux-facing surfaces that consume opaque monitor receipts, still without approving stubs, ABI, tracepoints, or behavior-changing patches.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -511,7 +511,13 @@
     "direct_call_gap_closure_validation": "capsched/capsched-models/validation/0086-direct-call-gap-closure-tlc.md",
     "direct_call_gap_closure_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-gap-closure-20260701T001620Z",
     "direct_call_gap_closure_implementation_gate": "capsched/capsched-models/implementation/0009-direct-call-gap-closure-gate.md",
-    "direct_call_gap_closure_gate_json": "capsched/capsched-models/implementation/direct-call-gap-closure-gate-v1.json"
+    "direct_call_gap_closure_gate_json": "capsched/capsched-models/implementation/direct-call-gap-closure-gate-v1.json",
+    "direct_call_monitor_receipt_schema": "capsched/capsched-models/analysis/0079-direct-call-monitor-receipt-schema.md",
+    "direct_call_monitor_receipt_schema_json": "capsched/capsched-models/analysis/direct-call-monitor-receipt-schema-v1.json",
+    "direct_call_receipt_schema_model": "capsched/capsched-models/formal/0056-direct-call-receipt-schema-model/README.md",
+    "direct_call_receipt_schema_tla": "capsched/capsched-models/formal/0056-direct-call-receipt-schema-model/DirectCallReceiptSchema.tla",
+    "direct_call_receipt_schema_validation": "capsched/capsched-models/validation/0087-direct-call-receipt-schema-tlc.md",
+    "direct_call_receipt_schema_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-receipt-schema-20260701T003345Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2091,9 +2097,19 @@
     {
       "id": "N-116",
       "text": "Use the N-115 gate to source-map candidate inert/no-code Linux-facing direct-call surfaces or refine monitor-owned receipt schemas, still without approving direct-call stubs, ABI, tracepoints, or behavior-changing Linux patches.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-115"
+      ],
+      "completed_on": "2026-06-30",
+      "partial_progress": "Refined monitor-owned receipt schemas before source-mapping Linux-facing surfaces. Added analysis/0079, direct-call-monitor-receipt-schema-v1.json, and formal/0056 DirectCallReceiptSchema. Safe TLC passed with 10 generated states, 9 distinct states, and depth 9. Twelve unsafe configs produced expected counterexamples for Linux-minted receipt, Linux schema acceptance, wrapper return as receipt, timeout shadow refresh, Linux shadow authority, response during revoke, revoke completion with in-flight response, trace plan as runtime coverage, ABI approval, behavior change, monitor verification claim, and protection claim. No Linux patch, ABI, tracepoint, behavior change, monitor verification, runtime coverage, or protection claim is approved."
+    },
+    {
+      "id": "N-117",
+      "text": "Source-map candidate inert/no-code Linux-facing direct-call surfaces that consume opaque monitor receipts from N-116, still without approving direct-call stubs, ABI, tracepoints, or behavior-changing Linux patches.",
+      "status": "pending",
+      "blocked_by": [
+        "N-116"
       ]
     }
   ],

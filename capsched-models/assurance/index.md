@@ -153,6 +153,10 @@ Prototype-evidenced areas:
   DCGATE rows for request envelope, direct-call entry/backend, schema
   negotiation, response shadow, and control revoke lane; still no Linux patch
   approved
+- DirectCallReceiptSchema model support for the rule that Linux-visible shadows
+  are derived cache records only, while monitor-owned receipts are required for
+  request image, schema acceptance, entry result, response handle, and revoke
+  completion
 
 Open production gaps:
 
@@ -520,6 +524,17 @@ Direct-call gap closure implementation gate:
   checklist, not patch approval, ABI approval, monitor verification, runtime
   coverage, or protection evidence.
 
+Direct-call receipt schema model:
+  analysis/0079 and formal/0056 define RequestImageReceipt, SchemaReceipt,
+  EntryResultReceipt, ResponseHandleReceipt, and RevokeReceipt as monitor-owned
+  receipt families. validation/0087 safe TLC passed with 10 generated states,
+  9 distinct states, and depth 9. Unsafe configs produced expected
+  counterexamples for Linux-minted receipt, Linux schema acceptance, wrapper
+  return as receipt, timeout shadow refresh, Linux shadow authority, response
+  during revoke, revoke completion with in-flight response, trace plan as
+  coverage, ABI approval, behavior change, monitor verification claim, and
+  protection claim. This is a receipt-schema gate, not implementation evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,
@@ -557,6 +572,9 @@ Forbidden:
   Do not treat implementation/0009 or direct-call-gap-closure-gate-v1.json as
   approval to add direct-call stubs, ABI, public tracepoints, or behavior
   changes.
+  Do not treat the DirectCallReceiptSchema TLC pass as monitor implementation,
+  Linux direct-call implementation, ABI approval, runtime coverage, monitor
+  verification, or production protection.
   Do not implement behavior-changing QueueLease enforcement from this evidence
   alone.
 ```

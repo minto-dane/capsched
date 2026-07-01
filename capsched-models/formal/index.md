@@ -61,6 +61,7 @@ Updated: 2026-06-30
 | 0053 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Attachment Readiness Model |
 | 0054 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Inventory Contract Model |
 | 0055 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Gap Closure Model |
+| 0056 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Receipt Schema Model |
 
 ## Planned
 

@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "status": "draft_schema_no_patch_approved",
+  "date": "2026-06-30",
+  "purpose": "Define monitor-owned direct-call receipt families before any Linux direct-call stub, ABI, tracepoint, or behavior-changing patch.",
+  "receipt_families": [
+    {
+      "receipt_type": "RequestImageReceipt",
+      "gate_id": "DCGATE-004",
+      "monitor_minted": true,
+      "linux_may_mint": false,
+      "required_fields": [
+        "receipt_id",
+        "schema_version",
+        "caller_domain",
+        "caller_domain_epoch",
+        "request_nonce",
+        "request_digest",
+        "bounded_copy_range",
+        "request_class"
+      ],
+      "linux_visible_shadow": [
+        "opaque_request_id",
+        "schema_version",
+        "non_authoritative_status"
+      ],
+      "forbidden_fallbacks": [
+        "Linux-built envelope as canonical authority",
+        "post-copy Linux mutable request fields as authority"
+      ]
+    },
+    {
+      "receipt_type": "SchemaReceipt",
+      "gate_id": "DCGATE-006",
+      "monitor_minted": true,
+      "linux_may_mint": false,
+      "required_fields": [
+        "receipt_id",
+        "accepted_schema_version",
+        "required_feature_bitmap",
+        "critical_field_policy",
+        "downgrade_rejected",
+        "terminal_incompatibility"
+      ],
+      "linux_visible_shadow": [
+        "accepted_schema_version",
+        "non_authoritative_feature_cache"
+      ],
+      "forbidden_fallbacks": [
+        "Linux-visible schema support as acceptance authority",
+        "ignored unknown critical fields"
+      ]
+    },
+    {
+      "receipt_type": "EntryResultReceipt",
+      "gate_id": "DCGATE-005",
+      "monitor_minted": true,
+      "linux_may_mint": false,
+      "required_fields": [
+        "receipt_id",
+        "entry_sequence",
+        "terminal_failure_code",
+        "success_class",
+        "replay_consumed",
+        "response_expected"
+      ],
+      "linux_visible_shadow": [
+        "opaque_entry_id",
+        "transport_status",
+        "non_authoritative_terminal_hint"
+      ],
+      "forbidden_fallbacks": [
+        "wrapper return code as monitor approval",
+        "transport completion as receipt"
+      ]
+    },
+    {
+      "receipt_type": "ResponseHandleReceipt",
+      "gate_id": "DCGATE-007",
+      "monitor_minted": true,
+      "linux_may_mint": false,
+      "required_fields": [
+        "receipt_id",
+        "response_handle",
+        "response_generation",
+        "caller_domain",
+        "caller_domain_epoch",
+        "shadow_generation",
+        "valid_until_revoke_generation"
+      ],
+      "linux_visible_shadow": [
+        "opaque_response_handle",
+        "shadow_generation",
+        "non_authoritative_timeout_state"
+      ],
+      "forbidden_fallbacks": [
+        "timeout refresh as renewed authority",
+        "cached Linux shadow as monitor response"
+      ]
+    },
+    {
+      "receipt_type": "RevokeReceipt",
+      "gate_id": "DCGATE-008",
+      "monitor_minted": true,
+      "linux_may_mint": false,
+      "required_fields": [
+        "receipt_id",
+        "revoke_generation",
+        "target_domain",
+        "target_domain_epoch",
+        "revoke_accepted",
+        "revoke_complete",
+        "response_embargo_generation",
+        "shadow_invalidation_generation"
+      ],
+      "linux_visible_shadow": [
+        "opaque_revoke_id",
+        "non_authoritative_revoke_status"
+      ],
+      "forbidden_fallbacks": [
+        "control priority bypassing replay budget",
+        "Linux revoke state as monitor completion"
+      ]
+    }
+  ],
+  "failure_modes": [
+    "terminal reject",
+    "retryable failure",
+    "timeout",
+    "schema mismatch",
+    "unknown critical field",
+    "replay collision",
+    "stale response shadow",
+    "revoke while in flight",
+    "response after revoke",
+    "Domain epoch mismatch"
+  ],
+  "required_non_claims": [
+    "Linux direct-call stubs are implemented",
+    "direct-call ABI is approved",
+    "tracefs runtime coverage occurred",
+    "monitor verification occurred",
+    "behavior-changing Linux patches are approved",
+    "production protection exists"
+  ],
+  "safety_flags": {
+    "source_only": true,
+    "implementation_approval": false,
+    "authority_claim": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "behavior_change": false,
+    "public_tracepoint_abi": false,
+    "protection_claim": false
+  }
+}

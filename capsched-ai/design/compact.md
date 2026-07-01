@@ -106,15 +106,15 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call implementation-facing gap closure gate. Implementation/0009 and
-  direct-call-gap-closure-gate-v1.json map DCGATE-004 through DCGATE-008 to
-  Linux-facing candidate surfaces, monitor-owned requirements, required
-  receipts, forbidden fallbacks, patch preconditions, and pre-patch evidence.
-  This remains no-patch/no-ABI/no-protection evidence.
+  Direct-call monitor-owned receipt schema. Analysis/0079 and formal/0056
+  define five monitor-owned receipt families. Validation/0087 safe TLC passed
+  with 10 generated states, 9 distinct states, depth 9. Twelve unsafe configs
+  produced expected counterexamples for Linux-minted receipt/schema/entry/
+  response/revoke shortcuts and for ABI/runtime/protection overclaims.
 
 next focused risk:
-  Use the N-115 gate to source-map candidate inert/no-code Linux-facing
-  direct-call surfaces or refine monitor-owned receipt schemas.
+  Source-map candidate inert/no-code Linux-facing direct-call surfaces that
+  consume opaque monitor receipts.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1555,8 +1555,8 @@ next:
   N-113 completed preserved gap/plan classification.
   N-114 completed direct-call gap-closure design/model.
   N-115 completed the implementation-facing closure gate.
-  N-116 should source-map candidate inert/no-code Linux-facing surfaces or
-  refine monitor-owned receipt schemas.
+  N-116 completed monitor-owned receipt schema/model.
+  N-117 should source-map candidate inert/no-code Linux-facing surfaces.
 ```
 
 Latest project gap classification:
@@ -1617,6 +1617,22 @@ gate rows:
   DCGATE-010 trace-only side gate
 
 next:
-  N-116 source-map candidate inert/no-code Linux-facing surfaces or refine
-  monitor-owned receipt schemas.
+  N-116 completed monitor-owned receipt schema/model.
+```
+
+Latest direct-call receipt schema:
+
+```text
+N-116 completed:
+  analysis/0079
+  formal/0056 DirectCallReceiptSchema
+  validation/0087
+
+safe TLC:
+  10 generated states
+  9 distinct states
+  depth 9
+
+next:
+  N-117 source-map Linux-facing receipt-consuming surfaces.
 ```

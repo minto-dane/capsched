@@ -92,6 +92,7 @@ Updated: 2026-06-30
 | 0084 | Executed; line-only source-anchor recheck completed | Semantic Recheck Line-Only Result |
 | 0085 | Executed; preserved project gaps classified | Project Gap Classification Result |
 | 0086 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Gap Closure TLC |
+| 0087 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Receipt Schema TLC |
 
 ## Principles
 

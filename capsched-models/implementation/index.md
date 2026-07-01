@@ -113,6 +113,11 @@ Validated formal inputs:
     request image, replay, schema acceptance, response handle, epoch, and revoke
     ordering; Linux stubs, wrappers, schema queries, timeouts, trace plans, or
     test hooks cannot stand in for those authorities.
+- `formal/0056-direct-call-receipt-schema-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: future Linux-facing direct-call surfaces may consume opaque
+    monitor receipts and derived shadows, but Linux cannot mint request, schema,
+    entry, response, or revoke authority.
 
 Known future branch names:
 
@@ -140,15 +145,16 @@ Current patch recommendation, not yet executed:
 
 ```text
 Next gate:
-  use implementation/0009 as the pre-patch gate for any direct-call carrier
-  proposal. The next work should either source-map candidate inert/no-code
-  Linux-facing surfaces or refine monitor-owned receipt schemas. A separate
-  privileged tracefs runbook is required before any tracefs execution,
-  direct-call carrier, or public tracepoint patch.
+  use implementation/0009 and analysis/0079 as the pre-patch gate for any
+  direct-call carrier proposal. The next work should source-map candidate
+  inert/no-code Linux-facing surfaces that consume opaque monitor receipts, or
+  refine monitor-side receipt lifecycle/failure schemas. A separate privileged
+  tracefs runbook is required before any tracefs execution, direct-call carrier,
+  or public tracepoint patch.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0086 improve traceability and model the
-  gap-closure gate, but they are not Linux stub implementation, monitor
-  verification, ABI approval, runtime coverage, behavior-change approval, or
-  production protection evidence.
+  validation/0080 through validation/0087 improve traceability and model the
+  gap-closure/receipt-schema gates, but they are not Linux stub implementation,
+  monitor verification, ABI approval, runtime coverage, behavior-change
+  approval, or production protection evidence.
 ```
