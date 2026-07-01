@@ -206,9 +206,20 @@ latest completed focused risk:
   donor/cgroup charge. JSON: 15 anchors, 6 unsafe cases, 12/12 safety flags
   false.
 
+latest completed focused risk:
+  Scheduler server-ticket gate. Analysis/0091, formal/0069, JSON gate, and
+  validation/0108 model fair/ext/DL server-borrow tickets, RT bandwidth and SCX
+  slice non-authority, fresh server epochs, live server state, lower task
+  authority, and monitor root budget. Safe TLC: 39 generated states, 24
+  distinct, depth 6. Unsafe configs reject server pick without ticket, server
+  runtime as root authority, RT bandwidth as root, SCX slice as authority,
+  stale server epoch, stopped server with live run, and lower task without
+  authority. JSON: 17 anchors, 7 unsafe cases, 12/12 safety flags false.
+
 next focused risk:
-  Trace-only current/donor/proxy runtime coverage, RT/DL/SCX server-ticket
-  refinement, and monitor root budget timer event modeling.
+  Trace-only current/donor/proxy/server runtime coverage, monitor root budget
+  timer event modeling, server epoch relation to replenish/swap/stop in a larger
+  scheduler authority model, and deadline CBS/GRUB compatibility source refresh.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

@@ -74,12 +74,14 @@ Updated: 2026-07-01
 | 0066 | Checked with safe pass and expected unsafe counterexamples | Linux Source-Map Refresh Target Model |
 | 0067 | Checked with safe pass and expected unsafe counterexamples | Scheduler Authority Refinement Gate Model |
 | 0068 | Checked with safe pass and expected unsafe counterexamples | Runtime Charge Subject Model |
+| 0069 | Checked with safe pass and expected unsafe counterexamples | Scheduler Server Ticket Model |
 
 ## Planned
 
-1. Trace-only runtime coverage gate for current/donor/proxy scheduler paths.
-2. RT/DL/sched_ext server-ticket refinement.
-3. Monitor root budget timer event model.
-4. F1 admission-freeze data dependency refresh against current upstream.
-5. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
+1. Trace-only runtime coverage gate for current/donor/proxy/server paths.
+2. Monitor root budget timer event model.
+3. Server epoch relation to replenish/swap/stop in a larger scheduler authority model.
+4. Deadline CBS/GRUB compatibility source refresh before behavior hooks.
+5. F1 admission-freeze data dependency refresh against current upstream.
+6. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

@@ -309,4 +309,14 @@ Current runtime charge subject gate:
   charge, class runtime as root authority, proxy runtime without ticket, remote
   tick proxy authority, task_sched_runtime as authority, and CFS proxy without
   donor/cgroup charge. No budget hook or scheduler authority patch is approved.
+
+Current scheduler server-ticket gate:
+  analysis/0091, formal/0069, scheduler-server-ticket-v1.json, and
+  validation/0108 now model fair/ext/DL server borrow tickets and class runtime
+  non-authority. Safe TLC passed with 39 generated states, 24 distinct states,
+  and depth 6. Unsafe configs produced expected counterexamples for server
+  pick without ticket, server runtime as root authority, RT bandwidth as root
+  authority, SCX slice as root authority, server replenish without epoch,
+  server stop with live ticket, and lower task without authority. No scheduler
+  hook, budget hook, or behavior-changing patch is approved.
 ```

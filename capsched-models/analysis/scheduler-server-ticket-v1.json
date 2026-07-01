@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "id": "scheduler-server-ticket-v1",
+  "status": "draft_model_gate_checked",
+  "date": "2026-07-01",
+  "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+  "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+  "analysis": "analysis/0091-scheduler-server-ticket-map.md",
+  "formal_model": "formal/0069-scheduler-server-ticket-model",
+  "validation": "validation/0108-scheduler-server-ticket-tlc.md",
+  "source_anchors": [
+    {
+      "id": "dl_server_api",
+      "path": "kernel/sched/sched.h",
+      "line": 366,
+      "symbol": "dl_server_update",
+      "meaning": "deadline server nested scheduling interface"
+    },
+    {
+      "id": "server_pick_task_field",
+      "path": "include/linux/sched.h",
+      "line": 739,
+      "symbol": "sched_dl_entity.server_pick_task",
+      "meaning": "server entity can select lower-class work"
+    },
+    {
+      "id": "dl_server_update",
+      "path": "kernel/sched/deadline.c",
+      "line": 1584,
+      "symbol": "dl_server_update",
+      "meaning": "server runtime accounting"
+    },
+    {
+      "id": "dl_server_update_idle",
+      "path": "kernel/sched/deadline.c",
+      "line": 1578,
+      "symbol": "dl_server_update_idle",
+      "meaning": "idle/server accounting"
+    },
+    {
+      "id": "dl_server_pick_use",
+      "path": "kernel/sched/deadline.c",
+      "line": 2814,
+      "symbol": "__pick_task_dl",
+      "meaning": "server entity calls server_pick_task"
+    },
+    {
+      "id": "fair_server_start",
+      "path": "kernel/sched/fair.c",
+      "line": 7891,
+      "symbol": "enqueue_entity",
+      "meaning": "fair work starts fair_server"
+    },
+    {
+      "id": "fair_server_update",
+      "path": "kernel/sched/fair.c",
+      "line": 2019,
+      "symbol": "update_curr",
+      "meaning": "fair runtime updates fair_server"
+    },
+    {
+      "id": "fair_server_pick_task",
+      "path": "kernel/sched/fair.c",
+      "line": 9957,
+      "symbol": "fair_server_pick_task",
+      "meaning": "fair server delegates to pick_task_fair"
+    },
+    {
+      "id": "ext_server_start",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 2042,
+      "symbol": "enqueue_task_scx",
+      "meaning": "sched_ext work starts ext_server"
+    },
+    {
+      "id": "ext_server_update",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 1336,
+      "symbol": "update_curr_scx",
+      "meaning": "sched_ext runtime updates ext_server"
+    },
+    {
+      "id": "ext_server_pick_task",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3235,
+      "symbol": "ext_server_pick_task",
+      "meaning": "ext server delegates to do_pick_task_scx(force_scx)"
+    },
+    {
+      "id": "scx_slice_refill_keep_prev",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3198,
+      "symbol": "do_pick_task_scx",
+      "meaning": "keep-prev path can refill slice"
+    },
+    {
+      "id": "scx_slice_refill_local",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 3207,
+      "symbol": "do_pick_task_scx",
+      "meaning": "local DSQ path can refill zero slice"
+    },
+    {
+      "id": "ext_fair_server_swap",
+      "path": "kernel/sched/ext/ext.c",
+      "line": 6099,
+      "symbol": "dl_server_swap_bw",
+      "meaning": "server bandwidth attachment can move between ext/fair"
+    },
+    {
+      "id": "rt_bandwidth_update",
+      "path": "kernel/sched/rt.c",
+      "line": 974,
+      "symbol": "update_curr_rt",
+      "meaning": "RT runtime/bandwidth policy update"
+    },
+    {
+      "id": "fair_server_stop_cpu_dead",
+      "path": "kernel/sched/core.c",
+      "line": 8846,
+      "symbol": "sched_cpu_dying",
+      "meaning": "CPU teardown stops fair server"
+    },
+    {
+      "id": "ext_server_stop_cpu_dead",
+      "path": "kernel/sched/core.c",
+      "line": 8848,
+      "symbol": "sched_cpu_dying",
+      "meaning": "CPU teardown stops ext server"
+    }
+  ],
+  "invariants": [
+    "NoRunWithoutTaskAuthority",
+    "NoServerBorrowWithoutTicket",
+    "NoServerRuntimeAsRootAuthority",
+    "NoRtBandwidthAsRootAuthority",
+    "NoScxSliceAsRootAuthority",
+    "NoRunWithStaleServerEpoch",
+    "NoStoppedServerWithLiveRun",
+    "NoFailClosedRunning"
+  ],
+  "unsafe_cases": [
+    "server_pick_without_ticket",
+    "server_runtime_as_root_authority",
+    "rt_bandwidth_as_root_authority",
+    "scx_slice_as_root_authority",
+    "server_replenish_without_epoch",
+    "server_stop_with_live_ticket",
+    "lower_task_without_authority"
+  ],
+  "safety_flags": {
+    "linux_implementation": false,
+    "behavior_change": false,
+    "public_abi": false,
+    "tracepoint_abi": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "protection_claim": false,
+    "hook_approved": false,
+    "budget_hook": false,
+    "server_runtime_root": false,
+    "rt_bandwidth_root": false,
+    "scx_slice_authority": false
+  },
+  "next_blocking_obligations": [
+    "trace-only runtime coverage for current/donor/proxy/server paths",
+    "monitor root budget timer event model",
+    "server epoch relation to replenish/swap/stop in a larger scheduler authority model",
+    "deadline CBS/GRUB compatibility source refresh before behavior hooks"
+  ]
+}

@@ -130,6 +130,10 @@ Model-supported areas:
 - runtime charge subject semantics, checking that Linux runtime accounting
   surfaces name current/donor/cgroup/class/monitor/proxy/observation roles and
   do not turn class runtime or task_sched_runtime into authority
+- scheduler server-ticket semantics, checking that fair/ext/DL server borrowing
+  requires a server-borrow ticket, fresh server epoch, live server state, lower
+  task authority, and monitor root budget, while DL server runtime, RT
+  bandwidth, and sched_ext slice state are not root authority
 
 Prototype-evidenced areas:
 

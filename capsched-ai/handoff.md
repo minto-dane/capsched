@@ -267,9 +267,25 @@ latest completed risk:
   and 12/12 safety flags false. Assurance evidence E-SCHED-RUNTIME-001 supports
   BUDGET-001 only as model evidence.
 
+latest completed risk:
+  Scheduler server-ticket gate. Analysis/0091, formal/0069,
+  scheduler-server-ticket-v1.json, and validation/0108 now model fair/ext/DL
+  server-borrow tickets, RT bandwidth and SCX slice non-authority, fresh server
+  epochs, live server state, lower task authority, and monitor root budget.
+  Safe TLC passed with 39 generated states, 24 distinct states, 0 states left
+  on queue, depth 6. Unsafe configs produced expected counterexamples for
+  server pick without ticket, server runtime as root authority, RT bandwidth as
+  root authority, SCX slice as root authority, server replenish without epoch,
+  server stop with live ticket, and lower task without authority. JSON check
+  confirms 17 source anchors, 7 unsafe cases, and 12/12 safety flags false.
+  Assurance evidence E-SCHED-SERVER-001 supports EXEC-001 and BUDGET-001 only
+  as model evidence.
+
 next focused risk:
-  Trace-only runtime coverage for current/donor/proxy paths, RT/DL/sched_ext
-  server-ticket refinement, and monitor root budget timer event modeling. Do
+  Trace-only runtime coverage for current/donor/proxy/server paths, monitor
+  root budget timer event modeling, server epoch relation to replenish/swap/stop
+  in a larger scheduler authority model, and deadline CBS/GRUB compatibility
+  source refresh before behavior hooks. Do
   not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
   integration, async carrier Linux names, budget hooks, or behavior-changing
   patches.

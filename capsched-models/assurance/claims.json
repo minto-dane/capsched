@@ -68,16 +68,18 @@
       "title": "No CPU execution without runnable authority",
       "claim": "A task cannot enter or remain executable without a live RunCap-derived FrozenRunUse, SchedContext, epoch, generation, CPU placement, and remaining budget.",
       "evidence": [
+        "E-L0-002",
         "E-RUN-001",
         "E-SCHED-REFINE-001",
-        "E-L0-002"
+        "E-SCHED-SERVER-001"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
-        "No wakeup/migration/remote wake coverage.",
+        "No monitor timer.",
+        "No runtime coverage for server-picked lower-class tasks.",
         "No scheduler class coverage.",
         "No trace/runtime coverage for current, donor, and proxy execution paths.",
-        "No monitor timer."
+        "No wakeup/migration/remote wake coverage."
       ],
       "forbidden_l0": false
     },
@@ -90,12 +92,14 @@
       "evidence": [
         "E-BUD-001",
         "E-SCHED-REFINE-001",
-        "E-SCHED-RUNTIME-001"
+        "E-SCHED-RUNTIME-001",
+        "E-SCHED-SERVER-001"
       ],
       "gaps": [
-        "No monitor root budget timer.",
         "No Linux accounting integration.",
         "No exact current/donor/proxy runtime charge equation across CFS, RT, deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution.",
+        "No monitor root budget timer binding to server tickets.",
+        "No monitor root budget timer.",
         "No service-domain debit/refund policy."
       ],
       "forbidden_l0": true
@@ -1508,6 +1512,16 @@
         "ASYNC-001"
       ],
       "limitation": "Socket endpoint checks cannot rely only on LSM because some paths reuse sock_sendmsg_nosec()."
+    },
+    {
+      "id": "E-SCHED-SERVER-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0108-scheduler-server-ticket-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "BUDGET-001"
+      ],
+      "limitation": "Finite model gate checks server-borrow ticket and class runtime non-authority; it is not Linux scheduler-hook implementation, runtime coverage, monitor timer evidence, or production protection evidence."
     }
   ],
   "counterexamples": [
@@ -1540,6 +1554,11 @@
       "id": "CEX-SCHED-RUNTIME-001",
       "record": "capsched-models/validation/0107-runtime-charge-subject-tlc.md",
       "meaning": "Unsafe runtime charge models show expected counterexamples for unspecified charge, class runtime as root authority, proxy without ticket, remote-tick proxy authority, task_sched_runtime authority, and CFS proxy without donor/cgroup charge."
+    },
+    {
+      "id": "CEX-SCHED-SERVER-001",
+      "record": "capsched-models/validation/0108-scheduler-server-ticket-tlc.md",
+      "meaning": "Unsafe server-ticket models show expected counterexamples for server pick without ticket, server runtime as root authority, RT bandwidth as root, SCX slice as authority, stale server epoch, stopped server with live run, and lower task without authority."
     }
   ],
   "forbidden_claims": [

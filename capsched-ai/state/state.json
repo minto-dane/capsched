@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "runtime-charge-subject-gate-complete",
+    "current_phase": "scheduler-server-ticket-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-136 runtime charge subject gate is complete. Added analysis/0090, formal/0068 RuntimeChargeSubject, runtime-charge-subject-v1.json, and validation/0107. The gate models NoUnspecifiedRuntimeCharge across scheduler runtime surfaces: sched_tick, hrtick, sched_tick_remote, task_sched_runtime, update_curr_common, CFS update_se/update_curr/task_tick_fair, RT update/tick, deadline update/tick, sched_ext update, idle, and stop. Safe TLC passed with 79 generated states, 48 distinct states, 0 left on queue, depth 4. Unsafe configs produced expected counterexamples for unspecified runtime charge, class runtime as root authority, proxy runtime without ticket, remote tick proxy authority, task_sched_runtime as authority, and CFS proxy without donor/cgroup charge. JSON check confirmed 15 source anchors, 6 unsafe cases, and 12/12 safety flags false. Assurance evidence E-SCHED-RUNTIME-001 supports BUDGET-001 only as model evidence. This is not Linux implementation, runtime coverage, ABI approval, monitor verification, behavior change, budget hook approval, or production protection. Next focused risks are trace-only runtime coverage for current/donor/proxy paths, RT/DL/sched_ext server-ticket refinement, and monitor root budget timer event modeling.",
+    "current_focus": "N-137 scheduler server-ticket gate is complete. Added analysis/0091, formal/0069 SchedulerServerTicket, scheduler-server-ticket-v1.json, and validation/0108. The gate models fair/ext/DL server-borrow tickets, RT bandwidth and SCX slice non-authority, fresh server epochs, live server state, task authority, and monitor root budget. Safe TLC passed with 39 generated states, 24 distinct states, 0 left on queue, depth 6. Unsafe configs produced expected counterexamples for server pick without ticket, server runtime as root authority, RT bandwidth as root authority, SCX slice as root authority, server replenish without epoch, server stop with live ticket, and lower task without authority. JSON check confirmed 17 anchors, 7 unsafe cases, 12/12 safety flags false. Assurance evidence E-SCHED-SERVER-001 supports EXEC-001/BUDGET-001 only as model evidence. This is not Linux implementation, runtime coverage, ABI approval, monitor verification, behavior change, scheduler hook approval, budget hook approval, or production protection. Next focused risks are trace-only runtime coverage for current/donor/proxy/server paths, monitor root budget timer event model, server epoch relation in larger model, and deadline CBS/GRUB compatibility source refresh.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -627,7 +627,13 @@
     "runtime_charge_subject_model": "capsched/capsched-models/formal/0068-runtime-charge-subject-model/README.md",
     "runtime_charge_subject_tla": "capsched/capsched-models/formal/0068-runtime-charge-subject-model/RuntimeChargeSubject.tla",
     "runtime_charge_subject_validation": "capsched/capsched-models/validation/0107-runtime-charge-subject-tlc.md",
-    "runtime_charge_subject_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/runtime-charge-subject-20260701T195712Z"
+    "runtime_charge_subject_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/runtime-charge-subject-20260701T195712Z",
+    "scheduler_server_ticket_analysis": "capsched/capsched-models/analysis/0091-scheduler-server-ticket-map.md",
+    "scheduler_server_ticket_json": "capsched/capsched-models/analysis/scheduler-server-ticket-v1.json",
+    "scheduler_server_ticket_model": "capsched/capsched-models/formal/0069-scheduler-server-ticket-model/README.md",
+    "scheduler_server_ticket_tla": "capsched/capsched-models/formal/0069-scheduler-server-ticket-model/SchedulerServerTicket.tla",
+    "scheduler_server_ticket_validation": "capsched/capsched-models/validation/0108-scheduler-server-ticket-tlc.md",
+    "scheduler_server_ticket_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/scheduler-server-ticket-20260701T200435Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

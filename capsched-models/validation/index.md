@@ -113,6 +113,7 @@ Updated: 2026-07-01
 | 0105 | Source-only refresh checked; existing authority model rechecked; JSON contract checked | Linux Scheduler Authority Core Refresh |
 | 0106 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Scheduler Authority Refinement Gate TLC |
 | 0107 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Runtime Charge Subject TLC |
+| 0108 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Scheduler Server Ticket TLC |
 
 ## Principles
 
