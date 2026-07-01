@@ -122,10 +122,9 @@ latest completed risk:
   implementation approval or authority/protection claims.
 
 next focused risk:
-  Model the N-125 no-behavior `capsched_async_carrier` API sketch transition
-  ordering and adapter obligations. Do not add direct-call stubs, ABI,
-  tracepoints, workqueue integration, io_uring integration, or
-  behavior-changing patches.
+  Split the N-126 broad adapter obligations into dedicated io_uring and
+  workqueue refinement models. Do not add direct-call stubs, ABI, tracepoints,
+  workqueue integration, io_uring integration, or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:
@@ -2155,6 +2154,49 @@ still not:
   monitor verification
   production protection
 
+N-126 completed:
+  formal/0059-direct-call-async-carrier-api-sketch-model/
+  validation/0097-direct-call-async-carrier-api-sketch-tlc.md
+
+safe TLC:
+  25 generated states
+  23 distinct states
+  depth 12
+
+safe paths:
+  workqueue:
+    create, freeze, bind, publish, coalescing handled, revoke_check, validate,
+    side effect, settle, release, accept.
+  io_uring:
+    create, freeze, bind, request prepared, reissue handled, revoke_check,
+    validate, side effect, settle, release, accept.
+
+unsafe counterexamples:
+  side effect before validate
+  immutable overwrite
+  second-caller leak
+  pending overwrite
+  double settlement
+  release dropping Linux refs
+  CQE settlement proof
+  reissue receipt refresh
+  bad authority intersection
+  Linux object authority
+  ABI approval
+  behavior change
+  monitor verification claim
+  protection claim
+
+still not:
+  Linux implementation
+  workqueue integration
+  io_uring integration
+  ABI approval
+  runtime coverage
+  behavior change
+  monitor verification
+  production protection
+
 next:
-  N-126 model the API sketch transition ordering and adapter obligations.
+  N-127 split io_uring and workqueue refinements before any Linux code proposal.
 ```

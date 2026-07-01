@@ -118,6 +118,11 @@ Model-supported areas:
   carrier core with single-assignment frozen fields, core/adapter ownership
   boundaries, exactly-once settlement pressure, and separate workqueue/io_uring
   adapter contracts, still without Linux implementation or protection evidence
+- direct-call async carrier API sketch transition-ordering semantics, checking
+  side-effect ordering, immutable tuple preservation, second-caller coalescing
+  rejection, at-most-once settlement, release/Linux-cleanup separation, CQE and
+  reissue non-authority, set-based authority intersection, Linux object
+  non-authority, and evidence-class non-claims
 
 Prototype-evidenced areas:
 

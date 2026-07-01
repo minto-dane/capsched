@@ -150,6 +150,14 @@ Validated formal inputs:
     ticket, and monitor receipt. Generic workqueue authority, pending
     work-struct overwrite, worker identity authority, service-only execution,
     Linux-minted receipt, and consume-after-revoke semantics are rejected.
+- `formal/0059-direct-call-async-carrier-api-sketch-model/`
+  - Status: checked with safe pass and expected unsafe counterexamples.
+  - Pressure: the N-125 async carrier API sketch requires side effects after
+    revoke_check and validate, immutable frozen/bind tuples, no second-caller
+    coalescing leak, at-most-once settlement, release separated from Linux
+    object cleanup, no CQE settlement proof, no reissue receipt refresh,
+    set-based authority intersection, no Linux object authority, and no
+    ABI/runtime/monitor/protection overclaims.
 
 Known future branch names:
 
@@ -200,10 +208,12 @@ Current API-sketch direction:
   remain separate adapter contracts. The next gate is to model this API sketch,
   especially io_uring request/resource/reissue/CQE state, BudgetTicket/receipt
   settlement, generation/epoch revoke interleavings, set-based authority
-  intersection, and workqueue delayed-work/self-requeue choices.
+  intersection, and workqueue delayed-work/self-requeue choices. formal/0059
+  and validation/0097 now check this first transition-ordering gate; the next
+  refinement should split io_uring and workqueue adapter internals further.
 
 Current blocker to behavior-changing Linux patches:
-  validation/0080 through validation/0096 improve traceability and
+  validation/0080 through validation/0097 improve traceability and
   model/source-map the gap-closure, receipt-schema, receipt-consumer,
   placement, async-carrier, source-map, lifetime, gate, API-direction, and API
   sketch artifacts, but they are not Linux stub implementation, monitor

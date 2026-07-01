@@ -113,8 +113,8 @@ latest completed focused risk:
   all rows and safety flags.
 
 next focused risk:
-  Model the no-behavior capsched_async_carrier API sketch transition ordering
-  and adapter obligations.
+  Split the async carrier adapter obligations into dedicated io_uring and
+  workqueue refinement models.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.
@@ -1839,6 +1839,24 @@ validated shape:
   5 required future models
   all safety flags false
 
+N-126 completed:
+  formal/0059
+  validation/0097
+
+TLC:
+  safe passed: 25 generated, 23 distinct, depth 12.
+  14 unsafe configs produced expected counterexamples.
+
+unsafe themes:
+  side effect before validate, immutable overwrite, second-caller leak, pending
+  overwrite, double settlement, release dropping Linux refs, CQE settlement
+  proof, reissue refresh, bad authority intersection, Linux object authority,
+  ABI/behavior/monitor/protection overclaims.
+
+still not:
+  Linux implementation, ABI, runtime coverage, monitor verification,
+  behavior change, or production protection.
+
 next:
-  N-126 model transition ordering and adapter obligations.
+  N-127 split io_uring/workqueue refinement models.
 ```

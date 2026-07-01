@@ -102,6 +102,7 @@ Updated: 2026-07-01
 | 0094 | Executed; no-patch lifetime table checked | Direct-Call Async Carrier Lifetime Table Result |
 | 0095 | Executed; no-behavior API direction checked | Direct-Call Async Carrier API Direction Result |
 | 0096 | Executed; no-behavior API sketch checked | Direct-Call Async Carrier API Sketch Result |
+| 0097 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Async Carrier API Sketch TLC |
 
 ## Principles
 

@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-06-30
+Updated: 2026-07-01
 
 ## Current Formal Records
 
@@ -64,6 +64,7 @@ Updated: 2026-06-30
 | 0056 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Receipt Schema Model |
 | 0057 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Receipt Consumer Placement Model |
 | 0058 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Async Carrier Model |
+| 0059 | Checked with safe pass and expected unsafe counterexamples | Direct-Call Async Carrier API Sketch Model |
 
 ## Planned
 
