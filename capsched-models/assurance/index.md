@@ -139,6 +139,10 @@ Model-supported areas:
   relation, evidence class, and non-claim boundaries, and that sched_stat,
   remote tick, server lifecycle, class runtime, and trace evidence do not become
   authority or production protection
+- monitor root budget timer semantics, checking that Domain execution requires
+  a monitor-owned timer/deadline, remaining monitor root budget, sealed token,
+  and fresh epoch, while Linux hrtick, sched_tick, hrtimer, NO_HZ, and runtime
+  charge reports cannot become root authority
 
 Prototype-evidenced areas:
 

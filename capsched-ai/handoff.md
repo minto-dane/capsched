@@ -295,11 +295,27 @@ latest completed risk:
   flags false. Assurance evidence E-SCHED-COVERAGE-001 supports BUDGET-001 and
   COMPAT-001 only as model evidence.
 
+latest completed risk:
+  Monitor root budget timer gate. Analysis/0093, formal/0071,
+  monitor-root-budget-timer-v1.json, and validation/0110 now model the
+  production CPU budget root as monitor-owned timer/deadline state, not Linux
+  hrtick, sched_tick, hrtimer, NO_HZ, or runtime charge reports. Safe TLC
+  passed with 78 generated states, 37 distinct states, 0 states left on queue,
+  depth 7. Unsafe configs produced expected counterexamples for running without
+  monitor timer, running without root budget, Linux timer as root authority,
+  overrun after budget expiry, Linux charge as monitor charge, activation
+  without sealed token, running after epoch revoke, running after monitor
+  interrupt, NO_HZ stopping monitor timer, and protection claim without
+  implementation. JSON check confirms 25 source anchors, 12 monitor event
+  requirements, 10 unsafe cases, and 12/12 safety flags false. Assurance
+  evidence E-MONITOR-TIMER-001 supports ACT-001 and BUDGET-001 only as model
+  evidence.
+
 next focused risk:
-  Monitor root budget timer event modeling, server epoch relation to
-  replenish/swap/stop in a larger scheduler authority model, deadline CBS/GRUB
-  compatibility source refresh before behavior hooks, and F1 admission-freeze
-  data dependency refresh. Do
+  Server epoch relation to replenish/swap/stop in a larger scheduler authority
+  model, deadline CBS/GRUB compatibility source refresh before behavior hooks,
+  F1 admission-freeze data dependency refresh, and monitor timer architecture
+  substrate comparison for x86 VMX-root and arm64 EL2. Do
   not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
   integration, async carrier Linux names, budget hooks, or behavior-changing
   patches.

@@ -105,12 +105,15 @@ Current evidence:
 
 - `formal/0005-domain-monitor-activation-model/`
 - `validation/0007-domain-monitor-activation-tlc.md`
+- `formal/0071-monitor-root-budget-timer-model/`
+- `validation/0110-monitor-root-budget-timer-tlc.md`
 - Slice 0B type names: `capsched_run_token`, `capsched_memory_view`
 
 Open gaps:
 
 - no HyperTag Monitor implementation
 - no arch-specific stage-2/EPT activation path
+- no arch-specific monitor root-budget timer implementation
 - no real token sealing
 - no interrupt/exception entry policy
 - no production evidence that Linux cannot mutate active Domain roots
@@ -186,11 +189,13 @@ Current evidence:
 - `validation/0108-scheduler-server-ticket-tlc.md`
 - `formal/0070-runtime-coverage-gate-model/`
 - `validation/0109-runtime-coverage-gate-tlc.md`
+- `formal/0071-monitor-root-budget-timer-model/`
+- `validation/0110-monitor-root-budget-timer-tlc.md`
 - Slice 0B type name: `capsched_budget_ticket`
 
 Open gaps:
 
-- no monitor root budget timer
+- no monitor root budget timer implementation
 - no Linux accounting integration
 - no exact current/donor/proxy runtime charge equation across CFS, RT,
   deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution
@@ -594,6 +599,7 @@ Open gaps:
 | E-SCHED-RUNTIME-001 | TLA validation | `validation/0107-runtime-charge-subject-tlc.md` | BUDGET |
 | E-SCHED-SERVER-001 | TLA validation | `validation/0108-scheduler-server-ticket-tlc.md` | EXEC, BUDGET |
 | E-SCHED-COVERAGE-001 | TLA validation | `validation/0109-runtime-coverage-gate-tlc.md` | BUDGET, COMPAT |
+| E-MONITOR-TIMER-001 | TLA validation | `validation/0110-monitor-root-budget-timer-tlc.md` | ACT, BUDGET |
 | E-ACT-001 | TLA validation | `validation/0007-domain-monitor-activation-tlc.md` | ACT |
 | E-CLUSTER-001 | Negative/stress record | `validation/0008-cluster-lease-full-systemd-tlc-run.md` | CLUSTER limitation |
 | E-CLUSTER-002 | TLA validation | `validation/0009-cluster-authority-decomposition-tlc.md` | CLUSTER, REVOKE |
@@ -615,6 +621,7 @@ Open gaps:
 | CEX-SCHED-RUNTIME-001 | `validation/0107` | Unspecified runtime charge, class runtime as root authority, proxy without ticket, remote tick proxy authority, task_sched_runtime authority, and CFS proxy without donor/cgroup charge are rejected. |
 | CEX-SCHED-SERVER-001 | `validation/0108` | Server pick without ticket, server runtime as root authority, RT bandwidth as root, SCX slice as authority, stale server epoch, stopped server with live run, and lower task without authority are rejected. |
 | CEX-SCHED-COVERAGE-001 | `validation/0109` | Missing current, missing donor, missing proxy relation, missing server coverage, missing evidence class, sched_stat_runtime authority, remote tick proxy coverage, trace protection claim, server lifecycle-only coverage, and class runtime root evidence are rejected. |
+| CEX-MONITOR-TIMER-001 | `validation/0110` | Running without monitor timer, running without root budget, Linux timer as root authority, overrun after expiry, Linux charge as monitor charge, unsealed activation, run after epoch revoke, run after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
 | HAZ-ENDP-001 | `analysis/0015` | Socket endpoint checks cannot rely only on LSM because some paths reuse `sock_sendmsg_nosec()`. |
 

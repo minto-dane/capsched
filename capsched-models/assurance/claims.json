@@ -51,13 +51,15 @@
       "claim": "Linux-visible Domain shadows do not create active authority; monitor validation of RunToken, epoch, placement, root budget, and MemoryView is required.",
       "evidence": [
         "E-ACT-001",
-        "E-L0-002"
+        "E-L0-002",
+        "E-MONITOR-TIMER-001"
       ],
       "gaps": [
         "No HyperTag Monitor.",
-        "No sealed RunToken.",
         "No arch activation path.",
-        "No proof that Linux cannot mutate active roots."
+        "No arch-specific monitor root-budget timer implementation.",
+        "No proof that Linux cannot mutate active roots.",
+        "No sealed RunToken."
       ],
       "forbidden_l0": true
     },
@@ -91,6 +93,7 @@
       "claim": "Domain CPU use and service execution on behalf of callers are bounded by non-forgeable root budgets and caller-reserved BudgetTickets.",
       "evidence": [
         "E-BUD-001",
+        "E-MONITOR-TIMER-001",
         "E-SCHED-COVERAGE-001",
         "E-SCHED-REFINE-001",
         "E-SCHED-RUNTIME-001",
@@ -99,9 +102,10 @@
       "gaps": [
         "No Linux accounting integration.",
         "No actual trace runtime coverage run under the N-138 contract.",
+        "No architecture-specific monitor timer interrupt/trap path.",
         "No exact current/donor/proxy runtime charge equation across CFS, RT, deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution.",
         "No monitor root budget timer binding to server tickets.",
-        "No monitor root budget timer.",
+        "No monitor root budget timer implementation.",
         "No service-domain debit/refund policy."
       ],
       "forbidden_l0": true
@@ -1536,6 +1540,16 @@
         "COMPAT-001"
       ],
       "limitation": "Finite model gate checks trace-only runtime coverage acceptance criteria for current/donor/proxy/server evidence and non-claims; it is not tracefs execution, runtime coverage, Linux implementation, monitor timer evidence, behavior change, or production protection evidence."
+    },
+    {
+      "id": "E-MONITOR-TIMER-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0110-monitor-root-budget-timer-tlc.md",
+      "supports": [
+        "ACT-001",
+        "BUDGET-001"
+      ],
+      "limitation": "Finite model gate checks monitor-owned root budget timer semantics and rejects Linux timers/accounting as authority; it is not a monitor implementation, Linux hook approval, runtime coverage, architecture-specific timer path, or production protection evidence."
     }
   ],
   "counterexamples": [
@@ -1578,6 +1592,11 @@
       "id": "CEX-SCHED-COVERAGE-001",
       "record": "capsched-models/validation/0109-runtime-coverage-gate-tlc.md",
       "meaning": "Unsafe runtime coverage models show expected counterexamples for missing current, missing donor, missing proxy relation, missing server coverage, missing evidence class, sched_stat_runtime as authority, remote tick as proxy coverage, trace coverage as protection, server lifecycle-only coverage, and class runtime as root budget evidence."
+    },
+    {
+      "id": "CEX-MONITOR-TIMER-001",
+      "record": "capsched-models/validation/0110-monitor-root-budget-timer-tlc.md",
+      "meaning": "Unsafe monitor timer models show expected counterexamples for running without monitor timer, running without root budget, Linux timer as root authority, overrun after budget expiry, Linux charge as monitor charge, activation without sealed token, running after epoch revoke, running after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation."
     }
   ],
   "forbidden_claims": [
@@ -1597,6 +1616,7 @@
     "FDIR ctx_irq, ctx_done, timer completion, IRQ completion, or service flush is frozen OffloadCap or VF request carrier authority.",
     "IRQ route invalidation proves DMA reachability revocation.",
     "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",
+    "Linux hrtick, sched_tick, hrtimer, NO_HZ remote tick, task_sched_runtime, or Linux runtime charge reports are monitor root budget enforcement.",
     "Linux netdev down/reset proves monitor-grade queue revoke.",
     "Linux netdev, ring, q_vector, devlink, representor, tracepoint, or workqueue state is modern NIC QueueLease authority.",
     "Linux page/slab/memcg/page-cache metadata is memory authority.",

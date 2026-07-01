@@ -226,10 +226,21 @@ latest completed focused risk:
   coverage, and class runtime as root evidence. JSON: 33 anchors, 12 coverage
   requirements, 10 unsafe cases, 12/12 safety flags false.
 
+latest completed focused risk:
+  Monitor root budget timer gate. Analysis/0093, formal/0071, JSON gate, and
+  validation/0110 model monitor-owned root CPU budget timer/deadline semantics.
+  Linux hrtick, sched_tick, hrtimer, NO_HZ, and runtime charge reports remain
+  non-authority. Safe TLC: 78 generated states, 37 distinct, depth 7. Unsafe
+  configs reject no monitor timer, no root budget, Linux timer root, overrun
+  after expiry, Linux charge root, unsealed activation, epoch-revoked run,
+  run after monitor interrupt, NO_HZ stopping monitor timer, and protection
+  claim. JSON: 25 anchors, 12 monitor event requirements, 10 unsafe cases,
+  12/12 safety flags false.
+
 next focused risk:
-  Monitor root budget timer event modeling, server epoch relation to
-  replenish/swap/stop in a larger scheduler authority model, deadline CBS/GRUB
-  compatibility source refresh, and F1 admission-freeze data dependency refresh.
+  Server epoch relation to replenish/swap/stop in a larger scheduler authority
+  model, deadline CBS/GRUB compatibility source refresh, F1 admission-freeze
+  data dependency refresh, and monitor timer architecture substrate comparison.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

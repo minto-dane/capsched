@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "runtime-coverage-gate-complete",
+    "current_phase": "monitor-root-budget-timer-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-138 runtime coverage gate is complete. Added analysis/0092, formal/0070 RuntimeCoverageGate, runtime-coverage-gate-v1.json, and validation/0109. The gate converts N-136/N-137 into trace-only coverage acceptance criteria for current/donor/proxy/server runtime paths. Safe TLC passed with 49 generated states, 29 distinct states, 0 left on queue, depth 6. Unsafe configs produced expected counterexamples for missing current, missing donor, missing proxy relation, missing server coverage, missing evidence class, sched_stat_runtime as authority, remote tick as proxy coverage, trace evidence as protection, server lifecycle-only coverage, and class runtime as root budget evidence. JSON check confirmed 33 anchors, 12 coverage requirements, 10 unsafe cases, and 12/12 safety flags false. Assurance evidence E-SCHED-COVERAGE-001 supports BUDGET-001/COMPAT-001 only as model evidence. This is not tracefs execution, runtime coverage, Linux implementation, ABI approval, monitor verification, behavior change, budget hook approval, scheduler hook approval, or production protection. Next focused risks are monitor root budget timer event modeling, server epoch relation to replenish/swap/stop in a larger scheduler authority model, deadline CBS/GRUB compatibility source refresh, and F1 admission-freeze data dependency refresh.",
+    "current_focus": "N-139 monitor root budget timer gate is complete. Added analysis/0093, formal/0071 MonitorRootBudgetTimer, monitor-root-budget-timer-v1.json, and validation/0110. The gate models Linux timer/accounting as non-authoritative and requires monitor-owned timer/deadline, remaining monitor root budget, sealed RunToken, and fresh Domain epoch before running. Safe TLC passed with 78 generated states, 37 distinct states, 0 left on queue, depth 7. Unsafe configs produced expected counterexamples for running without monitor timer, running without root budget, Linux timer as root authority, overrun after budget expiry, Linux charge as monitor charge, activation without sealed token, running after epoch revoke, running after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation. JSON check confirmed 25 anchors, 12 monitor event requirements, 10 unsafe cases, and 12/12 safety flags false. Assurance evidence E-MONITOR-TIMER-001 supports ACT-001/BUDGET-001 only as model evidence. This is not monitor implementation, Linux hook approval, runtime coverage, ABI approval, architecture timer path implementation, behavior change, or production protection. Next focused risks are server epoch relation to replenish/swap/stop in a larger scheduler authority model, deadline CBS/GRUB compatibility source refresh, F1 admission-freeze data dependency refresh, and monitor timer architecture substrate comparison.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -639,7 +639,13 @@
     "runtime_coverage_gate_model": "capsched/capsched-models/formal/0070-runtime-coverage-gate-model/README.md",
     "runtime_coverage_gate_tla": "capsched/capsched-models/formal/0070-runtime-coverage-gate-model/RuntimeCoverageGate.tla",
     "runtime_coverage_gate_validation": "capsched/capsched-models/validation/0109-runtime-coverage-gate-tlc.md",
-    "runtime_coverage_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/runtime-coverage-gate-20260701T201835Z"
+    "runtime_coverage_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/runtime-coverage-gate-20260701T201835Z",
+    "monitor_root_budget_timer_analysis": "capsched/capsched-models/analysis/0093-monitor-root-budget-timer.md",
+    "monitor_root_budget_timer_json": "capsched/capsched-models/analysis/monitor-root-budget-timer-v1.json",
+    "monitor_root_budget_timer_model": "capsched/capsched-models/formal/0071-monitor-root-budget-timer-model/README.md",
+    "monitor_root_budget_timer_tla": "capsched/capsched-models/formal/0071-monitor-root-budget-timer-model/MonitorRootBudgetTimer.tla",
+    "monitor_root_budget_timer_validation": "capsched/capsched-models/validation/0110-monitor-root-budget-timer-tlc.md",
+    "monitor_root_budget_timer_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/monitor-root-budget-timer-20260701T202836Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "id": "monitor-root-budget-timer-v1",
+  "analysis": "analysis/0093-monitor-root-budget-timer.md",
+  "status": "draft_monitor_root_budget_event_model",
+  "date": "2026-07-01",
+  "inputs": {
+    "runtime_charge_subject": "analysis/0090-runtime-charge-subject-map.md",
+    "scheduler_server_ticket": "analysis/0091-scheduler-server-ticket-map.md",
+    "runtime_coverage_gate": "analysis/0092-runtime-coverage-gate.md",
+    "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462"
+  },
+  "purpose": "Define the monitor-owned root CPU budget timer semantics required before Linux runtime accounting can support production budget enforcement claims.",
+  "source_anchors": [
+    {
+      "id": "sched_hrtick_callback",
+      "path": "kernel/sched/core.c",
+      "line": 907,
+      "meaning": "Linux hrtick callback, useful for class preemption but not root budget"
+    },
+    {
+      "id": "sched_hrtick_donor_tick",
+      "path": "kernel/sched/core.c",
+      "line": 916,
+      "meaning": "hrtick dispatches donor class task_tick"
+    },
+    {
+      "id": "sched_hrtick_start",
+      "path": "kernel/sched/core.c",
+      "line": 960,
+      "meaning": "Linux hrtick start path"
+    },
+    {
+      "id": "sched_hrtick_arm",
+      "path": "kernel/sched/core.c",
+      "line": 984,
+      "meaning": "Linux hrtimer arm for hrtick"
+    },
+    {
+      "id": "task_sched_runtime",
+      "path": "kernel/sched/core.c",
+      "line": 5674,
+      "meaning": "runtime read-side freshness, not enforcement"
+    },
+    {
+      "id": "sched_tick",
+      "path": "kernel/sched/core.c",
+      "line": 5762,
+      "meaning": "Linux periodic scheduler tick"
+    },
+    {
+      "id": "sched_tick_donor",
+      "path": "kernel/sched/core.c",
+      "line": 5778,
+      "meaning": "local tick observes rq->donor"
+    },
+    {
+      "id": "sched_tick_donor_task_tick",
+      "path": "kernel/sched/core.c",
+      "line": 5789,
+      "meaning": "local tick dispatches donor class task_tick"
+    },
+    {
+      "id": "sched_tick_remote",
+      "path": "kernel/sched/core.c",
+      "line": 5849,
+      "meaning": "NO_HZ remote tick surface"
+    },
+    {
+      "id": "sched_tick_remote_no_proxy",
+      "path": "kernel/sched/core.c",
+      "line": 5874,
+      "meaning": "remote tick assumes current equals donor"
+    },
+    {
+      "id": "schedule_entry",
+      "path": "kernel/sched/core.c",
+      "line": 7061,
+      "meaning": "Linux switch decision entry"
+    },
+    {
+      "id": "hrtick_schedule_enter",
+      "path": "kernel/sched/core.c",
+      "line": 7111,
+      "meaning": "Linux hrtick schedule deferral"
+    },
+    {
+      "id": "proxy_donor_update",
+      "path": "kernel/sched/core.c",
+      "line": 7152,
+      "meaning": "proxy execution donor may change during pick"
+    },
+    {
+      "id": "rq_curr_commit",
+      "path": "kernel/sched/core.c",
+      "line": 7201,
+      "meaning": "Linux rq->curr switch commit"
+    },
+    {
+      "id": "context_switch",
+      "path": "kernel/sched/core.c",
+      "line": 7234,
+      "meaning": "Linux context switch commit"
+    },
+    {
+      "id": "hrtimer_start_range_ns",
+      "path": "kernel/time/hrtimer.c",
+      "line": 1493,
+      "meaning": "Linux hrtimer start substrate"
+    },
+    {
+      "id": "hrtimer_interrupt",
+      "path": "kernel/time/hrtimer.c",
+      "line": 2185,
+      "meaning": "Linux high resolution timer interrupt"
+    },
+    {
+      "id": "hrtimer_run_queues",
+      "path": "kernel/time/hrtimer.c",
+      "line": 2215,
+      "meaning": "Linux hrtimer callback dispatch"
+    },
+    {
+      "id": "tick_nohz_stop_tick",
+      "path": "kernel/time/tick-sched.c",
+      "line": 898,
+      "meaning": "Linux NO_HZ tick stop"
+    },
+    {
+      "id": "tick_nohz_cancel_max",
+      "path": "kernel/time/tick-sched.c",
+      "line": 984,
+      "meaning": "Linux may cancel or program tick to max"
+    },
+    {
+      "id": "tick_nohz_restart_sched_tick",
+      "path": "kernel/time/tick-sched.c",
+      "line": 1016,
+      "meaning": "Linux tick restart"
+    },
+    {
+      "id": "vmx_update_hv_timer",
+      "path": "arch/x86/kvm/vmx/vmx.c",
+      "line": 7395,
+      "meaning": "reference shape for VMX timer programming, not CapSched Monitor"
+    },
+    {
+      "id": "vmx_preemption_timer_write",
+      "path": "arch/x86/kvm/vmx/vmx.c",
+      "line": 7413,
+      "meaning": "reference VMX preemption timer write"
+    },
+    {
+      "id": "vmx_set_hv_timer",
+      "path": "arch/x86/kvm/vmx/vmx.c",
+      "line": 8315,
+      "meaning": "reference deadline conversion path"
+    },
+    {
+      "id": "vmx_handle_preemption_timer",
+      "path": "arch/x86/kvm/vmx/vmx.c",
+      "line": 6218,
+      "meaning": "reference expiration handler"
+    }
+  ],
+  "monitor_event_requirements": [
+    "sealed_RunToken_validated_before_activation",
+    "Domain_epoch_validated_before_activation",
+    "monitor_owned_root_budget_counter",
+    "monitor_owned_timer_or_deadline",
+    "timer_armed_before_domain_runs",
+    "CPU_or_activation_generation_bound_deadline",
+    "timer_expiry_forces_stop_trap_or_revoke",
+    "Linux_tick_hrtick_hrtimer_nohz_not_authority",
+    "Linux_runtime_charge_report_not_monitor_debit",
+    "NO_HZ_tick_stop_cannot_stop_monitor_timer",
+    "immutable_or_monitor_owned_audit_receipt",
+    "bounded_overrun_independent_of_Linux_cooperation"
+  ],
+  "unsafe_cases": [
+    "run_without_monitor_timer",
+    "run_without_root_budget",
+    "linux_timer_as_root_authority",
+    "overrun_after_budget_expiry",
+    "linux_charge_as_monitor_charge",
+    "activation_without_sealed_token",
+    "run_after_epoch_revoke",
+    "run_after_monitor_interrupt",
+    "nohz_stops_monitor_timer",
+    "protection_claim_without_monitor_implementation"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "budget_hook": false,
+    "scheduler_hook": false,
+    "monitor_timer_implemented": false,
+    "monitor_verified": false,
+    "tracefs_executed": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "public_tracepoint_abi": false,
+    "behavior_change": false,
+    "authority_claim": false,
+    "production_protection": false
+  }
+}

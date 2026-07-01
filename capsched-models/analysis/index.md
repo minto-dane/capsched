@@ -98,6 +98,7 @@ Updated: 2026-07-01
 | 0090 | Draft model gate with TLC-backed design filter | Runtime Charge Subject Map |
 | 0091 | Draft model gate with TLC-backed design filter | Scheduler Server Ticket Map |
 | 0092 | Draft trace-only coverage gate with TLC-backed design filter | Runtime Coverage Gate |
+| 0093 | Draft monitor-root budget event model with TLC-backed design filter | Monitor Root Budget Timer |
 
 ## Planned Analysis Notes
 
@@ -161,3 +162,4 @@ Updated: 2026-07-01
 | `runtime-charge-subject-v1.json` | Draft model gate | Machine-readable runtime charge subject map for N-136 |
 | `scheduler-server-ticket-v1.json` | Draft model gate | Machine-readable scheduler server-ticket source map and model contract for N-137 |
 | `runtime-coverage-gate-v1.json` | Draft trace-only coverage gate | Machine-readable current/donor/proxy/server runtime coverage contract for N-138 |
+| `monitor-root-budget-timer-v1.json` | Draft monitor-root budget event model | Machine-readable monitor-owned root budget timer contract for N-139 |

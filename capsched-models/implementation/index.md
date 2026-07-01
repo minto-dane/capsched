@@ -332,4 +332,17 @@ Current runtime coverage gate:
   No tracefs execution, tracepoint, public ABI, budget hook, scheduler hook,
   runtime coverage result, monitor verification, behavior change, or production
   protection is approved.
+
+Current monitor root budget timer gate:
+  analysis/0093, formal/0071, monitor-root-budget-timer-v1.json, and
+  validation/0110 now define the semantic root for production CPU budget
+  enforcement. Safe TLC passed with 78 generated states, 37 distinct states,
+  and depth 7. Unsafe configs produced expected counterexamples for running
+  without a monitor timer, running without root budget, Linux timer as root
+  authority, overrun after budget expiry, Linux charge as monitor charge,
+  activation without sealed token, running after epoch revoke, running after
+  monitor interrupt, NO_HZ stopping the monitor timer, and protection claim
+  without implementation. No monitor timer implementation, Linux hook, budget
+  hook, scheduler hook, ABI, runtime test, behavior change, or production
+  protection is approved.
 ```
