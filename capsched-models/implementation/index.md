@@ -4,20 +4,20 @@ Updated: 2026-07-01
 
 No behavior-changing implementation patch points are accepted yet.
 
-Current final run/move revalidation hook-placement gate:
+Current final-deny retry/ineligibility model gate:
 
-- `analysis/0100-final-run-move-revalidation-hook-placement-gate.md`
+- `analysis/0101-final-deny-retry-ineligibility-gate.md`
   - Status: model-supported design gate, no Linux patch approved yet.
-  - Purpose: require ordinary Domain run commitment and queued-task movement
-    to consume a fresh final validation tuple that matches task generation,
-    Domain/SchedContext/RunCap epochs, move/core/sched_ext sequence, edge kind,
-    CPU, fresh allowed set, and pending-migration state.
-- `formal/0078-final-run-move-revalidation-hook-placement-gate-model/`
+  - Purpose: require any future final CapSched run-validation denial to mark
+    the denied candidate ineligible, neutralize class state and balance
+    callbacks, retry with bounded progress, or fail closed only when no
+    eligible candidate remains.
+- `formal/0079-final-deny-retry-ineligibility-gate-model/`
   - Status: checked with safe pass and expected unsafe counterexamples.
-  - Pressure: a conceptual final run hook near `kernel/sched/core.c:7188` and
-    a shared move boundary near `kernel/sched/core.c:2546` are model pressure
-    points only. A veto-capable hook is not approved; retry/ineligibility,
-    locking, static-branch overhead, and class-state rollback remain open.
+  - Pressure: the future implementation cannot simply deny after
+    `rq->curr`, retry the same task, or use Linux `RETRY_TASK`, idle fallback,
+    sched_ext fallback, core cached pick, or settled class state as authority.
+    Hook, retry, ineligibility, and rollback mechanisms remain unapproved.
 
 Candidate implementation plans:
 

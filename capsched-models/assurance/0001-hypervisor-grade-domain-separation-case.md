@@ -165,6 +165,8 @@ Current evidence:
 - `validation/0116-placement-affinity-hotplug-integration-gate-tlc.md`
 - `formal/0078-final-run-move-revalidation-hook-placement-gate-model/`
 - `validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md`
+- `formal/0079-final-deny-retry-ineligibility-gate-model/`
+- `validation/0118-final-deny-retry-ineligibility-gate-tlc.md`
 - `implementation/0001-l0-runnable-lease-implementation-plan.md`
 - Slice 0B type names: `capsched_run_cap`, `capsched_sched_ctx`,
   `capsched_frozen_run_use`
@@ -185,6 +187,8 @@ Open gaps:
   coverage
 - no final run/move revalidation hook, retry/ineligibility semantics, or
   runtime coverage
+- no final-deny retry/ineligibility implementation, class-state neutralization
+  mechanism, or runtime coverage
 - no integrated scheduler authority hook or runtime coverage
 
 Forbidden L0 claim:
@@ -558,6 +562,7 @@ Current evidence:
 - scheduler authority integration gate `validation/0114-scheduler-authority-integration-gate-tlc.md`
 - placement/affinity/hotplug integration gate `validation/0116-placement-affinity-hotplug-integration-gate-tlc.md`
 - final run/move revalidation hook-placement gate `validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md`
+- final deny retry/ineligibility gate `validation/0118-final-deny-retry-ineligibility-gate-tlc.md`
 - Slice 0A build validation `validation/0004-l0-slice0-systemd-build-run.md`
 - Slice 0B build validation `validation/0014-l0-slice0b-build-run.md`
 
@@ -570,6 +575,7 @@ Open gaps:
 - no F1 wake publication runtime compatibility trace under CapSched hooks
 - no integrated scheduler execution-edge runtime trace under CapSched hooks
 - no final run/move revalidation runtime trace under CapSched hooks
+- no final-deny retry/ineligibility runtime trace under CapSched hooks
 - no cgroup/cpuset/sched-class behavior patch
 - no user ABI compatibility test suite
 
@@ -658,6 +664,7 @@ Open gaps:
 | E-MONITOR-TIMER-ARCH-001 | TLA validation | `validation/0115-monitor-timer-architecture-substrate-tlc.md` | ACT, BUDGET |
 | E-SCHED-PLACEMENT-INTEGRATION-001 | TLA validation | `validation/0116-placement-affinity-hotplug-integration-gate-tlc.md` | ACT, EXEC, COMPAT |
 | E-SCHED-RUN-MOVE-REVALIDATION-001 | TLA validation | `validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md` | ACT, EXEC, COMPAT |
+| E-SCHED-DENY-RETRY-001 | TLA validation | `validation/0118-final-deny-retry-ineligibility-gate-tlc.md` | EXEC, COMPAT |
 | E-SCHED-SERVER-EPOCH-001 | TLA validation | `validation/0111-server-epoch-relation-tlc.md` | EXEC, BUDGET |
 | E-SCHED-DL-COMPAT-001 | TLA validation | `validation/0112-deadline-cbs-grub-compat-tlc.md` | EXEC, BUDGET, COMPAT |
 | E-SCHED-F1-FREEZE-001 | TLA validation | `validation/0113-f1-admission-freeze-refresh-tlc.md` | EXEC, BUDGET, COMPAT |
@@ -689,6 +696,7 @@ Open gaps:
 | CEX-SCHED-INTEGRATION-001 | `validation/0114` | Publication without frozen tuple; run without frozen tuple, selected settlement, server authority, deadline compatibility, or monitor root; Linux runtime/server runtime/deadline compatibility/placement authority; raw cap/heavy lookup after publication; fail-closed running; and protection overclaims are rejected. |
 | CEX-SCHED-PLACEMENT-INTEGRATION-001 | `validation/0116` | Running without grant provenance, frozen placement, fresh placement epoch, current Linux mask, active CPU, monitor CPU binding, MemoryView CPU binding, or no-pending-migration state; selected CPU, class selection, sched_ext, core scheduling, sched_exec, fallback, force affinity, cpuset fallback, migrate-disable, per-cpu kthread exception, and protection overclaims are rejected. |
 | CEX-SCHED-RUN-MOVE-REVALIDATION-001 | `validation/0117` | Final run or queued-task move without a matching consumed validation tuple; stale task generation, Domain epoch, SchedContext epoch, RunCap epoch, move/core/sched_ext sequence, edge kind, CPU, fresh set, or pending-migration state; move tuple used for run, run tuple used for move, hook-after-rq-current, Linux pick/move/balance/dispatch/hotplug/migration authority, Linux hook approval, behavior change, monitor verification, and protection overclaims are rejected. |
+| CEX-SCHED-DENY-RETRY-001 | `validation/0118` | Running a denied candidate, retrying the same denied candidate, denying after `rq->curr`, denying without ineligibility, retrying without progress, failing closed with an eligible candidate, running after retry without a fresh tuple, silent drop, retry-budget bypass, class state, `RETRY_TASK`, idle fallback, sched_ext fallback, core cached pick, behavior-change, monitor-verification, and protection overclaims are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
 | HAZ-ENDP-001 | `analysis/0015` | Socket endpoint checks cannot rely only on LSM because some paths reuse `sock_sendmsg_nosec()`. |
 
@@ -707,6 +715,10 @@ push, or migration stop can replace final CapSched run/move tuple
 revalidation.
 Hook placement after rq->curr publication is a valid ordinary Domain run
 authority boundary.
+Final CapSched deny can run the denied task, retry the same candidate without
+ineligibility, silently drop the candidate, fail closed while an eligible
+candidate exists, or use `RETRY_TASK`, idle fallback, sched_ext fallback, core
+cached pick, or settled class state as authority.
 task_struct Domain pointers create a hard security boundary.
 RunCap is resource endpoint authority.
 EndpointCap is CPU execution authority.

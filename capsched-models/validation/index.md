@@ -123,6 +123,7 @@ Updated: 2026-07-01
 | 0115 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Monitor Timer Architecture Substrate TLC |
 | 0116 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Placement, Affinity, and Hotplug Integration Gate TLC |
 | 0117 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Final Run/Move Revalidation Hook Placement Gate TLC |
+| 0118 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Final Deny Retry and Ineligibility Gate TLC |
 
 ## Principles
 

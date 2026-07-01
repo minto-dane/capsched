@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "final-run-move-revalidation-hook-placement-gate-complete",
+    "current_phase": "final-deny-retry-ineligibility-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-146 final run/move revalidation hook-placement gate is complete. Added analysis/0100, final-run-move-revalidation-hook-placement-gate-v1.json, formal/0078 FinalRunMoveRevalidationHookPlacementGate, and validation/0117. The checked model requires ordinary Domain run commitment and queued-task movement to consume a fresh validation tuple matching task generation, Domain/SchedContext/RunCap epochs, move/core/sched_ext sequence, edge kind, CPU, fresh allowed set, and pending-migration state. Safe TLC passed with 750 generated states, 455 distinct states, 0 left on queue, depth 21. Thirty-nine unsafe configs produced expected counterexamples for missing/stale/wrong run or move tuples, tuple kind and edge mismatch, stale task/domain/schedctx/runcap/move/core/scx state, run/move outside fresh set, pending migration, empty intersection, hook after rq->curr, Linux pick/move/balance/dispatch/hotplug/migration authority, Linux hook approval, behavior change, monitor verification, and protection overclaims. JSON check confirmed 33 anchors, 13 tuple fields, 2 run edges, 10 move edges, 12 invalidation sources, 18 forbidden substitutions, 39 unsafe cases, and 16/16 safety flags false. Assurance evidence E-SCHED-RUN-MOVE-REVALIDATION-001 supports ACT-001, EXEC-001, and COMPAT-001 only as model evidence. This is not Linux hook implementation, task-field approval, runtime coverage, ABI approval/change, monitor implementation, monitor verification, behavior change, budget enforcement evidence, or production protection.",
+    "current_focus": "N-147 final deny retry/ineligibility gate is complete. Added analysis/0101, final-deny-retry-ineligibility-gate-v1.json, formal/0079 FinalDenyRetryIneligibilityGate, and validation/0118. The checked model requires a future final CapSched run-validation denial to occur before rq->curr publication, mark the denied candidate ineligible, neutralize scheduler class state and balance callbacks, retry with bounded progress, or fail closed only when no eligible candidate remains. Safe TLC passed with 11 generated states, 9 distinct states, 0 left on queue, depth 6. Seventeen unsafe configs produced expected counterexamples for running a denied candidate, retrying the same denied candidate, denying after rq->curr, denying without ineligibility, retrying without progress, failing closed with an eligible candidate, running after retry without a fresh tuple, silent drop, retry-budget bypass, class state, RETRY_TASK, idle fallback, sched_ext fallback, core cached pick, behavior-change, monitor-verification, and protection overclaims. JSON check confirmed 21 anchors, 12 state subjects, 2 safe paths, 10 requirements, 12 forbidden substitutions, 17 unsafe cases, and 14/14 safety flags false. Assurance evidence E-SCHED-DENY-RETRY-001 supports EXEC-001 and COMPAT-001 only as model evidence. This is not Linux hook implementation, retry implementation, task-field approval, class-state rollback approval, runtime coverage, ABI approval/change, monitor implementation, monitor verification, behavior change, budget enforcement evidence, or production protection.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -688,7 +688,13 @@
     "final_run_move_revalidation_hook_placement_model": "capsched/capsched-models/formal/0078-final-run-move-revalidation-hook-placement-gate-model/README.md",
     "final_run_move_revalidation_hook_placement_tla": "capsched/capsched-models/formal/0078-final-run-move-revalidation-hook-placement-gate-model/FinalRunMoveRevalidationHookPlacementGate.tla",
     "final_run_move_revalidation_hook_placement_validation": "capsched/capsched-models/validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md",
-    "final_run_move_revalidation_hook_placement_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/final-run-move-revalidation-hook-placement-gate-20260701T223939Z"
+    "final_run_move_revalidation_hook_placement_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/final-run-move-revalidation-hook-placement-gate-20260701T223939Z",
+    "final_deny_retry_ineligibility_analysis": "capsched/capsched-models/analysis/0101-final-deny-retry-ineligibility-gate.md",
+    "final_deny_retry_ineligibility_json": "capsched/capsched-models/analysis/final-deny-retry-ineligibility-gate-v1.json",
+    "final_deny_retry_ineligibility_model": "capsched/capsched-models/formal/0079-final-deny-retry-ineligibility-gate-model/README.md",
+    "final_deny_retry_ineligibility_tla": "capsched/capsched-models/formal/0079-final-deny-retry-ineligibility-gate-model/FinalDenyRetryIneligibilityGate.tla",
+    "final_deny_retry_ineligibility_validation": "capsched/capsched-models/validation/0118-final-deny-retry-ineligibility-gate-tlc.md",
+    "final_deny_retry_ineligibility_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/final-deny-retry-ineligibility-gate-20260701T225643Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

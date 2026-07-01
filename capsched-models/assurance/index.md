@@ -181,6 +181,12 @@ Model-supported areas:
   pending-migration state, while Linux pick/move/balance/dispatch/hotplug
   machinery and hook-after-`rq->curr` placement are rejected as authority
   substitutes
+- final deny retry/ineligibility semantics, checking that a final run denial
+  must occur before `rq->curr`, mark the denied candidate ineligible,
+  neutralize scheduler class state and balance callbacks, retry with bounded
+  progress, or fail closed only when no eligible candidate remains, while
+  `RETRY_TASK`, idle fallback, sched_ext fallback, core cached picks, settled
+  class state, silent drop, and protection overclaims are rejected
 
 Prototype-evidenced areas:
 

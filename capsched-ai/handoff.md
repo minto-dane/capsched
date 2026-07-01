@@ -2586,3 +2586,56 @@ next:
   Design the retry/ineligibility semantics for a possible final run hook and
   shared move revalidation boundary, or run targeted runtime coverage planning.
 ```
+
+Latest scheduler deny/retry gate:
+
+```text
+N-147 completed:
+  analysis/0101-final-deny-retry-ineligibility-gate.md
+  analysis/final-deny-retry-ineligibility-gate-v1.json
+  formal/0079-final-deny-retry-ineligibility-gate-model/
+  validation/0118-final-deny-retry-ineligibility-gate-tlc.md
+
+purpose:
+  define what a future final CapSched run-validation hook must do when it
+  denies a selected ordinary Domain candidate.
+
+required shape:
+  deny before rq->curr publication
+  record denial
+  mark denied candidate ineligible for the retry epoch
+  neutralize scheduler class state
+  clear balance callbacks before retry/lock release
+  retry with bounded progress
+  commit only a different candidate with a fresh tuple
+  or fail closed only when no eligible candidate remains
+
+safe TLC:
+  11 generated states
+  9 distinct states
+  depth 6
+
+unsafe:
+  17 expected counterexamples.
+  Rejected hazards include running a denied candidate, retrying the same
+  denied candidate, denying after rq->curr, denying without ineligibility,
+  retrying without progress, failing closed with an eligible candidate, running
+  after retry without a fresh tuple, silent drop, retry-budget bypass, class
+  state authority, RETRY_TASK authority, idle fallback authority, sched_ext
+  fallback authority, core cached pick authority, and non-claim overreach.
+
+assurance:
+  E-SCHED-DENY-RETRY-001 supports EXEC-001 and COMPAT-001 only as model
+  evidence.
+
+still not:
+  Linux implementation, hook approval, retry implementation, task-field
+  approval, class-state rollback approval, runtime coverage, ABI approval,
+  monitor verification, behavior change, budget enforcement evidence, or
+  production protection.
+
+next:
+  Model task lifetime/RCU/refcount/locking for frozen run tuples and denied
+  candidates, or integrate fork/clone/exec/exit identity propagation into the
+  scheduler authority model.
+```

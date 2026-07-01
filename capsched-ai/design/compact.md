@@ -2172,3 +2172,46 @@ still not:
   implementation, monitor verification, budget enforcement evidence, behavior
   change, or production protection.
 ```
+
+N-147 completed:
+
+```text
+artifacts:
+  analysis/0101
+  final-deny-retry-ineligibility-gate-v1.json
+  formal/0079
+  validation/0118
+
+purpose:
+  final run validation denial must be explicit, bounded, progress-making, and
+  fail-closed.
+
+rule:
+  A denied candidate cannot run.
+  A denied candidate cannot be immediately retried in the same retry epoch.
+  Denial must happen before rq->curr publication.
+  Denial requires ineligibility plus scheduler class-state neutralization.
+  Retry must advance a count and be bounded.
+  Fail-closed is valid only with no eligible candidate.
+  A successful retry still needs a fresh tuple.
+
+safe TLC:
+  11 generated states
+  9 distinct states
+  depth 6
+
+unsafe:
+  17 expected counterexamples.
+  Rejected authority substitutes include class state, RETRY_TASK, idle
+  fallback, sched_ext fallback, core cached pick, silent drop, and non-claim
+  overreach.
+
+assurance:
+  E-SCHED-DENY-RETRY-001 supports EXEC-001 and COMPAT-001 only as model
+  evidence.
+
+still not:
+  Linux implementation, hook approval, retry implementation, class-state
+  rollback approval, runtime coverage, ABI, monitor verification, behavior
+  change, budget enforcement evidence, or production protection.
+```
