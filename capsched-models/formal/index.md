@@ -87,6 +87,7 @@ Updated: 2026-07-01
 | 0079 | Checked with safe pass and expected unsafe counterexamples | Final Deny Retry and Ineligibility Gate Model |
 | 0080 | Checked with safe pass and expected unsafe counterexamples | Task FrozenRun Lifetime and Locking Gate Model |
 | 0081 | Checked with safe pass and expected unsafe counterexamples | Lifecycle Identity Propagation Integration Gate Model |
+| 0082 | Checked with safe pass and expected unsafe counterexamples | Exit/Revoke Pending Authority Drain Gate Model |
 
 ## Planned
 

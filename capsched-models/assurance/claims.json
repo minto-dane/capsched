@@ -88,7 +88,8 @@
         "E-SCHED-DENY-RETRY-001",
         "E-SCHED-LIFETIME-LOCKING-001",
         "E-EXEC-GEN-001",
-        "E-SCHED-LIFECYCLE-IDENTITY-001"
+        "E-SCHED-LIFECYCLE-IDENTITY-001",
+        "E-SCHED-EXIT-REVOKE-DRAIN-001"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
@@ -104,7 +105,8 @@
         "No final run/move revalidation hook, retry/ineligibility semantics, or runtime coverage.",
         "No final-deny retry/ineligibility implementation, class-state neutralization mechanism, or runtime coverage.",
         "No task lifetime/refcount/locking implementation for FrozenRunUse or denied candidates, and no runtime coverage for those consume/settle edges.",
-        "No fork/clone/exec/exit lifecycle identity implementation or runtime coverage."
+        "No fork/clone/exec/exit lifecycle identity implementation or runtime coverage.",
+        "No integrated exit/revoke pending-authority drain implementation or runtime coverage."
       ],
       "forbidden_l0": false
     },
@@ -125,7 +127,8 @@
         "E-SCHED-SERVER-EPOCH-001",
         "E-SCHED-DL-COMPAT-001",
         "E-SCHED-F1-FREEZE-001",
-        "E-SCHED-INTEGRATION-001"
+        "E-SCHED-INTEGRATION-001",
+        "E-SCHED-EXIT-REVOKE-DRAIN-001"
       ],
       "gaps": [
         "No Linux accounting integration.",
@@ -139,7 +142,8 @@
         "No deadline CBS/GRUB integration with monitor root budget receipts.",
         "No F1 root-budget ticket freeze implementation or runtime coverage.",
         "No integrated execution-edge implementation tying monitor root budget to wake publication, selected settlement, server tickets, and deadline compatibility.",
-        "No service-domain debit/refund policy."
+        "No service-domain debit/refund policy.",
+        "No integrated exit/revoke settlement implementation for BudgetTickets, server tickets, root timers, or RunTokens."
       ],
       "forbidden_l0": true
     },
@@ -153,13 +157,15 @@
         "E-ENDP-001",
         "HAZ-ENDP-001",
         "E-EXEC-GEN-001",
-        "E-POST-EXEC-RESOURCE-001"
+        "E-POST-EXEC-RESOURCE-001",
+        "E-SCHED-EXIT-REVOKE-DRAIN-001"
       ],
       "gaps": [
         "No VFS/socket endpoint implementation.",
         "No fd survival/revocation semantics.",
         "No io_uring registered-resource enforcement.",
-        "No post-exec endpoint derivation implementation or runtime coverage."
+        "No post-exec endpoint derivation implementation or runtime coverage.",
+        "No integrated endpoint drain implementation for exit/revoke completion."
       ],
       "forbidden_l0": false
     },
@@ -173,13 +179,15 @@
         "E-ENDP-001",
         "HAZ-ENDP-001",
         "E-EXEC-GEN-001",
-        "E-POST-EXEC-RESOURCE-001"
+        "E-POST-EXEC-RESOURCE-001",
+        "E-SCHED-EXIT-REVOKE-DRAIN-001"
       ],
       "gaps": [
         "No CapSched work wrapper.",
         "No io_uring carrier implementation.",
         "No timer, RCU, softirq, or completion provenance policy.",
-        "No post-exec async/resource carrier implementation or runtime coverage."
+        "No post-exec async/resource carrier implementation or runtime coverage.",
+        "No integrated async drain implementation for task_work, workqueue, io_uring, timer, RCU, or softirq carriers."
       ],
       "forbidden_l0": false
     },
@@ -316,7 +324,8 @@
         "E-DEV-MNIC-055",
         "E-DEV-MNIC-056",
         "E-DEV-MNIC-057",
-        "E-DEV-MNIC-058"
+        "E-DEV-MNIC-058",
+        "E-SCHED-EXIT-REVOKE-DRAIN-001"
       ],
       "counterexamples": [
         "CEX-DEV-001"
@@ -331,7 +340,8 @@
         "No HyperTag monitor interface or service/driver Domain split implementation.",
         "No observation-only modern NIC HyperTag probe/stub Linux patch.",
         "No root-management/local monitor LocalDomainDeviceLease compilation implementation.",
-        "No DMA attack tests."
+        "No DMA attack tests.",
+        "No integrated exit/revoke drain implementation tying device QueueLease carriers to global completion."
       ],
       "forbidden_l0": true
     },
@@ -638,13 +648,15 @@
         "E-RUN-001",
         "E-CLUSTER-002",
         "E-MEM-001",
-        "E-DEV-001"
+        "E-DEV-001",
+        "E-SCHED-EXIT-REVOKE-DRAIN-001"
       ],
       "gaps": [
         "No lazy-vs-eager Linux revoke decision.",
         "No queue drain policy.",
         "No async cancellation policy.",
-        "No endpoint-family object generation policy."
+        "No endpoint-family object generation policy.",
+        "No integrated global pending-authority inventory or completion barrier implementation."
       ],
       "forbidden_l0": false
     },
@@ -717,7 +729,8 @@
         "E-SCHED-LIFETIME-LOCKING-001",
         "E-EXEC-GEN-001",
         "E-POST-EXEC-RESOURCE-001",
-        "E-SCHED-LIFECYCLE-IDENTITY-001"
+        "E-SCHED-LIFECYCLE-IDENTITY-001",
+        "E-SCHED-EXIT-REVOKE-DRAIN-001"
       ],
       "gaps": [
         "No boot/runtime evidence.",
@@ -729,6 +742,7 @@
         "No final-deny retry/ineligibility runtime trace under CapSched hooks.",
         "No task lifetime/refcount/locking runtime trace under CapSched hooks.",
         "No lifecycle fork/clone/exec/exit runtime trace under CapSched hooks.",
+        "No integrated exit/revoke pending-authority drain runtime trace under CapSched hooks.",
         "No scheduler behavior patch yet.",
         "No workload compatibility matrix."
       ],
@@ -1737,6 +1751,21 @@
         "COMPAT-001"
       ],
       "limitation": "Finite lifecycle identity integration model gate checks fork/clone SpawnCap child identity, exec continuation, exit invalidation, and Linux lifecycle non-authority; it is not Linux implementation, hook approval, runtime coverage, monitor verification, behavior change, budget enforcement evidence, or production protection."
+    },
+    {
+      "id": "E-SCHED-EXIT-REVOKE-DRAIN-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "BUDGET-001",
+        "ENDP-001",
+        "ASYNC-001",
+        "DEV-001",
+        "REVOKE-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite exit/revoke pending-authority drain integration gate checks global completion across scheduler, async, endpoint, monitor admission, device, budget, server, root, and unknown carrier families; it is not Linux implementation, hook approval, runtime coverage, monitor verification, behavior change, or production protection."
     }
   ],
   "counterexamples": [
@@ -1824,11 +1853,18 @@
       "id": "CEX-SCHED-LIFECYCLE-IDENTITY-001",
       "record": "capsched-models/validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md",
       "meaning": "Unsafe lifecycle identity models show expected counterexamples for child run without SpawnCap or fresh identity, ambient RunCap/FrozenRunUse/RunToken inheritance, wake before identity preparation, new Domain without token, clone flags as Domain authority, exec Domain change without token, post-exec run without ExecContinuation, check-only mutation, old FrozenRunUse after exec, run after exit, PID/TGID reuse, release authority, and behavior/monitor/protection overclaims."
+    },
+    {
+      "id": "CEX-SCHED-EXIT-REVOKE-DRAIN-001",
+      "record": "capsched-models/validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md",
+      "meaning": "Unsafe exit/revoke drain models show expected counterexamples for remote wake or queued FrozenRunUse surviving completion, early release, PID reuse, pending workqueue/io_uring/endpoint/direct-call/ring/device carriers, stale derived receipts, premature budget refund, surviving server ticket or root RunToken, audit/Linux cleanup as drain proof, unknown carrier default drain, budget leak/double settlement, RCU visibility authority, and behavior/monitor/protection overclaims."
     }
   ],
   "forbidden_claims": [
     "A raw task_struct pointer, RCU visibility, rq->curr publication, task CPU value, on_rq visibility, migrating state, or released FrozenRunUse is CapSched runnable authority.",
     "Linux clone flags, PID/TGID reuse or transfer, sched_exec placement, trace_sched_process_* observations, task release, or RCU-visible dead tasks can mint or preserve CapSched runnable authority.",
+    "Linux cancel, flush, pending-bit clear, task_work_add failure, io_uring cancel/free/CQE, timer delete/shutdown, rcu_barrier, audit row, trace row, or timeout can stand in for a global exit/revoke drain receipt.",
+    "Unknown scheduler, async, endpoint, monitor-admission, device, budget, server, or root execution carrier classes default to drained at exit/revoke completion.",
     "Exec fd/resource reachability, CLOEXEC handling failure, credential changes, old async state, old mmap state, or interpreter execfd handoff can preserve post-exec endpoint authority without derivation.",
     "A direct-call reference ABI sketch is a selected binary ABI, Linux stub, monitor implementation, performance result, or production protection proof.",
     "A semantic ABI candidate is a selected binary ABI, monitor call layout, Linux stub, shared-ring format, or production protection proof.",

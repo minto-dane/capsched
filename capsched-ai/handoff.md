@@ -2737,9 +2737,52 @@ still not:
   task-field approval, ABI, runtime coverage, monitor verification, behavior
   change, budget enforcement evidence, or production protection.
 
+N-150 completed:
+  analysis/0104-exit-revoke-pending-authority-drain-gate.md
+  analysis/exit-revoke-pending-authority-drain-gate-v1.json
+  formal/0082-exit-revoke-pending-authority-drain-gate-model/
+  validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md
+
+purpose:
+  define the global exit/revoke completion predicate across scheduler, async,
+  endpoint, monitor admission, device, budget, server, root execution, and
+  unknown carrier families.
+
+rule:
+  exit/revoke completion requires old-epoch authority embargo, complete
+  pending-authority inventory, drain/reject/quarantine/settlement of all known
+  carrier families, derived receipt/shadow revoke, exact-once budget/root
+  settlement, and fail-closed handling for unknown carrier kinds.
+  Linux cancel, flush, pending-bit clear, task_work_add failure, io_uring
+  cancel/free/CQE, timer delete, rcu_barrier, audit/trace rows, timeouts,
+  PID/TGID reuse, raw task pointers, and RCU visibility are not global drain
+  receipts or authority.
+
+safe TLC:
+  13 generated states
+  11 distinct states
+  depth 10
+
+unsafe:
+  28 expected counterexamples.
+  Rejected hazards include remote wake or queued FrozenRunUse surviving
+  completion, early release, PID reuse, pending workqueue/io_uring/endpoint/
+  direct-call/ring/device carriers, stale derived receipts, premature budget
+  refund, surviving server ticket or root RunToken, audit/Linux cleanup as
+  drain proof, unknown carrier default drain, budget leak/double settlement,
+  RCU visibility authority, and non-claim overreach.
+
+assurance:
+  E-SCHED-EXIT-REVOKE-DRAIN-001 supports EXEC-001, BUDGET-001, ENDP-001,
+  ASYNC-001, DEV-001, REVOKE-001, and COMPAT-001 as model evidence only.
+
+still not:
+  Linux implementation, hook approval, task fields, carrier structs,
+  endpoint/device/budget implementation, ABI, runtime coverage, monitor
+  verification, behavior change, or production protection.
+
 next:
-  Continue model-only completion by closing remaining integrated exit/revoke,
-  async lifecycle, and root-budget/monitor composition gaps, or construct a
-  final model-completeness ledger that lists any remaining non-implementation
-  blockers.
+  Continue model-only completion by constructing a final model-completeness
+  ledger across TOP-001 children and identifying any remaining non-implementation
+  blockers before claiming the model-only goal complete.
 ```

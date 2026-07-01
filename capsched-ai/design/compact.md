@@ -2298,3 +2298,47 @@ still not:
   Linux implementation, hook approval, task-field approval, runtime coverage,
   ABI, monitor verification, behavior change, budget evidence, or protection.
 ```
+
+N-150 completed:
+
+```text
+artifacts:
+  analysis/0104
+  exit-revoke-pending-authority-drain-gate-v1.json
+  formal/0082
+  validation/0121
+
+purpose:
+  define global exit/revoke completion across scheduler, async, endpoint,
+  monitor admission, device, budget, server, root execution, and unknown
+  carrier families.
+
+rule:
+  completion requires old-epoch embargo, complete pending-authority inventory,
+  drain/reject/quarantine/settle for every known carrier family, derived
+  receipt/shadow revoke, exact-once budget/root settlement, and fail-closed
+  unknown carriers. Linux cancel/flush/pending clear/task_work_add failure/
+  io_uring cancel/free/CQE/timer delete/rcu_barrier/audit/trace/timeout/PID
+  reuse/RCU visibility are not drain receipts or authority.
+
+safe TLC:
+  13 generated states
+  11 distinct states
+  depth 10
+
+unsafe:
+  28 expected counterexamples for remote wake or queued FrozenRunUse surviving
+  completion, early release, PID reuse, pending workqueue/io_uring/endpoint/
+  direct-call/ring/device carriers, stale derived receipts, premature budget
+  refund, surviving server ticket or root RunToken, audit/Linux cleanup as
+  drain proof, unknown carrier default drain, budget leak/double settlement,
+  RCU visibility authority, and overclaims.
+
+assurance:
+  E-SCHED-EXIT-REVOKE-DRAIN-001 supports EXEC, BUDGET, ENDP, ASYNC, DEV,
+  REVOKE, and COMPAT only as model evidence.
+
+still not:
+  Linux implementation, hook approval, carrier structs, runtime coverage, ABI,
+  monitor verification, behavior change, or production protection.
+```

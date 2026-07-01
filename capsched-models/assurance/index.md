@@ -688,6 +688,21 @@ Exec and post-exec evidence registration:
   Linux exec hooks, endpoint implementation, fd table sweeps, runtime coverage,
   monitor verification, behavior change, or production protection.
 
+Exit/revoke pending authority drain integration gate:
+  analysis/0104 and formal/0082 define the global exit/revoke completion
+  predicate across scheduler, async, endpoint, monitor admission, device,
+  budget, server, root execution, and unknown carrier families. validation/0121
+  safe TLC passed with 13 generated states, 11 distinct states, and depth 10.
+  Unsafe configs produced expected counterexamples for remote wake or queued
+  FrozenRunUse surviving completion, early release, PID reuse, pending
+  workqueue/io_uring/endpoint/direct-call/ring/device carriers, stale derived
+  receipts, premature budget refund, surviving server ticket or root RunToken,
+  audit/Linux cleanup as drain proof, unknown carrier default drain, budget
+  leak/double settlement, RCU visibility authority, and
+  behavior/monitor/protection overclaims. E-SCHED-EXIT-REVOKE-DRAIN-001
+  supports EXEC-001, BUDGET-001, ENDP-001, ASYNC-001, DEV-001, REVOKE-001, and
+  COMPAT-001 as model evidence only.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

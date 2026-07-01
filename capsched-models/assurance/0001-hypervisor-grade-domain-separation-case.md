@@ -173,6 +173,8 @@ Current evidence:
 - `validation/0037-exec-generation-inheritance-tlc.md`
 - `formal/0081-lifecycle-identity-propagation-integration-gate-model/`
 - `validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md`
+- `formal/0082-exit-revoke-pending-authority-drain-gate-model/`
+- `validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md`
 - `implementation/0001-l0-runnable-lease-implementation-plan.md`
 - Slice 0B type names: `capsched_run_cap`, `capsched_sched_ctx`,
   `capsched_frozen_run_use`
@@ -198,6 +200,9 @@ Open gaps:
 - no task lifetime/refcount/locking implementation for FrozenRunUse or denied
   candidates, and no runtime coverage for those consume/settle edges
 - no fork/clone/exec/exit lifecycle identity implementation or runtime coverage
+- no integrated exit/revoke pending-authority drain implementation or runtime
+  coverage across scheduler, async, endpoint, device, budget, server, and root
+  carriers
 - no integrated scheduler authority hook or runtime coverage
 
 Forbidden L0 claim:
@@ -242,6 +247,8 @@ Current evidence:
 - `validation/0114-scheduler-authority-integration-gate-tlc.md`
 - `formal/0076-monitor-timer-architecture-substrate-model/`
 - `validation/0115-monitor-timer-architecture-substrate-tlc.md`
+- `formal/0082-exit-revoke-pending-authority-drain-gate-model/`
+- `validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md`
 - Slice 0B type name: `capsched_budget_ticket`
 
 Open gaps:
@@ -260,6 +267,8 @@ Open gaps:
 - no integrated execution-edge implementation tying monitor root budget to
   wake publication, selected settlement, server tickets, and deadline
   compatibility
+- no integrated exit/revoke settlement implementation for BudgetTickets,
+  server tickets, root timers, or RunTokens
 - no service-domain budget debit/refund policy
 - no overload/DoS measurement
 
@@ -282,6 +291,8 @@ Current evidence:
 - `validation/0037-exec-generation-inheritance-tlc.md`
 - `formal/0026-post-exec-resource-inheritance-model/`
 - `validation/0038-post-exec-resource-inheritance-tlc.md`
+- `formal/0082-exit-revoke-pending-authority-drain-gate-model/`
+- `validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md`
 - `analysis/0015-endpoint-async-linux-attachment-map.md`
 - Slice 0B type names: `capsched_endpoint_cap`,
   `capsched_frozen_endpoint_use`
@@ -292,6 +303,7 @@ Open gaps:
 - no fd acquisition/survival/revocation semantics
 - no io_uring registered-resource enforcement
 - no post-exec endpoint derivation implementation or runtime coverage
+- no integrated endpoint drain implementation for exit/revoke completion
 - no object-generation model for all endpoint families
 
 Forbidden L0 claim:
@@ -319,6 +331,8 @@ Current evidence:
 - `validation/0037-exec-generation-inheritance-tlc.md`
 - `formal/0026-post-exec-resource-inheritance-model/`
 - `validation/0038-post-exec-resource-inheritance-tlc.md`
+- `formal/0082-exit-revoke-pending-authority-drain-gate-model/`
+- `validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md`
 - `analysis/0005-async-provenance-risk-map.md`
 - `analysis/0015-endpoint-async-linux-attachment-map.md`
 - Slice 0B type name: `capsched_work_ctx`
@@ -329,6 +343,8 @@ Open gaps:
 - no io_uring carrier implementation
 - no post-exec async/resource carrier implementation or runtime coverage
 - no timer/RCU/softirq provenance policy
+- no integrated async drain implementation for task_work, workqueue, io_uring,
+  timer, RCU, or softirq carriers
 - no confused-deputy tests
 
 ### MEM-001: Other Domain Memory and Mutable Kernel State Are Unmapped
@@ -457,6 +473,8 @@ Current evidence:
 - `validation/0049-queuecontrol-representor-tlc.md`
 - `formal/0031-modern-nic-queue-revoke-model/`
 - `validation/0050-modern-nic-queue-revoke-tlc.md`
+- `formal/0082-exit-revoke-pending-authority-drain-gate-model/`
+- `validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md`
 - `assurance/0002-modern-nic-queuelease-assurance-map.md`
 
 Modern NIC subclaims:
@@ -491,6 +509,8 @@ Open gaps:
 - no monitor-backed QueueTag, QueueControlCap, RepresentorForwardCap, typed
   SubmitLedger, or DescriptorLedger
 - no queue revoke/drain/quarantine implementation
+- no integrated exit/revoke drain implementation tying device QueueLease
+  carriers to global completion
 - no DMA attack tests
 
 Forbidden L0 claim:
@@ -519,7 +539,9 @@ Current evidence:
 - `formal/0007-cluster-authority-decomposition-model/`
 - `formal/0008-memory-ownership-model/`
 - `formal/0011-queue-lease-model/`
+- `formal/0082-exit-revoke-pending-authority-drain-gate-model/`
 - related validations: `0001`, `0009`, `0010`, `0013`
+- `validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md`
 
 Open gaps:
 
@@ -527,6 +549,8 @@ Open gaps:
 - no queue drain policy
 - no async cancellation policy
 - no object generation policy for all endpoint families
+- no integrated global pending-authority inventory or completion barrier
+  implementation
 
 ### CLUSTER-001: Cluster Leases Compile Local Before Use
 
@@ -586,6 +610,7 @@ Current evidence:
 - final deny retry/ineligibility gate `validation/0118-final-deny-retry-ineligibility-gate-tlc.md`
 - task FrozenRun lifetime/locking gate `validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md`
 - lifecycle identity propagation integration gate `validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md`
+- exit/revoke pending-authority drain gate `validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md`
 - exec generation and post-exec resource inheritance gates `validation/0037-exec-generation-inheritance-tlc.md`, `validation/0038-post-exec-resource-inheritance-tlc.md`
 - Slice 0A build validation `validation/0004-l0-slice0-systemd-build-run.md`
 - Slice 0B build validation `validation/0014-l0-slice0b-build-run.md`
@@ -602,6 +627,8 @@ Open gaps:
 - no final-deny retry/ineligibility runtime trace under CapSched hooks
 - no task lifetime/refcount/locking runtime trace under CapSched hooks
 - no lifecycle fork/clone/exec/exit runtime trace under CapSched hooks
+- no integrated exit/revoke pending-authority drain runtime trace under
+  CapSched hooks
 - no cgroup/cpuset/sched-class behavior patch
 - no user ABI compatibility test suite
 
@@ -693,6 +720,7 @@ Open gaps:
 | E-SCHED-DENY-RETRY-001 | TLA validation | `validation/0118-final-deny-retry-ineligibility-gate-tlc.md` | EXEC, COMPAT |
 | E-SCHED-LIFETIME-LOCKING-001 | TLA validation | `validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md` | EXEC, COMPAT |
 | E-SCHED-LIFECYCLE-IDENTITY-001 | TLA validation | `validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md` | EXEC, COMPAT |
+| E-SCHED-EXIT-REVOKE-DRAIN-001 | TLA validation | `validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md` | EXEC, BUDGET, ENDP, ASYNC, DEV, REVOKE, COMPAT |
 | E-EXEC-GEN-001 | TLA validation | `validation/0037-exec-generation-inheritance-tlc.md` | EXEC, ENDP, ASYNC, MEM, COMPAT |
 | E-POST-EXEC-RESOURCE-001 | TLA validation | `validation/0038-post-exec-resource-inheritance-tlc.md` | ENDP, ASYNC, COMPAT |
 | E-SCHED-SERVER-EPOCH-001 | TLA validation | `validation/0111-server-epoch-relation-tlc.md` | EXEC, BUDGET |
@@ -729,6 +757,7 @@ Open gaps:
 | CEX-SCHED-DENY-RETRY-001 | `validation/0118` | Running a denied candidate, retrying the same denied candidate, denying after `rq->curr`, denying without ineligibility, retrying without progress, failing closed with an eligible candidate, running after retry without a fresh tuple, silent drop, retry-budget bypass, class state, `RETRY_TASK`, idle fallback, sched_ext fallback, core cached pick, behavior-change, monitor-verification, and protection overclaims are rejected. |
 | CEX-SCHED-LIFETIME-LOCKING-001 | `validation/0119` | Running after task free/exit invalidation, running without stable task lifetime, RCU-only or raw-pointer authority, running while migrating, stale generation run, use after release, premature release, double release, ref/lock leak, queued move without rq lock, retry without stable candidate lifetime, ignored exit invalidation, and behavior/monitor/protection overclaims are rejected. |
 | CEX-SCHED-LIFECYCLE-IDENTITY-001 | `validation/0120` | Child run without SpawnCap or fresh identity, ambient RunCap/FrozenRunUse/RunToken inheritance, wake before identity preparation, new Domain without token, clone flags as Domain authority, exec Domain change without token, post-exec run without ExecContinuation, check-only mutation, old FrozenRunUse after exec, run after exit, PID/TGID reuse, release authority, and behavior/monitor/protection overclaims are rejected. |
+| CEX-SCHED-EXIT-REVOKE-DRAIN-001 | `validation/0121` | Remote wake or queued FrozenRunUse surviving completion, early release, PID reuse, pending workqueue/io_uring/endpoint/direct-call/ring/device carriers, stale derived receipts, premature budget refund, surviving server ticket or root RunToken, audit/Linux cleanup as drain proof, unknown carrier default drain, budget leak/double settlement, RCU visibility authority, and behavior/monitor/protection overclaims are rejected. |
 | CEX-EXEC-GEN-001 | `validation/0037` | Exec Domain change without monitor token, post-exec run without ExecContinuation, old endpoint/async/mmap authority, fd/CLOEXEC/execfd inheritance, credential amplification, and check-only mutation are rejected. |
 | CEX-POST-EXEC-RESOURCE-001 | `validation/0038` | Generic fd reachability, CLOEXEC leaks, regular/socket/anonymous fd ambient authority, epoll/eventfd/timerfd/io_uring old state, and execfd ambient inheritance after exec are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
@@ -753,6 +782,13 @@ CapSched runnable authority.
 Linux clone flags, PID/TGID reuse or transfer, `sched_exec()` placement,
 `trace_sched_process_*` observations, task release, or RCU-visible dead tasks
 can mint or preserve CapSched runnable authority.
+Linux `cancel_work_sync()`, `flush_work()`, work pending-bit clear,
+`task_work_add()` failure, io_uring cancel/free/CQE, timer delete/shutdown,
+`rcu_barrier()`, audit rows, trace rows, or timeouts can stand in for a global
+exit/revoke drain receipt.
+Unknown scheduler, async, endpoint, monitor-admission, device, budget, server,
+or root execution carrier classes can default to drained at exit/revoke
+completion.
 Exec fd/resource reachability, CLOEXEC handling failure, credential changes,
 old async state, old mmap state, or interpreter execfd handoff can preserve
 post-exec endpoint authority without derivation.
