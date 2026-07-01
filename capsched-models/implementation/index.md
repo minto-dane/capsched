@@ -4,20 +4,21 @@ Updated: 2026-07-01
 
 No behavior-changing implementation patch points are accepted yet.
 
-Current final-deny retry/ineligibility model gate:
+Current task FrozenRun lifetime/locking model gate:
 
-- `analysis/0101-final-deny-retry-ineligibility-gate.md`
+- `analysis/0102-task-frozen-run-lifetime-locking-gate.md`
   - Status: model-supported design gate, no Linux patch approved yet.
-  - Purpose: require any future final CapSched run-validation denial to mark
-    the denied candidate ineligible, neutralize class state and balance
-    callbacks, retry with bounded progress, or fail closed only when no
-    eligible candidate remains.
-- `formal/0079-final-deny-retry-ineligibility-gate-model/`
+  - Purpose: require any future `FrozenRunUse`, denied-candidate, or move
+    validation record to consume task identity only while live,
+    generation-fresh, not migrating, not released, and stabilized by task
+    reference or scheduler locked context.
+- `formal/0080-task-frozen-run-lifetime-locking-gate-model/`
   - Status: checked with safe pass and expected unsafe counterexamples.
-  - Pressure: the future implementation cannot simply deny after
-    `rq->curr`, retry the same task, or use Linux `RETRY_TASK`, idle fallback,
-    sched_ext fallback, core cached pick, or settled class state as authority.
-    Hook, retry, ineligibility, and rollback mechanisms remain unapproved.
+  - Pressure: raw `task_struct *`, RCU visibility, `rq->curr` publication,
+    task CPU value, `on_rq` visibility, migration state, and released frozen
+    records cannot be CapSched authority. Task fields, storage layout,
+    refcount scheme, locking protocol, hooks, and runtime coverage remain
+    unapproved.
 
 Candidate implementation plans:
 

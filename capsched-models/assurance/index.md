@@ -651,6 +651,21 @@ Direct-call receipt schema model:
   coverage, ABI approval, behavior change, monitor verification claim, and
   protection claim. This is a receipt-schema gate, not implementation evidence.
 
+Task FrozenRun lifetime and locking gate:
+  analysis/0102 and formal/0080 define the task identity lifetime and locking
+  precondition for `FrozenRunUse`, denied candidates, and future move
+  validation records. validation/0119 safe TLC passed with 20 generated states,
+  12 distinct states, and depth 6. Unsafe configs produced expected
+  counterexamples for run after free/exit invalidation, missing stable
+  lifetime, RCU-only authority, raw pointer authority, run while migrating,
+  stale generation, use after release, premature release, double release,
+  ref/lock leak, move without rq lock, retry without stable candidate lifetime,
+  ignored exit invalidation, and behavior/monitor/protection overclaims. This
+  supports EXEC-001 and COMPAT-001 as model evidence only; it is not task field
+  approval, storage-layout approval, refcount-scheme approval, locking-protocol
+  approval, runtime coverage, monitor verification, behavior change, or
+  production protection.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

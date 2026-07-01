@@ -2215,3 +2215,43 @@ still not:
   rollback approval, runtime coverage, ABI, monitor verification, behavior
   change, budget enforcement evidence, or production protection.
 ```
+
+N-148 completed:
+
+```text
+artifacts:
+  analysis/0102
+  task-frozen-run-lifetime-locking-gate-v1.json
+  formal/0080
+  validation/0119
+
+purpose:
+  fix task identity lifetime and locking semantics for FrozenRunUse, denied
+  candidates, and future move validation records.
+
+rule:
+  task identity consumption requires live task, fresh generation, no migration,
+  unreleased frozen record, and stabilization by a task ref or scheduler locked
+  context. Raw task_struct pointer, RCU visibility, and rq->curr publication
+  are not authority.
+
+safe TLC:
+  20 generated states
+  12 distinct states
+  depth 6
+
+unsafe:
+  16 expected counterexamples for run after free, missing stable lifetime,
+  RCU-only/raw-pointer authority, run while migrating, stale generation, use
+  after release, premature release, double release, ref/lock leak, move without
+  rq lock, retry without stable candidate lifetime, ignored exit invalidation,
+  and non-claim overreach.
+
+assurance:
+  E-SCHED-LIFETIME-LOCKING-001 supports EXEC-001 and COMPAT-001 only.
+
+still not:
+  Linux implementation, hook approval, task-field/storage-layout/refcount/
+  locking-protocol approval, runtime coverage, ABI, monitor verification,
+  behavior change, budget enforcement evidence, or production protection.
+```

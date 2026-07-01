@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "final-deny-retry-ineligibility-gate-complete",
+    "current_phase": "task-frozen-run-lifetime-locking-gate-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-147 final deny retry/ineligibility gate is complete. Added analysis/0101, final-deny-retry-ineligibility-gate-v1.json, formal/0079 FinalDenyRetryIneligibilityGate, and validation/0118. The checked model requires a future final CapSched run-validation denial to occur before rq->curr publication, mark the denied candidate ineligible, neutralize scheduler class state and balance callbacks, retry with bounded progress, or fail closed only when no eligible candidate remains. Safe TLC passed with 11 generated states, 9 distinct states, 0 left on queue, depth 6. Seventeen unsafe configs produced expected counterexamples for running a denied candidate, retrying the same denied candidate, denying after rq->curr, denying without ineligibility, retrying without progress, failing closed with an eligible candidate, running after retry without a fresh tuple, silent drop, retry-budget bypass, class state, RETRY_TASK, idle fallback, sched_ext fallback, core cached pick, behavior-change, monitor-verification, and protection overclaims. JSON check confirmed 21 anchors, 12 state subjects, 2 safe paths, 10 requirements, 12 forbidden substitutions, 17 unsafe cases, and 14/14 safety flags false. Assurance evidence E-SCHED-DENY-RETRY-001 supports EXEC-001 and COMPAT-001 only as model evidence. This is not Linux hook implementation, retry implementation, task-field approval, class-state rollback approval, runtime coverage, ABI approval/change, monitor implementation, monitor verification, behavior change, budget enforcement evidence, or production protection.",
+    "current_focus": "N-148 task FrozenRun lifetime/locking gate is complete. Added analysis/0102, task-frozen-run-lifetime-locking-gate-v1.json, formal/0080 TaskFrozenRunLifetimeLockingGate, and validation/0119. The checked model requires FrozenRunUse, denied-candidate, and future move validation records to consume task identity only while live, generation-fresh, not migrating, not released, and stabilized by a task reference or scheduler locked context. It rejects raw task_struct pointer authority, RCU-only authority, rq->curr publication authority, stale generation, use after release, premature release, double release, ref/lock leak, move without rq lock, retry without stable candidate lifetime, ignored exit invalidation, and behavior/monitor/protection overclaims. Safe TLC passed with 20 generated states, 12 distinct states, 0 left on queue, depth 6. Sixteen unsafe configs produced expected counterexamples. JSON check confirmed 19 anchors, 14 state subjects, 4 safe paths, 12 requirements, 13 forbidden substitutions, 16 unsafe cases, and 16/16 safety flags false. Assurance evidence E-SCHED-LIFETIME-LOCKING-001 supports EXEC-001 and COMPAT-001 only as model evidence. This is not Linux hook implementation, task-field approval, task storage-layout approval, refcount scheme approval, locking protocol approval, runtime coverage, ABI approval/change, monitor implementation, monitor verification, behavior change, budget enforcement evidence, or production protection.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -694,7 +694,13 @@
     "final_deny_retry_ineligibility_model": "capsched/capsched-models/formal/0079-final-deny-retry-ineligibility-gate-model/README.md",
     "final_deny_retry_ineligibility_tla": "capsched/capsched-models/formal/0079-final-deny-retry-ineligibility-gate-model/FinalDenyRetryIneligibilityGate.tla",
     "final_deny_retry_ineligibility_validation": "capsched/capsched-models/validation/0118-final-deny-retry-ineligibility-gate-tlc.md",
-    "final_deny_retry_ineligibility_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/final-deny-retry-ineligibility-gate-20260701T225643Z"
+    "final_deny_retry_ineligibility_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/final-deny-retry-ineligibility-gate-20260701T225643Z",
+    "task_frozen_run_lifetime_locking_analysis": "capsched/capsched-models/analysis/0102-task-frozen-run-lifetime-locking-gate.md",
+    "task_frozen_run_lifetime_locking_json": "capsched/capsched-models/analysis/task-frozen-run-lifetime-locking-gate-v1.json",
+    "task_frozen_run_lifetime_locking_model": "capsched/capsched-models/formal/0080-task-frozen-run-lifetime-locking-gate-model/README.md",
+    "task_frozen_run_lifetime_locking_tla": "capsched/capsched-models/formal/0080-task-frozen-run-lifetime-locking-gate-model/TaskFrozenRunLifetimeLockingGate.tla",
+    "task_frozen_run_lifetime_locking_validation": "capsched/capsched-models/validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md",
+    "task_frozen_run_lifetime_locking_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/task-frozen-run-lifetime-locking-gate-20260701T231139Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

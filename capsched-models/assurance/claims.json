@@ -85,7 +85,8 @@
         "E-SCHED-INTEGRATION-001",
         "E-SCHED-PLACEMENT-INTEGRATION-001",
         "E-SCHED-RUN-MOVE-REVALIDATION-001",
-        "E-SCHED-DENY-RETRY-001"
+        "E-SCHED-DENY-RETRY-001",
+        "E-SCHED-LIFETIME-LOCKING-001"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
@@ -99,7 +100,8 @@
         "No F1 admission-freeze hook, task storage, or wake_q/wakelist runtime coverage.",
         "No integrated scheduler authority hook or runtime coverage.",
         "No final run/move revalidation hook, retry/ineligibility semantics, or runtime coverage.",
-        "No final-deny retry/ineligibility implementation, class-state neutralization mechanism, or runtime coverage."
+        "No final-deny retry/ineligibility implementation, class-state neutralization mechanism, or runtime coverage.",
+        "No task lifetime/refcount/locking implementation for FrozenRunUse or denied candidates, and no runtime coverage for those consume/settle edges."
       ],
       "forbidden_l0": false
     },
@@ -701,7 +703,8 @@
         "E-SCHED-INTEGRATION-001",
         "E-SCHED-PLACEMENT-INTEGRATION-001",
         "E-SCHED-RUN-MOVE-REVALIDATION-001",
-        "E-SCHED-DENY-RETRY-001"
+        "E-SCHED-DENY-RETRY-001",
+        "E-SCHED-LIFETIME-LOCKING-001"
       ],
       "gaps": [
         "No boot/runtime evidence.",
@@ -711,6 +714,7 @@
         "No integrated scheduler execution-edge runtime trace under CapSched hooks.",
         "No final run/move revalidation runtime trace under CapSched hooks.",
         "No final-deny retry/ineligibility runtime trace under CapSched hooks.",
+        "No task lifetime/refcount/locking runtime trace under CapSched hooks.",
         "No scheduler behavior patch yet.",
         "No workload compatibility matrix."
       ],
@@ -1675,6 +1679,16 @@
         "COMPAT-001"
       ],
       "limitation": "Finite final-deny retry model gate checks ineligibility, progress, bounded retry, fail-closed, class-state neutralization, and Linux retry non-authority; it is not Linux implementation, hook approval, runtime coverage, monitor verification, budget enforcement evidence, behavior change, or production protection."
+    },
+    {
+      "id": "E-SCHED-LIFETIME-LOCKING-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite task lifetime and locking model gate checks task liveness, generation freshness, RCU-only rejection, raw-pointer rejection, rq/pi locking, migration exclusion, release settlement, and denied-candidate lifetime stability; it is not Linux implementation, hook approval, task field approval, storage-layout approval, runtime coverage, monitor verification, behavior change, or production protection."
     }
   ],
   "counterexamples": [
@@ -1742,9 +1756,15 @@
       "id": "CEX-SCHED-DENY-RETRY-001",
       "record": "capsched-models/validation/0118-final-deny-retry-ineligibility-gate-tlc.md",
       "meaning": "Unsafe final-deny retry models show expected counterexamples for running a denied candidate, retrying the same denied candidate, denying after rq->curr, denying without ineligibility, retrying without progress, fail-closed with an eligible candidate, running after retry without a fresh tuple, silent drop, retry-budget bypass, class state, RETRY_TASK, idle fallback, sched_ext fallback, core cached pick, behavior-change, monitor-verification, and protection overclaims."
+    },
+    {
+      "id": "CEX-SCHED-LIFETIME-LOCKING-001",
+      "record": "capsched-models/validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md",
+      "meaning": "Unsafe task lifetime and locking models show expected counterexamples for running after task free or exit invalidation, running without stable lifetime, RCU-only or raw-pointer authority, running while migrating, stale generation run, use after release, premature release, double release, ref/lock leak, queued move without rq lock, retry without stable candidate lifetime, ignored exit invalidation, and behavior/monitor/protection overclaims."
     }
   ],
   "forbidden_claims": [
+    "A raw task_struct pointer, RCU visibility, rq->curr publication, task CPU value, on_rq visibility, migrating state, or released FrozenRunUse is CapSched runnable authority.",
     "A direct-call reference ABI sketch is a selected binary ABI, Linux stub, monitor implementation, performance result, or production protection proof.",
     "A semantic ABI candidate is a selected binary ABI, monitor call layout, Linux stub, shared-ring format, or production protection proof.",
     "BPF or sched_ext is the production root for No RunCap, no run.",

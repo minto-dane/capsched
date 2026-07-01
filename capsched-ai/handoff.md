@@ -2639,3 +2639,52 @@ next:
   candidates, or integrate fork/clone/exec/exit identity propagation into the
   scheduler authority model.
 ```
+
+Latest task lifetime/locking gate:
+
+```text
+N-148 completed:
+  analysis/0102-task-frozen-run-lifetime-locking-gate.md
+  analysis/task-frozen-run-lifetime-locking-gate-v1.json
+  formal/0080-task-frozen-run-lifetime-locking-gate-model/
+  validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md
+
+purpose:
+  define the minimum lifetime, generation, RCU, rq/pi locking, migration, and
+  release-settlement semantics for FrozenRunUse, denied candidates, and future
+  move validation records.
+
+rule:
+  Raw task_struct pointers, RCU visibility, and rq->curr publication are not
+  CapSched authority. A frozen task identity can be consumed only while the
+  task is live, generation-fresh, not migrating, not released, and stabilized
+  by a task reference or scheduler locked context.
+
+safe TLC:
+  20 generated states
+  12 distinct states
+  depth 6
+
+unsafe:
+  16 expected counterexamples.
+  Rejected hazards include run after free/exit invalidation, missing stable
+  lifetime, RCU-only authority, raw pointer authority, run while migrating,
+  stale generation, use after release, premature release, double release,
+  ref/lock leak, move without rq lock, retry without stable candidate lifetime,
+  ignored exit invalidation, and non-claim overreach.
+
+assurance:
+  E-SCHED-LIFETIME-LOCKING-001 supports EXEC-001 and COMPAT-001 only as model
+  evidence.
+
+still not:
+  Linux implementation, hook approval, task-field approval, task storage-layout
+  approval, refcount scheme approval, locking protocol approval, runtime
+  coverage, ABI, monitor verification, behavior change, budget enforcement
+  evidence, or production protection.
+
+next:
+  Continue model-only completion by integrating fork/clone/exec/exit identity
+  propagation with the scheduler authority model, or close remaining runnable
+  lifecycle gaps before implementation planning.
+```
