@@ -89,6 +89,8 @@ Updated: 2026-07-01
 | 0081 | Draft source-only async carrier map | Direct-Call Async Workqueue and io_uring Source Map |
 | 0082 | Draft no-patch lifetime table | Direct-Call Async Carrier Lifetime Table |
 | 0083 | Accepted no-behavior API direction | Direct-Call Async Carrier API Direction |
+| 0084 | Draft refinement model input | Direct-Call Workqueue Adapter Refinement |
+| 0085 | Draft refinement model input | Direct-Call io_uring Adapter Refinement |
 
 ## Planned Analysis Notes
 
@@ -142,3 +144,5 @@ Updated: 2026-07-01
 | `direct-call-async-io-uring-source-map-v1.json` | Draft source map | Machine-readable io_uring request/resource/io-wq async-carrier source map for N-122 |
 | `direct-call-async-carrier-lifetime-table-v1.json` | Draft lifetime table | Machine-readable workqueue/io_uring async carrier lifetime obligations for N-123 |
 | `direct-call-async-carrier-api-direction-v1.json` | Accepted no-behavior API direction | Machine-readable workqueue-only vs io_uring-only vs shared internal carrier choice for N-124 |
+| `direct-call-workqueue-adapter-refinement-v1.json` | Draft refinement model input | Machine-readable workqueue adapter state, transition, unsafe-case, and non-claim contract for N-127 |
+| `direct-call-io-uring-adapter-refinement-v1.json` | Draft refinement model input | Machine-readable io_uring adapter request/resource/worker/completion state, unsafe-case, and non-claim contract for N-128 |

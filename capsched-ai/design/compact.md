@@ -122,15 +122,24 @@ latest completed focused risk:
   acceptance.
 
 latest completed focused risk:
-  Direct-call receipt-consumer placement gate. Implementation/0010 defines 7
-  DCPGATE rows for receipt provenance, bounded hot-path consumption,
-  policy/lifecycle separation, generic async exclusion, future gap preservation,
-  revoke/shadow invalidation, and evidence class split. Validation/0090 checked
-  all rows and safety flags.
+  Direct-call workqueue adapter refinement. Analysis/0084 and formal/0060 model
+  queue_work false, pending preservation, delayed retime, self-requeue, worker
+  callback, cancel/flush, rescuer bypass, caller budget settlement, and
+  release-vs-Linux-lifetime separation. Validation/0098 safe TLC passed with 16
+  generated states, 15 distinct states, and depth 15; 17 unsafe configs
+  produced expected counterexamples.
+
+latest completed focused risk:
+  Direct-call io_uring adapter refinement. Analysis/0085 and formal/0061 model
+  SQE consumption, request freeze, resource generation snapshot, inline issue,
+  io-wq punt, reissue, cancel, CQE, settlement, release, linked request, and
+  uring_cmd endpoint hazards. Validation/0099 safe TLC passed with 26 generated
+  states, 24 distinct states, and depth 15; 19 unsafe configs produced expected
+  counterexamples.
 
 next focused risk:
-  Split the async carrier adapter obligations into dedicated io_uring and
-  workqueue refinement models.
+  Build a combined async-adapter precondition gate reconciling N-127 and N-128
+  before any Linux code proposal.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

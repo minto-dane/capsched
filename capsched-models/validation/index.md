@@ -103,6 +103,8 @@ Updated: 2026-07-01
 | 0095 | Executed; no-behavior API direction checked | Direct-Call Async Carrier API Direction Result |
 | 0096 | Executed; no-behavior API sketch checked | Direct-Call Async Carrier API Sketch Result |
 | 0097 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Async Carrier API Sketch TLC |
+| 0098 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call Workqueue Adapter TLC |
+| 0099 | Safe model passed; unsafe models produced expected counterexamples | Direct-Call io_uring Adapter TLC |
 
 ## Principles
 

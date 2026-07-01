@@ -137,18 +137,35 @@ latest completed risk:
   revoke, reuse before revoke completion, and audit-only acceptance.
 
 latest completed risk:
-  Direct-call receipt-consumer placement gate. Implementation/0010 and
-  direct-call-receipt-consumer-placement-gate-v1.json define 7 DCPGATE rows:
-  receipt provenance root, hot-path bounded consumption, policy/lifecycle
-  separation, generic async exclusion, future gap preservation, revoke/shadow
-  invalidation, and evidence class split. Validation/0090 confirms all 7 rows
-  have preconditions, forbidden fallbacks, and patch preconditions, with no
-  implementation approval or authority/protection claims.
+  Direct-call workqueue adapter refinement. Analysis/0084 and formal/0060
+  split the workqueue side of the N-126 async carrier sketch. Validation/0098
+  safe TLC passed with 16 generated states, 15 distinct states, and depth 15.
+  Seventeen unsafe configs reject side effect before validate, pending
+  overwrite, second-caller leak, delayed retime receipt refresh,
+  self-requeue receipt refresh, worker identity authority, cancel/flush as
+  monitor revoke receipt, release freeing Linux work, double settlement,
+  freeze after publication, service-only budget, rescuer bypass, pending clear
+  as monitor revoke receipt, ABI approval, behavior change, monitor
+  verification claim, and protection claim.
+
+latest completed risk:
+  Direct-call io_uring adapter refinement. Analysis/0085 and formal/0061 split
+  the io_uring side into request/resource/io-wq/reissue/CQE/cancel/free states.
+  Validation/0099 safe TLC passed with 26 generated states, 24 distinct states,
+  and depth 15. Nineteen unsafe configs reject side effect before validate,
+  immutable overwrite, io_kiocb authority, io_wq_work authority, req
+  creds/tctx/SQPOLL authority, io_rsrc_node authority, reissue receipt refresh,
+  CQE settlement proof, cancel as monitor revoke receipt, double settlement,
+  release dropping Linux refs, stale execution after revoke, implicit
+  linked-request authority, resource update mutating in-flight authority,
+  uring_cmd without endpoint authority, ABI approval, behavior change, monitor
+  verification claim, and protection claim.
 
 next focused risk:
-  Split the N-126 broad adapter obligations into dedicated io_uring and
-  workqueue refinement models. Do not add direct-call stubs, ABI, tracepoints,
-  workqueue integration, io_uring integration, or behavior-changing patches.
+  Build an implementation-facing combined async-adapter precondition gate that
+  reconciles N-127 and N-128 before any Linux code proposal. Do not add
+  direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
+  integration, or behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:

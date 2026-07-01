@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "direct-call-async-api-sketch-model-complete",
+    "current_phase": "direct-call-io-uring-adapter-refinement-model-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-126 completed the first TLA+ transition-ordering model for the N-125 async carrier API sketch. formal/0059 DirectCallAsyncCarrierApiSketch models workqueue and io_uring safe paths through create, freeze, bind, adapter publication/preparation, revoke_check, validate, side effect, settle, release, and accept. validation/0097 safe TLC passed with 25 generated states, 23 distinct states, depth 12. Fourteen unsafe configs produced expected counterexamples for side effect before validate, immutable overwrite, second-caller leak, pending overwrite, double settlement, release dropping Linux refs, CQE settlement proof, reissue receipt refresh, bad authority intersection, Linux object authority, ABI approval, behavior change, monitor verification, and protection claim. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is N-127: split the broad N-126 adapter obligations into dedicated io_uring and workqueue refinement models before any Linux code proposal.",
+    "current_focus": "N-128 io_uring adapter refinement is complete as a model gate, following N-127 workqueue adapter refinement. Added analysis/0085, direct-call-io-uring-adapter-refinement-v1.json, formal/0061 DirectCallIoUringAdapter, and validation/0099. Safe TLC passed with 26 generated states, 24 distinct states, depth 15. Nineteen unsafe configs produced expected counterexamples for side effect before validate, immutable overwrite, io_kiocb authority, io_wq_work authority, req creds/tctx/SQPOLL authority, io_rsrc_node authority, reissue receipt refresh, CQE settlement proof, cancel as monitor revoke receipt, double settlement, release dropping Linux refs, stale execution after revoke, implicit linked-request authority, resource update mutating in-flight authority, uring_cmd without endpoint authority, ABI approval, behavior change, monitor verification claim, and protection claim. This is not Linux implementation, workqueue integration, io_uring integration, ABI approval, runtime coverage, monitor verification, behavior change, or production protection. Next focused risk is an implementation-facing combined async-adapter precondition gate that reconciles N-127 and N-128 before any Linux code proposal.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -568,7 +568,19 @@
     "direct_call_async_carrier_api_sketch_model": "capsched/capsched-models/formal/0059-direct-call-async-carrier-api-sketch-model/README.md",
     "direct_call_async_carrier_api_sketch_tla": "capsched/capsched-models/formal/0059-direct-call-async-carrier-api-sketch-model/DirectCallAsyncCarrierApiSketch.tla",
     "direct_call_async_carrier_api_sketch_model_validation": "capsched/capsched-models/validation/0097-direct-call-async-carrier-api-sketch-tlc.md",
-    "direct_call_async_carrier_api_sketch_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-async-carrier-api-sketch-20260701T061239Z"
+    "direct_call_async_carrier_api_sketch_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-async-carrier-api-sketch-20260701T061239Z",
+    "direct_call_workqueue_adapter_refinement": "capsched/capsched-models/analysis/0084-direct-call-workqueue-adapter-refinement.md",
+    "direct_call_workqueue_adapter_refinement_json": "capsched/capsched-models/analysis/direct-call-workqueue-adapter-refinement-v1.json",
+    "direct_call_workqueue_adapter_model": "capsched/capsched-models/formal/0060-direct-call-workqueue-adapter-refinement-model/README.md",
+    "direct_call_workqueue_adapter_tla": "capsched/capsched-models/formal/0060-direct-call-workqueue-adapter-refinement-model/DirectCallWorkqueueAdapter.tla",
+    "direct_call_workqueue_adapter_validation": "capsched/capsched-models/validation/0098-direct-call-workqueue-adapter-tlc.md",
+    "direct_call_workqueue_adapter_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-workqueue-adapter-20260701T183316Z",
+    "direct_call_io_uring_adapter_refinement": "capsched/capsched-models/analysis/0085-direct-call-io-uring-adapter-refinement.md",
+    "direct_call_io_uring_adapter_refinement_json": "capsched/capsched-models/analysis/direct-call-io-uring-adapter-refinement-v1.json",
+    "direct_call_io_uring_adapter_model": "capsched/capsched-models/formal/0061-direct-call-io-uring-adapter-refinement-model/README.md",
+    "direct_call_io_uring_adapter_tla": "capsched/capsched-models/formal/0061-direct-call-io-uring-adapter-refinement-model/DirectCallIoUringAdapter.tla",
+    "direct_call_io_uring_adapter_validation": "capsched/capsched-models/validation/0099-direct-call-io-uring-adapter-tlc.md",
+    "direct_call_io_uring_adapter_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/direct-call-io-uring-adapter-20260701T184003Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
