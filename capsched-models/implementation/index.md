@@ -4,21 +4,19 @@ Updated: 2026-07-01
 
 No behavior-changing implementation patch points are accepted yet.
 
-Current task FrozenRun lifetime/locking model gate:
+Current lifecycle identity propagation integration model gate:
 
-- `analysis/0102-task-frozen-run-lifetime-locking-gate.md`
+- `analysis/0103-lifecycle-identity-propagation-integration-gate.md`
   - Status: model-supported design gate, no Linux patch approved yet.
-  - Purpose: require any future `FrozenRunUse`, denied-candidate, or move
-    validation record to consume task identity only while live,
-    generation-fresh, not migrating, not released, and stabilized by task
-    reference or scheduler locked context.
-- `formal/0080-task-frozen-run-lifetime-locking-gate-model/`
+  - Purpose: require fork/clone child runnable publication, exec continuation,
+    and exit invalidation to preserve CapSched identity freshness without
+    ambiently inheriting runnable authority.
+- `formal/0081-lifecycle-identity-propagation-integration-gate-model/`
   - Status: checked with safe pass and expected unsafe counterexamples.
-  - Pressure: raw `task_struct *`, RCU visibility, `rq->curr` publication,
-    task CPU value, `on_rq` visibility, migration state, and released frozen
-    records cannot be CapSched authority. Task fields, storage layout,
-    refcount scheme, locking protocol, hooks, and runtime coverage remain
-    unapproved.
+  - Pressure: `dup_task_struct()` field copying, clone flags, PID/TGID reuse,
+    `sched_exec()` placement, task release, RCU-visible dead tasks, and trace
+    events cannot be authority. Fork, exec, exit, task-field, scheduler-hook,
+    ABI, and runtime coverage remain unapproved.
 
 Candidate implementation plans:
 

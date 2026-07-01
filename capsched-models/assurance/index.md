@@ -666,6 +666,28 @@ Task FrozenRun lifetime and locking gate:
   approval, runtime coverage, monitor verification, behavior change, or
   production protection.
 
+Lifecycle identity propagation integration gate:
+  analysis/0103 and formal/0081 integrate fork/clone, exec, and exit identity
+  propagation with the recent scheduler authority gates. validation/0120 safe
+  TLC passed with 19 generated states, 13 distinct states, and depth 4. Unsafe
+  configs produced expected counterexamples for child run without SpawnCap or
+  fresh identity, ambient RunCap/FrozenRunUse/RunToken inheritance, wake before
+  identity preparation, new Domain without token, clone flags as Domain
+  authority, exec Domain change without token, post-exec run without
+  ExecContinuation, check-only mutation, old FrozenRunUse after exec, run after
+  exit, PID/TGID reuse, release authority, and behavior/monitor/protection
+  overclaims. E-SCHED-LIFECYCLE-IDENTITY-001 supports EXEC-001 and COMPAT-001
+  as model evidence only.
+
+Exec and post-exec evidence registration:
+  Existing validation/0037 ExecGeneration is now registered as E-EXEC-GEN-001
+  for EXEC, ENDP, ASYNC, MEM, and COMPAT model support only. Existing
+  validation/0038 PostExecResource is now registered as
+  E-POST-EXEC-RESOURCE-001 for ENDP, ASYNC, and COMPAT model support only.
+  These registrations close an assurance bookkeeping gap; they do not approve
+  Linux exec hooks, endpoint implementation, fd table sweeps, runtime coverage,
+  monitor verification, behavior change, or production protection.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

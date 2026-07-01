@@ -108,6 +108,7 @@ Updated: 2026-07-01
 | 0100 | Draft hook-placement model gate with TLC-backed design filter | Final Run/Move Revalidation Hook Placement Gate |
 | 0101 | Draft model gate with TLC-backed design filter | Final Deny Retry and Ineligibility Gate |
 | 0102 | Draft model gate with TLC-backed design filter | Task FrozenRun Lifetime and Locking Gate |
+| 0103 | Draft integration model gate with TLC-backed design filter | Lifecycle Identity Propagation Integration Gate |
 
 ## Planned Analysis Notes
 
@@ -181,3 +182,4 @@ Updated: 2026-07-01
 | `final-run-move-revalidation-hook-placement-gate-v1.json` | Draft hook-placement model gate | Machine-readable final run/move tuple-consumption boundary, stale tuple rejection, and Linux selected/move non-authority contract for N-146 |
 | `final-deny-retry-ineligibility-gate-v1.json` | Draft model gate | Machine-readable final run denial retry, ineligibility, fail-closed, and non-authority contract for N-147 |
 | `task-frozen-run-lifetime-locking-gate-v1.json` | Draft model gate | Machine-readable task lifetime, generation, RCU-only rejection, rq/pi locking, migration, release, and denied-candidate settlement contract for N-148 |
+| `lifecycle-identity-propagation-integration-gate-v1.json` | Draft integration model gate | Machine-readable fork/clone, exec, and exit identity propagation contract for N-149 |

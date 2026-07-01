@@ -169,6 +169,10 @@ Current evidence:
 - `validation/0118-final-deny-retry-ineligibility-gate-tlc.md`
 - `formal/0080-task-frozen-run-lifetime-locking-gate-model/`
 - `validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md`
+- `formal/0025-exec-generation-inheritance-model/`
+- `validation/0037-exec-generation-inheritance-tlc.md`
+- `formal/0081-lifecycle-identity-propagation-integration-gate-model/`
+- `validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md`
 - `implementation/0001-l0-runnable-lease-implementation-plan.md`
 - Slice 0B type names: `capsched_run_cap`, `capsched_sched_ctx`,
   `capsched_frozen_run_use`
@@ -193,6 +197,7 @@ Open gaps:
   mechanism, or runtime coverage
 - no task lifetime/refcount/locking implementation for FrozenRunUse or denied
   candidates, and no runtime coverage for those consume/settle edges
+- no fork/clone/exec/exit lifecycle identity implementation or runtime coverage
 - no integrated scheduler authority hook or runtime coverage
 
 Forbidden L0 claim:
@@ -273,6 +278,10 @@ Current evidence:
 
 - `formal/0003-endpoint-async-provenance-model/`
 - `validation/0005-endpoint-async-tlc.md`
+- `formal/0025-exec-generation-inheritance-model/`
+- `validation/0037-exec-generation-inheritance-tlc.md`
+- `formal/0026-post-exec-resource-inheritance-model/`
+- `validation/0038-post-exec-resource-inheritance-tlc.md`
 - `analysis/0015-endpoint-async-linux-attachment-map.md`
 - Slice 0B type names: `capsched_endpoint_cap`,
   `capsched_frozen_endpoint_use`
@@ -282,6 +291,7 @@ Open gaps:
 - no VFS/socket endpoint implementation
 - no fd acquisition/survival/revocation semantics
 - no io_uring registered-resource enforcement
+- no post-exec endpoint derivation implementation or runtime coverage
 - no object-generation model for all endpoint families
 
 Forbidden L0 claim:
@@ -305,6 +315,10 @@ Current status: Model-supported
 Current evidence:
 
 - `formal/0003-endpoint-async-provenance-model/`
+- `formal/0025-exec-generation-inheritance-model/`
+- `validation/0037-exec-generation-inheritance-tlc.md`
+- `formal/0026-post-exec-resource-inheritance-model/`
+- `validation/0038-post-exec-resource-inheritance-tlc.md`
 - `analysis/0005-async-provenance-risk-map.md`
 - `analysis/0015-endpoint-async-linux-attachment-map.md`
 - Slice 0B type name: `capsched_work_ctx`
@@ -313,6 +327,7 @@ Open gaps:
 
 - no CapSched work wrapper
 - no io_uring carrier implementation
+- no post-exec async/resource carrier implementation or runtime coverage
 - no timer/RCU/softirq provenance policy
 - no confused-deputy tests
 
@@ -331,6 +346,8 @@ Current status: Model-supported
 Current evidence:
 
 - `analysis/0017-mm-allocator-page-cache-domain-state-map.md`
+- `formal/0025-exec-generation-inheritance-model/`
+- `validation/0037-exec-generation-inheritance-tlc.md`
 - `formal/0008-memory-ownership-model/`
 - `validation/0010-memory-ownership-tlc.md`
 - Slice 0B type names: `capsched_memory_view`, `capsched_page_owner`
@@ -567,6 +584,9 @@ Current evidence:
 - placement/affinity/hotplug integration gate `validation/0116-placement-affinity-hotplug-integration-gate-tlc.md`
 - final run/move revalidation hook-placement gate `validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md`
 - final deny retry/ineligibility gate `validation/0118-final-deny-retry-ineligibility-gate-tlc.md`
+- task FrozenRun lifetime/locking gate `validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md`
+- lifecycle identity propagation integration gate `validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md`
+- exec generation and post-exec resource inheritance gates `validation/0037-exec-generation-inheritance-tlc.md`, `validation/0038-post-exec-resource-inheritance-tlc.md`
 - Slice 0A build validation `validation/0004-l0-slice0-systemd-build-run.md`
 - Slice 0B build validation `validation/0014-l0-slice0b-build-run.md`
 
@@ -580,6 +600,8 @@ Open gaps:
 - no integrated scheduler execution-edge runtime trace under CapSched hooks
 - no final run/move revalidation runtime trace under CapSched hooks
 - no final-deny retry/ineligibility runtime trace under CapSched hooks
+- no task lifetime/refcount/locking runtime trace under CapSched hooks
+- no lifecycle fork/clone/exec/exit runtime trace under CapSched hooks
 - no cgroup/cpuset/sched-class behavior patch
 - no user ABI compatibility test suite
 
@@ -670,6 +692,9 @@ Open gaps:
 | E-SCHED-RUN-MOVE-REVALIDATION-001 | TLA validation | `validation/0117-final-run-move-revalidation-hook-placement-gate-tlc.md` | ACT, EXEC, COMPAT |
 | E-SCHED-DENY-RETRY-001 | TLA validation | `validation/0118-final-deny-retry-ineligibility-gate-tlc.md` | EXEC, COMPAT |
 | E-SCHED-LIFETIME-LOCKING-001 | TLA validation | `validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md` | EXEC, COMPAT |
+| E-SCHED-LIFECYCLE-IDENTITY-001 | TLA validation | `validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md` | EXEC, COMPAT |
+| E-EXEC-GEN-001 | TLA validation | `validation/0037-exec-generation-inheritance-tlc.md` | EXEC, ENDP, ASYNC, MEM, COMPAT |
+| E-POST-EXEC-RESOURCE-001 | TLA validation | `validation/0038-post-exec-resource-inheritance-tlc.md` | ENDP, ASYNC, COMPAT |
 | E-SCHED-SERVER-EPOCH-001 | TLA validation | `validation/0111-server-epoch-relation-tlc.md` | EXEC, BUDGET |
 | E-SCHED-DL-COMPAT-001 | TLA validation | `validation/0112-deadline-cbs-grub-compat-tlc.md` | EXEC, BUDGET, COMPAT |
 | E-SCHED-F1-FREEZE-001 | TLA validation | `validation/0113-f1-admission-freeze-refresh-tlc.md` | EXEC, BUDGET, COMPAT |
@@ -703,6 +728,9 @@ Open gaps:
 | CEX-SCHED-RUN-MOVE-REVALIDATION-001 | `validation/0117` | Final run or queued-task move without a matching consumed validation tuple; stale task generation, Domain epoch, SchedContext epoch, RunCap epoch, move/core/sched_ext sequence, edge kind, CPU, fresh set, or pending-migration state; move tuple used for run, run tuple used for move, hook-after-rq-current, Linux pick/move/balance/dispatch/hotplug/migration authority, Linux hook approval, behavior change, monitor verification, and protection overclaims are rejected. |
 | CEX-SCHED-DENY-RETRY-001 | `validation/0118` | Running a denied candidate, retrying the same denied candidate, denying after `rq->curr`, denying without ineligibility, retrying without progress, failing closed with an eligible candidate, running after retry without a fresh tuple, silent drop, retry-budget bypass, class state, `RETRY_TASK`, idle fallback, sched_ext fallback, core cached pick, behavior-change, monitor-verification, and protection overclaims are rejected. |
 | CEX-SCHED-LIFETIME-LOCKING-001 | `validation/0119` | Running after task free/exit invalidation, running without stable task lifetime, RCU-only or raw-pointer authority, running while migrating, stale generation run, use after release, premature release, double release, ref/lock leak, queued move without rq lock, retry without stable candidate lifetime, ignored exit invalidation, and behavior/monitor/protection overclaims are rejected. |
+| CEX-SCHED-LIFECYCLE-IDENTITY-001 | `validation/0120` | Child run without SpawnCap or fresh identity, ambient RunCap/FrozenRunUse/RunToken inheritance, wake before identity preparation, new Domain without token, clone flags as Domain authority, exec Domain change without token, post-exec run without ExecContinuation, check-only mutation, old FrozenRunUse after exec, run after exit, PID/TGID reuse, release authority, and behavior/monitor/protection overclaims are rejected. |
+| CEX-EXEC-GEN-001 | `validation/0037` | Exec Domain change without monitor token, post-exec run without ExecContinuation, old endpoint/async/mmap authority, fd/CLOEXEC/execfd inheritance, credential amplification, and check-only mutation are rejected. |
+| CEX-POST-EXEC-RESOURCE-001 | `validation/0038` | Generic fd reachability, CLOEXEC leaks, regular/socket/anonymous fd ambient authority, epoll/eventfd/timerfd/io_uring old state, and execfd ambient inheritance after exec are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
 | HAZ-ENDP-001 | `analysis/0015` | Socket endpoint checks cannot rely only on LSM because some paths reuse `sock_sendmsg_nosec()`. |
 
@@ -722,6 +750,12 @@ revalidation.
 Raw `task_struct *`, RCU visibility, `rq->curr` publication, task CPU value,
 `on_rq` visibility, migrating state, or a released FrozenRunUse can serve as
 CapSched runnable authority.
+Linux clone flags, PID/TGID reuse or transfer, `sched_exec()` placement,
+`trace_sched_process_*` observations, task release, or RCU-visible dead tasks
+can mint or preserve CapSched runnable authority.
+Exec fd/resource reachability, CLOEXEC handling failure, credential changes,
+old async state, old mmap state, or interpreter execfd handoff can preserve
+post-exec endpoint authority without derivation.
 Hook placement after rq->curr publication is a valid ordinary Domain run
 authority boundary.
 Final CapSched deny can run the denied task, retry the same candidate without

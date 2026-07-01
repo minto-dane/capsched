@@ -2688,3 +2688,58 @@ next:
   propagation with the scheduler authority model, or close remaining runnable
   lifecycle gaps before implementation planning.
 ```
+
+Latest lifecycle identity propagation integration gate:
+
+```text
+N-149 completed:
+  analysis/0103-lifecycle-identity-propagation-integration-gate.md
+  analysis/lifecycle-identity-propagation-integration-gate-v1.json
+  formal/0081-lifecycle-identity-propagation-integration-gate-model/
+  validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md
+
+purpose:
+  integrate fork/clone, exec, and exit identity propagation with the recent
+  scheduler authority gates.
+
+rule:
+  child run requires SpawnCap-derived fresh identity before wake publication.
+  new Domain spawn requires monitor token.
+  RunCap, FrozenRunUse, and RunToken are not ambiently inherited.
+  successful exec requires ExecContinuation.
+  check-only exec does not mutate generations.
+  old FrozenRunUse is not reused after exec.
+  exit invalidates stale task authority.
+  PID/TGID reuse, clone flags, sched_exec placement, task release,
+  RCU-visible dead tasks, and trace observations are not authority.
+
+safe TLC:
+  19 generated states
+  13 distinct states
+  depth 4
+
+unsafe:
+  20 expected counterexamples.
+  Rejected hazards include child run without SpawnCap or fresh identity,
+  ambient RunCap/FrozenRunUse/RunToken inheritance, wake before identity
+  preparation, new Domain without token, clone flags as Domain authority,
+  exec Domain change without token, post-exec run without ExecContinuation,
+  check-only mutation, old FrozenRunUse after exec, run after exit, PID/TGID
+  reuse, release authority, and non-claim overreach.
+
+assurance:
+  E-SCHED-LIFECYCLE-IDENTITY-001 supports EXEC-001 and COMPAT-001 only.
+  Existing validation/0037 and validation/0038 are now registered as
+  E-EXEC-GEN-001 and E-POST-EXEC-RESOURCE-001.
+
+still not:
+  Linux implementation, fork/exec/exit hook approval, scheduler hook approval,
+  task-field approval, ABI, runtime coverage, monitor verification, behavior
+  change, budget enforcement evidence, or production protection.
+
+next:
+  Continue model-only completion by closing remaining integrated exit/revoke,
+  async lifecycle, and root-budget/monitor composition gaps, or construct a
+  final model-completeness ledger that lists any remaining non-implementation
+  blockers.
+```

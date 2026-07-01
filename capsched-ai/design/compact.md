@@ -2255,3 +2255,46 @@ still not:
   locking-protocol approval, runtime coverage, ABI, monitor verification,
   behavior change, budget enforcement evidence, or production protection.
 ```
+
+N-149 completed:
+
+```text
+artifacts:
+  analysis/0103
+  lifecycle-identity-propagation-integration-gate-v1.json
+  formal/0081
+  validation/0120
+
+purpose:
+  integrate fork/clone, exec, and exit identity propagation with scheduler
+  runnable authority.
+
+rule:
+  child run requires SpawnCap-derived fresh identity before wake publication;
+  RunCap/FrozenRunUse/RunToken are not inherited; new Domain spawn needs a
+  monitor token; successful exec requires ExecContinuation; check-only exec is
+  non-mutating; old FrozenRunUse is not reused after exec; exit invalidates
+  stale task authority. PID/TGID, clone flags, sched_exec placement, release
+  state, RCU-visible dead tasks, and traces are not authority.
+
+safe TLC:
+  19 generated states
+  13 distinct states
+  depth 4
+
+unsafe:
+  20 expected counterexamples for missing SpawnCap/fresh identity,
+  ambient inheritance, wake-before-identity, new Domain without token, clone
+  flags authority, exec Domain change, exec run without continuation,
+  check-only mutation, old FrozenRunUse after exec, run after exit, PID/TGID
+  reuse, release authority, and overclaims.
+
+assurance:
+  E-SCHED-LIFECYCLE-IDENTITY-001 supports EXEC-001 and COMPAT-001 only.
+  Existing exec/post-exec models are registered as E-EXEC-GEN-001 and
+  E-POST-EXEC-RESOURCE-001.
+
+still not:
+  Linux implementation, hook approval, task-field approval, runtime coverage,
+  ABI, monitor verification, behavior change, budget evidence, or protection.
+```

@@ -86,6 +86,7 @@ Updated: 2026-07-01
 | 0078 | Checked with safe pass and expected unsafe counterexamples | Final Run/Move Revalidation Hook Placement Gate Model |
 | 0079 | Checked with safe pass and expected unsafe counterexamples | Final Deny Retry and Ineligibility Gate Model |
 | 0080 | Checked with safe pass and expected unsafe counterexamples | Task FrozenRun Lifetime and Locking Gate Model |
+| 0081 | Checked with safe pass and expected unsafe counterexamples | Lifecycle Identity Propagation Integration Gate Model |
 
 ## Planned
 

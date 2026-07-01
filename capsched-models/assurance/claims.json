@@ -86,7 +86,9 @@
         "E-SCHED-PLACEMENT-INTEGRATION-001",
         "E-SCHED-RUN-MOVE-REVALIDATION-001",
         "E-SCHED-DENY-RETRY-001",
-        "E-SCHED-LIFETIME-LOCKING-001"
+        "E-SCHED-LIFETIME-LOCKING-001",
+        "E-EXEC-GEN-001",
+        "E-SCHED-LIFECYCLE-IDENTITY-001"
       ],
       "gaps": [
         "No enqueue/pick/tick implementation.",
@@ -101,7 +103,8 @@
         "No integrated scheduler authority hook or runtime coverage.",
         "No final run/move revalidation hook, retry/ineligibility semantics, or runtime coverage.",
         "No final-deny retry/ineligibility implementation, class-state neutralization mechanism, or runtime coverage.",
-        "No task lifetime/refcount/locking implementation for FrozenRunUse or denied candidates, and no runtime coverage for those consume/settle edges."
+        "No task lifetime/refcount/locking implementation for FrozenRunUse or denied candidates, and no runtime coverage for those consume/settle edges.",
+        "No fork/clone/exec/exit lifecycle identity implementation or runtime coverage."
       ],
       "forbidden_l0": false
     },
@@ -148,12 +151,15 @@
       "claim": "Resource operations require EndpointCap-derived frozen use; scheduler RunCap is not resource authority.",
       "evidence": [
         "E-ENDP-001",
-        "HAZ-ENDP-001"
+        "HAZ-ENDP-001",
+        "E-EXEC-GEN-001",
+        "E-POST-EXEC-RESOURCE-001"
       ],
       "gaps": [
         "No VFS/socket endpoint implementation.",
         "No fd survival/revocation semantics.",
-        "No io_uring registered-resource enforcement."
+        "No io_uring registered-resource enforcement.",
+        "No post-exec endpoint derivation implementation or runtime coverage."
       ],
       "forbidden_l0": false
     },
@@ -165,12 +171,15 @@
       "claim": "Domain-derived async work executes with caller provenance and frozen caller authority.",
       "evidence": [
         "E-ENDP-001",
-        "HAZ-ENDP-001"
+        "HAZ-ENDP-001",
+        "E-EXEC-GEN-001",
+        "E-POST-EXEC-RESOURCE-001"
       ],
       "gaps": [
         "No CapSched work wrapper.",
         "No io_uring carrier implementation.",
-        "No timer, RCU, softirq, or completion provenance policy."
+        "No timer, RCU, softirq, or completion provenance policy.",
+        "No post-exec async/resource carrier implementation or runtime coverage."
       ],
       "forbidden_l0": false
     },
@@ -181,7 +190,8 @@
       "title": "Other Domain memory and mutable kernel state are unmapped",
       "claim": "Domain-private user pages and mutable kernel pages are mapped only in the owning MemoryView or through explicit service/shared buffers.",
       "evidence": [
-        "E-MEM-001"
+        "E-MEM-001",
+        "E-EXEC-GEN-001"
       ],
       "gaps": [
         "No monitor PageOwner.",
@@ -704,7 +714,10 @@
         "E-SCHED-PLACEMENT-INTEGRATION-001",
         "E-SCHED-RUN-MOVE-REVALIDATION-001",
         "E-SCHED-DENY-RETRY-001",
-        "E-SCHED-LIFETIME-LOCKING-001"
+        "E-SCHED-LIFETIME-LOCKING-001",
+        "E-EXEC-GEN-001",
+        "E-POST-EXEC-RESOURCE-001",
+        "E-SCHED-LIFECYCLE-IDENTITY-001"
       ],
       "gaps": [
         "No boot/runtime evidence.",
@@ -715,6 +728,7 @@
         "No final run/move revalidation runtime trace under CapSched hooks.",
         "No final-deny retry/ineligibility runtime trace under CapSched hooks.",
         "No task lifetime/refcount/locking runtime trace under CapSched hooks.",
+        "No lifecycle fork/clone/exec/exit runtime trace under CapSched hooks.",
         "No scheduler behavior patch yet.",
         "No workload compatibility matrix."
       ],
@@ -1689,6 +1703,40 @@
         "COMPAT-001"
       ],
       "limitation": "Finite task lifetime and locking model gate checks task liveness, generation freshness, RCU-only rejection, raw-pointer rejection, rq/pi locking, migration exclusion, release settlement, and denied-candidate lifetime stability; it is not Linux implementation, hook approval, task field approval, storage-layout approval, runtime coverage, monitor verification, behavior change, or production protection."
+    },
+    {
+      "id": "E-EXEC-GEN-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0037-exec-generation-inheritance-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "ENDP-001",
+        "ASYNC-001",
+        "MEM-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite exec generation model evidence only; checks Domain stability, ExecContinuation, post-exec endpoint/async/mmap invalidation, fd/CLOEXEC/execfd derivation, credential attenuation, and check-only non-mutation, but is not Linux implementation, runtime coverage, monitor verification, behavior change, or production protection."
+    },
+    {
+      "id": "E-POST-EXEC-RESOURCE-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0038-post-exec-resource-inheritance-tlc.md",
+      "supports": [
+        "ENDP-001",
+        "ASYNC-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite post-exec resource inheritance model evidence only; checks class-specific fd/resource derivation after exec and rejects ambient fd reachability, but is not fd-table implementation, VFS/socket/io_uring enforcement, runtime coverage, monitor verification, behavior change, or production protection."
+    },
+    {
+      "id": "E-SCHED-LIFECYCLE-IDENTITY-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md",
+      "supports": [
+        "EXEC-001",
+        "COMPAT-001"
+      ],
+      "limitation": "Finite lifecycle identity integration model gate checks fork/clone SpawnCap child identity, exec continuation, exit invalidation, and Linux lifecycle non-authority; it is not Linux implementation, hook approval, runtime coverage, monitor verification, behavior change, budget enforcement evidence, or production protection."
     }
   ],
   "counterexamples": [
@@ -1761,10 +1809,27 @@
       "id": "CEX-SCHED-LIFETIME-LOCKING-001",
       "record": "capsched-models/validation/0119-task-frozen-run-lifetime-locking-gate-tlc.md",
       "meaning": "Unsafe task lifetime and locking models show expected counterexamples for running after task free or exit invalidation, running without stable lifetime, RCU-only or raw-pointer authority, running while migrating, stale generation run, use after release, premature release, double release, ref/lock leak, queued move without rq lock, retry without stable candidate lifetime, ignored exit invalidation, and behavior/monitor/protection overclaims."
+    },
+    {
+      "id": "CEX-EXEC-GEN-001",
+      "record": "capsched-models/validation/0037-exec-generation-inheritance-tlc.md",
+      "meaning": "Unsafe exec generation models show expected counterexamples for exec Domain change without monitor token, post-exec run without ExecContinuation, old endpoint/async/mmap authority, fd/CLOEXEC/execfd inheritance, credential amplification, and check-only mutation."
+    },
+    {
+      "id": "CEX-POST-EXEC-RESOURCE-001",
+      "record": "capsched-models/validation/0038-post-exec-resource-inheritance-tlc.md",
+      "meaning": "Unsafe post-exec resource models show expected counterexamples for generic fd reachability, CLOEXEC leaks, regular/socket/anonymous fd ambient authority, epoll/eventfd/timerfd/io_uring old state, and execfd ambient inheritance after exec."
+    },
+    {
+      "id": "CEX-SCHED-LIFECYCLE-IDENTITY-001",
+      "record": "capsched-models/validation/0120-lifecycle-identity-propagation-integration-gate-tlc.md",
+      "meaning": "Unsafe lifecycle identity models show expected counterexamples for child run without SpawnCap or fresh identity, ambient RunCap/FrozenRunUse/RunToken inheritance, wake before identity preparation, new Domain without token, clone flags as Domain authority, exec Domain change without token, post-exec run without ExecContinuation, check-only mutation, old FrozenRunUse after exec, run after exit, PID/TGID reuse, release authority, and behavior/monitor/protection overclaims."
     }
   ],
   "forbidden_claims": [
     "A raw task_struct pointer, RCU visibility, rq->curr publication, task CPU value, on_rq visibility, migrating state, or released FrozenRunUse is CapSched runnable authority.",
+    "Linux clone flags, PID/TGID reuse or transfer, sched_exec placement, trace_sched_process_* observations, task release, or RCU-visible dead tasks can mint or preserve CapSched runnable authority.",
+    "Exec fd/resource reachability, CLOEXEC handling failure, credential changes, old async state, old mmap state, or interpreter execfd handoff can preserve post-exec endpoint authority without derivation.",
     "A direct-call reference ABI sketch is a selected binary ABI, Linux stub, monitor implementation, performance result, or production protection proof.",
     "A semantic ABI candidate is a selected binary ABI, monitor call layout, Linux stub, shared-ring format, or production protection proof.",
     "BPF or sched_ext is the production root for No RunCap, no run.",
