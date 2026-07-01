@@ -273,4 +273,11 @@ Current upstream-following gate:
   non-stale watched change in kernel/sched/cpufreq_schedutil.c, no model
   refresh requirement, a clean merge-tree, and no Linux patch approval. This is
   the gate to rerun before source-map refreshes or any future patch proposal.
+
+Current source-map refresh target:
+  analysis/0088, formal/0066, and validation/0104 select
+  scheduler_authority_core as the next source-only refresh target. This is not
+  Linux patch approval. The refresh should update analysis/0025, analysis/0026,
+  analysis/0028, and the formal/0012 mapping before any scheduler authority
+  patch movement.
 ```

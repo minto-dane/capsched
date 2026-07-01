@@ -71,10 +71,11 @@ Updated: 2026-07-01
 | 0063 | Checked with safe pass and expected unsafe counterexamples | Linux Async Carrier Patch Scope Model |
 | 0064 | Checked with safe pass and expected unsafe counterexamples | Linux Upstream Maintenance Gate Model |
 | 0065 | Checked with safe pass and expected unsafe counterexamples | Linux Source-Drift Freshness Gate Model |
+| 0066 | Checked with safe pass and expected unsafe counterexamples | Linux Source-Map Refresh Target Model |
 
 ## Planned
 
-1. Apply the source-drift freshness gate to the next concrete source-map refresh
-   target before any Linux patch movement.
+1. Refresh `scheduler_authority_core` source maps source-only:
+   `analysis/0025`, `analysis/0026`, `analysis/0028`, and formal/0012 mapping.
 2. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

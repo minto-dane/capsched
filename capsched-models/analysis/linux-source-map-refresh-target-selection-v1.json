@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "id": "linux-source-map-refresh-target-selection-v1",
+  "analysis": "0088-linux-source-map-refresh-target-selection",
+  "status": "target_selected_source_only",
+  "date": "2026-07-01",
+  "gate_input": {
+    "runner_result": "/media/nia/scsiusb/dev/linux-cap/build/source-drift/linux-source-drift-gate/20260701T193000Z/result.json",
+    "base_commit": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+    "base_to_upstream_commit_count": 340,
+    "watched_changed_count": 1,
+    "model_refresh_required_count": 0,
+    "model_freshness": "fresh",
+    "merge_tree_clean": true,
+    "linux_patch_approved": false
+  },
+  "selected_target": {
+    "group_id": "scheduler_authority_core",
+    "selection_kind": "source_map_refresh_target",
+    "linux_patch_target": false,
+    "reason": "It is the execution-authority root for RunCap, SchedContext, FrozenRunUse, SelectedUse, DomainTag activation, and budget charging; refreshing it reduces the risk of future Linux patch movement using stale scheduler assumptions.",
+    "next_artifacts": [
+      "analysis/0025-linux-scheduler-authority-state-machine.md",
+      "analysis/0026-scheduler-hook-proof-obligation-matrix.md",
+      "analysis/0028-tick-runtime-budget-source-map.md",
+      "formal/0012-linux-scheduler-authority-model/"
+    ]
+  },
+  "candidates": [
+    {
+      "group_id": "scheduler_authority_core",
+      "freshness": "fresh",
+      "centrality": "high",
+      "immediate_value": "execution_authority_root",
+      "selected": true
+    },
+    {
+      "group_id": "task_lifecycle_identity",
+      "freshness": "fresh",
+      "centrality": "high",
+      "immediate_value": "identity_propagation_after_scheduler_root_refresh",
+      "selected": false
+    },
+    {
+      "group_id": "async_workqueue",
+      "freshness": "fresh",
+      "centrality": "high",
+      "immediate_value": "recently_refined_but_implementation_blocked",
+      "selected": false
+    },
+    {
+      "group_id": "async_io_uring",
+      "freshness": "fresh",
+      "centrality": "high",
+      "immediate_value": "recently_refined_but_implementation_blocked",
+      "selected": false
+    },
+    {
+      "group_id": "scheduler_nearby_non_intersecting",
+      "freshness": "non_stale_drift_recorded",
+      "centrality": "low_for_authority",
+      "immediate_value": "record_only",
+      "selected": false
+    },
+    {
+      "group_id": "l0_footprint",
+      "freshness": "fresh",
+      "centrality": "medium",
+      "immediate_value": "no_patch_movement",
+      "selected": false
+    },
+    {
+      "group_id": "policy_frontend_security",
+      "freshness": "fresh",
+      "centrality": "medium",
+      "immediate_value": "issuance_layer_after_execution_root",
+      "selected": false
+    },
+    {
+      "group_id": "memory_and_mm_state",
+      "freshness": "fresh",
+      "centrality": "high",
+      "immediate_value": "production_isolation_root_but_later_split_state_layer",
+      "selected": false
+    },
+    {
+      "group_id": "device_queue_iommu",
+      "freshness": "fresh",
+      "centrality": "high",
+      "immediate_value": "production_io_root_but_later_l4_l5_layer",
+      "selected": false
+    }
+  ],
+  "current_upstream_anchors": [
+    "kernel/sched/core.c:2172 enqueue_task",
+    "kernel/sched/core.c:2219 activate_task",
+    "kernel/sched/core.c:3805 ttwu_do_activate",
+    "kernel/sched/core.c:3865 ttwu_runnable",
+    "kernel/sched/core.c:4067 ttwu_queue",
+    "kernel/sched/core.c:4251 try_to_wake_up",
+    "kernel/sched/core.c:5674 task_sched_runtime",
+    "kernel/sched/core.c:5762 sched_tick",
+    "kernel/sched/core.c:6124 __pick_next_task",
+    "kernel/sched/core.c:7061 __schedule",
+    "kernel/sched/core.c:7316 schedule",
+    "kernel/sched/fair.c:1985 update_curr",
+    "kernel/sched/fair.c:14851 task_tick_fair",
+    "kernel/sched/rt.c:974 update_curr_rt",
+    "kernel/sched/rt.c:2540 task_tick_rt",
+    "kernel/sched/deadline.c:2128 update_curr_dl",
+    "kernel/sched/deadline.c:2876 task_tick_dl",
+    "kernel/sched/ext/ext.c:1321 update_curr_scx",
+    "kernel/sched/ext/ext.c:3480 scx_tick",
+    "kernel/sched/ext/ext.c:3505 task_tick_scx"
+  ],
+  "selection_constraints": {
+    "requires_freshness_gate": true,
+    "requires_model_fresh_or_source_only_refresh": true,
+    "rejects_stale_patch_movement": true,
+    "rejects_selecting_nearby_non_intersecting_drift_as_primary_target": true,
+    "rejects_linux_patch_approval": true,
+    "rejects_runtime_or_protection_claim": true
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "behavior_change": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "public_tracepoint_abi": false,
+    "workqueue_integration": false,
+    "io_uring_integration": false,
+    "monitor_verified": false,
+    "production_protection": false
+  }
+}

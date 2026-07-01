@@ -174,9 +174,17 @@ latest completed focused risk:
   first TLC attempt exposed missing watch-map/non-claim invariants; the final
   model rejects both.
 
+latest completed focused risk:
+  Linux source-map refresh target selection. Analysis/0088, formal/0066, and
+  validation/0104 select scheduler_authority_core as the next source-only
+  refresh target, not a Linux patch target. JSON check confirms 9 candidates,
+  exactly 1 selected target, 20 current upstream anchors, and 9/9 safety flags
+  false. Safe TLC passed with 6 generated states, 6 distinct states, and depth
+  6; 7 unsafe configs produced expected counterexamples.
+
 next focused risk:
-  Apply the source-drift freshness gate to the next concrete source-map refresh
-  target before any Linux patch movement.
+  Refresh scheduler_authority_core source-only: analysis/0025, analysis/0026,
+  analysis/0028, and formal/0012 mapping.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

@@ -217,9 +217,22 @@ latest completed risk:
   classification and non-claims-required freshness decision; the final model
   rejects both.
 
+latest completed risk:
+  Linux source-map refresh target selection. Analysis/0088, formal/0066, and
+  validation/0104 select scheduler_authority_core as the next source-only
+  refresh target. It is not a Linux patch target. JSON check confirms 9
+  candidates, exactly 1 selected target, selected_target=scheduler_authority_core,
+  selected_target_linux_patch_target=false, 20 current upstream anchors, 9/9
+  safety flags false, gate_input_linux_patch_approved=false, and
+  gate_input_model_freshness=fresh. Validation/0104 safe TLC passed with 6
+  generated states, 6 distinct states, and depth 6. Seven unsafe configs reject
+  selection without gate, stale patch target, nearby non-intersecting drift as
+  primary target, Linux patch approval, runtime claim, protection claim, and
+  async Linux name movement.
+
 next focused risk:
-  Apply the source-drift freshness gate to the next concrete source-map refresh
-  target before any Linux patch movement. Do not add direct-call stubs, ABI,
+  Refresh scheduler_authority_core source-only: analysis/0025, analysis/0026,
+  analysis/0028, and formal/0012 mapping. Do not add direct-call stubs, ABI,
   tracepoints, workqueue integration, io_uring integration, async carrier Linux
   names, or behavior-changing patches.
 ```
