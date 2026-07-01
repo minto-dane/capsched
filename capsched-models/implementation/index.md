@@ -255,4 +255,14 @@ Current blocker to behavior-changing Linux patches:
   not Linux stub implementation, monitor
   verification, ABI approval, runtime coverage, behavior-change approval, or
   production protection evidence.
+
+Current Linux async-carrier patch decision:
+  analysis/0086, formal/0064, and validation/0102 now make N-131 a negative
+  maintenance gate. No new Linux async-carrier patch is approved now, including
+  no-behavior opaque async-carrier names. The current fetched upstream review
+  saw 340 commits since the L0 base, only nearby non-intersecting watched-path
+  drift in kernel/sched/cpufreq_schedutil.c, and a clean merge-tree result, but
+  this is not enough to justify new Linux names without a concrete consumer.
+  The next implementation-facing work is source-drift automation and a
+  model-freshness gate, not a C declaration.
 ```

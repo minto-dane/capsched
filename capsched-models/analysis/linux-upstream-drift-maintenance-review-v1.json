@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "id": "linux-upstream-drift-maintenance-review-v1",
+  "analysis": "0086-linux-upstream-drift-maintenance-review",
+  "status": "current_source_review_complete_no_new_linux_patch_recommended",
+  "date": "2026-07-01",
+  "linux_state": {
+    "work_branch": "capsched-linux-l0",
+    "base_commit": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+    "fetched_upstream_master": "665159e246749",
+    "base_to_upstream_commit_count": 340,
+    "merge_tree_exit_code": 0,
+    "merge_tree_result_tree": "cda01cf9b8c171e29869170aa160ad0724cc9ad4"
+  },
+  "current_l0_patch_footprint": {
+    "files_changed": 4,
+    "insertions": 115,
+    "files": [
+      "include/linux/capsched.h",
+      "init/Kconfig",
+      "kernel/sched/Makefile",
+      "kernel/sched/capsched.c"
+    ],
+    "behavior_changing_paths_touched": false
+  },
+  "watched_path_drift": {
+    "changed_paths": [
+      "kernel/sched/cpufreq_schedutil.c"
+    ],
+    "direct_l0_footprint_drift": false,
+    "future_async_attachment_drift_observed": false,
+    "semantic_drift_requires_model_refresh": false,
+    "classification": "D1_nearby_non_intersecting_drift"
+  },
+  "current_decision": {
+    "add_no_behavior_async_carrier_patch_now": false,
+    "reason": "Preserve the tiny low-drift L0 Linux footprint; no concrete consumer currently requires async carrier opaque names; adding names now risks premature architecture commitment without improving protection or runtime evidence.",
+    "allowed_next_work": [
+      "source_drift_automation",
+      "model_freshness_gate",
+      "source_maps",
+      "traceability",
+      "future_separate_patch_proposal_if_concrete_consumer_need_exists"
+    ]
+  },
+  "future_no_behavior_patch_gate": [
+    "concrete_consumer_need_exists",
+    "fresh_upstream_fetch_recorded",
+    "watched_path_drift_recorded",
+    "merge_tree_or_equivalent_clean",
+    "patch_footprint_isolated",
+    "touches_only_approved_no_behavior_boundary",
+    "adds_no_callable_function_prototype",
+    "adds_no_object_layout",
+    "adds_no_allocation_refcount_lock_callback_or_lifetime_rule",
+    "adds_no_workqueue_io_uring_scheduler_task_lifecycle_lsm_cgroup_namespace_tracepoint_debugfs_sysfs_ioctl_syscall_uapi_module_parameter_static_key_or_monitor_call_surface",
+    "build_expectations_explicit_for_config_capsched_n_y",
+    "non_claims_repeated"
+  ],
+  "drift_classes": [
+    {
+      "class_id": "D0",
+      "name": "no_relevant_drift",
+      "action": "still_defer_patch_unless_concrete_consumer_need_exists"
+    },
+    {
+      "class_id": "D1",
+      "name": "nearby_non_intersecting_drift",
+      "action": "record_drift_and_defer_patch_unless_concrete_consumer_need_exists"
+    },
+    {
+      "class_id": "D2",
+      "name": "direct_footprint_drift",
+      "action": "refresh_l0_patch_queue_and_rebuild_before_new_linux_patch"
+    },
+    {
+      "class_id": "D3",
+      "name": "future_attachment_point_drift",
+      "action": "refresh_source_maps_and_rerun_relevant_gates_before_behavior_patch"
+    },
+    {
+      "class_id": "D4",
+      "name": "semantic_drift",
+      "action": "treat_affected_model_as_stale_even_if_git_merge_is_clean"
+    }
+  ],
+  "unsafe_patterns": [
+    "clean_merge_tree_as_semantic_freshness_proof",
+    "opaque_names_without_concrete_need",
+    "concrete_async_provider_names_before_storage_lifetime_approval",
+    "callable_prototypes",
+    "object_layout",
+    "refcounts_locks_callbacks_registration_tables",
+    "tracepoints_as_harmless_public_observation_abi",
+    "no_behavior_scaffolding_as_protection_progress",
+    "runtime_coverage_claim",
+    "monitor_verification_claim",
+    "hypervisor_grade_security_claim"
+  ],
+  "safety_flags": {
+    "linux_async_carrier_patch_approved_now": false,
+    "concrete_consumer_need_exists": false,
+    "behavior_change": false,
+    "workqueue_integration": false,
+    "io_uring_integration": false,
+    "callable_prototype": false,
+    "object_layout": false,
+    "runtime_state": false,
+    "abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_verified": false,
+    "production_protection": false
+  }
+}

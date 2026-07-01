@@ -187,11 +187,25 @@ latest completed risk:
   10 workqueue blocker requirements, 13 io_uring blocker requirements, and
   9/9 safety flags false.
 
+latest completed risk:
+  Linux upstream maintenance gate. Analysis/0086 and formal/0064 make N-131 a
+  negative gate: do not add a new Linux async-carrier patch now, including
+  no-behavior opaque names. Upstream was fetched to 665159e246749, 340 commits
+  after the L0 base. Watched-path drift was only
+  kernel/sched/cpufreq_schedutil.c, classified D1 nearby non-intersecting
+  drift. merge-tree --write-tree upstream/master capsched-linux-l0 exited 0.
+  Validation/0102 safe TLC passed with 8 generated states, 8 distinct states,
+  and depth 8. Ten unsafe configs reject approval without need, fetch,
+  watched-diff review, merge-tree cleanliness, behavior change, hook, ABI,
+  object layout, runtime state, and protection claim. JSON gate check confirms
+  12 future patch gate requirements, 5 drift classes, 11 unsafe patterns, and
+  12/12 safety flags false.
+
 next focused risk:
-  Decide whether a separate no-behavior opaque type patch proposal is worth the
-  maintenance cost after source-drift and patch-queue review. Do not add
-  direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
-  integration, or behavior-changing patches.
+  Build reusable source-drift automation and model-freshness gates for future
+  upstream updates. Do not add direct-call stubs, ABI, tracepoints, workqueue
+  integration, io_uring integration, async carrier Linux names, or
+  behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:

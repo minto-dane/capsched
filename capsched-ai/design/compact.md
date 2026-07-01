@@ -152,9 +152,20 @@ latest completed focused risk:
   unsafe configs produced expected counterexamples. JSON plan check confirmed
   3 no-behavior allowed classes, 4 blocked classes, and 9/9 safety flags false.
 
+latest completed focused risk:
+  Linux upstream maintenance gate. Analysis/0086 and formal/0064 make N-131 a
+  negative gate: no new Linux async-carrier patch is approved now, including
+  no-behavior opaque names. Fetched upstream/master to 665159e246749, observed
+  340 commits since L0 base, watched-path drift only in
+  kernel/sched/cpufreq_schedutil.c, and clean merge-tree. Validation/0102 safe
+  TLC passed with 8 generated states, 8 distinct states, and depth 8; 10 unsafe
+  configs produced expected counterexamples. JSON gate check confirmed 12
+  future patch gate requirements, 5 drift classes, 11 unsafe patterns, and
+  12/12 safety flags false.
+
 next focused risk:
-  Decide whether a separate no-behavior opaque type patch proposal is worth the
-  maintenance cost after source-drift and patch-queue review.
+  Build reusable source-drift automation and model-freshness gates for future
+  upstream updates.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

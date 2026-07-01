@@ -91,6 +91,7 @@ Updated: 2026-07-01
 | 0083 | Accepted no-behavior API direction | Direct-Call Async Carrier API Direction |
 | 0084 | Draft refinement model input | Direct-Call Workqueue Adapter Refinement |
 | 0085 | Draft refinement model input | Direct-Call io_uring Adapter Refinement |
+| 0086 | Current-source review complete; no new Linux patch recommended | Linux Upstream Drift and Maintenance Review |
 
 ## Planned Analysis Notes
 
@@ -146,3 +147,4 @@ Updated: 2026-07-01
 | `direct-call-async-carrier-api-direction-v1.json` | Accepted no-behavior API direction | Machine-readable workqueue-only vs io_uring-only vs shared internal carrier choice for N-124 |
 | `direct-call-workqueue-adapter-refinement-v1.json` | Draft refinement model input | Machine-readable workqueue adapter state, transition, unsafe-case, and non-claim contract for N-127 |
 | `direct-call-io-uring-adapter-refinement-v1.json` | Draft refinement model input | Machine-readable io_uring adapter request/resource/worker/completion state, unsafe-case, and non-claim contract for N-128 |
+| `linux-upstream-drift-maintenance-review-v1.json` | Current-source maintenance gate | Machine-readable upstream drift, merge-tree, no-patch decision, future no-behavior patch gate, drift classes, unsafe patterns, and safety flags for N-131 |
