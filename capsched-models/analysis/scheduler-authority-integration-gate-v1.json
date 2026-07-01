@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "id": "scheduler-authority-integration-gate-v1",
+  "analysis": "analysis/0097-scheduler-authority-integration-gate.md",
+  "status": "draft_integration_model_gate",
+  "date": "2026-07-01",
+  "inputs": {
+    "linux_scheduler_authority_model": "formal/0012-linux-scheduler-authority-model/",
+    "scheduler_authority_refinement": "analysis/0089-scheduler-authority-refinement-gate.md",
+    "runtime_charge_subject": "analysis/0090-runtime-charge-subject-map.md",
+    "scheduler_server_ticket": "analysis/0091-scheduler-server-ticket-map.md",
+    "runtime_coverage_gate": "analysis/0092-runtime-coverage-gate.md",
+    "monitor_root_budget_timer": "analysis/0093-monitor-root-budget-timer.md",
+    "server_epoch_relation": "analysis/0094-server-epoch-relation.md",
+    "deadline_cbs_grub_compat": "analysis/0095-deadline-cbs-grub-compatibility.md",
+    "f1_admission_freeze_refresh": "analysis/0096-f1-admission-freeze-refresh.md",
+    "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "work_commit": "7cf0b1e415bcead8a2079c8be94a9d41aad7d462",
+    "freshness_check": "git fetch upstream master observed zero commits after upstream_commit on 2026-07-01"
+  },
+  "purpose": "Compose F1 frozen wake publication, selected-state settlement, server epoch tickets, deadline CBS/GRUB compatibility, and monitor root budget activation into one scheduler execution gate.",
+  "source_anchors": [
+    {
+      "id": "f1_wake_boundary",
+      "path": "kernel/sched/core.c",
+      "line": 4295,
+      "meaning": "fail-capable freeze window before TASK_WAKING"
+    },
+    {
+      "id": "task_waking_publication",
+      "path": "kernel/sched/core.c",
+      "line": 4357,
+      "meaning": "primary wake publication boundary"
+    },
+    {
+      "id": "remote_wake_publication",
+      "path": "kernel/sched/core.c",
+      "line": 4378,
+      "meaning": "remote wake-list publication after TASK_WAKING"
+    },
+    {
+      "id": "activation_consumes_freeze",
+      "path": "kernel/sched/core.c",
+      "line": 3805,
+      "meaning": "wake activation consumes frozen authority"
+    },
+    {
+      "id": "ttwu_queue_activation",
+      "path": "kernel/sched/core.c",
+      "line": 4067,
+      "meaning": "local queue activation path"
+    },
+    {
+      "id": "wake_up_new_task",
+      "path": "kernel/sched/core.c",
+      "line": 4935,
+      "meaning": "initial runnable enqueue"
+    },
+    {
+      "id": "pick_next_task_core",
+      "path": "kernel/sched/core.c",
+      "line": 6124,
+      "meaning": "selected-state class/core boundary"
+    },
+    {
+      "id": "pick_retry",
+      "path": "kernel/sched/core.c",
+      "line": 6145,
+      "meaning": "RETRY_TASK requires revalidation"
+    },
+    {
+      "id": "core_pick_path",
+      "path": "kernel/sched/core.c",
+      "line": 6216,
+      "meaning": "core scheduling selected-state path"
+    },
+    {
+      "id": "schedule_commit",
+      "path": "kernel/sched/core.c",
+      "line": 7061,
+      "meaning": "switch activation region"
+    },
+    {
+      "id": "rq_curr_commit",
+      "path": "kernel/sched/core.c",
+      "line": 7201,
+      "meaning": "rq->curr commit point"
+    },
+    {
+      "id": "context_switch",
+      "path": "kernel/sched/core.c",
+      "line": 7234,
+      "meaning": "context-switch call after selection"
+    },
+    {
+      "id": "sched_tick",
+      "path": "kernel/sched/core.c",
+      "line": 5762,
+      "meaning": "Linux tick accounting surface"
+    },
+    {
+      "id": "sched_tick_remote",
+      "path": "kernel/sched/core.c",
+      "line": 5849,
+      "meaning": "NO_HZ remote tick observation surface"
+    },
+    {
+      "id": "fair_server_start",
+      "path": "kernel/sched/fair.c",
+      "line": 7891,
+      "meaning": "fair server lifecycle state"
+    },
+    {
+      "id": "fair_server_retry",
+      "path": "kernel/sched/fair.c",
+      "line": 9950,
+      "meaning": "fair/server retry state"
+    },
+    {
+      "id": "deadline_cbs_overflow",
+      "path": "kernel/sched/deadline.c",
+      "line": 920,
+      "meaning": "CBS residual runtime/deadline rule"
+    },
+    {
+      "id": "deadline_update_entity",
+      "path": "kernel/sched/deadline.c",
+      "line": 1013,
+      "meaning": "DL wakeup/replenish compatibility transition"
+    },
+    {
+      "id": "deadline_runtime_deplete",
+      "path": "kernel/sched/deadline.c",
+      "line": 1416,
+      "meaning": "DL runtime depletion and throttle path"
+    },
+    {
+      "id": "deadline_enqueue_compat",
+      "path": "kernel/sched/deadline.c",
+      "line": 2388,
+      "meaning": "deadline enqueue compatibility check"
+    },
+    {
+      "id": "deadline_server_export",
+      "path": "kernel/sched/core.c",
+      "line": 128,
+      "meaning": "deadline server lifecycle trace export"
+    },
+    {
+      "id": "vmx_preemption_timer_handle",
+      "path": "arch/x86/kvm/vmx/vmx.c",
+      "line": 6218,
+      "meaning": "reference VMX timer expiration substrate"
+    },
+    {
+      "id": "vmx_preemption_timer_update",
+      "path": "arch/x86/kvm/vmx/vmx.c",
+      "line": 7395,
+      "meaning": "reference VMX timer programming substrate"
+    }
+  ],
+  "integrated_subjects": [
+    "FrozenRunUse",
+    "WakePublication",
+    "SelectedUse",
+    "ServerBorrowTicket",
+    "DeadlineCompatibility",
+    "MonitorRootActivation",
+    "LinuxObservation"
+  ],
+  "execution_requirements": [
+    "complete_frozen_tuple",
+    "selected_state_settled",
+    "server_ticket_fresh_if_server_path",
+    "server_live_if_server_path",
+    "lower_task_authority_if_server_path",
+    "dl_admission_if_deadline_path",
+    "cbs_runtime_if_deadline_path",
+    "not_cbs_throttled_if_deadline_path",
+    "monitor_timer_armed",
+    "monitor_root_budget_remaining",
+    "sealed_run_token",
+    "monitor_epoch_fresh"
+  ],
+  "authority_rejections": [
+    "publication_without_frozen_tuple",
+    "run_without_frozen_tuple",
+    "run_without_selected_settlement",
+    "run_without_server_ticket",
+    "run_with_stale_server_epoch",
+    "run_without_lower_task_authority",
+    "run_without_dl_admission",
+    "run_while_cbs_throttled",
+    "run_without_monitor_timer",
+    "linux_runtime_as_authority",
+    "server_runtime_as_authority",
+    "deadline_compat_as_authority",
+    "placement_as_authority",
+    "raw_cap_after_publication",
+    "heavy_lookup_after_publication",
+    "fail_closed_running",
+    "protection_claim"
+  ],
+  "unsafe_cases": [
+    "UnsafePublicationWithoutFrozenTuple",
+    "UnsafeRunMissingFrozenTuple",
+    "UnsafeRunWithoutSelectedSettlement",
+    "UnsafeRunWithoutServerTicket",
+    "UnsafeRunWithStaleServerEpoch",
+    "UnsafeRunWithoutLowerTaskAuthority",
+    "UnsafeRunWithoutDLAdmission",
+    "UnsafeRunWhileCBSThrottled",
+    "UnsafeRunWithoutMonitorTimer",
+    "UnsafeLinuxRuntimeAuthority",
+    "UnsafeServerRuntimeAuthority",
+    "UnsafeDeadlineCompatibilityAuthority",
+    "UnsafePlacementAuthority",
+    "UnsafeRawCapAfterPublication",
+    "UnsafeHeavyLookupAfterPublication",
+    "UnsafeFailClosedRunning",
+    "UnsafeProtectionClaim"
+  ],
+  "safety_flags": {
+    "linux_hook_approved": false,
+    "task_field_approved": false,
+    "scheduler_behavior_change": false,
+    "budget_hook_approved": false,
+    "public_abi_approved": false,
+    "monitor_abi_approved": false,
+    "tracepoint_abi_approved": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "architecture_timer_implemented": false,
+    "production_protection": false,
+    "authority_claim": false,
+    "linux_runtime_authority_allowed": false,
+    "server_runtime_authority_allowed": false,
+    "deadline_compat_authority_allowed": false
+  }
+}

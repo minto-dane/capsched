@@ -275,10 +275,20 @@ latest completed focused risk:
   anchors, 11 frozen tuple requirements, 5 publication boundaries, 8 path
   classes, 15 authority rejections, 15 unsafe cases, 14/14 safety flags false.
 
+latest completed focused risk:
+  Scheduler authority integration gate. Analysis/0097, formal/0075, JSON gate,
+  and validation/0114 compose F1 frozen wake publication, selected settlement,
+  server tickets, deadline compatibility, and monitor root activation into one
+  execution edge. Safe TLC: 59 generated states, 38 distinct, depth 6. Unsafe
+  configs reject publication/run without required authority layers, Linux
+  runtime/server runtime/deadline compatibility/placement as authority, raw cap
+  and heavy lookup after publication, fail-closed running, and protection claim.
+  JSON: 23 anchors, 7 integrated subjects, 12 execution requirements, 17
+  authority rejections, 17 unsafe cases, 15/15 safety flags false.
+
 next focused risk:
-  Monitor timer architecture substrate comparison, and server epoch plus
-  deadline CBS/GRUB plus F1 admission-freeze integration into the wider
-  LinuxSchedulerAuthority model.
+  Monitor timer architecture substrate comparison, and placement/affinity/hotplug
+  integration refresh after the N-143 integration gate.
 
 formal/0032 + validation/0052:
   VF IRQ ownership model checked.

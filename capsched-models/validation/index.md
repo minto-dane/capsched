@@ -119,6 +119,7 @@ Updated: 2026-07-01
 | 0111 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Server Epoch Relation TLC |
 | 0112 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Deadline CBS/GRUB Compatibility TLC |
 | 0113 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | F1 Admission-Freeze Refresh TLC |
+| 0114 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Scheduler Authority Integration Gate TLC |
 
 ## Principles
 

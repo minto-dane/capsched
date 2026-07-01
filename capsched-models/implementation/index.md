@@ -387,4 +387,21 @@ Current F1 admission-freeze refresh gate:
   No F1 hook, scheduler hook, task field, ABI, monitor ABI, tracepoint ABI,
   behavior change, runtime coverage, monitor verification, or production
   protection is approved.
+
+Current scheduler authority integration gate:
+  analysis/0097, formal/0075, scheduler-authority-integration-gate-v1.json,
+  and validation/0114 now compose F1 frozen wake publication, selected-state
+  settlement, server epoch tickets, deadline CBS/GRUB compatibility, and
+  monitor root timer/budget/token/epoch into one execution gate. Safe TLC
+  passed with 59 generated states, 38 distinct states, and depth 6. Unsafe
+  configs produced expected counterexamples for publication without frozen
+  tuple, run without frozen tuple, run without selected settlement, missing or
+  stale server authority, missing lower task authority, missing DL admission,
+  CBS-throttled run, missing monitor timer, Linux runtime authority, server
+  runtime authority, deadline compatibility authority, placement authority, raw
+  cap after publication, heavy lookup after publication, fail-closed running,
+  and protection claim without implementation. No Linux hook, scheduler hook,
+  budget hook, task field, ABI, monitor ABI, tracepoint ABI, behavior change,
+  runtime coverage, monitor verification, architecture timer implementation, or
+  production protection is approved.
 ```

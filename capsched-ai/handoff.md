@@ -362,10 +362,28 @@ latest completed risk:
   E-SCHED-F1-FREEZE-001 supports EXEC-001, BUDGET-001, and COMPAT-001 only as
   model evidence.
 
+latest completed risk:
+  Scheduler authority integration gate. Analysis/0097, formal/0075,
+  scheduler-authority-integration-gate-v1.json, and validation/0114 compose F1
+  frozen wake publication, selected-state settlement, server epoch tickets,
+  deadline CBS/GRUB compatibility, and monitor root timer/budget/token/epoch
+  into one execution edge. Safe TLC passed with 59 generated states, 38
+  distinct states, 0 states left on queue, depth 6. Unsafe configs reject
+  publication without frozen tuple, run without frozen tuple, run without
+  selected settlement, missing server ticket, stale server epoch, missing lower
+  task authority, missing DL admission, CBS-throttled run, missing monitor
+  timer, Linux runtime authority, server runtime authority, deadline
+  compatibility authority, placement authority, raw cap after publication,
+  heavy lookup after publication, fail-closed running, and protection claim
+  without implementation. JSON check confirms 23 anchors, 7 integrated
+  subjects, 12 execution requirements, 17 authority rejections, 17 unsafe cases,
+  and 15/15 safety flags false. Assurance evidence E-SCHED-INTEGRATION-001
+  supports ACT-001, EXEC-001, BUDGET-001, and COMPAT-001 only as model evidence.
+
 next focused risk:
   Monitor timer architecture substrate comparison for x86 VMX-root and arm64
-  EL2, and integration of the server epoch relation plus deadline CBS/GRUB plus
-  F1 admission-freeze into the wider LinuxSchedulerAuthority model. Do
+  EL2, and placement/affinity/hotplug integration refresh after the N-143
+  integration gate. Do
   not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
   integration, async carrier Linux names, budget hooks, or behavior-changing
   patches.

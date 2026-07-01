@@ -146,6 +146,12 @@ Model-supported areas:
   authority, while raw cap handles, heavy post-publication lookup, late
   lost-wakeup denial, placement authority, current continuation minting, fork
   ambient authority, and protection overclaims are rejected
+- scheduler authority integration semantics, checking that a single execution
+  edge composes FrozenRunUse, selected-state settlement, server ticket
+  freshness, deadline CBS/GRUB compatibility, and monitor root
+  timer/budget/token/epoch, while rejecting Linux runtime, server runtime,
+  deadline compatibility, placement, raw cap, heavy lookup, fail-closed-running,
+  and protection overclaims as authority substitutes
 - runtime coverage gate semantics, checking that future trace-only runtime
   coverage cannot be accepted without current, donor, proxy relation, server
   relation, evidence class, and non-claim boundaries, and that sched_stat,

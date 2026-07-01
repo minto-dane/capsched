@@ -107,6 +107,8 @@ Current evidence:
 - `validation/0007-domain-monitor-activation-tlc.md`
 - `formal/0071-monitor-root-budget-timer-model/`
 - `validation/0110-monitor-root-budget-timer-tlc.md`
+- `formal/0075-scheduler-authority-integration-gate-model/`
+- `validation/0114-scheduler-authority-integration-gate-tlc.md`
 - Slice 0B type names: `capsched_run_token`, `capsched_memory_view`
 
 Open gaps:
@@ -150,6 +152,8 @@ Current evidence:
 - `validation/0112-deadline-cbs-grub-compat-tlc.md`
 - `formal/0074-f1-admission-freeze-refresh-model/`
 - `validation/0113-f1-admission-freeze-refresh-tlc.md`
+- `formal/0075-scheduler-authority-integration-gate-model/`
+- `validation/0114-scheduler-authority-integration-gate-tlc.md`
 - `implementation/0001-l0-runnable-lease-implementation-plan.md`
 - Slice 0B type names: `capsched_run_cap`, `capsched_sched_ctx`,
   `capsched_frozen_run_use`
@@ -168,6 +172,7 @@ Open gaps:
 - no deadline CBS/GRUB integration hook or runtime coverage
 - no F1 admission-freeze hook, task storage, or wake_q/wakelist runtime
   coverage
+- no integrated scheduler authority hook or runtime coverage
 
 Forbidden L0 claim:
 
@@ -207,6 +212,8 @@ Current evidence:
 - `validation/0112-deadline-cbs-grub-compat-tlc.md`
 - `formal/0074-f1-admission-freeze-refresh-model/`
 - `validation/0113-f1-admission-freeze-refresh-tlc.md`
+- `formal/0075-scheduler-authority-integration-gate-model/`
+- `validation/0114-scheduler-authority-integration-gate-tlc.md`
 - Slice 0B type name: `capsched_budget_ticket`
 
 Open gaps:
@@ -220,6 +227,9 @@ Open gaps:
 - no server epoch relation integration with monitor root budget receipts
 - no deadline CBS/GRUB integration with monitor root budget receipts
 - no F1 root-budget ticket freeze implementation or runtime coverage
+- no integrated execution-edge implementation tying monitor root budget to
+  wake publication, selected settlement, server tickets, and deadline
+  compatibility
 - no service-domain budget debit/refund policy
 - no overload/DoS measurement
 
@@ -528,6 +538,7 @@ Current evidence:
 - trace-only runtime coverage gate `validation/0109-runtime-coverage-gate-tlc.md`
 - deadline CBS/GRUB compatibility gate `validation/0112-deadline-cbs-grub-compat-tlc.md`
 - F1 admission-freeze refresh gate `validation/0113-f1-admission-freeze-refresh-tlc.md`
+- scheduler authority integration gate `validation/0114-scheduler-authority-integration-gate-tlc.md`
 - Slice 0A build validation `validation/0004-l0-slice0-systemd-build-run.md`
 - Slice 0B build validation `validation/0014-l0-slice0b-build-run.md`
 
@@ -538,6 +549,7 @@ Open gaps:
 - no runtime trace execution under the N-138 current/donor/proxy/server contract
 - no deadline CBS/GRUB runtime compatibility trace under CapSched hooks
 - no F1 wake publication runtime compatibility trace under CapSched hooks
+- no integrated scheduler execution-edge runtime trace under CapSched hooks
 - no cgroup/cpuset/sched-class behavior patch
 - no user ABI compatibility test suite
 
@@ -626,6 +638,7 @@ Open gaps:
 | E-SCHED-SERVER-EPOCH-001 | TLA validation | `validation/0111-server-epoch-relation-tlc.md` | EXEC, BUDGET |
 | E-SCHED-DL-COMPAT-001 | TLA validation | `validation/0112-deadline-cbs-grub-compat-tlc.md` | EXEC, BUDGET, COMPAT |
 | E-SCHED-F1-FREEZE-001 | TLA validation | `validation/0113-f1-admission-freeze-refresh-tlc.md` | EXEC, BUDGET, COMPAT |
+| E-SCHED-INTEGRATION-001 | TLA validation | `validation/0114-scheduler-authority-integration-gate-tlc.md` | ACT, EXEC, BUDGET, COMPAT |
 | E-ACT-001 | TLA validation | `validation/0007-domain-monitor-activation-tlc.md` | ACT |
 | E-CLUSTER-001 | Negative/stress record | `validation/0008-cluster-lease-full-systemd-tlc-run.md` | CLUSTER limitation |
 | E-CLUSTER-002 | TLA validation | `validation/0009-cluster-authority-decomposition-tlc.md` | CLUSTER, REVOKE |
@@ -649,6 +662,7 @@ Open gaps:
 | CEX-SCHED-COVERAGE-001 | `validation/0109` | Missing current, missing donor, missing proxy relation, missing server coverage, missing evidence class, sched_stat_runtime authority, remote tick proxy coverage, trace protection claim, server lifecycle-only coverage, and class runtime root evidence are rejected. |
 | CEX-MONITOR-TIMER-001 | `validation/0110` | Running without monitor timer, running without root budget, Linux timer as root authority, overrun after expiry, Linux charge as monitor charge, unsealed activation, run after epoch revoke, run after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation are rejected. |
 | CEX-SCHED-F1-FREEZE-001 | `validation/0113` | TASK_WAKING, wake_list, and enqueue before freeze; incomplete frozen tuple; raw cap after publication; heavy post-publication lookup; late lost-wakeup denial; placement/current/fork authority minting; and protection overclaims are rejected. |
+| CEX-SCHED-INTEGRATION-001 | `validation/0114` | Publication without frozen tuple; run without frozen tuple, selected settlement, server authority, deadline compatibility, or monitor root; Linux runtime/server runtime/deadline compatibility/placement authority; raw cap/heavy lookup after publication; fail-closed running; and protection overclaims are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
 | HAZ-ENDP-001 | `analysis/0015` | Socket endpoint checks cannot rely only on LSM because some paths reuse `sock_sendmsg_nosec()`. |
 

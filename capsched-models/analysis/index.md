@@ -102,11 +102,12 @@ Updated: 2026-07-01
 | 0094 | Draft model gate with TLC-backed design filter | Server Epoch Relation |
 | 0095 | Draft model gate with TLC-backed design filter | Deadline CBS/GRUB Compatibility |
 | 0096 | Draft model gate with TLC-backed design filter | F1 Admission-Freeze Refresh |
+| 0097 | Draft integration model gate with TLC-backed design filter | Scheduler Authority Integration Gate |
 
 ## Planned Analysis Notes
 
 1. Monitor timer architecture substrate comparison for x86 VMX-root and arm64 EL2.
-2. Server epoch, deadline CBS/GRUB, and F1 admission-freeze integration into the wider LinuxSchedulerAuthority model.
+2. Placement refresh and affinity/hotplug integration refresh after the N-143 integration gate.
 3. BPF verifier/JIT TCB sub-map if BPF becomes a policy front-end.
 4. Broker BudgetTicket and service Domain charging map.
 5. Workqueue origin QEMU stack-trace observation runner.
@@ -171,3 +172,4 @@ Updated: 2026-07-01
 | `server-epoch-relation-v1.json` | Draft model gate | Machine-readable server-kind/server-epoch freshness contract for N-140 |
 | `deadline-cbs-grub-compat-v1.json` | Draft model gate | Machine-readable Linux SCHED_DEADLINE CBS/GRUB compatibility and authority-separation contract for N-141 |
 | `f1-admission-freeze-refresh-v1.json` | Draft model gate | Machine-readable F1 wake publication and FrozenRunUse boundary contract for N-142 |
+| `scheduler-authority-integration-gate-v1.json` | Draft integration model gate | Machine-readable integrated scheduler execution gate for N-143 |
