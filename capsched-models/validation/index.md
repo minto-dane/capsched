@@ -120,6 +120,7 @@ Updated: 2026-07-01
 | 0112 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Deadline CBS/GRUB Compatibility TLC |
 | 0113 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | F1 Admission-Freeze Refresh TLC |
 | 0114 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Scheduler Authority Integration Gate TLC |
+| 0115 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Monitor Timer Architecture Substrate TLC |
 
 ## Principles
 

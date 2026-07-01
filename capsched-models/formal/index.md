@@ -81,11 +81,12 @@ Updated: 2026-07-01
 | 0073 | Checked with safe pass and expected unsafe counterexamples | Deadline CBS/GRUB Compatibility Model |
 | 0074 | Checked with safe pass and expected unsafe counterexamples | F1 Admission-Freeze Refresh Model |
 | 0075 | Checked with safe pass and expected unsafe counterexamples | Scheduler Authority Integration Gate Model |
+| 0076 | Checked with safe pass and expected unsafe counterexamples | Monitor Timer Architecture Substrate Model |
 
 ## Planned
 
-1. Monitor timer architecture substrate comparison for x86 VMX-root and arm64 EL2 after the semantic model is stable.
-2. Placement refresh and affinity/hotplug integration refresh after the N-143 integration gate.
-3. Runtime coverage execution under the N-138 contract after hook candidates are narrowed.
-4. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
+1. Placement refresh and affinity/hotplug integration refresh after the N-143
+   integration gate and N-144 timer-substrate gate.
+2. Runtime coverage execution under the N-138 contract after hook candidates are narrowed.
+3. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.

@@ -404,4 +404,22 @@ Current scheduler authority integration gate:
   budget hook, task field, ABI, monitor ABI, tracepoint ABI, behavior change,
   runtime coverage, monitor verification, architecture timer implementation, or
   production protection is approved.
+
+Current monitor timer architecture substrate gate:
+  analysis/0098, formal/0076, monitor-timer-architecture-substrate-v1.json,
+  and validation/0115 now refine the monitor root budget timer into
+  architecture-substrate requirements for x86 VMX-root and arm64 EL2. Safe TLC
+  passed with 11 generated states, 9 distinct states, and depth 5. Unsafe
+  configs produced expected counterexamples for missing monitor architecture
+  substrate, wrong architecture substrate, Linux hrtimer/sched_tick roots, KVM
+  VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft
+  hrtimer roots, pKVM stage-2 memory as timer, pKVM plus Linux timer, missing
+  monitor timer, token, epoch, protected monitor state, root budget, MemoryView,
+  CPU, or activation-generation binding, Linux/KVM/guest deadline retiming,
+  expiry still running, NO_HZ control, unbounded overrun, Linux-minted receipt,
+  receipt without monitor expiry, and protection claim without implementation.
+  No Linux hook, scheduler hook, budget hook, task field, ABI, monitor ABI,
+  tracepoint ABI, x86 VMX-root implementation, arm64 EL2 implementation, KVM or
+  pKVM modification, behavior change, runtime coverage, monitor verification,
+  or production protection is approved.
 ```

@@ -109,13 +109,16 @@ Current evidence:
 - `validation/0110-monitor-root-budget-timer-tlc.md`
 - `formal/0075-scheduler-authority-integration-gate-model/`
 - `validation/0114-scheduler-authority-integration-gate-tlc.md`
+- `formal/0076-monitor-timer-architecture-substrate-model/`
+- `validation/0115-monitor-timer-architecture-substrate-tlc.md`
 - Slice 0B type names: `capsched_run_token`, `capsched_memory_view`
 
 Open gaps:
 
 - no HyperTag Monitor implementation
 - no arch-specific stage-2/EPT activation path
-- no arch-specific monitor root-budget timer implementation
+- no arch-specific monitor root-budget timer implementation or runtime
+  validation
 - no real token sealing
 - no interrupt/exception entry policy
 - no production evidence that Linux cannot mutate active Domain roots
@@ -214,11 +217,15 @@ Current evidence:
 - `validation/0113-f1-admission-freeze-refresh-tlc.md`
 - `formal/0075-scheduler-authority-integration-gate-model/`
 - `validation/0114-scheduler-authority-integration-gate-tlc.md`
+- `formal/0076-monitor-timer-architecture-substrate-model/`
+- `validation/0115-monitor-timer-architecture-substrate-tlc.md`
 - Slice 0B type name: `capsched_budget_ticket`
 
 Open gaps:
 
 - no monitor root budget timer implementation
+- no architecture-specific monitor root-budget timer implementation or runtime
+  validation
 - no Linux accounting integration
 - no exact current/donor/proxy runtime charge equation across CFS, RT,
   deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution
@@ -635,6 +642,7 @@ Open gaps:
 | E-SCHED-SERVER-001 | TLA validation | `validation/0108-scheduler-server-ticket-tlc.md` | EXEC, BUDGET |
 | E-SCHED-COVERAGE-001 | TLA validation | `validation/0109-runtime-coverage-gate-tlc.md` | BUDGET, COMPAT |
 | E-MONITOR-TIMER-001 | TLA validation | `validation/0110-monitor-root-budget-timer-tlc.md` | ACT, BUDGET |
+| E-MONITOR-TIMER-ARCH-001 | TLA validation | `validation/0115-monitor-timer-architecture-substrate-tlc.md` | ACT, BUDGET |
 | E-SCHED-SERVER-EPOCH-001 | TLA validation | `validation/0111-server-epoch-relation-tlc.md` | EXEC, BUDGET |
 | E-SCHED-DL-COMPAT-001 | TLA validation | `validation/0112-deadline-cbs-grub-compat-tlc.md` | EXEC, BUDGET, COMPAT |
 | E-SCHED-F1-FREEZE-001 | TLA validation | `validation/0113-f1-admission-freeze-refresh-tlc.md` | EXEC, BUDGET, COMPAT |
@@ -661,6 +669,7 @@ Open gaps:
 | CEX-SCHED-SERVER-001 | `validation/0108` | Server pick without ticket, server runtime as root authority, RT bandwidth as root, SCX slice as authority, stale server epoch, stopped server with live run, and lower task without authority are rejected. |
 | CEX-SCHED-COVERAGE-001 | `validation/0109` | Missing current, missing donor, missing proxy relation, missing server coverage, missing evidence class, sched_stat_runtime authority, remote tick proxy coverage, trace protection claim, server lifecycle-only coverage, and class runtime root evidence are rejected. |
 | CEX-MONITOR-TIMER-001 | `validation/0110` | Running without monitor timer, running without root budget, Linux timer as root authority, overrun after expiry, Linux charge as monitor charge, unsealed activation, run after epoch revoke, run after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation are rejected. |
+| CEX-MONITOR-TIMER-ARCH-001 | `validation/0115` | Missing or wrong monitor architecture substrate, Linux hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2-as-timer, missing binding tuple, Linux/KVM/guest deadline retiming, NO_HZ control, Linux-minted receipts, and protection overclaims are rejected. |
 | CEX-SCHED-F1-FREEZE-001 | `validation/0113` | TASK_WAKING, wake_list, and enqueue before freeze; incomplete frozen tuple; raw cap after publication; heavy post-publication lookup; late lost-wakeup denial; placement/current/fork authority minting; and protection overclaims are rejected. |
 | CEX-SCHED-INTEGRATION-001 | `validation/0114` | Publication without frozen tuple; run without frozen tuple, selected settlement, server authority, deadline compatibility, or monitor root; Linux runtime/server runtime/deadline compatibility/placement authority; raw cap/heavy lookup after publication; fail-closed running; and protection overclaims are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |

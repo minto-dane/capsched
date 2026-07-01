@@ -2033,4 +2033,43 @@ still not:
 
 next:
   N-127 split io_uring/workqueue refinement models.
+
+N-144 completed:
+  analysis/0098
+  monitor-timer-architecture-substrate-v1.json
+  formal/0076
+  validation/0115
+
+purpose:
+  refine monitor root budget timer into architecture-substrate requirements.
+  x86 VMX-root and arm64 EL2 are candidate substrate classes only when the
+  Monitor owns timer/deadline state, root budget ledger, expiry trap, token,
+  epoch, MemoryView, CPU id, activation generation, and receipt minting.
+
+safe TLC:
+  11 generated states
+  9 distinct states
+  depth 5
+
+unsafe configs:
+  24 expected counterexamples reject missing/wrong monitor substrate, Linux
+  hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots,
+  arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2 as timer, pKVM
+  plus Linux timer, missing token/epoch/MemoryView/CPU/generation/budget
+  binding, Linux/KVM/guest deadline retiming, expiry still running, NO_HZ
+  control, unbounded overrun, Linux-minted receipt, receipt without monitor
+  expiry, and protection overclaims.
+
+assurance:
+  E-MONITOR-TIMER-ARCH-001 supports ACT-001 and BUDGET-001 only as model
+  evidence.
+
+still not:
+  Linux implementation, scheduler hook, budget hook, ABI approval, monitor
+  implementation, x86 VMX-root implementation, arm64 EL2 implementation, KVM
+  or pKVM modification, runtime coverage, behavior change, monitor
+  verification, or production protection.
+
+next:
+  placement/affinity/hotplug integration refresh.
 ```

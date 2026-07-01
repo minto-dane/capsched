@@ -161,6 +161,12 @@ Model-supported areas:
   a monitor-owned timer/deadline, remaining monitor root budget, sealed token,
   and fresh epoch, while Linux hrtick, sched_tick, hrtimer, NO_HZ, and runtime
   charge reports cannot become root authority
+- monitor timer architecture-substrate semantics, checking that monitor-root
+  CPU budget authority requires an architecture-matched x86 VMX-root or arm64
+  EL2 substrate with token, epoch, MemoryView, CPU, activation-generation, and
+  bounded-overrun binding, while Linux timers, KVM guest timers, KVM hrtimer
+  fallbacks, pKVM stage-2 memory isolation, Linux/KVM deadline retiming, and
+  protection overclaims are rejected
 
 Prototype-evidenced areas:
 

@@ -381,12 +381,30 @@ latest completed risk:
   supports ACT-001, EXEC-001, BUDGET-001, and COMPAT-001 only as model evidence.
 
 next focused risk:
-  Monitor timer architecture substrate comparison for x86 VMX-root and arm64
-  EL2, and placement/affinity/hotplug integration refresh after the N-143
-  integration gate. Do
-  not add direct-call stubs, ABI, tracepoints, workqueue integration, io_uring
-  integration, async carrier Linux names, budget hooks, or behavior-changing
-  patches.
+  Monitor timer architecture substrate gate. Analysis/0098, formal/0076,
+  monitor-timer-architecture-substrate-v1.json, and validation/0115 refine
+  monitor root budget timing into architecture-substrate requirements for x86
+  VMX-root and arm64 EL2. Safe TLC passed with 11 generated states, 9 distinct
+  states, 0 states left on queue, depth 5. Unsafe configs reject missing
+  monitor architecture substrate, wrong architecture substrate, Linux hrtimer
+  root, Linux sched_tick root, KVM VMX guest timer root, KVM VMX hrtimer
+  fallback root, arm64 KVM arch timer root, arm64 KVM soft hrtimer root, pKVM
+  stage-2 as timer, pKVM plus Linux timer, missing monitor timer, missing
+  sealed token, stale epoch, unprotected monitor state, missing root budget,
+  missing MemoryView/CPU/activation-generation binding tuple, Linux/KVM/guest
+  deadline retiming, expiry still running, NO_HZ control, unbounded overrun,
+  Linux-minted receipt, receipt without monitor expiry, and protection claim
+  without implementation. JSON check confirms 31 anchors, 9 substrates, 16
+  requirements, 18 forbidden substitutions, 24 unsafe cases, and 16/16 safety
+  flags false. Assurance evidence E-MONITOR-TIMER-ARCH-001 supports ACT-001
+  and BUDGET-001 only as model evidence.
+
+next focused risk:
+  Placement/affinity/hotplug integration refresh after the N-143 execution gate
+  and N-144 monitor-timer substrate gate. Do not add direct-call stubs, ABI,
+  tracepoints, workqueue integration, io_uring integration, async carrier Linux
+  names, budget hooks, scheduler hooks, architecture timer implementation, or
+  behavior-changing patches.
 ```
 
 That focused VF IRQ model is now checked:

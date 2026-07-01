@@ -53,12 +53,14 @@
         "E-ACT-001",
         "E-L0-002",
         "E-MONITOR-TIMER-001",
+        "E-MONITOR-TIMER-ARCH-001",
         "E-SCHED-INTEGRATION-001"
       ],
       "gaps": [
         "No HyperTag Monitor.",
         "No arch activation path.",
         "No arch-specific monitor root-budget timer implementation.",
+        "No architecture-substrate runtime validation.",
         "No proof that Linux cannot mutate active roots.",
         "No sealed RunToken."
       ],
@@ -103,6 +105,7 @@
       "evidence": [
         "E-BUD-001",
         "E-MONITOR-TIMER-001",
+        "E-MONITOR-TIMER-ARCH-001",
         "E-SCHED-COVERAGE-001",
         "E-SCHED-REFINE-001",
         "E-SCHED-RUNTIME-001",
@@ -116,6 +119,7 @@
         "No Linux accounting integration.",
         "No actual trace runtime coverage run under the N-138 contract.",
         "No architecture-specific monitor timer interrupt/trap path.",
+        "No architecture-substrate runtime validation.",
         "No exact current/donor/proxy runtime charge equation across CFS, RT, deadline, sched_ext, hrtick, cgroup CPU time, and proxy execution.",
         "No monitor root budget timer binding to server tickets.",
         "No monitor root budget timer implementation.",
@@ -1617,6 +1621,16 @@
         "BUDGET-001"
       ],
       "limitation": "Finite model gate checks monitor-owned root budget timer semantics and rejects Linux timers/accounting as authority; it is not a monitor implementation, Linux hook approval, runtime coverage, architecture-specific timer path, or production protection evidence."
+    },
+    {
+      "id": "E-MONITOR-TIMER-ARCH-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0115-monitor-timer-architecture-substrate-tlc.md",
+      "supports": [
+        "ACT-001",
+        "BUDGET-001"
+      ],
+      "limitation": "Architecture substrate model evidence only; not monitor timer implementation, x86 VMX-root implementation, arm64 EL2 implementation, Linux hook approval, ABI approval, runtime coverage, monitor verification, behavior change, or production protection."
     }
   ],
   "counterexamples": [
@@ -1664,6 +1678,11 @@
       "id": "CEX-MONITOR-TIMER-001",
       "record": "capsched-models/validation/0110-monitor-root-budget-timer-tlc.md",
       "meaning": "Unsafe monitor timer models show expected counterexamples for running without monitor timer, running without root budget, Linux timer as root authority, overrun after budget expiry, Linux charge as monitor charge, activation without sealed token, running after epoch revoke, running after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation."
+    },
+    {
+      "id": "CEX-MONITOR-TIMER-ARCH-001",
+      "record": "capsched-models/validation/0115-monitor-timer-architecture-substrate-tlc.md",
+      "meaning": "Unsafe monitor architecture-substrate models show expected counterexamples for missing or wrong monitor architecture substrate, Linux hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2-as-timer, missing binding tuple, Linux/KVM/guest deadline retiming, NO_HZ control, Linux-minted receipts, and protection overclaims."
     }
   ],
   "forbidden_claims": [
@@ -1684,6 +1703,7 @@
     "IRQ route invalidation proves DMA reachability revocation.",
     "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",
     "Linux hrtick, sched_tick, hrtimer, NO_HZ remote tick, task_sched_runtime, or Linux runtime charge reports are monitor root budget enforcement.",
+    "Monitor timer architecture-substrate modeling is monitor timer implementation, x86 VMX-root implementation, arm64 EL2 implementation, KVM or pKVM modification approval, monitor verification, or production protection.",
     "Linux netdev down/reset proves monitor-grade queue revoke.",
     "Linux netdev, ring, q_vector, devlink, representor, tracepoint, or workqueue state is modern NIC QueueLease authority.",
     "Linux page/slab/memcg/page-cache metadata is memory authority.",
