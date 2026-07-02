@@ -127,6 +127,7 @@ Updated: 2026-07-02
 | 0119 | Design-only implementation-reopen drift gate with fresh upstream observation | Implementation Reopen Upstream Drift Gate |
 | 0120 | Final design-ready audit passed; implementation unapproved | Final Implementation-Ready Audit |
 | 0121 | P3 overclaim review passed; only placement-only no-behavior compatibility may be claimed | SchedExecLease P3 Overclaim Review |
+| 0122 | P4 pre-entry gate passed for allow-all/no-denial scope; P5 denial remains blocked | SchedExecLease P4 Pre-Entry Risk Gate |
 
 ## Planned Analysis Notes
 
@@ -216,3 +217,4 @@ Updated: 2026-07-02
 | `evaluation-contract-gate-v1.json` | Draft model gate | Machine-readable production protection and cost-efficiency evaluation contract for N-154 |
 | `final-model-completeness-ledger-v1.json` | Final completion ledger | Machine-readable final model-only completion audit for N-155 |
 | `terminology-freeze-rename-risk-review-v1.json` | Public vocabulary lock | Machine-readable N-156 terminology freeze, inventory, and alias policy |
+| `sched-exec-lease-p4-pre-entry-risk-gate-v1.json` | P4 pre-entry gate | Machine-readable P4 allow-all/no-denial pre-entry evidence, generated-code review, QEMU matrix, drift, security-diff preflight, and non-claim constraints |

@@ -1,8 +1,8 @@
 # Implementation 0024: SchedExecLease P4 Allow-All Revalidation Skeleton Plan
 
-Status: Draft P4 patch plan; implementation not applied; out of current scope
-under ADR-0011; blocked until P3 is explicitly reopened/validated and
-analysis/0113 plus analysis/0114 blockers are closed or consciously scoped
+Status: Draft P4 patch plan; implementation not applied; pre-entry validation
+passed for allow-all/no-denial scope in validation/0141; P5 denial remains
+blocked by analysis/0115 and analysis/0117 constraints
 
 Date: 2026-07-02
 
@@ -21,8 +21,8 @@ compatibility; it must not claim runtime protection.
 
 ```text
 linux_branch=capsched-linux-l0
-linux_commit=a0f2676adda634391983e74f29fcba577a9c919e
-linux_subject=sched/exec_lease: Add task identity shadow
+linux_commit=d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3
+linux_subject=sched/exec_lease: Add placement-only scheduler touchpoints
 ```
 
 P4 prerequisites:
@@ -30,10 +30,12 @@ P4 prerequisites:
 ```text
 P2 full build/layout/QEMU validation recorded
 P3 placement-only touchpoint patch implemented and validated
+P4 pre-entry risk/validation gate recorded in analysis/0122 and validation/0141
 analysis/0100 final run/move gate remains applicable to current source
 analysis/0101 final deny retry/ineligibility gate remains applicable to current source
-analysis/0113 implementation-ready audit no longer reports open blockers
-analysis/0114 sched_ext/core/proxy coverage classification is closed
+analysis/0114 sched_ext/core/proxy coverage classification is consciously scoped
+analysis/0115 blocks upgrading the P4 allow-all final edge into P5 denial
+analysis/0117 path classification remains binding for any later P5 scope
 ```
 
 ## Allowed Patch Surface

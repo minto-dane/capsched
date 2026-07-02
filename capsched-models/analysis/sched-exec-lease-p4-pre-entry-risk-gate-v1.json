@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p4-pre-entry-risk-gate-v1",
+  "date": "2026-07-02",
+  "status": "passed_for_p4_allow_all_pre_entry_no_denial_no_protection",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3",
+    "subject": "sched/exec_lease: Add placement-only scheduler touchpoints"
+  },
+  "p4_scope": {
+    "implementation_applied": false,
+    "allowed": true,
+    "mode": "allow_all",
+    "behavior_change": false,
+    "runtime_denial": false,
+    "claim_class": "compatibility_source_shape_only"
+  },
+  "inputs_reviewed": [
+    "validation/0140-sched-exec-lease-p3-validation.md",
+    "implementation/0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md",
+    "analysis/0114-sched-ext-core-proxy-coverage-boundary.md",
+    "analysis/0115-bounded-retry-ineligibility-source-design.md",
+    "analysis/0117-scheduler-path-classification-for-p5.md",
+    "analysis/0118-implementation-claim-ledger-gate.md",
+    "analysis/0121-sched-exec-lease-p3-overclaim-review.md"
+  ],
+  "generated_code_review": {
+    "p2_p3_core_o_byte_identical": false,
+    "section_sizes_identical": true,
+    "relocations_identical": true,
+    "marker_symbols_absent": true,
+    "observed_disassembly_differences": [
+      "commutative_test_operand_order_in_try_to_wake_up",
+      "independent_mov_load_order_in___schedule"
+    ],
+    "interpretation": "semantic_no_behavior_evidence_not_byte_identity_evidence"
+  },
+  "qemu_matrix": {
+    "status": "passed",
+    "run_log": "build/logs/sched-exec-lease-p4-pre-qemu-matrix-20260702T100641Z-direct.log",
+    "off_run_dir": "build/qemu/sched-exec-lease-p4-pre-matrix-direct/20260702T100641Z-off",
+    "on_run_dir": "build/qemu/sched-exec-lease-p4-pre-matrix-direct/20260702T100707Z-on",
+    "workload_mode": "all",
+    "off": {
+      "qemu_status": 0,
+      "workload_ret": 0,
+      "kprobes_enabled": true,
+      "kvm": "enabled",
+      "sched_switch_count": 15092,
+      "sched_migrate_task_count": 44,
+      "enqueue_task_count": 14952,
+      "sched_tick_count": 1160
+    },
+    "on": {
+      "qemu_status": 0,
+      "workload_ret": 0,
+      "config_sched_exec_lease": "y",
+      "kprobes_enabled": true,
+      "kvm": "enabled",
+      "sched_switch_count": 15101,
+      "sched_migrate_task_count": 41,
+      "enqueue_task_count": 14954,
+      "sched_tick_count": 1160
+    },
+    "coverage_limits": [
+      "pick_next_task_function_missing",
+      "__schedule_function_missing",
+      "dlease_pick_next_task_kprobe_failed"
+    ],
+    "runtime_coverage": false
+  },
+  "upstream_drift": {
+    "run_dir": "build/source-drift/linux-source-drift-gate/20260702T095803Z-p4-pre",
+    "upstream_commit": "4a50a141f05a8d1737661b19ee22ff8455b94409",
+    "base_to_upstream_commit_count": 342,
+    "watched_changed_count": 1,
+    "changed_path": "kernel/sched/cpufreq_schedutil.c",
+    "drift_class": "D1_nearby_non_intersecting_drift",
+    "model_refresh_required_count": 0,
+    "merge_tree_clean": true,
+    "model_freshness": "fresh",
+    "candidate_no_behavior_patch_reviewable": true
+  },
+  "patch_queue_replay": {
+    "status": "passed_exact_head",
+    "run_dir": "build/replay/p4-pre-localref-20260702T100222Z/linux",
+    "replay_head": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3"
+  },
+  "codex_security": {
+    "profile": "security_diff_scan",
+    "preflight": "ready",
+    "full_canonical_scan_launched": false,
+    "reason_full_scan_not_launched": "P3 diff adds no ABI, parser, allocator, monitor call, credential path, copy path, or new privilege boundary; scoped diff review was sufficient for P4 pre-entry",
+    "candidate_findings": []
+  },
+  "checkpatch": {
+    "git_diff_check": "passed",
+    "checkpatch_strict": "metadata_issues_only",
+    "issues": [
+      "missing_commit_description",
+      "missing_signed_off_by"
+    ],
+    "semantic_blocker": false,
+    "upstream_readiness_blocker": true
+  },
+  "p5_constraints": {
+    "p4_final_hook_is_sufficient_for_p5_denial": false,
+    "p5_requires_pre_settle_or_rollback_proof": true,
+    "sched_ext_core_proxy_remain_disabled_for_initial_p5": true,
+    "runtime_coverage_claim_allowed": false
+  },
+  "forbidden_claims": {
+    "runtime_enforcement": false,
+    "runtime_denial": false,
+    "retry_or_quarantine": false,
+    "fail_closed": false,
+    "runtime_coverage": false,
+    "budget_enforcement": false,
+    "policy_frontend_integration": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verification": false,
+    "hypervisor_grade_isolation": false,
+    "production_protection": false,
+    "cost_efficiency": false,
+    "datacenter_deployment_readiness": false
+  }
+}

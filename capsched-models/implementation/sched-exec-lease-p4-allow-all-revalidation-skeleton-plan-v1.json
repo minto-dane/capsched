@@ -2,19 +2,21 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p4-allow-all-revalidation-skeleton-plan-v1",
   "date": "2026-07-02",
-  "status": "draft_plan_implementation_not_applied_out_of_current_scope_blocked_by_design_readiness",
+  "status": "draft_plan_implementation_not_applied_p4_pre_entry_validated_allow_all_only",
   "linux_basis": {
     "branch": "capsched-linux-l0",
-    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
-    "subject": "sched/exec_lease: Add task identity shadow"
+    "commit": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3",
+    "subject": "sched/exec_lease: Add placement-only scheduler touchpoints"
   },
   "prerequisites": [
     "P2 validation recorded",
     "P3 placement-only touchpoint patch implemented and validated",
+    "analysis/0122 and validation/0141 P4 pre-entry gate recorded",
     "analysis/0100 final run/move gate applicable",
     "analysis/0101 final deny retry/ineligibility gate applicable",
-    "analysis/0113 implementation-ready audit blockers closed or explicitly scoped",
-    "analysis/0114 sched_ext/core/proxy coverage classification closed"
+    "analysis/0114 sched_ext/core/proxy coverage classification consciously scoped",
+    "analysis/0115 blocks upgrading P4 allow-all final edge into P5 denial",
+    "analysis/0117 path classification binding for later P5 scope"
   ],
   "allowed_patch_surface": [
     "include/linux/sched_exec_lease.h",

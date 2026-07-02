@@ -151,9 +151,9 @@ Current SchedExecLease L0 readiness:
     replay, full off/on builds, QEMU off/on no-behavior smoke, object/symbol
     note, and overclaim review.
 - `0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md`
-  - Status: draft P4 patch plan; implementation not applied, out of current
-    scope under ADR-0011, and blocked until P3 is explicitly reopened and
-    analysis/0113 plus analysis/0114 blockers are closed or consciously scoped.
+  - Status: draft P4 patch plan; implementation not applied. P4 pre-entry
+    validation passed for allow-all/no-denial scope in validation/0141.
+    P5 denial remains blocked by analysis/0115 and analysis/0117.
   - Rule: P4 may wire allow-all final run and queued-move revalidation helper
     calls, but every production result must remain allow. It must preserve
     separate run and move tuples, place final run validation before `rq->curr`
@@ -324,7 +324,8 @@ Candidate implementation plans:
   - Purpose: record the P3 Linux patch that places static inline no-op
     scheduler touchpoint markers and preserves no-denial/no-ABI behavior.
 - `0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md`
-  - Status: draft patch plan, implementation not applied.
+  - Status: draft patch plan, implementation not applied; P4 pre-entry
+    validation passed for allow-all/no-denial scope.
   - Purpose: constrain the first wired final run/move validation skeleton to
     allow-all behavior only, preserving run/move edge separation and keeping
     denial/retry/fail-closed semantics blocked for P5 or later.

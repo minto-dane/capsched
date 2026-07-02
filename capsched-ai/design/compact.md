@@ -3074,3 +3074,37 @@ TLC:
   safe passed: 2 generated, 1 distinct, depth 1.
   unsafe expected counterexamples: 12/12.
 ```
+
+Current implementation state, 2026-07-02:
+
+```text
+N-165:
+  P3 placement-only scheduler touchpoint patch is applied at Linux commit
+  d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3 and validated in validation/0140.
+  It is no-denial/no-ABI/no-monitor compatibility evidence only.
+
+N-166:
+  P4 pre-entry gate is complete:
+    analysis/0122-sched-exec-lease-p4-pre-entry-risk-gate.md
+    validation/0141-sched-exec-lease-p4-pre-entry-validation.md
+
+  P4 may proceed only as allow-all final run/move revalidation skeleton.
+  P4 code is not applied.
+  P5 denial remains blocked.
+
+  Evidence:
+    exact patch queue replay to P3 HEAD.
+    upstream drift fresh; only D1 nearby cpufreq_schedutil.c drift.
+    git diff/security review for P3 diff.
+    Codex Security preflight ready; no full canonical scan launched.
+    generated-code review found no marker symbols and identical section sizes/
+    relocations, but not byte identity.
+    QEMU off/on all-workload matrix passed with kprobes enabled.
+
+  Caveats:
+    no byte-identity claim.
+    no runtime coverage claim.
+    checkpatch metadata issues remain before RFC/mainline-style series:
+      missing commit description.
+      missing Signed-off-by.
+```

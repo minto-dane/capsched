@@ -3563,3 +3563,49 @@ N-173 final implementation-ready audit:
     linux_patch_approved, behavior_change, runtime_denial, runtime_coverage,
     ABI, monitor_verification, production_protection, hypervisor_grade,
     cost_efficiency, deployment_readiness.
+
+Current implementation state, 2026-07-02:
+
+N-165 P3 placement-only Linux patch:
+  linux commit:
+    d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3
+
+  status:
+    applied and validated as no-denial/no-ABI/no-monitor compatibility only.
+    Patch queue 0006 replays to exact P3 HEAD. validation/0140 records full
+    off/on vmlinux builds and QEMU forkexec off/on smoke. analysis/0121 limits
+    claims to placement-only no-behavior compatibility.
+
+N-166 P4 pre-entry gate:
+  artifacts:
+    capsched-models/analysis/0122-sched-exec-lease-p4-pre-entry-risk-gate.md
+    capsched-models/analysis/sched-exec-lease-p4-pre-entry-risk-gate-v1.json
+    capsched-models/validation/0141-sched-exec-lease-p4-pre-entry-validation.md
+
+  verdict:
+    P4 may proceed only as an allow-all final run/move revalidation skeleton.
+    P4 code is not applied yet. Runtime denial, ABI, monitor calls, budget
+    enforcement, runtime coverage, production protection, hypervisor-grade
+    isolation, cost efficiency, and deployment readiness remain false.
+
+  validation:
+    patch queue replay exact to P3 HEAD.
+    upstream drift fresh; only D1 nearby non-intersecting drift in
+    kernel/sched/cpufreq_schedutil.c.
+    git diff/security review passed for P4 pre-entry scope.
+    Codex Security diff-scan preflight was ready; full canonical scan was not
+    launched because P3 adds no ABI/parser/allocator/credential/monitor surface.
+    broader QEMU off/on all-workload matrix passed with kprobes enabled.
+
+  important caveats:
+    P2-vs-P3 core.o is not byte-identical. Section sizes and relocations match;
+    reviewed disassembly differences are semantically equivalent instruction
+    ordering/operand-order noise. Do not claim byte identity.
+    checkpatch reports missing commit description and Signed-off-by in patch
+    queue 0006. This is an upstream-readiness blocker before RFC/mainline-style
+    series, not a P4 semantic blocker.
+
+  next:
+    If implementing P4, keep it allow-all/no-denial/no-ABI/no-monitor. P5
+    remains blocked by pre-settle/rollback proof, negative denial tests,
+    path-classification limits, runtime trace evidence, and claim-ledger rows.
