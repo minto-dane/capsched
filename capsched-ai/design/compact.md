@@ -3312,4 +3312,28 @@ P5 readiness after P4:
     or rollback-proved, move denial has status plumbing, negative tests exist,
     path classification is enforced, and runtime/protection/cost claims remain
     false.
+
+P5A scope:
+  analysis/0130, implementation/0028, formal/0099, and validation/0152 record
+  P5A scope only. No Linux implementation is approved.
+
+  Split:
+    P5A0 = no-behavior infrastructure proposal.
+    P5A-R = run-denial design.
+    P5A-M = move status-plumbing design.
+    P5A-V = validation and claim ledger.
+
+  Hardened conclusions:
+    deny-one-CFS-and-pick-next requires fair-picker eligibility integration.
+    broad common move denial requires status settlement across migration,
+    affinity, swap, push, and core-cookie-steal paths.
+    first patch may not change behavior.
+
+  Validation:
+    run-sched-exec-lease-p5a-scope-gate.sh passed.
+    formal/0099 safe passed.
+    10 unsafe configs produced expected counterexamples.
+
+  Next:
+    P5A0 no-behavior infrastructure proposal only.
 ```

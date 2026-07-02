@@ -174,6 +174,15 @@ Current SchedExecLease L0 readiness:
     success; analysis/0128 and validation/0150 close the final
     overclaim/security review. It still adds no runtime denial, budget charge,
     ABI, monitor call, runtime coverage, or protection claim.
+- `0028-sched-exec-lease-p5a-scope-proposal.md`
+  - Status: implementation scope proposal only; no Linux code approved.
+  - Rule: P5A is decomposed into P5A0 no-behavior infrastructure, P5A-R
+    run-denial design, P5A-M move status-plumbing design, and P5A-V
+    validation/claim ledger. P5A0 must not branch on non-ALLOW or change
+    scheduler behavior. Deny-one-CFS-and-pick-next requires fair-picker
+    eligibility integration; broad common move denial requires caller status
+    settlement across migration, affinity, swap, push, and core-cookie-steal
+    paths.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

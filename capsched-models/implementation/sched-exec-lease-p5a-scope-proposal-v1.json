@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-scope-proposal-v1",
+  "date": "2026-07-02",
+  "status": "implementation_scope_proposal_only_no_linux_code_approved",
+  "analysis": "analysis/0130-sched-exec-lease-p5a-scope-proposal.md",
+  "current_allowed_next_discussion": [
+    "p5a0_no_behavior_status_plumbing_shape",
+    "p5a0_no_behavior_test_harness_shape",
+    "p5a0_no_behavior_setup_time_path_disable_shape",
+    "claim_ledger_integration"
+  ],
+  "p5a0_forbidden": [
+    "branch_on_non_allow",
+    "runtime_denial",
+    "retry_selection",
+    "fail_closed",
+    "quarantine",
+    "scheduler_behavior_change",
+    "abi",
+    "monitor_call",
+    "protection_claim"
+  ],
+  "additional_blockers": [
+    "deny_one_cfs_and_pick_next_requires_fair_picker_eligibility_integration",
+    "broad_common_move_denial_requires_status_settlement_across_migration_affinity_swap_push_and_core_cookie_steal"
+  ],
+  "required_before_p5a0_patch": [
+    "fresh_upstream_drift_row_for_touched_groups",
+    "patch_queue_plan",
+    "source_checker_plan",
+    "build_matrix_plan",
+    "qemu_disabled_behavior_smoke_plan",
+    "negative_test_harness_plan",
+    "claim_ledger_row",
+    "explicit_non_claims"
+  ],
+  "required_before_behavior_patch": [
+    "p5a0_validated",
+    "p5a_r_pre_settle_run_design_validated",
+    "p5a_m_move_settlement_design_validated",
+    "p5a_v_negative_tests_implemented",
+    "denial_disabled_by_default",
+    "unsupported_paths_disabled_or_excluded",
+    "no_overclaim_review_complete"
+  ],
+  "safety_flags": {
+    "linux_code_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false
+  }
+}

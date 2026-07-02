@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "artifact": "sched-exec-lease-p5a-scope-proposal",
+  "date": "2026-07-02",
+  "status": "scope_recorded_p5_linux_implementation_not_approved",
+  "source_basis": {
+    "linux_repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8",
+    "linux_subject": "sched/exec_lease: Add allow-only validation skeleton",
+    "readiness_refresh": "validation/0151-sched-exec-lease-p5-readiness-after-p4.md"
+  },
+  "decision": {
+    "p5a_decomposed": true,
+    "first_patch_may_change_behavior": false,
+    "p5_linux_implementation_approved": false,
+    "runtime_denial_approved": false
+  },
+  "sub_slices": [
+    {
+      "id": "P5A0",
+      "name": "no-behavior infrastructure proposal",
+      "allowed": [
+        "status_plumbing_shape",
+        "negative_test_harness_shape",
+        "setup_time_path_disable_shape",
+        "claim_ledger_shape"
+      ],
+      "forbidden": [
+        "non_allow_branch",
+        "runtime_denial",
+        "retry",
+        "fail_closed",
+        "quarantine",
+        "abi",
+        "monitor_call"
+      ]
+    },
+    {
+      "id": "P5A-R",
+      "name": "run denial design",
+      "allowed_scope": [
+        "ordinary_cfs_final_run",
+        "non_core",
+        "non_proxy",
+        "non_sched_ext",
+        "test_only",
+        "off_by_default"
+      ],
+      "required_before_implementation": [
+        "pre_settle_candidate_validation",
+        "cfs_picker_visible_ineligibility",
+        "bounded_retry",
+        "same_generation_repick_negative_test",
+        "fail_closed_only_after_supported_eligible_exhausted",
+        "fair_picker_eligibility_integration_before_deny_one_choose_next"
+      ],
+      "not_approved": [
+        "deny_one_cfs_task_and_choose_next_cfs_task",
+        "current_p4_run_hook_as_denial_point"
+      ]
+    },
+    {
+      "id": "P5A-M",
+      "name": "move status-plumbing design",
+      "allowed_scope": [
+        "move_queued_task",
+        "move_queued_task_locked",
+        "status_plumbing_only",
+        "no_behavior_change"
+      ],
+      "required_before_implementation": [
+        "move_status_plumbing",
+        "caller_success_settlement_rules",
+        "no_waiter_completion_after_denied_move",
+        "two_way_swap_prevalidation_or_rollback",
+        "core_cookie_steal_success_guard"
+      ],
+      "not_approved": [
+        "broad_common_move_denial",
+        "affinity_pending_move_denial",
+        "migrate_swap_one_sided_denial",
+        "core_cookie_steal_denial_without_success_guard"
+      ]
+    },
+    {
+      "id": "P5A-V",
+      "name": "validation and claim ledger",
+      "required": [
+        "negative_tests",
+        "build_matrix",
+        "qemu_matrix",
+        "trace_or_probe_evidence",
+        "claim_ledger",
+        "no_overclaim_review"
+      ]
+    }
+  ],
+  "disabled_paths": [
+    "sched_ext",
+    "core_scheduling",
+    "proxy_execution"
+  ],
+  "excluded_paths": [
+    "rt",
+    "deadline",
+    "fair_direct_load_balance_detach_attach",
+    "idle_as_authority",
+    "stopper_hotplug_migration_kthreads_as_ordinary_domain_execution",
+    "generic_kthreads_workqueues",
+    "io_uring_workers"
+  ],
+  "negative_tests_required": [
+    "post_settle_denial_without_rollback_rejected",
+    "denied_candidate_never_reaches_rq_curr_sched_switch_context_switch",
+    "same_task_generation_not_repicked_in_retry_epoch",
+    "cfs_picker_visible_ineligibility_before_run_denial",
+    "denied_move_no_detach_or_cpu_mutation",
+    "denied_move_no_success_waiter_completion",
+    "fail_closed_rejected_while_supported_eligible_candidate_exists",
+    "disabled_excluded_paths_no_coverage_or_protection_claim",
+    "runtime_protection_cost_claims_false"
+  ],
+  "review_order": [
+    "p5a_scope_gate",
+    "p5a0_no_behavior_infrastructure_proposal",
+    "p5a0_implementation_patch_if_separately_approved",
+    "p5a_r_run_denial_design_model",
+    "p5a_m_move_denial_settlement_model",
+    "p5a_v_negative_validation_harness",
+    "first_test_only_behavior_patch_if_all_previous_gates_pass"
+  ],
+  "allowed_claims": [
+    "p5a_scope_recorded",
+    "p5_linux_implementation_not_approved",
+    "runtime_denial_not_approved"
+  ],
+  "forbidden_claims": [
+    "linux_code_change_approved",
+    "behavior_change_approved",
+    "runtime_denial_approved",
+    "retry_approved",
+    "fail_closed_approved",
+    "runtime_coverage",
+    "monitor_call",
+    "monitor_verification",
+    "production_protection",
+    "hypervisor_grade_isolation",
+    "cost_efficiency",
+    "deployment_readiness",
+    "datacenter_readiness"
+  ],
+  "safety_flags": {
+    "p5a_scope_recorded": true,
+    "p5_linux_implementation_approved": false,
+    "linux_code_change_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false
+  }
+}

@@ -157,6 +157,7 @@ Updated: 2026-07-02
 | 0149 | Passed for QEMU off/on boot/workload smoke with all workload and kprobes where available; runtime coverage remains unproven | SchedExecLease P4 QEMU Boot Smoke |
 | 0150 | Passed final P4 overclaim/security review; P4 allow-only compatibility slice closed and P5 remains blocked | SchedExecLease P4 Final Overclaim and Security Review |
 | 0151 | Source-order checker passed; safe model passed; unsafe models produced expected counterexamples; P5 remains blocked | SchedExecLease P5 Readiness After P4 |
+| 0152 | Source/JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5 Linux implementation remains unapproved | SchedExecLease P5A Scope Gate |
 
 ## Principles
 

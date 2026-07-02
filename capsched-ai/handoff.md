@@ -3937,3 +3937,41 @@ P5 readiness after P4 / validation 0151:
     code. It must define pre-settle run denial or rollback, move status
     plumbing, negative tests, path classification enforcement, and claim ledger
     constraints before any behavior-changing patch.
+
+P5A scope gate / validation 0152:
+  status:
+    Recorded P5A scope only. No Linux implementation, behavior change, or
+    runtime denial is approved.
+
+  artifacts:
+    capsched-models/analysis/0130-sched-exec-lease-p5a-scope-proposal.md
+    capsched-models/analysis/sched-exec-lease-p5a-scope-proposal-v1.json
+    capsched-models/implementation/0028-sched-exec-lease-p5a-scope-proposal.md
+    capsched-models/implementation/sched-exec-lease-p5a-scope-proposal-v1.json
+    capsched-models/formal/0099-p5a-scope-gate-model/
+    capsched-models/validation/0152-sched-exec-lease-p5a-scope-gate.md
+    capsched-models/validation/run-sched-exec-lease-p5a-scope-gate.sh
+
+  decomposition:
+    P5A0:
+      no-behavior infrastructure proposal.
+    P5A-R:
+      run-denial design only; deny-one-CFS-and-pick-next requires fair-picker
+      eligibility integration.
+    P5A-M:
+      move status-plumbing design only; broad common move denial is rejected
+      until caller status settlement covers migration, affinity, swap, push,
+      and core-cookie-steal paths.
+    P5A-V:
+      validation and claim ledger.
+
+  validation:
+    Source/JSON gate run 20260702T-p5a-scope passed.
+    formal/0099 safe passed.
+    10 unsafe configs produced expected counterexamples.
+
+  next:
+    The next reviewable work is P5A0 no-behavior infrastructure proposal:
+    fresh drift row, patch queue plan, source checker plan, build/QEMU
+    disabled-behavior plan, negative-test harness plan, claim ledger row, and
+    explicit non-claims.
