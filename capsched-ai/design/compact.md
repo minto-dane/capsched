@@ -3208,4 +3208,29 @@ N-170:
   Next:
     P4 implementation is still not approved. Remaining pre-P4 blockers:
     allow-all helper proof and no reachable denial path proof.
+
+P4 allow-all helper proof / validation 0146:
+  Prepatch allow-all/no-reachable-denial helper proof is complete:
+    analysis/0127-sched-exec-lease-p4-allow-all-helper-proof.md
+    analysis/sched-exec-lease-p4-allow-all-helper-proof-v1.json
+    formal/0096-p4-allow-all-helper-gate-model/
+    validation/0146-sched-exec-lease-p4-allow-all-helper-proof-validation.md
+    validation/run-sched-exec-lease-p4-allow-all-helper-proof.sh
+
+  Source checker:
+    passed against Linux work commit d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3.
+    sched_exec_allow_all_validation() returns only
+    SCHED_EXEC_VALIDATION_ALLOW.
+    no RETRY/INELIGIBLE/QUARANTINE return is currently present.
+    no P4 validate-run/move helper is currently present.
+    scheduler code does not branch on SchedExecLease validation results.
+
+  TLC:
+    safe passed; 15 unsafe configs produced expected counterexamples.
+
+  Next:
+    Actual P4 allow-all skeleton patch is now the next reviewable step, but it
+    still requires generated-code/object review, CONFIG off/on build, QEMU
+    compatibility, and overclaim/security-diff validation before acceptance.
+    P5 denial remains blocked.
 ```

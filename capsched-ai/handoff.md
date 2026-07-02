@@ -3784,3 +3784,44 @@ N-170 static final-run observability:
   next:
     Build allow-all helper proof and no reachable denial path proof before any
     P4 patch. Keep P4 allow-all only. P5 remains blocked.
+
+P4 allow-all helper proof / validation 0146:
+  status:
+    The prepatch allow-all/no-reachable-denial helper proof is closed. No Linux
+    P4 patch has been applied or approved by this proof.
+
+  artifacts:
+    capsched-models/analysis/0127-sched-exec-lease-p4-allow-all-helper-proof.md
+    capsched-models/analysis/sched-exec-lease-p4-allow-all-helper-proof-v1.json
+    capsched-models/formal/0096-p4-allow-all-helper-gate-model/
+    capsched-models/validation/0146-sched-exec-lease-p4-allow-all-helper-proof-validation.md
+    capsched-models/validation/run-sched-exec-lease-p4-allow-all-helper-proof.sh
+
+  source checker:
+    run_dir:
+      build/source-check/sched-exec-lease-p4-allow-all-helper/20260702T211836Z-n171-allow-all
+    work_commit:
+      d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3
+    allow_helper_line:
+      80
+    allow_return_line:
+      82
+
+  meaning:
+    Current sched_exec_allow_all_validation() returns only
+    SCHED_EXEC_VALIDATION_ALLOW. No current return statement returns RETRY,
+    INELIGIBLE, or QUARANTINE. No P4 validate-run/move helpers exist yet, and
+    scheduler code does not branch on SchedExecLease validation results.
+
+  TLC:
+    safe passed with 2 generated states, 1 distinct state, depth 1.
+    15 unsafe configs produced expected counterexamples for missing source
+    check, helper returning non-allow, non-allow reachability, scheduler
+    branching, retry/quarantine/monitor/budget/ABI behavior, implementation
+    approval, runtime coverage, protection, and cost/deployment overclaims.
+
+  next:
+    The next reviewable step is the actual P4 allow-all skeleton patch. It must
+    still pass generated-code/object review, CONFIG off/on build validation,
+    QEMU compatibility validation, and overclaim/security-diff review before
+    acceptance. P5 denial remains blocked.

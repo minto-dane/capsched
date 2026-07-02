@@ -132,6 +132,7 @@ Updated: 2026-07-02
 | 0124 | P4 candidate-scoped drift blocker closed; implementation still paused pending anchors | Candidate-Scoped Drift Closure Gate |
 | 0125 | P4 anchor manifest complete; implementation still paused pending observability and helper proof | SchedExecLease P4 Anchor Manifest |
 | 0126 | Static final-run anchor observability complete; runtime coverage remains unproven | SchedExecLease P4 Static Final-Run Observability |
+| 0127 | P4 allow-all/no-denial helper proof complete; P4 implementation still not applied | SchedExecLease P4 Allow-All Helper Proof |
 
 ## Planned Analysis Notes
 
@@ -226,3 +227,4 @@ Updated: 2026-07-02
 | `candidate-scoped-drift-closure-gate-v1.json` | Candidate-scope gate | Machine-readable P4 candidate-scoped drift closure, non-candidate stale containment, formal result summary, remaining P4 blockers, and non-claims |
 | `sched-exec-lease-p4-anchor-manifest-v1.json` | P4 anchor manifest | Machine-readable P4 final-run/common-move/locked-move anchor windows, source-order constraints, explicit non-coverage, remaining blockers, and non-claims |
 | `sched-exec-lease-p4-static-final-run-observability-v1.json` | Static final-run observability | Machine-readable P4 final-run static pre-rq-curr observability, P3 marker negative observation, remaining blockers, and non-claims |
+| `sched-exec-lease-p4-allow-all-helper-proof-v1.json` | P4 allow-all helper proof | Machine-readable P4 allow-only/no-denial helper contract, current-tree source check, remaining patch acceptance requirements, and non-claims |

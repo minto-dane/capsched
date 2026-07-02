@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p4-allow-all-helper-proof-v1",
+  "analysis": "0127-sched-exec-lease-p4-allow-all-helper-proof",
+  "date": "2026-07-02",
+  "status": "allow_all_no_denial_helper_contract_complete_p4_not_applied",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "work_commit": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c"
+  },
+  "current_tree_checks": {
+    "allow_all_helper": "sched_exec_allow_all_validation",
+    "allow_return": "SCHED_EXEC_VALIDATION_ALLOW",
+    "forbidden_current_return_values": [
+      "SCHED_EXEC_VALIDATION_RETRY",
+      "SCHED_EXEC_VALIDATION_INELIGIBLE",
+      "SCHED_EXEC_VALIDATION_QUARANTINE"
+    ],
+    "p4_validate_helpers_present": false,
+    "scheduler_branches_on_validation_result": false
+  },
+  "future_p4_helper_contract": {
+    "production_return_set": [
+      "SCHED_EXEC_VALIDATION_ALLOW"
+    ],
+    "non_allow_results_unreachable": true,
+    "allowed_helper_names": [
+      "sched_exec_lease_validate_run_edge",
+      "sched_exec_lease_validate_move_edge",
+      "sched_exec_lease_validate_move_edge_locked"
+    ],
+    "forbidden_behaviors": [
+      "return_retry",
+      "return_ineligible",
+      "return_quarantine",
+      "branch_to_retry",
+      "mark_ineligible",
+      "queue_quarantine",
+      "goto_pick_again",
+      "fail_closed_idle",
+      "alter_rq_curr_commit",
+      "alter_scheduler_class_state",
+      "allocate",
+      "sleep",
+      "take_new_locks",
+      "charge_budget",
+      "call_policy_frontend",
+      "call_monitor",
+      "add_abi",
+      "add_public_tracepoint_abi"
+    ]
+  },
+  "decisions": {
+    "allow_all_helper_proof_closed": true,
+    "no_reachable_denial_path_proof_closed": true,
+    "p4_implementation_approved": false,
+    "p5_denial_approved": false
+  },
+  "remaining_before_p4_patch_acceptance": [
+    "actual_p4_patch",
+    "generated_code_object_review",
+    "off_on_build_validation",
+    "qemu_compatibility_validation",
+    "overclaim_security_diff_review"
+  ],
+  "non_claims": {
+    "linux_patch_approved": false,
+    "runtime_denial": false,
+    "runtime_coverage": false,
+    "budget_enforcement": false,
+    "abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade": false,
+    "cost_efficiency": false,
+    "deployment_readiness": false
+  }
+}
