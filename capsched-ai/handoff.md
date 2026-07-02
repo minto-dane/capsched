@@ -2819,7 +2819,44 @@ rule:
   protection.
 
 next:
-  Close TCB-001 with a monitor/service-domain TCB boundary model, then SIDE-001
-  with a co-tenancy/side-channel policy model, then EVAL-001 with an evaluation
+  N-152 has now closed TCB-001 at model level. Close SIDE-001 with a
+  co-tenancy/side-channel policy model, then EVAL-001 with an evaluation
   contract model.
+
+N-152 completed:
+  analysis/0106-tcb-boundary-gate.md
+  analysis/tcb-boundary-gate-v1.json
+  formal/0084-tcb-boundary-gate-model/
+  validation/0123-tcb-boundary-gate-tlc.md
+
+purpose:
+  close TCB-001 as a model-supported boundary without claiming implementation
+  or measured TCB size.
+
+rule:
+  HyperTag Monitor owns only non-forgeable roots and typed/sealed transitions.
+  Monitor TCB excludes drivers, parsers, policy engines, Linux scheduler
+  policy, cgroup/namespace/LSM policy logic, and Linux mutable metadata.
+  Service Domains enter through typed endpoints, use least authority, intersect
+  service authority with caller frozen authority, and expose no raw monitor or
+  device handles. A TCB budget and VM/VMM comparison envelope are required.
+
+safe TLC:
+  3 generated states
+  2 distinct states
+  depth 2
+
+unsafe:
+  11 expected counterexamples for unbounded monitor core, untyped monitor
+  interface, monitor policy/driver/parser inclusion, Linux mutable trusted root,
+  service ambient authority, raw handle exposure, missing TCB budget, missing
+  VM/VMM comparison envelope, and implementation/protection/cost overclaims.
+
+assurance:
+  E-TCB-BOUNDARY-001 supports TCB-001 as model evidence only.
+
+still not:
+  monitor implementation, service-domain implementation, line/interface count,
+  runtime coverage, monitor verification, production protection, or cost
+  efficiency.
 ```

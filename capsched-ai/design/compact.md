@@ -2379,3 +2379,40 @@ unsafe:
 next:
   model TCB-001, SIDE-001, and EVAL-001 before marking the goal complete.
 ```
+
+N-152 completed:
+
+```text
+artifacts:
+  analysis/0106
+  tcb-boundary-gate-v1.json
+  formal/0084
+  validation/0123
+
+purpose:
+  close TCB-001 at model level.
+
+rule:
+  Monitor owns only typed/sealed roots and transitions. Drivers, parsers,
+  policy engines, Linux scheduler/cgroup/namespace/LSM policy, and Linux
+  mutable metadata are not Monitor TCB roots. Service Domains require typed
+  endpoints, least authority, caller-frozen authority intersection, and no raw
+  handle exposure. A TCB budget and VM/VMM comparison envelope are required.
+
+safe TLC:
+  3 generated states
+  2 distinct states
+  depth 2
+
+unsafe:
+  11 expected counterexamples for unbounded/untyped Monitor, monitor driver/
+  parser/policy inclusion, Linux trusted root, service ambient authority, raw
+  handle exposure, missing TCB budget/comparison envelope, and overclaims.
+
+assurance:
+  E-TCB-BOUNDARY-001 supports TCB-001 only as model evidence.
+
+remaining model blockers:
+  SIDE-001
+  EVAL-001
+```

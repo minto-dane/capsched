@@ -642,18 +642,20 @@ shared Linux plus monitor-backed Domains improves or preserves attack surface
 while reducing cost.
 ```
 
-Current status: Open
+Current status: Model-supported
 
 Current evidence:
 
-- architectural intent only
 - service-domain risk analysis in `analysis/0010-dangerous-surfaces-and-service-domains.md`
+- `formal/0084-tcb-boundary-gate-model/`
+- `validation/0123-tcb-boundary-gate-tlc.md`
 
 Open gaps:
 
 - no monitor code
 - no TCB line count or interface count
-- no service-domain split design
+- no service-domain implementation
+- no measured parser, driver, policy-engine, or raw-handle exposure count
 - no comparison to KVM, Firecracker, or container stacks
 
 ### SIDE-001: Co-Tenancy and Side-Channel Policy Is Explicit
@@ -735,6 +737,7 @@ Open gaps:
 | E-PCACHE-001 | Counterexample-driven TLA | `validation/0012-page-cache-overlay-tlc.md` | PCACHE |
 | E-DEV-001 | TLA validation | `validation/0013-queue-lease-tlc.md` | DEV, REVOKE |
 | E-L0-002 | Linux build validation | `validation/0014-l0-slice0b-build-run.md` | COMPAT |
+| E-TCB-BOUNDARY-001 | TLA validation | `validation/0123-tcb-boundary-gate-tlc.md` | TCB |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
 
 ## Counterexample and Negative Evidence Log
@@ -758,6 +761,7 @@ Open gaps:
 | CEX-SCHED-LIFETIME-LOCKING-001 | `validation/0119` | Running after task free/exit invalidation, running without stable task lifetime, RCU-only or raw-pointer authority, running while migrating, stale generation run, use after release, premature release, double release, ref/lock leak, queued move without rq lock, retry without stable candidate lifetime, ignored exit invalidation, and behavior/monitor/protection overclaims are rejected. |
 | CEX-SCHED-LIFECYCLE-IDENTITY-001 | `validation/0120` | Child run without SpawnCap or fresh identity, ambient RunCap/FrozenRunUse/RunToken inheritance, wake before identity preparation, new Domain without token, clone flags as Domain authority, exec Domain change without token, post-exec run without ExecContinuation, check-only mutation, old FrozenRunUse after exec, run after exit, PID/TGID reuse, release authority, and behavior/monitor/protection overclaims are rejected. |
 | CEX-SCHED-EXIT-REVOKE-DRAIN-001 | `validation/0121` | Remote wake or queued FrozenRunUse surviving completion, early release, PID reuse, pending workqueue/io_uring/endpoint/direct-call/ring/device carriers, stale derived receipts, premature budget refund, surviving server ticket or root RunToken, audit/Linux cleanup as drain proof, unknown carrier default drain, budget leak/double settlement, RCU visibility authority, and behavior/monitor/protection overclaims are rejected. |
+| CEX-TCB-BOUNDARY-001 | `validation/0123` | Unbounded monitor core, untyped monitor interface, driver/parser/policy engine in the monitor, Linux mutable trusted root, service-domain ambient authority, raw handle exposure, missing TCB budget, missing VM/VMM comparison envelope, implementation overclaim, production-protection overclaim, and cost-efficiency overclaim are rejected. |
 | CEX-EXEC-GEN-001 | `validation/0037` | Exec Domain change without monitor token, post-exec run without ExecContinuation, old endpoint/async/mmap authority, fd/CLOEXEC/execfd inheritance, credential amplification, and check-only mutation are rejected. |
 | CEX-POST-EXEC-RESOURCE-001 | `validation/0038` | Generic fd reachability, CLOEXEC leaks, regular/socket/anonymous fd ambient authority, epoll/eventfd/timerfd/io_uring old state, and execfd ambient inheritance after exec are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
@@ -789,6 +793,11 @@ exit/revoke drain receipt.
 Unknown scheduler, async, endpoint, monitor-admission, device, budget, server,
 or root execution carrier classes can default to drained at exit/revoke
 completion.
+Monitor TCB can include device drivers, filesystem/network/protocol parsers,
+policy engines, Linux scheduler policy, cgroup/namespace/LSM policy logic, or
+Linux mutable metadata as trusted roots.
+Service Domains can exercise ambient caller or target authority without typed
+endpoints and caller-frozen authority intersection.
 Exec fd/resource reachability, CLOEXEC handling failure, credential changes,
 old async state, old mmap state, or interpreter execfd handoff can preserve
 post-exec endpoint authority without derivation.

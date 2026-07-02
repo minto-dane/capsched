@@ -751,14 +751,17 @@
     {
       "id": "TCB-001",
       "parent": "TOP-001",
-      "status": "open",
+      "status": "model_supported",
       "title": "Monitor and service domains stay smaller than VM/VMM attack area",
       "claim": "The production TCB is small enough to improve or preserve attack surface while reducing cost versus per-VM guest kernels.",
-      "evidence": [],
+      "evidence": [
+        "E-TCB-BOUNDARY-001"
+      ],
       "gaps": [
         "No monitor code.",
         "No TCB line/interface count.",
-        "No service-domain split design.",
+        "No service-domain implementation.",
+        "No measured parser, driver, policy-engine, or raw-handle exposure count.",
         "No KVM or Firecracker comparison."
       ],
       "forbidden_l0": true
@@ -1766,6 +1769,15 @@
         "COMPAT-001"
       ],
       "limitation": "Finite exit/revoke pending-authority drain integration gate checks global completion across scheduler, async, endpoint, monitor admission, device, budget, server, root, and unknown carrier families; it is not Linux implementation, hook approval, runtime coverage, monitor verification, behavior change, or production protection."
+    },
+    {
+      "id": "E-TCB-BOUNDARY-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0123-tcb-boundary-gate-tlc.md",
+      "supports": [
+        "TCB-001"
+      ],
+      "limitation": "Finite TCB boundary model evidence only; it defines monitor and service-domain TCB responsibilities, forbidden monitor contents, typed interfaces, least-authority service entry, TCB budget, and VM/VMM comparison envelope, but is not monitor implementation, service-domain implementation, line/interface measurement, runtime coverage, monitor verification, production protection, or cost-efficiency evidence."
     }
   ],
   "counterexamples": [
@@ -1858,6 +1870,11 @@
       "id": "CEX-SCHED-EXIT-REVOKE-DRAIN-001",
       "record": "capsched-models/validation/0121-exit-revoke-pending-authority-drain-gate-tlc.md",
       "meaning": "Unsafe exit/revoke drain models show expected counterexamples for remote wake or queued FrozenRunUse surviving completion, early release, PID reuse, pending workqueue/io_uring/endpoint/direct-call/ring/device carriers, stale derived receipts, premature budget refund, surviving server ticket or root RunToken, audit/Linux cleanup as drain proof, unknown carrier default drain, budget leak/double settlement, RCU visibility authority, and behavior/monitor/protection overclaims."
+    },
+    {
+      "id": "CEX-TCB-BOUNDARY-001",
+      "record": "capsched-models/validation/0123-tcb-boundary-gate-tlc.md",
+      "meaning": "Unsafe TCB boundary models reject unbounded monitor core, untyped monitor interface, driver/parser/policy engine in the monitor, Linux mutable trusted root, service-domain ambient authority, raw handle exposure, missing TCB budget, missing VM/VMM comparison envelope, implementation overclaim, production-protection overclaim, and cost-efficiency overclaim."
     }
   ],
   "forbidden_claims": [
@@ -1892,6 +1909,8 @@
     "Linux netdev, ring, q_vector, devlink, representor, tracepoint, or workqueue state is modern NIC QueueLease authority.",
     "Linux page/slab/memcg/page-cache metadata is memory authority.",
     "Linux service-domain queues, Linux-owned response stores, Linux-visible shadows, audit logs, ring slots, or raw driver handles are monitor receipt authority.",
+    "Monitor TCB can include device drivers, filesystem/network/protocol parsers, policy engines, Linux scheduler policy, cgroup/namespace/LSM policy logic, or Linux mutable metadata as trusted roots.",
+    "Service Domains can exercise ambient caller or target authority without typed endpoints and caller-frozen authority intersection.",
     "Linux-only L0 provides hypervisor-grade isolation.",
     "Monitor-owned ring refinement permits Linux ring slots, Linux response publication, Linux-only slot generations, or ring-full/drop accounting to become authority.",
     "Packet memory can be returned to a Domain after revoke without stale-completion quarantine and generation reset.",

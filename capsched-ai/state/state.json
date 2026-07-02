@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "model-completeness-ledger-gate-complete-model-goal-not-complete",
+    "current_phase": "tcb-boundary-gate-complete-model-goal-not-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-151 model completeness ledger gate is complete and says the model-only goal is not complete yet. Added analysis/0105, model-completeness-ledger-gate-v1.json, formal/0083 ModelCompletenessLedgerGate, and validation/0122. Current top-level child audit: 11 model-supported claims (ACT, EXEC, BUDGET, ENDP, ASYNC, MEM, TLB, PCACHE, DEV, REVOKE, CLUSTER), 1 prototype/compatibility-classified claim (COMPAT), and 3 open model blockers (TCB-001, SIDE-001, EVAL-001). Safe TLC passed with 5 generated states, 3 distinct states, 0 left on queue, depth 2. Seven unsafe configs produced expected counterexamples for completion with TCB/SIDE/EVAL open, completion without compatibility classification, ignoring open blockers, production claim from model-only evidence, and prototype-as-protection. Do not mark the goal complete until TCB, side-channel/co-tenancy, and evaluation-contract models are added. This is not Linux implementation, runtime coverage, monitor verification, production protection, or cost-efficiency evidence.",
+    "current_focus": "N-152 TCB boundary gate is complete. Added analysis/0106, tcb-boundary-gate-v1.json, formal/0084 TcbBoundaryGate, and validation/0123. TCB-001 is now model_supported via E-TCB-BOUNDARY-001. The model constrains HyperTag Monitor to typed/sealed roots only, forbids drivers/parsers/policy engines/Linux mutable metadata in the Monitor trust root, requires service Domains to enter through typed endpoints with least authority and caller-frozen authority intersection, forbids raw handle exposure, and requires a TCB budget plus VM/VMM comparison envelope. Safe TLC passed with 3 generated states, 2 distinct states, 0 left on queue, depth 2. Eleven unsafe configs produced expected counterexamples. Remaining model-only blockers before goal completion are SIDE-001 and EVAL-001. This is not monitor implementation, service-domain implementation, line/interface measurement, runtime coverage, monitor verification, production protection, or cost-efficiency evidence.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -720,7 +720,13 @@
     "model_completeness_ledger_model": "capsched/capsched-models/formal/0083-model-completeness-ledger-gate-model/README.md",
     "model_completeness_ledger_tla": "capsched/capsched-models/formal/0083-model-completeness-ledger-gate-model/ModelCompletenessLedgerGate.tla",
     "model_completeness_ledger_validation": "capsched/capsched-models/validation/0122-model-completeness-ledger-gate-tlc.md",
-    "model_completeness_ledger_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/model-completeness-ledger-gate-20260701T235822Z"
+    "model_completeness_ledger_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/model-completeness-ledger-gate-20260701T235822Z",
+    "tcb_boundary_gate_analysis": "capsched/capsched-models/analysis/0106-tcb-boundary-gate.md",
+    "tcb_boundary_gate_json": "capsched/capsched-models/analysis/tcb-boundary-gate-v1.json",
+    "tcb_boundary_gate_model": "capsched/capsched-models/formal/0084-tcb-boundary-gate-model/README.md",
+    "tcb_boundary_gate_tla": "capsched/capsched-models/formal/0084-tcb-boundary-gate-model/TcbBoundaryGate.tla",
+    "tcb_boundary_gate_validation": "capsched/capsched-models/validation/0123-tcb-boundary-gate-tlc.md",
+    "tcb_boundary_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/tcb-boundary-gate-20260702T000304Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

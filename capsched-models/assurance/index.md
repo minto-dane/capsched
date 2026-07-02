@@ -713,6 +713,19 @@ Model completeness ledger gate:
   evidence, and prototype evidence treated as protection. This is a negative
   completion gate: the model-only goal is not complete yet.
 
+TCB boundary gate:
+  analysis/0106 and formal/0084 define the model-supported TCB boundary for
+  the HyperTag Monitor and service Domains. validation/0123 safe TLC passed
+  with 3 generated states, 2 distinct states, and depth 2. Unsafe configs
+  produced expected counterexamples for unbounded monitor core, untyped
+  monitor interface, driver/parser/policy engine inside the monitor, Linux
+  mutable state as trusted root, service-domain ambient authority, raw handle
+  exposure, missing TCB budget, missing VM/VMM comparison envelope, and
+  implementation/protection/cost overclaims. E-TCB-BOUNDARY-001 supports
+  TCB-001 as model evidence only; it is not monitor implementation, TCB
+  measurement, monitor verification, production protection, or cost-efficiency
+  evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

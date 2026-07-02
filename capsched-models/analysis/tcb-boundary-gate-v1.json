@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "id": "tcb-boundary-gate-v1",
+  "analysis": "analysis/0106-tcb-boundary-gate.md",
+  "status": "draft_model_gate",
+  "date": "2026-07-01",
+  "purpose": "Define the model-supported TCB boundary for HyperTag Monitor and service Domains without claiming implementation, measurement, or production protection.",
+  "monitor_allowed_responsibilities": [
+    "domain_registry",
+    "epochs",
+    "sealed_run_token_roots",
+    "root_budget_roots",
+    "memoryview_roots",
+    "page_ownership_roots",
+    "iommu_ownership_roots",
+    "queue_ownership_roots",
+    "typed_revoke_receipts"
+  ],
+  "monitor_forbidden_responsibilities": [
+    "device_driver",
+    "filesystem_parser",
+    "network_protocol_parser",
+    "policy_engine",
+    "linux_scheduler_policy",
+    "cgroup_namespace_lsm_policy_logic",
+    "linux_mutable_metadata_trust_root"
+  ],
+  "monitor_interface_requirements": [
+    "typed_sealed_activation",
+    "typed_root_budget_expiry_receipt",
+    "typed_memoryview_page_ownership_transition",
+    "typed_iommu_irq_queuelease_transition",
+    "typed_revoke_completion_receipt",
+    "no_raw_handle_authority"
+  ],
+  "service_domain_requirements": [
+    "typed_endpoint_entry",
+    "least_authority_service_scope",
+    "service_authority_intersects_caller_frozen_authority",
+    "no_ambient_caller_authority",
+    "no_ambient_target_authority",
+    "no_raw_monitor_or_device_handle_exposure"
+  ],
+  "comparison_envelope": [
+    "declared_tcb_budget",
+    "monitor_interface_count",
+    "parser_exposure",
+    "driver_exposure",
+    "service_endpoint_count",
+    "privileged_code_volume",
+    "reachable_attack_surface",
+    "kvm_vmm_baseline_mapping"
+  ],
+  "unsafe_cases": [
+    "UnsafeUnboundedMonitorCore",
+    "UnsafeUntypedMonitorInterface",
+    "UnsafeMonitorPolicyOrDriver",
+    "UnsafeLinuxMutableTrustedRoot",
+    "UnsafeServiceDomainAmbientAuthority",
+    "UnsafeRawHandleExposure",
+    "UnsafeMissingTcbBudget",
+    "UnsafeMissingVmComparisonEnvelope",
+    "UnsafeImplementationClaim",
+    "UnsafeProductionProtectionClaim",
+    "UnsafeCostEfficiencyClaim"
+  ],
+  "safety_flags": {
+    "tcb_model_supported": true,
+    "linux_patch_approved": false,
+    "monitor_implementation_approved": false,
+    "service_domain_implementation_approved": false,
+    "runtime_coverage_claim": false,
+    "monitor_verified": false,
+    "production_protection_claim": false,
+    "cost_efficiency_claim": false
+  },
+  "evidence": {
+    "id": "E-TCB-BOUNDARY-001",
+    "kind": "tla_validation",
+    "claims_supported": ["TCB-001"],
+    "limitations": "Finite model gate supports TCB boundary semantics only; it is not monitor implementation, TCB line/interface measurement, runtime coverage, monitor verification, production protection, or cost-efficiency evidence."
+  }
+}

@@ -128,6 +128,7 @@ Updated: 2026-07-01
 | 0120 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Lifecycle Identity Propagation Integration Gate TLC |
 | 0121 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Exit/Revoke Pending Authority Drain Gate TLC |
 | 0122 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked; model-only goal not yet complete | Model Completeness Ledger Gate TLC |
+| 0123 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | TCB Boundary Gate TLC |
 
 ## Principles
 
