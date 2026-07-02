@@ -66,7 +66,7 @@ closed the design obligations needed to safely propose P3/P4/P5 implementation.
 | core scheduling cached-pick decision | analysis/0100/0101 identify risk | Open |
 | proxy donor/current/executor decision | analysis/0111 identifies risk | Open |
 | workqueue/kthread classification | prior async models exist | Open for scheduler-denial scope |
-| bounded retry/ineligibility representation | analysis/0101 model gate exists | Open for Linux source shape |
+| bounded retry/ineligibility representation | analysis/0101 model gate, analysis/0115 source design | Partially satisfied; source shape documented, model refresh still open |
 | negative denial test plan | implementation/0025 lists required tests | Open |
 | claim-ledger overclaim guard for implementation | non-claims exist | Open as a concrete gate |
 | upstream-drift refresh policy before implementation | prior drift gates exist | Needs re-run before any implementation |
@@ -101,7 +101,11 @@ fail-closed condition
 ```
 
 The model requires these semantics, but a source-specific design is still
-needed before implementation.
+needed before implementation. analysis/0115 now records the current-source
+shape and the critical finding that pre-`rq->curr` denial may still be
+post-class-settlement. This partially closes the source-shape question, but B2
+remains open until the model and negative validation plan are refreshed around
+pre-settle validation versus post-settle rollback.
 
 ### B3: Negative Test Design
 
@@ -134,7 +138,7 @@ The next design work should close blockers in this order:
 
 ```text
 1. sched_ext/core/proxy coverage boundary
-2. bounded retry and ineligibility source design
+2. bounded retry and ineligibility model refresh
 3. negative denial validation plan
 4. implementation claim-ledger gate
 5. upstream-drift recheck plan for reopening implementation scope

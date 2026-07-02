@@ -33,6 +33,8 @@ analysis/0100 final run/move tuple gate is refreshed against current source
 analysis/0101 final deny/retry/ineligibility gate is refreshed against current source
 analysis/0113 implementation-ready blockers are closed or explicitly scoped
 analysis/0114 sched_ext/core/proxy coverage decisions are closed
+analysis/0115 bounded retry/ineligibility source design is reflected in the
+  refreshed model and validation plan
 ```
 
 ## Permitted Scope If Re-Approved
@@ -49,7 +51,8 @@ bounded retry epoch
 candidate ineligibility for the retry epoch
 fresh tuple requirement after retry
 fail-closed path only when no eligible candidate exists
-negative tests proving denial happens before rq->curr publication
+negative tests proving denial happens before class settlement, or after a
+  source-proved rollback, and always before rq->curr publication
 ```
 
 Forbidden even in P5:
@@ -63,6 +66,8 @@ hypervisor-grade claim
 silent fallback to ordinary Linux scheduling after denial
 unbounded retry
 denying after rq->curr publication
+denying after put_prev_set_next_task() or equivalent class settlement without a
+rollback proof
 running a denied candidate
 using RETRY_TASK, idle fallback, sched_ext fallback, class state, or core cached
 pick as SchedExecLease authority
@@ -95,6 +100,8 @@ progress condition
 fail-closed condition
 class-state neutralization
 balance-callback handling
+pre-settle validation shape or post-settle rollback proof
+class picker ineligibility visibility
 ```
 
 The same denied candidate must not be selected again in the same retry epoch.
@@ -170,6 +177,7 @@ QEMU boot/workload smoke plan updated for denial mode
 fork/exec/exit denial-lifetime tests designed
 move/affinity/hotplug tests designed
 sched_ext/core/proxy availability or exclusion recorded
+post-settle denial rollback model or explicit pre-settle-only decision recorded
 claim ledger updated to forbid production protection claims
 ```
 

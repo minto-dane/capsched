@@ -81,6 +81,13 @@ SCHED_EXEC_VALIDATION_ALLOW
 Any non-allow value must be limited to model text, comments, build-only static
 assertions, or later P5 test-only code after explicit approval.
 
+analysis/0115 adds an important constraint: the P4 conceptual final run hook is
+not automatically a safe P5 denial hook. In current Linux, `pick_next_task()`
+often returns after `put_prev_set_next_task()` has already settled
+class-specific state. P4 may still observe and shape an allow-all final edge,
+but P5 denial must use pre-settle validation or a source-proved rollback
+mechanism.
+
 ## Required Edge Separation
 
 P4 must keep these validation concepts separate:

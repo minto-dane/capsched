@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "id": "bounded-retry-ineligibility-source-design-v1",
+  "date": "2026-07-02",
+  "status": "source_verified_b2_design_constraint_no_implementation",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "core_finding": "final_denial_after_pick_next_task_is_post_class_settlement_for_many_paths",
+  "source_review_findings": [
+    "pre_rq_curr_is_not_automatically_pre_commit",
+    "pick_next_task_returns_after_put_prev_set_next_task_for_common_paths",
+    "post_settle_denial_requires_class_specific_rollback",
+    "blocked_or_dequeued_prev_cannot_be_used_as_rollback_handle"
+  ],
+  "allowed_shapes": [
+    {
+      "name": "pre_settle_candidate_validation",
+      "default_direction": true,
+      "requirements": [
+        "validate_before_put_prev_set_next_task_or_equivalent_settlement",
+        "denied_candidate_visible_to_class_picker",
+        "retry_epoch_records_denied_candidate",
+        "balance_callbacks_cleared_or_proved_empty_before_retry"
+      ]
+    },
+    {
+      "name": "post_settle_rollback",
+      "default_direction": false,
+      "p5_ready": false,
+      "requirements": [
+        "class_specific_rollback_model",
+        "dl_server_restore",
+        "donor_next_restore",
+        "balance_callback_restore_or_cleanup",
+        "core_proxy_selected_state_invalidation",
+        "rq_curr_donor_next_class_coherence",
+        "class_current_fields_coherence",
+        "reschedule_state_and_switch_accounting_repair"
+      ]
+    }
+  ],
+  "forbidden_shapes": [
+    "turn_p4_allow_all_final_hook_into_denial_without_rollback",
+    "goto_pick_again_after_post_settle_denial",
+    "common_loop_ineligibility_hidden_from_class_picker",
+    "retry_task_as_authority",
+    "idle_fallback_as_authority",
+    "sched_ext_fallback_as_authority",
+    "core_cached_pick_as_authority",
+    "retry_budget_exhaustion_as_no_eligible_proof"
+  ],
+  "retry_epoch_required_fields": [
+    "rq_identity",
+    "cpu",
+    "epoch_sequence",
+    "retry_count",
+    "retry_budget",
+    "edge_kind",
+    "denied_candidate_set",
+    "core_sequence_snapshot",
+    "sched_ext_custody_snapshot_when_in_scope",
+    "proxy_donor_executor_relation_when_in_scope",
+    "supported_disabled_excluded_path_set"
+  ],
+  "denied_candidate_key": [
+    "task_pointer",
+    "task_generation",
+    "process_generation_if_available",
+    "domain_epoch",
+    "runcap_or_run_grant_epoch",
+    "schedcontext_epoch",
+    "run_cpu_or_move_destination_cpu",
+    "edge_kind"
+  ],
+  "source_surfaces": {
+    "common_pick": [
+      "kernel/sched/core.c:__pick_next_task",
+      "kernel/sched/core.c:pick_next_task",
+      "kernel/sched/sched.h:put_prev_set_next_task",
+      "kernel/sched/core.c:__schedule"
+    ],
+    "balance_callbacks": [
+      "kernel/sched/core.c:zap_balance_callbacks",
+      "kernel/sched/sched.h:assert_balance_callbacks_empty",
+      "kernel/sched/sched.h:queue_balance_callback"
+    ],
+    "queued_move": [
+      "kernel/sched/sched.h:move_queued_task_locked",
+      "kernel/sched/core.c:move_queued_task"
+    ],
+    "sched_ext": [
+      "kernel/sched/ext/ext.c:consume_dispatch_q",
+      "kernel/sched/ext/ext.c:scx_dispatch_sched",
+      "kernel/sched/ext/ext.c:do_pick_task_scx",
+      "kernel/sched/ext/ext.c:ext_server_pick_task"
+    ],
+    "core_scheduling": [
+      "kernel/sched/core.c:core_pick_seq",
+      "kernel/sched/core.c:core_task_seq",
+      "kernel/sched/core.c:core_sched_seq",
+      "kernel/sched/core.c:try_steal_cookie"
+    ],
+    "proxy_execution": [
+      "kernel/sched/core.c:proxy_resched_idle",
+      "kernel/sched/core.c:proxy_deactivate",
+      "kernel/sched/core.c:proxy_migrate_task",
+      "kernel/sched/core.c:find_proxy_task"
+    ]
+  },
+  "default_p5_stance_until_modeled": {
+    "sched_ext": "disable_or_exclude",
+    "core_scheduling": "disable_or_exclude",
+    "proxy_execution": "disable_or_exclude",
+    "post_settle_denial": "forbidden_without_rollback_model"
+  },
+  "required_future_model_refresh": [
+    "pre_settle_validation",
+    "post_settle_validation_requires_rollback",
+    "post_settle_denial_pre_rq_curr_forbidden_without_rollback",
+    "blocked_prev_not_a_rollback_handle",
+    "class_picker_observes_ineligibility",
+    "same_class_same_candidate_repick",
+    "balance_callback_cleanup",
+    "core_cached_pick_invalidation",
+    "core_sched_find_bypasses_class_picker",
+    "core_wide_sibling_pick_invalidation",
+    "sched_ext_reintroduce_denied_candidate",
+    "sched_ext_local_dsq_head_livelock",
+    "sched_ext_direct_dispatch_cleanup",
+    "sched_ext_server_pick_no_retry_task",
+    "proxy_donor_executor_denial_subject"
+  ],
+  "core_proxy_specific_constraints": [
+    "core_pick_fastpath_must_revalidate_or_be_invalidated",
+    "sched_core_find_requires_ineligibility_filter_outside_class_picker",
+    "core_wide_denial_must_clear_sibling_core_pick_or_advance_sequence",
+    "try_steal_cookie_requires_destination_move_validation",
+    "proxy_denial_subject_must_name_donor_executor_or_both",
+    "proxy_lock_order_must_not_call_sleeping_monitor_under_rq_mutex_locks",
+    "blocked_donor_handoff_must_not_be_silently_broken",
+    "runtime_budget_accounting_must_name_donor_executor_or_both"
+  ],
+  "sched_ext_specific_constraints": [
+    "task_can_run_on_remote_rq_is_not_final_authority",
+    "first_local_task_head_denial_requires_remove_requeue_or_quarantine",
+    "global_dsq_fallback_is_not_denial",
+    "direct_dispatch_denial_requires_ddsp_and_ops_state_cleanup",
+    "finish_dispatch_custody_state_must_not_be_left_dispatching",
+    "ext_server_pick_task_must_not_return_retry_task",
+    "bypass_mode_must_not_silently_erase_denial"
+  ],
+  "safety_flags": {
+    "implementation_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "post_settle_denial_ready": false,
+    "sched_ext_supported": false,
+    "core_scheduling_supported": false,
+    "proxy_execution_supported": false,
+    "user_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

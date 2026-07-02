@@ -15,7 +15,8 @@
     "analysis/0100 refreshed against current source",
     "analysis/0101 refreshed against current source",
     "analysis/0113 implementation-ready blockers closed or explicitly scoped",
-    "analysis/0114 sched_ext/core/proxy coverage decisions closed"
+    "analysis/0114 sched_ext/core/proxy coverage decisions closed",
+    "analysis/0115 bounded retry/ineligibility source design reflected in refreshed model and validation plan"
   ],
   "first_allowed_scope_after_reapproval": "test_only_denial_mode_off_by_default",
   "allowed_after_reapproval": [
@@ -25,7 +26,7 @@
     "candidate_ineligibility_for_retry_epoch",
     "fresh_tuple_after_retry",
     "fail_closed_only_when_no_eligible_candidate_exists",
-    "negative_tests_before_rq_curr_publication"
+    "negative_tests_before_class_settlement_or_after_source_proved_rollback_and_before_rq_curr_publication"
   ],
   "forbidden_even_in_p5": [
     "user_abi",
@@ -36,6 +37,7 @@
     "silent_fallback_after_denial",
     "unbounded_retry",
     "deny_after_rq_curr_publication",
+    "deny_after_class_settlement_without_rollback_proof",
     "run_denied_candidate",
     "retry_task_as_authority",
     "idle_fallback_as_authority",
@@ -52,6 +54,8 @@
     "fail_closed_condition",
     "class_state_neutralization",
     "balance_callback_handling",
+    "pre_settle_validation_or_post_settle_rollback_proof",
+    "class_picker_ineligibility_visibility",
     "scheduler_class_coverage",
     "sched_ext_support_disable_or_exclusion",
     "core_cached_pick_revalidation_or_invalidation",
@@ -67,6 +71,7 @@
     "fork_exec_exit_denial_lifetime_tests_designed",
     "move_affinity_hotplug_tests_designed",
     "sched_ext_core_proxy_availability_or_exclusion_recorded",
+    "post_settle_denial_rollback_model_or_pre_settle_only_decision_recorded",
     "analysis_0113_claim_ledger_gate_recorded",
     "analysis_0114_coverage_boundary_closed",
     "claim_ledger_overclaim_guard_updated"

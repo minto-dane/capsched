@@ -2860,4 +2860,26 @@ next:
   implementation claim-ledger gate.
   upstream-drift recheck before implementation scope is reopened.
 ```
+
+N-167 bounded retry and ineligibility source design:
+
+```text
+artifacts:
+  analysis/0115-bounded-retry-ineligibility-source-design.md
+  analysis/bounded-retry-ineligibility-source-design-v1.json
+
+key finding:
+  pre-rq->curr is not automatically pre-commit.
+  pick_next_task() may already have called put_prev_set_next_task().
+
+P5 consequence:
+  do not turn the P4 allow-all final hook into a denial hook.
+  denial needs pre-settle validation or a source-proved rollback.
+
+default until modeled:
+  post-settle denial forbidden without rollback proof.
+  sched_ext/core/proxy disabled or excluded for test denial.
+
+next:
+  refresh final-deny model and negative validation plan.
 ```

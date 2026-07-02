@@ -15,6 +15,10 @@ Latest design-readiness audit:
 - `analysis/0114-sched-ext-core-proxy-coverage-boundary.md`
   - Rule: sched_ext, core scheduling, and proxy execution are uncovered until
     explicitly classified as supported, disabled, or excluded.
+- `analysis/0115-bounded-retry-ineligibility-source-design.md`
+  - Rule: pre-`rq->curr` denial is not automatically pre-commit. P5 denial must
+    use pre-settle candidate validation or a source-proved rollback; simply
+    turning the P4 allow-all final hook into a denying hook is forbidden.
 
 Current SchedExecLease L0 readiness:
 
@@ -88,7 +92,8 @@ Current SchedExecLease L0 readiness:
     separate run and move tuples, place final run validation before `rq->curr`
     publication, place move validation before detach/CPU mutation, and still
     forbid denial receipts, retry epochs, fail-closed behavior, monitor calls,
-    ABI, or protection claims.
+    ABI, or protection claims. P4 final observation is not sufficient for P5
+    denial without analysis/0115 pre-settle or rollback proof.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope under ADR-0011 until implementation-ready design blockers are
@@ -98,7 +103,7 @@ Current SchedExecLease L0 readiness:
     negative tests, sched_ext/core/proxy decisions, workqueue/kthread
     classification, bounded retry evidence, and claim-ledger overclaim guards
     exist. The first allowed P5 scope, if re-approved, is test-only denial mode
-    off by default.
+    off by default, and denial must be pre-settle or backed by a rollback proof.
 
 N-156 terminology policy:
 

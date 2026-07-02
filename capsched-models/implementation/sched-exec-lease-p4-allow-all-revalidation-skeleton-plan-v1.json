@@ -68,8 +68,14 @@
   "edge_separation": {
     "move_result_authorizes_run": false,
     "run_result_authorizes_move": false,
-    "boolean_freshness_is_sufficient": false
+    "boolean_freshness_is_sufficient": false,
+    "p4_final_hook_is_sufficient_for_p5_denial": false
   },
+  "analysis_0115_constraints": [
+    "pick_next_task_may_return_after_class_settlement",
+    "p5_denial_requires_pre_settle_validation_or_rollback_proof",
+    "p4_allow_all_observation_must_not_be_upgraded_to_denial_without_new_gate"
+  ],
   "forbidden_content": [
     "denial_receipts",
     "ineligibility_marks",

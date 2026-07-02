@@ -3387,3 +3387,27 @@ N-165/N-166 design-readiness audit:
     design-only bounded retry and ineligibility source shape, then negative
     denial validation design, then claim-ledger gate, then upstream-drift
     recheck before any implementation scope is reopened.
+
+N-167 bounded retry and ineligibility source design:
+  artifacts:
+    capsched-models/analysis/0115-bounded-retry-ineligibility-source-design.md
+    capsched-models/analysis/bounded-retry-ineligibility-source-design-v1.json
+
+  key finding:
+    pre-rq->curr is not automatically pre-commit. In the current Linux source,
+    pick_next_task() often returns only after put_prev_set_next_task() has
+    already settled scheduler-class state.
+
+  consequence:
+    P4 allow-all final revalidation is useful as source skeleton, but P5 denial
+    must not be created by simply turning that hook into a denying hook.
+
+  required P5 shape:
+    pre-settle candidate validation, or a source-proved per-class rollback.
+    Shape B rollback is not ready.
+
+  open next:
+    refresh the final-deny model and negative tests around pre-settle
+    validation, class-picker ineligibility visibility, same-candidate repick,
+    sched_ext DSQ livelock, core cached-pick invalidation, and proxy
+    donor/executor subject split.
