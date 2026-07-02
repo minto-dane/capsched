@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-implementation-readiness-and-design",
+    "current_phase": "sched-exec-lease-l0-design-ready-no-new-implementation",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -226,7 +226,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-164 applied and validated the SchedExecLease P2 no-denial task identity shadow. The Linux work commit is a0f2676adda634391983e74f29fcba577a9c919e and patch queue 0005 replays it. validation/0133 covers full vmlinux off/on builds plus task layout; validation/0134 covers QEMU off/on boot/workload smoke with CONFIG_SCHED_EXEC_LEASE=y in the enabled guest. Next implementation design focus is P3 placement-only scheduler touch points. Behavior-changing runtime enforcement remains unapproved until final hook coverage, sched_ext/core/proxy/workqueue decisions, bounded retry/ineligibility behavior, refreshed negative denial tests, and overclaim guards are added.",
+    "current_focus": "N-164 applied and validated the SchedExecLease P2 no-denial task identity shadow. The Linux work commit is a0f2676adda634391983e74f29fcba577a9c919e and patch queue 0005 replays it. validation/0133 covers full vmlinux off/on builds plus task layout; validation/0134 covers QEMU off/on boot/workload smoke with CONFIG_SCHED_EXEC_LEASE=y in the enabled guest. The active scope is now implementation-ready design only; new Linux implementation is out of scope until explicitly reopened. ADR-0011 and analysis/0112 record the P3/P4 source-verified design boundary. Behavior-changing runtime enforcement remains unapproved until final hook coverage, sched_ext/core/proxy/workqueue decisions, bounded retry/ineligibility behavior, refreshed negative denial tests, and overclaim guards are added.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",

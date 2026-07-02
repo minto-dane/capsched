@@ -1,7 +1,7 @@
 # Implementation 0023: SchedExecLease P3 Placement-Only Touchpoint Plan
 
-Status: Draft P3 patch plan; implementation not applied; blocked until P2
-full-build, layout, and QEMU validation are recorded
+Status: Design-only P3 patch plan; implementation not applied and out of
+current scope
 
 Date: 2026-07-02
 
@@ -23,12 +23,15 @@ linux_commit=a0f2676adda634391983e74f29fcba577a9c919e
 linux_subject=sched/exec_lease: Add task identity shadow
 ```
 
-P3 must not be applied until P2 validation records are complete:
+P2 validation records are complete:
 
 ```text
-validation/0133-sched-exec-lease-p2-full-build.md
+validation/0133-sched-exec-lease-p2-full-build-and-layout.md
 validation/0134-sched-exec-lease-p2-qemu-boot-smoke.md
 ```
+
+The current scope is implementation-ready design only. P3 must not be applied
+until implementation scope is explicitly reopened.
 
 ## Allowed Patch Surface
 
@@ -82,6 +85,14 @@ sched_exec_lease_validate_move_edge()
 ```
 
 Those names must return allow-all only when they are later wired by P4.
+
+Current design refinement from analysis/0112:
+
+```text
+P3 helper names should avoid validate_* until P4.
+Use prepare/observe/note names for design-only edge markers.
+Reserve fallible or allow-all validation result objects for P4 or later.
+```
 
 ## Candidate Anchors From Current Source
 

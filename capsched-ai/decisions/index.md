@@ -1,6 +1,6 @@
 # Decision Index
 
-Updated: 2026-07-01
+Updated: 2026-07-02
 
 | ID | Status | Title |
 | --- | --- | --- |
@@ -14,3 +14,4 @@ Updated: 2026-07-01
 | ADR-0008 | Accepted | Implement from the long-horizon target backward |
 | ADR-0009 | Accepted | Async carrier API direction |
 | ADR-0010 | Accepted | Private superproject and Linux patch queue |
+| ADR-0011 | Accepted | Design-ready scope before next Linux implementation |

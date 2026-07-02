@@ -117,6 +117,7 @@ Updated: 2026-07-02
 | 0109 | Final model-only completion gate | Final Model Completeness Ledger |
 | 0110 | Accepted terminology gate | Terminology Freeze and Rename Risk Review |
 | 0111 | Covered by implementation gate | SchedExecLease L0 Readiness and Vertical Slice Design |
+| 0112 | Design-only source verification | SchedExecLease P3/P4 Source-Verified Design Boundary |
 
 ## Planned Analysis Notes
 

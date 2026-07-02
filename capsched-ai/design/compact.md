@@ -2835,5 +2835,7 @@ still not:
   budget charging, runtime coverage, production protection, or cost evidence.
 
 next:
-  P3 placement-only scheduler touch points, still no-denial/no-ABI.
+  design-only P3/P4 readiness. ADR-0011 says no new Linux implementation is in
+  current scope until explicitly reopened. analysis/0112 records the
+  source-verified P3/P4 anchor boundary.
 ```

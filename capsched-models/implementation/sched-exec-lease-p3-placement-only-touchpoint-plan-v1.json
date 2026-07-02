@@ -2,15 +2,17 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p3-placement-only-touchpoint-plan-v1",
   "date": "2026-07-02",
-  "status": "draft_plan_implementation_not_applied_blocked_until_p2_validation",
+  "status": "design_only_plan_implementation_not_applied_out_of_current_scope",
   "linux_basis": {
     "branch": "capsched-linux-l0",
     "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
     "subject": "sched/exec_lease: Add task identity shadow"
   },
   "prerequisites": [
-    "validation/0133-sched-exec-lease-p2-full-build.md",
-    "validation/0134-sched-exec-lease-p2-qemu-boot-smoke.md"
+    "validation/0133-sched-exec-lease-p2-full-build-and-layout.md",
+    "validation/0134-sched-exec-lease-p2-qemu-boot-smoke.md",
+    "analysis/0112-sched-exec-lease-p3-p4-source-verified-design-boundary.md",
+    "explicit_user_approval_to_reopen_implementation_scope"
   ],
   "allowed_patch_surface": [
     "include/linux/sched_exec_lease.h",
@@ -98,6 +100,7 @@
   ],
   "required_validation": [
     "p2_validation_complete",
+    "implementation_scope_reopened",
     "git_diff_check",
     "patch_queue_replay",
     "full_vmlinux_config_off",

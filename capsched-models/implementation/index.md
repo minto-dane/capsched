@@ -58,8 +58,9 @@ Current SchedExecLease L0 readiness:
     claim. Full build, task layout, and QEMU boot/workload smoke validation
     passed in validation/0133 and validation/0134.
 - `0023-sched-exec-lease-p3-placement-only-touchpoint-plan.md`
-  - Status: draft P3 patch plan; implementation not applied. P2 validation is
-    now recorded, but P3 still must remain placement-only/no-denial.
+  - Status: design-only P3 patch plan; implementation not applied and out of
+    current scope. P2 validation is recorded, but P3 code must wait for
+    explicit implementation-scope approval.
   - Rule: P3 may place only no-denial scheduler touch points in
     `kernel/sched/core.c`, `kernel/sched/sched.h`,
     `include/linux/sched_exec_lease.h`, and `kernel/sched/exec_lease.c`.
@@ -225,7 +226,8 @@ Candidate implementation plans:
   - Purpose: record the P2 Linux patch that adds a CONFIG-gated task identity
     shadow and nofail lifecycle helpers while preserving no-denial semantics.
 - `0023-sched-exec-lease-p3-placement-only-touchpoint-plan.md`
-  - Status: draft patch plan, implementation not applied.
+  - Status: design-only patch plan, implementation not applied and out of
+    current scope.
   - Purpose: constrain the first scheduler-file patch to no-denial source-level
     touch points for wake preparation, new-task publication, donor-aware tick
     observation, switch-boundary observation, and future P4 final run/move

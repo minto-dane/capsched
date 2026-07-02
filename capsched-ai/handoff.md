@@ -3365,6 +3365,10 @@ still blocked:
   denial tests, production protection, and cost-efficiency claims.
 
 next:
-  P3 placement-only scheduler touch points. P3 must remain no-denial/no-ABI and
-  must not make enqueue_task() fallible, deny after rq->curr publication,
-  allocate grants, charge budget, call a monitor, or claim runtime coverage.
+  Design-only P3/P4 readiness. ADR-0011 states that new Linux implementation is
+  out of current scope until explicitly reopened. analysis/0112 verifies the
+  current source anchors for wake, new-task publication, tick donor
+  observation, final run, switch observation, and queued move boundaries.
+  Future P3 must remain no-denial/no-ABI and must not make enqueue_task()
+  fallible, deny after rq->curr publication, allocate grants, charge budget,
+  call a monitor, or claim runtime coverage.
