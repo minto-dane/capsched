@@ -4,6 +4,19 @@ Updated: 2026-07-02
 
 No behavior-changing implementation patch points are accepted yet.
 
+Current SchedExecLease L0 readiness:
+
+- `0016-sched-exec-lease-l0-implementation-readiness-gate.md`
+  - Status: ready for implementation design and no-behavior preparation
+    patches; behavior-changing enforcement remains unapproved.
+  - Evidence: N-156 naming/build validation plus N-157 patch-queue replay and
+    source-drift freshness.
+- `0017-sched-exec-lease-l0-vertical-slice-design.md`
+  - Status: first vertical-slice design drafted.
+  - Rule: P1-P4 are no-denial preparation slices; P5 is the first possible
+    behavior-changing slice and must be separately re-approved after full
+    build, QEMU smoke, hook coverage, and negative denial tests.
+
 N-156 terminology policy:
 
 - Public project name: DomainLease-Linux.
@@ -106,6 +119,17 @@ Candidate implementation plans:
   - Purpose: freeze mainline-facing names and limit the first Linux scaffold to
     `CONFIG_SCHED_EXEC_LEASE`, `include/linux/sched_exec_lease.h`, and
     `kernel/sched/exec_lease.c`.
+- `0016-sched-exec-lease-l0-implementation-readiness-gate.md`
+  - Status: implementation readiness gate passed for design/no-behavior
+    preparation; runtime enforcement not approved.
+  - Purpose: consolidate replay, freshness, compatibility, hook-placement, and
+    overclaim requirements before the first SchedExecLease L0 implementation
+    patch.
+- `0017-sched-exec-lease-l0-vertical-slice-design.md`
+  - Status: draft vertical slice design, no behavior-changing patch approved.
+  - Purpose: define the minimal future patch order and forbid unsafe collapse
+    of wake, enqueue, final-pick, donor budget, lifecycle, and revoke
+    semantics.
 
 Validated formal inputs:
 

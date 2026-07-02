@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-l0-implementation-readiness-gate-v1",
+  "date": "2026-07-02",
+  "status": "ready_for_design_and_no_behavior_preparation_not_runtime_enforcement",
+  "evidence": {
+    "terminology_gate": "analysis/0110-terminology-freeze-rename-risk-review.md",
+    "rename_build_validation": "validation/0128-sched-exec-lease-rename-build-validation.md",
+    "patch_queue_replay_validation": "validation/0129-patch-queue-replay-and-freshness.md",
+    "readiness_gate": "implementation/0016-sched-exec-lease-l0-implementation-readiness-gate.md",
+    "vertical_slice_design": "implementation/0017-sched-exec-lease-l0-vertical-slice-design.md"
+  },
+  "readiness": {
+    "patch_queue_replay": "ready",
+    "source_drift_freshness": "ready",
+    "naming_and_no_abi_surface": "ready",
+    "targeted_scaffold_build": "ready",
+    "full_vmlinux_build": "required_before_behavior_change",
+    "qemu_boot_smoke": "required_before_behavior_change",
+    "runtime_enforcement": "not_approved"
+  },
+  "requirements": [
+    "CONFIG_SCHED_EXEC_LEASE=n remains behavior-compatible",
+    "CONFIG_SCHED_EXEC_LEASE=y starts with default allow-all semantics",
+    "no user ABI, public tracepoint ABI, monitor ABI, syscall, procfs, sysfs, debugfs, or exported symbol",
+    "fallible admission cannot occur first inside enqueue_task",
+    "final run validation must occur before rq->curr publication",
+    "runtime budget accounting must be donor-aware",
+    "core scheduling cached picks must be revalidated or invalidated",
+    "sched_ext must not be an enforcement root",
+    "task lifetime and generation storage must be explicit before task fields are consumed",
+    "fork, exec, and exit identity propagation must be connected before runtime authority is consumed",
+    "cleanup, trace, RCU, cancel, and completion are not revoke receipts"
+  ],
+  "allowed_next_patch_classes": [
+    "no_behavior_internal_helper_skeleton",
+    "no_behavior_identity_preparation_skeleton",
+    "no_behavior_scheduler_touch_point_comments_or_static_inline_hooks",
+    "kunit_only_or_build_only_validation_without_abi"
+  ],
+  "blocked_patch_classes": [
+    "runtime_denial",
+    "public_user_handle",
+    "public_tracepoint_abi",
+    "monitor_abi",
+    "exported_symbol",
+    "endpoint_or_device_or_memory_authority",
+    "hypervisor_grade_protection_claim",
+    "production_protection_claim"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

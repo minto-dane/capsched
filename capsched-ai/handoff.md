@@ -3055,3 +3055,58 @@ still not:
   full vmlinux validation for this rename, model revalidation, behavior-changing
   Linux implementation, user ABI, public tracepoint ABI, monitor ABI, monitor
   verification, production protection, or cost efficiency.
+
+N-157 completed:
+  validation/0129-patch-queue-replay-and-freshness.md
+
+purpose:
+  prove the private Linux patch queue is replayable after N-156 before moving
+  toward implementation design.
+
+result:
+  fresh replay of linux-patches series 0001..0003 produced:
+    3bb2a5821ffdcc0fa6d451cbf259ef82a9ea9a9c
+
+  replay tree:
+    /media/nia/scsiusb/dev/linux-cap/build/replay/n157-capsched-linux-l0-20260702T024618Z
+
+  source-drift gate:
+    /media/nia/scsiusb/dev/linux-cap/build/source-drift/linux-source-drift-gate/20260702T024618Z
+    model_freshness=fresh
+    merge_tree_clean=true
+    linux_patch_approved=false
+
+  targeted build log:
+    /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-rename-build-20260702T024654Z.log
+
+script fixes:
+  linux-patches/scripts/recreate-capsched-linux-l0.sh now rejects dirty
+  targets, supports reference clones and non-origin remotes, checks patch
+  existence, uses deterministic committer date/identity, and verifies final
+  HEAD against upstream/base.txt work_commit.
+
+still not:
+  full vmlinux validation, QEMU boot validation, runtime coverage, behavior
+  change, ABI approval, monitor verification, production protection, or cost
+  efficiency.
+
+N-158 in progress:
+  analysis/0111-sched-exec-lease-l0-readiness-and-design-review.md
+  implementation/0016-sched-exec-lease-l0-implementation-readiness-gate.md
+  implementation/0017-sched-exec-lease-l0-vertical-slice-design.md
+  implementation/sched-exec-lease-l0-implementation-readiness-gate-v1.json
+
+verdict:
+  ready for implementation design and no-behavior preparation patches.
+  behavior-changing runtime enforcement remains blocked.
+
+allowed next patch classes:
+  no-behavior internal helper skeleton
+  no-behavior identity preparation skeleton
+  no-behavior scheduler touch-point comments/static inline hooks
+  KUnit-only or build-only validation without ABI
+
+blocked patch classes:
+  runtime denial, public user handles, public tracepoint ABI, monitor ABI,
+  exported symbols, endpoint/device/memory authority, hypervisor-grade or
+  production protection claims.

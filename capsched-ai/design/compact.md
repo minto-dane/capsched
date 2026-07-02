@@ -2581,3 +2581,59 @@ still not:
   full vmlinux validation for this rename, behavior change, ABI, monitor
   implementation, runtime coverage, production protection, or cost evidence.
 ```
+
+N-157 completed:
+
+```text
+artifact:
+  validation/0129
+
+result:
+  patch queue series 0001..0003 fresh replay reproduces work_commit
+  3bb2a5821ffdcc0fa6d451cbf259ef82a9ea9a9c.
+
+replay tree:
+  build/replay/n157-capsched-linux-l0-20260702T024618Z
+
+source drift:
+  build/source-drift/linux-source-drift-gate/20260702T024618Z
+  model_freshness=fresh
+  merge_tree_clean=true
+
+targeted replay build:
+  build/logs/sched-exec-lease-rename-build-20260702T024654Z.log
+  off: SCHED_EXEC_LEASE undef, no exec_lease.o
+  on: SCHED_EXEC_LEASE y, exec_lease.o built
+
+still not:
+  full vmlinux, QEMU boot, runtime coverage, behavior change, ABI, monitor
+  verification, production protection, or cost evidence.
+```
+
+N-158 in progress:
+
+```text
+artifacts:
+  analysis/0111
+  implementation/0016
+  implementation/0017
+  sched-exec-lease-l0-implementation-readiness-gate-v1.json
+
+verdict:
+  ready for implementation design and no-behavior preparation patches.
+  behavior-changing runtime enforcement remains unapproved.
+
+blocked until later:
+  runtime denial
+  public ABI or public tracepoint ABI
+  monitor ABI
+  exported symbols
+  endpoint/device/memory authority
+  protection or cost-efficiency claims
+
+next safe patch classes:
+  no-behavior internal helper skeleton
+  no-behavior lifecycle identity skeleton
+  no-behavior scheduler touch-point static inline hooks/comments
+  KUnit/build-only validation without ABI
+```

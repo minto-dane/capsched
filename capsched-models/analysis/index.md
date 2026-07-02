@@ -116,6 +116,7 @@ Updated: 2026-07-02
 | 0108 | Draft model gate with TLC-backed design filter | Evaluation Contract Gate |
 | 0109 | Final model-only completion gate | Final Model Completeness Ledger |
 | 0110 | Accepted terminology gate | Terminology Freeze and Rename Risk Review |
+| 0111 | Covered by implementation gate | SchedExecLease L0 Readiness and Vertical Slice Design |
 
 ## Planned Analysis Notes
 

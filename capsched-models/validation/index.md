@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-01
+Updated: 2026-07-02
 
 ## Current Validation Records
 
@@ -134,6 +134,7 @@ Updated: 2026-07-01
 | 0126 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked; model-only goal complete | Final Model Completeness Ledger TLC |
 | 0127 | Source-only terminology inventory executed; no model or protection claim | Terminology Rename Inventory |
 | 0128 | Passed for targeted scheduler-subtree build; no behavior or protection claim | SchedExecLease Rename Build Validation |
+| 0129 | Passed for hash-level replay, source-drift freshness, and targeted build; no behavior or protection claim | Patch Queue Replay and Freshness |
 
 ## Principles
 

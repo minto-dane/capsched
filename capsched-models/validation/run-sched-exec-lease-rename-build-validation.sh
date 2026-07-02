@@ -11,13 +11,14 @@
 set -euo pipefail
 
 ROOT=/media/nia/scsiusb/dev/linux-cap
-LINUX="$ROOT/linux"
+LINUX="${LINUX:-$ROOT/linux}"
 BUILD="$ROOT/build"
 TOOLS="$ROOT/tools/apt-local/root"
 LOG_DIR="$BUILD/logs"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 LOG="$LOG_DIR/sched-exec-lease-rename-build-$STAMP.log"
 JOBS="${JOBS:-8}"
+BUILD_TAG="${BUILD_TAG:-targeted}"
 
 mkdir -p "$LOG_DIR"
 exec > >(tee -a "$LOG") 2>&1
@@ -45,7 +46,7 @@ run_make()
 
 build_off()
 {
-	local out="$BUILD/linux-l0-sched-exec-lease-off-targeted-x86_64"
+	local out="$BUILD/linux-l0-sched-exec-lease-off-$BUILD_TAG-x86_64"
 
 	say "building CONFIG_SCHED_EXEC_LEASE=n x86_64_defconfig"
 	run_make "$out" x86_64_defconfig
@@ -64,7 +65,7 @@ build_off()
 
 build_on()
 {
-	local out="$BUILD/linux-l0-sched-exec-lease-on-targeted-x86_64"
+	local out="$BUILD/linux-l0-sched-exec-lease-on-$BUILD_TAG-x86_64"
 
 	say "building CONFIG_SCHED_EXEC_LEASE=y x86_64_defconfig"
 	run_make "$out" x86_64_defconfig

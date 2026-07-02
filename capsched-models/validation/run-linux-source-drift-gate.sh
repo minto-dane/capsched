@@ -16,17 +16,17 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 REPO_DIR=$(cd -- "$SCRIPT_DIR/../.." && pwd)
 WORKSPACE_DIR=$(cd -- "$REPO_DIR/.." && pwd)
 
-LINUX_DIR=${CAPSCHED_LINUX_DIR:-"$WORKSPACE_DIR/linux"}
-CONFIG=${CAPSCHED_DRIFT_CONFIG:-"$REPO_DIR/capsched-models/analysis/linux-source-drift-model-freshness-gate-v1.json"}
-OUT_ROOT=${CAPSCHED_DRIFT_OUT_ROOT:-"$WORKSPACE_DIR/build/source-drift/linux-source-drift-gate"}
-RUN_ID=${CAPSCHED_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
+LINUX_DIR=${DOMAINLEASE_LINUX_DIR:-${CAPSCHED_LINUX_DIR:-"$WORKSPACE_DIR/linux"}}
+CONFIG=${DOMAINLEASE_DRIFT_CONFIG:-${CAPSCHED_DRIFT_CONFIG:-"$REPO_DIR/capsched-models/analysis/linux-source-drift-model-freshness-gate-v1.json"}}
+OUT_ROOT=${DOMAINLEASE_DRIFT_OUT_ROOT:-${CAPSCHED_DRIFT_OUT_ROOT:-"$WORKSPACE_DIR/build/source-drift/linux-source-drift-gate"}}
+RUN_ID=${DOMAINLEASE_RUN_ID:-${CAPSCHED_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}}
 OUT_DIR="$OUT_ROOT/$RUN_ID"
 
-UPSTREAM_REF=${CAPSCHED_DRIFT_UPSTREAM_REF:-upstream/master}
-WORK_REF=${CAPSCHED_DRIFT_WORK_REF:-capsched-linux-l0}
-BASE_REF=${CAPSCHED_DRIFT_BASE_REF:-}
-FETCH=${CAPSCHED_DRIFT_FETCH:-0}
-CONCRETE_CONSUMER_NEED=${CAPSCHED_CONCRETE_CONSUMER_NEED:-0}
+UPSTREAM_REF=${DOMAINLEASE_DRIFT_UPSTREAM_REF:-${CAPSCHED_DRIFT_UPSTREAM_REF:-upstream/master}}
+WORK_REF=${DOMAINLEASE_DRIFT_WORK_REF:-${CAPSCHED_DRIFT_WORK_REF:-capsched-linux-l0}}
+BASE_REF=${DOMAINLEASE_DRIFT_BASE_REF:-${CAPSCHED_DRIFT_BASE_REF:-}}
+FETCH=${DOMAINLEASE_DRIFT_FETCH:-${CAPSCHED_DRIFT_FETCH:-0}}
+CONCRETE_CONSUMER_NEED=${DOMAINLEASE_CONCRETE_CONSUMER_NEED:-${CAPSCHED_CONCRETE_CONSUMER_NEED:-0}}
 
 die()
 {
@@ -63,9 +63,13 @@ UPSTREAM_COUNT=$(git -C "$LINUX_DIR" rev-list --count "$BASE_COMMIT..$UPSTREAM_C
 jq -r '.watch_groups[].paths[]' "$CONFIG" | sort -u > "$OUT_DIR/watched-paths.txt"
 mapfile -t WATCH_PATHS < "$OUT_DIR/watched-paths.txt"
 
+jq -r '.watch_groups[] | select(.group_id == "l0_footprint") | .paths[]' "$CONFIG" \
+	> "$OUT_DIR/patch-footprint-paths.txt"
+mapfile -t PATCH_FOOTPRINT_PATHS < "$OUT_DIR/patch-footprint-paths.txt"
+[ "${#PATCH_FOOTPRINT_PATHS[@]}" -gt 0 ] || die "l0_footprint has no paths"
+
 git -C "$LINUX_DIR" diff --name-status "$BASE_COMMIT..$WORK_COMMIT" \
-	-- include/linux/capsched.h init/Kconfig kernel/sched/Makefile kernel/sched/capsched.c \
-	> "$OUT_DIR/patch-footprint.name-status"
+	-- "${PATCH_FOOTPRINT_PATHS[@]}" > "$OUT_DIR/patch-footprint.name-status"
 
 git -C "$LINUX_DIR" diff --name-status "$BASE_COMMIT..$UPSTREAM_COMMIT" \
 	-- "${WATCH_PATHS[@]}" > "$OUT_DIR/watched-drift.name-status"

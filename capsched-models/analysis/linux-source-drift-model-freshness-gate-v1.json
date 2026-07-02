@@ -25,10 +25,10 @@
       "group_id": "l0_footprint",
       "purpose": "Current inert L0 patch footprint and patch-queue stability.",
       "paths": [
-        "include/linux/capsched.h",
+        "include/linux/sched_exec_lease.h",
         "init/Kconfig",
         "kernel/sched/Makefile",
-        "kernel/sched/capsched.c"
+        "kernel/sched/exec_lease.c"
       ],
       "drift_class_if_changed": "D2_direct_footprint_drift",
       "stale_if_changed": true,
