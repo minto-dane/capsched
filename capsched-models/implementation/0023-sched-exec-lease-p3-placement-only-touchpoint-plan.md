@@ -1,7 +1,6 @@
 # Implementation 0023: SchedExecLease P3 Placement-Only Touchpoint Plan
 
-Status: Design-only P3 patch plan; implementation not applied and out of
-current scope
+Status: Superseded by implementation/0026; retained as the P3 design plan
 
 Date: 2026-07-02
 
@@ -30,8 +29,13 @@ validation/0133-sched-exec-lease-p2-full-build-and-layout.md
 validation/0134-sched-exec-lease-p2-qemu-boot-smoke.md
 ```
 
-The current scope is implementation-ready design only. P3 must not be applied
-until implementation scope is explicitly reopened.
+This plan was originally written before implementation scope was reopened for
+P3 validation. The applied P3 implementation is recorded in:
+
+```text
+implementation/0026-sched-exec-lease-p3-placement-only-implementation.md
+validation/0140-sched-exec-lease-p3-validation.md
+```
 
 ## Allowed Patch Surface
 

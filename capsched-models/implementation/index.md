@@ -132,15 +132,24 @@ Current SchedExecLease L0 readiness:
     claim. Full build, task layout, and QEMU boot/workload smoke validation
     passed in validation/0133 and validation/0134.
 - `0023-sched-exec-lease-p3-placement-only-touchpoint-plan.md`
-  - Status: design-only P3 patch plan; implementation not applied and out of
-    current scope. P2 validation is recorded, but P3 code must wait for
-    explicit implementation-scope approval.
+  - Status: design plan for P3; applied implementation is recorded separately
+    in `0026-sched-exec-lease-p3-placement-only-implementation.md`.
   - Rule: P3 may place only no-denial scheduler touch points in
     `kernel/sched/core.c`, `kernel/sched/sched.h`,
     `include/linux/sched_exec_lease.h`, and `kernel/sched/exec_lease.c`.
     It must not make `enqueue_task()` fallible, deny after `rq->curr`
     publication, allocate grants, charge budget, call a monitor, expose ABI, or
     claim runtime coverage.
+- `0026-sched-exec-lease-p3-placement-only-implementation.md`
+  - Status: applied and validated P3 placement-only scheduler touchpoint patch.
+  - Linux commit:
+    `d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3`.
+  - Rule: static inline no-op marker helpers are placed at wake, new-task,
+    queued-move, donor tick, and switch-observation edges. The patch adds no
+    fallible validation result, denial path, budget charge, ABI, monitor call,
+    exported symbol, or protection claim. Validation/0140 records patch queue
+    replay, full off/on builds, QEMU off/on no-behavior smoke, object/symbol
+    note, and overclaim review.
 - `0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md`
   - Status: draft P4 patch plan; implementation not applied, out of current
     scope under ADR-0011, and blocked until P3 is explicitly reopened and
@@ -305,12 +314,15 @@ Candidate implementation plans:
   - Purpose: record the P2 Linux patch that adds a CONFIG-gated task identity
     shadow and nofail lifecycle helpers while preserving no-denial semantics.
 - `0023-sched-exec-lease-p3-placement-only-touchpoint-plan.md`
-  - Status: design-only patch plan, implementation not applied and out of
-    current scope.
+  - Status: design plan; applied implementation recorded in 0026.
   - Purpose: constrain the first scheduler-file patch to no-denial source-level
     touch points for wake preparation, new-task publication, donor-aware tick
     observation, switch-boundary observation, and future P4 final run/move
     validation anchors.
+- `0026-sched-exec-lease-p3-placement-only-implementation.md`
+  - Status: applied and validated.
+  - Purpose: record the P3 Linux patch that places static inline no-op
+    scheduler touchpoint markers and preserves no-denial/no-ABI behavior.
 - `0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md`
   - Status: draft patch plan, implementation not applied.
   - Purpose: constrain the first wired final run/move validation skeleton to

@@ -145,6 +145,7 @@ Updated: 2026-07-02
 | 0137 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Implementation Claim Ledger Gate TLC |
 | 0138 | Source-drift runner executed; safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Implementation Reopen Drift Gate TLC |
 | 0139 | Safe model passed; unsafe models produced expected counterexamples; design-ready audit passed; no implementation or protection claim | Final Implementation-Ready Audit TLC |
+| 0140 | Passed for P3 patch queue replay, full off/on build, QEMU off/on no-behavior smoke, object/symbol note, and overclaim review; no protection claim | SchedExecLease P3 Validation |
 
 ## Principles
 

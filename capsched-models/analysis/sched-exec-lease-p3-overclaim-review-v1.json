@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p3-overclaim-review-v1",
+  "date": "2026-07-02",
+  "status": "passed_narrow_compatibility_claim_only",
+  "linux_commit": {
+    "hash": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3",
+    "subject": "sched/exec_lease: Add placement-only scheduler touchpoints"
+  },
+  "accepted_claim": "P3 places static inline no-op scheduler touchpoint markers and passes patch queue replay, full off/on builds, and QEMU off/on no-behavior smoke without adding denial, ABI, monitor calls, budget charging, or protection evidence.",
+  "evidence": {
+    "patch_queue_replay": "passed_exact_head",
+    "git_diff_check": "passed",
+    "full_build_off_on": "passed",
+    "qemu_smoke_off_on": "passed",
+    "object_symbol_note": "marker_symbols_absent_core_o_size_identical_off_on",
+    "source_overclaim_grep": "passed_no_p3_validate_deny_abi_monitor_surface_found"
+  },
+  "forbidden_claims": {
+    "runtime_enforcement": false,
+    "runtime_denial": false,
+    "retry_or_quarantine": false,
+    "complete_hook_coverage": false,
+    "final_run_validation": false,
+    "queued_move_validation": false,
+    "budget_enforcement": false,
+    "policy_integration": false,
+    "user_abi": false,
+    "monitor_verification": false,
+    "hypervisor_grade_isolation": false,
+    "production_protection": false,
+    "cost_efficiency": false,
+    "datacenter_deployment_readiness": false
+  },
+  "next_step": "P4 allow-all final run/move revalidation skeleton requires separate scope decision and refreshed edge review"
+}

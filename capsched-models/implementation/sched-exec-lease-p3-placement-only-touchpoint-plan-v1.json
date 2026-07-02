@@ -2,7 +2,11 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p3-placement-only-touchpoint-plan-v1",
   "date": "2026-07-02",
-  "status": "design_only_plan_implementation_not_applied_out_of_current_scope",
+  "status": "superseded_design_plan_applied_implementation_recorded_in_0026_validation_0140",
+  "superseded_by": {
+    "implementation": "capsched/capsched-models/implementation/0026-sched-exec-lease-p3-placement-only-implementation.md",
+    "validation": "capsched/capsched-models/validation/0140-sched-exec-lease-p3-validation.md"
+  },
   "linux_basis": {
     "branch": "capsched-linux-l0",
     "commit": "a0f2676adda634391983e74f29fcba577a9c919e",

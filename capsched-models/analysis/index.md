@@ -126,6 +126,7 @@ Updated: 2026-07-02
 | 0118 | Design-only claim ledger gate with TLC-backed overclaim rejection | Implementation Claim Ledger Gate |
 | 0119 | Design-only implementation-reopen drift gate with fresh upstream observation | Implementation Reopen Upstream Drift Gate |
 | 0120 | Final design-ready audit passed; implementation unapproved | Final Implementation-Ready Audit |
+| 0121 | P3 overclaim review passed; only placement-only no-behavior compatibility may be claimed | SchedExecLease P3 Overclaim Review |
 
 ## Planned Analysis Notes
 

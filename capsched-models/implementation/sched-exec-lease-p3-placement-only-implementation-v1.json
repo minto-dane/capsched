@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p3-placement-only-implementation-v1",
+  "date": "2026-07-02",
+  "status": "applied_validated_no_denial_no_abi_no_protection_claim",
+  "linux_commit": {
+    "hash": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3",
+    "subject": "sched/exec_lease: Add placement-only scheduler touchpoints",
+    "branch": "capsched-linux-l0"
+  },
+  "patch_queue": {
+    "patch": "linux-patches/patches/capsched-linux-l0/0006-sched-exec_lease-Add-placement-only-scheduler-touchp.patch",
+    "series": "linux-patches/patches/capsched-linux-l0/series",
+    "work_commit": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3"
+  },
+  "changed_linux_source": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h"
+  ],
+  "marker_helpers": [
+    "sched_exec_lease_prepare_wake",
+    "sched_exec_lease_prepare_new_task",
+    "sched_exec_lease_note_queued_move",
+    "sched_exec_lease_observe_tick",
+    "sched_exec_lease_note_switch"
+  ],
+  "touchpoints": [
+    {
+      "file": "kernel/sched/core.c",
+      "function": "move_queued_task",
+      "placement": "before deactivate_task(rq, p, DEQUEUE_NOCLOCK)",
+      "semantics": "future_queued_move_pre_detach_marker"
+    },
+    {
+      "file": "kernel/sched/core.c",
+      "function": "try_to_wake_up",
+      "placement": "before WRITE_ONCE(p->__state, TASK_WAKING)",
+      "semantics": "future_pre_TASK_WAKING_marker"
+    },
+    {
+      "file": "kernel/sched/core.c",
+      "function": "wake_up_new_task",
+      "placement": "before WRITE_ONCE(p->__state, TASK_RUNNING)",
+      "semantics": "future_child_runnable_publication_marker"
+    },
+    {
+      "file": "kernel/sched/core.c",
+      "function": "sched_tick",
+      "placement": "after donor = rq->donor",
+      "semantics": "future_donor_aware_tick_observation_marker"
+    },
+    {
+      "file": "kernel/sched/core.c",
+      "function": "__schedule",
+      "placement": "before context_switch(rq, prev, next, &rf)",
+      "semantics": "future_switch_tuple_observation_marker_not_final_run_validation"
+    },
+    {
+      "file": "kernel/sched/sched.h",
+      "function": "move_queued_task_locked",
+      "placement": "before deactivate_task(src_rq, task, 0)",
+      "semantics": "future_locked_queued_move_pre_detach_marker"
+    }
+  ],
+  "validation": {
+    "record": "capsched/capsched-models/validation/0140-sched-exec-lease-p3-validation.md",
+    "patch_queue_replay": "passed",
+    "full_vmlinux_off_on": "passed",
+    "qemu_no_behavior_off_on": "passed",
+    "object_symbol_note": "marker_symbols_absent_from_scheduler_objects",
+    "overclaim_review": "passed"
+  },
+  "safety_flags": {
+    "runtime_denial": false,
+    "retry_or_quarantine": false,
+    "budget_charging": false,
+    "grant_allocation": false,
+    "user_abi": false,
+    "tracepoint_abi": false,
+    "debugfs_procfs_sysfs_abi": false,
+    "exported_symbols": false,
+    "monitor_call": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false,
+    "datacenter_deployment_readiness": false
+  }
+}
