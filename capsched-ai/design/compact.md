@@ -2787,3 +2787,53 @@ still not:
   behavior change, scheduler hooks, runtime denial, ABI, monitor call,
   runtime coverage, or protection claim.
 ```
+
+N-164 P2 task identity shadow implementation:
+
+```text
+artifacts:
+  implementation/0022-sched-exec-lease-p2-task-identity-shadow-implementation.md
+  implementation/sched-exec-lease-p2-task-identity-shadow-implementation-v1.json
+  validation/0133-sched-exec-lease-p2-full-build-and-layout.md
+  validation/0134-sched-exec-lease-p2-qemu-boot-smoke.md
+  validation/run-sched-exec-lease-task-layout-probe.sh
+
+linux:
+  commit a0f2676adda634391983e74f29fcba577a9c919e
+  subject sched/exec_lease: Add task identity shadow
+
+changed source:
+  include/linux/sched.h
+  include/linux/sched_exec_lease.h
+  kernel/fork.c
+  fs/exec.c
+  kernel/exit.c
+  kernel/sched/exec_lease.c
+
+patch queue:
+  added 0005-sched-exec-lease-Add-task-identity-shadow.patch
+  work_commit updated to a0f2676adda634391983e74f29fcba577a9c919e
+  replay passed to exact final HEAD
+
+validation:
+  full vmlinux off/on passed with BUILD_TAG=p2-n164-current.
+  task layout probe passed:
+    off: sched_exec field absent, task_struct size 0xcc0.
+    on: sched_exec field size 0x28, offset+1 0x591, task_struct size 0xd00.
+  QEMU off/on passed:
+    off: qemu_status=0, WORKLOAD_RET 0.
+    on: CONFIG_SCHED_EXEC_LEASE=y, qemu_status=0, WORKLOAD_RET 0.
+    fork/exec/exit counts: 101/101/101 in both runs.
+
+coverage limit:
+  pick_next_task and __schedule remain function-missing in the smoke; the
+  dlease_pick_next_task kprobe failed/missing. This is recorded as a P3/P4/P5
+  design/validation issue, not a P2 blocker.
+
+still not:
+  scheduler hook approval, runtime denial, behavior change, ABI, monitor call,
+  budget charging, runtime coverage, production protection, or cost evidence.
+
+next:
+  P3 placement-only scheduler touch points, still no-denial/no-ABI.
+```

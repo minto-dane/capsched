@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p3-placement-only-touchpoint-plan-v1",
+  "date": "2026-07-02",
+  "status": "draft_plan_implementation_not_applied_blocked_until_p2_validation",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "prerequisites": [
+    "validation/0133-sched-exec-lease-p2-full-build.md",
+    "validation/0134-sched-exec-lease-p2-qemu-boot-smoke.md"
+  ],
+  "allowed_patch_surface": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h",
+    "kernel/sched/exec_lease.c"
+  ],
+  "candidate_touchpoints": [
+    {
+      "name": "sched_exec_lease_prepare_wake",
+      "file": "kernel/sched/core.c",
+      "function": "try_to_wake_up",
+      "anchor": "before WRITE_ONCE(p->__state, TASK_WAKING)",
+      "semantics": "future_pre_TASK_WAKING_preparation_no_denial_in_P3"
+    },
+    {
+      "name": "sched_exec_lease_prepare_new_task",
+      "file": "kernel/sched/core.c",
+      "function": "wake_up_new_task",
+      "anchor": "after raw_spin_lock_irqsave before WRITE_ONCE(p->__state, TASK_RUNNING)",
+      "semantics": "future_child_runnable_publication_preparation_no_failure_in_P3"
+    },
+    {
+      "name": "sched_exec_lease_observe_tick",
+      "file": "kernel/sched/core.c",
+      "function": "sched_tick",
+      "anchor": "after donor = rq->donor",
+      "semantics": "future_donor_aware_runtime_observation_no_budget_charge_in_P3"
+    },
+    {
+      "name": "sched_exec_lease_note_switch",
+      "file": "kernel/sched/core.c",
+      "function": "__schedule",
+      "anchor": "before context_switch(rq, prev, next, &rf)",
+      "semantics": "future_switch_boundary_observation_no_monitor_call_in_P3"
+    },
+    {
+      "name": "sched_exec_lease_validate_run_edge",
+      "file": "kernel/sched/core.c",
+      "function": "__schedule",
+      "anchor": "keep_resched join before is_switch and before RCU_INIT_POINTER(rq->curr, next)",
+      "semantics": "future_P4_allow_all_final_run_validation_not_wired_as_fallible_in_P3"
+    },
+    {
+      "name": "sched_exec_lease_validate_move_edge",
+      "file": "kernel/sched/core.c",
+      "function": "move_queued_task",
+      "anchor": "before deactivate_task(rq, p, DEQUEUE_NOCLOCK)",
+      "semantics": "future_P4_allow_all_move_validation_not_wired_as_fallible_in_P3"
+    },
+    {
+      "name": "sched_exec_lease_validate_move_edge_locked",
+      "file": "kernel/sched/sched.h",
+      "function": "move_queued_task_locked",
+      "anchor": "before deactivate_task(src_rq, task, 0)",
+      "semantics": "future_P4_allow_all_locked_move_validation_not_wired_as_fallible_in_P3"
+    }
+  ],
+  "rejected_anchors": {
+    "enqueue_task": "void_and_mutates_scheduler_state_too_late_for_first_fallible_boundary",
+    "context_switch": "too_late_for_final_run_denial_after_rq_curr_publication",
+    "set_task_cpu": "cpu_mutation_primitive_not_authority_boundary",
+    "attach_task": "too_late_after_detach_and_cpu_mutation",
+    "sched_exec": "placement_only_not_exec_authority",
+    "sched_ext_dispatch_queue": "policy_dispatch_state_not_security_root"
+  },
+  "forbidden_content": [
+    "runtime_denial",
+    "retry_or_quarantine_behavior",
+    "sleeping_allocation",
+    "grant_allocation",
+    "budget_charging",
+    "task_wake_failure",
+    "task_migration_failure",
+    "runqueue_fields",
+    "per_rq_authority_state",
+    "monitor_calls",
+    "lsm_cgroup_namespace_policy_coupling",
+    "tracepoint_abi",
+    "debugfs_procfs_sysfs_abi",
+    "syscall_ioctl_abi",
+    "exported_symbols",
+    "workqueue_or_io_uring_provenance",
+    "memoryview_iommu_device_ownership_changes"
+  ],
+  "required_validation": [
+    "p2_validation_complete",
+    "git_diff_check",
+    "patch_queue_replay",
+    "full_vmlinux_config_off",
+    "full_vmlinux_config_on",
+    "qemu_boot_workload_smoke_off_on",
+    "observable_trace_evidence_for_touched_anchors",
+    "generated_code_or_object_size_note",
+    "claim_ledger_non_overclaim_review"
+  ],
+  "safety_flags": {
+    "implementation_applied": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "scheduler_hot_path_touched": false,
+    "runtime_coverage": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

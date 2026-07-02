@@ -45,6 +45,44 @@ Current SchedExecLease L0 readiness:
     `wake_up_new_task()`, `sched_exec()` remains placement-only, exec mutation
     is after point-of-no-return, and exit invalidation happens in
     `do_exit()`/`PF_EXITING`.
+- `0022-sched-exec-lease-p2-task-identity-shadow-implementation.md`
+  - Status: applied and validated P2 no-denial lifecycle shadow patch.
+  - Linux commit:
+    `a0f2676adda634391983e74f29fcba577a9c919e`.
+  - Rule: task-local `struct sched_exec_task` is present only under
+    `CONFIG_SCHED_EXEC_LEASE`; it is Linux-local shadow state, not authority.
+    The patch resets raw-copy inheritance in `dup_task_struct()`, prepares
+    child identity in `copy_process()`, bumps exec generation after
+    `exec_mmap()`, and marks exit after `exit_signals()`. It adds no scheduler
+    hook, runtime denial, ABI, monitor call, budget charging, or protection
+    claim. Full build, task layout, and QEMU boot/workload smoke validation
+    passed in validation/0133 and validation/0134.
+- `0023-sched-exec-lease-p3-placement-only-touchpoint-plan.md`
+  - Status: draft P3 patch plan; implementation not applied. P2 validation is
+    now recorded, but P3 still must remain placement-only/no-denial.
+  - Rule: P3 may place only no-denial scheduler touch points in
+    `kernel/sched/core.c`, `kernel/sched/sched.h`,
+    `include/linux/sched_exec_lease.h`, and `kernel/sched/exec_lease.c`.
+    It must not make `enqueue_task()` fallible, deny after `rq->curr`
+    publication, allocate grants, charge budget, call a monitor, expose ABI, or
+    claim runtime coverage.
+- `0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md`
+  - Status: draft P4 patch plan; implementation not applied and blocked until
+    P2/P3 validation is recorded.
+  - Rule: P4 may wire allow-all final run and queued-move revalidation helper
+    calls, but every production result must remain allow. It must preserve
+    separate run and move tuples, place final run validation before `rq->curr`
+    publication, place move validation before detach/CPU mutation, and still
+    forbid denial receipts, retry epochs, fail-closed behavior, monitor calls,
+    ABI, or protection claims.
+- `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
+  - Status: draft readiness gate; P5 implementation not approved.
+  - Rule: P5 is the first possible behavior-changing slice and remains blocked
+    until P2/P3/P4 validation, refreshed final run/move and denial/retry models,
+    negative tests, sched_ext/core/proxy decisions, workqueue/kthread
+    classification, bounded retry evidence, and claim-ledger overclaim guards
+    exist. The first allowed P5 scope, if re-approved, is test-only denial mode
+    off by default.
 
 N-156 terminology policy:
 
@@ -181,6 +219,28 @@ Candidate implementation plans:
   - Purpose: constrain the first task-lifecycle patch to a Linux-local identity
     shadow and fix raw-copy reset, child publication, exec point-of-no-return,
     and exit invalidation requirements before any code is applied.
+- `0022-sched-exec-lease-p2-task-identity-shadow-implementation.md`
+  - Status: applied and validated for no-denial build/layout/QEMU
+    compatibility.
+  - Purpose: record the P2 Linux patch that adds a CONFIG-gated task identity
+    shadow and nofail lifecycle helpers while preserving no-denial semantics.
+- `0023-sched-exec-lease-p3-placement-only-touchpoint-plan.md`
+  - Status: draft patch plan, implementation not applied.
+  - Purpose: constrain the first scheduler-file patch to no-denial source-level
+    touch points for wake preparation, new-task publication, donor-aware tick
+    observation, switch-boundary observation, and future P4 final run/move
+    validation anchors.
+- `0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md`
+  - Status: draft patch plan, implementation not applied.
+  - Purpose: constrain the first wired final run/move validation skeleton to
+    allow-all behavior only, preserving run/move edge separation and keeping
+    denial/retry/fail-closed semantics blocked for P5 or later.
+- `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
+  - Status: draft gate, implementation not approved.
+  - Purpose: define the evidence required before any behavior-changing
+    SchedExecLease denial patch can even be reviewed, and forbid silent
+    fallback, unbounded retry, denial after `rq->curr` publication, or
+    production protection claims.
 
 Validated formal inputs:
 

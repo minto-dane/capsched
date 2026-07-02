@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5-test-only-denial-readiness-gate-v1",
+  "date": "2026-07-02",
+  "status": "draft_gate_p5_implementation_not_approved",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "blocked_until": [
+    "P2 validation recorded",
+    "P3 validation recorded",
+    "P4 validation recorded",
+    "analysis/0100 refreshed against current source",
+    "analysis/0101 refreshed against current source"
+  ],
+  "first_allowed_scope_after_reapproval": "test_only_denial_mode_off_by_default",
+  "allowed_after_reapproval": [
+    "internal_test_state",
+    "explicit_denial_receipt",
+    "bounded_retry_epoch",
+    "candidate_ineligibility_for_retry_epoch",
+    "fresh_tuple_after_retry",
+    "fail_closed_only_when_no_eligible_candidate_exists",
+    "negative_tests_before_rq_curr_publication"
+  ],
+  "forbidden_even_in_p5": [
+    "user_abi",
+    "public_tracepoint_abi",
+    "monitor_abi",
+    "production_protection_claim",
+    "hypervisor_grade_claim",
+    "silent_fallback_after_denial",
+    "unbounded_retry",
+    "deny_after_rq_curr_publication",
+    "run_denied_candidate",
+    "retry_task_as_authority",
+    "idle_fallback_as_authority",
+    "sched_ext_fallback_as_authority",
+    "class_state_as_authority",
+    "core_cached_pick_as_authority"
+  ],
+  "mandatory_decisions": [
+    "denial_subject_run_move_or_both",
+    "retry_epoch_owner",
+    "candidate_ineligibility_representation",
+    "retry_budget",
+    "progress_condition",
+    "fail_closed_condition",
+    "class_state_neutralization",
+    "balance_callback_handling",
+    "scheduler_class_coverage",
+    "sched_ext_support_disable_or_exclusion",
+    "core_cached_pick_revalidation_or_invalidation",
+    "proxy_donor_current_executor_authority",
+    "kernel_thread_and_workqueue_classification"
+  ],
+  "required_before_patch_review": [
+    "p2_p3_p4_validation_complete",
+    "final_denial_retry_model_refreshed",
+    "negative_denial_tests_designed",
+    "full_build_plan_updated",
+    "qemu_denial_plan_updated",
+    "fork_exec_exit_denial_lifetime_tests_designed",
+    "move_affinity_hotplug_tests_designed",
+    "sched_ext_core_proxy_availability_or_exclusion_recorded",
+    "claim_ledger_overclaim_guard_updated"
+  ],
+  "required_before_patch_acceptance": [
+    "git_diff_check",
+    "patch_queue_replay",
+    "config_off_full_vmlinux",
+    "config_on_full_vmlinux_denial_disabled",
+    "test_only_denial_config_build",
+    "qemu_smoke_denial_disabled",
+    "qemu_negative_denial_enabled",
+    "trace_denied_candidates_do_not_reach_rq_curr_or_context_switch",
+    "bounded_retry_evidence",
+    "fail_closed_evidence_or_unavailable_note",
+    "no_overclaim_review"
+  ],
+  "safety_flags": {
+    "implementation_applied": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "retry_approved": false,
+    "fail_closed_approved": false,
+    "runtime_coverage": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

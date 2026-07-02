@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p4-allow-all-revalidation-skeleton-plan-v1",
+  "date": "2026-07-02",
+  "status": "draft_plan_implementation_not_applied_blocked_until_p2_p3_validation",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "prerequisites": [
+    "P2 validation recorded",
+    "P3 placement-only touchpoint patch implemented and validated",
+    "analysis/0100 final run/move gate applicable",
+    "analysis/0101 final deny retry/ineligibility gate applicable"
+  ],
+  "allowed_patch_surface": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h",
+    "kernel/sched/exec_lease.c"
+  ],
+  "conditional_patch_surface_requires_amendment": [
+    "kernel/sched/fair.c"
+  ],
+  "allowed_result_shape": {
+    "enum": "sched_exec_validation_result",
+    "production_result": "SCHED_EXEC_VALIDATION_ALLOW",
+    "non_allow_results_reachable": false
+  },
+  "candidate_hooks": [
+    {
+      "name": "sched_exec_lease_validate_run_edge",
+      "file": "kernel/sched/core.c",
+      "function": "__schedule",
+      "anchor": "keep_resched join before is_switch and before RCU_INIT_POINTER(rq->curr, next)",
+      "result": "allow_all_only",
+      "must_cover": [
+        "ordinary_pick",
+        "proxy_resolution_before_curr_publication"
+      ]
+    },
+    {
+      "name": "sched_exec_lease_validate_move_edge",
+      "file": "kernel/sched/core.c",
+      "function": "move_queued_task",
+      "anchor": "before deactivate_task(rq, p, DEQUEUE_NOCLOCK)",
+      "result": "allow_all_only",
+      "must_precede": [
+        "deactivate_task",
+        "set_task_cpu"
+      ]
+    },
+    {
+      "name": "sched_exec_lease_validate_move_edge_locked",
+      "file": "kernel/sched/sched.h",
+      "function": "move_queued_task_locked",
+      "anchor": "before deactivate_task(src_rq, task, 0)",
+      "result": "allow_all_only",
+      "must_precede": [
+        "source_detach",
+        "destination_attach"
+      ]
+    }
+  ],
+  "edge_separation": {
+    "move_result_authorizes_run": false,
+    "run_result_authorizes_move": false,
+    "boolean_freshness_is_sufficient": false
+  },
+  "forbidden_content": [
+    "denial_receipts",
+    "ineligibility_marks",
+    "retry_epochs",
+    "retry_budgets",
+    "quarantine_queues",
+    "fail_closed_cpu_idling",
+    "class_state_rollback",
+    "balance_callback_neutralization",
+    "idle_fallback",
+    "sched_ext_fallback_control",
+    "core_cached_pick_invalidation",
+    "monitor_activation",
+    "monitor_receipts",
+    "user_abi",
+    "public_tracepoint_abi",
+    "exported_symbols",
+    "monitor_abi"
+  ],
+  "required_validation": [
+    "p2_validation_complete",
+    "p3_validation_complete",
+    "git_diff_check",
+    "patch_queue_replay",
+    "full_vmlinux_config_off",
+    "full_vmlinux_config_on",
+    "qemu_boot_workload_smoke_off_on",
+    "trace_or_kprobe_anchor_evidence_when_observable",
+    "object_or_generated_code_disabled_noop_review",
+    "claim_ledger_non_overclaim_review"
+  ],
+  "safety_flags": {
+    "implementation_applied": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "retry_approved": false,
+    "fail_closed_approved": false,
+    "runtime_coverage": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

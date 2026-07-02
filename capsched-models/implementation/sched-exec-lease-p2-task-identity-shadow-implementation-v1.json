@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p2-task-identity-shadow-implementation-v1",
+  "date": "2026-07-02",
+  "status": "applied_no_denial_p2_lifecycle_shadow_patch_validated",
+  "linux": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "patch_queue": {
+    "patch": "linux-patches/patches/capsched-linux-l0/0005-sched-exec-lease-Add-task-identity-shadow.patch",
+    "series": "linux-patches/patches/capsched-linux-l0/series",
+    "work_commit": "a0f2676adda634391983e74f29fcba577a9c919e"
+  },
+  "changed_linux_files": [
+    "include/linux/sched.h",
+    "include/linux/sched_exec_lease.h",
+    "kernel/fork.c",
+    "fs/exec.c",
+    "kernel/exit.c",
+    "kernel/sched/exec_lease.c"
+  ],
+  "task_shadow": {
+    "struct": "sched_exec_task",
+    "embedded_in_task_struct": true,
+    "config_guard": "CONFIG_SCHED_EXEC_LEASE",
+    "fields": [
+      "domain_id",
+      "domain_epoch",
+      "task_generation",
+      "exec_generation",
+      "flags"
+    ],
+    "authority": "linux_local_shadow_only_not_execution_authority"
+  },
+  "lifecycle_anchors": {
+    "raw_copy_reset": {
+      "file": "kernel/fork.c",
+      "function": "dup_task_struct",
+      "after_pattern": "RCU_INIT_POINTER(tsk->exec_state, NULL)",
+      "before_pattern": "setup_thread_stack(tsk, orig)",
+      "helper": "sched_exec_task_reset"
+    },
+    "child_identity_prepare": {
+      "file": "kernel/fork.c",
+      "function": "copy_process",
+      "after_pattern": "copy_creds(p, clone_flags)",
+      "before_pattern": "No more failure paths after this point.",
+      "helper": "sched_exec_task_prepare_fork",
+      "covers": [
+        "kernel_clone_before_wake_up_new_task",
+        "create_io_thread_inactive_return"
+      ]
+    },
+    "exec_identity": {
+      "file": "fs/exec.c",
+      "function": "begin_new_exec",
+      "after_pattern": "exec_mmap(bprm)",
+      "forbidden_anchor": "sched_exec",
+      "helper": "sched_exec_task_commit_exec",
+      "meaning": "exec_generation_bump_after_new_mm_visible"
+    },
+    "exit_invalidate": {
+      "file": "kernel/exit.c",
+      "function": "do_exit",
+      "after_pattern": "exit_signals(tsk);",
+      "helper": "sched_exec_task_exit",
+      "reason": "exit_signals_sets_PF_EXITING"
+    }
+  },
+  "helper_contract": {
+    "nofail": true,
+    "reset_default_domain_shadow": true,
+    "fork_task_generation": "placeholder_constant_one_not_protection_freshness",
+    "exec_generation": "saturating_increment",
+    "exit_flag": "task_local_exiting_flag"
+  },
+  "forbidden_content_present": {
+    "scheduler_hooks": false,
+    "rq_fields": false,
+    "per_rq_state": false,
+    "heap_grant_objects": false,
+    "runtime_denial": false,
+    "budget_charging": false,
+    "blocking_generation_checks": false,
+    "policy_decisions": false,
+    "lsm_cgroup_namespace_coupling": false,
+    "tracepoints": false,
+    "debugfs_procfs_sysfs": false,
+    "syscall_ioctl": false,
+    "exported_symbols": false,
+    "monitor_calls": false,
+    "memoryview_changes": false,
+    "iommu_or_device_ownership_changes": false,
+    "workqueue_or_io_uring_authority_propagation": false
+  },
+  "validation": {
+    "targeted_build_off_on": "passed_after_project_local_objtool_libelf_headers",
+    "patch_queue_replay": "passed",
+    "full_build_record": "capsched/capsched-models/validation/0133-sched-exec-lease-p2-full-build-and-layout.md",
+    "qemu_record": "capsched/capsched-models/validation/0134-sched-exec-lease-p2-qemu-boot-smoke.md",
+    "qemu_off": {
+      "run_dir": "build/qemu/sched-exec-lease-p2-boot-smoke/20260702T045650Z-off",
+      "qemu_status": 0,
+      "workload": "forkexec 100",
+      "workload_ret": 0,
+      "sched_process_fork": 101,
+      "sched_process_exec": 101,
+      "sched_process_exit": 101
+    },
+    "qemu_on": {
+      "run_dir": "build/qemu/sched-exec-lease-p2-boot-smoke/20260702T050601Z-on",
+      "qemu_status": 0,
+      "config_sched_exec_lease": "y",
+      "workload": "forkexec 100",
+      "workload_ret": 0,
+      "sched_process_fork": 101,
+      "sched_process_exec": 101,
+      "sched_process_exit": 101,
+      "kprobe_dlease_enqueue_task": 275,
+      "kprobe_dlease_try_to_wake_up": 169,
+      "kprobe_dlease_wake_up_new_task": 101,
+      "kprobe_dlease_sched_tick": 121,
+      "kprobe_dlease_pick_next_task": 0
+    },
+    "coverage_limits": [
+      "pick_next_task_missing_from_function_filter",
+      "__schedule_missing_from_function_filter",
+      "dlease_pick_next_task_kprobe_failed_or_missing"
+    ],
+    "acceptance_status": "accepted_for_no_denial_p2_lifecycle_shadow_after_full_build_layout_and_qemu_evidence"
+  },
+  "safety_flags": {
+    "implementation_applied": true,
+    "behavior_change": false,
+    "runtime_denial_approved": false,
+    "scheduler_hook_approved": false,
+    "runtime_coverage": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

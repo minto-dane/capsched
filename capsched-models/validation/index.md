@@ -138,6 +138,8 @@ Updated: 2026-07-02
 | 0130 | Passed for full `vmlinux` off/on build; no behavior or protection claim | SchedExecLease Full vmlinux Build |
 | 0131 | Passed for QEMU boot/workload smoke off/on; hook coverage incomplete; no behavior or protection claim | SchedExecLease QEMU Boot Smoke |
 | 0132 | Passed for patch queue replay and full `vmlinux` off/on build; no behavior or protection claim | SchedExecLease P1 Full Build |
+| 0133 | Passed for P2 full `vmlinux` off/on build and build-only task layout probe; QEMU tracked separately; no behavior or protection claim | SchedExecLease P2 Full Build and Task Layout |
+| 0134 | Passed for P2 QEMU boot/workload smoke off/on; hook coverage incomplete; no behavior or protection claim | SchedExecLease P2 QEMU Boot Smoke |
 
 ## Principles
 

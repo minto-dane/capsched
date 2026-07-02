@@ -3306,3 +3306,65 @@ forbidden:
   scheduler hooks, rq fields, runtime denial, budget charging, blocking
   generation checks, tracepoints, ABI, exports, monitor calls, MemoryView/IOMMU
   changes, workqueue/io_uring authority propagation, and protection claims.
+
+N-164 P2 task identity shadow implementation and validation:
+  implementation/0022-sched-exec-lease-p2-task-identity-shadow-implementation.md
+  implementation/sched-exec-lease-p2-task-identity-shadow-implementation-v1.json
+  validation/0133-sched-exec-lease-p2-full-build-and-layout.md
+  validation/0134-sched-exec-lease-p2-qemu-boot-smoke.md
+  validation/run-sched-exec-lease-task-layout-probe.sh
+
+Linux:
+  branch:
+    capsched-linux-l0
+
+  work commit:
+    a0f2676adda634391983e74f29fcba577a9c919e
+    sched/exec_lease: Add task identity shadow
+
+  changed source:
+    include/linux/sched.h
+    include/linux/sched_exec_lease.h
+    kernel/fork.c
+    fs/exec.c
+    kernel/exit.c
+    kernel/sched/exec_lease.c
+
+Patch queue:
+  linux-patches/patches/capsched-linux-l0/0005-sched-exec-lease-Add-task-identity-shadow.patch
+  linux-patches/patches/capsched-linux-l0/series
+  linux-patches/upstream/base.txt
+
+Validation:
+  replay passed to exact final HEAD:
+    a0f2676adda634391983e74f29fcba577a9c919e
+
+  full vmlinux off/on passed with BUILD_TAG=p2-n164-current.
+  task layout probe passed:
+    off: sched_exec field absent, task_struct size 0xcc0
+    on: sched_exec field size 0x28, offset+1 0x591, task_struct size 0xd00
+
+  QEMU off/on boot/workload smoke passed:
+    off run:
+      build/qemu/sched-exec-lease-p2-boot-smoke/20260702T045650Z-off
+      qemu_status=0, WORKLOAD_RET 0
+
+    on run:
+      build/qemu/sched-exec-lease-p2-boot-smoke/20260702T050601Z-on
+      CONFIG_SCHED_EXEC_LEASE=y, qemu_status=0, WORKLOAD_RET 0
+      sched_process_fork/exec/exit counts: 101/101/101
+
+  coverage limit preserved:
+    pick_next_task and __schedule remain function-missing in the current smoke.
+    dlease_pick_next_task kprobe failed/missing. This is not a P2 blocker
+    because P2 has no scheduler hook or denial path.
+
+still blocked:
+  behavior-changing runtime enforcement, scheduler hook approval, runtime
+  denial, ABI, monitor calls, budget charging, runtime coverage, negative
+  denial tests, production protection, and cost-efficiency claims.
+
+next:
+  P3 placement-only scheduler touch points. P3 must remain no-denial/no-ABI and
+  must not make enqueue_task() fallible, deny after rq->curr publication,
+  allocate grants, charge budget, call a monitor, or claim runtime coverage.
