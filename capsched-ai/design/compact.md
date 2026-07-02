@@ -2416,3 +2416,36 @@ remaining model blockers:
   SIDE-001
   EVAL-001
 ```
+
+N-153 completed:
+
+```text
+artifacts:
+  analysis/0107
+  side-channel-cotenancy-policy-gate-v1.json
+  formal/0085
+  validation/0124
+
+purpose:
+  close SIDE-001 at model level.
+
+rule:
+  co-tenancy needs known policy, leakage classification, and explicit policy
+  for SMT/core/cache/NUMA/device queue/cluster sharing. Performance optimizer
+  cannot override hard Monitor-backed boundaries. Scheduler must respect side
+  policy. Side policy is not an authority root.
+
+safe TLC:
+  3 generated states
+  2 distinct states
+  depth 2
+
+unsafe:
+  15 expected counterexamples.
+
+assurance:
+  E-SIDE-COTENANCY-001 supports SIDE-001 only as model evidence.
+
+remaining model blocker:
+  EVAL-001
+```

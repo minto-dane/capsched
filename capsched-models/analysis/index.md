@@ -112,6 +112,7 @@ Updated: 2026-07-01
 | 0104 | Draft integration model gate with TLC-backed design filter | Exit/Revoke Pending Authority Drain Gate |
 | 0105 | Draft completion gate with TLC-backed design filter | Model Completeness Ledger Gate |
 | 0106 | Draft model gate with TLC-backed design filter | TCB Boundary Gate |
+| 0107 | Draft model gate with TLC-backed design filter | Side-Channel and Co-Tenancy Policy Gate |
 
 ## Planned Analysis Notes
 
@@ -189,3 +190,4 @@ Updated: 2026-07-01
 | `exit-revoke-pending-authority-drain-gate-v1.json` | Draft integration model gate | Machine-readable global exit/revoke pending-authority inventory, drain, receipt, settlement, and non-claim contract for N-150 |
 | `model-completeness-ledger-gate-v1.json` | Negative completion gate | Machine-readable current model-completeness audit and remaining model-only blockers for N-151 |
 | `tcb-boundary-gate-v1.json` | Draft model gate | Machine-readable HyperTag Monitor and service-domain TCB boundary contract for N-152 |
+| `side-channel-cotenancy-policy-gate-v1.json` | Draft model gate | Machine-readable explicit co-tenancy and side-channel policy contract for N-153 |

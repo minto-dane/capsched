@@ -769,14 +769,18 @@
     {
       "id": "SIDE-001",
       "parent": "TOP-001",
-      "status": "open",
+      "status": "model_supported",
       "title": "Co-tenancy and side-channel policy is explicit",
       "claim": "CPU core, SMT, cache, NUMA, device, and queue co-tenancy decisions are explicit Domain policy.",
-      "evidence": [],
+      "evidence": [
+        "E-SIDE-COTENANCY-001"
+      ],
       "gaps": [
-        "No side-channel threat partition.",
+        "No side-channel mitigation implementation.",
         "No core scheduling integration.",
-        "No cache/NUMA isolation policy."
+        "No cache/NUMA isolation implementation.",
+        "No runtime side-channel tests.",
+        "No performance/security tradeoff measurement."
       ],
       "forbidden_l0": false
     },
@@ -1778,6 +1782,15 @@
         "TCB-001"
       ],
       "limitation": "Finite TCB boundary model evidence only; it defines monitor and service-domain TCB responsibilities, forbidden monitor contents, typed interfaces, least-authority service entry, TCB budget, and VM/VMM comparison envelope, but is not monitor implementation, service-domain implementation, line/interface measurement, runtime coverage, monitor verification, production protection, or cost-efficiency evidence."
+    },
+    {
+      "id": "E-SIDE-COTENANCY-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0124-side-channel-cotenancy-policy-gate-tlc.md",
+      "supports": [
+        "SIDE-001"
+      ],
+      "limitation": "Finite side-channel and co-tenancy policy model evidence only; it requires explicit policy and leakage classification for SMT/core/cache/NUMA/device queue/cluster sharing while preserving hard Monitor-backed boundaries, but is not scheduler implementation, side-channel mitigation evidence, runtime coverage, monitor verification, production protection, or cost-efficiency evidence."
     }
   ],
   "counterexamples": [
@@ -1875,6 +1888,11 @@
       "id": "CEX-TCB-BOUNDARY-001",
       "record": "capsched-models/validation/0123-tcb-boundary-gate-tlc.md",
       "meaning": "Unsafe TCB boundary models reject unbounded monitor core, untyped monitor interface, driver/parser/policy engine in the monitor, Linux mutable trusted root, service-domain ambient authority, raw handle exposure, missing TCB budget, missing VM/VMM comparison envelope, implementation overclaim, production-protection overclaim, and cost-efficiency overclaim."
+    },
+    {
+      "id": "CEX-SIDE-COTENANCY-001",
+      "record": "capsched-models/validation/0124-side-channel-cotenancy-policy-gate-tlc.md",
+      "meaning": "Unsafe side-channel and co-tenancy policy models reject unknown policy default-allow, SMT/core/cache/NUMA/device queue/cluster sharing without explicit policy, performance override of isolation, side policy weakening hard boundaries, scheduler side-policy bypass, missing monitor binding, missing leakage classification, side policy as authority root, and protection/cost overclaims."
     }
   ],
   "forbidden_claims": [
@@ -1923,6 +1941,8 @@
     "Root-management ClusterLease text, scheduler placement, service-domain admission, Linux PCI/devlink/IOMMU registration, or tracefs observation is a LocalDomainDeviceLease.",
     "RunCap is resource endpoint authority.",
     "Runtime trace coverage, sched_stat_runtime, sched_switch, remote tick, or DL server lifecycle trace is monitor root budget enforcement or production protection evidence.",
+    "Side-channel or co-tenancy policy can mint execution, memory, endpoint, queue, or budget authority.",
+    "Unknown SMT/core/cache/NUMA/device queue/cluster co-tenancy policy defaults to allow, or performance optimization can override hard Monitor-backed isolation.",
     "SKB, XDP frame, XDP_TX page-pool, AF_XDP zero-copy, QueueControl, RepresentorForward, and ServiceWork can be collapsed into one queue capability.",
     "SchedContext budget is monitor root budget.",
     "TLC completion alone proves the datacenter OS goal.",

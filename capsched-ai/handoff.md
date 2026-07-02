@@ -2819,9 +2819,8 @@ rule:
   protection.
 
 next:
-  N-152 has now closed TCB-001 at model level. Close SIDE-001 with a
-  co-tenancy/side-channel policy model, then EVAL-001 with an evaluation
-  contract model.
+  N-153 has now closed SIDE-001 at model level. Close EVAL-001 with an
+  evaluation contract model.
 
 N-152 completed:
   analysis/0106-tcb-boundary-gate.md
@@ -2859,4 +2858,40 @@ still not:
   monitor implementation, service-domain implementation, line/interface count,
   runtime coverage, monitor verification, production protection, or cost
   efficiency.
+
+N-153 completed:
+  analysis/0107-side-channel-cotenancy-policy-gate.md
+  analysis/side-channel-cotenancy-policy-gate-v1.json
+  formal/0085-side-channel-cotenancy-policy-gate-model/
+  validation/0124-side-channel-cotenancy-policy-gate-tlc.md
+
+purpose:
+  close SIDE-001 as a model-supported co-tenancy and side-channel policy
+  boundary.
+
+rule:
+  co-tenancy requires known policy, leakage classification, and explicit policy
+  for SMT, core, cache, NUMA, device queue, and cluster placement sharing.
+  Performance optimization cannot override hard Monitor-backed boundaries.
+  Scheduler placement must respect side policy. Side policy is not execution,
+  memory, endpoint, queue, or budget authority.
+
+safe TLC:
+  3 generated states
+  2 distinct states
+  depth 2
+
+unsafe:
+  15 expected counterexamples for unknown policy default allow, sharing without
+  explicit policy, performance override, hard-boundary weakening, scheduler
+  bypass, missing monitor binding, missing leakage classification, side policy
+  as authority root, and protection/cost overclaims.
+
+assurance:
+  E-SIDE-COTENANCY-001 supports SIDE-001 as model evidence only.
+
+still not:
+  scheduler implementation, side-channel mitigation implementation, runtime
+  side-channel evidence, performance evidence, monitor verification, production
+  protection, or cost efficiency.
 ```

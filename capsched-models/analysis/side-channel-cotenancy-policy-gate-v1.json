@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "id": "side-channel-cotenancy-policy-gate-v1",
+  "analysis": "analysis/0107-side-channel-cotenancy-policy-gate.md",
+  "status": "draft_model_gate",
+  "date": "2026-07-01",
+  "purpose": "Define explicit co-tenancy and side-channel policy constraints without claiming mitigation implementation, production protection, or cost efficiency.",
+  "policy_dimensions": [
+    "smt_sibling_sharing",
+    "core_sharing",
+    "cache_sharing",
+    "numa_locality_and_sharing",
+    "device_queue_sharing",
+    "cluster_placement"
+  ],
+  "hard_boundaries_preserved": [
+    "run_cap_sched_context_root_budget",
+    "memoryview_page_ownership",
+    "iommu_queuelease_ownership",
+    "typed_endpoint_authority",
+    "monitor_activation_binding"
+  ],
+  "requirements": [
+    "policy_known_before_sharing",
+    "leakage_classified_before_sharing",
+    "explicit_policy_for_each_allowed_sharing_dimension",
+    "performance_optimizer_cannot_override_isolation",
+    "hard_monitor_backed_boundary_preserved",
+    "scheduler_respects_side_policy",
+    "monitor_binding_preserved",
+    "side_policy_not_authority_root"
+  ],
+  "unsafe_cases": [
+    "UnsafeUnknownPolicyDefaultsAllow",
+    "UnsafeSmtWithoutPolicy",
+    "UnsafeCoreWithoutPolicy",
+    "UnsafeCacheWithoutPolicy",
+    "UnsafeNumaWithoutPolicy",
+    "UnsafeDeviceQueueWithoutPolicy",
+    "UnsafeClusterPlacementWithoutPolicy",
+    "UnsafePerformanceOverridesIsolation",
+    "UnsafeSidePolicyWeakensHardBoundary",
+    "UnsafeSchedulerIgnoresSidePolicy",
+    "UnsafeMonitorBindingMissing",
+    "UnsafeLeakageUnclassified",
+    "UnsafeSidePolicyAsAuthorityRoot",
+    "UnsafeProductionProtectionClaim",
+    "UnsafeCostEfficiencyClaim"
+  ],
+  "safety_flags": {
+    "side_policy_model_supported": true,
+    "linux_patch_approved": false,
+    "scheduler_hook_approved": false,
+    "side_channel_mitigation_implemented": false,
+    "runtime_coverage_claim": false,
+    "monitor_verified": false,
+    "production_protection_claim": false,
+    "cost_efficiency_claim": false
+  },
+  "evidence": {
+    "id": "E-SIDE-COTENANCY-001",
+    "kind": "tla_validation",
+    "claims_supported": ["SIDE-001"],
+    "limitations": "Finite model gate supports explicit co-tenancy and side-channel policy semantics only; it is not scheduler implementation, side-channel mitigation evidence, performance evidence, monitor verification, production protection, or cost-efficiency evidence."
+  }
+}

@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "tcb-boundary-gate-complete-model-goal-not-complete",
+    "current_phase": "side-channel-cotenancy-policy-gate-complete-model-goal-not-complete",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-152 TCB boundary gate is complete. Added analysis/0106, tcb-boundary-gate-v1.json, formal/0084 TcbBoundaryGate, and validation/0123. TCB-001 is now model_supported via E-TCB-BOUNDARY-001. The model constrains HyperTag Monitor to typed/sealed roots only, forbids drivers/parsers/policy engines/Linux mutable metadata in the Monitor trust root, requires service Domains to enter through typed endpoints with least authority and caller-frozen authority intersection, forbids raw handle exposure, and requires a TCB budget plus VM/VMM comparison envelope. Safe TLC passed with 3 generated states, 2 distinct states, 0 left on queue, depth 2. Eleven unsafe configs produced expected counterexamples. Remaining model-only blockers before goal completion are SIDE-001 and EVAL-001. This is not monitor implementation, service-domain implementation, line/interface measurement, runtime coverage, monitor verification, production protection, or cost-efficiency evidence.",
+    "current_focus": "N-153 side-channel and co-tenancy policy gate is complete. Added analysis/0107, side-channel-cotenancy-policy-gate-v1.json, formal/0085 SideChannelCotenancyPolicyGate, and validation/0124. SIDE-001 is now model_supported via E-SIDE-COTENANCY-001. The model requires known policy and leakage classification before co-tenancy; explicit policy for SMT/core/cache/NUMA/device queue/cluster sharing; preservation of hard Monitor-backed boundaries and monitor binding; scheduler compliance with side policy; and rejects performance override, side policy as authority root, production protection claims, and cost-efficiency claims. Safe TLC passed with 3 generated states, 2 distinct states, 0 left on queue, depth 2. Fifteen unsafe configs produced expected counterexamples. Remaining model-only blocker before goal completion is EVAL-001. This is not scheduler implementation, side-channel mitigation, runtime coverage, performance evidence, monitor verification, production protection, or cost-efficiency evidence.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -726,7 +726,13 @@
     "tcb_boundary_gate_model": "capsched/capsched-models/formal/0084-tcb-boundary-gate-model/README.md",
     "tcb_boundary_gate_tla": "capsched/capsched-models/formal/0084-tcb-boundary-gate-model/TcbBoundaryGate.tla",
     "tcb_boundary_gate_validation": "capsched/capsched-models/validation/0123-tcb-boundary-gate-tlc.md",
-    "tcb_boundary_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/tcb-boundary-gate-20260702T000304Z"
+    "tcb_boundary_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/tcb-boundary-gate-20260702T000304Z",
+    "side_channel_cotenancy_policy_analysis": "capsched/capsched-models/analysis/0107-side-channel-cotenancy-policy-gate.md",
+    "side_channel_cotenancy_policy_json": "capsched/capsched-models/analysis/side-channel-cotenancy-policy-gate-v1.json",
+    "side_channel_cotenancy_policy_model": "capsched/capsched-models/formal/0085-side-channel-cotenancy-policy-gate-model/README.md",
+    "side_channel_cotenancy_policy_tla": "capsched/capsched-models/formal/0085-side-channel-cotenancy-policy-gate-model/SideChannelCotenancyPolicyGate.tla",
+    "side_channel_cotenancy_policy_validation": "capsched/capsched-models/validation/0124-side-channel-cotenancy-policy-gate-tlc.md",
+    "side_channel_cotenancy_policy_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/side-channel-cotenancy-policy-gate-20260702T000905Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

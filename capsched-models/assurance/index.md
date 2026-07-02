@@ -726,6 +726,19 @@ TCB boundary gate:
   measurement, monitor verification, production protection, or cost-efficiency
   evidence.
 
+Side-channel and co-tenancy policy gate:
+  analysis/0107 and formal/0085 define the model-supported side policy
+  boundary for SMT, core, cache, NUMA, device queue, and cluster placement.
+  validation/0124 safe TLC passed with 3 generated states, 2 distinct states,
+  and depth 2. Unsafe configs produced expected counterexamples for unknown
+  policy default-allow, sharing without explicit policy, performance override
+  of isolation, side policy weakening hard boundaries, scheduler bypass,
+  missing monitor binding, missing leakage classification, side policy as
+  authority root, and production/cost overclaims. E-SIDE-COTENANCY-001 supports
+  SIDE-001 as model evidence only; it is not mitigation implementation,
+  runtime side-channel evidence, monitor verification, production protection,
+  or cost-efficiency evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

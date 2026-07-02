@@ -667,18 +667,21 @@ CPU core, SMT, cache, NUMA, device, and queue co-tenancy decisions are explicit
 Domain policy and do not accidentally weaken hard boundaries.
 ```
 
-Current status: Open
+Current status: Model-supported
 
 Current evidence:
 
 - scheduler topology analysis `analysis/0014-scheduler-topology-cluster-partition-map.md`
+- `formal/0085-side-channel-cotenancy-policy-gate-model/`
+- `validation/0124-side-channel-cotenancy-policy-gate-tlc.md`
 
 Open gaps:
 
-- no side-channel threat partition
+- no side-channel mitigation implementation
 - no core scheduling integration
-- no cache/NUMA isolation policy
-- no performance/security tradeoff matrix
+- no cache/NUMA isolation implementation
+- no runtime side-channel tests
+- no performance/security tradeoff measurement
 
 ### EVAL-001: Exploit and Cost Baselines Are Tested
 
@@ -738,6 +741,7 @@ Open gaps:
 | E-DEV-001 | TLA validation | `validation/0013-queue-lease-tlc.md` | DEV, REVOKE |
 | E-L0-002 | Linux build validation | `validation/0014-l0-slice0b-build-run.md` | COMPAT |
 | E-TCB-BOUNDARY-001 | TLA validation | `validation/0123-tcb-boundary-gate-tlc.md` | TCB |
+| E-SIDE-COTENANCY-001 | TLA validation | `validation/0124-side-channel-cotenancy-policy-gate-tlc.md` | SIDE |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
 
 ## Counterexample and Negative Evidence Log
@@ -762,6 +766,7 @@ Open gaps:
 | CEX-SCHED-LIFECYCLE-IDENTITY-001 | `validation/0120` | Child run without SpawnCap or fresh identity, ambient RunCap/FrozenRunUse/RunToken inheritance, wake before identity preparation, new Domain without token, clone flags as Domain authority, exec Domain change without token, post-exec run without ExecContinuation, check-only mutation, old FrozenRunUse after exec, run after exit, PID/TGID reuse, release authority, and behavior/monitor/protection overclaims are rejected. |
 | CEX-SCHED-EXIT-REVOKE-DRAIN-001 | `validation/0121` | Remote wake or queued FrozenRunUse surviving completion, early release, PID reuse, pending workqueue/io_uring/endpoint/direct-call/ring/device carriers, stale derived receipts, premature budget refund, surviving server ticket or root RunToken, audit/Linux cleanup as drain proof, unknown carrier default drain, budget leak/double settlement, RCU visibility authority, and behavior/monitor/protection overclaims are rejected. |
 | CEX-TCB-BOUNDARY-001 | `validation/0123` | Unbounded monitor core, untyped monitor interface, driver/parser/policy engine in the monitor, Linux mutable trusted root, service-domain ambient authority, raw handle exposure, missing TCB budget, missing VM/VMM comparison envelope, implementation overclaim, production-protection overclaim, and cost-efficiency overclaim are rejected. |
+| CEX-SIDE-COTENANCY-001 | `validation/0124` | Unknown policy default-allow, SMT/core/cache/NUMA/device queue/cluster sharing without explicit policy, performance override of isolation, side policy weakening hard boundaries, scheduler side-policy bypass, missing monitor binding, missing leakage classification, side policy as authority root, and protection/cost overclaims are rejected. |
 | CEX-EXEC-GEN-001 | `validation/0037` | Exec Domain change without monitor token, post-exec run without ExecContinuation, old endpoint/async/mmap authority, fd/CLOEXEC/execfd inheritance, credential amplification, and check-only mutation are rejected. |
 | CEX-POST-EXEC-RESOURCE-001 | `validation/0038` | Generic fd reachability, CLOEXEC leaks, regular/socket/anonymous fd ambient authority, epoll/eventfd/timerfd/io_uring old state, and execfd ambient inheritance after exec are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
@@ -798,6 +803,10 @@ policy engines, Linux scheduler policy, cgroup/namespace/LSM policy logic, or
 Linux mutable metadata as trusted roots.
 Service Domains can exercise ambient caller or target authority without typed
 endpoints and caller-frozen authority intersection.
+Side-channel or co-tenancy policy can mint execution, memory, endpoint, queue,
+or budget authority.
+Unknown SMT/core/cache/NUMA/device queue/cluster co-tenancy policy defaults to
+allow, or performance optimization can override hard Monitor-backed isolation.
 Exec fd/resource reachability, CLOEXEC handling failure, credential changes,
 old async state, old mmap state, or interpreter execfd handoff can preserve
 post-exec endpoint authority without derivation.
