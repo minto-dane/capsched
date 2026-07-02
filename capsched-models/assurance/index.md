@@ -703,6 +703,16 @@ Exit/revoke pending authority drain integration gate:
   supports EXEC-001, BUDGET-001, ENDP-001, ASYNC-001, DEV-001, REVOKE-001, and
   COMPAT-001 as model evidence only.
 
+Model completeness ledger gate:
+  analysis/0105 and formal/0083 audit whether the model-only goal may be
+  marked complete. validation/0122 safe TLC passed with 5 generated states, 3
+  distinct states, and depth 2. Unsafe configs produced expected
+  counterexamples for model completion while TCB-001, SIDE-001, or EVAL-001
+  remain open, completion without compatibility/prototype classification,
+  ignoring an open model blocker, production protection from model-only
+  evidence, and prototype evidence treated as protection. This is a negative
+  completion gate: the model-only goal is not complete yet.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

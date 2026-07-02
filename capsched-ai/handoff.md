@@ -2782,7 +2782,44 @@ still not:
   verification, behavior change, or production protection.
 
 next:
-  Continue model-only completion by constructing a final model-completeness
-  ledger across TOP-001 children and identifying any remaining non-implementation
-  blockers before claiming the model-only goal complete.
+  N-151 has now constructed the model-completeness ledger and found the
+  model-only goal is not complete yet.
+
+N-151 completed:
+  analysis/0105-model-completeness-ledger-gate.md
+  analysis/model-completeness-ledger-gate-v1.json
+  formal/0083-model-completeness-ledger-gate-model/
+  validation/0122-model-completeness-ledger-gate-tlc.md
+
+purpose:
+  prevent premature completion of the model-only goal.
+
+current audit:
+  11 top-level children are model-supported:
+    ACT, EXEC, BUDGET, ENDP, ASYNC, MEM, TLB, PCACHE, DEV, REVOKE, CLUSTER.
+  1 top-level child is prototype/compatibility-classified:
+    COMPAT.
+  3 top-level children remain open model blockers:
+    TCB, SIDE, EVAL.
+
+safe TLC:
+  5 generated states
+  3 distinct states
+  depth 2
+
+unsafe:
+  7 expected counterexamples for model completion while TCB/SIDE/EVAL are open,
+  completion without compatibility classification, ignored open blocker,
+  production claim from model-only evidence, and prototype evidence as
+  protection.
+
+rule:
+  Do not mark the goal complete until TCB-001, SIDE-001, and EVAL-001 have
+  model-supported artifacts. Even then, model-only completion is not production
+  protection.
+
+next:
+  Close TCB-001 with a monitor/service-domain TCB boundary model, then SIDE-001
+  with a co-tenancy/side-channel policy model, then EVAL-001 with an evaluation
+  contract model.
 ```

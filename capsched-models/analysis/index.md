@@ -110,6 +110,7 @@ Updated: 2026-07-01
 | 0102 | Draft model gate with TLC-backed design filter | Task FrozenRun Lifetime and Locking Gate |
 | 0103 | Draft integration model gate with TLC-backed design filter | Lifecycle Identity Propagation Integration Gate |
 | 0104 | Draft integration model gate with TLC-backed design filter | Exit/Revoke Pending Authority Drain Gate |
+| 0105 | Draft completion gate with TLC-backed design filter | Model Completeness Ledger Gate |
 
 ## Planned Analysis Notes
 
@@ -185,3 +186,4 @@ Updated: 2026-07-01
 | `task-frozen-run-lifetime-locking-gate-v1.json` | Draft model gate | Machine-readable task lifetime, generation, RCU-only rejection, rq/pi locking, migration, release, and denied-candidate settlement contract for N-148 |
 | `lifecycle-identity-propagation-integration-gate-v1.json` | Draft integration model gate | Machine-readable fork/clone, exec, and exit identity propagation contract for N-149 |
 | `exit-revoke-pending-authority-drain-gate-v1.json` | Draft integration model gate | Machine-readable global exit/revoke pending-authority inventory, drain, receipt, settlement, and non-claim contract for N-150 |
+| `model-completeness-ledger-gate-v1.json` | Negative completion gate | Machine-readable current model-completeness audit and remaining model-only blockers for N-151 |

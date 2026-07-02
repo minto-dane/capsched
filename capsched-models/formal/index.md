@@ -88,6 +88,7 @@ Updated: 2026-07-01
 | 0080 | Checked with safe pass and expected unsafe counterexamples | Task FrozenRun Lifetime and Locking Gate Model |
 | 0081 | Checked with safe pass and expected unsafe counterexamples | Lifecycle Identity Propagation Integration Gate Model |
 | 0082 | Checked with safe pass and expected unsafe counterexamples | Exit/Revoke Pending Authority Drain Gate Model |
+| 0083 | Checked with safe pass and expected unsafe counterexamples | Model Completeness Ledger Gate Model |
 
 ## Planned
 

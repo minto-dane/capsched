@@ -127,6 +127,7 @@ Updated: 2026-07-01
 | 0119 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Task FrozenRun Lifetime and Locking Gate TLC |
 | 0120 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Lifecycle Identity Propagation Integration Gate TLC |
 | 0121 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Exit/Revoke Pending Authority Drain Gate TLC |
+| 0122 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked; model-only goal not yet complete | Model Completeness Ledger Gate TLC |
 
 ## Principles
 
