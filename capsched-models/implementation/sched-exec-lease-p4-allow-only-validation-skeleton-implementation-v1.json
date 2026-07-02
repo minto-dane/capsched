@@ -99,7 +99,7 @@
     "requires_full_vmlinux": true,
     "requires_qemu": true,
     "full_vmlinux_status": "passed_validation_0148",
-    "qemu_status": "pending"
+    "qemu_status": "passed_validation_0149"
   },
   "non_claims": {
     "runtime_denial": false,

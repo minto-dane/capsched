@@ -3268,8 +3268,16 @@ P4 allow-only skeleton implementation:
     off config undef, vmlinux present, exec_lease.o absent.
     on config y, vmlinux present, exec_lease.o present.
 
+  Validation 0149:
+    QEMU off/on boot/workload smoke passed.
+    off run:
+      build/qemu/sched-exec-lease-p4-allow-only-matrix/20260702T220800Z-off
+    on run:
+      build/qemu/sched-exec-lease-p4-allow-only-matrix/20260702T221639Z-on
+    both qemu_status=0 and WORKLOAD_RET 0.
+
   Not yet done:
-    QEMU off/on compatibility validation.
+    final overclaim/security review.
 
   Non-claims:
     no runtime denial, runtime coverage, budget enforcement, monitor

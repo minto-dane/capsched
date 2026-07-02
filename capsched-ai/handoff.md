@@ -3829,8 +3829,9 @@ P4 allow-all helper proof / validation 0146:
 P4 allow-only skeleton implementation / validation 0147:
   status:
     Applied to Linux and partially validated. Full vmlinux off/on validation is
-    complete in validation/0148. Full P4 acceptance is still pending QEMU
-    off/on validation and final overclaim/security review.
+    complete in validation/0148. QEMU off/on boot/workload validation is
+    complete in validation/0149. Full P4 acceptance is still pending final
+    overclaim/security review.
 
   Linux:
     commit:
@@ -3875,14 +3876,18 @@ P4 allow-only skeleton implementation / validation 0147:
       off config undef, vmlinux present, exec_lease.o absent.
       on config y, vmlinux present, exec_lease.o present.
       log: build/logs/sched-exec-lease-full-build-20260702T214346Z.log
+    QEMU off/on boot/workload smoke passed in validation/0149:
+      off run: build/qemu/sched-exec-lease-p4-allow-only-matrix/20260702T220800Z-off
+      on run: build/qemu/sched-exec-lease-p4-allow-only-matrix/20260702T221639Z-on
+      both qemu_status=0 and WORKLOAD_RET 0.
 
   important negative:
     core.o byte identity is not claimed.
-    QEMU validation is pending.
+    QEMU does not prove runtime coverage: pick_next_task and __schedule remain
+    function-missing/kprobe-unavailable in this runner.
     runtime denial, runtime coverage, budget enforcement, monitor verification,
     production protection, hypervisor-grade isolation, cost-efficiency,
     deployment readiness, and P5 denial remain false.
 
   next:
-    Run QEMU off/on compatibility validation for P4. If it is long, launch it
-    under systemd and stop chat supervision.
+    Run final P4 overclaim/security review. Keep P5 denial blocked.
