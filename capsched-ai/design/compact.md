@@ -2845,7 +2845,8 @@ artifacts:
   analysis/sched-ext-core-proxy-coverage-boundary-v1.json
 
 verdict:
-  implementation-ready design is not complete yet.
+  implementation-ready design is not complete yet at N-165/N-166.
+  Later superseded by N-173 final implementation-ready audit.
 
 default runtime-coverage rule:
   uncovered until explicitly proved covered.
@@ -3038,4 +3039,38 @@ rejects:
 
 next:
   final implementation-ready audit.
+```
+
+N-173 final implementation-ready audit:
+
+```text
+artifacts:
+  analysis/0120-final-implementation-ready-audit.md
+  analysis/final-implementation-ready-audit-v1.json
+  formal/0092-final-implementation-ready-audit-model/
+  validation/0139-final-implementation-ready-audit-tlc.md
+
+verdict:
+  implementation-ready design complete for scope-reopening review.
+  implementation scope reopened: false.
+  Linux patch approved: false.
+  behavior change approved: false.
+  runtime denial approved: false.
+  runtime coverage: false.
+  monitor verified: false.
+  production protection: false.
+  cost efficiency: false.
+
+next reviewable candidate:
+  P3 placement-only/no-denial/no-ABI scheduler touchpoints, only after explicit
+  implementation-scope reopening and a proposal row.
+
+sequential candidates:
+  P4 only after P3 implementation validation.
+  P5 only after P3/P4 validation, and only as off-by-default test-only denial
+  for the classified support set.
+
+TLC:
+  safe passed: 2 generated, 1 distinct, depth 1.
+  unsafe expected counterexamples: 12/12.
 ```

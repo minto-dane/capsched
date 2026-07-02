@@ -7,10 +7,20 @@ No behavior-changing implementation patch points are accepted yet.
 Latest design-readiness audit:
 
 - `analysis/0113-implementation-ready-completion-audit.md`
-  - Verdict: implementation-ready design is not complete yet.
-  - Reason: P2 is validated and the P5 path/claim gates are now design-closed,
-    and the B5 upstream-drift gate is fresh; final implementation-ready audit
-    still remains before any new Linux implementation scope is reopened.
+  - Verdict: historical audit superseded by analysis/0120.
+- `analysis/0120-final-implementation-ready-audit.md`
+  - Verdict: final design-ready audit passed for implementation-scope
+    reopening review; implementation remains unapproved.
+  - Rule: P3 placement-only/no-denial/no-ABI scheduler touchpoints are the next
+    reviewable candidate only after explicit scope reopening and a proposal row.
+    P4 depends on P3 implementation validation. P5 depends on P3/P4 validation
+    and remains test-only/off-by-default for the classified support set.
+- `formal/0092-final-implementation-ready-audit-model/`
+  - Evidence: validation/0139 safe TLC passed and 12 unsafe configs produced
+    expected counterexamples for design-ready approving a patch, P3 without
+    scope reopen, P4 before P3, P5 before P3/P4, missing P5 classification,
+    runtime coverage, ABI/protection/cost overclaims, missing claim ledger,
+    missing drift gate, and missing non-claims.
 - `analysis/0114-sched-ext-core-proxy-coverage-boundary.md`
   - Rule: sched_ext, core scheduling, and proxy execution are uncovered until
     explicitly classified as supported, disabled, or excluded.

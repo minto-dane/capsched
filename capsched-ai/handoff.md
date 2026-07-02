@@ -3372,7 +3372,8 @@ N-165/N-166 design-readiness audit:
     capsched-models/analysis/sched-ext-core-proxy-coverage-boundary-v1.json
 
   current verdict:
-    implementation-ready design is not complete yet.
+    implementation-ready design is not complete yet at N-165/N-166.
+    Later superseded by N-173 final implementation-ready audit.
 
   reason:
     P2 is validated, and ADR-0011 keeps new Linux implementation out of scope,
@@ -3532,3 +3533,33 @@ N-172 implementation reopen upstream drift gate:
 
   next:
     final implementation-ready audit.
+
+N-173 final implementation-ready audit:
+  artifacts:
+    capsched-models/analysis/0120-final-implementation-ready-audit.md
+    capsched-models/analysis/final-implementation-ready-audit-v1.json
+    capsched-models/formal/0092-final-implementation-ready-audit-model/
+    capsched-models/validation/0139-final-implementation-ready-audit-tlc.md
+
+  verdict:
+    implementation-ready design is complete for implementation-scope reopening
+    review, but implementation remains unapproved.
+
+  next reviewable candidate:
+    P3 placement-only/no-denial/no-ABI scheduler touchpoints, only after
+    explicit scope reopening and a proposal row with claim ledger, fresh drift
+    row, patch replay plan, build/QEMU plan, and non-claims.
+
+  sequential gates:
+    P4 depends on P3 implementation validation.
+    P5 depends on P3/P4 validation and remains off-by-default test-only denial
+    for the classified support set.
+
+  TLC:
+    safe passed with 2 generated states, 1 distinct state, depth 1.
+    12 unsafe configs produced expected counterexamples.
+
+  non-claims remain false:
+    linux_patch_approved, behavior_change, runtime_denial, runtime_coverage,
+    ABI, monitor_verification, production_protection, hypervisor_grade,
+    cost_efficiency, deployment_readiness.

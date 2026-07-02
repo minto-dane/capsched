@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "id": "final-implementation-ready-audit-v1",
+  "date": "2026-07-02",
+  "status": "final_design_ready_audit_passed_implementation_unapproved",
+  "current_linux": {
+    "branch": "capsched-linux-l0",
+    "work_commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "work_subject": "sched/exec_lease: Add task identity shadow",
+    "upstream_master": "4a50a141f05a8d1737661b19ee22ff8455b94409"
+  },
+  "verdict": {
+    "implementation_ready_design_complete": true,
+    "scope_reopen_decision_framework_complete": true,
+    "implementation_scope_reopened": false,
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency": false
+  },
+  "next_reviewable_candidate": {
+    "slice": "P3",
+    "name": "placement_only_scheduler_touchpoints",
+    "directly_reviewable_after_explicit_scope_reopen": true,
+    "allowed_mode": "no_denial_no_retry_no_abi_no_monitor_no_budget_charge_no_protection_claim"
+  },
+  "sequential_candidates": [
+    {
+      "slice": "P4",
+      "name": "allow_all_final_revalidation_skeleton",
+      "directly_reviewable_now": false,
+      "blocked_until": ["P3_implemented_and_validated"],
+      "allowed_mode": "allow_all_no_denial_no_retry_no_fail_closed_no_runtime_coverage"
+    },
+    {
+      "slice": "P5",
+      "name": "test_only_denial",
+      "directly_reviewable_now": false,
+      "blocked_until": [
+        "P3_implemented_and_validated",
+        "P4_implemented_and_validated",
+        "negative_denial_tests_designed_and_mapped",
+        "denied_candidate_trace_evidence_plan",
+        "bounded_retry_evidence_plan",
+        "fresh_drift_row",
+        "claim_ledger_row"
+      ],
+      "allowed_mode": "off_by_default_test_only_denial_for_classified_support_set"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R1",
+      "name": "no_new_implementation_current_scope",
+      "evidence": ["ADR-0011", "clean_linux_tree_at_p2"],
+      "verdict": "satisfied"
+    },
+    {
+      "id": "R2",
+      "name": "p1_p2_no_behavior_compatibility",
+      "evidence": ["implementation/0020", "implementation/0022", "validation/0130", "validation/0131", "validation/0132", "validation/0133", "validation/0134"],
+      "verdict": "satisfied"
+    },
+    {
+      "id": "R3",
+      "name": "p3_patch_contract",
+      "evidence": ["implementation/0023", "analysis/0112"],
+      "verdict": "satisfied_for_scope_reopen_review"
+    },
+    {
+      "id": "R4",
+      "name": "p4_allow_all_contract",
+      "evidence": ["implementation/0024", "analysis/0100", "analysis/0115"],
+      "verdict": "satisfied_for_sequential_review_after_p3"
+    },
+    {
+      "id": "R5",
+      "name": "p5_test_only_denial_gate",
+      "evidence": ["implementation/0025", "analysis/0115", "analysis/0116", "analysis/0117", "analysis/0118", "analysis/0119"],
+      "verdict": "satisfied_as_gated_future_review_not_directly_reviewable"
+    },
+    {
+      "id": "R6",
+      "name": "scheduler_path_classification",
+      "evidence": ["analysis/0117", "formal/0089", "validation/0136"],
+      "verdict": "satisfied_for_initial_p5"
+    },
+    {
+      "id": "R7",
+      "name": "final_denial_source_shape",
+      "evidence": ["analysis/0115", "formal/0088", "validation/0135"],
+      "verdict": "satisfied_as_design_gate"
+    },
+    {
+      "id": "R8",
+      "name": "negative_denial_obligations",
+      "evidence": ["analysis/0116"],
+      "verdict": "satisfied_as_design_plan_future_tests_required"
+    },
+    {
+      "id": "R9",
+      "name": "implementation_claim_ledger",
+      "evidence": ["analysis/0118", "formal/0090", "validation/0137"],
+      "verdict": "satisfied"
+    },
+    {
+      "id": "R10",
+      "name": "upstream_drift_freshness_before_reopen",
+      "evidence": ["analysis/0119", "formal/0091", "validation/0138"],
+      "verdict": "satisfied"
+    },
+    {
+      "id": "R11",
+      "name": "non_claim_boundaries",
+      "evidence": ["assurance/claims.json", "analysis/0109", "analysis/0118", "validation/0137"],
+      "verdict": "satisfied"
+    }
+  ],
+  "required_for_future_p3_patch_proposal": [
+    "explicit_implementation_scope_reopen",
+    "claim_ledger_row",
+    "fresh_drift_row_for_patch_parent",
+    "patch_queue_replay_plan",
+    "full_vmlinux_off_on_build_plan",
+    "qemu_no_behavior_smoke_plan",
+    "explicit_non_claims"
+  ],
+  "safety_flags": {
+    "implementation_scope_reopened": false,
+    "linux_patch_approved": false,
+    "behavior_change": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade": false,
+    "cost_efficiency": false,
+    "deployment_readiness": false
+  }
+}

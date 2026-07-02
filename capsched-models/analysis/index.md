@@ -125,6 +125,7 @@ Updated: 2026-07-02
 | 0117 | Design-only path classification with TLC-backed gate | Scheduler Path Classification for P5 |
 | 0118 | Design-only claim ledger gate with TLC-backed overclaim rejection | Implementation Claim Ledger Gate |
 | 0119 | Design-only implementation-reopen drift gate with fresh upstream observation | Implementation Reopen Upstream Drift Gate |
+| 0120 | Final design-ready audit passed; implementation unapproved | Final Implementation-Ready Audit |
 
 ## Planned Analysis Notes
 
@@ -193,6 +194,7 @@ Updated: 2026-07-02
 | `scheduler-path-classification-for-p5-v1.json` | Design-only path classification | Machine-readable P5 supported/disabled/excluded scheduler path classification and claim-scope guard |
 | `implementation-claim-ledger-gate-v1.json` | Design-only claim ledger gate | Machine-readable evidence-class to claim-class rules and mandatory non-claim safety flags for future implementation proposals |
 | `implementation-reopen-upstream-drift-gate-v1.json` | Design-only implementation-reopen drift gate | Machine-readable fresh upstream observation, touched-group freshness rules, slice reopen requirements, and non-claim safety flags |
+| `final-implementation-ready-audit-v1.json` | Final design-ready audit | Machine-readable final implementation-ready design verdict, slice readiness, future patch requirements, and safety flags |
 | `scheduler-server-ticket-v1.json` | Draft model gate | Machine-readable scheduler server-ticket source map and model contract for N-137 |
 | `runtime-coverage-gate-v1.json` | Draft trace-only coverage gate | Machine-readable current/donor/proxy/server runtime coverage contract for N-138 |
 | `monitor-root-budget-timer-v1.json` | Draft monitor-root budget event model | Machine-readable monitor-owned root budget timer contract for N-139 |
