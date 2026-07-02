@@ -2933,3 +2933,46 @@ next:
   All N-151 model-only blockers are now closed. Add a final model-completeness
   ledger before marking the model-only goal complete.
 ```
+
+N-155 completed:
+  analysis/0109-final-model-completeness-ledger.md
+  analysis/final-model-completeness-ledger-v1.json
+  formal/0087-final-model-completeness-ledger-model/
+  validation/0126-final-model-completeness-ledger-tlc.md
+
+purpose:
+  close the current model-only goal after TCB-001, SIDE-001, and EVAL-001 were
+  closed at model level.
+
+result:
+  model-only goal complete. Production protection remains unclaimed.
+
+current audit:
+  14 top-level children are model-supported:
+    ACT, EXEC, BUDGET, ENDP, ASYNC, MEM, TLB, PCACHE, DEV, REVOKE, CLUSTER,
+    TCB, SIDE, EVAL.
+  1 top-level child is prototype/compatibility-classified:
+    COMPAT.
+  0 model-only blockers remain open.
+
+safe TLC:
+  3 generated states
+  2 distinct states
+  depth 2
+
+unsafe:
+  14 expected counterexamples for missing model children, missing COMPAT
+  classification, open DEV subclaims, missing TCB/SIDE/EVAL model support,
+  ignored blockers, missing forbidden-claim records, and production, cost,
+  runtime, implementation, prototype-as-protection, or TOP completion claims
+  from model-only evidence.
+
+assurance:
+  E-FINAL-MODEL-COMPLETION-001 supports closing the current model-only goal
+  only. It supports no production subclaim.
+
+still not:
+  Linux implementation, hook approval, ABI approval, runtime coverage, monitor
+  implementation, monitor verification, exploit-containment success, benchmark
+  evidence, production protection, cost efficiency, or datacenter deployment
+  readiness.

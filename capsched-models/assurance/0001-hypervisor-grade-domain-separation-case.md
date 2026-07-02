@@ -708,6 +708,33 @@ Open gaps:
 - no KVM, Firecracker, or container comparison result
 - no throughput, tail-latency, density, or operational-cost benchmark result
 
+## Model-Only Completion Ledger
+
+Current status:
+
+```text
+model-only goal: complete
+production protection: not complete
+```
+
+Current evidence:
+
+- `formal/0087-final-model-completeness-ledger-model/`
+- `validation/0126-final-model-completeness-ledger-tlc.md`
+
+The final ledger records:
+
+```text
+14 top-level children are model-supported.
+1 top-level child, COMPAT-001, is prototype/compatibility-classified.
+0 model-only blockers remain open.
+```
+
+This closes the current modeling goal. It does not close `TOP-001` as a
+production protection claim, because implementation, monitor verification,
+runtime coverage, exploit-containment tests, and cost/performance evaluation
+remain future work.
+
 ## Evidence Index
 
 | Evidence ID | Kind | Record | Supports |
@@ -745,6 +772,7 @@ Open gaps:
 | E-TCB-BOUNDARY-001 | TLA validation | `validation/0123-tcb-boundary-gate-tlc.md` | TCB |
 | E-SIDE-COTENANCY-001 | TLA validation | `validation/0124-side-channel-cotenancy-policy-gate-tlc.md` | SIDE |
 | E-EVAL-CONTRACT-001 | TLA validation | `validation/0125-evaluation-contract-gate-tlc.md` | EVAL |
+| E-FINAL-MODEL-COMPLETION-001 | TLA validation | `validation/0126-final-model-completeness-ledger-tlc.md` | model-only goal, no production subclaim |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
 
 ## Counterexample and Negative Evidence Log
@@ -771,6 +799,7 @@ Open gaps:
 | CEX-TCB-BOUNDARY-001 | `validation/0123` | Unbounded monitor core, untyped monitor interface, driver/parser/policy engine in the monitor, Linux mutable trusted root, service-domain ambient authority, raw handle exposure, missing TCB budget, missing VM/VMM comparison envelope, implementation overclaim, production-protection overclaim, and cost-efficiency overclaim are rejected. |
 | CEX-SIDE-COTENANCY-001 | `validation/0124` | Unknown policy default-allow, SMT/core/cache/NUMA/device queue/cluster sharing without explicit policy, performance override of isolation, side policy weakening hard boundaries, scheduler side-policy bypass, missing monitor binding, missing leakage classification, side policy as authority root, and protection/cost overclaims are rejected. |
 | CEX-EVAL-CONTRACT-001 | `validation/0125` | Missing exploit containment, cross-Domain memory/DMA/control, monitor escape, KVM/Firecracker/container baselines, workload envelope, throughput/tail-latency/density/operational-cost metrics, security or cost pass criteria, negative-result policy, microbench-only evaluation, and protection/cost/result claims from the contract alone are rejected. |
+| CEX-FINAL-MODEL-COMPLETION-001 | `validation/0126` | Completion without all top-level model children, missing COMPAT-001 classification, open DEV subclaims, missing TCB/SIDE/EVAL model support, ignored blockers, missing forbidden-claim records, and production/cost/runtime/implementation/TOP completion claims from model-only evidence are rejected. |
 | CEX-EXEC-GEN-001 | `validation/0037` | Exec Domain change without monitor token, post-exec run without ExecContinuation, old endpoint/async/mmap authority, fd/CLOEXEC/execfd inheritance, credential amplification, and check-only mutation are rejected. |
 | CEX-POST-EXEC-RESOURCE-001 | `validation/0038` | Generic fd reachability, CLOEXEC leaks, regular/socket/anonymous fd ambient authority, epoll/eventfd/timerfd/io_uring old state, and execfd ambient inheritance after exec are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |

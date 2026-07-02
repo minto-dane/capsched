@@ -5,7 +5,7 @@
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "evaluation-contract-gate-complete-final-model-completeness-pending",
+    "current_phase": "model-only-goal-complete-production-unclaimed",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-154 evaluation contract gate is complete. Added analysis/0108, evaluation-contract-gate-v1.json, formal/0086 EvaluationContractGate, and validation/0125. EVAL-001 is now model_supported via E-EVAL-CONTRACT-001. The model requires exploit-containment, cross-Domain memory/DMA/control, monitor escape, KVM/Firecracker/container baselines, workload envelope, throughput, tail-latency, density, operational cost, security/cost pass criteria, and negative-result policy before future protection/cost claims. It rejects microbench-only evaluation and rejects production protection, cost efficiency, or evaluation result claims from the contract alone. Safe TLC passed with 3 generated states, 2 distinct states, 0 left on queue, depth 2. Twenty unsafe configs produced expected counterexamples. All N-151 model-only blockers are now closed, but do not mark the goal complete until a final model-completeness ledger confirms this current state. This is not evaluation execution, runtime coverage, exploit-containment success, benchmark result, monitor verification, production protection, or cost-efficiency evidence.",
+    "current_focus": "N-155 final model-completeness ledger is complete. Added analysis/0109, final-model-completeness-ledger-v1.json, formal/0087 FinalModelCompletenessLedger, and validation/0126. The model-only goal is complete: 14 top-level children are model_supported, COMPAT-001 is explicitly prototype/compatibility-classified, DEV subclaims have no open model blocker, and TCB-001/SIDE-001/EVAL-001 are model_supported. Safe TLC passed with 3 generated states, 2 distinct states, 0 left on queue, depth 2. Fourteen unsafe configs produced expected counterexamples. TOP-001 remains open as a production protection claim. This is not Linux implementation, hook approval, ABI approval, runtime coverage, monitor implementation, monitor verification, exploit-containment success, benchmark evidence, production protection, cost efficiency, or datacenter deployment readiness.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -738,7 +738,13 @@
     "evaluation_contract_gate_model": "capsched/capsched-models/formal/0086-evaluation-contract-gate-model/README.md",
     "evaluation_contract_gate_tla": "capsched/capsched-models/formal/0086-evaluation-contract-gate-model/EvaluationContractGate.tla",
     "evaluation_contract_gate_validation": "capsched/capsched-models/validation/0125-evaluation-contract-gate-tlc.md",
-    "evaluation_contract_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/evaluation-contract-gate-20260702T001605Z"
+    "evaluation_contract_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/evaluation-contract-gate-20260702T001605Z",
+    "final_model_completeness_ledger_analysis": "capsched/capsched-models/analysis/0109-final-model-completeness-ledger.md",
+    "final_model_completeness_ledger_json": "capsched/capsched-models/analysis/final-model-completeness-ledger-v1.json",
+    "final_model_completeness_ledger_model": "capsched/capsched-models/formal/0087-final-model-completeness-ledger-model/README.md",
+    "final_model_completeness_ledger_tla": "capsched/capsched-models/formal/0087-final-model-completeness-ledger-model/FinalModelCompletenessLedger.tla",
+    "final_model_completeness_ledger_validation": "capsched/capsched-models/validation/0126-final-model-completeness-ledger-tlc.md",
+    "final_model_completeness_ledger_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/final-model-completeness-ledger-20260702T002535Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

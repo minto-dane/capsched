@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-07-01",
+  "updated": "2026-07-02",
   "scope": "CapSched-H production assurance case with Linux-only L0 prototype boundaries",
   "status_legend": {
     "open": "Required for the final goal but not established.",
@@ -1804,6 +1804,13 @@
         "EVAL-001"
       ],
       "limitation": "Finite evaluation contract model evidence only; it defines required security and cost/performance evaluation contracts and forbidden shortcuts, but is not evaluation execution, runtime coverage, exploit-containment success, benchmark result, monitor verification, production protection, or cost-efficiency evidence."
+    },
+    {
+      "id": "E-FINAL-MODEL-COMPLETION-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0126-final-model-completeness-ledger-tlc.md",
+      "supports": [],
+      "limitation": "Final model-only completion evidence. It supports closing the current model-only goal, but is not Linux implementation, runtime coverage, monitor implementation, monitor verification, exploit-containment success, benchmark evidence, production protection, cost efficiency, or datacenter deployment readiness."
     }
   ],
   "counterexamples": [
@@ -1911,6 +1918,11 @@
       "id": "CEX-EVAL-CONTRACT-001",
       "record": "capsched-models/validation/0125-evaluation-contract-gate-tlc.md",
       "meaning": "Unsafe evaluation contract models reject missing exploit containment, cross-Domain memory/DMA/control, monitor escape, KVM/Firecracker/container baselines, workload envelope, throughput/tail-latency/density/operational-cost metrics, security or cost pass criteria, negative-result policy, microbench-only evaluation, and protection/cost/result claims from the contract alone."
+    },
+    {
+      "id": "CEX-FINAL-MODEL-COMPLETION-001",
+      "record": "capsched-models/validation/0126-final-model-completeness-ledger-tlc.md",
+      "meaning": "Unsafe final model-completeness ledgers reject completion without all top-level model children, missing COMPAT-001 classification, open DEV subclaims, missing TCB/SIDE/EVAL model support, ignored blockers, missing forbidden-claim records, and production, cost, runtime, implementation, prototype-as-protection, or TOP completion claims from model-only evidence."
     }
   ],
   "forbidden_claims": [
@@ -1933,6 +1945,7 @@
     "Direct-call source inventory permits Linux modification, root requirement in source-only mode, tracefs writes in source-only mode, probe attachment, public tracepoint ABI creation, source/trace observations as authority, runtime observation claims, raw handle exposure, monitor verification claims, or protection claims.",
     "EndpointCap is CPU execution authority.",
     "Evaluation contract modeling is evaluation execution, exploit-containment success, benchmark result, production protection, or cost-efficiency evidence.",
+    "Final model-only completion is Linux implementation, runtime coverage, monitor verification, exploit-containment success, production protection, cost efficiency, or datacenter deployment readiness.",
     "FDIR ctx_irq, ctx_done, timer completion, IRQ completion, or service flush is frozen OffloadCap or VF request carrier authority.",
     "IRQ route invalidation proves DMA reachability revocation.",
     "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",

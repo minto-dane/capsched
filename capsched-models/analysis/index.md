@@ -114,6 +114,7 @@ Updated: 2026-07-01
 | 0106 | Draft model gate with TLC-backed design filter | TCB Boundary Gate |
 | 0107 | Draft model gate with TLC-backed design filter | Side-Channel and Co-Tenancy Policy Gate |
 | 0108 | Draft model gate with TLC-backed design filter | Evaluation Contract Gate |
+| 0109 | Final model-only completion gate | Final Model Completeness Ledger |
 
 ## Planned Analysis Notes
 
@@ -193,3 +194,4 @@ Updated: 2026-07-01
 | `tcb-boundary-gate-v1.json` | Draft model gate | Machine-readable HyperTag Monitor and service-domain TCB boundary contract for N-152 |
 | `side-channel-cotenancy-policy-gate-v1.json` | Draft model gate | Machine-readable explicit co-tenancy and side-channel policy contract for N-153 |
 | `evaluation-contract-gate-v1.json` | Draft model gate | Machine-readable production protection and cost-efficiency evaluation contract for N-154 |
+| `final-model-completeness-ledger-v1.json` | Final completion ledger | Machine-readable final model-only completion audit for N-155 |
