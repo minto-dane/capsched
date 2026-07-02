@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "id": "terminology-freeze-rename-risk-review-v1",
+  "analysis": "analysis/0110-terminology-freeze-rename-risk-review.md",
+  "status": "public_vocabulary_locked_legacy_aliases_retained",
+  "date": "2026-07-02",
+  "public_vocabulary": {
+    "umbrella_project": "DomainLease-Linux",
+    "monitor_backed_architecture": "DomainLease-H",
+    "scheduler_core": "SchedExecLease",
+    "linux_scaffold_prefix": "sched_exec_lease",
+    "linux_kconfig": "CONFIG_SCHED_EXEC_LEASE"
+  },
+  "legacy_aliases": [
+    {
+      "legacy": "CapSched-Linux",
+      "public": "DomainLease-Linux",
+      "policy": "legacy alias only after N-156"
+    },
+    {
+      "legacy": "CapSched-H",
+      "public": "DomainLease-H",
+      "policy": "legacy alias only after N-156"
+    },
+    {
+      "legacy": "RunCap",
+      "public": "ExecutionGrant",
+      "linux": "sched_exec_grant",
+      "policy": "model history may retain; new Linux symbols must not use RunCap"
+    },
+    {
+      "legacy": "FrozenRunUse",
+      "public": "ExecutionLease",
+      "linux": "sched_exec_lease",
+      "policy": "model history may retain; new Linux symbols must not use FrozenRunUse"
+    },
+    {
+      "legacy": "SchedContext",
+      "public": "CPU Budget Context",
+      "linux": "sched_budget_ctx",
+      "policy": "new Linux-facing text must avoid ambiguous sched_ctx"
+    },
+    {
+      "legacy": "DomainTag",
+      "public": "Domain Activation",
+      "linux": "domain_activation",
+      "policy": "active context label, not authority by itself"
+    },
+    {
+      "legacy": "HyperTag Monitor",
+      "public": "Domain Monitor",
+      "linux": "domain_monitor",
+      "policy": "HyperTag remains a legacy research alias only"
+    },
+    {
+      "legacy": "EndpointCap",
+      "public": "EndpointGrant",
+      "linux": null,
+      "policy": "endpoint authority must not become scheduler code symbol"
+    },
+    {
+      "legacy": "QueueLease",
+      "public": "QueueLease",
+      "linux": "queue_lease",
+      "policy": "name retained because it is concrete and not Linux-capability-like"
+    }
+  ],
+  "inventory_counts": {
+    "markdown_docs": {
+      "CapSched": 971,
+      "CAPSCHED": 194,
+      "capsched": 1459,
+      "RunCap": 247,
+      "FrozenRunUse": 226,
+      "SchedContext": 237,
+      "DomainTag": 122,
+      "HyperTag": 153
+    },
+    "json_jsonl": {
+      "CapSched": 108,
+      "CAPSCHED": 39,
+      "capsched": 5880,
+      "RunCap": 54,
+      "FrozenRunUse": 37,
+      "SchedContext": 32,
+      "DomainTag": 19,
+      "HyperTag": 27
+    },
+    "tla": {
+      "CapSched": 5,
+      "CAPSCHED": 0,
+      "capsched": 27,
+      "RunCap": 137,
+      "FrozenRunUse": 51,
+      "SchedContext": 9,
+      "DomainTag": 0,
+      "HyperTag": 0
+    },
+    "tlc_cfg": {
+      "CapSched": 4,
+      "CAPSCHED": 0,
+      "capsched": 0,
+      "RunCap": 19,
+      "FrozenRunUse": 2,
+      "SchedContext": 4,
+      "DomainTag": 0,
+      "HyperTag": 0
+    },
+    "ai_state_memory": {
+      "CapSched": 106,
+      "CAPSCHED": 42,
+      "capsched": 5987,
+      "RunCap": 61,
+      "FrozenRunUse": 46,
+      "SchedContext": 48,
+      "DomainTag": 25,
+      "HyperTag": 40
+    },
+    "assurance_subset": {
+      "CapSched": 37,
+      "CAPSCHED": 5,
+      "capsched": 129,
+      "RunCap": 17,
+      "FrozenRunUse": 19,
+      "SchedContext": 10,
+      "DomainTag": 1,
+      "HyperTag": 21
+    },
+    "linux_scaffold": {
+      "CapSched": 4,
+      "CAPSCHED": 8,
+      "capsched": 28,
+      "RunCap": 3,
+      "FrozenRunUse": 1,
+      "SchedContext": 1,
+      "DomainTag": 1,
+      "HyperTag": 0
+    },
+    "file_names": {
+      "capsched": 2,
+      "CapSched": 2,
+      "CAPSCHED": 2,
+      "RunCap": 5,
+      "FrozenRunUse": 2,
+      "SchedContext": 2,
+      "DomainTag": 0,
+      "HyperTag": 29
+    }
+  },
+  "rename_policy": [
+    "new_public_documents_use_locked_vocabulary",
+    "historical_artifact_names_are_preserved_as_evidence_identity",
+    "claim_ids_are_not_renamed",
+    "linux_scaffold_is_renamed_to_sched_exec_lease_in_a_no_behavior_patch",
+    "legacy_alias_appendix_is_required_for_old_to_new_mapping",
+    "no_user_abi_public_tracepoint_abi_monitor_abi_or_exported_symbol_until_a_concrete_consumer_exists"
+  ],
+  "linux_scaffold_rename_validation": {
+    "status": "passed_targeted_scheduler_subtree_build",
+    "validation": "validation/0128-sched-exec-lease-rename-build-validation.md",
+    "runner": "validation/run-sched-exec-lease-rename-build-validation.sh",
+    "log": "/media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-rename-build-20260702T014802Z.log",
+    "off_build": "/media/nia/scsiusb/dev/linux-cap/build/linux-l0-sched-exec-lease-off-targeted-x86_64",
+    "on_build": "/media/nia/scsiusb/dev/linux-cap/build/linux-l0-sched-exec-lease-on-targeted-x86_64",
+    "off_config_state": "undef",
+    "on_config_state": "y",
+    "off_exec_lease_object": "absent",
+    "on_exec_lease_object": "present",
+    "full_vmlinux": "not_run_for_n156_targeted_rename_validation"
+  },
+  "safety_flags": {
+    "claim_ids_changed": false,
+    "historical_tla_modules_rewritten": false,
+    "linux_behavior_changed": false,
+    "user_abi_added": false,
+    "public_tracepoint_abi_added": false,
+    "monitor_abi_added": false,
+    "production_protection_claim": false,
+    "rename_changes_security_semantics": false
+  }
+}

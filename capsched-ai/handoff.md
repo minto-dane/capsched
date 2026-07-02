@@ -4,6 +4,25 @@ Updated: 2026-07-02
 
 Read this first when resuming the project.
 
+Naming freeze:
+
+```text
+public umbrella name:
+  DomainLease-Linux
+
+legacy private modeling name:
+  CapSched-Linux
+
+scheduler core:
+  SchedExecLease
+
+Linux-facing scaffold:
+  sched_exec_lease
+```
+
+N-156 keeps old names as historical aliases only. Claim IDs, evidence IDs,
+counterexample IDs, and old TLA module/file names remain stable.
+
 ## Current State
 
 The workspace is `/media/nia/scsiusb/dev/linux-cap`.
@@ -23,7 +42,7 @@ Linux patch queue repo:
 ```
 
 ADR-0010 fixes the publication policy. `capsched-linux` is not a full Linux
-history mirror. It stores upstream base metadata, the private CapSched Linux
+history mirror. It stores upstream base metadata, the private DomainLease Linux
 patch series, and a recreate script. The local full Linux working tree remains
 under `linux/`, but it is not committed into the superproject.
 
@@ -33,11 +52,11 @@ Recreate local Linux from the superproject with:
 ./linux-patches/scripts/recreate-capsched-linux-l0.sh ./linux
 ```
 
-Upstream Linux has been fetched into sibling repository `linux/`. Slice 0A has
-been committed in that Linux repository as inert `CONFIG_CAPSCHED` scaffolding.
-Slice 0B has also been committed as type-only authority scaffolding in
-`include/linux/capsched.h` and `kernel/sched/capsched.c`. No behavior-changing
-scheduler patch points are accepted yet.
+Upstream Linux has been fetched into sibling repository `linux/`. Slice 0A and
+Slice 0B were committed under the legacy `CONFIG_CAPSCHED` scaffold. N-156 is
+renaming the inert Linux scaffold to `CONFIG_SCHED_EXEC_LEASE`,
+`include/linux/sched_exec_lease.h`, and `kernel/sched/exec_lease.c`. No
+behavior-changing scheduler patch points are accepted yet.
 
 ADR-0007 fixes the N-series traceability policy. `N-*` remains a chronological
 work ledger for past and future work. Semantic meaning, Linux anchors, drift
@@ -2976,3 +2995,63 @@ still not:
   implementation, monitor verification, exploit-containment success, benchmark
   evidence, production protection, cost efficiency, or datacenter deployment
   readiness.
+
+N-156 completed:
+  analysis/0110-terminology-freeze-rename-risk-review.md
+  analysis/terminology-freeze-rename-risk-review-v1.json
+  traceability/0002-terminology-alias-appendix.md
+  implementation/0015-mainline-naming-and-scope-review.md
+  validation/0127-terminology-rename-inventory.md
+  validation/0128-sched-exec-lease-rename-build-validation.md
+
+purpose:
+  freeze public vocabulary before publication and avoid later paper/RFC/Linux
+  confusion.
+
+public names:
+  DomainLease-Linux = umbrella project.
+  DomainLease-H = monitor-backed architecture.
+  SchedExecLease = scheduler core.
+  sched_exec_lease = Linux-facing scaffold.
+
+legacy aliases:
+  CapSched-Linux, CapSched-H, RunCap, FrozenRunUse, SchedContext, DomainTag,
+  and HyperTag Monitor remain historical aliases in old artifacts.
+
+policy:
+  do not rename claim IDs, evidence IDs, counterexample IDs, or old TLA module
+  paths. New public docs must use the locked vocabulary. Linux symbols must not
+  use `capsched_*` or `RunCap`.
+
+linux result:
+  commit 3bb2a5821ffdcc0fa6d451cbf259ef82a9ea9a9c
+  sched/exec_lease: Rename inert scheduler lease scaffold
+
+  renamed:
+    CONFIG_CAPSCHED -> CONFIG_SCHED_EXEC_LEASE
+    include/linux/capsched.h -> include/linux/sched_exec_lease.h
+    kernel/sched/capsched.c -> kernel/sched/exec_lease.c
+
+  patch queue:
+    linux-patches/patches/capsched-linux-l0/0003-sched-exec-lease-Rename-inert-scheduler-lease-scaffold.patch
+
+validation:
+  targeted scheduler-subtree build passed.
+
+  log:
+    /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-rename-build-20260702T014802Z.log
+
+  off:
+    SCHED_EXEC_LEASE = undef
+    kernel/sched/built-in.a built
+    kernel/sched/exec_lease.o absent
+
+  on:
+    SCHED_EXEC_LEASE = y
+    kernel/sched/built-in.a built
+    kernel/sched/exec_lease.o present
+
+still not:
+  full vmlinux validation for this rename, model revalidation, behavior-changing
+  Linux implementation, user ABI, public tracepoint ABI, monitor ABI, monitor
+  verification, production protection, or cost efficiency.

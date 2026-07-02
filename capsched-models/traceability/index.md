@@ -1,6 +1,6 @@
 # Traceability Index
 
-Updated: 2026-06-30
+Updated: 2026-07-02
 
 ## Purpose
 
@@ -22,6 +22,7 @@ Instead, it explains how to read them together.
 | File | Role |
 | --- | --- |
 | `0001-n-series-overlay-policy.md` | Human-readable policy for N-series overlay traceability and Linux drift handling. |
+| `0002-terminology-alias-appendix.md` | Human-readable legacy-to-public vocabulary alias map for N-156 and later work. |
 | `overlay-row-schema-v1.json` | Machine-readable row schema for future N/artifact/Linux/claim crosswalk ledgers. |
 | `project-overlay-ledger-row-schema-v1.json` | Machine-readable row schema for generated project-level overlay ledger rows. |
 | `project-gap-classification-schema-v1.json` | Machine-readable schema for classifying preserved project gaps into semantic groups. |

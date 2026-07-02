@@ -132,6 +132,8 @@ Updated: 2026-07-01
 | 0124 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Side-Channel and Co-Tenancy Policy Gate TLC |
 | 0125 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Evaluation Contract Gate TLC |
 | 0126 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked; model-only goal complete | Final Model Completeness Ledger TLC |
+| 0127 | Source-only terminology inventory executed; no model or protection claim | Terminology Rename Inventory |
+| 0128 | Passed for targeted scheduler-subtree build; no behavior or protection claim | SchedExecLease Rename Build Validation |
 
 ## Principles
 

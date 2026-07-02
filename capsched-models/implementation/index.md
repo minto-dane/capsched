@@ -1,8 +1,16 @@
 # Implementation Index
 
-Updated: 2026-07-01
+Updated: 2026-07-02
 
 No behavior-changing implementation patch points are accepted yet.
+
+N-156 terminology policy:
+
+- Public project name: DomainLease-Linux.
+- Legacy private modeling name: CapSched-Linux.
+- First Linux-facing scaffold name: SchedExecLease / `sched_exec_lease`.
+- New Linux symbols must avoid `capsched_*`, `RunCap`, and unqualified
+  `Domain`.
 
 Current lifecycle identity propagation integration model gate:
 
@@ -93,6 +101,11 @@ Candidate implementation plans:
     considered: no Linux patch, or a separately reviewed no-behavior opaque
     type scaffolding proposal; behavior-changing workqueue/io_uring hooks
     remain blocked.
+- `0015-mainline-naming-and-scope-review.md`
+  - Status: accepted naming/scope gate, no behavior-changing patch approved.
+  - Purpose: freeze mainline-facing names and limit the first Linux scaffold to
+    `CONFIG_SCHED_EXEC_LEASE`, `include/linux/sched_exec_lease.h`, and
+    `kernel/sched/exec_lease.c`.
 
 Validated formal inputs:
 

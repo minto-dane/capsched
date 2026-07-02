@@ -1,7 +1,8 @@
-# CapSched-Linux Workspace
+# DomainLease-Linux Workspace
 
-This directory is the CapSched project-control repository. It is meant to sit
-beside the future upstream Linux checkout.
+This directory is the DomainLease-Linux project-control repository. It was
+called CapSched-Linux during the private modeling phase; N-156 freezes the
+public vocabulary before publication.
 
 ## Layout
 
@@ -32,7 +33,7 @@ Read in this order:
 
 Use this `capsched/` directory as the project-control Git repository. The
 upstream Linux tree should live in sibling directory `../linux/` with its own
-Git history and CapSched implementation branches.
+Git history and DomainLease implementation branches.
 
 Current project-control state is expected to be committed before fetching
 upstream Linux.

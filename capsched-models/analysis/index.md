@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-01
+Updated: 2026-07-02
 
 ## Current Analysis Notes
 
@@ -115,6 +115,7 @@ Updated: 2026-07-01
 | 0107 | Draft model gate with TLC-backed design filter | Side-Channel and Co-Tenancy Policy Gate |
 | 0108 | Draft model gate with TLC-backed design filter | Evaluation Contract Gate |
 | 0109 | Final model-only completion gate | Final Model Completeness Ledger |
+| 0110 | Accepted terminology gate | Terminology Freeze and Rename Risk Review |
 
 ## Planned Analysis Notes
 
@@ -195,3 +196,4 @@ Updated: 2026-07-01
 | `side-channel-cotenancy-policy-gate-v1.json` | Draft model gate | Machine-readable explicit co-tenancy and side-channel policy contract for N-153 |
 | `evaluation-contract-gate-v1.json` | Draft model gate | Machine-readable production protection and cost-efficiency evaluation contract for N-154 |
 | `final-model-completeness-ledger-v1.json` | Final completion ledger | Machine-readable final model-only completion audit for N-155 |
+| `terminology-freeze-rename-risk-review-v1.json` | Public vocabulary lock | Machine-readable N-156 terminology freeze, inventory, and alias policy |

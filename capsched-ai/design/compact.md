@@ -4,21 +4,41 @@ Updated: 2026-07-02
 
 ## Project
 
-CapSched-Linux aims to introduce a capability-oriented execution and resource
-authority model into Linux scheduler foundations. The long-term target is a
+DomainLease-Linux, formerly CapSched-Linux during private modeling, aims to
+introduce a capability-disciplined execution and resource lease model into
+Linux scheduler foundations. The long-term target is a
 datacenter OS substrate where process-, service-, container-, tenant-, and
 cluster-cell-scale domains can receive isolation strength comparable to VM
 boundaries at lower operational cost.
 
+N-156 naming freeze:
+
+```text
+public umbrella:
+  DomainLease-Linux
+legacy alias:
+  CapSched-Linux
+scheduler core:
+  SchedExecLease
+Linux scaffold:
+  sched_exec_lease / CONFIG_SCHED_EXEC_LEASE
+monitor-backed architecture:
+  DomainLease-H
+legacy monitor name:
+  HyperTag Monitor
+```
+
+Old claim IDs, evidence IDs, counterexample IDs, TLA modules, and historical
+file paths remain stable for traceability.
+
 Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
-`7cf0b1e415bcead8a2079c8be94a9d41aad7d462`. No behavior-changing implementation
-patch points are accepted yet. A first deep source-analysis pass now exists in
-`capsched-models/analysis/0002` through `0044`. A candidate Linux L0 Runnable
-Lease implementation plan has been derived from the checked model. Linux source
-now contains Slice 0A inert `CONFIG_CAPSCHED` scaffolding and Slice 0B
-type-only authority scaffolding, both with no task layout or scheduler behavior
-changes.
+`7cf0b1e415bcead8a2079c8be94a9d41aad7d462` before the N-156 Linux scaffold
+rename. No behavior-changing implementation patch points are accepted yet. A
+first deep source-analysis pass now exists in `capsched-models/analysis/0002`
+through `0044`. A candidate Linux L0 Runnable Lease implementation plan has
+been derived from the checked model. Linux source contains inert scaffold only,
+with no task layout or scheduler behavior changes.
 
 Private GitHub publication uses a superproject:
 
@@ -2522,4 +2542,42 @@ assurance:
 still not:
   Linux implementation, runtime coverage, monitor verification, production
   protection, cost efficiency, or deployment readiness.
+```
+
+N-156 completed:
+
+```text
+artifacts:
+  analysis/0110
+  terminology-freeze-rename-risk-review-v1.json
+  traceability/0002
+  implementation/0015
+  validation/0127
+  validation/0128
+
+decision:
+  public vocabulary is DomainLease-Linux / DomainLease-H / SchedExecLease /
+  sched_exec_lease.
+
+legacy:
+  CapSched-Linux, CapSched-H, RunCap, FrozenRunUse, SchedContext, DomainTag,
+  and HyperTag Monitor remain aliases for historical evidence.
+
+linux rename target:
+  CONFIG_SCHED_EXEC_LEASE
+  include/linux/sched_exec_lease.h
+  kernel/sched/exec_lease.c
+
+linux result:
+  commit 3bb2a5821ffdcc0fa6d451cbf259ef82a9ea9a9c
+  patch queue 0003-sched-exec-lease-Rename-inert-scheduler-lease-scaffold.patch
+
+validation:
+  targeted scheduler-subtree build passed.
+  off state: SCHED_EXEC_LEASE = undef, no exec_lease.o.
+  on state: SCHED_EXEC_LEASE = y, exec_lease.o built.
+
+still not:
+  full vmlinux validation for this rename, behavior change, ABI, monitor
+  implementation, runtime coverage, production protection, or cost evidence.
 ```

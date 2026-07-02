@@ -1,9 +1,9 @@
-# CapSched Models and Engineering Work
+# DomainLease Models and Engineering Work
 
-Updated: 2026-07-01
+Updated: 2026-07-02
 
 This directory contains the modeling and engineering work products for
-CapSched-Linux.
+DomainLease-Linux, formerly CapSched-Linux during the private modeling phase.
 
 ## Subdirectories
 
