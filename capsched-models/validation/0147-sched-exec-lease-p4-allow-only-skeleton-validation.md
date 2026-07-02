@@ -4,7 +4,8 @@ Date: 2026-07-02
 
 Status: patch queue replay, checkpatch, source/object checker, targeted
 `CONFIG_SCHED_EXEC_LEASE=off/on` scheduler build, and formal gate passed.
-Full `vmlinux` and QEMU compatibility validation are still pending.
+Full `vmlinux` validation is recorded separately in validation/0148. QEMU
+compatibility validation is still pending.
 
 ## Linux Patch
 
@@ -164,8 +165,8 @@ The P4 allow-only skeleton is recorded as an applied no-denial Linux patch and
 has passed static, replay, style, targeted build, object/symbol, and formal
 gate validation.
 
-It is not yet fully accepted as P4 completion because full `vmlinux` off/on and
-QEMU off/on compatibility validation remain pending.
+It is not yet fully accepted as P4 completion because QEMU off/on compatibility
+validation remains pending.
 
 P5 remains blocked.
 

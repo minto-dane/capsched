@@ -3263,8 +3263,12 @@ P4 allow-only skeleton implementation:
     formal/0097 safe passed; 12 unsafe configs produced expected
     counterexamples.
 
+  Validation 0148:
+    full vmlinux off/on build passed.
+    off config undef, vmlinux present, exec_lease.o absent.
+    on config y, vmlinux present, exec_lease.o present.
+
   Not yet done:
-    full vmlinux off/on validation.
     QEMU off/on compatibility validation.
 
   Non-claims:

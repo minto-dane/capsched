@@ -98,7 +98,7 @@
     "targeted_build_tag": "p4-targeted-current",
     "requires_full_vmlinux": true,
     "requires_qemu": true,
-    "full_vmlinux_status": "pending",
+    "full_vmlinux_status": "passed_validation_0148",
     "qemu_status": "pending"
   },
   "non_claims": {

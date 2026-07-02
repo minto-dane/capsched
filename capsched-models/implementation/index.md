@@ -162,7 +162,7 @@ Current SchedExecLease L0 readiness:
     denial without analysis/0115 pre-settle or rollback proof.
 - `0027-sched-exec-lease-p4-allow-only-validation-skeleton-implementation.md`
   - Status: applied P4 allow-only validation skeleton patch; full acceptance
-    pending full `vmlinux` and QEMU validation.
+    pending QEMU validation.
   - Linux commit:
     `a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8`.
   - Rule: the patch adds three static inline validation helpers and three
@@ -170,8 +170,9 @@ Current SchedExecLease L0 readiness:
     helper returns only `SCHED_EXEC_VALIDATION_ALLOW`, and scheduler control
     flow does not branch on the result. Validation/0147 records patch queue
     replay, checkpatch, targeted off/on scheduler build, source/object checks,
-    and formal gate evidence. It still adds no runtime denial, budget charge,
-    ABI, monitor call, runtime coverage, or protection claim.
+    and formal gate evidence; validation/0148 records full off/on `vmlinux`
+    build success. It still adds no runtime denial, budget charge, ABI,
+    monitor call, runtime coverage, or protection claim.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope under ADR-0011 until implementation-ready design blockers are

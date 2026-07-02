@@ -3828,8 +3828,9 @@ P4 allow-all helper proof / validation 0146:
 
 P4 allow-only skeleton implementation / validation 0147:
   status:
-    Applied to Linux and partially validated. Full P4 acceptance is still
-    pending full vmlinux off/on and QEMU off/on validation.
+    Applied to Linux and partially validated. Full vmlinux off/on validation is
+    complete in validation/0148. Full P4 acceptance is still pending QEMU
+    off/on validation and final overclaim/security review.
 
   Linux:
     commit:
@@ -3870,16 +3871,18 @@ P4 allow-only skeleton implementation / validation 0147:
     core_o_file_size_equal=true, 347728/347728.
     formal/0097 safe passed; 12 unsafe configs produced expected
     counterexamples.
+    full vmlinux off/on build passed in validation/0148:
+      off config undef, vmlinux present, exec_lease.o absent.
+      on config y, vmlinux present, exec_lease.o present.
+      log: build/logs/sched-exec-lease-full-build-20260702T214346Z.log
 
   important negative:
     core.o byte identity is not claimed.
-    full vmlinux validation is pending.
     QEMU validation is pending.
     runtime denial, runtime coverage, budget enforcement, monitor verification,
     production protection, hypervisor-grade isolation, cost-efficiency,
     deployment readiness, and P5 denial remain false.
 
   next:
-    Run full vmlinux off/on validation and QEMU off/on compatibility validation
-    for P4. If they are long, launch them under systemd and stop chat
-    supervision.
+    Run QEMU off/on compatibility validation for P4. If it is long, launch it
+    under systemd and stop chat supervision.
