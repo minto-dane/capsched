@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "artifact": "sched-exec-lease-p5-readiness-refresh-after-p4",
+  "date": "2026-07-02",
+  "status": "p5_blocked",
+  "source_basis": {
+    "linux_repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8",
+    "linux_subject": "sched/exec_lease: Add allow-only validation skeleton",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c"
+  },
+  "subagent_reviews": [
+    {
+      "name": "Pasteur",
+      "bias": "scheduler mutation ordering",
+      "result": "run-edge hook is after class/proxy/blocking settlement; move helpers are locally pre-mutation but caller-unsafe without status plumbing"
+    },
+    {
+      "name": "Zeno",
+      "bias": "upstream resilience",
+      "result": "future refresh must use function-scoped ordered-pattern checks, not exact line anchors"
+    },
+    {
+      "name": "Banach",
+      "bias": "security threat model",
+      "result": "P5 must remain test-only, off by default, path-classified, pre-settle where possible, and claim-scoped"
+    }
+  ],
+  "current_p4_facts": {
+    "helpers_allow_only": true,
+    "scheduler_branches_on_validation_result": false,
+    "run_hook": {
+      "file": "kernel/sched/core.c",
+      "line": 7199,
+      "helper": "sched_exec_lease_validate_run_edge(prev, next)",
+      "before_rq_curr_publication": true,
+      "before_context_switch": true,
+      "after_pick_next_task": true,
+      "after_known_put_prev_set_next_task_paths": true,
+      "after_resched_bit_clear": true,
+      "p5_deny_ready": false,
+      "reason": "pre-rq-curr is not pre-class-settle; denial here requires pre-settle relocation or rollback proof"
+    },
+    "common_move_hook": {
+      "file": "kernel/sched/core.c",
+      "line": 2552,
+      "helper": "sched_exec_lease_validate_move_edge(p, new_cpu)",
+      "before_deactivate_task": true,
+      "before_set_task_cpu": true,
+      "function_returns_status": false,
+      "p5_deny_ready": false,
+      "reason": "callers assume success and may clear migration_pending or complete waiters"
+    },
+    "locked_move_hook": {
+      "file": "kernel/sched/sched.h",
+      "line": 4125,
+      "helper": "sched_exec_lease_validate_move_edge_locked(task, dst_rq->cpu)",
+      "before_deactivate_task": true,
+      "before_set_task_cpu": true,
+      "function_returns_status": false,
+      "p5_deny_ready": false,
+      "reason": "void helper callers assume success; migrate_swap_stop needs two-way prevalidation or rollback"
+    }
+  },
+  "p5_preconditions": [
+    "run denial pre-settle or rollback proof",
+    "picker-visible denied-candidate ineligibility",
+    "bounded progress-making retry",
+    "fail-closed only when supported eligible set is exhausted",
+    "move status plumbing before move denial",
+    "no migration or affinity completion after denied move",
+    "migrate_swap two-way prevalidation or rollback",
+    "path classification for sched_ext/core/proxy/RT/deadline/fair-direct/kthread/workqueue/io_uring",
+    "negative tests proving denied task never reaches rq->curr/sched_switch/context_switch",
+    "test-only off-by-default claim ledger"
+  ],
+  "allowed_claims": [
+    "P4 allow-only compatibility remains closed",
+    "P5 readiness has been refreshed against actual P4 code",
+    "P5 remains blocked"
+  ],
+  "forbidden_claims": [
+    "runtime denial approved",
+    "runtime coverage proven",
+    "budget enforcement",
+    "monitor call",
+    "monitor verification",
+    "production protection",
+    "hypervisor-grade isolation",
+    "cost-efficiency",
+    "deployment readiness"
+  ]
+}

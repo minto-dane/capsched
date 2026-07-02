@@ -23,6 +23,28 @@ linux_commit=a0f2676adda634391983e74f29fcba577a9c919e
 linux_subject=sched/exec_lease: Add task identity shadow
 ```
 
+## Post-P4 Refresh
+
+P4 is now closed as an allow-only compatibility slice at:
+
+```text
+linux_commit=a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8
+linux_subject=sched/exec_lease: Add allow-only validation skeleton
+```
+
+The current controlling refresh is:
+
+```text
+analysis/0129-sched-exec-lease-p5-readiness-refresh-after-p4.md
+formal/0098-p5-readiness-after-p4-gate-model/
+validation/0151-sched-exec-lease-p5-readiness-after-p4.md
+```
+
+That refresh keeps P5 blocked. The current P4 run hook is before `rq->curr` and
+`context_switch()`, but it is not pre-class-settle. The current move hooks are
+before local dequeue/CPU mutation, but their helpers do not return denial
+status and callers assume success.
+
 P5 is blocked until:
 
 ```text

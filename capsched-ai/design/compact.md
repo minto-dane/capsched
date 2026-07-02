@@ -3285,4 +3285,31 @@ P4 allow-only skeleton implementation:
     no runtime denial, runtime coverage, budget enforcement, monitor
     verification, production protection, hypervisor-grade isolation,
     cost-efficiency, deployment readiness, or P5 denial approval.
+
+P5 readiness after P4:
+  analysis/0129, formal/0098, and validation/0151 refresh P5 against actual P4
+  code at Linux commit a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8.
+
+  Source checker:
+    run-sched-exec-lease-p5-readiness-after-p4.sh passed.
+    run_hook_before_rq_curr=true.
+    run_hook_before_context_switch=true.
+    run_hook_after_pick_next_task=true.
+    known_class_settlement_before_run_hook_source=true.
+    run_hook_p5_deny_ready=false.
+    common/locked move hooks before local mutation=true.
+    common_move_returns_status=false.
+    locked_move_returns_status=false.
+
+  TLC:
+    formal/0098 safe passed.
+    9 unsafe configs produced expected counterexamples.
+
+  Current rule:
+    P5 remains blocked. The P4 run hook is pre-rq->curr but not
+    pre-class-settle. Move hooks are pre-mutation but caller-unsafe without
+    status plumbing. Do not branch on non-ALLOW until run denial is pre-settle
+    or rollback-proved, move denial has status plumbing, negative tests exist,
+    path classification is enforced, and runtime/protection/cost claims remain
+    false.
 ```

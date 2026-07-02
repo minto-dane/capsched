@@ -230,3 +230,4 @@ Updated: 2026-07-02
 | `sched-exec-lease-p4-static-final-run-observability-v1.json` | Static final-run observability | Machine-readable P4 final-run static pre-rq-curr observability, P3 marker negative observation, remaining blockers, and non-claims |
 | `sched-exec-lease-p4-allow-all-helper-proof-v1.json` | P4 allow-all helper proof | Machine-readable P4 allow-only/no-denial helper contract, current-tree source check, remaining patch acceptance requirements, and non-claims |
 | `sched-exec-lease-p4-final-overclaim-security-review-v1.json` | P4 final review | Machine-readable P4 final overclaim/security review, accepted compatibility evidence, zero finding result, allowed claim, forbidden claims, and next gate |
+| `sched-exec-lease-p5-readiness-refresh-after-p4-v1.json` | P5 blocked refresh | Machine-readable post-P4 P5 readiness refresh, run/move denial blockers, source facts, preconditions, and non-claims |

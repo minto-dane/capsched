@@ -156,6 +156,7 @@ Updated: 2026-07-02
 | 0148 | Passed for full vmlinux CONFIG_SCHED_EXEC_LEASE=off/on build; QEMU compatibility still pending | SchedExecLease P4 Full vmlinux Build |
 | 0149 | Passed for QEMU off/on boot/workload smoke with all workload and kprobes where available; runtime coverage remains unproven | SchedExecLease P4 QEMU Boot Smoke |
 | 0150 | Passed final P4 overclaim/security review; P4 allow-only compatibility slice closed and P5 remains blocked | SchedExecLease P4 Final Overclaim and Security Review |
+| 0151 | Source-order checker passed; safe model passed; unsafe models produced expected counterexamples; P5 remains blocked | SchedExecLease P5 Readiness After P4 |
 
 ## Principles
 

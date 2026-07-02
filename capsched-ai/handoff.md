@@ -3891,6 +3891,49 @@ P4 allow-only skeleton implementation / validation 0147:
     deployment readiness, and P5 denial remain false.
 
   next:
-    Reopen P5 readiness against the actual P4 code. Keep P5 denial blocked
-    until denial source shape, negative tests, path classification, and runtime
-    evidence are refreshed.
+    P5 readiness has now been reopened and refreshed in analysis/0129,
+    formal/0098, and validation/0151. Keep P5 denial blocked until the
+    preconditions below are implemented and validated.
+
+P5 readiness after P4 / validation 0151:
+  status:
+    Refreshed against actual P4 Linux commit
+    a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8. P5 remains blocked.
+
+  artifacts:
+    capsched-models/analysis/0129-sched-exec-lease-p5-readiness-refresh-after-p4.md
+    capsched-models/analysis/sched-exec-lease-p5-readiness-refresh-after-p4-v1.json
+    capsched-models/formal/0098-p5-readiness-after-p4-gate-model/
+    capsched-models/validation/0151-sched-exec-lease-p5-readiness-after-p4.md
+    capsched-models/validation/run-sched-exec-lease-p5-readiness-after-p4.sh
+
+  source checker:
+    run_dir:
+      build/source-check/sched-exec-lease-p5-readiness-after-p4/20260702T-p5-readiness-after-p4
+    result:
+      run_hook_before_rq_curr=true.
+      run_hook_before_context_switch=true.
+      run_hook_after_pick_next_task=true.
+      known_class_settlement_before_run_hook_source=true.
+      run_hook_p5_deny_ready=false.
+      common_move_hook_before_mutation=true.
+      locked_move_hook_before_mutation=true.
+      common_move_returns_status=false.
+      locked_move_returns_status=false.
+      p5_approved=false.
+
+  TLC:
+    formal/0098 safe passed.
+    9 unsafe configs produced expected counterexamples.
+
+  key finding:
+    The P4 run hook is pre-rq->curr but not pre-class-settle. It must not be
+    turned into a denying hook without moving validation before class
+    settlement or proving rollback. Move hooks are locally pre-mutation but
+    callers assume success, so P5 move denial needs status plumbing first.
+
+  next:
+    Design-only next step is a P5 implementation-scope proposal, not Linux
+    code. It must define pre-settle run denial or rollback, move status
+    plumbing, negative tests, path classification enforcement, and claim ledger
+    constraints before any behavior-changing patch.

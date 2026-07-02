@@ -103,6 +103,7 @@ Updated: 2026-07-02
 | 0095 | Checked with safe pass and expected unsafe counterexamples | Static Final-Run Observability Gate Model |
 | 0096 | Checked with safe pass and expected unsafe counterexamples | P4 Allow-All Helper Gate Model |
 | 0097 | Checked with safe pass and expected unsafe counterexamples | P4 Allow-Only Skeleton Gate Model |
+| 0098 | Checked with safe pass and expected unsafe counterexamples | P5 Readiness After P4 Gate Model |
 
 ## Planned
 

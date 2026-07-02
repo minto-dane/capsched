@@ -176,15 +176,17 @@ Current SchedExecLease L0 readiness:
     ABI, monitor call, runtime coverage, or protection claim.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
-    current scope under ADR-0011 until implementation-ready design blockers are
-    closed.
+    current scope. Post-P4 refresh is recorded in analysis/0129,
+    formal/0098, and validation/0151; P5 remains blocked.
   - Rule: P5 is the first possible behavior-changing slice and remains blocked
     until P2/P3/P4 validation, refreshed final run/move and denial/retry models,
     negative tests, the analysis/0117 scheduler path classification, bounded
     retry evidence, and the analysis/0118 claim-ledger row exist. The first
     allowed P5 scope, if re-approved, is test-only denial mode off by default,
     limited to ordinary CFS final run and common queued move helpers, and
-    denial must be pre-settle or backed by a rollback proof.
+    denial must be pre-settle or backed by a rollback proof. Current P4 run
+    hook is not denial-ready, and current move helpers need denial-status
+    plumbing before any non-ALLOW branch.
 
 N-156 terminology policy:
 
