@@ -33,13 +33,14 @@ file paths remain stable for traceability.
 
 Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
-`a0f2676adda634391983e74f29fcba577a9c919e` after the SchedExecLease P2
-no-denial task identity shadow. No behavior-changing implementation patch
-points are accepted yet. P1 private object vocabulary and P2 task identity
-shadow have been full-build and QEMU-smoke validated, but there is no scheduler
-hook, runtime denial, ABI, monitor call, budget charging, or protection claim.
+`d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3` after the SchedExecLease P3
+placement-only scheduler touchpoints. No behavior-changing implementation
+patch points are accepted yet. P1 private object vocabulary, P2 task identity
+shadow, and P3 no-op scheduler touchpoints have been validated as
+no-denial/no-ABI/no-monitor compatibility only. There is no runtime denial,
+monitor call, budget charging, runtime coverage, or protection claim.
 Latest fetched upstream/master is
-`4a50a141f05a8d1737661b19ee22ff8455b94409`.
+`87320be9f0d24fce67631b7eef919f0b79c3e45c`.
 
 Private GitHub publication uses a superproject:
 
@@ -3084,17 +3085,15 @@ N-165:
   It is no-denial/no-ABI/no-monitor compatibility evidence only.
 
 N-166:
-  P4 pre-entry gate is complete:
+  P4 pre-entry gate was complete for the then-fetched upstream ref:
     analysis/0122-sched-exec-lease-p4-pre-entry-risk-gate.md
     validation/0141-sched-exec-lease-p4-pre-entry-validation.md
 
-  P4 may proceed only as allow-all final run/move revalidation skeleton.
-  P4 code is not applied.
-  P5 denial remains blocked.
+  N-167 supersedes this as an implementation-go decision.
 
   Evidence:
     exact patch queue replay to P3 HEAD.
-    upstream drift fresh; only D1 nearby cpufreq_schedutil.c drift.
+    upstream drift fresh at that time; only D1 nearby cpufreq_schedutil.c drift.
     git diff/security review for P3 diff.
     Codex Security preflight ready; no full canonical scan launched.
     generated-code review found no marker symbols and identical section sizes/
@@ -3107,4 +3106,24 @@ N-166:
     checkpatch metadata issues remain before RFC/mainline-style series:
       missing commit description.
       missing Signed-off-by.
+
+N-167:
+  P4 pre-implementation critical audit is complete:
+    analysis/0123-sched-exec-lease-p4-pre-implementation-critical-audit.md
+    validation/0142-sched-exec-lease-p4-pre-implementation-critical-audit-validation.md
+
+  Verdict:
+    P4 implementation is paused. The drift runner now fails on nonexistent
+    watched paths and requires l0_footprint to match the actual base..work
+    Linux diff. Fresh fetch moved upstream/master to
+    87320be9f0d24fce67631b7eef919f0b79c3e45c. Scheduler/lifecycle/async/policy
+    direct P4 groups are fresh, but device_queue_iommu is D4 stale from current
+    net changes, so global model_freshness=stale and
+    candidate_no_behavior_patch_reviewable=false.
+
+  Next:
+    create candidate-scoped drift closure or refresh the stale D4
+    device/QueueLease source maps; add P4 anchor manifest and runtime/static
+    final-run anchor observability. P4 remains allow-all only. P5 remains
+    blocked.
 ```

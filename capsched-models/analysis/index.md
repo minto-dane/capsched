@@ -128,6 +128,7 @@ Updated: 2026-07-02
 | 0120 | Final design-ready audit passed; implementation unapproved | Final Implementation-Ready Audit |
 | 0121 | P3 overclaim review passed; only placement-only no-behavior compatibility may be claimed | SchedExecLease P3 Overclaim Review |
 | 0122 | P4 pre-entry gate passed for allow-all/no-denial scope; P5 denial remains blocked | SchedExecLease P4 Pre-Entry Risk Gate |
+| 0123 | P4 paused pending scoped drift closure and anchor evidence hardening | SchedExecLease P4 Pre-Implementation Critical Audit |
 
 ## Planned Analysis Notes
 
@@ -218,3 +219,4 @@ Updated: 2026-07-02
 | `final-model-completeness-ledger-v1.json` | Final completion ledger | Machine-readable final model-only completion audit for N-155 |
 | `terminology-freeze-rename-risk-review-v1.json` | Public vocabulary lock | Machine-readable N-156 terminology freeze, inventory, and alias policy |
 | `sched-exec-lease-p4-pre-entry-risk-gate-v1.json` | P4 pre-entry gate | Machine-readable P4 allow-all/no-denial pre-entry evidence, generated-code review, QEMU matrix, drift, security-diff preflight, and non-claim constraints |
+| `sched-exec-lease-p4-pre-implementation-critical-audit-v1.json` | P4 pause gate | Machine-readable P4 pre-implementation multi-axis audit, hardened fresh drift result, stale global D4 finding, axis verdicts, and reopen criteria |

@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p4-pre-implementation-critical-audit-v1",
+  "analysis": "0123-sched-exec-lease-p4-pre-implementation-critical-audit",
+  "date": "2026-07-02",
+  "status": "p4_paused_pending_scope_drift_and_anchor_evidence",
+  "supersedes_operational_readiness_of": [
+    "0122-sched-exec-lease-p4-pre-entry-risk-gate"
+  ],
+  "does_not_invalidate_historical_evidence": [
+    "0141-sched-exec-lease-p4-pre-entry-validation"
+  ],
+  "linux_refs": {
+    "base_commit": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "work_commit": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3",
+    "base_to_upstream_commit_count": 422
+  },
+  "fresh_drift_run": {
+    "run_dir": "build/source-drift/linux-source-drift-gate/20260702T203130Z-n167-p4-pre-audit",
+    "watched_changed_count": 62,
+    "model_refresh_required_count": 1,
+    "missing_watched_path_count": 0,
+    "patch_footprint_config_matches_actual": true,
+    "merge_tree_clean": true,
+    "model_freshness": "stale",
+    "candidate_no_behavior_patch_reviewable": false,
+    "stale_groups": [
+      {
+        "group_id": "device_queue_iommu",
+        "drift_class": "D4_semantic_drift",
+        "changed_count": 61,
+        "meaning": "Global datacenter/QueueLease/device source maps are stale after current net merge. Scheduler-only P4 direct groups remain fresh, but the global all-angles gate is not closed."
+      }
+    ],
+    "non_stale_changed_groups": [
+      {
+        "group_id": "scheduler_nearby_non_intersecting",
+        "drift_class": "D1_nearby_non_intersecting_drift",
+        "changed_count": 1,
+        "meaning": "cpufreq_schedutil nearby drift is recorded but does not stale scheduler authority models by itself."
+      }
+    ],
+    "fresh_groups": [
+      "l0_footprint",
+      "scheduler_authority_core",
+      "task_lifecycle_identity",
+      "async_workqueue",
+      "async_io_uring",
+      "policy_frontend_security",
+      "memory_and_mm_state"
+    ]
+  },
+  "hardened_validation_changes": {
+    "watch_path_fix": {
+      "old": "kernel/sched/ext.c",
+      "new": "kernel/sched/ext/ext.c"
+    },
+    "watch_path_existence_check": true,
+    "direct_footprint_derived_from_base_to_work": true,
+    "direct_footprint_must_match_config": true,
+    "current_actual_patch_footprint": [
+      "fs/exec.c",
+      "include/linux/sched.h",
+      "include/linux/sched_exec_lease.h",
+      "init/Kconfig",
+      "kernel/exit.c",
+      "kernel/fork.c",
+      "kernel/sched/Makefile",
+      "kernel/sched/core.c",
+      "kernel/sched/exec_lease.c",
+      "kernel/sched/sched.h"
+    ]
+  },
+  "axis_verdicts": {
+    "security": {
+      "verdict": "no_security_boundary_claim",
+      "blockers": [
+        "no_non_forgeable_monitor_root",
+        "p3_no_execution_enforcement",
+        "p4_allow_all_has_zero_protection_value",
+        "p5_denial_source_shape_not_safe_yet",
+        "async_provenance_gap_remains",
+        "path_coverage_intentionally_narrow"
+      ]
+    },
+    "scheduler_integration": {
+      "verdict": "p4_allow_all_observation_plausible_p5_denial_not_safe",
+      "blockers": [
+        "post_pick_next_task_may_be_post_class_settlement",
+        "shared_move_hooks_do_not_cover_all_migrations",
+        "sched_ext_core_proxy_rt_dl_async_paths_excluded",
+        "current_switch_marker_observation_only"
+      ]
+    },
+    "formal_validation": {
+      "verdict": "safety_checklist_evidence_not_liveness_or_linux_refinement",
+      "facts": {
+        "formal_files_with_property_wf_sf": 0,
+        "formal_files_with_check_deadlock_false": 255
+      },
+      "blockers": [
+        "no_liveness_progress_properties",
+        "no_source_specific_cfs_pre_settle_denial_model",
+        "no_runtime_or_static_final_run_anchor_observability",
+        "no_eventual_revoke_drain_proof"
+      ]
+    },
+    "performance": {
+      "verdict": "compatibility_only_no_cost_efficiency_evidence",
+      "facts": [
+        "p3_markers_compile_away_in_observed_build",
+        "p2_adds_approximately_64_bytes_per_task",
+        "p4_and_monitor_costs_unmeasured"
+      ],
+      "blockers": [
+        "no_microbenchmarks",
+        "no_kvm_firecracker_container_baselines",
+        "no_monitor_transition_or_iommu_tail_latency_measurement"
+      ]
+    },
+    "datacenter_scalability": {
+      "verdict": "single_mutable_distributed_linux_claim_blocked",
+      "supported_direction": "single_abi_control_plane_local_monitor_roots_cluster_leases_typed_cross_node_services",
+      "required_artifacts": [
+        "ClusterControlPlaneAuthority",
+        "FailureDomainPartition",
+        "ClockEpochLease",
+        "CrossNodePlacementServiceDomain",
+        "DatacenterIOLocality",
+        "GlobalRevokeDrain",
+        "OperationalIsolation"
+      ]
+    },
+    "upstream_maintenance": {
+      "verdict": "patch_queue_shape_good_not_upstream_ready",
+      "blockers": [
+        "historical_queue_checkpatch_signoff_description_issues",
+        "p4_p5_hot_path_anchor_fragility",
+        "p5_artifacts_need_post_p4_source_basis_refresh",
+        "public_queue_needs_clean_history"
+      ]
+    }
+  },
+  "p4_allowed_only_if": {
+    "fresh_remote_drift_checked": true,
+    "watch_path_existence_checked": true,
+    "patch_footprint_matches_actual": true,
+    "candidate_scope_drift_closed": true,
+    "final_run_anchor_manifest_present": true,
+    "queued_move_anchor_manifest_present": true,
+    "runtime_or_static_anchor_observability_present": true,
+    "p4_helpers_allow_all_only": true,
+    "no_denial_path_reachable": true,
+    "no_abi": true,
+    "no_monitor_call": true,
+    "no_runtime_coverage_claim": true,
+    "no_protection_claim": true
+  },
+  "forbidden_claims": {
+    "runtime_denial": false,
+    "runtime_coverage": false,
+    "budget_enforcement": false,
+    "monitor_verified": false,
+    "hypervisor_grade_isolation": false,
+    "production_protection": false,
+    "cost_efficiency": false,
+    "deployment_readiness": false
+  },
+  "next_required_artifacts": [
+    "candidate_scoped_drift_gate_or_device_queue_iommu_refresh",
+    "p4_anchor_manifest",
+    "final_run_anchor_runtime_or_static_observability",
+    "p5_cfs_pre_settle_denial_source_model",
+    "liveness_progress_revoke_drain_properties",
+    "p5_negative_denial_test_harness_plan"
+  ]
+}

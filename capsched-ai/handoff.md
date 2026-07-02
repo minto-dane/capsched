@@ -3609,3 +3609,40 @@ N-166 P4 pre-entry gate:
     If implementing P4, keep it allow-all/no-denial/no-ABI/no-monitor. P5
     remains blocked by pre-settle/rollback proof, negative denial tests,
     path-classification limits, runtime trace evidence, and claim-ledger rows.
+
+N-167 P4 pre-implementation critical audit:
+  artifacts:
+    capsched-models/analysis/0123-sched-exec-lease-p4-pre-implementation-critical-audit.md
+    capsched-models/analysis/sched-exec-lease-p4-pre-implementation-critical-audit-v1.json
+    capsched-models/validation/0142-sched-exec-lease-p4-pre-implementation-critical-audit-validation.md
+
+  verdict:
+    P4 implementation is paused. N-166 remains historical evidence for the
+    then-fetched upstream ref, but it is no longer sufficient as an
+    implementation-go decision.
+
+  validation hardening:
+    linux-source-drift-model-freshness-gate now watches
+    kernel/sched/ext/ext.c, not the nonexistent kernel/sched/ext.c.
+    run-linux-source-drift-gate.sh now fails if a watched path exists in none
+    of base/upstream/work and requires l0_footprint to match the actual
+    base..work Linux diff.
+
+  fresh remote:
+    upstream/master:
+      87320be9f0d24fce67631b7eef919f0b79c3e45c
+    base_to_upstream_commit_count:
+      422
+    merge-tree:
+      clean
+
+  drift result:
+    scheduler/lifecycle/async/policy/mm direct P4 groups are fresh.
+    device_queue_iommu is D4 stale from 61 net changes, so the global
+    all-angles model_freshness=stale and candidate_no_behavior_patch_reviewable=false.
+
+  next:
+    Either add candidate-scoped drift closure for scheduler-only P4 with
+    explicit non-claims, or refresh the stale D4 device/QueueLease source maps.
+    Add a P4 anchor manifest and runtime/static final-run anchor observability.
+    P4 must remain allow-all/no-denial/no-ABI/no-monitor. P5 remains blocked.

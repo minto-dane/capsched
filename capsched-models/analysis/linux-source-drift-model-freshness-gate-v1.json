@@ -25,10 +25,16 @@
       "group_id": "l0_footprint",
       "purpose": "Current inert L0 patch footprint and patch-queue stability.",
       "paths": [
+        "fs/exec.c",
+        "include/linux/sched.h",
         "include/linux/sched_exec_lease.h",
         "init/Kconfig",
+        "kernel/exit.c",
+        "kernel/fork.c",
         "kernel/sched/Makefile",
-        "kernel/sched/exec_lease.c"
+        "kernel/sched/core.c",
+        "kernel/sched/exec_lease.c",
+        "kernel/sched/sched.h"
       ],
       "drift_class_if_changed": "D2_direct_footprint_drift",
       "stale_if_changed": true,
@@ -53,7 +59,7 @@
         "kernel/sched/fair.c",
         "kernel/sched/deadline.c",
         "kernel/sched/rt.c",
-        "kernel/sched/ext.c"
+        "kernel/sched/ext/ext.c"
       ],
       "drift_class_if_changed": "D3_future_attachment_point_drift",
       "stale_if_changed": true,

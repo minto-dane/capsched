@@ -63,10 +63,62 @@ UPSTREAM_COUNT=$(git -C "$LINUX_DIR" rev-list --count "$BASE_COMMIT..$UPSTREAM_C
 jq -r '.watch_groups[].paths[]' "$CONFIG" | sort -u > "$OUT_DIR/watched-paths.txt"
 mapfile -t WATCH_PATHS < "$OUT_DIR/watched-paths.txt"
 
+tree_has_path()
+{
+	local commit=$1
+	local path=$2
+
+	git -C "$LINUX_DIR" cat-file -e "$commit:$path" >/dev/null 2>&1
+}
+
+printf 'path\tbase_exists\tupstream_exists\twork_exists\tever_exists\n' \
+	> "$OUT_DIR/watched-path-existence.tsv"
+for path in "${WATCH_PATHS[@]}"; do
+	base_exists=false
+	upstream_exists=false
+	work_exists=false
+	if tree_has_path "$BASE_COMMIT" "$path"; then
+		base_exists=true
+	fi
+	if tree_has_path "$UPSTREAM_COMMIT" "$path"; then
+		upstream_exists=true
+	fi
+	if tree_has_path "$WORK_COMMIT" "$path"; then
+		work_exists=true
+	fi
+	if [ "$base_exists" = "true" ] || [ "$upstream_exists" = "true" ] || [ "$work_exists" = "true" ]; then
+		ever_exists=true
+	else
+		ever_exists=false
+	fi
+	printf '%s\t%s\t%s\t%s\t%s\n' \
+		"$path" "$base_exists" "$upstream_exists" "$work_exists" "$ever_exists" \
+		>> "$OUT_DIR/watched-path-existence.tsv"
+done
+
+awk 'NR > 1 && $5 != "true" { print $1 }' "$OUT_DIR/watched-path-existence.tsv" \
+	> "$OUT_DIR/missing-watched-paths.txt"
+MISSING_WATCHED_PATH_COUNT=$(wc -l < "$OUT_DIR/missing-watched-paths.txt")
+if [ "$MISSING_WATCHED_PATH_COUNT" -ne 0 ]; then
+	die "drift config contains watched paths that do not exist in base/upstream/work; see $OUT_DIR/missing-watched-paths.txt"
+fi
+
 jq -r '.watch_groups[] | select(.group_id == "l0_footprint") | .paths[]' "$CONFIG" \
-	> "$OUT_DIR/patch-footprint-paths.txt"
+	| sort -u > "$OUT_DIR/patch-footprint-paths.txt"
 mapfile -t PATCH_FOOTPRINT_PATHS < "$OUT_DIR/patch-footprint-paths.txt"
 [ "${#PATCH_FOOTPRINT_PATHS[@]}" -gt 0 ] || die "l0_footprint has no paths"
+
+git -C "$LINUX_DIR" diff --name-only "$BASE_COMMIT..$WORK_COMMIT" \
+	| sort -u > "$OUT_DIR/actual-patch-footprint-paths.txt"
+comm -23 "$OUT_DIR/actual-patch-footprint-paths.txt" "$OUT_DIR/patch-footprint-paths.txt" \
+	> "$OUT_DIR/patch-footprint-config-missing.txt"
+comm -13 "$OUT_DIR/actual-patch-footprint-paths.txt" "$OUT_DIR/patch-footprint-paths.txt" \
+	> "$OUT_DIR/patch-footprint-config-extra.txt"
+PATCH_FOOTPRINT_MISSING_COUNT=$(wc -l < "$OUT_DIR/patch-footprint-config-missing.txt")
+PATCH_FOOTPRINT_EXTRA_COUNT=$(wc -l < "$OUT_DIR/patch-footprint-config-extra.txt")
+if [ "$PATCH_FOOTPRINT_MISSING_COUNT" -ne 0 ] || [ "$PATCH_FOOTPRINT_EXTRA_COUNT" -ne 0 ]; then
+	die "l0_footprint does not match actual base..work patch footprint; see $OUT_DIR/patch-footprint-config-*.txt"
+fi
 
 git -C "$LINUX_DIR" diff --name-status "$BASE_COMMIT..$WORK_COMMIT" \
 	-- "${PATCH_FOOTPRINT_PATHS[@]}" > "$OUT_DIR/patch-footprint.name-status"
@@ -96,6 +148,9 @@ printf '%s\n' "$MERGE_TREE_OUTPUT" > "$OUT_DIR/merge-tree.txt"
 	printf 'base_to_upstream_commit_count=%s\n' "$UPSTREAM_COUNT"
 	printf 'merge_tree_exit=%s\n' "$MERGE_TREE_EXIT"
 	printf 'concrete_consumer_need=%s\n' "$CONCRETE_CONSUMER_NEED"
+	printf 'missing_watched_path_count=%s\n' "$MISSING_WATCHED_PATH_COUNT"
+	printf 'patch_footprint_config_missing_count=%s\n' "$PATCH_FOOTPRINT_MISSING_COUNT"
+	printf 'patch_footprint_config_extra_count=%s\n' "$PATCH_FOOTPRINT_EXTRA_COUNT"
 } > "$OUT_DIR/metadata.txt"
 
 printf 'group_id\tchanged_count\tstale_if_changed\tmodel_refresh_required\tdrift_class\tchanged_paths\taffected_artifacts_count\tblocked_until_refresh_count\n' > "$OUT_DIR/group-results.tsv"
@@ -176,6 +231,8 @@ fi
 	printf 'semantic_drift_requires_refresh=%s\n' "$SEMANTIC_DRIFT"
 	printf 'merge_tree_exit=%s\n' "$MERGE_TREE_EXIT"
 	printf 'merge_tree_clean=%s\n' "$MERGE_TREE_CLEAN"
+	printf 'missing_watched_path_count=%s\n' "$MISSING_WATCHED_PATH_COUNT"
+	printf 'patch_footprint_config_matches_actual=true\n'
 	printf 'model_freshness=%s\n' "$MODEL_FRESHNESS"
 	printf 'concrete_consumer_need=%s\n' "$CONCRETE_CONSUMER_NEED"
 	printf 'candidate_no_behavior_patch_reviewable=%s\n' "$CANDIDATE_NO_BEHAVIOR_PATCH_REVIEWABLE"
@@ -201,6 +258,7 @@ jq -n \
 	--arg semantic_drift_requires_refresh "$SEMANTIC_DRIFT" \
 	--argjson merge_tree_exit "$MERGE_TREE_EXIT" \
 	--arg merge_tree_clean "$MERGE_TREE_CLEAN" \
+	--argjson missing_watched_path_count "$MISSING_WATCHED_PATH_COUNT" \
 	--arg model_freshness "$MODEL_FRESHNESS" \
 	--arg concrete_consumer_need "$CONCRETE_CONSUMER_NEED" \
 	--arg candidate_no_behavior_patch_reviewable "$CANDIDATE_NO_BEHAVIOR_PATCH_REVIEWABLE" \
@@ -219,6 +277,8 @@ jq -n \
 	  semantic_drift_requires_refresh: ($semantic_drift_requires_refresh == "true"),
 	  merge_tree_exit: $merge_tree_exit,
 	  merge_tree_clean: ($merge_tree_clean == "true"),
+	  missing_watched_path_count: $missing_watched_path_count,
+	  patch_footprint_config_matches_actual: true,
 	  model_freshness: $model_freshness,
 	  concrete_consumer_need: ($concrete_consumer_need == "1"),
 	  candidate_no_behavior_patch_reviewable: ($candidate_no_behavior_patch_reviewable == "true"),
