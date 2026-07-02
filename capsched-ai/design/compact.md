@@ -2637,3 +2637,29 @@ next safe patch classes:
   no-behavior scheduler touch-point static inline hooks/comments
   KUnit/build-only validation without ABI
 ```
+
+N-159 in progress:
+
+```text
+full vmlinux:
+  validation/0130 records a pass for CONFIG_SCHED_EXEC_LEASE=off and
+  CONFIG_SCHED_EXEC_LEASE=on.
+
+  off:
+    SCHED_EXEC_LEASE=undef
+    vmlinux present
+    exec_lease.o absent
+
+  on:
+    SCHED_EXEC_LEASE=y
+    vmlinux present
+    exec_lease.o present
+
+QEMU:
+  systemd unit capsched-n159-qemu-after-full-build-20260702T0320Z.service
+  is active and building the off QEMU bzImage before off/on boot smoke.
+
+still not:
+  QEMU boot validation, runtime coverage, behavior change, ABI approval,
+  monitor verification, production protection, or cost evidence.
+```

@@ -135,6 +135,7 @@ Updated: 2026-07-02
 | 0127 | Source-only terminology inventory executed; no model or protection claim | Terminology Rename Inventory |
 | 0128 | Passed for targeted scheduler-subtree build; no behavior or protection claim | SchedExecLease Rename Build Validation |
 | 0129 | Passed for hash-level replay, source-drift freshness, and targeted build; no behavior or protection claim | Patch Queue Replay and Freshness |
+| 0130 | Passed for full `vmlinux` off/on build; no behavior or protection claim | SchedExecLease Full vmlinux Build |
 
 ## Principles
 

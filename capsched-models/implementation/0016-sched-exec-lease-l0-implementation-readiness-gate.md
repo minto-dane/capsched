@@ -22,6 +22,8 @@ Patch queue replay:                 ready
 Source-drift freshness:             ready
 Naming and no-ABI surface:          ready
 No-behavior scaffold build:         ready
+Full vmlinux off/on build:          ready
+QEMU boot smoke off/on:             pending
 Behavior-changing enforcement:      not approved yet
 First implementation design gate:   required and drafted in 0017
 ```
@@ -39,6 +41,7 @@ tracepoints, monitor ABI, or production protection claims.
 | Targeted build on current tree | `validation/0128` | Passed |
 | Patch queue replay | `validation/0129` | Passed |
 | Source-drift freshness after rename | `validation/0129` | Passed |
+| Full `vmlinux` off/on build | `validation/0130` | Passed |
 | Overclaim guard | `analysis/0109`, `assurance/claims.json` | Still active |
 
 ## Hard Requirements Before Runtime Enforcement
@@ -61,7 +64,7 @@ implementation placement and validation plan:
 | L0-RDY-011 | Task lifetime and generation storage are fixed before task fields are used | `dup_task_struct()` copies task state and RCU visibility is not authority |
 | L0-RDY-012 | fork/clone, exec, and exit identity propagation are connected before runtime authority is consumed | No ambient lease inheritance |
 | L0-RDY-013 | cleanup, trace, RCU, cancel, or io_uring/workqueue completion are not revoke receipts | Avoid false revocation evidence |
-| L0-RDY-014 | Full `vmlinux` build and QEMU smoke are required before any behavior-changing patch is accepted | Targeted build is not enough for runtime behavior |
+| L0-RDY-014 | Full `vmlinux` build and QEMU smoke are required before any behavior-changing patch is accepted | Targeted build is not enough for runtime behavior; full `vmlinux` build is passed, QEMU smoke remains pending |
 
 ## Source Anchors
 

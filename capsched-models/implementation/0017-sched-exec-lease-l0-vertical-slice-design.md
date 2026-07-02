@@ -158,6 +158,13 @@ fork/exec/exit identity KUnit or trace plan
 negative denial tests
 ```
 
+Current status:
+
+```text
+full vmlinux off/on validation: passed in validation/0130
+QEMU boot smoke off/on validation: pending
+```
+
 ## Non-Claims
 
 This design is not an implementation patch, enforcement evidence, monitor

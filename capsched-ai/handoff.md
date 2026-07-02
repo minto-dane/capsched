@@ -3110,3 +3110,36 @@ blocked patch classes:
   runtime denial, public user handles, public tracepoint ABI, monitor ABI,
   exported symbols, endpoint/device/memory authority, hypervisor-grade or
   production protection claims.
+
+N-159 in progress:
+  validation/0130-sched-exec-lease-full-vmlinux-build.md
+  validation/run-sched-exec-lease-full-build-validation.sh
+  validation/run-sched-exec-lease-qemu-boot-smoke.sh
+
+full vmlinux result:
+  passed for disabled and enabled configurations.
+
+  log:
+    /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260702T030457Z.log
+
+  off:
+    SCHED_EXEC_LEASE = undef
+    vmlinux present
+    kernel/sched/exec_lease.o absent
+
+  on:
+    SCHED_EXEC_LEASE = y
+    vmlinux present
+    kernel/sched/exec_lease.o present
+
+QEMU status:
+  capsched-n159-qemu-after-full-build-20260702T0320Z.service is active.
+  It is building the off QEMU bzImage and will run off boot smoke followed by
+  on boot smoke with kprobe observation if the off smoke succeeds.
+
+  log:
+    /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-qemu-after-full-build-20260702T0320Z.log
+
+still not:
+  QEMU boot validation, runtime coverage, behavior change, ABI approval,
+  monitor verification, production protection, or cost efficiency.
