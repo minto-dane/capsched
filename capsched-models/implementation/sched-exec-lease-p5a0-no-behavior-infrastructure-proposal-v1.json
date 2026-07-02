@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a0-no-behavior-infrastructure-proposal-v1",
+  "date": "2026-07-02",
+  "status": "implementation_proposal_only_no_linux_patch_approved",
+  "analysis": "analysis/0131-sched-exec-lease-p5a0-no-behavior-infrastructure-proposal.md",
+  "allowed_future_patch_shape": {
+    "helpers_allow_only": true,
+    "scheduler_branch_on_validation_result": false,
+    "non_allow_path_reachable": false,
+    "retry": false,
+    "fail_closed": false,
+    "quarantine": false,
+    "runtime_denial": false,
+    "abi": false,
+    "monitor_call": false
+  },
+  "candidate_patch_units": [
+    "p5a0_1_source_only_contract_and_internal_type_shapes",
+    "p5a0_2_move_status_carrier_plumbing_allow_only",
+    "p5a0_3_internal_negative_test_harness_skeleton_no_public_abi",
+    "p5a0_4_disabled_path_setup_skeleton_no_behavior_until_test_denial_mode",
+    "p5a0_5_validation_and_overclaim_review"
+  ],
+  "required_before_writing_patch": [
+    "fresh_upstream_drift_row",
+    "patch_queue_plan",
+    "source_checker_plan",
+    "build_qemu_plan",
+    "object_symbol_plan",
+    "claim_ledger_row"
+  ],
+  "required_before_acceptance": [
+    "patch_queue_replay",
+    "checkpatch",
+    "source_checker",
+    "config_off_on_build",
+    "qemu_denial_disabled_smoke",
+    "object_symbol_review",
+    "overclaim_review"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false
+  }
+}

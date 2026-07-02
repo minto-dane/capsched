@@ -33,12 +33,13 @@ file paths remain stable for traceability.
 
 Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
-`d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3` after the SchedExecLease P3
-placement-only scheduler touchpoints. No behavior-changing implementation
-patch points are accepted yet. P1 private object vocabulary, P2 task identity
-shadow, and P3 no-op scheduler touchpoints have been validated as
-no-denial/no-ABI/no-monitor compatibility only. There is no runtime denial,
-monitor call, budget charging, runtime coverage, or protection claim.
+`a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8` after the SchedExecLease P4
+allow-only validation skeleton. No behavior-changing implementation patch
+points are accepted yet. P1 private object vocabulary, P2 task identity shadow,
+P3 no-op scheduler touchpoints, and P4 allow-only final-run/move validation
+helpers have been validated as no-denial/no-ABI/no-monitor compatibility only.
+There is no runtime denial, monitor call, budget charging, runtime coverage, or
+protection claim.
 Latest fetched upstream/master is
 `87320be9f0d24fce67631b7eef919f0b79c3e45c`.
 
@@ -3336,4 +3337,28 @@ P5A scope:
 
   Next:
     P5A0 no-behavior infrastructure proposal only.
+
+P5A0 no-behavior gate:
+  analysis/0131, implementation/0029, formal/0100, and validation/0153 record
+  and validate P5A0 as proposal only. No Linux patch is approved.
+
+  Allowed shape:
+    future status plumbing shape, internal test harness observability,
+    setup-time path-disable boundaries, and claim ledger rows.
+
+  Forbidden by gate:
+    behavior change, non-ALLOW branch, runtime denial, retry, fail-closed,
+    quarantine, public ABI, monitor call, protection claim, cost-efficiency
+    claim, and deployment-readiness claim.
+
+  Validation:
+    run-sched-exec-lease-p5a0-no-behavior-gate.sh passed against
+    a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8.
+    formal/0100 safe passed.
+    12 unsafe configs produced expected counterexamples.
+
+  Next:
+    P5A0.1 prepatch evidence package: fresh drift row, patch queue plan,
+    source checker plan, full build/QEMU denial-disabled plan, object/symbol
+    plan, negative harness plan, claim ledger row, and explicit non-claims.
 ```

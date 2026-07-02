@@ -134,6 +134,9 @@ Updated: 2026-07-02
 | 0126 | Static final-run anchor observability complete; runtime coverage remains unproven | SchedExecLease P4 Static Final-Run Observability |
 | 0127 | P4 allow-all/no-denial helper proof complete; P4 implementation still not applied | SchedExecLease P4 Allow-All Helper Proof |
 | 0128 | P4 allow-only compatibility slice closed after final overclaim/security review; P5 remains blocked | SchedExecLease P4 Final Overclaim and Security Review |
+| 0129 | P5 readiness refreshed after P4; denial remains blocked | SchedExecLease P5 Readiness Refresh After P4 |
+| 0130 | P5A scope decomposed; no Linux implementation approved | SchedExecLease P5A Scope Proposal |
+| 0131 | P5A0 no-behavior infrastructure proposal recorded; no Linux patch approved | SchedExecLease P5A0 No-Behavior Infrastructure Proposal |
 
 ## Planned Analysis Notes
 
@@ -232,3 +235,4 @@ Updated: 2026-07-02
 | `sched-exec-lease-p4-final-overclaim-security-review-v1.json` | P4 final review | Machine-readable P4 final overclaim/security review, accepted compatibility evidence, zero finding result, allowed claim, forbidden claims, and next gate |
 | `sched-exec-lease-p5-readiness-refresh-after-p4-v1.json` | P5 blocked refresh | Machine-readable post-P4 P5 readiness refresh, run/move denial blockers, source facts, preconditions, and non-claims |
 | `sched-exec-lease-p5a-scope-proposal-v1.json` | P5A scope proposal | Machine-readable P5A0/P5A-R/P5A-M/P5A-V decomposition, narrowed run/move blockers, forbidden claims, and review order |
+| `sched-exec-lease-p5a0-no-behavior-infrastructure-proposal-v1.json` | P5A0 proposal | Machine-readable no-behavior infrastructure proposal, future patch constraints, move/run/test/setup shapes, required validation, and non-claims |

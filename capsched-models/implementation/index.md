@@ -183,6 +183,17 @@ Current SchedExecLease L0 readiness:
     eligibility integration; broad common move denial requires caller status
     settlement across migration, affinity, swap, push, and core-cookie-steal
     paths.
+- `0029-sched-exec-lease-p5a0-no-behavior-infrastructure-proposal.md`
+  - Status: no-behavior infrastructure proposal only; no Linux code approved.
+  - Rule: P5A0 may only prepare the shape of future status plumbing, internal
+    test harness observability, setup-time path-disable boundaries, and claim
+    ledger rows. It does not approve a Linux patch, behavior change,
+    non-ALLOW branch, runtime denial, retry, fail-closed path, quarantine,
+    public ABI, monitor call, production protection claim, or cost-efficiency
+    claim. The next reviewable work is P5A0.1 prepatch evidence: fresh drift
+    row, patch queue plan, source checker plan, full build/QEMU plan,
+    object/symbol plan, negative harness plan, claim ledger row, and explicit
+    non-claims.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
@@ -359,6 +370,18 @@ Candidate implementation plans:
     SchedExecLease denial patch can even be reviewed, and forbid silent
     fallback, unbounded retry, denial after `rq->curr` publication, or
     production protection claims.
+- `0028-sched-exec-lease-p5a-scope-proposal.md`
+  - Status: proposed scope decomposition, no Linux patch approved.
+  - Purpose: split the blocked P5 denial space into P5A0 no-behavior
+    infrastructure, P5A-R run denial design, P5A-M move status settlement, and
+    P5A-V validation/claim ledger.
+- `0029-sched-exec-lease-p5a0-no-behavior-infrastructure-proposal.md`
+  - Status: proposed no-behavior infrastructure boundary, no Linux patch
+    approved.
+  - Purpose: define the only safe next review order before implementation:
+    first prepare evidence and checkers for an ALLOW-only/no-denial
+    infrastructure patch, then separately review any code. CFS deny and broad
+    move denial remain outside P5A0.
 
 Validated formal inputs:
 

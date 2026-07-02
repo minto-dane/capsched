@@ -3975,3 +3975,32 @@ P5A scope gate / validation 0152:
     fresh drift row, patch queue plan, source checker plan, build/QEMU
     disabled-behavior plan, negative-test harness plan, claim ledger row, and
     explicit non-claims.
+
+P5A0 no-behavior gate / validation 0153:
+  status:
+    Recorded and validated P5A0 proposal only. No Linux patch, behavior
+    change, runtime denial, retry, fail-closed path, quarantine, public ABI,
+    monitor call, production protection claim, or cost-efficiency claim is
+    approved.
+
+  artifacts:
+    capsched-models/analysis/0131-sched-exec-lease-p5a0-no-behavior-infrastructure-proposal.md
+    capsched-models/analysis/sched-exec-lease-p5a0-no-behavior-infrastructure-proposal-v1.json
+    capsched-models/implementation/0029-sched-exec-lease-p5a0-no-behavior-infrastructure-proposal.md
+    capsched-models/implementation/sched-exec-lease-p5a0-no-behavior-infrastructure-proposal-v1.json
+    capsched-models/formal/0100-p5a0-no-behavior-gate-model/
+    capsched-models/validation/0153-sched-exec-lease-p5a0-no-behavior-gate.md
+    capsched-models/validation/run-sched-exec-lease-p5a0-no-behavior-gate.sh
+
+  validation:
+    JSON gate run 20260702T-p5a0-no-behavior-gate passed against Linux commit
+    a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8.
+    formal/0100 safe passed.
+    12 unsafe configs produced expected counterexamples.
+
+  next:
+    P5A0.1 prepatch evidence package: fresh drift row for touched scheduler
+    groups, patch queue plan, source checker plan, full build/QEMU
+    denial-disabled plan, object/symbol plan, negative harness plan, claim
+    ledger row, and explicit non-claims. P5A-R CFS deny and P5A-M broad move
+    denial remain later design work.

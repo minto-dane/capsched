@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "artifact": "sched-exec-lease-p5a0-no-behavior-infrastructure-proposal",
+  "date": "2026-07-02",
+  "status": "proposal_recorded_no_linux_patch_approved",
+  "source_basis": {
+    "linux_repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8",
+    "linux_subject": "sched/exec_lease: Add allow-only validation skeleton"
+  },
+  "blocked_harder_work": {
+    "p5a_r": "deny-one-CFS-and-pick-next requires fair-picker eligibility integration",
+    "p5a_m": "broad common move denial requires status settlement across migration, affinity, swap, push, and core-cookie-steal paths"
+  },
+  "allowed_shapes": [
+    "status_plumbing_shape",
+    "test_harness_shape",
+    "setup_time_path_disable_shape",
+    "claim_ledger_shape"
+  ],
+  "future_p5a0_patch_constraints": {
+    "config_off_no_impact": true,
+    "config_on_helpers_allow_only": true,
+    "scheduler_branch_on_non_allow": false,
+    "runtime_denial": false,
+    "retry": false,
+    "fail_closed": false,
+    "quarantine": false,
+    "public_abi": false,
+    "monitor_call": false
+  },
+  "move_status_plumbing_shape": {
+    "common_move_result_contains_rq_and_status": true,
+    "locked_move_returns_status": true,
+    "allow_path_identical_required": true,
+    "non_allow_reachable_in_p5a0": false,
+    "caller_behavior_change_allowed": false,
+    "waiter_completion_change_allowed": false,
+    "resched_change_allowed": false,
+    "task_cpu_placement_change_allowed": false
+  },
+  "run_status_plumbing_shape": {
+    "current_p4_final_run_hook_as_denial_hook": false,
+    "observation_only": true,
+    "allow_only": true,
+    "future_denial_requires_p5a_r": true
+  },
+  "test_harness_shape": {
+    "internal_only": true,
+    "public_tracepoint_abi": false,
+    "syscall_abi": false,
+    "ioctl_abi": false,
+    "sysfs_abi": false,
+    "procfs_abi": false,
+    "debugfs_abi": false,
+    "monitor_abi": false,
+    "observables": [
+      "denial_injection_point_id",
+      "candidate_task_or_test_id",
+      "task_generation",
+      "edge_kind",
+      "candidate_or_destination_cpu",
+      "validation_result",
+      "settlement_point",
+      "rq_curr_observation",
+      "sched_switch_observation",
+      "context_switch_observation",
+      "move_mutation_observation",
+      "waiter_completion_observation",
+      "claim_flags"
+    ]
+  },
+  "setup_time_disable_shape": {
+    "future_unsupported_paths": [
+      "sched_ext",
+      "core_scheduling",
+      "proxy_execution",
+      "rt",
+      "deadline",
+      "fair_direct_detach_attach",
+      "idle_as_authority",
+      "stopper_hotplug_migration_kthreads_as_ordinary_domain_execution",
+      "generic_kthreads_workqueues",
+      "io_uring_workers"
+    ],
+    "behavior_change_in_proposal": false
+  },
+  "required_before_patch_review": [
+    "fresh_upstream_drift_row_for_touched_groups",
+    "patch_queue_plan",
+    "source_checker_plan",
+    "full_build_off_on_plan",
+    "qemu_denial_disabled_smoke_plan",
+    "object_symbol_review_plan",
+    "negative_harness_plan",
+    "claim_ledger_row",
+    "explicit_non_claims"
+  ],
+  "required_before_patch_acceptance": [
+    "patch_queue_replay",
+    "checkpatch",
+    "source_checker_no_non_allow_reachable_behavior",
+    "source_checker_no_scheduler_branch_on_validation_result",
+    "config_off_on_build",
+    "qemu_denial_disabled_boot_workload_smoke",
+    "object_symbol_review",
+    "overclaim_review"
+  ],
+  "safety_flags": {
+    "proposal_recorded": true,
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "retry_approved": false,
+    "fail_closed_approved": false,
+    "quarantine_approved": false,
+    "runtime_coverage": false,
+    "public_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false,
+    "datacenter_readiness": false
+  }
+}
