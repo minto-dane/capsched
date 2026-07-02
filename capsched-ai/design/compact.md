@@ -2834,8 +2834,30 @@ still not:
   scheduler hook approval, runtime denial, behavior change, ABI, monitor call,
   budget charging, runtime coverage, production protection, or cost evidence.
 
+N-165/N-166 design-readiness audit:
+
+```text
+artifacts:
+  analysis/0113-implementation-ready-completion-audit.md
+  analysis/implementation-ready-completion-audit-v1.json
+  analysis/0114-sched-ext-core-proxy-coverage-boundary.md
+  analysis/sched-ext-core-proxy-coverage-boundary-v1.json
+
+verdict:
+  implementation-ready design is not complete yet.
+
+default runtime-coverage rule:
+  uncovered until explicitly proved covered.
+
+open coverage boundary:
+  sched_ext DSQ custody/direct dispatch/bypass/fallback/server pick.
+  core scheduling cached picks, core sequence freshness, cookie steal moves.
+  proxy donor/current/executor split, donor-aware budget, proxy migration.
+
 next:
-  design-only P3/P4 readiness. ADR-0011 says no new Linux implementation is in
-  current scope until explicitly reopened. analysis/0112 records the
-  source-verified P3/P4 anchor boundary.
+  bounded retry and ineligibility source design.
+  negative denial validation plan.
+  implementation claim-ledger gate.
+  upstream-drift recheck before implementation scope is reopened.
+```
 ```

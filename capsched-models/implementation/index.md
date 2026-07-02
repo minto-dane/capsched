@@ -4,6 +4,18 @@ Updated: 2026-07-02
 
 No behavior-changing implementation patch points are accepted yet.
 
+Latest design-readiness audit:
+
+- `analysis/0113-implementation-ready-completion-audit.md`
+  - Verdict: implementation-ready design is not complete yet.
+  - Reason: P2 is validated, but sched_ext/core/proxy coverage, bounded
+    retry/ineligibility source shape, negative denial tests, claim-ledger
+    gates, and upstream-drift recheck remain open before any new Linux
+    implementation scope is reopened.
+- `analysis/0114-sched-ext-core-proxy-coverage-boundary.md`
+  - Rule: sched_ext, core scheduling, and proxy execution are uncovered until
+    explicitly classified as supported, disabled, or excluded.
+
 Current SchedExecLease L0 readiness:
 
 - `0016-sched-exec-lease-l0-implementation-readiness-gate.md`
@@ -68,8 +80,9 @@ Current SchedExecLease L0 readiness:
     publication, allocate grants, charge budget, call a monitor, expose ABI, or
     claim runtime coverage.
 - `0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md`
-  - Status: draft P4 patch plan; implementation not applied and blocked until
-    P2/P3 validation is recorded.
+  - Status: draft P4 patch plan; implementation not applied, out of current
+    scope under ADR-0011, and blocked until P3 is explicitly reopened and
+    analysis/0113 plus analysis/0114 blockers are closed or consciously scoped.
   - Rule: P4 may wire allow-all final run and queued-move revalidation helper
     calls, but every production result must remain allow. It must preserve
     separate run and move tuples, place final run validation before `rq->curr`
@@ -77,7 +90,9 @@ Current SchedExecLease L0 readiness:
     forbid denial receipts, retry epochs, fail-closed behavior, monitor calls,
     ABI, or protection claims.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
-  - Status: draft readiness gate; P5 implementation not approved.
+  - Status: draft readiness gate; P5 implementation not approved and out of
+    current scope under ADR-0011 until implementation-ready design blockers are
+    closed.
   - Rule: P5 is the first possible behavior-changing slice and remains blocked
     until P2/P3/P4 validation, refreshed final run/move and denial/retry models,
     negative tests, sched_ext/core/proxy decisions, workqueue/kthread

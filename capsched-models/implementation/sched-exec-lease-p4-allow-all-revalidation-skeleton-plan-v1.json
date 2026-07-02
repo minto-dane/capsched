@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p4-allow-all-revalidation-skeleton-plan-v1",
   "date": "2026-07-02",
-  "status": "draft_plan_implementation_not_applied_blocked_until_p2_p3_validation",
+  "status": "draft_plan_implementation_not_applied_out_of_current_scope_blocked_by_design_readiness",
   "linux_basis": {
     "branch": "capsched-linux-l0",
     "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
@@ -12,7 +12,9 @@
     "P2 validation recorded",
     "P3 placement-only touchpoint patch implemented and validated",
     "analysis/0100 final run/move gate applicable",
-    "analysis/0101 final deny retry/ineligibility gate applicable"
+    "analysis/0101 final deny retry/ineligibility gate applicable",
+    "analysis/0113 implementation-ready audit blockers closed or explicitly scoped",
+    "analysis/0114 sched_ext/core/proxy coverage classification closed"
   ],
   "allowed_patch_surface": [
     "include/linux/sched_exec_lease.h",
@@ -90,6 +92,8 @@
   "required_validation": [
     "p2_validation_complete",
     "p3_validation_complete",
+    "analysis_0113_blockers_closed_or_scoped",
+    "analysis_0114_sched_ext_core_proxy_classified",
     "git_diff_check",
     "patch_queue_replay",
     "full_vmlinux_config_off",

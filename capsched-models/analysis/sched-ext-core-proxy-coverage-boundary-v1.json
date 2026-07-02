@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "id": "sched-ext-core-proxy-coverage-boundary-v1",
+  "date": "2026-07-02",
+  "status": "source_verified_design_boundary_no_implementation",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "default_runtime_coverage": "uncovered_until_explicitly_proved_covered",
+  "subjects": {
+    "sched_ext": {
+      "classification": "open",
+      "source_surfaces": [
+        "kernel/sched/ext/ext.c:move_remote_task_to_local_dsq",
+        "kernel/sched/ext/ext.c:task_can_run_on_remote_rq",
+        "kernel/sched/ext/ext.c:consume_dispatch_q",
+        "kernel/sched/ext/ext.c:scx_dispatch_sched",
+        "kernel/sched/ext/ext.c:balance_one",
+        "kernel/sched/ext/ext.c:do_pick_task_scx",
+        "kernel/sched/ext/ext.c:pick_task_scx",
+        "kernel/sched/ext/ext.c:ext_server_pick_task",
+        "kernel/sched/ext/ext.c:scx_prio_less"
+      ],
+      "required_decision": [
+        "disable_when_test_denial_enabled",
+        "or_support_dsq_consume_direct_dispatch_bypass_fallback_server_pick",
+        "or_exclude_from_runtime_coverage_claims"
+      ]
+    },
+    "core_scheduling": {
+      "classification": "open",
+      "source_surfaces": [
+        "kernel/sched/core.c:pick_next_task",
+        "kernel/sched/core.c:rq_core_pick_fastpath",
+        "kernel/sched/core.c:core_task_seq_core_pick_seq_core_sched_seq",
+        "kernel/sched/core.c:sched_core_find",
+        "kernel/sched/core.c:try_steal_cookie",
+        "kernel/sched/sched.h:move_queued_task_locked",
+        "kernel/sched/core.c:sched_core_balance"
+      ],
+      "required_decision": [
+        "invalidate_or_revalidate_cached_picks",
+        "bind_tuple_freshness_to_core_sequences",
+        "validate_cookie_steal_move_edge"
+      ]
+    },
+    "proxy_execution": {
+      "classification": "open",
+      "source_surfaces": [
+        "kernel/sched/core.c:sched_proxy_exec",
+        "kernel/sched/core.c:rq_set_donor",
+        "kernel/sched/core.c:find_proxy_task",
+        "kernel/sched/core.c:proxy_resched_idle",
+        "kernel/sched/core.c:proxy_deactivate",
+        "kernel/sched/core.c:proxy_migrate_task",
+        "kernel/sched/core.c:sched_tick"
+      ],
+      "required_decision": [
+        "tuple_includes_donor_executor_proxy_relation",
+        "budget_subject_is_donor_aware",
+        "proxy_migration_invalidates_old_tuples",
+        "proxy_retry_obeys_bounded_retry_design"
+      ]
+    }
+  },
+  "forbidden_assumptions": [
+    "dsq_custody_is_authority",
+    "core_cached_pick_is_authority",
+    "proxy_donor_equals_current",
+    "rq_curr_is_always_budget_subject",
+    "final_hook_in_schedule_automatically_covers_all_selected_state"
+  ],
+  "safety_flags": {
+    "implementation_approved": false,
+    "runtime_coverage": false,
+    "runtime_denial_approved": false,
+    "sched_ext_supported": false,
+    "core_scheduling_supported": false,
+    "proxy_execution_supported": false,
+    "monitor_verified": false,
+    "production_protection": false
+  }
+}

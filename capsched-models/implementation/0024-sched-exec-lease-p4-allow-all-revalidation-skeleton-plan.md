@@ -1,7 +1,8 @@
 # Implementation 0024: SchedExecLease P4 Allow-All Revalidation Skeleton Plan
 
-Status: Draft P4 patch plan; implementation not applied; blocked until P2
-validation is recorded and P3 is implemented/validated
+Status: Draft P4 patch plan; implementation not applied; out of current scope
+under ADR-0011; blocked until P3 is explicitly reopened/validated and
+analysis/0113 plus analysis/0114 blockers are closed or consciously scoped
 
 Date: 2026-07-02
 
@@ -31,6 +32,8 @@ P2 full build/layout/QEMU validation recorded
 P3 placement-only touchpoint patch implemented and validated
 analysis/0100 final run/move gate remains applicable to current source
 analysis/0101 final deny retry/ineligibility gate remains applicable to current source
+analysis/0113 implementation-ready audit no longer reports open blockers
+analysis/0114 sched_ext/core/proxy coverage classification is closed
 ```
 
 ## Allowed Patch Surface

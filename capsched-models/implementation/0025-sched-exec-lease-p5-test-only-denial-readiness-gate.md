@@ -1,6 +1,7 @@
 # Implementation 0025: SchedExecLease P5 Test-Only Denial Readiness Gate
 
-Status: Draft readiness gate; P5 implementation not approved
+Status: Draft readiness gate; P5 implementation not approved; out of current
+scope under ADR-0011 until implementation-ready design blockers are closed
 
 Date: 2026-07-02
 
@@ -30,6 +31,8 @@ P3 scheduler touchpoint validation is recorded
 P4 allow-all revalidation skeleton validation is recorded
 analysis/0100 final run/move tuple gate is refreshed against current source
 analysis/0101 final deny/retry/ineligibility gate is refreshed against current source
+analysis/0113 implementation-ready blockers are closed or explicitly scoped
+analysis/0114 sched_ext/core/proxy coverage decisions are closed
 ```
 
 ## Permitted Scope If Re-Approved

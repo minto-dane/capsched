@@ -118,6 +118,8 @@ Updated: 2026-07-02
 | 0110 | Accepted terminology gate | Terminology Freeze and Rename Risk Review |
 | 0111 | Covered by implementation gate | SchedExecLease L0 Readiness and Vertical Slice Design |
 | 0112 | Design-only source verification | SchedExecLease P3/P4 Source-Verified Design Boundary |
+| 0113 | Design-readiness audit; not complete | Implementation-Ready Completion Audit |
+| 0114 | Source-verified design boundary | sched_ext, Core Scheduling, and Proxy Coverage Boundary |
 
 ## Planned Analysis Notes
 
@@ -179,6 +181,8 @@ Updated: 2026-07-02
 | `linux-scheduler-authority-core-refresh-v1.json` | Source-only refresh contract | Machine-readable scheduler authority anchors, refreshed rules, updated artifacts, and safety flags for N-134 |
 | `scheduler-authority-refinement-gate-v1.json` | Draft model gate | Machine-readable TASK_WAKING, donor/current/proxy budget, and selected-state refinement gate for N-135 |
 | `runtime-charge-subject-v1.json` | Draft model gate | Machine-readable runtime charge subject map for N-136 |
+| `implementation-ready-completion-audit-v1.json` | Design-readiness audit | Machine-readable implementation-ready completion status, blockers, and next design order |
+| `sched-ext-core-proxy-coverage-boundary-v1.json` | Source-verified coverage boundary | Machine-readable sched_ext/core/proxy open classifications, source surfaces, required decisions, and forbidden assumptions |
 | `scheduler-server-ticket-v1.json` | Draft model gate | Machine-readable scheduler server-ticket source map and model contract for N-137 |
 | `runtime-coverage-gate-v1.json` | Draft trace-only coverage gate | Machine-readable current/donor/proxy/server runtime coverage contract for N-138 |
 | `monitor-root-budget-timer-v1.json` | Draft monitor-root budget event model | Machine-readable monitor-owned root budget timer contract for N-139 |

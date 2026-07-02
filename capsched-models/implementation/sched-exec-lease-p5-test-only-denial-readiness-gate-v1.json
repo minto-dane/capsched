@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5-test-only-denial-readiness-gate-v1",
   "date": "2026-07-02",
-  "status": "draft_gate_p5_implementation_not_approved",
+  "status": "draft_gate_p5_implementation_not_approved_out_of_current_scope_blocked_by_design_readiness",
   "linux_basis": {
     "branch": "capsched-linux-l0",
     "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
@@ -13,7 +13,9 @@
     "P3 validation recorded",
     "P4 validation recorded",
     "analysis/0100 refreshed against current source",
-    "analysis/0101 refreshed against current source"
+    "analysis/0101 refreshed against current source",
+    "analysis/0113 implementation-ready blockers closed or explicitly scoped",
+    "analysis/0114 sched_ext/core/proxy coverage decisions closed"
   ],
   "first_allowed_scope_after_reapproval": "test_only_denial_mode_off_by_default",
   "allowed_after_reapproval": [
@@ -65,6 +67,8 @@
     "fork_exec_exit_denial_lifetime_tests_designed",
     "move_affinity_hotplug_tests_designed",
     "sched_ext_core_proxy_availability_or_exclusion_recorded",
+    "analysis_0113_claim_ledger_gate_recorded",
+    "analysis_0114_coverage_boundary_closed",
     "claim_ledger_overclaim_guard_updated"
   ],
   "required_before_patch_acceptance": [

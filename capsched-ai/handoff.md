@@ -3364,11 +3364,26 @@ still blocked:
   denial, ABI, monitor calls, budget charging, runtime coverage, negative
   denial tests, production protection, and cost-efficiency claims.
 
-next:
-  Design-only P3/P4 readiness. ADR-0011 states that new Linux implementation is
-  out of current scope until explicitly reopened. analysis/0112 verifies the
-  current source anchors for wake, new-task publication, tick donor
-  observation, final run, switch observation, and queued move boundaries.
-  Future P3 must remain no-denial/no-ABI and must not make enqueue_task()
-  fallible, deny after rq->curr publication, allocate grants, charge budget,
-  call a monitor, or claim runtime coverage.
+N-165/N-166 design-readiness audit:
+  artifacts:
+    capsched-models/analysis/0113-implementation-ready-completion-audit.md
+    capsched-models/analysis/implementation-ready-completion-audit-v1.json
+    capsched-models/analysis/0114-sched-ext-core-proxy-coverage-boundary.md
+    capsched-models/analysis/sched-ext-core-proxy-coverage-boundary-v1.json
+
+  current verdict:
+    implementation-ready design is not complete yet.
+
+  reason:
+    P2 is validated, and ADR-0011 keeps new Linux implementation out of scope,
+    but sched_ext DSQ custody/fallback, core scheduling cached picks/cookie
+    steal, and proxy donor/current/executor splits remain uncovered until
+    explicitly classified as supported, disabled, or excluded.
+
+  default claim rule:
+    uncovered until explicitly proved covered.
+
+  next:
+    design-only bounded retry and ineligibility source shape, then negative
+    denial validation design, then claim-ledger gate, then upstream-drift
+    recheck before any implementation scope is reopened.
