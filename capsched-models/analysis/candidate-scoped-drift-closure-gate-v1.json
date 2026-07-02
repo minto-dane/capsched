@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "id": "candidate-scoped-drift-closure-gate-v1",
+  "analysis": "0124-candidate-scoped-drift-closure-gate",
+  "date": "2026-07-02",
+  "status": "p4_candidate_scoped_drift_closed_p4_implementation_still_paused",
+  "candidate": {
+    "id": "P4SchedulerAllowAll",
+    "mode": "allow_all_no_denial_no_abi_no_monitor",
+    "touched_or_claimed_groups": [
+      "l0_footprint",
+      "scheduler_authority_core",
+      "task_lifecycle_identity"
+    ],
+    "forbidden_modes": [
+      "runtime_denial",
+      "retry",
+      "fail_closed",
+      "runtime_coverage_claim",
+      "budget_enforcement",
+      "abi",
+      "monitor_call",
+      "protection_claim"
+    ]
+  },
+  "source_drift_basis": {
+    "run_dir": "build/source-drift/linux-source-drift-gate/20260702T203130Z-n167-p4-pre-audit",
+    "base_commit": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "work_commit": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3",
+    "merge_tree_clean": true,
+    "watch_path_existence_checked": true,
+    "patch_footprint_matches_actual": true
+  },
+  "candidate_group_results": [
+    {
+      "group_id": "l0_footprint",
+      "fresh": true
+    },
+    {
+      "group_id": "scheduler_authority_core",
+      "fresh": true
+    },
+    {
+      "group_id": "task_lifecycle_identity",
+      "fresh": true
+    }
+  ],
+  "non_candidate_stale_groups": [
+    {
+      "group_id": "device_queue_iommu",
+      "drift_class": "D4_semantic_drift",
+      "changed_count": 61,
+      "stale_for_claims": [
+        "device_queue_lease_claim",
+        "iommu_mapping_claim",
+        "queuelease_patch",
+        "datacenter_device_claim",
+        "global_all_angles_freshness"
+      ]
+    }
+  ],
+  "formal_model": {
+    "path": "formal/0093-candidate-scoped-drift-closure-gate-model/",
+    "safe_cfg": "CandidateScopedDriftClosureGateSafe.cfg",
+    "unsafe_cfg_count": 14,
+    "safe_passed": true,
+    "unsafe_counterexamples_expected": true,
+    "unsafe_counterexamples_observed": 14
+  },
+  "decisions": {
+    "candidate_scoped_drift_closed": true,
+    "global_model_freshness": false,
+    "p4_implementation_approved": false,
+    "p5_denial_approved": false
+  },
+  "remaining_before_p4_implementation": [
+    "final_run_anchor_manifest",
+    "queued_move_anchor_manifest",
+    "runtime_or_static_final_run_anchor_observability",
+    "allow_all_helper_proof",
+    "no_reachable_denial_path_proof",
+    "generated_code_review_after_patch",
+    "build_and_qemu_validation_after_patch"
+  ],
+  "non_claims": {
+    "linux_patch_approved": false,
+    "runtime_denial": false,
+    "runtime_coverage": false,
+    "budget_enforcement": false,
+    "abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade": false,
+    "cost_efficiency": false,
+    "deployment_readiness": false
+  }
+}

@@ -3646,3 +3646,44 @@ N-167 P4 pre-implementation critical audit:
     explicit non-claims, or refresh the stale D4 device/QueueLease source maps.
     Add a P4 anchor manifest and runtime/static final-run anchor observability.
     P4 must remain allow-all/no-denial/no-ABI/no-monitor. P5 remains blocked.
+
+N-168 candidate-scoped drift closure gate:
+  artifacts:
+    capsched-models/analysis/0124-candidate-scoped-drift-closure-gate.md
+    capsched-models/analysis/candidate-scoped-drift-closure-gate-v1.json
+    capsched-models/formal/0093-candidate-scoped-drift-closure-gate-model/
+    capsched-models/validation/0143-candidate-scoped-drift-closure-gate-tlc.md
+
+  verdict:
+    P4SchedulerAllowAll candidate-scoped drift is closed for the groups it
+    touches or claims:
+      l0_footprint
+      scheduler_authority_core
+      task_lifecycle_identity
+
+    device_queue_iommu remains D4 stale and is explicitly non-candidate. It
+    cannot support device, QueueLease, IOMMU, datacenter, global freshness,
+    protection, or cost claims.
+
+  TLC:
+    safe passed with 2 generated states, 1 distinct state, depth 1.
+    14 unsafe configs produced expected counterexamples:
+      unknown scope
+      no fresh fetch
+      no source run
+      no watched-path existence check
+      footprint mismatch
+      candidate-scope stale group
+      missing non-candidate stale record
+      global freshness from scoped closure
+      P4 implementation without anchors
+      runtime denial from P4 scoped drift
+      runtime coverage claim
+      monitor verification claim
+      protection/hypervisor-grade claim
+      cost/deployment claim
+
+  next:
+    P4 implementation is still not approved. Build a P4 anchor manifest and
+    runtime/static final-run anchor observability. Keep P4 allow-all only.
+    P5 remains blocked.

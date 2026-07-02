@@ -3126,4 +3126,26 @@ N-167:
     device/QueueLease source maps; add P4 anchor manifest and runtime/static
     final-run anchor observability. P4 remains allow-all only. P5 remains
     blocked.
+
+N-168:
+  Candidate-scoped drift closure gate is complete:
+    analysis/0124-candidate-scoped-drift-closure-gate.md
+    formal/0093-candidate-scoped-drift-closure-gate-model/
+    validation/0143-candidate-scoped-drift-closure-gate-tlc.md
+
+  Verdict:
+    P4SchedulerAllowAll candidate-scoped drift is closed for
+    l0_footprint, scheduler_authority_core, and task_lifecycle_identity
+    against upstream 87320be9f0d24fce67631b7eef919f0b79c3e45c.
+    Global all-angles freshness remains false because device_queue_iommu is
+    still D4 stale and cannot support device, QueueLease, datacenter, or broad
+    architecture claims.
+
+  TLC:
+    safe passed; 14 unsafe configs produced expected counterexamples.
+
+  Next:
+    P4 implementation is still paused until final-run anchor manifest,
+    queued-move anchor manifest, and runtime/static anchor observability exist.
+    P4 remains allow-all only. P5 remains blocked.
 ```
