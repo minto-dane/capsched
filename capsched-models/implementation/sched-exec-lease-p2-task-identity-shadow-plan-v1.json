@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p2-task-identity-shadow-plan-v1",
+  "date": "2026-07-02",
+  "status": "draft_plan_implementation_not_applied",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "95b8c509043d755ad77801315beec94c09059777",
+    "subject": "sched/exec_lease: Add private no-behavior object vocabulary"
+  },
+  "allowed_patch_surface": [
+    "include/linux/sched.h",
+    "include/linux/sched_exec_lease.h",
+    "kernel/fork.c",
+    "fs/exec.c",
+    "kernel/exit.c",
+    "kernel/sched/exec_lease.c"
+  ],
+  "forbidden_patch_surface": [
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h",
+    "kernel/workqueue.c",
+    "io_uring/",
+    "security/",
+    "mm/",
+    "drivers/"
+  ],
+  "preferred_task_shadow": {
+    "struct": "sched_exec_task",
+    "fields": [
+      "domain_id",
+      "domain_epoch",
+      "task_generation",
+      "exec_generation",
+      "flags"
+    ],
+    "authority": "linux_local_shadow_only"
+  },
+  "required_lifecycle_anchors": {
+    "raw_copy_reset": {
+      "file": "kernel/fork.c",
+      "function": "dup_task_struct",
+      "after_pattern": "RCU_INIT_POINTER(tsk->exec_state, NULL)",
+      "before_pattern": "setup_thread_stack(tsk, orig)",
+      "reason": "arch_dup_task_struct raw-copies parent task bytes"
+    },
+    "child_identity_prepare": {
+      "file": "kernel/fork.c",
+      "function": "copy_process",
+      "after_patterns": [
+        "PF_KTHREAD",
+        "PF_IO_WORKER",
+        "copy_creds"
+      ],
+      "before_pattern": "No more failure paths after this point.",
+      "must_cover": [
+        "kernel_clone before wake_up_new_task",
+        "create_io_thread inactive return path"
+      ]
+    },
+    "exec_identity": {
+      "file": "fs/exec.c",
+      "forbidden_anchor": "sched_exec",
+      "allowed_function": "begin_new_exec",
+      "minimum_anchor": "bprm->point_of_no_return = true",
+      "preferred_if_generation_means_thread_group_commit": "after de_thread(me) succeeds",
+      "preferred_if_generation_means_new_mm_visible": "after exec_mmap(bprm) succeeds"
+    },
+    "exit_invalidate": {
+      "file": "kernel/exit.c",
+      "function": "do_exit",
+      "after_pattern": "exit_signals(tsk);",
+      "reason": "exit_signals sets PF_EXITING"
+    }
+  },
+  "forbidden_content": [
+    "scheduler_hooks",
+    "rq_fields",
+    "per_rq_state",
+    "heap_allocated_grant_objects",
+    "runtime_denial",
+    "budget_charging",
+    "blocking_generation_checks",
+    "policy_decisions",
+    "lsm_cgroup_namespace_coupling",
+    "tracepoints",
+    "debugfs_procfs_sysfs",
+    "syscalls",
+    "ioctls",
+    "exported_symbols",
+    "monitor_calls",
+    "memoryview_changes",
+    "iommu_or_device_ownership_changes",
+    "workqueue_or_io_uring_authority_propagation"
+  ],
+  "required_validation": [
+    "jq_project_json",
+    "jsonl_event_validation",
+    "git_diff_check",
+    "patch_queue_replay",
+    "full_vmlinux_config_off",
+    "full_vmlinux_config_on",
+    "task_layout_inspection_off_on",
+    "qemu_boot_workload_smoke_off_on",
+    "fork_clone_exec_exit_trace_smoke"
+  ],
+  "safety_flags": {
+    "implementation_applied": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "scheduler_hook_approved": false,
+    "lifecycle_hook_approved": false,
+    "runtime_coverage": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

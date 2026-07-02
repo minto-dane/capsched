@@ -2755,3 +2755,35 @@ still not:
   behavior change, runtime denial, hook approval, ABI, monitor verification,
   runtime coverage, production protection, or cost evidence.
 ```
+
+N-163 P2 task identity shadow plan:
+
+```text
+artifacts:
+  implementation/0021-sched-exec-lease-p2-task-identity-shadow-plan.md
+  implementation/sched-exec-lease-p2-task-identity-shadow-plan-v1.json
+
+status:
+  draft plan, implementation not applied.
+
+allowed surface:
+  include/linux/sched.h
+  include/linux/sched_exec_lease.h
+  kernel/fork.c
+  fs/exec.c
+  kernel/exit.c
+  kernel/sched/exec_lease.c
+
+hard lifecycle requirements:
+  dup_task_struct: sanitize after arch_dup_task_struct raw copy.
+  copy_process: prepare child identity before publication/wake paths.
+  create_io_thread: covered because it returns inactive copy_process child.
+  sched_exec: placement-only, no identity mutation.
+  begin_new_exec: only point-of-no-return exec shadow mutation.
+  do_exit: invalidate immediately after exit_signals/PF_EXITING.
+  release_task/free_task: storage cleanup only, not revoke proof.
+
+still not:
+  behavior change, scheduler hooks, runtime denial, ABI, monitor call,
+  runtime coverage, or protection claim.
+```

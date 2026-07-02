@@ -37,6 +37,14 @@ Current SchedExecLease L0 readiness:
   - Rule: only `kernel/sched/exec_lease.c` changed; private object vocabulary
     compiles when enabled and remains uncalled, unexported, hook-free, ABI-free,
     and behavior-free.
+- `0021-sched-exec-lease-p2-task-identity-shadow-plan.md`
+  - Status: draft P2 patch plan; implementation not applied.
+  - Rule: P2 may add a CONFIG-gated Linux-local task identity shadow only if
+    raw-copy inheritance is sanitized after `arch_dup_task_struct()`, child
+    identity is prepared in `copy_process()` before publication and before
+    `wake_up_new_task()`, `sched_exec()` remains placement-only, exec mutation
+    is after point-of-no-return, and exit invalidation happens in
+    `do_exit()`/`PF_EXITING`.
 
 N-156 terminology policy:
 
@@ -168,6 +176,11 @@ Candidate implementation plans:
   - Purpose: record the P1 Linux patch that adds private SchedExecLease object
     vocabulary in `kernel/sched/exec_lease.c` only and preserves no-behavior
     semantics.
+- `0021-sched-exec-lease-p2-task-identity-shadow-plan.md`
+  - Status: draft patch plan, implementation not applied.
+  - Purpose: constrain the first task-lifecycle patch to a Linux-local identity
+    shadow and fix raw-copy reset, child publication, exec point-of-no-return,
+    and exit invalidation requirements before any code is applied.
 
 Validated formal inputs:
 

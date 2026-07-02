@@ -3264,3 +3264,45 @@ still blocked:
   behavior-changing runtime enforcement, runtime denial, ABI, monitor calls,
   hook approval, runtime coverage, production protection, and cost-efficiency
   claims.
+
+N-163 P2 task identity shadow plan:
+  implementation/0021-sched-exec-lease-p2-task-identity-shadow-plan.md
+  implementation/sched-exec-lease-p2-task-identity-shadow-plan-v1.json
+
+status:
+  draft patch plan, implementation not applied.
+
+allowed P2 surface:
+  include/linux/sched.h
+  include/linux/sched_exec_lease.h
+  kernel/fork.c
+  fs/exec.c
+  kernel/exit.c
+  kernel/sched/exec_lease.c
+
+required anchors:
+  dup_task_struct:
+    reset/sanitize sched_exec shadow after arch_dup_task_struct raw copy,
+    preferably after RCU_INIT_POINTER(tsk->exec_state, NULL) and before
+    setup_thread_stack(tsk, orig).
+
+  copy_process:
+    prepare nofail child identity after worker/kthread flags and copy_creds,
+    before the "No more failure paths" boundary and before any
+    wake_up_new_task path. create_io_thread is covered by copy_process because
+    it returns an inactive child to be woken later.
+
+  exec:
+    sched_exec remains placement-only. Any exec shadow mutation belongs in
+    begin_new_exec after point-of-no-return, with the exact anchor chosen and
+    justified by whether the generation means fatal commit, de_thread success,
+    or new-mm visibility.
+
+  exit:
+    invalidate in do_exit immediately after exit_signals(tsk) sets PF_EXITING;
+    release_task/free_task are too late for authority invalidation.
+
+forbidden:
+  scheduler hooks, rq fields, runtime denial, budget charging, blocking
+  generation checks, tracepoints, ABI, exports, monitor calls, MemoryView/IOMMU
+  changes, workqueue/io_uring authority propagation, and protection claims.
