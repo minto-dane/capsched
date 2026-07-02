@@ -121,6 +121,7 @@ Updated: 2026-07-02
 | 0113 | Design-readiness audit; not complete | Implementation-Ready Completion Audit |
 | 0114 | Source-verified design boundary | sched_ext, Core Scheduling, and Proxy Coverage Boundary |
 | 0115 | Source-verified B2 design constraint | Bounded Retry and Ineligibility Source Design |
+| 0116 | Design-only negative validation plan | Negative Denial Validation Plan |
 
 ## Planned Analysis Notes
 
@@ -185,6 +186,7 @@ Updated: 2026-07-02
 | `implementation-ready-completion-audit-v1.json` | Design-readiness audit | Machine-readable implementation-ready completion status, blockers, and next design order |
 | `sched-ext-core-proxy-coverage-boundary-v1.json` | Source-verified coverage boundary | Machine-readable sched_ext/core/proxy open classifications, source surfaces, required decisions, and forbidden assumptions |
 | `bounded-retry-ineligibility-source-design-v1.json` | Source-verified B2 design constraint | Machine-readable bounded retry/ineligibility source shape, allowed shapes, forbidden shapes, and future model refresh requirements |
+| `negative-denial-validation-plan-v1.json` | Design-only negative validation plan | Machine-readable negative denial test obligations, future observables, path classification requirements, and non-claim safety flags |
 | `scheduler-server-ticket-v1.json` | Draft model gate | Machine-readable scheduler server-ticket source map and model contract for N-137 |
 | `runtime-coverage-gate-v1.json` | Draft trace-only coverage gate | Machine-readable current/donor/proxy/server runtime coverage contract for N-138 |
 | `monitor-root-budget-timer-v1.json` | Draft monitor-root budget event model | Machine-readable monitor-owned root budget timer contract for N-139 |

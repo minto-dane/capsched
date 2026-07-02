@@ -66,8 +66,8 @@ closed the design obligations needed to safely propose P3/P4/P5 implementation.
 | core scheduling cached-pick decision | analysis/0100/0101 identify risk | Open |
 | proxy donor/current/executor decision | analysis/0111 identifies risk | Open |
 | workqueue/kthread classification | prior async models exist | Open for scheduler-denial scope |
-| bounded retry/ineligibility representation | analysis/0101 model gate, analysis/0115 source design | Partially satisfied; source shape documented, model refresh still open |
-| negative denial test plan | implementation/0025 lists required tests | Open |
+| bounded retry/ineligibility representation | analysis/0101, analysis/0115, formal/0088, validation/0135 | Partially satisfied; source shape and model refresh done, implementation test evidence still future |
+| negative denial test plan | implementation/0025, analysis/0116 | Partially satisfied; design plan exists, future implementation tests still open |
 | claim-ledger overclaim guard for implementation | non-claims exist | Open as a concrete gate |
 | upstream-drift refresh policy before implementation | prior drift gates exist | Needs re-run before any implementation |
 
@@ -101,11 +101,11 @@ fail-closed condition
 ```
 
 The model requires these semantics, but a source-specific design is still
-needed before implementation. analysis/0115 now records the current-source
-shape and the critical finding that pre-`rq->curr` denial may still be
-post-class-settlement. This partially closes the source-shape question, but B2
-remains open until the model and negative validation plan are refreshed around
-pre-settle validation versus post-settle rollback.
+needed before implementation. analysis/0115 records the current-source shape
+and the critical finding that pre-`rq->curr` denial may still be
+post-class-settlement. formal/0088 and validation/0135 refresh the model around
+pre-settle validation versus post-settle rollback. B2 remains open only in the
+sense that implementation-level test evidence is future P5 work.
 
 ### B3: Negative Test Design
 
@@ -120,6 +120,10 @@ core cached pick bypasses freshness
 proxy donor/current mismatch charges or authorizes the wrong task
 kworker identity is treated as caller authority
 ```
+
+analysis/0116 records the design-only negative validation plan. It does not
+approve test instrumentation or implementation, but it fixes the required
+unsafe cases and observables for future P5 review.
 
 ### B4: Claim Ledger Gate
 
@@ -138,10 +142,10 @@ The next design work should close blockers in this order:
 
 ```text
 1. sched_ext/core/proxy coverage boundary
-2. bounded retry and ineligibility model refresh
-3. negative denial validation plan
-4. implementation claim-ledger gate
-5. upstream-drift recheck plan for reopening implementation scope
+2. scheduler path classification for P5 supported/disabled/excluded status
+3. implementation claim-ledger gate
+4. upstream-drift recheck plan for reopening implementation scope
+5. final implementation-ready audit
 ```
 
 ## Non-Claims

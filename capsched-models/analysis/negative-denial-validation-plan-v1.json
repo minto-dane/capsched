@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "negative-denial-validation-plan-v1",
+  "date": "2026-07-02",
+  "status": "design_only_negative_validation_plan_no_implementation",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "model_basis": [
+    "analysis/0115-bounded-retry-ineligibility-source-design.md",
+    "formal/0088-final-deny-source-shape-gate-model",
+    "validation/0135-final-deny-source-shape-gate-tlc.md"
+  ],
+  "negative_tests": [
+    "post_settle_denial_without_rollback",
+    "denied_candidate_reaches_rq_curr",
+    "same_candidate_repick",
+    "class_picker_invisible_ineligibility",
+    "sched_ext_local_dsq_head_livelock",
+    "sched_ext_fallback_bypass",
+    "core_cached_pick_bypass",
+    "core_cookie_steal_bypass",
+    "proxy_donor_executor_mismatch",
+    "proxy_cleanup_breaks_mutex_handoff",
+    "fail_closed_with_eligible_candidate",
+    "linux_retry_machinery_as_authority",
+    "kworker_identity_as_caller_authority",
+    "claim_overreach"
+  ],
+  "future_required_observables": [
+    "task_identifier",
+    "task_generation",
+    "domain_or_placeholder_epoch",
+    "retry_epoch",
+    "candidate_cpu",
+    "denial_result",
+    "class_path",
+    "class_settlement_point",
+    "rq_curr_publication_observation",
+    "sched_switch_observation",
+    "fail_closed_reason",
+    "claim_flags"
+  ],
+  "path_classification_required": [
+    "supported",
+    "disabled",
+    "excluded"
+  ],
+  "safety_flags": {
+    "implementation_approved": false,
+    "test_instrumentation_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

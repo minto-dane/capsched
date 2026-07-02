@@ -19,6 +19,14 @@ Latest design-readiness audit:
   - Rule: pre-`rq->curr` denial is not automatically pre-commit. P5 denial must
     use pre-settle candidate validation or a source-proved rollback; simply
     turning the P4 allow-all final hook into a denying hook is forbidden.
+- `formal/0088-final-deny-source-shape-gate-model/`
+  - Evidence: validation/0135 safe TLC passed and 15 unsafe configs produced
+    expected counterexamples for post-settle denial, invisible ineligibility,
+    same-candidate repick, SCX head livelock, core cached-pick bypass, proxy
+    subject mismatch, fallback authority, and overclaims.
+- `analysis/0116-negative-denial-validation-plan.md`
+  - Rule: future P5 review must map each negative-denial obligation to a
+    concrete test or an explicit unsupported/excluded note before code review.
 
 Current SchedExecLease L0 readiness:
 

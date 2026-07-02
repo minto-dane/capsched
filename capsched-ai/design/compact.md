@@ -2883,3 +2883,29 @@ default until modeled:
 next:
   refresh final-deny model and negative validation plan.
 ```
+
+N-168/N-169 final-deny model refresh and negative validation plan:
+
+```text
+artifacts:
+  formal/0088-final-deny-source-shape-gate-model/
+  validation/0135-final-deny-source-shape-gate-tlc.md
+  analysis/0116-negative-denial-validation-plan.md
+  analysis/negative-denial-validation-plan-v1.json
+
+TLC:
+  safe passed: 10 generated, 8 distinct, depth 5.
+  unsafe expected counterexamples: 15/15.
+
+rejects:
+  post-settle denial without rollback.
+  invisible ineligibility and same-candidate repick.
+  SCX head livelock and fallback authority.
+  core cached-pick bypass.
+  proxy donor/executor mismatch.
+  fail closed while eligible.
+  runtime/protection/cost overclaims.
+
+next:
+  classify scheduler paths as supported, disabled, or excluded for P5.
+```

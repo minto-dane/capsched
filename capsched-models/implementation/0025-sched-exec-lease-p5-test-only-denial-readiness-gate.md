@@ -35,6 +35,8 @@ analysis/0113 implementation-ready blockers are closed or explicitly scoped
 analysis/0114 sched_ext/core/proxy coverage decisions are closed
 analysis/0115 bounded retry/ineligibility source design is reflected in the
   refreshed model and validation plan
+analysis/0116 negative denial validation plan is reflected in the future P5
+  test harness design
 ```
 
 ## Permitted Scope If Re-Approved
@@ -172,6 +174,8 @@ Before even reviewing a P5 patch:
 P2/P3/P4 validation complete
 TLC or equivalent model refreshed for final denial retry/ineligibility
 negative denial tests designed
+analysis/0116 negative-denial obligations mapped to concrete tests or explicit
+  unsupported notes
 full vmlinux off/on build plan updated
 QEMU boot/workload smoke plan updated for denial mode
 fork/exec/exit denial-lifetime tests designed

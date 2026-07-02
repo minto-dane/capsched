@@ -16,7 +16,8 @@
     "analysis/0101 refreshed against current source",
     "analysis/0113 implementation-ready blockers closed or explicitly scoped",
     "analysis/0114 sched_ext/core/proxy coverage decisions closed",
-    "analysis/0115 bounded retry/ineligibility source design reflected in refreshed model and validation plan"
+    "analysis/0115 bounded retry/ineligibility source design reflected in refreshed model and validation plan",
+    "analysis/0116 negative denial validation plan reflected in future P5 test harness design"
   ],
   "first_allowed_scope_after_reapproval": "test_only_denial_mode_off_by_default",
   "allowed_after_reapproval": [
@@ -66,6 +67,7 @@
     "p2_p3_p4_validation_complete",
     "final_denial_retry_model_refreshed",
     "negative_denial_tests_designed",
+    "analysis_0116_negative_denial_obligations_mapped",
     "full_build_plan_updated",
     "qemu_denial_plan_updated",
     "fork_exec_exit_denial_lifetime_tests_designed",

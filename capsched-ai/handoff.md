@@ -3411,3 +3411,25 @@ N-167 bounded retry and ineligibility source design:
     validation, class-picker ineligibility visibility, same-candidate repick,
     sched_ext DSQ livelock, core cached-pick invalidation, and proxy
     donor/executor subject split.
+
+N-168/N-169 final-deny model refresh and negative validation plan:
+  artifacts:
+    capsched-models/formal/0088-final-deny-source-shape-gate-model/
+    capsched-models/validation/0135-final-deny-source-shape-gate-tlc.md
+    capsched-models/analysis/0116-negative-denial-validation-plan.md
+    capsched-models/analysis/negative-denial-validation-plan-v1.json
+
+  TLC:
+    safe passed with 10 generated states, 8 distinct states, depth 5.
+    15 unsafe configs produced expected counterexamples.
+
+  rejected:
+    post-settle denial without rollback, invisible class-picker ineligibility,
+    same-candidate repick, sched_ext local DSQ head livelock, core cached-pick
+    bypass, proxy donor/executor mismatch, fail closed while eligible,
+    RETRY_TASK/idle/sched_ext fallback authority, and overclaims.
+
+  still blocked:
+    no Linux implementation or runtime denial is approved. Next design gate is
+    explicit scheduler path classification: supported, disabled, or excluded
+    for CFS/RT/DL/sched_ext/core/proxy/workqueue/kthread surfaces.
