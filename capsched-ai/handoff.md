@@ -3095,8 +3095,10 @@ N-158 in progress:
   implementation/0016-sched-exec-lease-l0-implementation-readiness-gate.md
   implementation/0017-sched-exec-lease-l0-vertical-slice-design.md
   implementation/0018-sched-exec-lease-l0-p1-p4-blueprint.md
+  implementation/0019-sched-exec-lease-p1-no-behavior-patch-plan.md
   implementation/sched-exec-lease-l0-implementation-readiness-gate-v1.json
   implementation/sched-exec-lease-l0-p1-p4-blueprint-v1.json
+  implementation/sched-exec-lease-p1-no-behavior-patch-plan-v1.json
 
 verdict:
   ready for implementation design and no-behavior preparation patches.
@@ -3126,6 +3128,14 @@ explicit P5 gates added by subagent review:
   kthread/workqueue root/internal/service-domain classification.
   negative denial tests for SCX, core cached picks, proxy split, and kworker
     paths after denial exists.
+
+P1 patch plan:
+  implementation/0019 narrows the first possible implementation patch to
+  include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c only.
+  P1 may add private/opaque allow-all scaffolding and authority-separation
+  comments only. It may not add task_struct fields, rq fields, scheduler hooks,
+  lifecycle hooks, ABI, monitor calls, allocation, runtime denial, budget
+  charging, generation mutation, or behavior changes.
 
 allowed next patch classes:
   no-behavior internal helper skeleton

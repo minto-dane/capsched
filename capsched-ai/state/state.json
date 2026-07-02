@@ -224,7 +224,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-159/N-160 SchedExecLease implementation-readiness and design are in progress after N-157/N-158. Patch queue replay reproduces work_commit 3bb2a5821ffdcc0fa6d451cbf259ef82a9ea9a9c, source-drift freshness is updated for sched_exec_lease paths, targeted scheduler-subtree build passes, full vmlinux off/on build passes in validation/0130, and QEMU boot/workload smoke off/on passes in validation/0131. implementation/0018 fixes the P1-P4 no-denial blueprint: P1 internal skeleton, P2 lifecycle identity shadow, P3 placement-only touch points, and P4 allow-all final revalidation. Behavior-changing runtime enforcement remains unapproved until hook coverage, sched_ext/core/proxy/workqueue decisions, lifecycle validation, bounded retry, and negative denial tests are added.",
+    "current_focus": "N-159/N-160/N-161 SchedExecLease implementation-readiness and design are in progress after N-157/N-158. Patch queue replay reproduces work_commit 3bb2a5821ffdcc0fa6d451cbf259ef82a9ea9a9c, source-drift freshness is updated for sched_exec_lease paths, targeted scheduler-subtree build passes, full vmlinux off/on build passes in validation/0130, and QEMU boot/workload smoke off/on passes in validation/0131. implementation/0018 fixes the P1-P4 no-denial blueprint. implementation/0019 now narrows the first possible P1 patch to include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c only, with no task fields, scheduler hooks, lifecycle hooks, ABI, monitor calls, or behavior changes. Behavior-changing runtime enforcement remains unapproved until hook coverage, sched_ext/core/proxy/workqueue decisions, lifecycle validation, bounded retry, and negative denial tests are added.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -763,8 +763,10 @@
     "sched_exec_lease_l0_readiness_gate": "capsched/capsched-models/implementation/0016-sched-exec-lease-l0-implementation-readiness-gate.md",
     "sched_exec_lease_l0_vertical_slice_design": "capsched/capsched-models/implementation/0017-sched-exec-lease-l0-vertical-slice-design.md",
     "sched_exec_lease_l0_p1_p4_blueprint": "capsched/capsched-models/implementation/0018-sched-exec-lease-l0-p1-p4-blueprint.md",
+    "sched_exec_lease_p1_no_behavior_patch_plan": "capsched/capsched-models/implementation/0019-sched-exec-lease-p1-no-behavior-patch-plan.md",
     "sched_exec_lease_l0_readiness_json": "capsched/capsched-models/implementation/sched-exec-lease-l0-implementation-readiness-gate-v1.json",
     "sched_exec_lease_l0_p1_p4_blueprint_json": "capsched/capsched-models/implementation/sched-exec-lease-l0-p1-p4-blueprint-v1.json",
+    "sched_exec_lease_p1_no_behavior_patch_plan_json": "capsched/capsched-models/implementation/sched-exec-lease-p1-no-behavior-patch-plan-v1.json",
     "sched_exec_lease_qemu_boot_smoke_validation": "capsched/capsched-models/validation/0131-sched-exec-lease-qemu-boot-smoke.md"
   },
   "architecture_intent": {

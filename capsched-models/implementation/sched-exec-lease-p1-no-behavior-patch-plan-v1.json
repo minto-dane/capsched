@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p1-no-behavior-patch-plan-v1",
+  "date": "2026-07-02",
+  "status": "draft_plan_implementation_not_applied",
+  "allowed_patch_surface": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/exec_lease.c"
+  ],
+  "forbidden_patch_surface": [
+    "include/linux/sched.h",
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h",
+    "kernel/fork.c",
+    "fs/exec.c",
+    "kernel/exit.c",
+    "kernel/workqueue.c",
+    "io_uring/",
+    "security/",
+    "mm/",
+    "drivers/"
+  ],
+  "allowed_content": [
+    "internal struct definitions inside kernel/sched/exec_lease.c",
+    "internal enum or result names for allow-all validation shape",
+    "static helper functions with default allow-all root-domain semantics",
+    "compile-time only invariants",
+    "authority-separation comments"
+  ],
+  "forbidden_content": [
+    "task_struct_fields",
+    "rq_fields",
+    "per_task_allocation",
+    "per_rq_allocation",
+    "scheduler_hook_calls",
+    "lifecycle_hook_calls",
+    "runtime_denial",
+    "budget_charging",
+    "generation_mutation",
+    "policy_decisions",
+    "lsm_calls",
+    "cgroup_calls",
+    "namespace_coupling",
+    "tracepoints",
+    "debugfs",
+    "procfs",
+    "sysfs",
+    "syscall",
+    "ioctl",
+    "exported_symbol",
+    "module_parameter",
+    "monitor_call",
+    "user_visible_handle"
+  ],
+  "authority_separation": {
+    "execution_grant": "runnable authority placeholder only",
+    "execution_lease": "future frozen use placeholder only",
+    "budget_context": "budget placeholder only",
+    "domain_shadow": "linux-local label shadow only not authority",
+    "monitor_token": "opaque placeholder only not linux-minted authority",
+    "universal_capability_object": "forbidden"
+  },
+  "upstream_drift_contract": [
+    "patch_queue_recreates_current_work_commit",
+    "source_drift_freshness_clean_or_reviewed",
+    "include_linux_sched_exec_lease_h_exists",
+    "kernel_sched_exec_lease_c_exists",
+    "kernel_sched_makefile_builds_exec_lease_o_only_under_config",
+    "config_sched_exec_lease_depends_on_expert_and_defaults_n"
+  ],
+  "required_validation": [
+    "jq_project_json",
+    "jsonl_event_validation",
+    "bash_n_touched_validation_runners",
+    "git_diff_check",
+    "patch_queue_replay",
+    "full_vmlinux_config_off",
+    "full_vmlinux_config_on",
+    "qemu_boot_smoke_off_on_if_compiled_behavior_changes"
+  ],
+  "review_questions": [
+    "config_off_compiles_out_exec_lease_o",
+    "config_on_preserves_allow_all_behavior",
+    "object_layouts_private_or_opaque",
+    "no_task_struct_or_rq_changes",
+    "no_scheduler_or_lifecycle_hooks",
+    "no_exported_symbols_or_abi_surfaces",
+    "non_allow_results_unreachable",
+    "non_claims_preserved",
+    "patch_can_be_dropped_without_scheduler_behavior_change"
+  ],
+  "safety_flags": {
+    "implementation_applied": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "scheduler_hook_approved": false,
+    "lifecycle_hook_approved": false,
+    "runtime_coverage": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

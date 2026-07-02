@@ -2706,3 +2706,23 @@ hard P5 gates:
   classification, fork/exec/exit validation, negative denial tests, and claim
   ledger overclaim guard.
 ```
+
+N-161 P1 patch plan:
+
+```text
+artifacts:
+  implementation/0019-sched-exec-lease-p1-no-behavior-patch-plan.md
+  implementation/sched-exec-lease-p1-no-behavior-patch-plan-v1.json
+
+status:
+  draft patch plan, implementation not applied.
+
+allowed P1 surface:
+  include/linux/sched_exec_lease.h
+  kernel/sched/exec_lease.c
+
+forbidden in P1:
+  task_struct fields, rq fields, scheduler hooks, lifecycle hooks, allocation,
+  runtime denial, budget charging, generation mutation, ABI, monitor calls,
+  exported symbols, tracepoints, and behavior changes.
+```

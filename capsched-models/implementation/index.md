@@ -24,6 +24,12 @@ Current SchedExecLease L0 readiness:
     placement-only scheduler touch points, and allow-all final revalidation
     scaffolding. Runtime denial, ABI, monitor calls, and production protection
     claims remain forbidden.
+- `0019-sched-exec-lease-p1-no-behavior-patch-plan.md`
+  - Status: draft P1 patch plan; implementation not applied.
+  - Rule: P1 may touch only `include/linux/sched_exec_lease.h` and
+    `kernel/sched/exec_lease.c`, may add only private/opaque allow-all
+    scaffolding, and may not add task fields, scheduler hooks, lifecycle hooks,
+    ABI, monitor calls, or behavior changes.
 
 N-156 terminology policy:
 
@@ -145,6 +151,11 @@ Candidate implementation plans:
     task lifecycle identity skeleton, P3 placement-only scheduler touch points,
     and P4 allow-all final revalidation skeleton, while keeping P5 denial
     blocked.
+- `0019-sched-exec-lease-p1-no-behavior-patch-plan.md`
+  - Status: draft patch plan, implementation not applied.
+  - Purpose: constrain the first possible P1 patch to the existing
+    SchedExecLease scaffold files and forbid any task layout, scheduler hook,
+    lifecycle hook, ABI, monitor, or behavior-changing content.
 
 Validated formal inputs:
 
