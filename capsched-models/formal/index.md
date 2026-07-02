@@ -99,6 +99,7 @@ Updated: 2026-07-02
 | 0091 | Checked with safe pass and expected unsafe counterexamples | Implementation Reopen Drift Gate Model |
 | 0092 | Checked with safe pass and expected unsafe counterexamples | Final Implementation-Ready Audit Model |
 | 0093 | Checked with safe pass and expected unsafe counterexamples | Candidate-Scoped Drift Closure Gate Model |
+| 0094 | Checked with safe pass and expected unsafe counterexamples | P4 Anchor Manifest Gate Model |
 
 ## Planned
 

@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p4-anchor-manifest-v1",
+  "analysis": "0125-sched-exec-lease-p4-anchor-manifest",
+  "date": "2026-07-02",
+  "status": "anchor_manifest_complete_p4_implementation_not_approved",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "work_commit": "d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "candidate_scoped_drift": "closed",
+    "global_model_freshness": false
+  },
+  "candidate": {
+    "id": "P4SchedulerAllowAll",
+    "mode": "allow_all_no_denial_no_abi_no_monitor",
+    "implementation_approved": false
+  },
+  "anchors": [
+    {
+      "id": "A1_final_run_allow_all_join",
+      "kind": "run",
+      "path": "kernel/sched/core.c",
+      "function": "__schedule",
+      "window_start": "static void __sched notrace __schedule(int sched_mode)",
+      "window_end": "void __noreturn do_task_dead(void)",
+      "ordered_patterns": [
+        "picked:",
+        "clear_tsk_need_resched(prev);",
+        "clear_preempt_need_resched();",
+        "keep_resched:",
+        "rq->last_seen_need_resched_ns = 0;",
+        "is_switch = prev != next;",
+        "RCU_INIT_POINTER(rq->curr, next);",
+        "rq = context_switch(rq, prev, next, &rf);"
+      ],
+      "insert_after": "rq->last_seen_need_resched_ns = 0;",
+      "insert_before": "is_switch = prev != next;",
+      "must_be_before": [
+        "RCU_INIT_POINTER(rq->curr, next);",
+        "rq = context_switch(rq, prev, next, &rf);"
+      ],
+      "allowed_helper_shape": "allow_all_only",
+      "p5_denial_safe": false,
+      "reason_p5_denial_unsafe": "class state and normal-path resched state may already be settled; P5 requires pre-settle or rollback proof"
+    },
+    {
+      "id": "A2_common_queued_move_allow_all_edge",
+      "kind": "move",
+      "path": "kernel/sched/core.c",
+      "function": "move_queued_task",
+      "window_start": "static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,",
+      "window_end": "struct migration_arg {",
+      "ordered_patterns": [
+        "sched_exec_lease_note_queued_move(p, new_cpu);",
+        "deactivate_task(rq, p, DEQUEUE_NOCLOCK);",
+        "set_task_cpu(p, new_cpu);",
+        "rq_unlock(rq, rf);",
+        "activate_task(rq, p, 0);"
+      ],
+      "insert_after": "sched_exec_lease_note_queued_move(p, new_cpu);",
+      "insert_before": "deactivate_task(rq, p, DEQUEUE_NOCLOCK);",
+      "must_be_before": [
+        "deactivate_task(rq, p, DEQUEUE_NOCLOCK);",
+        "set_task_cpu(p, new_cpu);"
+      ],
+      "allowed_helper_shape": "allow_all_only",
+      "p5_denial_safe": "future_move_denial_requires_separate_design",
+      "reason_p5_denial_unsafe": "P4 helper may not fail or reroute; move_queued_task is a source edge, not authority"
+    },
+    {
+      "id": "A3_double_rq_queued_move_allow_all_edge",
+      "kind": "move",
+      "path": "kernel/sched/sched.h",
+      "function": "move_queued_task_locked",
+      "window_start": "void move_queued_task_locked(struct rq *src_rq, struct rq *dst_rq, struct task_struct *task)",
+      "window_end": "bool task_is_pushable(struct rq *rq, struct task_struct *p, int cpu)",
+      "ordered_patterns": [
+        "sched_exec_lease_note_queued_move(task, dst_rq->cpu);",
+        "deactivate_task(src_rq, task, 0);",
+        "set_task_cpu(task, dst_rq->cpu);",
+        "activate_task(dst_rq, task, 0);"
+      ],
+      "insert_after": "sched_exec_lease_note_queued_move(task, dst_rq->cpu);",
+      "insert_before": "deactivate_task(src_rq, task, 0);",
+      "must_be_before": [
+        "deactivate_task(src_rq, task, 0);",
+        "set_task_cpu(task, dst_rq->cpu);"
+      ],
+      "allowed_helper_shape": "allow_all_only",
+      "p5_denial_safe": "future_move_denial_requires_separate_design",
+      "reason_p5_denial_unsafe": "common move helper does not cover the locked path; P4 helper may not fail or reroute"
+    }
+  ],
+  "explicit_non_coverage": [
+    "fair_direct_detach_attach_load_balance",
+    "active_balance_stopper_migration",
+    "sched_ext_dsq_custody_dispatch_consume_fallback",
+    "core_scheduling_cached_pick_freshness",
+    "proxy_execution_migration",
+    "rt_dl_final_denial_semantics",
+    "kthreads",
+    "workqueues",
+    "io_uring_workers",
+    "hotplug_exception_semantics",
+    "monitor_activation",
+    "monitor_receipts"
+  ],
+  "remaining_before_p4_implementation": [
+    "runtime_or_static_final_run_anchor_observability_record",
+    "allow_all_helper_proof",
+    "no_reachable_denial_path_proof",
+    "generated_code_review_after_patch",
+    "build_and_qemu_validation_after_patch"
+  ],
+  "non_claims": {
+    "linux_patch_approved": false,
+    "runtime_denial": false,
+    "runtime_coverage": false,
+    "budget_enforcement": false,
+    "abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade": false,
+    "cost_efficiency": false,
+    "deployment_readiness": false
+  }
+}

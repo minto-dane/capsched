@@ -3687,3 +3687,54 @@ N-168 candidate-scoped drift closure gate:
     P4 implementation is still not approved. Build a P4 anchor manifest and
     runtime/static final-run anchor observability. Keep P4 allow-all only.
     P5 remains blocked.
+
+N-169 P4 anchor manifest:
+  artifacts:
+    capsched-models/analysis/0125-sched-exec-lease-p4-anchor-manifest.md
+    capsched-models/analysis/sched-exec-lease-p4-anchor-manifest-v1.json
+    capsched-models/formal/0094-p4-anchor-manifest-gate-model/
+    capsched-models/validation/0144-sched-exec-lease-p4-anchor-manifest-validation.md
+    capsched-models/validation/run-sched-exec-lease-p4-anchor-manifest-check.sh
+
+  verdict:
+    P4 anchor-manifest blocker is closed, but P4 implementation is not
+    approved.
+
+  source checker:
+    run_dir:
+      build/source-check/sched-exec-lease-p4-anchors/20260702T210555Z-n169-p4-anchor
+    work_commit:
+      d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3
+    anchor_count:
+      3
+
+  anchors:
+    A1 final-run allow-all join:
+      kernel/sched/core.c __schedule
+      insert interval lines 7196..7198 in current source
+      after rq->last_seen_need_resched_ns = 0
+      before is_switch = prev != next
+      before rq->curr publication and context_switch
+      not P5-denial-safe
+
+    A2 common queued move:
+      kernel/sched/core.c move_queued_task
+      insert interval lines 2552..2553
+      before deactivate_task and set_task_cpu
+
+    A3 double-rq queued move:
+      kernel/sched/sched.h move_queued_task_locked
+      insert interval lines 4125..4126
+      before deactivate_task and set_task_cpu
+
+  TLC:
+    safe passed with 2 generated states, 1 distinct state, depth 1.
+    12 unsafe configs produced expected counterexamples for missing anchors,
+    final run after rq->curr, move after detach/CPU mutation, missing
+    non-coverage, implementation approval from manifest, runtime denial,
+    runtime coverage, protection, and cost/deployment claims.
+
+  next:
+    Build runtime/static final-run anchor observability, allow-all helper proof,
+    and no reachable denial path proof before any P4 patch. Keep P4 allow-all
+    only. P5 remains blocked.

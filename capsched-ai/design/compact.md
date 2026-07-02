@@ -3148,4 +3148,34 @@ N-168:
     P4 implementation is still paused until final-run anchor manifest,
     queued-move anchor manifest, and runtime/static anchor observability exist.
     P4 remains allow-all only. P5 remains blocked.
+
+N-169:
+  P4 anchor manifest is complete:
+    analysis/0125-sched-exec-lease-p4-anchor-manifest.md
+    analysis/sched-exec-lease-p4-anchor-manifest-v1.json
+    formal/0094-p4-anchor-manifest-gate-model/
+    validation/0144-sched-exec-lease-p4-anchor-manifest-validation.md
+
+  Source checker:
+    validation/run-sched-exec-lease-p4-anchor-manifest-check.sh
+    found 3 anchors against Linux commit d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3.
+
+  Anchors:
+    A1 final-run allow-all join in __schedule between
+      rq->last_seen_need_resched_ns = 0;
+      and is_switch = prev != next;
+      before rq->curr publication and context_switch.
+      This is explicitly not P5-denial-safe.
+    A2 common queued move before deactivate_task/set_task_cpu in
+      move_queued_task.
+    A3 double-rq locked move before deactivate_task/set_task_cpu in
+      move_queued_task_locked.
+
+  TLC:
+    safe passed; 12 unsafe configs produced expected counterexamples.
+
+  Next:
+    P4 implementation is still not approved. Remaining pre-P4 blockers:
+    runtime/static final-run anchor observability, allow-all helper proof, and
+    no reachable denial path proof.
 ```

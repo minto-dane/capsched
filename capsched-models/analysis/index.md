@@ -130,6 +130,7 @@ Updated: 2026-07-02
 | 0122 | P4 pre-entry gate passed for allow-all/no-denial scope; P5 denial remains blocked | SchedExecLease P4 Pre-Entry Risk Gate |
 | 0123 | P4 paused pending scoped drift closure and anchor evidence hardening | SchedExecLease P4 Pre-Implementation Critical Audit |
 | 0124 | P4 candidate-scoped drift blocker closed; implementation still paused pending anchors | Candidate-Scoped Drift Closure Gate |
+| 0125 | P4 anchor manifest complete; implementation still paused pending observability and helper proof | SchedExecLease P4 Anchor Manifest |
 
 ## Planned Analysis Notes
 
@@ -222,3 +223,4 @@ Updated: 2026-07-02
 | `sched-exec-lease-p4-pre-entry-risk-gate-v1.json` | P4 pre-entry gate | Machine-readable P4 allow-all/no-denial pre-entry evidence, generated-code review, QEMU matrix, drift, security-diff preflight, and non-claim constraints |
 | `sched-exec-lease-p4-pre-implementation-critical-audit-v1.json` | P4 pause gate | Machine-readable P4 pre-implementation multi-axis audit, hardened fresh drift result, stale global D4 finding, axis verdicts, and reopen criteria |
 | `candidate-scoped-drift-closure-gate-v1.json` | Candidate-scope gate | Machine-readable P4 candidate-scoped drift closure, non-candidate stale containment, formal result summary, remaining P4 blockers, and non-claims |
+| `sched-exec-lease-p4-anchor-manifest-v1.json` | P4 anchor manifest | Machine-readable P4 final-run/common-move/locked-move anchor windows, source-order constraints, explicit non-coverage, remaining blockers, and non-claims |
