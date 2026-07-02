@@ -138,6 +138,7 @@ Updated: 2026-07-02
 | 0130 | P5A scope decomposed; no Linux implementation approved | SchedExecLease P5A Scope Proposal |
 | 0131 | P5A0 no-behavior infrastructure proposal recorded; no Linux patch approved | SchedExecLease P5A0 No-Behavior Infrastructure Proposal |
 | 0132 | P5A0.E prepatch evidence recorded; no Linux patch approved | SchedExecLease P5A0.E Prepatch Evidence |
+| 0133 | P5A0.P1 patch plan recorded; no Linux patch approved | SchedExecLease P5A0.P1 No-Behavior Patch Plan |
 
 ## Planned Analysis Notes
 
@@ -238,3 +239,4 @@ Updated: 2026-07-02
 | `sched-exec-lease-p5a-scope-proposal-v1.json` | P5A scope proposal | Machine-readable P5A0/P5A-R/P5A-M/P5A-V decomposition, narrowed run/move blockers, forbidden claims, and review order |
 | `sched-exec-lease-p5a0-no-behavior-infrastructure-proposal-v1.json` | P5A0 proposal | Machine-readable no-behavior infrastructure proposal, future patch constraints, move/run/test/setup shapes, required validation, and non-claims |
 | `sched-exec-lease-p5a0-e-prepatch-evidence-v1.json` | P5A0.E evidence | Machine-readable prepatch evidence package, candidate-scoped drift, future patch identity, source observations, low-overhead constraints, and non-claims |
+| `sched-exec-lease-p5a0-p1-no-behavior-patch-plan-v1.json` | P5A0.P1 patch plan | Machine-readable no-behavior patch-plan gate, per-0008 delta rule, lifecycle freeze, no-overhead acceptance evidence, and non-claims |

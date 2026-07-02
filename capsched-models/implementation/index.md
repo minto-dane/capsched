@@ -205,6 +205,17 @@ Current SchedExecLease L0 readiness:
     records stale non-candidate `device_queue_iommu`, and preserves all
     non-claims for runtime denial, coverage, monitor, protection, cost,
     deployment, datacenter, and global freshness.
+- `0031-sched-exec-lease-p5a0-p1-no-behavior-patch-plan.md`
+  - Status: patch plan only; no Linux code approved and no `0008` patch exists.
+  - Rule: future P5A0.P1 must be validated as the `0008` delta, not as the
+    existing full queue footprint. The default allowlist is only
+    `include/linux/sched_exec_lease.h` and `kernel/sched/exec_lease.c`, but
+    `exec_lease.c` lifecycle helper behavior is frozen because it is called
+    from fork, exec, and exit. Acceptance requires replay, upstream replay,
+    merge-tree, checkpatch, source checker, off/on full builds, QEMU
+    denial-disabled smoke, object/symbol/disassembly, section-size and hot
+    scheduler function growth review, layout review, and overclaim/security
+    review.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

@@ -160,6 +160,7 @@ Updated: 2026-07-02
 | 0152 | Source/JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5 Linux implementation remains unapproved | SchedExecLease P5A Scope Gate |
 | 0153 | Strengthened JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5A0 remains no-behavior and no Linux patch is approved | SchedExecLease P5A0 No-Behavior Gate |
 | 0154 | Source/JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5A0.E prepatch evidence is recorded and no Linux patch is approved | SchedExecLease P5A0.E Prepatch Evidence |
+| 0155 | Source/JSON gate passed; safe model passed; 20 unsafe configs produced expected counterexamples; P5A0.P1 patch plan is recorded and no Linux patch is approved | SchedExecLease P5A0.P1 Patch Plan |
 
 ## Principles
 

@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a0-p1-no-behavior-patch-plan-v1",
+  "date": "2026-07-02",
+  "status": "patch_plan_only_no_linux_patch_approved",
+  "analysis": "analysis/0133-sched-exec-lease-p5a0-p1-no-behavior-patch-plan.md",
+  "candidate": {
+    "id": "P5A0.P1",
+    "linux_patch_created": false,
+    "linux_patch_approved": false,
+    "future_patch_queue_slot": "0008"
+  },
+  "file_allowlist": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/exec_lease.c"
+  ],
+  "delta_scope": {
+    "per_0008_delta_footprint_required": true,
+    "whole_existing_queue_footprint_is_not_sufficient": true,
+    "p5a0_p1_new_delta_must_remain_allowlisted": true
+  },
+  "forbidden_files": [
+    "include/linux/sched.h",
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h",
+    "kernel/sched/fair.c",
+    "kernel/sched/rt.c",
+    "kernel/sched/deadline.c",
+    "kernel/sched/ext/ext.c",
+    "kernel/fork.c",
+    "fs/exec.c",
+    "kernel/exit.c",
+    "init/Kconfig",
+    "kernel/sched/Makefile"
+  ],
+  "frozen_hot_path_helpers": [
+    "sched_exec_lease_prepare_wake",
+    "sched_exec_lease_prepare_new_task",
+    "sched_exec_lease_note_queued_move",
+    "sched_exec_lease_observe_tick",
+    "sched_exec_lease_note_switch",
+    "sched_exec_lease_validate_run_edge",
+    "sched_exec_lease_validate_move_edge",
+    "sched_exec_lease_validate_move_edge_locked"
+  ],
+  "frozen_lifecycle_helpers": [
+    "sched_exec_task_reset",
+    "sched_exec_task_prepare_fork",
+    "sched_exec_task_commit_exec",
+    "sched_exec_task_exit"
+  ],
+  "forbidden_delta_classes": {
+    "sched_exec_task_layout_change": true,
+    "hot_path_helper_body_change": true,
+    "lifecycle_helper_body_change": true,
+    "validation_return_change": true,
+    "validation_result_consumption": true,
+    "runtime_constructor_added": true,
+    "global_runtime_state_added": true,
+    "external_layout_exposed": true,
+    "non_static_symbol_added": true,
+    "exported_symbol": true
+  },
+  "future_acceptance_requirements": [
+    "per_0008_delta_footprint_manifest",
+    "patch_queue_replay_from_recorded_base",
+    "disposable_upstream_replay",
+    "upstream_merge_tree_check",
+    "checkpatch",
+    "source_checker",
+    "config_off_full_vmlinux_build",
+    "config_on_full_vmlinux_build",
+    "qemu_denial_disabled_boot_workload_smoke",
+    "object_symbol_disassembly_review",
+    "exec_lease_object_section_size_review",
+    "hot_scheduler_function_growth_review",
+    "task_rq_sched_entity_cfs_rq_layout_review",
+    "overclaim_security_review"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "public_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false,
+    "datacenter_readiness": false,
+    "global_all_angles_freshness": false
+  }
+}

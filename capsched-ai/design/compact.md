@@ -3393,4 +3393,28 @@ P5A0.E prepatch evidence:
   Next:
     P5A0.P1 patch plan only, limited by default to
     include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c.
+
+P5A0.P1 patch-plan gate:
+  analysis/0133, implementation/0031, formal/0102, and validation/0155 record
+  and validate P5A0.P1 as a patch-plan/reviewability gate only. No Linux patch
+  or `0008` patch is approved.
+
+  Required future shape:
+    per-0008 delta footprint, not full queue footprint.
+    file allowlist: include/linux/sched_exec_lease.h and
+    kernel/sched/exec_lease.c.
+    hot-path helper bodies frozen.
+    exec_lease.c lifecycle helper behavior frozen because fork/exec/exit call
+    those helpers.
+    no behavior, denial, ABI, monitor call, runtime coverage, protection,
+    cost, datacenter, or global freshness claim.
+
+  Validation:
+    run-sched-exec-lease-p5a0-p1-patch-plan-gate.sh passed.
+    formal/0102 safe passed with PlanRecordedEventually.
+    20 unsafe configs produced expected counterexamples.
+
+  Next:
+    Future P5A0.P1 no-behavior Linux patch draft under the gate. P5A-R and
+    P5A-M remain blocked by fair-picker eligibility and move-status settlement.
 ```

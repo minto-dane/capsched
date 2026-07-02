@@ -4035,3 +4035,41 @@ P5A0.E prepatch evidence / validation 0154:
     P5A0.P1 no-behavior patch plan, limited by default to
     include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c. Touching
     scheduler control-flow files reopens scope.
+
+P5A0.P1 patch-plan gate / validation 0155:
+  status:
+    Recorded and validated patch plan only. No Linux patch, `0008` patch,
+    behavior change, runtime denial, runtime coverage, ABI, monitor call,
+    production protection, cost, datacenter, or global freshness claim is
+    approved.
+
+  artifacts:
+    capsched-models/analysis/0133-sched-exec-lease-p5a0-p1-no-behavior-patch-plan.md
+    capsched-models/analysis/sched-exec-lease-p5a0-p1-no-behavior-patch-plan-v1.json
+    capsched-models/implementation/0031-sched-exec-lease-p5a0-p1-no-behavior-patch-plan.md
+    capsched-models/implementation/sched-exec-lease-p5a0-p1-no-behavior-patch-plan-v1.json
+    capsched-models/formal/0102-p5a0-p1-patch-plan-gate-model/
+    capsched-models/validation/0155-sched-exec-lease-p5a0-p1-patch-plan.md
+    capsched-models/validation/run-sched-exec-lease-p5a0-p1-patch-plan-gate.sh
+
+  validation:
+    Source/JSON gate run 20260702T-p5a0-p1-plan passed.
+    formal/0102 safe passed and requires PlanRecordedEventually.
+    20 unsafe configs produced expected counterexamples.
+
+  key constraints:
+    Future P5A0.P1 must be measured as the `0008` delta, not as the full
+    existing queue footprint.
+    Default file allowlist is only include/linux/sched_exec_lease.h and
+    kernel/sched/exec_lease.c.
+    Hot-path helper bodies are frozen.
+    exec_lease.c lifecycle helper behavior is frozen because fork/exec/exit
+    already call those helpers.
+    Future acceptance requires replay, upstream replay, merge-tree, source
+    checker, off/on full builds, QEMU denial-disabled smoke,
+    object/symbol/disassembly, section-size and hot-function growth review,
+    layout review, and overclaim/security review.
+
+  next:
+    Future P5A0.P1 no-behavior Linux patch draft under this gate. P5A-R CFS
+    denial and P5A-M broad move denial remain blocked.

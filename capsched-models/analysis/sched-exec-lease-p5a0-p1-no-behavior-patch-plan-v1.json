@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "artifact": "sched-exec-lease-p5a0-p1-no-behavior-patch-plan",
+  "date": "2026-07-02",
+  "status": "patch_plan_recorded_no_linux_patch_approved",
+  "candidate": {
+    "id": "P5A0.P1",
+    "mode": "no_behavior_patch_plan_only",
+    "linux_patch_created": false,
+    "linux_patch_approved": false,
+    "future_patch_queue_slot": "0008"
+  },
+  "source_basis": {
+    "linux_repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8",
+    "linux_subject": "sched/exec_lease: Add allow-only validation skeleton"
+  },
+  "evidence_basis": {
+    "p5a0_e_analysis": "analysis/0132-sched-exec-lease-p5a0-e-prepatch-evidence.md",
+    "p5a0_e_validation": "validation/0154-sched-exec-lease-p5a0-e-prepatch-evidence.md",
+    "p5a0_e_source_check_run": "build/source-check/sched-exec-lease-p5a0-e-prepatch-evidence/20260702T-p5a0-e-prepatch",
+    "p5a0_e_tla_run": "build/tlc/p5a0-e-prepatch-evidence-gate/20260702T-p5a0-e-prepatch"
+  },
+  "file_allowlist": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/exec_lease.c"
+  ],
+  "forbidden_files": [
+    "include/linux/sched.h",
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h",
+    "kernel/sched/fair.c",
+    "kernel/sched/rt.c",
+    "kernel/sched/deadline.c",
+    "kernel/sched/ext/ext.c",
+    "kernel/fork.c",
+    "fs/exec.c",
+    "kernel/exit.c",
+    "init/Kconfig",
+    "kernel/sched/Makefile"
+  ],
+  "allowed_diff_classes": [
+    "comments",
+    "documentation_only_contract_text",
+    "opaque_forward_declarations",
+    "private_unused_type_declarations",
+    "private_unused_static_inline_helpers_not_called",
+    "private_constants_not_referenced_from_hot_paths"
+  ],
+  "delta_scope": {
+    "per_0008_delta_footprint_required": true,
+    "whole_existing_queue_footprint_is_not_sufficient": true,
+    "existing_queue_may_touch_scheduler_lifecycle_kconfig_makefile": true,
+    "p5a0_p1_new_delta_must_remain_allowlisted": true
+  },
+  "frozen_hot_path_helpers": [
+    "sched_exec_lease_prepare_wake",
+    "sched_exec_lease_prepare_new_task",
+    "sched_exec_lease_note_queued_move",
+    "sched_exec_lease_observe_tick",
+    "sched_exec_lease_note_switch",
+    "sched_exec_lease_validate_run_edge",
+    "sched_exec_lease_validate_move_edge",
+    "sched_exec_lease_validate_move_edge_locked"
+  ],
+  "frozen_lifecycle_helpers": [
+    "sched_exec_task_reset",
+    "sched_exec_task_prepare_fork",
+    "sched_exec_task_commit_exec",
+    "sched_exec_task_exit"
+  ],
+  "forbidden_diff_classes": {
+    "sched_exec_task_layout_change": true,
+    "task_struct_layout_change": true,
+    "rq_layout_change": true,
+    "sched_entity_layout_change": true,
+    "cfs_rq_layout_change": true,
+    "kconfig_default_change": true,
+    "makefile_object_inclusion_change": true,
+    "scheduler_callsite_change": true,
+    "hot_path_helper_body_change": true,
+    "lifecycle_helper_body_change": true,
+    "validation_result_consumption": true,
+    "runtime_constructor_added": true,
+    "global_runtime_state_added": true,
+    "external_layout_exposed": true,
+    "runtime_denial": true,
+    "non_allow_reachable": true,
+    "retry": true,
+    "fail_closed": true,
+    "quarantine": true,
+    "denied_receipt": true,
+    "runtime_status_publication": true,
+    "allocation": true,
+    "sleep_or_blocking_call": true,
+    "new_lock_or_refcount_transfer": true,
+    "static_key": true,
+    "tracepoint": true,
+    "printk": true,
+    "public_abi": true,
+    "non_static_symbol_added": true,
+    "exported_symbol": true,
+    "monitor_call": true,
+    "monitor_abi": true
+  },
+  "future_acceptance_metadata_required": [
+    "recorded_base_commit",
+    "parent_work_commit",
+    "future_work_commit",
+    "future_0008_patch_file",
+    "future_0008_patch_sha256",
+    "series_sha256",
+    "linux_patches_commit",
+    "exact_current_upstream_ref",
+    "exact_current_upstream_commit",
+    "source_drift_run_id",
+    "merge_tree_result",
+    "replay_log_path",
+    "replayed_tree_diff_against_authored_candidate"
+  ],
+  "future_acceptance_requirements": [
+    "per_0008_delta_footprint_manifest",
+    "patch_queue_replay_from_recorded_base",
+    "disposable_upstream_replay",
+    "upstream_merge_tree_check",
+    "checkpatch",
+    "source_checker",
+    "config_off_full_vmlinux_build",
+    "config_on_full_vmlinux_build",
+    "qemu_denial_disabled_boot_workload_smoke",
+    "object_symbol_disassembly_review",
+    "exec_lease_object_section_size_review",
+    "hot_scheduler_function_growth_review",
+    "task_rq_sched_entity_cfs_rq_layout_review",
+    "overclaim_security_review"
+  ],
+  "decisions": {
+    "p5a0_p1_patch_plan_recorded": true,
+    "p5a0_p1_linux_patch_approved": false,
+    "p5a0_p2_move_status_approved": false,
+    "p5a_r_run_denial_approved": false,
+    "p5a_m_move_denial_approved": false
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "public_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false,
+    "datacenter_readiness": false,
+    "global_all_angles_freshness": false
+  }
+}
