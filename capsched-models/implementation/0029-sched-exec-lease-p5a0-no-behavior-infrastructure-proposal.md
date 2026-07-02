@@ -43,23 +43,27 @@ claim ledger integration
 
 ## Candidate Patch Units
 
-The safest future patch order is:
+The safest future review order is:
 
 ```text
-P5A0.1:
-  source-only contract and internal type shapes
+P5A0.E:
+  prepatch evidence package; no Linux patch
 
-P5A0.2:
+P5A0.P1:
+  source-only contract and internal type shapes, limited by default to
+  include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c
+
+P5A0.P2:
   move status carrier plumbing with ALLOW-only behavior
 
-P5A0.3:
+P5A0.P3:
   internal negative-test harness skeleton with no public ABI
 
-P5A0.4:
+P5A0.P4:
   disabled-path setup skeleton with no behavior change until test-denial mode
   exists
 
-P5A0.5:
+P5A0.P5:
   source/object/build/QEMU validation and overclaim review
 ```
 
@@ -67,7 +71,7 @@ Any patch that changes scheduler behavior must be moved out of P5A0.
 
 ## Review Blockers
 
-Before writing P5A0.1:
+Before writing P5A0.P1:
 
 ```text
 fresh upstream drift row
@@ -76,6 +80,7 @@ source checker plan
 build/QEMU plan
 object/symbol plan
 claim ledger row
+explicit file allowlist
 ```
 
 Before accepting any P5A0 patch:

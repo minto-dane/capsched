@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a0-e-prepatch-evidence-v1",
+  "date": "2026-07-02",
+  "status": "prepatch_evidence_only_no_linux_patch_approved",
+  "analysis": "analysis/0132-sched-exec-lease-p5a0-e-prepatch-evidence.md",
+  "candidate": {
+    "id": "P5A0EPrepatchEvidence",
+    "patch_queue_entry_created": false,
+    "future_patch_id": "P5A0.P1",
+    "future_patch_queue_slot": "0008",
+    "future_patch_class": "no_behavior_infrastructure_only"
+  },
+  "p5a0_p1_recommended_file_allowlist": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/exec_lease.c"
+  ],
+  "scheduler_file_touch_requires_scope_reopen": [
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h",
+    "kernel/sched/fair.c",
+    "kernel/sched/rt.c",
+    "kernel/sched/deadline.c",
+    "kernel/sched/ext/ext.c"
+  ],
+  "review_package": {
+    "fresh_upstream_drift_row": true,
+    "candidate_scoped_drift_record": true,
+    "patch_queue_plan": true,
+    "source_checker_plan": true,
+    "full_build_off_on_plan": true,
+    "qemu_denial_disabled_smoke_plan": true,
+    "object_symbol_review_plan": true,
+    "negative_harness_plan": true,
+    "claim_ledger_row": true,
+    "explicit_non_claims": true
+  },
+  "future_patch_constraints": {
+    "helpers_allow_only": true,
+    "scheduler_branch_on_validation_result": false,
+    "non_allow_path_reachable": false,
+    "runtime_denial": false,
+    "retry": false,
+    "fail_closed": false,
+    "quarantine": false,
+    "public_abi": false,
+    "monitor_call": false,
+    "task_struct_layout_change": false,
+    "rq_layout_change": false,
+    "hot_path_allocation": false,
+    "sleep_or_blocking_call": false
+  },
+  "acceptance_requirements_for_future_patch": [
+    "patch_queue_replay",
+    "checkpatch",
+    "source_checker",
+    "config_off_on_full_vmlinux_build",
+    "qemu_denial_disabled_boot_workload_smoke",
+    "object_symbol_review",
+    "overclaim_security_review"
+  ],
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "public_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false,
+    "global_all_angles_freshness": false
+  }
+}

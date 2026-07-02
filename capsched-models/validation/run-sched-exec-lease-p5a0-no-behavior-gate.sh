@@ -95,10 +95,20 @@ jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.runtime_denial' false
 jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.retry' false
 jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.fail_closed' false
 jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.quarantine' false
+jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.task_struct_layout_change' false
+jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.rq_layout_change' false
+jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.sched_entity_layout_change' false
+jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.cfs_rq_layout_change' false
+jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.hot_path_allocation' false
+jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.sleep_or_blocking_call' false
+jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.exported_symbol' false
+jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.public_tracepoint_abi' false
 jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.public_abi' false
 jq_bool "$ANALYSIS_CONFIG" '.future_p5a0_patch_constraints.monitor_call' false
 
 jq_bool "$ANALYSIS_CONFIG" '.move_status_plumbing_shape.allow_path_identical_required' true
+jq_bool "$ANALYSIS_CONFIG" '.move_status_plumbing_shape.common_move_result_contains_rq_and_status' true
+jq_bool "$ANALYSIS_CONFIG" '.move_status_plumbing_shape.locked_move_returns_status' true
 jq_bool "$ANALYSIS_CONFIG" '.move_status_plumbing_shape.non_allow_reachable_in_p5a0' false
 jq_bool "$ANALYSIS_CONFIG" '.move_status_plumbing_shape.caller_behavior_change_allowed' false
 jq_bool "$ANALYSIS_CONFIG" '.move_status_plumbing_shape.waiter_completion_change_allowed' false
@@ -119,6 +129,24 @@ jq_bool "$ANALYSIS_CONFIG" '.test_harness_shape.procfs_abi' false
 jq_bool "$ANALYSIS_CONFIG" '.test_harness_shape.debugfs_abi' false
 jq_bool "$ANALYSIS_CONFIG" '.test_harness_shape.monitor_abi' false
 
+for observable in \
+	denial_injection_point_id \
+	candidate_task_or_test_id \
+	task_generation \
+	edge_kind \
+	candidate_or_destination_cpu \
+	validation_result \
+	settlement_point \
+	rq_curr_observation \
+	sched_switch_observation \
+	context_switch_observation \
+	move_mutation_observation \
+	waiter_completion_observation \
+	claim_flags
+do
+	require_array_value "$ANALYSIS_CONFIG" '.test_harness_shape.observables' "$observable"
+done
+
 jq_bool "$ANALYSIS_CONFIG" '.setup_time_disable_shape.behavior_change_in_proposal' false
 
 for required in \
@@ -128,6 +156,7 @@ for required in \
 	full_build_off_on_plan \
 	qemu_denial_disabled_smoke_plan \
 	object_symbol_review_plan \
+	hot_path_codegen_layout_review_plan \
 	negative_harness_plan \
 	claim_ledger_row \
 	explicit_non_claims
@@ -156,7 +185,9 @@ jq_bool "$ANALYSIS_CONFIG" '.safety_flags.retry_approved' false
 jq_bool "$ANALYSIS_CONFIG" '.safety_flags.fail_closed_approved' false
 jq_bool "$ANALYSIS_CONFIG" '.safety_flags.quarantine_approved' false
 jq_bool "$ANALYSIS_CONFIG" '.safety_flags.public_abi' false
+jq_bool "$ANALYSIS_CONFIG" '.safety_flags.runtime_coverage' false
 jq_bool "$ANALYSIS_CONFIG" '.safety_flags.monitor_call' false
+jq_bool "$ANALYSIS_CONFIG" '.safety_flags.monitor_verified' false
 jq_bool "$ANALYSIS_CONFIG" '.safety_flags.production_protection' false
 jq_bool "$ANALYSIS_CONFIG" '.safety_flags.hypervisor_grade_isolation' false
 jq_bool "$ANALYSIS_CONFIG" '.safety_flags.cost_efficiency_claim' false
@@ -176,20 +207,53 @@ jq_bool "$IMPLEMENTATION_CONFIG" '.allowed_future_patch_shape.monitor_call' fals
 jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.linux_patch_approved' false
 jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.behavior_change_approved' false
 jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.runtime_denial_approved' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.retry_approved' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.fail_closed_approved' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.quarantine_approved' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.runtime_coverage' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.task_struct_layout_change' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.rq_layout_change' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.sched_entity_layout_change' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.cfs_rq_layout_change' false
 jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.abi' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.public_tracepoint_abi' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.exported_symbol' false
 jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.monitor_call' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.monitor_verified' false
 jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.production_protection' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.hypervisor_grade_isolation' false
 jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.cost_efficiency_claim' false
 jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.deployment_readiness' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.datacenter_readiness' false
+jq_bool "$IMPLEMENTATION_CONFIG" '.safety_flags.global_all_angles_freshness' false
 
 for unit in \
-	p5a0_1_source_only_contract_and_internal_type_shapes \
-	p5a0_2_move_status_carrier_plumbing_allow_only \
-	p5a0_3_internal_negative_test_harness_skeleton_no_public_abi \
-	p5a0_4_disabled_path_setup_skeleton_no_behavior_until_test_denial_mode \
-	p5a0_5_validation_and_overclaim_review
+	p5a0_e_prepatch_evidence_no_linux_patch \
+	p5a0_p1_source_only_contract_and_internal_type_shapes \
+	p5a0_p2_move_status_carrier_plumbing_allow_only \
+	p5a0_p3_internal_negative_test_harness_skeleton_no_public_abi \
+	p5a0_p4_disabled_path_setup_skeleton_no_behavior_until_test_denial_mode \
+	p5a0_p5_validation_and_overclaim_review
 do
 	require_array_value "$IMPLEMENTATION_CONFIG" '.candidate_patch_units' "$unit"
+done
+
+for file in \
+	include/linux/sched_exec_lease.h \
+	kernel/sched/exec_lease.c
+do
+	require_array_value "$IMPLEMENTATION_CONFIG" '.p5a0_p1_recommended_file_allowlist' "$file"
+done
+
+for file in \
+	kernel/sched/core.c \
+	kernel/sched/sched.h \
+	kernel/sched/fair.c \
+	kernel/sched/rt.c \
+	kernel/sched/deadline.c \
+	kernel/sched/ext/ext.c
+do
+	require_array_value "$IMPLEMENTATION_CONFIG" '.scheduler_file_touch_requires_scope_reopen' "$file"
 done
 
 {
@@ -203,7 +267,10 @@ done
 	printf 'retry_fail_closed_quarantine\tfalse\tfuture patch constraints\n'
 	printf 'public_abi\tfalse\ttest harness and safety flags\n'
 	printf 'monitor_call\tfalse\tfuture patch constraints\n'
+	printf 'runtime_coverage_or_monitor_verified\tfalse\tsafety flags\n'
+	printf 'layout_or_exported_symbol_change\tfalse\timplementation safety flags\n'
 	printf 'move_non_allow_reachable_in_p5a0\tfalse\tmove status shape\n'
+	printf 'test_observables_complete\ttrue\tanalysis observables\n'
 	printf 'required_prepatch_evidence_planned\ttrue\trequired_before_patch_review\n'
 	printf 'required_acceptance_validation_planned\ttrue\trequired_before_patch_acceptance\n'
 	printf 'production_or_cost_claim\tfalse\tsafety flags\n'
@@ -224,7 +291,10 @@ jq -n \
 	  retry_fail_closed_quarantine: false,
 	  public_abi: false,
 	  monitor_call: false,
+	  runtime_coverage_or_monitor_verified: false,
+	  layout_or_exported_symbol_change: false,
 	  move_non_allow_reachable_in_p5a0: false,
+	  test_observables_complete: true,
 	  required_prepatch_evidence_planned: true,
 	  required_acceptance_validation_planned: true,
 	  production_or_cost_claim: false

@@ -158,7 +158,8 @@ Updated: 2026-07-02
 | 0150 | Passed final P4 overclaim/security review; P4 allow-only compatibility slice closed and P5 remains blocked | SchedExecLease P4 Final Overclaim and Security Review |
 | 0151 | Source-order checker passed; safe model passed; unsafe models produced expected counterexamples; P5 remains blocked | SchedExecLease P5 Readiness After P4 |
 | 0152 | Source/JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5 Linux implementation remains unapproved | SchedExecLease P5A Scope Gate |
-| 0153 | JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5A0 remains no-behavior and no Linux patch is approved | SchedExecLease P5A0 No-Behavior Gate |
+| 0153 | Strengthened JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5A0 remains no-behavior and no Linux patch is approved | SchedExecLease P5A0 No-Behavior Gate |
+| 0154 | Source/JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5A0.E prepatch evidence is recorded and no Linux patch is approved | SchedExecLease P5A0.E Prepatch Evidence |
 
 ## Principles
 

@@ -106,6 +106,7 @@ Updated: 2026-07-02
 | 0098 | Checked with safe pass and expected unsafe counterexamples | P5 Readiness After P4 Gate Model |
 | 0099 | Checked with safe pass and expected unsafe counterexamples | P5A Scope Gate Model |
 | 0100 | Checked with safe pass and expected unsafe counterexamples | P5A0 No-Behavior Gate Model |
+| 0101 | Checked with safe pass and expected unsafe counterexamples | P5A0.E Prepatch Evidence Gate Model |
 
 ## Planned
 

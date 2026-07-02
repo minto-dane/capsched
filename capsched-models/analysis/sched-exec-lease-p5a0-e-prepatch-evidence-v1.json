@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "artifact": "sched-exec-lease-p5a0-e-prepatch-evidence",
+  "date": "2026-07-02",
+  "status": "prepatch_evidence_recorded_no_linux_patch_approved",
+  "candidate": {
+    "id": "P5A0EPrepatchEvidence",
+    "mode": "evidence_only_no_linux_patch",
+    "touched_or_claimed_groups": [
+      "l0_footprint",
+      "scheduler_authority_core"
+    ],
+    "unclaimed_groups_requiring_reopen_if_touched": [
+      "task_lifecycle_identity",
+      "async_workqueue",
+      "async_io_uring",
+      "policy_frontend_security",
+      "memory_and_mm_state",
+      "device_queue_iommu"
+    ]
+  },
+  "source_basis": {
+    "linux_repo": "/media/nia/scsiusb/dev/linux-cap/linux",
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8",
+    "linux_subject": "sched/exec_lease: Add allow-only validation skeleton"
+  },
+  "future_patch_identity": {
+    "prepatch_evidence_id": "P5A0.E",
+    "first_linux_patch_id": "P5A0.P1",
+    "move_status_plumbing_patch_id": "P5A0.P2",
+    "p5a0_p1_recommended_file_allowlist": [
+      "include/linux/sched_exec_lease.h",
+      "kernel/sched/exec_lease.c"
+    ],
+    "scheduler_file_touch_requires_scope_reopen": [
+      "kernel/sched/core.c",
+      "kernel/sched/sched.h",
+      "kernel/sched/fair.c",
+      "kernel/sched/rt.c",
+      "kernel/sched/deadline.c",
+      "kernel/sched/ext/ext.c"
+    ]
+  },
+  "source_drift_basis": {
+    "run_dir": "build/source-drift/linux-source-drift-gate/20260702T-p5a0-1-drift",
+    "base_commit": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "work_commit": "a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8",
+    "merge_tree_clean": true,
+    "patch_footprint_config_matches_actual": true,
+    "global_model_freshness": false,
+    "candidate_no_behavior_patch_reviewable_from_global_gate": false
+  },
+  "candidate_group_results": [
+    {
+      "group_id": "l0_footprint",
+      "changed_count": 0,
+      "fresh": true
+    },
+    {
+      "group_id": "scheduler_authority_core",
+      "changed_count": 0,
+      "fresh": true
+    }
+  ],
+  "non_candidate_stale_groups": [
+    {
+      "group_id": "device_queue_iommu",
+      "drift_class": "D4_semantic_drift",
+      "changed_count": 61,
+      "barred_claims": [
+        "queuelease_patch",
+        "iommu_mapping_claim",
+        "device_queue_lease_claim",
+        "datacenter_device_claim",
+        "global_all_angles_freshness",
+        "production_protection",
+        "cost_efficiency_claim"
+      ]
+    }
+  ],
+  "source_observations": {
+    "helper_return_set_allow_only": true,
+    "validation_helper_count": 3,
+    "scheduler_validation_callsite_count": 3,
+    "scheduler_branch_on_validation_result": false,
+    "run_hook_before_rq_curr": true,
+    "run_hook_before_context_switch": true,
+    "run_hook_after_pick_next_task": true,
+    "run_hook_p5_deny_ready": false,
+    "common_move_hook_before_mutation": true,
+    "locked_move_hook_before_mutation": true,
+    "common_move_returns_status": false,
+    "locked_move_returns_status": false,
+    "broad_move_denial_ready": false
+  },
+  "required_plans": {
+    "patch_queue_plan": true,
+    "source_checker_plan": true,
+    "full_build_off_on_plan": true,
+    "qemu_denial_disabled_smoke_plan": true,
+    "object_symbol_review_plan": true,
+    "negative_harness_plan": true,
+    "claim_ledger_row": true,
+    "explicit_non_claims": true
+  },
+  "performance_constraints": {
+    "no_task_struct_layout_change": true,
+    "no_rq_layout_change": true,
+    "no_sched_entity_layout_change": true,
+    "no_cfs_rq_layout_change": true,
+    "no_hot_path_allocation": true,
+    "no_sleep_or_blocking_call": true,
+    "no_monitor_transition": true,
+    "no_new_runtime_branch_on_validation_result": true,
+    "object_symbol_review_required_before_acceptance": true
+  },
+  "negative_harness_constraints": {
+    "internal_only": true,
+    "public_tracepoint_abi": false,
+    "syscall_abi": false,
+    "ioctl_abi": false,
+    "sysfs_abi": false,
+    "procfs_abi": false,
+    "debugfs_abi": false,
+    "monitor_abi": false,
+    "live_denial_injection": false
+  },
+  "decisions": {
+    "p5a0_e_prepatch_evidence_recorded": true,
+    "p5a0_p1_patch_approved": false,
+    "p5a0_p2_move_status_patch_approved": false,
+    "p5a_r_run_denial_approved": false,
+    "p5a_m_move_denial_approved": false,
+    "global_all_angles_freshness_claim": false
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "retry_approved": false,
+    "fail_closed_approved": false,
+    "quarantine_approved": false,
+    "runtime_coverage": false,
+    "public_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false,
+    "datacenter_readiness": false
+  }
+}

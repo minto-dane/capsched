@@ -77,6 +77,9 @@ CONFIG_SCHED_EXEC_LEASE=y:
   no retry
   no fail-closed
   no quarantine
+  no task_struct, rq, sched_entity, or cfs_rq layout change
+  no hot-path allocation, sleeping call, monitor transition, exported symbol,
+  public tracepoint ABI, or public ABI
 ```
 
 ## Move Status Plumbing Shape
@@ -191,6 +194,7 @@ source checker plan
 full build off/on plan
 QEMU denial-disabled smoke plan
 object/symbol review plan
+hot-path codegen and layout review plan
 negative harness plan
 claim ledger row
 explicit non-claims

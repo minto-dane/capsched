@@ -3348,17 +3348,49 @@ P5A0 no-behavior gate:
 
   Forbidden by gate:
     behavior change, non-ALLOW branch, runtime denial, retry, fail-closed,
-    quarantine, public ABI, monitor call, protection claim, cost-efficiency
-    claim, and deployment-readiness claim.
+    quarantine, public ABI, monitor call, layout/object impact, runtime
+    coverage claim, monitor verification claim, protection claim,
+    cost-efficiency claim, datacenter claim, and deployment-readiness claim.
 
   Validation:
-    run-sched-exec-lease-p5a0-no-behavior-gate.sh passed against
+    strengthened run-sched-exec-lease-p5a0-no-behavior-gate.sh passed against
     a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8.
     formal/0100 safe passed.
-    12 unsafe configs produced expected counterexamples.
+    14 unsafe configs produced expected counterexamples.
 
   Next:
-    P5A0.1 prepatch evidence package: fresh drift row, patch queue plan,
-    source checker plan, full build/QEMU denial-disabled plan, object/symbol
-    plan, negative harness plan, claim ledger row, and explicit non-claims.
+    P5A0.E prepatch evidence package.
+
+P5A0.E prepatch evidence:
+  analysis/0132, implementation/0030, formal/0101, and validation/0154 record
+  and validate P5A0.E as evidence only. No Linux patch is approved.
+
+  Naming:
+    P5A0.E = evidence only.
+    P5A0.P1 = future first no-behavior Linux patch proposal.
+    P5A0.P2 = future move-status plumbing proposal.
+
+  Drift:
+    l0_footprint and scheduler_authority_core are fresh in run
+    20260702T-p5a0-1-drift.
+    device_queue_iommu remains D4 stale and barred from broad/device/
+    datacenter/protection/cost claims.
+    global_model_freshness=false.
+
+  Source facts:
+    helpers ALLOW-only.
+    validation callsites=3.
+    no scheduler branch on validation.
+    no fair-picker ineligibility.
+    run hook is not P5 deny-ready.
+    move hooks are pre-mutation but not status-capable.
+
+  Validation:
+    run-sched-exec-lease-p5a0-e-prepatch-evidence.sh passed.
+    formal/0101 safe passed.
+    14 unsafe configs produced expected counterexamples.
+
+  Next:
+    P5A0.P1 patch plan only, limited by default to
+    include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c.
 ```

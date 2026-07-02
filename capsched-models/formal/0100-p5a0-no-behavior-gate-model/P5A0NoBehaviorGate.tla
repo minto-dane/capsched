@@ -17,6 +17,8 @@ Phase == {
     "BadPublicTestHarness",
     "BadSetupBehaviorChange",
     "BadMissingPrePatchEvidence",
+    "BadLayoutOrObjectImpact",
+    "BadRuntimeCoverageClaim",
     "BadProtectionCostOrDeploymentClaim"
 }
 
@@ -28,6 +30,13 @@ GateFields == {
     "linuxPatchApproved",
     "behaviorChangeApproved",
     "configOffBehaviorImpact",
+    "configOffObjectImpact",
+    "taskStructLayoutChange",
+    "rqLayoutChange",
+    "schedEntityLayoutChange",
+    "cfsRqLayoutChange",
+    "exportedSymbol",
+    "publicTracepointAbi",
     "configOnNonAllowReachable",
     "helperReturnsOnlyAllow",
     "schedulerBranchesOnNonAllow",
@@ -37,6 +46,8 @@ GateFields == {
     "quarantineApproved",
     "publicAbi",
     "monitorCall",
+    "runtimeCoverageClaim",
+    "monitorVerificationClaim",
     "moveStatusPlumbingPlanned",
     "moveNonAllowReachableInP5A0",
     "movePlacementMutationOnNonAllow",
@@ -48,8 +59,10 @@ GateFields == {
     "requiredPrePatchEvidencePlanned",
     "acceptanceValidationPlanned",
     "protectionClaim",
+    "hypervisorGradeClaim",
     "costEfficiencyClaim",
     "deploymentReadinessClaim",
+    "datacenterReadinessClaim",
     "nonClaimsRecorded"
 }
 
@@ -61,6 +74,13 @@ BaseGate == [
     linuxPatchApproved |-> FALSE,
     behaviorChangeApproved |-> FALSE,
     configOffBehaviorImpact |-> FALSE,
+    configOffObjectImpact |-> FALSE,
+    taskStructLayoutChange |-> FALSE,
+    rqLayoutChange |-> FALSE,
+    schedEntityLayoutChange |-> FALSE,
+    cfsRqLayoutChange |-> FALSE,
+    exportedSymbol |-> FALSE,
+    publicTracepointAbi |-> FALSE,
     configOnNonAllowReachable |-> FALSE,
     helperReturnsOnlyAllow |-> TRUE,
     schedulerBranchesOnNonAllow |-> FALSE,
@@ -70,6 +90,8 @@ BaseGate == [
     quarantineApproved |-> FALSE,
     publicAbi |-> FALSE,
     monitorCall |-> FALSE,
+    runtimeCoverageClaim |-> FALSE,
+    monitorVerificationClaim |-> FALSE,
     moveStatusPlumbingPlanned |-> TRUE,
     moveNonAllowReachableInP5A0 |-> FALSE,
     movePlacementMutationOnNonAllow |-> FALSE,
@@ -81,8 +103,10 @@ BaseGate == [
     requiredPrePatchEvidencePlanned |-> TRUE,
     acceptanceValidationPlanned |-> TRUE,
     protectionClaim |-> FALSE,
+    hypervisorGradeClaim |-> FALSE,
     costEfficiencyClaim |-> FALSE,
     deploymentReadinessClaim |-> FALSE,
+    datacenterReadinessClaim |-> FALSE,
     nonClaimsRecorded |-> TRUE
 ]
 
@@ -157,11 +181,27 @@ UnsafeMissingPrePatchEvidenceSpec ==
                             !.acceptanceValidationPlanned = FALSE]
     /\ [][UNCHANGED gate]_vars
 
+UnsafeLayoutOrObjectImpactSpec ==
+    gate = [BaseGate EXCEPT !.phase = "BadLayoutOrObjectImpact",
+                            !.configOffObjectImpact = TRUE,
+                            !.taskStructLayoutChange = TRUE,
+                            !.rqLayoutChange = TRUE,
+                            !.exportedSymbol = TRUE]
+    /\ [][UNCHANGED gate]_vars
+
+UnsafeRuntimeCoverageClaimSpec ==
+    gate = [BaseGate EXCEPT !.phase = "BadRuntimeCoverageClaim",
+                            !.runtimeCoverageClaim = TRUE,
+                            !.monitorVerificationClaim = TRUE]
+    /\ [][UNCHANGED gate]_vars
+
 UnsafeProtectionCostOrDeploymentClaimSpec ==
     gate = [BaseGate EXCEPT !.phase = "BadProtectionCostOrDeploymentClaim",
                             !.protectionClaim = TRUE,
+                            !.hypervisorGradeClaim = TRUE,
                             !.costEfficiencyClaim = TRUE,
-                            !.deploymentReadinessClaim = TRUE]
+                            !.deploymentReadinessClaim = TRUE,
+                            !.datacenterReadinessClaim = TRUE]
     /\ [][UNCHANGED gate]_vars
 
 BoolFieldOK(f) == gate[f] \in BOOLEAN
@@ -187,9 +227,17 @@ NoLinuxPatchFromProposal ==
 NoBehaviorFromP5A0Proposal ==
     /\ ~gate.behaviorChangeApproved
     /\ ~gate.configOffBehaviorImpact
+    /\ ~gate.configOffObjectImpact
     /\ ~gate.configOnNonAllowReachable
     /\ gate.helperReturnsOnlyAllow
     /\ ~gate.schedulerBranchesOnNonAllow
+
+NoLayoutOrObjectImpact ==
+    /\ ~gate.taskStructLayoutChange
+    /\ ~gate.rqLayoutChange
+    /\ ~gate.schedEntityLayoutChange
+    /\ ~gate.cfsRqLayoutChange
+    /\ ~gate.exportedSymbol
 
 NoRuntimeDenialFamily ==
     /\ ~gate.runtimeDenialApproved
@@ -199,7 +247,12 @@ NoRuntimeDenialFamily ==
 
 NoPublicOrMonitorSurface ==
     /\ ~gate.publicAbi
+    /\ ~gate.publicTracepointAbi
     /\ ~gate.monitorCall
+
+NoRuntimeOrMonitorClaim ==
+    /\ ~gate.runtimeCoverageClaim
+    /\ ~gate.monitorVerificationClaim
 
 MoveStatusIsOnlyPlanned ==
     /\ gate.moveStatusPlumbingPlanned
@@ -219,16 +272,20 @@ SetupDisableDoesNotChangeRuntime ==
 
 NoProductionOrCostClaim ==
     /\ ~gate.protectionClaim
+    /\ ~gate.hypervisorGradeClaim
     /\ ~gate.costEfficiencyClaim
     /\ ~gate.deploymentReadinessClaim
+    /\ ~gate.datacenterReadinessClaim
 
 Safety ==
     /\ TypeOK
     /\ NoProposalWithoutPreconditions
     /\ NoLinuxPatchFromProposal
     /\ NoBehaviorFromP5A0Proposal
+    /\ NoLayoutOrObjectImpact
     /\ NoRuntimeDenialFamily
     /\ NoPublicOrMonitorSurface
+    /\ NoRuntimeOrMonitorClaim
     /\ MoveStatusIsOnlyPlanned
     /\ RunHookIsNotDenialHook
     /\ TestHarnessIsInternalOnly

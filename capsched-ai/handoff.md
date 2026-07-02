@@ -3993,14 +3993,45 @@ P5A0 no-behavior gate / validation 0153:
     capsched-models/validation/run-sched-exec-lease-p5a0-no-behavior-gate.sh
 
   validation:
-    JSON gate run 20260702T-p5a0-no-behavior-gate passed against Linux commit
+    Strengthened JSON gate run 20260702T-p5a0-regate2 passed against Linux commit
     a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8.
     formal/0100 safe passed.
-    12 unsafe configs produced expected counterexamples.
+    14 unsafe configs produced expected counterexamples.
 
   next:
-    P5A0.1 prepatch evidence package: fresh drift row for touched scheduler
-    groups, patch queue plan, source checker plan, full build/QEMU
-    denial-disabled plan, object/symbol plan, negative harness plan, claim
-    ledger row, and explicit non-claims. P5A-R CFS deny and P5A-M broad move
+    P5A0.E prepatch evidence package. P5A-R CFS deny and P5A-M broad move
     denial remain later design work.
+
+P5A0.E prepatch evidence / validation 0154:
+  status:
+    Recorded and validated evidence package only. No Linux patch, behavior
+    change, runtime denial, runtime coverage, monitor verification,
+    protection, cost, deployment, datacenter, or global freshness claim is
+    approved.
+
+  naming:
+    P5A0.E is evidence only.
+    P5A0.P1 is the future first no-behavior Linux patch proposal.
+    P5A0.P2 is future move-status plumbing.
+
+  artifacts:
+    capsched-models/analysis/0132-sched-exec-lease-p5a0-e-prepatch-evidence.md
+    capsched-models/analysis/sched-exec-lease-p5a0-e-prepatch-evidence-v1.json
+    capsched-models/implementation/0030-sched-exec-lease-p5a0-e-prepatch-evidence.md
+    capsched-models/implementation/sched-exec-lease-p5a0-e-prepatch-evidence-v1.json
+    capsched-models/formal/0101-p5a0-e-prepatch-evidence-gate-model/
+    capsched-models/validation/0154-sched-exec-lease-p5a0-e-prepatch-evidence.md
+    capsched-models/validation/run-sched-exec-lease-p5a0-e-prepatch-evidence.sh
+
+  validation:
+    Fresh drift run 20260702T-p5a0-1-drift has l0_footprint and
+    scheduler_authority_core fresh; device_queue_iommu remains D4 stale and
+    barred from broad claims.
+    Source/JSON gate run 20260702T-p5a0-e-prepatch passed.
+    formal/0101 safe passed.
+    14 unsafe configs produced expected counterexamples.
+
+  next:
+    P5A0.P1 no-behavior patch plan, limited by default to
+    include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c. Touching
+    scheduler control-flow files reopens scope.

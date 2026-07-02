@@ -190,10 +190,21 @@ Current SchedExecLease L0 readiness:
     ledger rows. It does not approve a Linux patch, behavior change,
     non-ALLOW branch, runtime denial, retry, fail-closed path, quarantine,
     public ABI, monitor call, production protection claim, or cost-efficiency
-    claim. The next reviewable work is P5A0.1 prepatch evidence: fresh drift
+    claim. The next reviewable work is P5A0.E prepatch evidence: fresh drift
     row, patch queue plan, source checker plan, full build/QEMU plan,
     object/symbol plan, negative harness plan, claim ledger row, and explicit
     non-claims.
+- `0030-sched-exec-lease-p5a0-e-prepatch-evidence.md`
+  - Status: prepatch evidence only; no Linux code approved.
+  - Rule: P5A0.E resolves the P5A0.1 ambiguity by naming the evidence package
+    separately from future Linux patches. P5A0.P1 is the future first
+    no-behavior patch proposal and is limited by default to
+    `include/linux/sched_exec_lease.h` and `kernel/sched/exec_lease.c`.
+    Touching scheduler control-flow files reopens scope. P5A0.E records fresh
+    candidate-scoped drift for `l0_footprint` and `scheduler_authority_core`,
+    records stale non-candidate `device_queue_iommu`, and preserves all
+    non-claims for runtime denial, coverage, monitor, protection, cost,
+    deployment, datacenter, and global freshness.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
@@ -382,6 +393,12 @@ Candidate implementation plans:
     first prepare evidence and checkers for an ALLOW-only/no-denial
     infrastructure patch, then separately review any code. CFS deny and broad
     move denial remain outside P5A0.
+- `0030-sched-exec-lease-p5a0-e-prepatch-evidence.md`
+  - Status: prepatch evidence package, no Linux patch approved.
+  - Purpose: record P5A0.E as evidence-only, reserve P5A0.P1 for the future
+    first no-behavior patch proposal, and require file allowlist, source drift,
+    source checker, object/symbol, build/QEMU, negative harness, and claim
+    ledger evidence before any code review.
 
 Validated formal inputs:
 

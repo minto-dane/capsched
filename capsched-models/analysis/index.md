@@ -137,6 +137,7 @@ Updated: 2026-07-02
 | 0129 | P5 readiness refreshed after P4; denial remains blocked | SchedExecLease P5 Readiness Refresh After P4 |
 | 0130 | P5A scope decomposed; no Linux implementation approved | SchedExecLease P5A Scope Proposal |
 | 0131 | P5A0 no-behavior infrastructure proposal recorded; no Linux patch approved | SchedExecLease P5A0 No-Behavior Infrastructure Proposal |
+| 0132 | P5A0.E prepatch evidence recorded; no Linux patch approved | SchedExecLease P5A0.E Prepatch Evidence |
 
 ## Planned Analysis Notes
 
@@ -236,3 +237,4 @@ Updated: 2026-07-02
 | `sched-exec-lease-p5-readiness-refresh-after-p4-v1.json` | P5 blocked refresh | Machine-readable post-P4 P5 readiness refresh, run/move denial blockers, source facts, preconditions, and non-claims |
 | `sched-exec-lease-p5a-scope-proposal-v1.json` | P5A scope proposal | Machine-readable P5A0/P5A-R/P5A-M/P5A-V decomposition, narrowed run/move blockers, forbidden claims, and review order |
 | `sched-exec-lease-p5a0-no-behavior-infrastructure-proposal-v1.json` | P5A0 proposal | Machine-readable no-behavior infrastructure proposal, future patch constraints, move/run/test/setup shapes, required validation, and non-claims |
+| `sched-exec-lease-p5a0-e-prepatch-evidence-v1.json` | P5A0.E evidence | Machine-readable prepatch evidence package, candidate-scoped drift, future patch identity, source observations, low-overhead constraints, and non-claims |

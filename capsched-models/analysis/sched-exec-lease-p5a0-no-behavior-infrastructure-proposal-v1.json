@@ -27,6 +27,14 @@
     "retry": false,
     "fail_closed": false,
     "quarantine": false,
+    "task_struct_layout_change": false,
+    "rq_layout_change": false,
+    "sched_entity_layout_change": false,
+    "cfs_rq_layout_change": false,
+    "hot_path_allocation": false,
+    "sleep_or_blocking_call": false,
+    "exported_symbol": false,
+    "public_tracepoint_abi": false,
     "public_abi": false,
     "monitor_call": false
   },
@@ -93,6 +101,7 @@
     "full_build_off_on_plan",
     "qemu_denial_disabled_smoke_plan",
     "object_symbol_review_plan",
+    "hot_path_codegen_layout_review_plan",
     "negative_harness_plan",
     "claim_ledger_row",
     "explicit_non_claims"

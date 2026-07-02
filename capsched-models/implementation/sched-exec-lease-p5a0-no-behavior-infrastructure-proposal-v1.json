@@ -16,11 +16,24 @@
     "monitor_call": false
   },
   "candidate_patch_units": [
-    "p5a0_1_source_only_contract_and_internal_type_shapes",
-    "p5a0_2_move_status_carrier_plumbing_allow_only",
-    "p5a0_3_internal_negative_test_harness_skeleton_no_public_abi",
-    "p5a0_4_disabled_path_setup_skeleton_no_behavior_until_test_denial_mode",
-    "p5a0_5_validation_and_overclaim_review"
+    "p5a0_e_prepatch_evidence_no_linux_patch",
+    "p5a0_p1_source_only_contract_and_internal_type_shapes",
+    "p5a0_p2_move_status_carrier_plumbing_allow_only",
+    "p5a0_p3_internal_negative_test_harness_skeleton_no_public_abi",
+    "p5a0_p4_disabled_path_setup_skeleton_no_behavior_until_test_denial_mode",
+    "p5a0_p5_validation_and_overclaim_review"
+  ],
+  "p5a0_p1_recommended_file_allowlist": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/exec_lease.c"
+  ],
+  "scheduler_file_touch_requires_scope_reopen": [
+    "kernel/sched/core.c",
+    "kernel/sched/sched.h",
+    "kernel/sched/fair.c",
+    "kernel/sched/rt.c",
+    "kernel/sched/deadline.c",
+    "kernel/sched/ext/ext.c"
   ],
   "required_before_writing_patch": [
     "fresh_upstream_drift_row",
@@ -28,7 +41,8 @@
     "source_checker_plan",
     "build_qemu_plan",
     "object_symbol_plan",
-    "claim_ledger_row"
+    "claim_ledger_row",
+    "explicit_file_allowlist"
   ],
   "required_before_acceptance": [
     "patch_queue_replay",
@@ -43,12 +57,24 @@
     "linux_patch_approved": false,
     "behavior_change_approved": false,
     "runtime_denial_approved": false,
+    "retry_approved": false,
+    "fail_closed_approved": false,
+    "quarantine_approved": false,
     "runtime_coverage": false,
+    "task_struct_layout_change": false,
+    "rq_layout_change": false,
+    "sched_entity_layout_change": false,
+    "cfs_rq_layout_change": false,
     "abi": false,
+    "public_tracepoint_abi": false,
+    "exported_symbol": false,
     "monitor_call": false,
     "monitor_verified": false,
     "production_protection": false,
+    "hypervisor_grade_isolation": false,
     "cost_efficiency_claim": false,
-    "deployment_readiness": false
+    "deployment_readiness": false,
+    "datacenter_readiness": false,
+    "global_all_angles_freshness": false
   }
 }

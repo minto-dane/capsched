@@ -2,7 +2,8 @@
 
 Date: 2026-07-02
 
-Status: passed for P5A0 proposal gating.
+Status: passed for P5A0 proposal gating. Rechecked after P5A0.E review
+hardening.
 
 Linux source basis:
 
@@ -25,14 +26,14 @@ formal/0100-p5a0-no-behavior-gate-model/
 Command:
 
 ```sh
-DOMAINLEASE_RUN_ID=20260702T-p5a0-no-behavior-gate \
+DOMAINLEASE_RUN_ID=20260702T-p5a0-regate2 \
   capsched/capsched-models/validation/run-sched-exec-lease-p5a0-no-behavior-gate.sh
 ```
 
 Output directory:
 
 ```text
-build/source-check/sched-exec-lease-p5a0-no-behavior-gate/20260702T-p5a0-no-behavior-gate/
+build/source-check/sched-exec-lease-p5a0-no-behavior-gate/20260702T-p5a0-regate2/
 ```
 
 Result summary:
@@ -47,7 +48,10 @@ runtime_denial_approved                     false
 retry_fail_closed_quarantine                false
 public_abi                                  false
 monitor_call                                false
+runtime_coverage_or_monitor_verified        false
+layout_or_exported_symbol_change            false
 move_non_allow_reachable_in_p5a0            false
+test_observables_complete                   true
 required_prepatch_evidence_planned          true
 required_acceptance_validation_planned      true
 production_or_cost_claim                    false
@@ -64,7 +68,7 @@ formal/0100-p5a0-no-behavior-gate-model/P5A0NoBehaviorGate.tla
 Output directory:
 
 ```text
-build/tlc/p5a0-no-behavior-gate/20260702T-p5a0-no-behavior-gate/
+build/tlc/p5a0-no-behavior-gate/20260702T-p5a0-regate/
 ```
 
 Safe configuration:
@@ -77,6 +81,7 @@ Expected unsafe counterexamples:
 
 ```text
 P5A0NoBehaviorGateUnsafeBehaviorChange
+P5A0NoBehaviorGateUnsafeLayoutOrObjectImpact
 P5A0NoBehaviorGateUnsafeLinuxPatchApproved
 P5A0NoBehaviorGateUnsafeMissingPrePatchEvidence
 P5A0NoBehaviorGateUnsafeMoveStatusBehavior
@@ -86,6 +91,7 @@ P5A0NoBehaviorGateUnsafePublicAbiOrMonitor
 P5A0NoBehaviorGateUnsafePublicTestHarness
 P5A0NoBehaviorGateUnsafeRetryFailClosedQuarantine
 P5A0NoBehaviorGateUnsafeRunP4Denial
+P5A0NoBehaviorGateUnsafeRuntimeCoverageClaim
 P5A0NoBehaviorGateUnsafeRuntimeDenial
 P5A0NoBehaviorGateUnsafeSetupBehaviorChange
 ```
@@ -104,10 +110,13 @@ future infrastructure, but this validation explicitly rejects:
 - using the current P4 final-run observation point as a denial hook;
 - move-status plumbing that changes task placement or caller settlement;
 - public tracepoint/syscall/ioctl/sysfs/procfs/debugfs/monitor ABI;
+- config-off object impact, task/rq/sched_entity/cfs_rq layout changes,
+  exported symbols, runtime coverage claims, monitor verification claims,
+  hypervisor-grade claims, and datacenter-readiness claims;
 - production protection, hypervisor-grade isolation, cost-efficiency, or
   deployment-readiness claims.
 
-The next reviewable work is P5A0.1: a prepatch evidence package containing a
+The next reviewable work is P5A0.E: a prepatch evidence package containing a
 fresh drift row for the touched scheduler groups, patch queue plan, source
 checker plan, full build/QEMU plan, object/symbol review plan, negative harness
 plan, claim ledger row, and explicit non-claims.

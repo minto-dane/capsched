@@ -13,6 +13,10 @@ The safe configuration accepts only this state:
 - No Linux patch is approved by this proposal.
 - No behavior change, runtime denial, retry, fail-closed, quarantine, public
   ABI, or monitor call is approved.
+- No config-off object impact, task/rq/sched_entity/cfs_rq layout change,
+  exported symbol, public tracepoint ABI, runtime coverage claim, monitor
+  verification claim, hypervisor-grade claim, or datacenter-readiness claim is
+  approved.
 - Move status plumbing and setup-time path disabling are only planned shapes.
 - Test observability is internal-only.
 - Required prepatch and acceptance validation plans are recorded.
