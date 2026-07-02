@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p1-no-behavior-implementation-v1",
+  "date": "2026-07-02",
+  "status": "applied_no_behavior_p1_patch",
+  "linux": {
+    "branch": "capsched-linux-l0",
+    "commit": "95b8c509043d755ad77801315beec94c09059777",
+    "subject": "sched/exec_lease: Add private no-behavior object vocabulary"
+  },
+  "patch_queue": {
+    "patch": "linux-patches/patches/capsched-linux-l0/0004-sched-exec-lease-Add-private-no-behavior-object-vocabulary.patch",
+    "series": "linux-patches/patches/capsched-linux-l0/series",
+    "work_commit": "95b8c509043d755ad77801315beec94c09059777"
+  },
+  "changed_linux_files": [
+    "kernel/sched/exec_lease.c"
+  ],
+  "unchanged_allowed_files": [
+    "include/linux/sched_exec_lease.h"
+  ],
+  "private_vocabulary": [
+    "enum sched_exec_validation_result",
+    "struct sched_exec_domain",
+    "struct sched_exec_grant",
+    "struct sched_budget_ctx",
+    "struct sched_exec_lease",
+    "sched_exec_allow_all_validation"
+  ],
+  "authority_separation": {
+    "sched_exec_domain": "linux_local_shadow_only_not_monitor_authority",
+    "sched_exec_grant": "runnable_authority_placeholder_only",
+    "sched_budget_ctx": "cpu_budget_placeholder_only",
+    "sched_exec_lease": "future_frozen_use_placeholder_only",
+    "sched_exec_allow_all_validation": "private_allow_all_shape_only"
+  },
+  "forbidden_content_present": {
+    "task_struct_fields": false,
+    "rq_fields": false,
+    "scheduler_hooks": false,
+    "lifecycle_hooks": false,
+    "allocation": false,
+    "runtime_state_mutation": false,
+    "runtime_denial": false,
+    "budget_charging": false,
+    "generation_mutation": false,
+    "policy_frontend_calls": false,
+    "tracepoints": false,
+    "debugfs_procfs_sysfs": false,
+    "syscall_ioctl": false,
+    "exported_symbols": false,
+    "monitor_calls": false,
+    "user_visible_handles": false
+  },
+  "validation": {
+    "record": "capsched/capsched-models/validation/0132-sched-exec-lease-p1-full-build.md",
+    "patch_queue_replay": "passed",
+    "full_vmlinux_config_off": "passed",
+    "full_vmlinux_config_on": "passed",
+    "qemu_rerun": "not_required_for_no_runtime_call_site_change"
+  },
+  "safety_flags": {
+    "implementation_applied": true,
+    "behavior_change": false,
+    "runtime_denial_approved": false,
+    "scheduler_hook_approved": false,
+    "lifecycle_hook_approved": false,
+    "runtime_coverage": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

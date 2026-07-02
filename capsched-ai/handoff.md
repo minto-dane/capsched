@@ -3199,3 +3199,68 @@ QEMU status:
 still not:
   runtime coverage, hook approval, behavior change, ABI approval, monitor
   verification, production protection, or cost efficiency.
+
+N-162 P1 no-behavior implementation:
+  implementation/0020-sched-exec-lease-p1-no-behavior-implementation.md
+  implementation/sched-exec-lease-p1-no-behavior-implementation-v1.json
+  validation/0132-sched-exec-lease-p1-full-build.md
+
+Linux:
+  branch:
+    capsched-linux-l0
+
+  work commit:
+    95b8c509043d755ad77801315beec94c09059777
+    sched/exec_lease: Add private no-behavior object vocabulary
+
+  changed source:
+    kernel/sched/exec_lease.c
+
+  added private vocabulary:
+    enum sched_exec_validation_result
+    struct sched_exec_domain
+    struct sched_exec_grant
+    struct sched_budget_ctx
+    struct sched_exec_lease
+    sched_exec_allow_all_validation()
+
+  unchanged/absent:
+    no task_struct fields, rq fields, scheduler hooks, lifecycle hooks,
+    allocation, runtime state mutation, runtime denial, budget charging,
+    generation mutation, policy frontend calls, ABI, exported symbols,
+    tracepoints, monitor calls, or user-visible handles.
+
+Patch queue:
+  linux-patches/patches/capsched-linux-l0/0004-sched-exec-lease-Add-private-no-behavior-object-vocabulary.patch
+  linux-patches/patches/capsched-linux-l0/series
+  linux-patches/upstream/base.txt
+
+Validation:
+  patch queue replay passed:
+    final HEAD 95b8c509043d755ad77801315beec94c09059777
+
+  full vmlinux build passed:
+    log:
+      /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260702T035916Z.log
+
+    off:
+      build/linux-l0-sched-exec-lease-off-p1-n162-current-x86_64
+      SCHED_EXEC_LEASE=undef
+      vmlinux present
+      kernel/sched/exec_lease.o absent
+
+    on:
+      build/linux-l0-sched-exec-lease-on-p1-n162-current-x86_64
+      SCHED_EXEC_LEASE=y
+      vmlinux present
+      kernel/sched/exec_lease.o present
+
+QEMU:
+  not rerun for N-162 because P1 adds no runtime call site, hook, task layout,
+  lifecycle path, or behavior path. Fresh QEMU is required before any later
+  runtime call-site patch.
+
+still blocked:
+  behavior-changing runtime enforcement, runtime denial, ABI, monitor calls,
+  hook approval, runtime coverage, production protection, and cost-efficiency
+  claims.

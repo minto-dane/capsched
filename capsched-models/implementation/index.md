@@ -30,6 +30,13 @@ Current SchedExecLease L0 readiness:
     `kernel/sched/exec_lease.c`, may add only private/opaque allow-all
     scaffolding, and may not add task fields, scheduler hooks, lifecycle hooks,
     ABI, monitor calls, or behavior changes.
+- `0020-sched-exec-lease-p1-no-behavior-implementation.md`
+  - Status: applied P1 no-behavior Linux patch.
+  - Linux commit:
+    `95b8c509043d755ad77801315beec94c09059777`.
+  - Rule: only `kernel/sched/exec_lease.c` changed; private object vocabulary
+    compiles when enabled and remains uncalled, unexported, hook-free, ABI-free,
+    and behavior-free.
 
 N-156 terminology policy:
 
@@ -156,6 +163,11 @@ Candidate implementation plans:
   - Purpose: constrain the first possible P1 patch to the existing
     SchedExecLease scaffold files and forbid any task layout, scheduler hook,
     lifecycle hook, ABI, monitor, or behavior-changing content.
+- `0020-sched-exec-lease-p1-no-behavior-implementation.md`
+  - Status: applied and full-build validated.
+  - Purpose: record the P1 Linux patch that adds private SchedExecLease object
+    vocabulary in `kernel/sched/exec_lease.c` only and preserves no-behavior
+    semantics.
 
 Validated formal inputs:
 

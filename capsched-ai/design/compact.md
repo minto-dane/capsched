@@ -2726,3 +2726,32 @@ forbidden in P1:
   runtime denial, budget charging, generation mutation, ABI, monitor calls,
   exported symbols, tracepoints, and behavior changes.
 ```
+
+N-162 P1 no-behavior implementation:
+
+```text
+artifacts:
+  implementation/0020-sched-exec-lease-p1-no-behavior-implementation.md
+  implementation/sched-exec-lease-p1-no-behavior-implementation-v1.json
+  validation/0132-sched-exec-lease-p1-full-build.md
+
+linux:
+  commit 95b8c509043d755ad77801315beec94c09059777
+  subject sched/exec_lease: Add private no-behavior object vocabulary
+  changed kernel/sched/exec_lease.c only
+
+patch queue:
+  added 0004-sched-exec-lease-Add-private-no-behavior-object-vocabulary.patch
+  work_commit updated to 95b8c509043d755ad77801315beec94c09059777
+  replay passed to exact final HEAD
+
+validation:
+  full vmlinux off/on passed with BUILD_TAG=p1-n162-current.
+  off: SCHED_EXEC_LEASE=undef, vmlinux present, exec_lease.o absent.
+  on: SCHED_EXEC_LEASE=y, vmlinux present, exec_lease.o present.
+  log: build/logs/sched-exec-lease-full-build-20260702T035916Z.log
+
+still not:
+  behavior change, runtime denial, hook approval, ABI, monitor verification,
+  runtime coverage, production protection, or cost evidence.
+```
