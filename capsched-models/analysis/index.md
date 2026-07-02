@@ -123,6 +123,7 @@ Updated: 2026-07-02
 | 0115 | Source-verified B2 design constraint | Bounded Retry and Ineligibility Source Design |
 | 0116 | Design-only negative validation plan | Negative Denial Validation Plan |
 | 0117 | Design-only path classification with TLC-backed gate | Scheduler Path Classification for P5 |
+| 0118 | Design-only claim ledger gate with TLC-backed overclaim rejection | Implementation Claim Ledger Gate |
 
 ## Planned Analysis Notes
 
@@ -189,6 +190,7 @@ Updated: 2026-07-02
 | `bounded-retry-ineligibility-source-design-v1.json` | Source-verified B2 design constraint | Machine-readable bounded retry/ineligibility source shape, allowed shapes, forbidden shapes, and future model refresh requirements |
 | `negative-denial-validation-plan-v1.json` | Design-only negative validation plan | Machine-readable negative denial test obligations, future observables, path classification requirements, and non-claim safety flags |
 | `scheduler-path-classification-for-p5-v1.json` | Design-only path classification | Machine-readable P5 supported/disabled/excluded scheduler path classification and claim-scope guard |
+| `implementation-claim-ledger-gate-v1.json` | Design-only claim ledger gate | Machine-readable evidence-class to claim-class rules and mandatory non-claim safety flags for future implementation proposals |
 | `scheduler-server-ticket-v1.json` | Draft model gate | Machine-readable scheduler server-ticket source map and model contract for N-137 |
 | `runtime-coverage-gate-v1.json` | Draft trace-only coverage gate | Machine-readable current/donor/proxy/server runtime coverage contract for N-138 |
 | `monitor-root-budget-timer-v1.json` | Draft monitor-root budget event model | Machine-readable monitor-owned root budget timer contract for N-139 |

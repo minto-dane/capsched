@@ -142,6 +142,7 @@ Updated: 2026-07-02
 | 0134 | Passed for P2 QEMU boot/workload smoke off/on; hook coverage incomplete; no behavior or protection claim | SchedExecLease P2 QEMU Boot Smoke |
 | 0135 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Final Deny Source Shape Gate TLC |
 | 0136 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Scheduler Path Classification Gate TLC |
+| 0137 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Implementation Claim Ledger Gate TLC |
 
 ## Principles
 

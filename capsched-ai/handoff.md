@@ -3464,5 +3464,36 @@ N-170 scheduler path classification for P5:
     protection, and cost-efficiency claims.
 
   next:
-    implementation claim-ledger gate, upstream-drift recheck plan for reopening
+    implementation claim-ledger gate was later closed at design level by N-171.
+    The remaining next work is upstream-drift recheck plan for reopening
     implementation scope, then final implementation-ready audit.
+
+N-171 implementation claim-ledger gate:
+  artifacts:
+    capsched-models/analysis/0118-implementation-claim-ledger-gate.md
+    capsched-models/analysis/implementation-claim-ledger-gate-v1.json
+    capsched-models/formal/0090-implementation-claim-ledger-gate-model/
+    capsched-models/validation/0137-implementation-claim-ledger-gate-tlc.md
+
+  TLC:
+    safe passed with 2 generated states, 1 distinct state, depth 1.
+    13 unsafe configs produced expected counterexamples.
+
+  rule:
+    every future implementation proposal must carry a machine-readable claim
+    ledger row naming evidence classes, supported claims, forbidden claims,
+    open gaps, validation-before-review, validation-before-acceptance,
+    upstream drift freshness, and safety flags.
+
+  rejected:
+    missing ledger row, implementation approval without reopened scope,
+    implementation approval with stale drift, behavior change without P5
+    evidence, runtime denial without denied-candidate trace evidence, runtime
+    coverage without runtime trace coverage, monitor verification without
+    monitor roots, production/hypervisor-grade overclaims, cost-efficiency
+    overclaim, public ABI overclaim, model-only production claim, and
+    compatibility evidence as protection.
+
+  next:
+    upstream-drift recheck plan for reopening implementation scope, then final
+    implementation-ready audit.

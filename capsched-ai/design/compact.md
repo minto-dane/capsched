@@ -2854,9 +2854,10 @@ open coverage boundary:
   proxy donor/current/executor split, donor-aware budget, proxy migration.
 
 next:
-  bounded retry and ineligibility source design.
-  negative denial validation plan.
-  implementation claim-ledger gate.
+  bounded retry and ineligibility source design. Later closed at design level
+  by N-167.
+  negative denial validation plan. Later closed at design level by N-168/N-169.
+  implementation claim-ledger gate. Later closed at design level by N-171.
   upstream-drift recheck before implementation scope is reopened.
 ```
 
@@ -2949,7 +2950,49 @@ rejects:
   implementation/protection/cost overclaims.
 
 next:
-  implementation claim-ledger gate.
+  implementation claim-ledger gate. Later closed at design level by N-171.
+  upstream-drift recheck plan for reopening implementation scope.
+  final implementation-ready audit.
+```
+
+N-171 implementation claim-ledger gate:
+
+```text
+artifacts:
+  analysis/0118-implementation-claim-ledger-gate.md
+  analysis/implementation-claim-ledger-gate-v1.json
+  formal/0090-implementation-claim-ledger-gate-model/
+  validation/0137-implementation-claim-ledger-gate-tlc.md
+
+TLC:
+  safe passed: 2 generated, 1 distinct, depth 1.
+  unsafe expected counterexamples: 13/13.
+
+required future implementation proposal row:
+  proposal id.
+  slice id.
+  Linux base/work commit.
+  patch scope and behavior mode.
+  evidence classes present.
+  supported claims.
+  forbidden claims.
+  open gaps.
+  validation before review and acceptance.
+  upstream drift freshness.
+  safety flags.
+
+rejects:
+  missing ledger row.
+  implementation approval without reopened scope or fresh drift.
+  behavior change without P5 negative evidence.
+  runtime denial without denied-candidate trace evidence.
+  runtime coverage without runtime trace coverage.
+  monitor verification without monitor roots.
+  production/hypervisor-grade/cost overclaims.
+  public ABI overclaim.
+  model-only or compatibility-only production claim.
+
+next:
   upstream-drift recheck plan for reopening implementation scope.
   final implementation-ready audit.
 ```

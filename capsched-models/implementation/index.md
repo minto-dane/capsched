@@ -8,10 +8,9 @@ Latest design-readiness audit:
 
 - `analysis/0113-implementation-ready-completion-audit.md`
   - Verdict: implementation-ready design is not complete yet.
-  - Reason: P2 is validated, but sched_ext/core/proxy coverage, bounded
-    retry/ineligibility source shape, negative denial tests, claim-ledger
-    gates, and upstream-drift recheck remain open before any new Linux
-    implementation scope is reopened.
+  - Reason: P2 is validated and the P5 path/claim gates are now design-closed,
+    but upstream-drift recheck and final implementation-ready audit still
+    remain before any new Linux implementation scope is reopened.
 - `analysis/0114-sched-ext-core-proxy-coverage-boundary.md`
   - Rule: sched_ext, core scheduling, and proxy execution are uncovered until
     explicitly classified as supported, disabled, or excluded.
@@ -40,6 +39,19 @@ Latest design-readiness audit:
     coverage over excluded paths, disabled execution, fallback authority,
     async/kthread authority collapse, implementation approval, production
     protection, and cost-efficiency claims.
+- `analysis/0118-implementation-claim-ledger-gate.md`
+  - Rule: every future implementation proposal must carry a machine-readable
+    claim ledger row with evidence classes, supported claims, forbidden claims,
+    open gaps, validation-before-review, validation-before-acceptance,
+    upstream drift freshness, and safety flags.
+- `formal/0090-implementation-claim-ledger-gate-model/`
+  - Evidence: validation/0137 safe TLC passed and 13 unsafe configs produced
+    expected counterexamples for missing ledger rows, implementation approval
+    without reopened scope or fresh drift, behavior change without P5 evidence,
+    runtime denial without trace evidence, runtime coverage without runtime
+    trace coverage, monitor verification without monitor roots, production or
+    hypervisor-grade overclaims, cost-efficiency overclaim, public ABI
+    overclaim, model-only production claim, and compatibility-as-protection.
 
 Current SchedExecLease L0 readiness:
 
@@ -122,10 +134,10 @@ Current SchedExecLease L0 readiness:
   - Rule: P5 is the first possible behavior-changing slice and remains blocked
     until P2/P3/P4 validation, refreshed final run/move and denial/retry models,
     negative tests, the analysis/0117 scheduler path classification, bounded
-    retry evidence, and claim-ledger overclaim guards exist. The first allowed
-    P5 scope, if re-approved, is test-only denial mode off by default, limited
-    to ordinary CFS final run and common queued move helpers, and denial must be
-    pre-settle or backed by a rollback proof.
+    retry evidence, and the analysis/0118 claim-ledger row exist. The first
+    allowed P5 scope, if re-approved, is test-only denial mode off by default,
+    limited to ordinary CFS final run and common queued move helpers, and
+    denial must be pre-settle or backed by a rollback proof.
 
 N-156 terminology policy:
 

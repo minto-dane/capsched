@@ -17,7 +17,9 @@
     "p2_qemu_boot_workload_off_on",
     "initial_p5_sched_ext_core_proxy_path_classification_recorded",
     "initial_p5_workqueue_kthread_async_classification_recorded",
-    "scheduler_path_classification_gate_tlc_checked"
+    "scheduler_path_classification_gate_tlc_checked",
+    "implementation_claim_ledger_gate_recorded",
+    "implementation_claim_ledger_gate_tlc_checked"
   ],
   "partial": [
     "p3_source_anchors_verified_design_only",
@@ -28,11 +30,6 @@
     "negative_denial_validation_plan_done_future_test_mapping_required"
   ],
   "open_blockers": [
-    {
-      "id": "B4",
-      "name": "implementation_claim_ledger_gate",
-      "needed_before_implementation": true
-    },
     {
       "id": "B5",
       "name": "fresh_upstream_drift_recheck_before_reopening_implementation_scope",
@@ -70,8 +67,31 @@
       "validation/0136"
     ]
   },
+  "implementation_claim_ledger_gate": {
+    "status": "satisfied_as_design_gate",
+    "evidence": [
+      "analysis/0118",
+      "formal/0090",
+      "validation/0137"
+    ],
+    "future_patch_requirement": "machine_readable_claim_ledger_row_required_before_patch_review",
+    "rejects": [
+      "missing_claim_ledger_row",
+      "implementation_approval_without_reopened_scope",
+      "implementation_approval_with_stale_upstream_drift",
+      "behavior_change_without_p5_negative_evidence",
+      "runtime_denial_without_denied_candidate_trace_evidence",
+      "runtime_coverage_without_runtime_trace_coverage",
+      "monitor_verification_without_monitor_roots",
+      "production_protection_without_monitor_and_exploit_evaluation",
+      "hypervisor_grade_claim_from_linux_only_p5_evidence",
+      "cost_efficiency_without_evaluation",
+      "public_abi_without_abi_gate",
+      "model_only_production_claim",
+      "compatibility_as_protection"
+    ]
+  },
   "next_design_order": [
-    "implementation_claim_ledger_gate",
     "upstream_drift_recheck_plan",
     "final_implementation_ready_audit"
   ],

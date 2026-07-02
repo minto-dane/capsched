@@ -61,14 +61,14 @@ closed the design obligations needed to safely propose P3/P4/P5 implementation.
 | P3 source anchors verified | analysis/0112 | Partially satisfied |
 | P3 no-behavior/no-ABI patch contract | implementation/0023 | Needs scope refresh before implementation |
 | P4 final run/move allow-all contract | implementation/0024, analysis/0100 | Needs current-source refresh |
-| P5 test-only denial gate | implementation/0025, analysis/0101, analysis/0117 | Needs claim-ledger and drift gates before implementation scope |
+| P5 test-only denial gate | implementation/0025, analysis/0101, analysis/0117, analysis/0118 | Needs drift gate before implementation scope |
 | sched_ext coverage decision | analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
 | core scheduling cached-pick decision | analysis/0100/0101, analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
 | proxy donor/current/executor decision | analysis/0111, analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
 | workqueue/kthread classification | prior async models, analysis/0117 | Satisfied for initial P5: excluded, future typed async required |
 | bounded retry/ineligibility representation | analysis/0101, analysis/0115, formal/0088, validation/0135 | Partially satisfied; source shape and model refresh done, implementation test evidence still future |
 | negative denial test plan | implementation/0025, analysis/0116 | Partially satisfied; design plan exists, future implementation tests still open |
-| claim-ledger overclaim guard for implementation | non-claims exist | Open as a concrete gate |
+| claim-ledger overclaim guard for implementation | analysis/0118, formal/0090, validation/0137 | Satisfied as a design gate; future proposals must include ledger row |
 | upstream-drift refresh policy before implementation | prior drift gates exist | Needs re-run before any implementation |
 
 ## Hard Blockers Before Implementation Scope Reopens
@@ -163,14 +163,36 @@ no production protection without exploit-containment evaluation
 no cost-efficiency claim without the evaluation contract
 ```
 
+analysis/0118 closes B4 as a design gate. It requires every future
+implementation proposal to carry a machine-readable claim ledger row naming:
+
+```text
+evidence classes present
+supported claims
+forbidden claims
+open gaps
+validation before review
+validation before acceptance
+upstream drift freshness
+safety flags
+```
+
+formal/0090 and validation/0137 check that missing ledger rows and overclaims
+are rejected, including implementation approval without reopened scope,
+implementation approval with stale drift, behavior change without P5 evidence,
+runtime denial without denied-candidate trace evidence, runtime coverage
+without trace coverage, monitor verification without monitor roots, production
+protection without monitor/evaluation evidence, hypervisor-grade claim from
+Linux-only P5 evidence, cost-efficiency without evaluation, public ABI without
+ABI gate, model-only production claim, and compatibility-as-protection.
+
 ## Next Design Work
 
 The next design work should close blockers in this order:
 
 ```text
-1. implementation claim-ledger gate
-2. upstream-drift recheck plan for reopening implementation scope
-3. final implementation-ready audit
+1. upstream-drift recheck plan for reopening implementation scope
+2. final implementation-ready audit
 ```
 
 ## Non-Claims

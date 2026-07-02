@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "id": "implementation-claim-ledger-gate-v1",
+  "date": "2026-07-02",
+  "status": "design_only_claim_gate_no_implementation",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "required_claim_ledger_row_fields": [
+    "proposal_id",
+    "slice_id",
+    "linux_base_commit",
+    "linux_work_commit_or_expected_parent",
+    "patch_scope",
+    "behavior_mode",
+    "evidence_classes_present",
+    "supported_claims",
+    "forbidden_claims",
+    "open_gaps",
+    "required_validation_before_review",
+    "required_validation_before_acceptance",
+    "upstream_drift_freshness",
+    "safety_flags"
+  ],
+  "missing_ledger_row_reviewable": false,
+  "evidence_class_rules": [
+    {
+      "evidence_class": "model_checked",
+      "may_support": ["model_supported_semantics"],
+      "must_not_support": ["implementation_approval", "runtime_coverage", "production_protection"]
+    },
+    {
+      "evidence_class": "linux_no_behavior_build",
+      "may_support": ["build_compatibility"],
+      "must_not_support": ["runtime_denial", "runtime_coverage", "production_protection"]
+    },
+    {
+      "evidence_class": "qemu_no_behavior_smoke",
+      "may_support": ["boot_workload_compatibility"],
+      "must_not_support": ["runtime_denial", "production_protection"]
+    },
+    {
+      "evidence_class": "patch_queue_replay",
+      "may_support": ["reproducibility"],
+      "must_not_support": ["semantic_protection"]
+    },
+    {
+      "evidence_class": "source_drift_fresh",
+      "may_support": ["implementation_review_freshness"],
+      "must_not_support": ["authority", "production_protection"]
+    },
+    {
+      "evidence_class": "negative_denial_tests",
+      "may_support": ["test_only_denial_for_supported_paths"],
+      "must_not_support": ["full_scheduler_runtime_coverage"]
+    },
+    {
+      "evidence_class": "runtime_trace_coverage",
+      "may_support": ["runtime_coverage_for_observed_paths"],
+      "must_not_support": ["monitor_verification", "production_protection"]
+    },
+    {
+      "evidence_class": "monitor_validation",
+      "may_support": ["monitor_backed_enforcement_for_specified_roots"],
+      "must_not_support": ["cost_efficiency"]
+    },
+    {
+      "evidence_class": "exploit_containment_evaluation",
+      "may_support": ["production_protection_when_monitor_roots_present"],
+      "must_not_support": ["cost_efficiency_by_itself"]
+    },
+    {
+      "evidence_class": "cost_evaluation",
+      "may_support": ["cost_efficiency_when_protection_basis_exists"],
+      "must_not_support": ["production_protection_by_itself"]
+    }
+  ],
+  "current_supported_claims": [
+    "model_supported_design_claims_for_checked_models",
+    "linux_no_behavior_compatibility_for_p1_p2",
+    "patch_queue_replay_for_current_private_linux_delta",
+    "qemu_no_behavior_smoke_compatibility_for_p2"
+  ],
+  "current_forbidden_claims": [
+    "implementation_ready_completion",
+    "new_linux_implementation_scope",
+    "runtime_denial",
+    "runtime_coverage",
+    "monitor_verification",
+    "production_protection",
+    "hypervisor_grade_isolation",
+    "cost_efficiency",
+    "public_abi",
+    "monitor_abi"
+  ],
+  "claim_rules": {
+    "implementation_approval_requires": [
+      "claim_ledger_row_present",
+      "implementation_scope_explicitly_reopened",
+      "upstream_drift_freshness_for_touched_paths",
+      "required_gate_artifacts_named",
+      "unsupported_claim_safety_flags_false"
+    ],
+    "behavior_change_and_runtime_denial_requires": [
+      "implementation_approval_gate",
+      "p5_path_classification_reflected",
+      "negative_denial_tests",
+      "trace_denied_candidates_do_not_reach_rq_curr_or_context_switch",
+      "bounded_retry_evidence",
+      "fail_closed_evidence_or_explicit_unavailable_note"
+    ],
+    "runtime_coverage_requires": [
+      "runtime_trace_coverage",
+      "exact_path_set_stated",
+      "current_donor_proxy_server_relation_evidence_when_applicable",
+      "unsupported_paths_excluded_from_claim"
+    ],
+    "monitor_verification_requires": [
+      "non_forgeable_domain_epoch_or_token_root",
+      "memoryview_or_stage2_ept_ownership",
+      "monitor_root_cpu_budget",
+      "iommu_queue_ownership_when_device_claims_in_scope",
+      "revoke_epoch_freshness_ordering"
+    ],
+    "production_protection_requires": [
+      "monitor_verification",
+      "runtime_coverage_for_claimed_boundary",
+      "exploit_containment_evaluation",
+      "tcb_boundary_review",
+      "side_channel_cotenancy_policy_review",
+      "residual_risk_ledger"
+    ],
+    "cost_efficiency_requires": [
+      "evaluation_contract_executed",
+      "benchmark_methodology_and_workloads_recorded",
+      "baseline_comparison_recorded",
+      "protection_basis_already_established_for_compared_boundary"
+    ]
+  },
+  "mandatory_false_unless_proven": [
+    "runtime_denial_approved",
+    "runtime_coverage",
+    "monitor_verified",
+    "production_protection",
+    "hypervisor_grade",
+    "cost_efficiency",
+    "public_abi",
+    "monitor_abi"
+  ],
+  "safety_flags": {
+    "implementation_applied": false,
+    "implementation_scope_reopened": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade": false,
+    "cost_efficiency": false,
+    "public_abi": false,
+    "monitor_abi": false
+  }
+}

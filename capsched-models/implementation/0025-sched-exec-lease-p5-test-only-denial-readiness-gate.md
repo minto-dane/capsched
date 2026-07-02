@@ -39,6 +39,8 @@ analysis/0116 negative denial validation plan is reflected in the future P5
   test harness design
 analysis/0117 scheduler path classification is reflected in the future P5
   support, disable, and exclusion checks
+analysis/0118 implementation claim ledger gate is reflected in the future P5
+  proposal row and non-claim list
 ```
 
 ## Permitted Scope If Re-Approved
@@ -215,6 +217,7 @@ move/affinity/hotplug tests designed
 sched_ext/core/proxy availability or exclusion recorded
 post-settle denial rollback model or explicit pre-settle-only decision recorded
 claim ledger updated to forbid production protection claims
+machine-readable claim ledger row present for the proposal
 ```
 
 Before accepting a P5 patch:
@@ -231,6 +234,8 @@ trace/kprobe evidence that denied candidates do not reach rq->curr/context_switc
 bounded retry evidence
 fail-closed evidence or explicit unavailable note
 no overclaim review
+claim ledger row matches observed evidence classes and leaves unsupported
+  claims false
 ```
 
 ## Non-Claims
