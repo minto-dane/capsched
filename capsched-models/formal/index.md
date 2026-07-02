@@ -100,6 +100,7 @@ Updated: 2026-07-02
 | 0092 | Checked with safe pass and expected unsafe counterexamples | Final Implementation-Ready Audit Model |
 | 0093 | Checked with safe pass and expected unsafe counterexamples | Candidate-Scoped Drift Closure Gate Model |
 | 0094 | Checked with safe pass and expected unsafe counterexamples | P4 Anchor Manifest Gate Model |
+| 0095 | Checked with safe pass and expected unsafe counterexamples | Static Final-Run Observability Gate Model |
 
 ## Planned
 

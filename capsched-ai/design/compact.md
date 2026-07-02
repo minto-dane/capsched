@@ -3178,4 +3178,34 @@ N-169:
     P4 implementation is still not approved. Remaining pre-P4 blockers:
     runtime/static final-run anchor observability, allow-all helper proof, and
     no reachable denial path proof.
+
+N-170:
+  Static final-run observability is complete:
+    analysis/0126-sched-exec-lease-p4-static-final-run-observability.md
+    analysis/sched-exec-lease-p4-static-final-run-observability-v1.json
+    formal/0095-static-final-run-observability-gate-model/
+    validation/0145-sched-exec-lease-p4-static-final-run-observability-validation.md
+    validation/run-sched-exec-lease-p4-static-final-run-observability.sh
+
+  Source checker:
+    window_start=7065
+    window_end=7249
+    insert_after=7196
+    insert_before=7198
+    rq_curr_line=7205
+    trace_sched_switch_line=7235
+    p3_note_switch_line=7237
+    context_switch_line=7239
+
+  Meaning:
+    The future P4 allow-all final-run helper interval is statically observable
+    before rq->curr publication. Existing P3 note_switch is after rq->curr and
+    is not a precommit anchor or runtime coverage.
+
+  TLC:
+    safe passed; 9 unsafe configs produced expected counterexamples.
+
+  Next:
+    P4 implementation is still not approved. Remaining pre-P4 blockers:
+    allow-all helper proof and no reachable denial path proof.
 ```

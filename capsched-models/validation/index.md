@@ -150,6 +150,7 @@ Updated: 2026-07-02
 | 0142 | Executed; hardened drift gate found global D4 stale device/QueueLease drift, so P4 remains paused pending scoped drift closure and anchor evidence | SchedExecLease P4 Pre-Implementation Critical Audit Validation |
 | 0143 | Safe model passed; 14 unsafe configs produced expected counterexamples; P4 candidate-scoped drift blocker closed but implementation remains paused pending anchors | Candidate-Scoped Drift Closure Gate TLC |
 | 0144 | Source checker passed; safe model passed; 12 unsafe configs produced expected counterexamples; P4 anchor manifest blocker closed but implementation remains paused | SchedExecLease P4 Anchor Manifest Validation |
+| 0145 | Source checker passed; safe model passed; 9 unsafe configs produced expected counterexamples; static final-run observability blocker closed but runtime coverage remains unproven | SchedExecLease P4 Static Final-Run Observability Validation |
 
 ## Principles
 

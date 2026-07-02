@@ -3738,3 +3738,49 @@ N-169 P4 anchor manifest:
     Build runtime/static final-run anchor observability, allow-all helper proof,
     and no reachable denial path proof before any P4 patch. Keep P4 allow-all
     only. P5 remains blocked.
+
+N-170 static final-run observability:
+  artifacts:
+    capsched-models/analysis/0126-sched-exec-lease-p4-static-final-run-observability.md
+    capsched-models/analysis/sched-exec-lease-p4-static-final-run-observability-v1.json
+    capsched-models/formal/0095-static-final-run-observability-gate-model/
+    capsched-models/validation/0145-sched-exec-lease-p4-static-final-run-observability-validation.md
+    capsched-models/validation/run-sched-exec-lease-p4-static-final-run-observability.sh
+
+  verdict:
+    Static final-run observability blocker is closed. Runtime final-run
+    coverage remains unproven.
+
+  source checker:
+    run_dir:
+      build/source-check/sched-exec-lease-p4-final-run-observability/20260702T211219Z-n170-static-final-run
+    work_commit:
+      d5f77adb5a64f3b2545db6ab1dcdc4aa4442bab3
+    window_start/window_end:
+      7065/7249
+    insert_after/insert_before:
+      7196/7198
+    rq_curr_line:
+      7205
+    trace_sched_switch_line:
+      7235
+    p3_note_switch_line:
+      7237
+    context_switch_line:
+      7239
+
+  important negative:
+    Existing P3 sched_exec_lease_note_switch(prev, next) is after rq->curr
+    publication, so it is not a P4 precommit anchor and not runtime coverage
+    evidence.
+
+  TLC:
+    safe passed with 2 generated states, 1 distinct state, depth 1.
+    9 unsafe configs produced expected counterexamples for missing source
+    check, missing static anchor, anchor after rq->curr, P3 marker as
+    precommit, runtime coverage from static source, implementation approval,
+    runtime denial, protection, and cost/deployment claims.
+
+  next:
+    Build allow-all helper proof and no reachable denial path proof before any
+    P4 patch. Keep P4 allow-all only. P5 remains blocked.
