@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-07-01",
+  "updated": "2026-07-02",
   "project": {
     "name": "CapSched-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-oriented execution and resource authority model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use.",
-    "current_phase": "side-channel-cotenancy-policy-gate-complete-model-goal-not-complete",
+    "current_phase": "evaluation-contract-gate-complete-final-model-completeness-pending",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -221,7 +221,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-153 side-channel and co-tenancy policy gate is complete. Added analysis/0107, side-channel-cotenancy-policy-gate-v1.json, formal/0085 SideChannelCotenancyPolicyGate, and validation/0124. SIDE-001 is now model_supported via E-SIDE-COTENANCY-001. The model requires known policy and leakage classification before co-tenancy; explicit policy for SMT/core/cache/NUMA/device queue/cluster sharing; preservation of hard Monitor-backed boundaries and monitor binding; scheduler compliance with side policy; and rejects performance override, side policy as authority root, production protection claims, and cost-efficiency claims. Safe TLC passed with 3 generated states, 2 distinct states, 0 left on queue, depth 2. Fifteen unsafe configs produced expected counterexamples. Remaining model-only blocker before goal completion is EVAL-001. This is not scheduler implementation, side-channel mitigation, runtime coverage, performance evidence, monitor verification, production protection, or cost-efficiency evidence.",
+    "current_focus": "N-154 evaluation contract gate is complete. Added analysis/0108, evaluation-contract-gate-v1.json, formal/0086 EvaluationContractGate, and validation/0125. EVAL-001 is now model_supported via E-EVAL-CONTRACT-001. The model requires exploit-containment, cross-Domain memory/DMA/control, monitor escape, KVM/Firecracker/container baselines, workload envelope, throughput, tail-latency, density, operational cost, security/cost pass criteria, and negative-result policy before future protection/cost claims. It rejects microbench-only evaluation and rejects production protection, cost efficiency, or evaluation result claims from the contract alone. Safe TLC passed with 3 generated states, 2 distinct states, 0 left on queue, depth 2. Twenty unsafe configs produced expected counterexamples. All N-151 model-only blockers are now closed, but do not mark the goal complete until a final model-completeness ledger confirms this current state. This is not evaluation execution, runtime coverage, exploit-containment success, benchmark result, monitor verification, production protection, or cost-efficiency evidence.",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",
@@ -732,7 +732,13 @@
     "side_channel_cotenancy_policy_model": "capsched/capsched-models/formal/0085-side-channel-cotenancy-policy-gate-model/README.md",
     "side_channel_cotenancy_policy_tla": "capsched/capsched-models/formal/0085-side-channel-cotenancy-policy-gate-model/SideChannelCotenancyPolicyGate.tla",
     "side_channel_cotenancy_policy_validation": "capsched/capsched-models/validation/0124-side-channel-cotenancy-policy-gate-tlc.md",
-    "side_channel_cotenancy_policy_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/side-channel-cotenancy-policy-gate-20260702T000905Z"
+    "side_channel_cotenancy_policy_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/side-channel-cotenancy-policy-gate-20260702T000905Z",
+    "evaluation_contract_gate_analysis": "capsched/capsched-models/analysis/0108-evaluation-contract-gate.md",
+    "evaluation_contract_gate_json": "capsched/capsched-models/analysis/evaluation-contract-gate-v1.json",
+    "evaluation_contract_gate_model": "capsched/capsched-models/formal/0086-evaluation-contract-gate-model/README.md",
+    "evaluation_contract_gate_tla": "capsched/capsched-models/formal/0086-evaluation-contract-gate-model/EvaluationContractGate.tla",
+    "evaluation_contract_gate_validation": "capsched/capsched-models/validation/0125-evaluation-contract-gate-tlc.md",
+    "evaluation_contract_gate_tlc_log_dir": "/media/nia/scsiusb/dev/linux-cap/build/tlc/evaluation-contract-gate-20260702T001605Z"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only CapSched L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

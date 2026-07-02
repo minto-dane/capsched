@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "id": "evaluation-contract-gate-v1",
+  "analysis": "analysis/0108-evaluation-contract-gate.md",
+  "status": "draft_model_gate",
+  "date": "2026-07-01",
+  "purpose": "Define the evaluation contract required before production protection or cost-efficiency claims without claiming evaluation results.",
+  "security_contract": [
+    "domain_local_kernel_exploit_containment",
+    "cross_domain_memory_attempts",
+    "cross_domain_dma_attempts",
+    "cross_domain_control_authority_attempts",
+    "monitor_escape_attempts",
+    "security_pass_fail_criteria",
+    "negative_result_recording_policy"
+  ],
+  "cost_performance_contract": [
+    "kvm_baseline",
+    "firecracker_baseline",
+    "container_linux_baseline",
+    "workload_envelope",
+    "throughput_metric",
+    "tail_latency_metric",
+    "density_metric",
+    "operational_cost_metric",
+    "cost_pass_fail_criteria"
+  ],
+  "forbidden_shortcuts": [
+    "microbench_only_cost_claim",
+    "contract_as_evaluation_result",
+    "contract_as_production_protection",
+    "contract_as_cost_efficiency",
+    "missing_negative_result_policy",
+    "single_baseline_comparison"
+  ],
+  "unsafe_cases": [
+    "UnsafeMissingExploitContainment",
+    "UnsafeMissingCrossDomainMemory",
+    "UnsafeMissingCrossDomainDma",
+    "UnsafeMissingCrossDomainControl",
+    "UnsafeMissingMonitorEscape",
+    "UnsafeMissingKvmBaseline",
+    "UnsafeMissingFirecrackerBaseline",
+    "UnsafeMissingContainerBaseline",
+    "UnsafeMissingWorkloadEnvelope",
+    "UnsafeMissingThroughput",
+    "UnsafeMissingTailLatency",
+    "UnsafeMissingDensity",
+    "UnsafeMissingOperationalCost",
+    "UnsafeMissingSecurityPassCriteria",
+    "UnsafeMissingCostPassCriteria",
+    "UnsafeMissingNegativeResultPolicy",
+    "UnsafeMicrobenchOnly",
+    "UnsafeProtectionClaimFromContract",
+    "UnsafeCostClaimFromContract",
+    "UnsafeEvaluationResultClaimFromContract"
+  ],
+  "safety_flags": {
+    "evaluation_contract_model_supported": true,
+    "evaluation_results_available": false,
+    "runtime_coverage_claim": false,
+    "benchmark_result_claim": false,
+    "exploit_containment_success_claim": false,
+    "monitor_verified": false,
+    "production_protection_claim": false,
+    "cost_efficiency_claim": false
+  },
+  "evidence": {
+    "id": "E-EVAL-CONTRACT-001",
+    "kind": "tla_validation",
+    "claims_supported": ["EVAL-001"],
+    "limitations": "Finite model gate supports the evaluation contract only; it is not evaluation execution, runtime coverage, exploit-containment success, benchmark result, monitor verification, production protection, or cost-efficiency evidence."
+  }
+}

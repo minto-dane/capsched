@@ -91,6 +91,7 @@ Updated: 2026-07-01
 | 0083 | Checked with safe pass and expected unsafe counterexamples | Model Completeness Ledger Gate Model |
 | 0084 | Checked with safe pass and expected unsafe counterexamples | TCB Boundary Gate Model |
 | 0085 | Checked with safe pass and expected unsafe counterexamples | Side-Channel and Co-Tenancy Policy Gate Model |
+| 0086 | Checked with safe pass and expected unsafe counterexamples | Evaluation Contract Gate Model |
 
 ## Planned
 

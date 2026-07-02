@@ -787,15 +787,19 @@
     {
       "id": "EVAL-001",
       "parent": "TOP-001",
-      "status": "open",
+      "status": "model_supported",
       "title": "Exploit and cost baselines are tested",
       "claim": "CapSched-H provides VM-like cross-Domain protection and better cost efficiency for selected datacenter workloads.",
-      "evidence": [],
+      "evidence": [
+        "E-EVAL-CONTRACT-001"
+      ],
       "gaps": [
-        "No kernel-exploit containment test.",
-        "No cross-Domain memory/DMA test.",
-        "No monitor escape test.",
-        "No cost, tail-latency, throughput, or density benchmark."
+        "No evaluation execution.",
+        "No exploit-containment success result.",
+        "No cross-Domain memory/DMA/control test result.",
+        "No monitor escape test result.",
+        "No KVM, Firecracker, or container comparison result.",
+        "No throughput, tail-latency, density, or operational-cost benchmark result."
       ],
       "forbidden_l0": true
     }
@@ -1791,6 +1795,15 @@
         "SIDE-001"
       ],
       "limitation": "Finite side-channel and co-tenancy policy model evidence only; it requires explicit policy and leakage classification for SMT/core/cache/NUMA/device queue/cluster sharing while preserving hard Monitor-backed boundaries, but is not scheduler implementation, side-channel mitigation evidence, runtime coverage, monitor verification, production protection, or cost-efficiency evidence."
+    },
+    {
+      "id": "E-EVAL-CONTRACT-001",
+      "kind": "tla_validation",
+      "record": "capsched-models/validation/0125-evaluation-contract-gate-tlc.md",
+      "supports": [
+        "EVAL-001"
+      ],
+      "limitation": "Finite evaluation contract model evidence only; it defines required security and cost/performance evaluation contracts and forbidden shortcuts, but is not evaluation execution, runtime coverage, exploit-containment success, benchmark result, monitor verification, production protection, or cost-efficiency evidence."
     }
   ],
   "counterexamples": [
@@ -1893,6 +1906,11 @@
       "id": "CEX-SIDE-COTENANCY-001",
       "record": "capsched-models/validation/0124-side-channel-cotenancy-policy-gate-tlc.md",
       "meaning": "Unsafe side-channel and co-tenancy policy models reject unknown policy default-allow, SMT/core/cache/NUMA/device queue/cluster sharing without explicit policy, performance override of isolation, side policy weakening hard boundaries, scheduler side-policy bypass, missing monitor binding, missing leakage classification, side policy as authority root, and protection/cost overclaims."
+    },
+    {
+      "id": "CEX-EVAL-CONTRACT-001",
+      "record": "capsched-models/validation/0125-evaluation-contract-gate-tlc.md",
+      "meaning": "Unsafe evaluation contract models reject missing exploit containment, cross-Domain memory/DMA/control, monitor escape, KVM/Firecracker/container baselines, workload envelope, throughput/tail-latency/density/operational-cost metrics, security or cost pass criteria, negative-result policy, microbench-only evaluation, and protection/cost/result claims from the contract alone."
     }
   ],
   "forbidden_claims": [
@@ -1914,6 +1932,7 @@
     "Direct-call schema compatibility permits unsupported schema acceptance, downgrade of monitor/caller minimums, unknown mandatory fields, unknown success codes, transport observations as receipts, or direct-only schema namespaces.",
     "Direct-call source inventory permits Linux modification, root requirement in source-only mode, tracefs writes in source-only mode, probe attachment, public tracepoint ABI creation, source/trace observations as authority, runtime observation claims, raw handle exposure, monitor verification claims, or protection claims.",
     "EndpointCap is CPU execution authority.",
+    "Evaluation contract modeling is evaluation execution, exploit-containment success, benchmark result, production protection, or cost-efficiency evidence.",
     "FDIR ctx_irq, ctx_done, timer completion, IRQ completion, or service flush is frozen OffloadCap or VF request carrier authority.",
     "IRQ route invalidation proves DMA reachability revocation.",
     "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",

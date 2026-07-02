@@ -130,6 +130,7 @@ Updated: 2026-07-01
 | 0122 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked; model-only goal not yet complete | Model Completeness Ledger Gate TLC |
 | 0123 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | TCB Boundary Gate TLC |
 | 0124 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Side-Channel and Co-Tenancy Policy Gate TLC |
+| 0125 | Safe model passed; unsafe models produced expected counterexamples; JSON contract checked | Evaluation Contract Gate TLC |
 
 ## Principles
 

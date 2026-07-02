@@ -113,6 +113,7 @@ Updated: 2026-07-01
 | 0105 | Draft completion gate with TLC-backed design filter | Model Completeness Ledger Gate |
 | 0106 | Draft model gate with TLC-backed design filter | TCB Boundary Gate |
 | 0107 | Draft model gate with TLC-backed design filter | Side-Channel and Co-Tenancy Policy Gate |
+| 0108 | Draft model gate with TLC-backed design filter | Evaluation Contract Gate |
 
 ## Planned Analysis Notes
 
@@ -191,3 +192,4 @@ Updated: 2026-07-01
 | `model-completeness-ledger-gate-v1.json` | Negative completion gate | Machine-readable current model-completeness audit and remaining model-only blockers for N-151 |
 | `tcb-boundary-gate-v1.json` | Draft model gate | Machine-readable HyperTag Monitor and service-domain TCB boundary contract for N-152 |
 | `side-channel-cotenancy-policy-gate-v1.json` | Draft model gate | Machine-readable explicit co-tenancy and side-channel policy contract for N-153 |
+| `evaluation-contract-gate-v1.json` | Draft model gate | Machine-readable production protection and cost-efficiency evaluation contract for N-154 |

@@ -739,6 +739,19 @@ Side-channel and co-tenancy policy gate:
   runtime side-channel evidence, monitor verification, production protection,
   or cost-efficiency evidence.
 
+Evaluation contract gate:
+  analysis/0108 and formal/0086 define the model-supported evaluation contract
+  required before production protection or datacenter cost-efficiency claims.
+  validation/0125 safe TLC passed with 3 generated states, 2 distinct states,
+  and depth 2. Unsafe configs produced expected counterexamples for missing
+  exploit containment, cross-Domain memory/DMA/control, monitor escape,
+  KVM/Firecracker/container baselines, workload envelope, throughput,
+  tail-latency, density, operational cost, pass criteria, negative-result
+  policy, microbench-only evaluation, and protection/cost/result claims from
+  contract alone. E-EVAL-CONTRACT-001 supports EVAL-001 as model evidence only;
+  it is not evaluation execution, benchmark evidence, production protection, or
+  cost-efficiency evidence.
+
 Forbidden:
   Do not treat netdev/ring/q_vector/devlink/workqueue state as production
   authority. Do not treat netdev down/reset, ring cleanup, NAPI disable,

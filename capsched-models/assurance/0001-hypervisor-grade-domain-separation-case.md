@@ -692,19 +692,21 @@ CapSched-H provides cross-Domain protection comparable to VM boundaries and
 better cost efficiency for selected datacenter workloads.
 ```
 
-Current status: Open
+Current status: Model-supported
 
 Current evidence:
 
-- no direct production evidence yet
+- `formal/0086-evaluation-contract-gate-model/`
+- `validation/0125-evaluation-contract-gate-tlc.md`
 
 Open gaps:
 
-- no kernel-exploit containment test
-- no cross-Domain read/write/DMA test
-- no monitor escape test
-- no KVM/Firecracker cost comparison
-- no tail-latency and throughput benchmarks
+- no evaluation execution
+- no exploit-containment success result
+- no cross-Domain memory/DMA/control test result
+- no monitor escape test result
+- no KVM, Firecracker, or container comparison result
+- no throughput, tail-latency, density, or operational-cost benchmark result
 
 ## Evidence Index
 
@@ -742,6 +744,7 @@ Open gaps:
 | E-L0-002 | Linux build validation | `validation/0014-l0-slice0b-build-run.md` | COMPAT |
 | E-TCB-BOUNDARY-001 | TLA validation | `validation/0123-tcb-boundary-gate-tlc.md` | TCB |
 | E-SIDE-COTENANCY-001 | TLA validation | `validation/0124-side-channel-cotenancy-policy-gate-tlc.md` | SIDE |
+| E-EVAL-CONTRACT-001 | TLA validation | `validation/0125-evaluation-contract-gate-tlc.md` | EVAL |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
 
 ## Counterexample and Negative Evidence Log
@@ -767,6 +770,7 @@ Open gaps:
 | CEX-SCHED-EXIT-REVOKE-DRAIN-001 | `validation/0121` | Remote wake or queued FrozenRunUse surviving completion, early release, PID reuse, pending workqueue/io_uring/endpoint/direct-call/ring/device carriers, stale derived receipts, premature budget refund, surviving server ticket or root RunToken, audit/Linux cleanup as drain proof, unknown carrier default drain, budget leak/double settlement, RCU visibility authority, and behavior/monitor/protection overclaims are rejected. |
 | CEX-TCB-BOUNDARY-001 | `validation/0123` | Unbounded monitor core, untyped monitor interface, driver/parser/policy engine in the monitor, Linux mutable trusted root, service-domain ambient authority, raw handle exposure, missing TCB budget, missing VM/VMM comparison envelope, implementation overclaim, production-protection overclaim, and cost-efficiency overclaim are rejected. |
 | CEX-SIDE-COTENANCY-001 | `validation/0124` | Unknown policy default-allow, SMT/core/cache/NUMA/device queue/cluster sharing without explicit policy, performance override of isolation, side policy weakening hard boundaries, scheduler side-policy bypass, missing monitor binding, missing leakage classification, side policy as authority root, and protection/cost overclaims are rejected. |
+| CEX-EVAL-CONTRACT-001 | `validation/0125` | Missing exploit containment, cross-Domain memory/DMA/control, monitor escape, KVM/Firecracker/container baselines, workload envelope, throughput/tail-latency/density/operational-cost metrics, security or cost pass criteria, negative-result policy, microbench-only evaluation, and protection/cost/result claims from the contract alone are rejected. |
 | CEX-EXEC-GEN-001 | `validation/0037` | Exec Domain change without monitor token, post-exec run without ExecContinuation, old endpoint/async/mmap authority, fd/CLOEXEC/execfd inheritance, credential amplification, and check-only mutation are rejected. |
 | CEX-POST-EXEC-RESOURCE-001 | `validation/0038` | Generic fd reachability, CLOEXEC leaks, regular/socket/anonymous fd ambient authority, epoll/eventfd/timerfd/io_uring old state, and execfd ambient inheritance after exec are rejected. |
 | NEG-CLUSTER-001 | `validation/0008` | Full ClusterLease integration TLC did not finish and is not a pass. |
@@ -807,6 +811,8 @@ Side-channel or co-tenancy policy can mint execution, memory, endpoint, queue,
 or budget authority.
 Unknown SMT/core/cache/NUMA/device queue/cluster co-tenancy policy defaults to
 allow, or performance optimization can override hard Monitor-backed isolation.
+Evaluation contract modeling is evaluation execution, exploit-containment
+success, benchmark result, production protection, or cost-efficiency evidence.
 Exec fd/resource reachability, CLOEXEC handling failure, credential changes,
 old async state, old mmap state, or interpreter execfd handoff can preserve
 post-exec endpoint authority without derivation.

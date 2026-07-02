@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-01
+Updated: 2026-07-02
 
 Read this first when resuming the project.
 
@@ -2894,4 +2894,42 @@ still not:
   scheduler implementation, side-channel mitigation implementation, runtime
   side-channel evidence, performance evidence, monitor verification, production
   protection, or cost efficiency.
+
+N-154 completed:
+  analysis/0108-evaluation-contract-gate.md
+  analysis/evaluation-contract-gate-v1.json
+  formal/0086-evaluation-contract-gate-model/
+  validation/0125-evaluation-contract-gate-tlc.md
+
+purpose:
+  close EVAL-001 at model level by specifying the evaluation contract required
+  before any future hypervisor-comparable protection or cost-efficiency claim.
+
+rule:
+  future evaluation claims require exploit-containment, cross-Domain memory,
+  DMA, control-authority, and monitor-escape tests; KVM, Firecracker, and
+  container/Linux baselines; workload envelope; throughput, tail-latency,
+  density, and operational-cost metrics; pass/fail criteria; and negative
+  result policy. Microbench-only evaluation is not sufficient.
+
+safe TLC:
+  3 generated states
+  2 distinct states
+  depth 2
+
+unsafe:
+  20 expected counterexamples for missing security/cost contract items,
+  microbench-only evaluation, and protection/cost/result claims from the
+  contract alone.
+
+assurance:
+  E-EVAL-CONTRACT-001 supports EVAL-001 as model evidence only.
+
+still not:
+  evaluation execution, benchmark evidence, exploit-containment success,
+  monitor verification, production protection, or cost efficiency.
+
+next:
+  All N-151 model-only blockers are now closed. Add a final model-completeness
+  ledger before marking the model-only goal complete.
 ```

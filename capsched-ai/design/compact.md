@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-01
+Updated: 2026-07-02
 
 ## Project
 
@@ -2448,4 +2448,38 @@ assurance:
 
 remaining model blocker:
   EVAL-001
+```
+
+N-154 completed:
+
+```text
+artifacts:
+  analysis/0108
+  evaluation-contract-gate-v1.json
+  formal/0086
+  validation/0125
+
+purpose:
+  close EVAL-001 at model level.
+
+rule:
+  future protection/cost claims require an explicit security and cost
+  evaluation contract: exploit-containment, cross-Domain memory/DMA/control,
+  monitor escape, KVM/Firecracker/container baselines, workload envelope,
+  throughput, tail latency, density, operational cost, pass/fail criteria, and
+  negative-result policy. Microbench-only evaluation is rejected.
+
+safe TLC:
+  3 generated states
+  2 distinct states
+  depth 2
+
+unsafe:
+  20 expected counterexamples.
+
+assurance:
+  E-EVAL-CONTRACT-001 supports EVAL-001 only as model evidence.
+
+remaining model blockers:
+  none known from N-151; run final completeness ledger next.
 ```
