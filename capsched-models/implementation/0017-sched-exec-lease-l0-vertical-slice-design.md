@@ -1,8 +1,8 @@
 # Implementation 0017: SchedExecLease L0 Vertical Slice Design
 
-Status: Draft design gate for first implementation slice; behavior-changing
-enforcement still blocked until this design is validated by full build and boot
-smoke
+Status: Draft design gate for first implementation slice; refined by 0018;
+behavior-changing enforcement still blocked until the remaining validation and
+coverage gates are satisfied
 
 Date: 2026-07-02
 
@@ -149,7 +149,6 @@ retry paths must be bounded
 
 ```text
 full vmlinux off/on validation
-QEMU boot smoke off/on validation
 exact task-field lifetime placement
 core scheduling cached-pick invalidation design
 sched_ext support/disable/fail-closed decision
@@ -162,7 +161,8 @@ Current status:
 
 ```text
 full vmlinux off/on validation: passed in validation/0130
-QEMU boot smoke off/on validation: pending
+QEMU boot smoke off/on validation: passed in validation/0131 for boot/workload smoke; hook coverage incomplete
+P1-P4 blueprint: drafted in implementation/0018
 ```
 
 ## Non-Claims

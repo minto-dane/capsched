@@ -2657,9 +2657,52 @@ full vmlinux:
 
 QEMU:
   systemd unit capsched-n159-qemu-after-full-build-20260702T0320Z.service
-  is active and building the off QEMU bzImage before off/on boot smoke.
+  completed. validation/0131 records off/on QEMU boot/workload smoke pass.
+  off artifacts are under
+  build/qemu/sched-exec-lease-boot-smoke/20260702T031917Z-off/.
+  on artifacts are under
+  build/qemu/sched-exec-lease-boot-smoke/20260702T033357Z-on/.
+  on CONFIG_SCHED_EXEC_LEASE=y, qemu_status=0, WORKLOAD_RET 0.
+  Hook coverage remains incomplete: pick_next_task and __schedule were missing
+  from function/kprobe observation.
 
 still not:
-  QEMU boot validation, runtime coverage, behavior change, ABI approval,
-  monitor verification, production protection, or cost evidence.
+  runtime coverage, hook approval, behavior change, ABI approval, monitor
+  verification, production protection, or cost evidence.
+```
+
+N-160 implementation blueprint:
+
+```text
+artifacts:
+  implementation/0018-sched-exec-lease-l0-p1-p4-blueprint.md
+  implementation/sched-exec-lease-l0-p1-p4-blueprint-v1.json
+
+status:
+  P1-P4 no-denial implementation blueprint drafted.
+  P5 runtime denial remains blocked.
+
+P1:
+  internal object skeleton only.
+
+P2:
+  task lifecycle identity shadow only with reset after dup_task_struct raw copy,
+  child identity in copy_process before wake_up_new_task, sched_exec placement
+  only, begin_new_exec point-of-no-return staging, and do_exit/PF_EXITING
+  invalidation.
+
+P3:
+  placement-only scheduler touch points.
+
+P4:
+  allow-all final revalidation skeleton. Preferred hook classes are final run
+  at __schedule keep_resched before rq->curr publication, queued moves before
+  move_queued_task()/move_queued_task_locked() mutation, and fair detach_task()
+  before direct deactivate_task()/set_task_cpu().
+
+hard P5 gates:
+  sched_ext support/disable/fail-closed, core cached-pick freshness, proxy
+  donor/current/executor authority and budget tests, kthread/workqueue
+  classification, fork/exec/exit validation, negative denial tests, and claim
+  ledger overclaim guard.
 ```

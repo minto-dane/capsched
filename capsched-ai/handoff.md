@@ -3094,11 +3094,38 @@ N-158 in progress:
   analysis/0111-sched-exec-lease-l0-readiness-and-design-review.md
   implementation/0016-sched-exec-lease-l0-implementation-readiness-gate.md
   implementation/0017-sched-exec-lease-l0-vertical-slice-design.md
+  implementation/0018-sched-exec-lease-l0-p1-p4-blueprint.md
   implementation/sched-exec-lease-l0-implementation-readiness-gate-v1.json
+  implementation/sched-exec-lease-l0-p1-p4-blueprint-v1.json
 
 verdict:
   ready for implementation design and no-behavior preparation patches.
   behavior-changing runtime enforcement remains blocked.
+
+P1-P4 blueprint:
+  P1: internal object skeleton only, no task fields and no runtime state.
+  P2: task lifecycle identity shadow only if raw-copy inheritance is reset
+      after dup_task_struct(), child identity is prepared in copy_process()
+      before wake_up_new_task(), sched_exec() remains placement-only, exec
+      mutation is after point-of-no-return, and do_exit()/PF_EXITING invalidates.
+  P3: placement-only scheduler touch points, all allow/no-op.
+  P4: allow-all final revalidation skeleton only.
+
+preferred P4 hook classes:
+  final run at __schedule() keep_resched join after pick/proxy resolution and
+    before rq->curr publication.
+  common queued move at move_queued_task() before deactivate_task()/set_task_cpu().
+  double-rq queued move at move_queued_task_locked() before mutation.
+  fair load-balance move at fair detach_task() before its direct
+    deactivate_task()/set_task_cpu().
+
+explicit P5 gates added by subagent review:
+  sched_ext support/disable/fail-closed decision.
+  core cached-pick revalidation or invalidation.
+  proxy donor/current/executor authority and budget tests.
+  kthread/workqueue root/internal/service-domain classification.
+  negative denial tests for SCX, core cached picks, proxy split, and kworker
+    paths after denial exists.
 
 allowed next patch classes:
   no-behavior internal helper skeleton
@@ -3113,6 +3140,7 @@ blocked patch classes:
 
 N-159 in progress:
   validation/0130-sched-exec-lease-full-vmlinux-build.md
+  validation/0131-sched-exec-lease-qemu-boot-smoke.md
   validation/run-sched-exec-lease-full-build-validation.sh
   validation/run-sched-exec-lease-qemu-boot-smoke.sh
 
@@ -3133,13 +3161,31 @@ full vmlinux result:
     kernel/sched/exec_lease.o present
 
 QEMU status:
-  capsched-n159-qemu-after-full-build-20260702T0320Z.service is active.
-  It is building the off QEMU bzImage and will run off boot smoke followed by
-  on boot smoke with kprobe observation if the off smoke succeeds.
+  validation/0131 records QEMU boot/workload smoke pass for off/on.
+
+  off artifacts:
+    build/qemu/sched-exec-lease-boot-smoke/20260702T031917Z-off/serial.log
+    build/qemu/sched-exec-lease-boot-smoke/20260702T031917Z-off/counts.tsv
+    build/qemu/sched-exec-lease-boot-smoke/20260702T031917Z-off/run-summary.txt
+
+  on artifacts:
+    build/qemu/sched-exec-lease-boot-smoke/20260702T033357Z-on/serial.log
+    build/qemu/sched-exec-lease-boot-smoke/20260702T033357Z-on/counts.tsv
+    build/qemu/sched-exec-lease-boot-smoke/20260702T033357Z-on/run-summary.txt
+
+  result:
+    off qemu_status=0, WORKLOAD_RET 0
+    on qemu_status=0, WORKLOAD_RET 0
+    on CONFIG_SCHED_EXEC_LEASE=y
+
+  coverage limit:
+    pick_next_task and __schedule were function-missing, and
+    dlease_pick_next_task kprobe failed/missing. This is boot/workload smoke,
+    not final hook coverage.
 
   log:
     /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-qemu-after-full-build-20260702T0320Z.log
 
 still not:
-  QEMU boot validation, runtime coverage, behavior change, ABI approval,
-  monitor verification, production protection, or cost efficiency.
+  runtime coverage, hook approval, behavior change, ABI approval, monitor
+  verification, production protection, or cost efficiency.

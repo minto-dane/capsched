@@ -1,0 +1,392 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-l0-p1-p4-blueprint-v1",
+  "date": "2026-07-02",
+  "status": "p1_p4_no_denial_blueprint_p5_blocked",
+  "linux_source_basis": {
+    "branch": "capsched-linux-l0",
+    "work_commit": "3bb2a5821ffdcc0fa6d451cbf259ef82a9ea9a9c",
+    "work_subject": "sched/exec_lease: Rename inert scheduler lease scaffold",
+    "patch_queue_base": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4"
+  },
+  "current_scaffold": {
+    "config": "CONFIG_SCHED_EXEC_LEASE",
+    "header": "include/linux/sched_exec_lease.h",
+    "translation_unit": "kernel/sched/exec_lease.c",
+    "behavior": "inert_no_task_fields_no_hooks_no_abi_no_monitor"
+  },
+  "patch_slices": [
+    {
+      "id": "P1",
+      "name": "internal_object_skeleton",
+      "allowed_files": [
+        "include/linux/sched_exec_lease.h",
+        "kernel/sched/exec_lease.c"
+      ],
+      "allowed": [
+        "internal opaque object skeletons",
+        "default root-domain allow-all helpers",
+        "pure helper result types",
+        "no externally callable symbols"
+      ],
+      "forbidden": [
+        "task_struct_field",
+        "runqueue_field",
+        "runtime_denial",
+        "user_abi",
+        "monitor_call",
+        "public_tracepoint_abi"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "task_lifecycle_identity_skeleton",
+      "allowed_files": [
+        "include/linux/sched.h",
+        "include/linux/sched_exec_lease.h",
+        "kernel/fork.c",
+        "fs/exec.c",
+        "kernel/exit.c",
+        "kernel/sched/exec_lease.c"
+      ],
+      "required_properties": [
+        "copied task bytes are sanitized or reinitialized after dup_task_struct",
+        "post-raw-copy reset follows existing exec_state-style pattern",
+        "child identity is prepared before wake_up_new_task",
+        "create_io_thread inactive child return is covered",
+        "future fallible allocation happens before no-more-failure-paths or is nofail default-root",
+        "exec keeps isolation domain",
+        "sched_exec remains placement-only",
+        "exec-sensitive program generation is distinct from task identity",
+        "exit invalidates task authority",
+        "exit invalidation happens at do_exit or PF_EXITING time, not only release_task",
+        "PID/TGID reuse is not identity freshness",
+        "RCU visibility is not authority",
+        "free_task or equivalent final release is storage cleanup only, not revoke proof"
+      ],
+      "forbidden": [
+        "ambient authority inheritance",
+        "exec minted domain",
+        "sched_exec_generation_mutation",
+        "PID_TGID_as_lease_identity",
+        "release_task_as_first_invalidation",
+        "grant allocation",
+        "runtime_denial",
+        "monitor_call"
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "placement_only_scheduler_touch_points",
+      "allowed_files": [
+        "kernel/sched/core.c",
+        "kernel/sched/sched.h",
+        "kernel/sched/exec_lease.c",
+        "include/linux/sched_exec_lease.h"
+      ],
+      "candidate_helpers": [
+        "sched_exec_lease_prepare_wake",
+        "sched_exec_lease_prepare_new_task",
+        "sched_exec_lease_validate_run_edge",
+        "sched_exec_lease_validate_move_edge",
+        "sched_exec_lease_observe_tick",
+        "sched_exec_lease_note_switch"
+      ],
+      "required_properties": [
+        "helpers are no-op or allow-all",
+        "enqueue_task is not made fallible",
+        "touch points are named by authority edge",
+        "no selected-state shortcut becomes authority"
+      ]
+    },
+    {
+      "id": "P4",
+      "name": "allow_all_final_revalidation_skeleton",
+      "required_properties": [
+        "run validation occurs before rq_curr publication",
+        "move validation occurs before destination move commit",
+        "run and move validation tuples are separate",
+        "non-allow results are unreachable outside test-only scaffolding",
+        "bounded retry shape exists before denial",
+        "core cached picks are not treated as fresh",
+        "donor/current split is preserved",
+        "sched_ext dispatch is not authority",
+        "kworker execution context is not caller authority"
+      ],
+      "forbidden": [
+        "deny_after_rq_curr_publication",
+        "picked_label_only_final_run_hook",
+        "context_switch_as_first_denial_hook",
+        "set_task_cpu_as_authority",
+        "attach_task_as_authority",
+        "run_tuple_authorizes_move",
+        "move_tuple_authorizes_run",
+        "infinite_retry",
+        "silent_wakeup_drop",
+        "current_only_budget_charge",
+        "sched_ext_as_enforcement_root",
+        "workqueue_worker_identity_as_caller_authority"
+      ]
+    }
+  ],
+  "source_anchors": [
+    {
+      "path": "kernel/sched/core.c",
+      "line": 2546,
+      "symbol": "move_queued_task",
+      "meaning": "common queued move before deactivate_task and set_task_cpu"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 4357,
+      "symbol": "try_to_wake_up",
+      "meaning": "TASK_WAKING publication"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 4941,
+      "symbol": "wake_up_new_task",
+      "meaning": "new task runnable publication"
+    },
+    {
+      "path": "kernel/fork.c",
+      "line": 952,
+      "symbol": "dup_task_struct",
+      "meaning": "post-raw-copy task field reset pattern"
+    },
+    {
+      "path": "kernel/fork.c",
+      "line": 2478,
+      "symbol": "copy_process",
+      "meaning": "no more failure paths boundary"
+    },
+    {
+      "path": "kernel/fork.c",
+      "line": 2672,
+      "symbol": "create_io_thread",
+      "meaning": "inactive child returned for later wake"
+    },
+    {
+      "path": "kernel/fork.c",
+      "line": 2778,
+      "symbol": "kernel_clone",
+      "meaning": "child wake after copy_process return"
+    },
+    {
+      "path": "fs/exec.c",
+      "line": 1006,
+      "symbol": "de_thread",
+      "meaning": "non-leader exec can exchange task IDs"
+    },
+    {
+      "path": "fs/exec.c",
+      "line": 1105,
+      "symbol": "begin_new_exec",
+      "meaning": "exec point-of-no-return region"
+    },
+    {
+      "path": "fs/exec.c",
+      "line": 1771,
+      "symbol": "do_execveat_common",
+      "meaning": "sched_exec placement before final exec success"
+    },
+    {
+      "path": "kernel/exit.c",
+      "line": 946,
+      "symbol": "do_exit",
+      "meaning": "exit_signals sets PF_EXITING"
+    },
+    {
+      "path": "kernel/exit.c",
+      "line": 307,
+      "symbol": "release_task",
+      "meaning": "RCU-user put after release cleanup"
+    },
+    {
+      "path": "kernel/fork.c",
+      "line": 533,
+      "symbol": "free_task",
+      "meaning": "final storage release path"
+    },
+    {
+      "path": "kernel/sched/sched.h",
+      "line": 4120,
+      "symbol": "move_queued_task_locked",
+      "meaning": "queued move commit"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 5762,
+      "symbol": "sched_tick",
+      "meaning": "donor-aware tick observation"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 6254,
+      "symbol": "pick_next_task",
+      "meaning": "core cached pick fast path"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 6871,
+      "symbol": "find_proxy_task",
+      "meaning": "proxy execution owner search"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 7149,
+      "symbol": "__schedule",
+      "meaning": "final next-task selection"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 7151,
+      "symbol": "__schedule",
+      "meaning": "proxy execution donor/current adjustment"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 7191,
+      "symbol": "__schedule",
+      "meaning": "keep_resched join before rq_curr publication"
+    },
+    {
+      "path": "kernel/sched/core.c",
+      "line": 7201,
+      "symbol": "__schedule",
+      "meaning": "rq_curr publication"
+    },
+    {
+      "path": "kernel/sched/fair.c",
+      "line": 10839,
+      "symbol": "detach_task",
+      "meaning": "fair load-balance move before direct deactivate_task and set_task_cpu"
+    },
+    {
+      "path": "kernel/sched/sched.h",
+      "line": 3083,
+      "symbol": "attach_task",
+      "meaning": "too late to be move authority"
+    },
+    {
+      "path": "kernel/sched/rt.c",
+      "line": 2066,
+      "symbol": "push_rt_task",
+      "meaning": "RT push uses move_queued_task_locked"
+    },
+    {
+      "path": "kernel/sched/rt.c",
+      "line": 2342,
+      "symbol": "pull_rt_task",
+      "meaning": "RT pull uses move_queued_task_locked"
+    },
+    {
+      "path": "kernel/sched/deadline.c",
+      "line": 2827,
+      "symbol": "pick_task_dl",
+      "meaning": "deadline server pick is selected state"
+    },
+    {
+      "path": "kernel/sched/deadline.c",
+      "line": 3195,
+      "symbol": "push_dl_task",
+      "meaning": "deadline push uses move_queued_task_locked"
+    },
+    {
+      "path": "kernel/sched/deadline.c",
+      "line": 3281,
+      "symbol": "pull_dl_task",
+      "meaning": "deadline pull uses move_queued_task_locked"
+    },
+    {
+      "path": "kernel/sched/ext/ext.c",
+      "line": 1904,
+      "symbol": "ops_enqueue",
+      "meaning": "sched_ext enqueue bypass for exiting or migration-disabled tasks"
+    },
+    {
+      "path": "kernel/sched/ext/ext.c",
+      "line": 2264,
+      "symbol": "move_remote_task_to_local_dsq",
+      "meaning": "sched_ext remote-to-local DSQ move"
+    },
+    {
+      "path": "kernel/sched/ext/ext.c",
+      "line": 5484,
+      "symbol": "scx_bypass",
+      "meaning": "sched_ext enable and fallback policy surface"
+    },
+    {
+      "path": "kernel/workqueue.c",
+      "line": 2861,
+      "symbol": "worker_thread",
+      "meaning": "worker execution loop entry"
+    },
+    {
+      "path": "kernel/workqueue.c",
+      "line": 3220,
+      "symbol": "process_one_work",
+      "meaning": "work function execution in kworker context"
+    }
+  ],
+  "p5_blockers": [
+    "hook_coverage_plan_maps_bypass_surfaces",
+    "core_cached_pick_revalidation_or_invalidation_designed",
+    "sched_ext_support_disable_or_fail_closed_decision",
+    "proxy_donor_current_budget_test_plan",
+    "kthread_workqueue_root_internal_service_domain_classification",
+    "fork_exec_exit_identity_validation_plan",
+    "negative_denial_tests",
+    "bounded_retry_ineligibility_state",
+    "claim_ledger_forbids_production_protection_claims"
+  ],
+  "p5_satisfied_prerequisites": [
+    "full_vmlinux_off_on_passed_in_validation_0130",
+    "qemu_boot_smoke_off_on_passed_for_no_behavior_compatibility_in_validation_0131"
+  ],
+  "preferred_hook_classes": [
+    {
+      "class": "final_run",
+      "placement": "__schedule after pick_next_task and proxy resolution at keep_resched join before rq_curr publication"
+    },
+    {
+      "class": "common_queued_move",
+      "placement": "move_queued_task before deactivate_task and set_task_cpu"
+    },
+    {
+      "class": "double_rq_queued_move",
+      "placement": "move_queued_task_locked before deactivate_task and set_task_cpu"
+    },
+    {
+      "class": "fair_load_balance_move",
+      "placement": "fair detach_task before direct deactivate_task and set_task_cpu"
+    }
+  ],
+  "required_validation_for_p1_p4": [
+    "patch_queue_replay",
+    "source_drift_freshness",
+    "full_vmlinux_config_off",
+    "full_vmlinux_config_on",
+    "qemu_boot_smoke_off_on_when_scheduler_or_lifecycle_touched",
+    "diff_check",
+    "no_legacy_public_linux_scaffold_names"
+  ],
+  "p5_extra_coverage": [
+    "sched_ext_enabled_and_fallback_bypass_paths_observed_or_unavailable_recorded",
+    "core_scheduling_enabled_on_smt_or_unavailable_recorded",
+    "proxy_execution_enabled_or_unavailable_recorded",
+    "workqueue_kthread_smoke_with_explicit_authority_classification"
+  ],
+  "safety_flags": {
+    "linux_implementation": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "user_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "runtime_coverage": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}

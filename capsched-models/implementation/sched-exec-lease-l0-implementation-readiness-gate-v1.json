@@ -8,15 +8,19 @@
     "rename_build_validation": "validation/0128-sched-exec-lease-rename-build-validation.md",
     "patch_queue_replay_validation": "validation/0129-patch-queue-replay-and-freshness.md",
     "readiness_gate": "implementation/0016-sched-exec-lease-l0-implementation-readiness-gate.md",
-    "vertical_slice_design": "implementation/0017-sched-exec-lease-l0-vertical-slice-design.md"
+    "vertical_slice_design": "implementation/0017-sched-exec-lease-l0-vertical-slice-design.md",
+    "p1_p4_blueprint": "implementation/0018-sched-exec-lease-l0-p1-p4-blueprint.md",
+    "full_vmlinux_build_validation": "validation/0130-sched-exec-lease-full-vmlinux-build.md",
+    "qemu_boot_smoke_validation": "validation/0131-sched-exec-lease-qemu-boot-smoke.md"
   },
   "readiness": {
     "patch_queue_replay": "ready",
     "source_drift_freshness": "ready",
     "naming_and_no_abi_surface": "ready",
     "targeted_scaffold_build": "ready",
-    "full_vmlinux_build": "required_before_behavior_change",
-    "qemu_boot_smoke": "required_before_behavior_change",
+    "full_vmlinux_build": "ready",
+    "qemu_boot_smoke": "ready_for_no_behavior_compatibility_hook_coverage_incomplete",
+    "p1_p4_blueprint": "drafted",
     "runtime_enforcement": "not_approved"
   },
   "requirements": [

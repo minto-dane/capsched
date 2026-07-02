@@ -14,8 +14,16 @@ Current SchedExecLease L0 readiness:
 - `0017-sched-exec-lease-l0-vertical-slice-design.md`
   - Status: first vertical-slice design drafted.
   - Rule: P1-P4 are no-denial preparation slices; P5 is the first possible
-    behavior-changing slice and must be separately re-approved after full
-    build, QEMU smoke, hook coverage, and negative denial tests.
+    behavior-changing slice and must be separately re-approved after hook
+    coverage, sched_ext/core/proxy/workqueue decisions, lifecycle validation,
+    bounded retry, and negative denial tests. Full build and QEMU smoke have
+    passed for no-behavior compatibility.
+- `0018-sched-exec-lease-l0-p1-p4-blueprint.md`
+  - Status: implementation blueprint drafted for P1-P4; P5 remains blocked.
+  - Rule: P1-P4 may add only no-denial internal skeleton, lifecycle shadow,
+    placement-only scheduler touch points, and allow-all final revalidation
+    scaffolding. Runtime denial, ABI, monitor calls, and production protection
+    claims remain forbidden.
 
 N-156 terminology policy:
 
@@ -130,6 +138,13 @@ Candidate implementation plans:
   - Purpose: define the minimal future patch order and forbid unsafe collapse
     of wake, enqueue, final-pick, donor budget, lifecycle, and revoke
     semantics.
+- `0018-sched-exec-lease-l0-p1-p4-blueprint.md`
+  - Status: draft implementation blueprint, no behavior-changing patch
+    approved.
+  - Purpose: translate the L0 design gate into P1 internal object skeleton, P2
+    task lifecycle identity skeleton, P3 placement-only scheduler touch points,
+    and P4 allow-all final revalidation skeleton, while keeping P5 denial
+    blocked.
 
 Validated formal inputs:
 

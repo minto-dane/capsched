@@ -136,6 +136,7 @@ Updated: 2026-07-02
 | 0128 | Passed for targeted scheduler-subtree build; no behavior or protection claim | SchedExecLease Rename Build Validation |
 | 0129 | Passed for hash-level replay, source-drift freshness, and targeted build; no behavior or protection claim | Patch Queue Replay and Freshness |
 | 0130 | Passed for full `vmlinux` off/on build; no behavior or protection claim | SchedExecLease Full vmlinux Build |
+| 0131 | Passed for QEMU boot/workload smoke off/on; hook coverage incomplete; no behavior or protection claim | SchedExecLease QEMU Boot Smoke |
 
 ## Principles
 

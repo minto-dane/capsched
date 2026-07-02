@@ -23,9 +23,9 @@ Source-drift freshness:             ready
 Naming and no-ABI surface:          ready
 No-behavior scaffold build:         ready
 Full vmlinux off/on build:          ready
-QEMU boot smoke off/on:             pending
+QEMU boot smoke off/on:             ready for no-behavior compatibility
 Behavior-changing enforcement:      not approved yet
-First implementation design gate:   required and drafted in 0017
+First implementation design gate:   drafted in 0017 and refined by 0018
 ```
 
 The next allowed work is design-complete preparation for the first vertical
@@ -42,6 +42,7 @@ tracepoints, monitor ABI, or production protection claims.
 | Patch queue replay | `validation/0129` | Passed |
 | Source-drift freshness after rename | `validation/0129` | Passed |
 | Full `vmlinux` off/on build | `validation/0130` | Passed |
+| QEMU boot smoke off/on | `validation/0131` | Passed for boot/workload smoke; hook coverage incomplete |
 | Overclaim guard | `analysis/0109`, `assurance/claims.json` | Still active |
 
 ## Hard Requirements Before Runtime Enforcement
@@ -64,7 +65,7 @@ implementation placement and validation plan:
 | L0-RDY-011 | Task lifetime and generation storage are fixed before task fields are used | `dup_task_struct()` copies task state and RCU visibility is not authority |
 | L0-RDY-012 | fork/clone, exec, and exit identity propagation are connected before runtime authority is consumed | No ambient lease inheritance |
 | L0-RDY-013 | cleanup, trace, RCU, cancel, or io_uring/workqueue completion are not revoke receipts | Avoid false revocation evidence |
-| L0-RDY-014 | Full `vmlinux` build and QEMU smoke are required before any behavior-changing patch is accepted | Targeted build is not enough for runtime behavior; full `vmlinux` build is passed, QEMU smoke remains pending |
+| L0-RDY-014 | Full `vmlinux` build and QEMU smoke are required before any behavior-changing patch is accepted | Targeted build is not enough for runtime behavior; full `vmlinux` and QEMU smoke are passed, but runtime behavior remains blocked by hook coverage and negative tests |
 
 ## Source Anchors
 
@@ -93,13 +94,14 @@ kernel/exit.c:924          do_exit()
 ## Implementation Readiness State
 
 The project is now ready to design the first SchedExecLease L0 vertical slice
-against current Linux source. It is not yet ready to merge a behavior-changing
-enforcement patch.
+against current Linux source and to prepare no-behavior P1-P4 patches. It is
+not yet ready to merge a behavior-changing enforcement patch.
 
-The next artifact is:
+The current design artifacts are:
 
 ```text
 implementation/0017-sched-exec-lease-l0-vertical-slice-design.md
+implementation/0018-sched-exec-lease-l0-p1-p4-blueprint.md
 ```
 
 ## Non-Claims
