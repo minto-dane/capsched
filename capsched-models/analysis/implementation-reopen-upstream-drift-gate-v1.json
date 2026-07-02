@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "id": "implementation-reopen-upstream-drift-gate-v1",
+  "date": "2026-07-02",
+  "status": "design_only_reopen_drift_gate_no_implementation",
+  "upstream_observation": {
+    "fetched": true,
+    "upstream_before": "665159e246749578d4e4bfe106ee3b74edcdab18",
+    "upstream_after": "4a50a141f05a8d1737661b19ee22ff8455b94409",
+    "upstream_after_date": "2026-07-01 14:21:03 -1000",
+    "upstream_after_subject": "Merge tag 'bootconfig-fixes-v7.2-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace"
+  },
+  "source_drift_run": {
+    "run_dir": "build/source-drift/linux-source-drift-gate/20260702T063331Z-b5-recheck",
+    "base_commit": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "upstream_commit": "4a50a141f05a8d1737661b19ee22ff8455b94409",
+    "work_commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "base_to_upstream_commit_count": 342,
+    "watched_changed_count": 1,
+    "model_refresh_required_count": 0,
+    "direct_footprint_drift": false,
+    "future_attachment_drift": false,
+    "semantic_drift_requires_refresh": false,
+    "merge_tree_exit": 0,
+    "merge_tree_clean": true,
+    "model_freshness": "fresh",
+    "linux_patch_approved": false
+  },
+  "changed_watched_groups": [
+    {
+      "group_id": "scheduler_nearby_non_intersecting",
+      "changed_count": 1,
+      "stale_if_changed": false,
+      "model_refresh_required": false,
+      "drift_class": "D1_nearby_non_intersecting_drift",
+      "changed_paths": ["kernel/sched/cpufreq_schedutil.c"]
+    }
+  ],
+  "required_before_reopen": [
+    "fresh_upstream_fetch",
+    "exact_upstream_commit_recorded",
+    "exact_base_commit_recorded",
+    "exact_work_commit_recorded",
+    "watched_group_classification_recorded",
+    "model_freshness_recorded",
+    "merge_tree_result_recorded",
+    "touched_group_freshness_recorded",
+    "claim_ledger_row_present",
+    "slice_specific_gate_references_present",
+    "explicit_non_claims_recorded"
+  ],
+  "slice_requirements": {
+    "P3": {
+      "required_fresh_groups": [
+        "l0_footprint",
+        "scheduler_authority_core",
+        "task_lifecycle_identity"
+      ],
+      "required_gates": [
+        "analysis/0112",
+        "analysis/0113",
+        "analysis/0118"
+      ],
+      "allowed_mode": "no_denial_no_abi"
+    },
+    "P4": {
+      "required_fresh_groups": [
+        "l0_footprint",
+        "scheduler_authority_core",
+        "task_lifecycle_identity"
+      ],
+      "required_gates": [
+        "analysis/0100",
+        "analysis/0115",
+        "analysis/0118"
+      ],
+      "allowed_mode": "allow_all_no_denial_no_runtime_coverage"
+    },
+    "P5": {
+      "required_fresh_groups": [
+        "l0_footprint",
+        "scheduler_authority_core",
+        "task_lifecycle_identity",
+        "async_workqueue",
+        "async_io_uring"
+      ],
+      "required_gates": [
+        "analysis/0115",
+        "analysis/0116",
+        "analysis/0117",
+        "analysis/0118"
+      ],
+      "allowed_mode": "test_only_denial_for_classified_support_set"
+    }
+  },
+  "hard_rejects": [
+    "no_fresh_fetch",
+    "no_source_drift_runner_result",
+    "unknown_watched_group_classification",
+    "clean_merge_as_semantic_freshness",
+    "stale_model_freshness",
+    "changed_touched_group_without_refresh",
+    "missing_claim_ledger_row",
+    "p5_without_scheduler_path_classification",
+    "p5_without_negative_denial_obligations",
+    "behavior_change_approved_by_drift_freshness_alone",
+    "runtime_coverage_claim_from_drift_freshness",
+    "abi_claim_from_drift_freshness",
+    "monitor_verification_claim_from_drift_freshness",
+    "production_protection_claim_from_drift_freshness",
+    "cost_efficiency_claim_from_drift_freshness"
+  ],
+  "current_decision": {
+    "drift_observation": "fresh",
+    "merge_tree": "clean",
+    "model_freshness": "fresh",
+    "implementation_scope_reopened": false,
+    "linux_patch_approved": false
+  },
+  "safety_flags": {
+    "implementation_scope_reopened": false,
+    "linux_patch_approved": false,
+    "behavior_change": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "abi": false,
+    "monitor_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade": false,
+    "cost_efficiency": false
+  }
+}

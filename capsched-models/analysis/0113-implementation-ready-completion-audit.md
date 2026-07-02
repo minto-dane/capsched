@@ -61,7 +61,7 @@ closed the design obligations needed to safely propose P3/P4/P5 implementation.
 | P3 source anchors verified | analysis/0112 | Partially satisfied |
 | P3 no-behavior/no-ABI patch contract | implementation/0023 | Needs scope refresh before implementation |
 | P4 final run/move allow-all contract | implementation/0024, analysis/0100 | Needs current-source refresh |
-| P5 test-only denial gate | implementation/0025, analysis/0101, analysis/0117, analysis/0118 | Needs drift gate before implementation scope |
+| P5 test-only denial gate | implementation/0025, analysis/0101, analysis/0117, analysis/0118, analysis/0119 | Needs final implementation-ready audit |
 | sched_ext coverage decision | analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
 | core scheduling cached-pick decision | analysis/0100/0101, analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
 | proxy donor/current/executor decision | analysis/0111, analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
@@ -69,7 +69,7 @@ closed the design obligations needed to safely propose P3/P4/P5 implementation.
 | bounded retry/ineligibility representation | analysis/0101, analysis/0115, formal/0088, validation/0135 | Partially satisfied; source shape and model refresh done, implementation test evidence still future |
 | negative denial test plan | implementation/0025, analysis/0116 | Partially satisfied; design plan exists, future implementation tests still open |
 | claim-ledger overclaim guard for implementation | analysis/0118, formal/0090, validation/0137 | Satisfied as a design gate; future proposals must include ledger row |
-| upstream-drift refresh policy before implementation | prior drift gates exist | Needs re-run before any implementation |
+| upstream-drift refresh policy before implementation | analysis/0119, formal/0091, validation/0138 | Satisfied as a design gate; latest upstream observation fresh |
 
 ## Hard Blockers Before Implementation Scope Reopens
 
@@ -186,13 +186,39 @@ protection without monitor/evaluation evidence, hypervisor-grade claim from
 Linux-only P5 evidence, cost-efficiency without evaluation, public ABI without
 ABI gate, model-only production claim, and compatibility-as-protection.
 
+### B5: Upstream Drift Recheck Before Reopening Implementation Scope
+
+Before implementation scope is reopened, upstream must be freshly fetched and
+the touched model/source groups must be checked for semantic freshness. Clean
+merge-tree output alone is not enough.
+
+analysis/0119 closes B5 as a design gate and records the fresh upstream
+observation:
+
+```text
+upstream/master=4a50a141f05a8d1737661b19ee22ff8455b94409
+base_to_upstream_commit_count=342
+watched_changed_count=1
+changed_path=kernel/sched/cpufreq_schedutil.c
+drift_class=D1_nearby_non_intersecting_drift
+model_refresh_required_count=0
+merge_tree_clean=true
+model_freshness=fresh
+linux_patch_approved=false
+```
+
+formal/0091 and validation/0138 check that implementation reopening is rejected
+without fresh fetch, source-drift runner output, watched-group classification,
+touched-group freshness, claim ledger, and slice-specific gates. They also
+reject using drift freshness as behavior change, runtime coverage, ABI, monitor
+verification, production protection, or cost-efficiency evidence.
+
 ## Next Design Work
 
 The next design work should close blockers in this order:
 
 ```text
-1. upstream-drift recheck plan for reopening implementation scope
-2. final implementation-ready audit
+1. final implementation-ready audit
 ```
 
 ## Non-Claims

@@ -96,6 +96,7 @@ Updated: 2026-07-02
 | 0088 | Checked with safe pass and expected unsafe counterexamples | Final Deny Source Shape Gate Model |
 | 0089 | Checked with safe pass and expected unsafe counterexamples | Scheduler Path Classification Gate Model |
 | 0090 | Checked with safe pass and expected unsafe counterexamples | Implementation Claim Ledger Gate Model |
+| 0091 | Checked with safe pass and expected unsafe counterexamples | Implementation Reopen Drift Gate Model |
 
 ## Planned
 

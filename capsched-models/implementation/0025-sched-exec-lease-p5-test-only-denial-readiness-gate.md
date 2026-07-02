@@ -41,6 +41,8 @@ analysis/0117 scheduler path classification is reflected in the future P5
   support, disable, and exclusion checks
 analysis/0118 implementation claim ledger gate is reflected in the future P5
   proposal row and non-claim list
+analysis/0119 implementation-reopen upstream drift gate is reflected in the
+  future P5 touched-group freshness and drift row
 ```
 
 ## Permitted Scope If Re-Approved
@@ -218,6 +220,7 @@ sched_ext/core/proxy availability or exclusion recorded
 post-settle denial rollback model or explicit pre-settle-only decision recorded
 claim ledger updated to forbid production protection claims
 machine-readable claim ledger row present for the proposal
+fresh implementation-reopen drift row present for the proposal
 ```
 
 Before accepting a P5 patch:
@@ -236,6 +239,7 @@ fail-closed evidence or explicit unavailable note
 no overclaim review
 claim ledger row matches observed evidence classes and leaves unsupported
   claims false
+implementation-reopen drift row matches touched groups and current upstream
 ```
 
 ## Non-Claims

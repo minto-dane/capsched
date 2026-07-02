@@ -9,8 +9,8 @@ Latest design-readiness audit:
 - `analysis/0113-implementation-ready-completion-audit.md`
   - Verdict: implementation-ready design is not complete yet.
   - Reason: P2 is validated and the P5 path/claim gates are now design-closed,
-    but upstream-drift recheck and final implementation-ready audit still
-    remain before any new Linux implementation scope is reopened.
+    and the B5 upstream-drift gate is fresh; final implementation-ready audit
+    still remains before any new Linux implementation scope is reopened.
 - `analysis/0114-sched-ext-core-proxy-coverage-boundary.md`
   - Rule: sched_ext, core scheduling, and proxy execution are uncovered until
     explicitly classified as supported, disabled, or excluded.
@@ -52,6 +52,21 @@ Latest design-readiness audit:
     trace coverage, monitor verification without monitor roots, production or
     hypervisor-grade overclaims, cost-efficiency overclaim, public ABI
     overclaim, model-only production claim, and compatibility-as-protection.
+- `analysis/0119-implementation-reopen-upstream-drift-gate.md`
+  - Rule: implementation scope cannot reopen without a fresh upstream fetch,
+    source-drift runner result, watched-group classification, touched-group
+    freshness, claim ledger row, slice-specific gates, and explicit non-claims.
+  - Current observation: upstream/master fetched to
+    `4a50a141f05a8d1737661b19ee22ff8455b94409`; watched drift is only
+    `kernel/sched/cpufreq_schedutil.c`, classified D1 nearby non-intersecting;
+    model_refresh_required_count=0, merge_tree_clean=true,
+    model_freshness=fresh, linux_patch_approved=false.
+- `formal/0091-implementation-reopen-drift-gate-model/`
+  - Evidence: validation/0138 safe TLC passed and 15 unsafe configs produced
+    expected counterexamples for missing fetch/run/classification, clean merge
+    as semantic freshness, stale model/touched groups, missing claim ledger,
+    missing P5 path/negative gates, and drift freshness being used as
+    behavior, coverage, ABI, monitor, protection, or cost evidence.
 
 Current SchedExecLease L0 readiness:
 

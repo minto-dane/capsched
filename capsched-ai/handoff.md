@@ -3495,5 +3495,40 @@ N-171 implementation claim-ledger gate:
     compatibility evidence as protection.
 
   next:
-    upstream-drift recheck plan for reopening implementation scope, then final
-    implementation-ready audit.
+    upstream-drift recheck was later closed at design level by N-172. The
+    remaining next work is final implementation-ready audit.
+
+N-172 implementation reopen upstream drift gate:
+  artifacts:
+    capsched-models/analysis/0119-implementation-reopen-upstream-drift-gate.md
+    capsched-models/analysis/implementation-reopen-upstream-drift-gate-v1.json
+    capsched-models/formal/0091-implementation-reopen-drift-gate-model/
+    capsched-models/validation/0138-implementation-reopen-drift-gate-tlc.md
+
+  upstream:
+    fetched upstream/master from 665159e246749578d4e4bfe106ee3b74edcdab18 to
+    4a50a141f05a8d1737661b19ee22ff8455b94409.
+
+  source-drift run:
+    build/source-drift/linux-source-drift-gate/20260702T063331Z-b5-recheck
+    base_to_upstream_commit_count=342
+    watched_changed_count=1
+    changed_path=kernel/sched/cpufreq_schedutil.c
+    drift_class=D1_nearby_non_intersecting_drift
+    model_refresh_required_count=0
+    merge_tree_clean=true
+    model_freshness=fresh
+    linux_patch_approved=false
+
+  TLC:
+    safe passed with 2 generated states, 1 distinct state, depth 1.
+    15 unsafe configs produced expected counterexamples.
+
+  rejected:
+    reopen without fetch/source-drift run/group classification, clean merge as
+    semantic freshness, stale model or touched group, missing claim ledger,
+    P5 missing path classification or negative plan, and behavior/coverage/ABI/
+    monitor/protection/cost claims from drift freshness.
+
+  next:
+    final implementation-ready audit.

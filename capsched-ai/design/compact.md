@@ -38,6 +38,8 @@ no-denial task identity shadow. No behavior-changing implementation patch
 points are accepted yet. P1 private object vocabulary and P2 task identity
 shadow have been full-build and QEMU-smoke validated, but there is no scheduler
 hook, runtime denial, ABI, monitor call, budget charging, or protection claim.
+Latest fetched upstream/master is
+`4a50a141f05a8d1737661b19ee22ff8455b94409`.
 
 Private GitHub publication uses a superproject:
 
@@ -2993,6 +2995,47 @@ rejects:
   model-only or compatibility-only production claim.
 
 next:
-  upstream-drift recheck plan for reopening implementation scope.
+  upstream-drift recheck plan for reopening implementation scope. Later closed
+  at design level by N-172.
+  final implementation-ready audit.
+```
+
+N-172 implementation reopen upstream drift gate:
+
+```text
+artifacts:
+  analysis/0119-implementation-reopen-upstream-drift-gate.md
+  analysis/implementation-reopen-upstream-drift-gate-v1.json
+  formal/0091-implementation-reopen-drift-gate-model/
+  validation/0138-implementation-reopen-drift-gate-tlc.md
+
+fresh upstream:
+  before: 665159e246749578d4e4bfe106ee3b74edcdab18
+  after:  4a50a141f05a8d1737661b19ee22ff8455b94409
+
+source-drift run:
+  run_dir: build/source-drift/linux-source-drift-gate/20260702T063331Z-b5-recheck
+  base_to_upstream_commit_count: 342
+  watched_changed_count: 1
+  changed path: kernel/sched/cpufreq_schedutil.c
+  drift class: D1 nearby non-intersecting
+  model_refresh_required_count: 0
+  merge_tree_clean: true
+  model_freshness: fresh
+  linux_patch_approved: false
+
+TLC:
+  safe passed: 2 generated, 1 distinct, depth 1.
+  unsafe expected counterexamples: 15/15.
+
+rejects:
+  reopen without fresh fetch/source-drift run/group classification.
+  clean merge as semantic freshness.
+  reopen with stale model or touched group.
+  reopen without claim ledger.
+  P5 reopen without path classification or negative plan.
+  behavior/coverage/ABI/monitor/protection/cost claims from drift freshness.
+
+next:
   final implementation-ready audit.
 ```

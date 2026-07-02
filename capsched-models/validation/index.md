@@ -143,6 +143,7 @@ Updated: 2026-07-02
 | 0135 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Final Deny Source Shape Gate TLC |
 | 0136 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Scheduler Path Classification Gate TLC |
 | 0137 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Implementation Claim Ledger Gate TLC |
+| 0138 | Source-drift runner executed; safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Implementation Reopen Drift Gate TLC |
 
 ## Principles
 

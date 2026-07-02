@@ -50,9 +50,9 @@
       "upstream_remote_name": "upstream",
       "upstream_branch": "master",
       "upstream_ref": "upstream/master",
-      "upstream_commit": "665159e246749578d4e4bfe106ee3b74edcdab18",
-      "upstream_commit_date": "2026-06-30 17:50:44 -1000",
-      "upstream_commit_subject": "Merge tag 'probes-fixes-v7.2-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace",
+      "upstream_commit": "4a50a141f05a8d1737661b19ee22ff8455b94409",
+      "upstream_commit_date": "2026-07-01 14:21:03 -1000",
+      "upstream_commit_subject": "Merge tag 'bootconfig-fixes-v7.2-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace",
       "work_branch": "capsched-linux-l0",
       "work_commit": "a0f2676adda634391983e74f29fcba577a9c919e",
       "work_commit_subject": "sched/exec_lease: Add task identity shadow",
@@ -65,7 +65,7 @@
       "n164_p2_status": "applied and validated: Linux commit a0f2676adda634391983e74f29fcba577a9c919e adds a CONFIG-gated task identity shadow and nofail lifecycle helpers across include/linux/sched.h, include/linux/sched_exec_lease.h, kernel/fork.c, fs/exec.c, kernel/exit.c, and kernel/sched/exec_lease.c. Patch queue 0005 records the commit. validation/0133 passed full vmlinux off/on builds and build-only task layout probing; validation/0134 passed QEMU boot/workload smoke off/on with CONFIG_SCHED_EXEC_LEASE=y in the enabled guest and fork/exec/exit workload return 0. This remains no-denial compatibility evidence only: no scheduler hook, runtime denial, ABI, monitor call, budget charging, runtime coverage, production protection, or cost-efficiency claim is approved.",
       "private_remote": "https://github.com/minto-dane/capsched-linux",
       "private_remote_mode": "patch_queue_not_full_linux_history",
-      "fetched_on": "2026-06-25"
+      "fetched_on": "2026-07-02"
     }
   },
   "active_analysis": {
@@ -226,7 +226,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-164 applied and validated the SchedExecLease P2 no-denial task identity shadow. The Linux work commit is a0f2676adda634391983e74f29fcba577a9c919e and patch queue 0005 replays it. validation/0133 covers full vmlinux off/on builds plus task layout; validation/0134 covers QEMU off/on boot/workload smoke with CONFIG_SCHED_EXEC_LEASE=y in the enabled guest. The active scope is implementation-ready design only; new Linux implementation is out of scope until explicitly reopened. ADR-0011 and analysis/0112 record the source-verified P3/P4 boundary. analysis/0113 audits the active goal and says implementation-ready design is not complete yet. analysis/0115 records B2 source-shape constraints: pre-rq->curr denial is not automatically pre-commit because pick_next_task() may have already settled scheduler class state; P5 denial requires pre-settle validation or a source-proved rollback. formal/0088 and validation/0135 model-check that source-specific final-deny shape. analysis/0116 records the negative-denial validation plan. analysis/0117 classifies the initial P5 support set as ordinary CFS final run plus common queued move only; sched_ext/core/proxy are disabled, and RT/DL/fair direct balance/workqueues/io_uring/internal kthreads are excluded from runtime coverage. formal/0089 and validation/0136 check the scheduler path classification. analysis/0118 defines the implementation claim-ledger row and evidence-class rules; formal/0090 and validation/0137 reject missing ledger rows, implementation approval without reopened scope/fresh drift, behavior change without P5 evidence, runtime/protection/ABI/cost overclaims, model-only production claims, and compatibility-as-protection. Behavior-changing runtime enforcement remains unapproved until upstream drift recheck and final implementation-ready audit are closed.",
+    "current_focus": "N-164 applied and validated the SchedExecLease P2 no-denial task identity shadow. The Linux work commit is a0f2676adda634391983e74f29fcba577a9c919e and patch queue 0005 replays it. validation/0133 covers full vmlinux off/on builds plus task layout; validation/0134 covers QEMU off/on boot/workload smoke with CONFIG_SCHED_EXEC_LEASE=y in the enabled guest. The active scope is implementation-ready design only; new Linux implementation is out of scope until explicitly reopened. ADR-0011 and analysis/0112 record the source-verified P3/P4 boundary. analysis/0113 audits the active goal and says implementation-ready design is not complete yet. analysis/0115 records B2 source-shape constraints: pre-rq->curr denial is not automatically pre-commit because pick_next_task() may have already settled scheduler class state; P5 denial requires pre-settle validation or a source-proved rollback. formal/0088 and validation/0135 model-check that source-specific final-deny shape. analysis/0116 records the negative-denial validation plan. analysis/0117 classifies the initial P5 support set as ordinary CFS final run plus common queued move only; sched_ext/core/proxy are disabled, and RT/DL/fair direct balance/workqueues/io_uring/internal kthreads are excluded from runtime coverage. formal/0089 and validation/0136 check the scheduler path classification. analysis/0118 defines the implementation claim-ledger row and evidence-class rules; formal/0090 and validation/0137 reject claim overreach. analysis/0119 records fresh upstream drift observation after fetching upstream/master to 4a50a141f05a8d1737661b19ee22ff8455b94409; only kernel/sched/cpufreq_schedutil.c changed in watched paths, model_refresh_required_count=0, merge_tree_clean=true, model_freshness=fresh, and linux_patch_approved=false. formal/0091 and validation/0138 reject reopening without fetch/run/classification/touched freshness/claim ledger and reject treating drift freshness as behavior, coverage, ABI, monitor, protection, or cost evidence. Behavior-changing runtime enforcement remains unapproved until final implementation-ready audit is closed.",
     "implementation_ready_completion_audit": "capsched/capsched-models/analysis/0113-implementation-ready-completion-audit.md",
     "sched_ext_core_proxy_coverage_boundary": "capsched/capsched-models/analysis/0114-sched-ext-core-proxy-coverage-boundary.md",
     "bounded_retry_ineligibility_source_design": "capsched/capsched-models/analysis/0115-bounded-retry-ineligibility-source-design.md",
@@ -239,6 +239,9 @@
     "implementation_claim_ledger_gate": "capsched/capsched-models/analysis/0118-implementation-claim-ledger-gate.md",
     "implementation_claim_ledger_model": "capsched/capsched-models/formal/0090-implementation-claim-ledger-gate-model/README.md",
     "implementation_claim_ledger_validation": "capsched/capsched-models/validation/0137-implementation-claim-ledger-gate-tlc.md",
+    "implementation_reopen_drift_gate": "capsched/capsched-models/analysis/0119-implementation-reopen-upstream-drift-gate.md",
+    "implementation_reopen_drift_model": "capsched/capsched-models/formal/0091-implementation-reopen-drift-gate-model/README.md",
+    "implementation_reopen_drift_validation": "capsched/capsched-models/validation/0138-implementation-reopen-drift-gate-tlc.md",
     "f1_admission_freeze_data_dependencies": "capsched/capsched-models/analysis/0031-f1-admission-freeze-data-dependencies.md",
     "f1_admission_data_model": "capsched/capsched-models/formal/0014-f1-admission-data-model/README.md",
     "f1_admission_data_tla": "capsched/capsched-models/formal/0014-f1-admission-data-model/F1AdmissionData.tla",

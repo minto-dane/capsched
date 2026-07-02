@@ -19,7 +19,10 @@
     "initial_p5_workqueue_kthread_async_classification_recorded",
     "scheduler_path_classification_gate_tlc_checked",
     "implementation_claim_ledger_gate_recorded",
-    "implementation_claim_ledger_gate_tlc_checked"
+    "implementation_claim_ledger_gate_tlc_checked",
+    "implementation_reopen_upstream_drift_gate_recorded",
+    "implementation_reopen_upstream_drift_gate_tlc_checked",
+    "fresh_upstream_observation_recorded"
   ],
   "partial": [
     "p3_source_anchors_verified_design_only",
@@ -30,11 +33,6 @@
     "negative_denial_validation_plan_done_future_test_mapping_required"
   ],
   "open_blockers": [
-    {
-      "id": "B5",
-      "name": "fresh_upstream_drift_recheck_before_reopening_implementation_scope",
-      "needed_before_implementation": true
-    },
     {
       "id": "B6",
       "name": "final_implementation_ready_audit",
@@ -91,8 +89,24 @@
       "compatibility_as_protection"
     ]
   },
+  "implementation_reopen_upstream_drift_gate": {
+    "status": "satisfied_as_design_gate",
+    "evidence": [
+      "analysis/0119",
+      "formal/0091",
+      "validation/0138"
+    ],
+    "upstream_commit": "4a50a141f05a8d1737661b19ee22ff8455b94409",
+    "base_to_upstream_commit_count": 342,
+    "watched_changed_count": 1,
+    "model_refresh_required_count": 0,
+    "merge_tree_clean": true,
+    "model_freshness": "fresh",
+    "linux_patch_approved": false,
+    "changed_watched_path": "kernel/sched/cpufreq_schedutil.c",
+    "changed_watched_path_class": "D1_nearby_non_intersecting_drift"
+  },
   "next_design_order": [
-    "upstream_drift_recheck_plan",
     "final_implementation_ready_audit"
   ],
   "safety_flags": {

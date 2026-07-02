@@ -19,7 +19,8 @@
     "analysis/0115 bounded retry/ineligibility source design reflected in refreshed model and validation plan",
     "analysis/0116 negative denial validation plan reflected in future P5 test harness design",
     "analysis/0117 scheduler path classification reflected in future P5 support disable and exclusion checks",
-    "analysis/0118 implementation claim ledger gate reflected in future P5 proposal row and non-claim list"
+    "analysis/0118 implementation claim ledger gate reflected in future P5 proposal row and non-claim list",
+    "analysis/0119 implementation-reopen upstream drift gate reflected in future P5 touched-group freshness and drift row"
   ],
   "first_allowed_scope_after_reapproval": "test_only_denial_mode_off_by_default",
   "initial_p5_supported_paths": [
@@ -99,7 +100,8 @@
     "analysis_0113_claim_ledger_gate_recorded",
     "analysis_0114_coverage_boundary_closed",
     "claim_ledger_overclaim_guard_updated",
-    "machine_readable_claim_ledger_row_present"
+    "machine_readable_claim_ledger_row_present",
+    "fresh_implementation_reopen_drift_row_present"
   ],
   "required_before_patch_acceptance": [
     "git_diff_check",
@@ -113,7 +115,8 @@
     "bounded_retry_evidence",
     "fail_closed_evidence_or_unavailable_note",
     "no_overclaim_review",
-    "claim_ledger_row_matches_observed_evidence_classes"
+    "claim_ledger_row_matches_observed_evidence_classes",
+    "implementation_reopen_drift_row_matches_touched_groups_and_current_upstream"
   ],
   "safety_flags": {
     "implementation_applied": false,
