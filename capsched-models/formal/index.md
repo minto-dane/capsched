@@ -102,6 +102,7 @@ Updated: 2026-07-02
 | 0094 | Checked with safe pass and expected unsafe counterexamples | P4 Anchor Manifest Gate Model |
 | 0095 | Checked with safe pass and expected unsafe counterexamples | Static Final-Run Observability Gate Model |
 | 0096 | Checked with safe pass and expected unsafe counterexamples | P4 Allow-All Helper Gate Model |
+| 0097 | Checked with safe pass and expected unsafe counterexamples | P4 Allow-Only Skeleton Gate Model |
 
 ## Planned
 

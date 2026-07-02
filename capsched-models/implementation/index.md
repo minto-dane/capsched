@@ -151,9 +151,8 @@ Current SchedExecLease L0 readiness:
     replay, full off/on builds, QEMU off/on no-behavior smoke, object/symbol
     note, and overclaim review.
 - `0024-sched-exec-lease-p4-allow-all-revalidation-skeleton-plan.md`
-  - Status: draft P4 patch plan; implementation not applied. P4 pre-entry
-    validation passed for allow-all/no-denial scope in validation/0141.
-    P5 denial remains blocked by analysis/0115 and analysis/0117.
+  - Status: draft P4 patch plan; applied implementation is recorded separately
+    in `0027-sched-exec-lease-p4-allow-only-validation-skeleton-implementation.md`.
   - Rule: P4 may wire allow-all final run and queued-move revalidation helper
     calls, but every production result must remain allow. It must preserve
     separate run and move tuples, place final run validation before `rq->curr`
@@ -161,6 +160,18 @@ Current SchedExecLease L0 readiness:
     forbid denial receipts, retry epochs, fail-closed behavior, monitor calls,
     ABI, or protection claims. P4 final observation is not sufficient for P5
     denial without analysis/0115 pre-settle or rollback proof.
+- `0027-sched-exec-lease-p4-allow-only-validation-skeleton-implementation.md`
+  - Status: applied P4 allow-only validation skeleton patch; full acceptance
+    pending full `vmlinux` and QEMU validation.
+  - Linux commit:
+    `a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8`.
+  - Rule: the patch adds three static inline validation helpers and three
+    callsites for final-run, common queued move, and locked queued move. Every
+    helper returns only `SCHED_EXEC_VALIDATION_ALLOW`, and scheduler control
+    flow does not branch on the result. Validation/0147 records patch queue
+    replay, checkpatch, targeted off/on scheduler build, source/object checks,
+    and formal gate evidence. It still adds no runtime denial, budget charge,
+    ABI, monitor call, runtime coverage, or protection claim.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope under ADR-0011 until implementation-ready design blockers are

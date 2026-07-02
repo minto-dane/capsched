@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p4-allow-only-validation-skeleton-implementation-v1",
+  "implementation": "0027-sched-exec-lease-p4-allow-only-validation-skeleton-implementation",
+  "date": "2026-07-02",
+  "status": "applied_pending_full_acceptance_validation",
+  "linux": {
+    "branch": "capsched-linux-l0",
+    "work_commit": "a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8",
+    "subject": "sched/exec_lease: Add allow-only validation skeleton",
+    "base_commit": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4"
+  },
+  "patch_queue": {
+    "repo": "linux-patches",
+    "series_entry": "0007-sched-exec-lease-Add-allow-only-validation-skel.patch",
+    "replay_required": true,
+    "checkpatch_required": true
+  },
+  "touched_files": [
+    "include/linux/sched_exec_lease.h",
+    "kernel/sched/core.c",
+    "kernel/sched/exec_lease.c",
+    "kernel/sched/sched.h"
+  ],
+  "helpers": [
+    {
+      "name": "sched_exec_lease_validate_run_edge",
+      "path": "include/linux/sched_exec_lease.h",
+      "return_set": [
+        "SCHED_EXEC_VALIDATION_ALLOW"
+      ]
+    },
+    {
+      "name": "sched_exec_lease_validate_move_edge",
+      "path": "include/linux/sched_exec_lease.h",
+      "return_set": [
+        "SCHED_EXEC_VALIDATION_ALLOW"
+      ]
+    },
+    {
+      "name": "sched_exec_lease_validate_move_edge_locked",
+      "path": "include/linux/sched_exec_lease.h",
+      "return_set": [
+        "SCHED_EXEC_VALIDATION_ALLOW"
+      ]
+    }
+  ],
+  "callsites": [
+    {
+      "name": "final_run",
+      "path": "kernel/sched/core.c",
+      "function": "__schedule",
+      "helper": "sched_exec_lease_validate_run_edge",
+      "before": [
+        "is_switch = prev != next",
+        "RCU_INIT_POINTER(rq->curr, next)",
+        "context_switch(rq, prev, next, &rf)"
+      ]
+    },
+    {
+      "name": "move_queued_task",
+      "path": "kernel/sched/core.c",
+      "function": "move_queued_task",
+      "helper": "sched_exec_lease_validate_move_edge",
+      "before": [
+        "deactivate_task(rq, p, DEQUEUE_NOCLOCK)",
+        "set_task_cpu(p, new_cpu)"
+      ]
+    },
+    {
+      "name": "move_queued_task_locked",
+      "path": "kernel/sched/sched.h",
+      "function": "move_queued_task_locked",
+      "helper": "sched_exec_lease_validate_move_edge_locked",
+      "before": [
+        "deactivate_task(src_rq, task, 0)",
+        "set_task_cpu(task, dst_rq->cpu)"
+      ]
+    }
+  ],
+  "forbidden_behaviors": [
+    "return_retry",
+    "return_ineligible",
+    "return_quarantine",
+    "scheduler_branch_on_validation_result",
+    "goto_pick_again",
+    "mark_ineligible",
+    "quarantine",
+    "budget_charge",
+    "monitor_call",
+    "policy_frontend_call",
+    "allocation",
+    "sleep",
+    "new_lock",
+    "abi_surface"
+  ],
+  "validation": {
+    "targeted_build_tag": "p4-targeted-current",
+    "requires_full_vmlinux": true,
+    "requires_qemu": true,
+    "full_vmlinux_status": "pending",
+    "qemu_status": "pending"
+  },
+  "non_claims": {
+    "runtime_denial": false,
+    "runtime_coverage": false,
+    "budget_enforcement": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade": false,
+    "cost_efficiency": false,
+    "deployment_readiness": false,
+    "p5_denial_approved": false
+  }
+}

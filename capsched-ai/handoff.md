@@ -3825,3 +3825,61 @@ P4 allow-all helper proof / validation 0146:
     still pass generated-code/object review, CONFIG off/on build validation,
     QEMU compatibility validation, and overclaim/security-diff review before
     acceptance. P5 denial remains blocked.
+
+P4 allow-only skeleton implementation / validation 0147:
+  status:
+    Applied to Linux and partially validated. Full P4 acceptance is still
+    pending full vmlinux off/on and QEMU off/on validation.
+
+  Linux:
+    commit:
+      a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8
+    subject:
+      sched/exec_lease: Add allow-only validation skeleton
+    patch queue:
+      linux-patches/patches/capsched-linux-l0/0007-sched-exec-lease-Add-allow-only-validation-skel.patch
+
+  implementation artifacts:
+    capsched-models/implementation/0027-sched-exec-lease-p4-allow-only-validation-skeleton-implementation.md
+    capsched-models/implementation/sched-exec-lease-p4-allow-only-validation-skeleton-implementation-v1.json
+    capsched-models/formal/0097-p4-allow-only-skeleton-gate-model/
+    capsched-models/validation/0147-sched-exec-lease-p4-allow-only-skeleton-validation.md
+    capsched-models/validation/run-sched-exec-lease-p4-allow-only-skeleton-check.sh
+
+  patch content:
+    Moves SCHED_EXEC_VALIDATION_* enum to include/linux/sched_exec_lease.h.
+    Adds static inline validate helpers:
+      sched_exec_lease_validate_run_edge()
+      sched_exec_lease_validate_move_edge()
+      sched_exec_lease_validate_move_edge_locked()
+    Adds three callsites:
+      __schedule() before is_switch/rq->curr/context_switch
+      move_queued_task() before deactivate_task/set_task_cpu
+      move_queued_task_locked() before deactivate_task/set_task_cpu
+
+  validation passed:
+    patch queue replay to exact HEAD a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8.
+    checkpatch: 0 errors, 0 warnings.
+    targeted CONFIG_SCHED_EXEC_LEASE off/on scheduler build passed.
+    source/object checker run:
+      build/source-check/sched-exec-lease-p4-allow-only-skeleton/20260702T2136Z-p4-allow-only
+    helper_count=3, callsite_count=3.
+    non_allow_returns_found=false.
+    scheduler_branches_on_validation_result=false.
+    validation_symbols_emitted=false.
+    core_o_file_size_equal=true, 347728/347728.
+    formal/0097 safe passed; 12 unsafe configs produced expected
+    counterexamples.
+
+  important negative:
+    core.o byte identity is not claimed.
+    full vmlinux validation is pending.
+    QEMU validation is pending.
+    runtime denial, runtime coverage, budget enforcement, monitor verification,
+    production protection, hypervisor-grade isolation, cost-efficiency,
+    deployment readiness, and P5 denial remain false.
+
+  next:
+    Run full vmlinux off/on validation and QEMU off/on compatibility validation
+    for P4. If they are long, launch them under systemd and stop chat
+    supervision.

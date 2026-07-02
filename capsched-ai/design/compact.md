@@ -3233,4 +3233,42 @@ P4 allow-all helper proof / validation 0146:
     still requires generated-code/object review, CONFIG off/on build, QEMU
     compatibility, and overclaim/security-diff validation before acceptance.
     P5 denial remains blocked.
+
+P4 allow-only skeleton implementation:
+  Linux commit:
+    a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8
+    sched/exec_lease: Add allow-only validation skeleton
+
+  Patch queue:
+    0007-sched-exec-lease-Add-allow-only-validation-skel.patch
+    replayed to exact HEAD.
+
+  Added:
+    three static inline helpers returning only SCHED_EXEC_VALIDATION_ALLOW.
+    three callsites:
+      final-run before is_switch/rq->curr/context_switch.
+      common queued move before deactivate_task/set_task_cpu.
+      locked queued move before deactivate_task/set_task_cpu.
+
+  Validation 0147:
+    checkpatch clean.
+    targeted CONFIG off/on scheduler build passed.
+    source/object checker passed:
+      helper_count=3.
+      callsite_count=3.
+      non_allow_returns_found=false.
+      scheduler_branches_on_validation_result=false.
+      validation_symbols_emitted=false.
+      core_o_file_size_equal=true.
+    formal/0097 safe passed; 12 unsafe configs produced expected
+    counterexamples.
+
+  Not yet done:
+    full vmlinux off/on validation.
+    QEMU off/on compatibility validation.
+
+  Non-claims:
+    no runtime denial, runtime coverage, budget enforcement, monitor
+    verification, production protection, hypervisor-grade isolation,
+    cost-efficiency, deployment readiness, or P5 denial approval.
 ```
