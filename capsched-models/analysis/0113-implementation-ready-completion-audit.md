@@ -61,11 +61,11 @@ closed the design obligations needed to safely propose P3/P4/P5 implementation.
 | P3 source anchors verified | analysis/0112 | Partially satisfied |
 | P3 no-behavior/no-ABI patch contract | implementation/0023 | Needs scope refresh before implementation |
 | P4 final run/move allow-all contract | implementation/0024, analysis/0100 | Needs current-source refresh |
-| P5 test-only denial gate | implementation/0025, analysis/0101 | Needs source-specific retry design |
-| sched_ext coverage decision | implementation/0025 mentions decision | Open |
-| core scheduling cached-pick decision | analysis/0100/0101 identify risk | Open |
-| proxy donor/current/executor decision | analysis/0111 identifies risk | Open |
-| workqueue/kthread classification | prior async models exist | Open for scheduler-denial scope |
+| P5 test-only denial gate | implementation/0025, analysis/0101, analysis/0117 | Needs claim-ledger and drift gates before implementation scope |
+| sched_ext coverage decision | analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
+| core scheduling cached-pick decision | analysis/0100/0101, analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
+| proxy donor/current/executor decision | analysis/0111, analysis/0114, analysis/0117 | Satisfied for initial P5: disabled, not covered |
+| workqueue/kthread classification | prior async models, analysis/0117 | Satisfied for initial P5: excluded, future typed async required |
 | bounded retry/ineligibility representation | analysis/0101, analysis/0115, formal/0088, validation/0135 | Partially satisfied; source shape and model refresh done, implementation test evidence still future |
 | negative denial test plan | implementation/0025, analysis/0116 | Partially satisfied; design plan exists, future implementation tests still open |
 | claim-ledger overclaim guard for implementation | non-claims exist | Open as a concrete gate |
@@ -86,6 +86,33 @@ proxy execution donor/current/executor split
 
 Without this decision, a later final run validation point can be bypassed or
 mis-accounted by Linux-selected state.
+
+analysis/0117 closes B1 for the first P5 test-only denial scope by classifying:
+
+```text
+supported:
+  ordinary CFS final run in a non-core, non-proxy, non-sched_ext configuration
+  common queued move through move_queued_task() / move_queued_task_locked()
+
+disabled:
+  sched_ext
+  core scheduling
+  proxy execution
+
+excluded:
+  fair direct load balance
+  RT
+  deadline
+  idle exception
+  stopper/hotplug/migration kernel threads
+  generic kthreads/workqueues
+  io_uring workers
+```
+
+formal/0089 and validation/0136 check that this classification cannot support
+runtime coverage, implementation approval, production protection, or
+cost-efficiency claims. B1 remains a future full-support requirement, but it is
+no longer an open ambiguity for the narrow initial P5 test-only denial gate.
 
 ### B2: Bounded Denial Retry Shape
 
@@ -141,11 +168,9 @@ no cost-efficiency claim without the evaluation contract
 The next design work should close blockers in this order:
 
 ```text
-1. sched_ext/core/proxy coverage boundary
-2. scheduler path classification for P5 supported/disabled/excluded status
-3. implementation claim-ledger gate
-4. upstream-drift recheck plan for reopening implementation scope
-5. final implementation-ready audit
+1. implementation claim-ledger gate
+2. upstream-drift recheck plan for reopening implementation scope
+3. final implementation-ready audit
 ```
 
 ## Non-Claims

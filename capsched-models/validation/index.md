@@ -141,6 +141,7 @@ Updated: 2026-07-02
 | 0133 | Passed for P2 full `vmlinux` off/on build and build-only task layout probe; QEMU tracked separately; no behavior or protection claim | SchedExecLease P2 Full Build and Task Layout |
 | 0134 | Passed for P2 QEMU boot/workload smoke off/on; hook coverage incomplete; no behavior or protection claim | SchedExecLease P2 QEMU Boot Smoke |
 | 0135 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Final Deny Source Shape Gate TLC |
+| 0136 | Safe model passed; unsafe models produced expected counterexamples; no implementation or protection claim | Scheduler Path Classification Gate TLC |
 
 ## Principles
 

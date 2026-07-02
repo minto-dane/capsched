@@ -27,6 +27,19 @@ Latest design-readiness audit:
 - `analysis/0116-negative-denial-validation-plan.md`
   - Rule: future P5 review must map each negative-denial obligation to a
     concrete test or an explicit unsupported/excluded note before code review.
+- `analysis/0117-scheduler-path-classification-for-p5.md`
+  - Rule: the initial P5 test-only support set is limited to ordinary CFS final
+    run in non-core/non-proxy/non-sched_ext configurations and common queued
+    move helpers. sched_ext, core scheduling, and proxy execution are disabled;
+    fair direct load balance, RT, deadline, idle exception, infrastructure
+    kthreads, workqueues, and io_uring workers are excluded from runtime
+    coverage claims.
+- `formal/0089-scheduler-path-classification-gate-model/`
+  - Evidence: validation/0136 safe TLC passed and 10 unsafe configs produced
+    expected counterexamples for open paths, supported-without-evidence,
+    coverage over excluded paths, disabled execution, fallback authority,
+    async/kthread authority collapse, implementation approval, production
+    protection, and cost-efficiency claims.
 
 Current SchedExecLease L0 readiness:
 
@@ -108,10 +121,11 @@ Current SchedExecLease L0 readiness:
     closed.
   - Rule: P5 is the first possible behavior-changing slice and remains blocked
     until P2/P3/P4 validation, refreshed final run/move and denial/retry models,
-    negative tests, sched_ext/core/proxy decisions, workqueue/kthread
-    classification, bounded retry evidence, and claim-ledger overclaim guards
-    exist. The first allowed P5 scope, if re-approved, is test-only denial mode
-    off by default, and denial must be pre-settle or backed by a rollback proof.
+    negative tests, the analysis/0117 scheduler path classification, bounded
+    retry evidence, and claim-ledger overclaim guards exist. The first allowed
+    P5 scope, if re-approved, is test-only denial mode off by default, limited
+    to ordinary CFS final run and common queued move helpers, and denial must be
+    pre-settle or backed by a rollback proof.
 
 N-156 terminology policy:
 

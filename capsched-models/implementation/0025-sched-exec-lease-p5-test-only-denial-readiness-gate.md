@@ -37,12 +37,21 @@ analysis/0115 bounded retry/ineligibility source design is reflected in the
   refreshed model and validation plan
 analysis/0116 negative denial validation plan is reflected in the future P5
   test harness design
+analysis/0117 scheduler path classification is reflected in the future P5
+  support, disable, and exclusion checks
 ```
 
 ## Permitted Scope If Re-Approved
 
 The first P5 patch may only be a test-only denial mode. It must be off by
 default and must not claim production security.
+
+The initial support set is limited to:
+
+```text
+ordinary CFS final run in a non-core, non-proxy, non-sched_ext configuration
+common queued move through move_queued_task() / move_queued_task_locked()
+```
 
 Allowed in principle after re-approval:
 
@@ -126,6 +135,27 @@ stopper/hotplug/migration kernel threads
 Any uncovered class or path must be explicitly excluded from runtime coverage
 claims.
 
+For the initial P5 test-only denial mode, analysis/0117 classifies:
+
+```text
+disabled:
+  sched_ext
+  core scheduling
+  proxy execution
+
+excluded:
+  fair direct load balance
+  RT
+  deadline
+  idle exception
+  stopper/hotplug/migration kernel threads
+  generic kthreads/workqueues
+  io_uring workers
+```
+
+Any future patch that touches these paths must first update the classification,
+formal gate, validation plan, and claim ledger.
+
 ### sched_ext
 
 P5 must make a concrete decision:
@@ -176,6 +206,8 @@ TLC or equivalent model refreshed for final denial retry/ineligibility
 negative denial tests designed
 analysis/0116 negative-denial obligations mapped to concrete tests or explicit
   unsupported notes
+analysis/0117 scheduler-path classification reflected in setup-time disables,
+  unsupported notes, and negative tests
 full vmlinux off/on build plan updated
 QEMU boot/workload smoke plan updated for denial mode
 fork/exec/exit denial-lifetime tests designed

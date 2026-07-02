@@ -14,30 +14,20 @@
     "p2_patch_queue_replay",
     "p2_full_vmlinux_off_on",
     "p2_task_layout_off_on",
-    "p2_qemu_boot_workload_off_on"
+    "p2_qemu_boot_workload_off_on",
+    "initial_p5_sched_ext_core_proxy_path_classification_recorded",
+    "initial_p5_workqueue_kthread_async_classification_recorded",
+    "scheduler_path_classification_gate_tlc_checked"
   ],
   "partial": [
     "p3_source_anchors_verified_design_only",
     "p3_no_behavior_patch_contract",
     "p4_final_run_move_allow_all_contract",
-    "p5_test_only_denial_gate"
+    "p5_test_only_denial_gate",
+    "bounded_denial_retry_source_shape_design_done_future_test_evidence_required",
+    "negative_denial_validation_plan_done_future_test_mapping_required"
   ],
   "open_blockers": [
-    {
-      "id": "B1",
-      "name": "sched_ext_core_proxy_coverage_boundary",
-      "needed_before_implementation": true
-    },
-    {
-      "id": "B2",
-      "name": "bounded_denial_retry_source_shape",
-      "needed_before_implementation": true
-    },
-    {
-      "id": "B3",
-      "name": "negative_denial_validation_plan",
-      "needed_before_implementation": true
-    },
     {
       "id": "B4",
       "name": "implementation_claim_ledger_gate",
@@ -47,14 +37,43 @@
       "id": "B5",
       "name": "fresh_upstream_drift_recheck_before_reopening_implementation_scope",
       "needed_before_implementation": true
+    },
+    {
+      "id": "B6",
+      "name": "final_implementation_ready_audit",
+      "needed_before_implementation": true
     }
   ],
+  "initial_p5_path_classification": {
+    "supported": [
+      "ordinary_cfs_final_run_non_core_non_proxy_non_sched_ext",
+      "common_queued_move_move_queued_task",
+      "common_queued_move_move_queued_task_locked"
+    ],
+    "disabled": [
+      "sched_ext",
+      "core_scheduling",
+      "proxy_execution"
+    ],
+    "excluded": [
+      "fair_direct_load_balance",
+      "rt_final_run_push_pull",
+      "deadline_final_run_server_push_pull",
+      "idle_exception",
+      "stopper_hotplug_migration_kthreads",
+      "generic_kthreads_workqueues",
+      "io_uring_workers"
+    ],
+    "evidence": [
+      "analysis/0117",
+      "formal/0089",
+      "validation/0136"
+    ]
+  },
   "next_design_order": [
-    "sched_ext_core_proxy_coverage_boundary",
-    "bounded_retry_and_ineligibility_source_design",
-    "negative_denial_validation_plan",
     "implementation_claim_ledger_gate",
-    "upstream_drift_recheck_plan"
+    "upstream_drift_recheck_plan",
+    "final_implementation_ready_audit"
   ],
   "safety_flags": {
     "implementation_complete": false,

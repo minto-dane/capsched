@@ -33,12 +33,11 @@ file paths remain stable for traceability.
 
 Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
-`7cf0b1e415bcead8a2079c8be94a9d41aad7d462` before the N-156 Linux scaffold
-rename. No behavior-changing implementation patch points are accepted yet. A
-first deep source-analysis pass now exists in `capsched-models/analysis/0002`
-through `0044`. A candidate Linux L0 Runnable Lease implementation plan has
-been derived from the checked model. Linux source contains inert scaffold only,
-with no task layout or scheduler behavior changes.
+`a0f2676adda634391983e74f29fcba577a9c919e` after the SchedExecLease P2
+no-denial task identity shadow. No behavior-changing implementation patch
+points are accepted yet. P1 private object vocabulary and P2 task identity
+shadow have been full-build and QEMU-smoke validated, but there is no scheduler
+hook, runtime denial, ABI, monitor call, budget charging, or protection claim.
 
 Private GitHub publication uses a superproject:
 
@@ -2908,4 +2907,49 @@ rejects:
 
 next:
   classify scheduler paths as supported, disabled, or excluded for P5.
+```
+
+N-170 scheduler path classification for P5:
+
+```text
+artifacts:
+  analysis/0117-scheduler-path-classification-for-p5.md
+  analysis/scheduler-path-classification-for-p5-v1.json
+  formal/0089-scheduler-path-classification-gate-model/
+  validation/0136-scheduler-path-classification-gate-tlc.md
+
+TLC:
+  safe passed: 2 generated, 1 distinct, depth 1.
+  unsafe expected counterexamples: 10/10.
+
+initial P5 supported:
+  ordinary CFS final run, non-core, non-proxy, non-sched_ext.
+  common queued move through move_queued_task() / move_queued_task_locked().
+
+initial P5 disabled:
+  sched_ext.
+  core scheduling.
+  proxy execution.
+
+initial P5 excluded:
+  fair direct load balance.
+  RT and deadline.
+  idle exception.
+  stopper/hotplug/migration kernel threads.
+  generic kthreads/workqueues.
+  io_uring workers.
+
+rejects:
+  open paths.
+  supported-without-evidence.
+  runtime coverage over excluded paths.
+  disabled path execution.
+  fallback authority.
+  workqueue/kthread caller-authority collapse.
+  implementation/protection/cost overclaims.
+
+next:
+  implementation claim-ledger gate.
+  upstream-drift recheck plan for reopening implementation scope.
+  final implementation-ready audit.
 ```

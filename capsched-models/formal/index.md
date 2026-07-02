@@ -94,6 +94,7 @@ Updated: 2026-07-02
 | 0086 | Checked with safe pass and expected unsafe counterexamples | Evaluation Contract Gate Model |
 | 0087 | Checked with safe pass and expected unsafe counterexamples | Final Model Completeness Ledger Model |
 | 0088 | Checked with safe pass and expected unsafe counterexamples | Final Deny Source Shape Gate Model |
+| 0089 | Checked with safe pass and expected unsafe counterexamples | Scheduler Path Classification Gate Model |
 
 ## Planned
 

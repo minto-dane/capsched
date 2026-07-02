@@ -3433,3 +3433,36 @@ N-168/N-169 final-deny model refresh and negative validation plan:
     no Linux implementation or runtime denial is approved. Next design gate is
     explicit scheduler path classification: supported, disabled, or excluded
     for CFS/RT/DL/sched_ext/core/proxy/workqueue/kthread surfaces.
+
+N-170 scheduler path classification for P5:
+  artifacts:
+    capsched-models/analysis/0117-scheduler-path-classification-for-p5.md
+    capsched-models/analysis/scheduler-path-classification-for-p5-v1.json
+    capsched-models/formal/0089-scheduler-path-classification-gate-model/
+    capsched-models/validation/0136-scheduler-path-classification-gate-tlc.md
+
+  TLC:
+    safe passed with 2 generated states, 1 distinct state, depth 1.
+    10 unsafe configs produced expected counterexamples.
+
+  initial P5 supported paths:
+    ordinary CFS final run in non-core, non-proxy, non-sched_ext configuration.
+    common queued move through move_queued_task() / move_queued_task_locked().
+
+  initial P5 disabled paths:
+    sched_ext, core scheduling, proxy execution.
+
+  initial P5 excluded paths:
+    fair direct load balance, RT, deadline, idle exception,
+    stopper/hotplug/migration kernel threads, generic kthreads/workqueues,
+    io_uring workers.
+
+  rejected:
+    open paths, supported-without-evidence, runtime coverage over excluded
+    paths, disabled path execution, fallback authority, workqueue or internal
+    kthread identity as caller authority, implementation approval, production
+    protection, and cost-efficiency claims.
+
+  next:
+    implementation claim-ledger gate, upstream-drift recheck plan for reopening
+    implementation scope, then final implementation-ready audit.

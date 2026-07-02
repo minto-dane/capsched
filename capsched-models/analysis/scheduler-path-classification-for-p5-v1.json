@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "id": "scheduler-path-classification-for-p5-v1",
+  "date": "2026-07-02",
+  "status": "design_only_path_classification_no_implementation",
+  "linux_basis": {
+    "branch": "capsched-linux-l0",
+    "commit": "a0f2676adda634391983e74f29fcba577a9c919e",
+    "subject": "sched/exec_lease: Add task identity shadow"
+  },
+  "classification_vocabulary": [
+    "supported",
+    "disabled",
+    "excluded",
+    "future_support_required"
+  ],
+  "initial_p5_support_set": [
+    "ordinary_cfs_final_run_non_core_non_proxy_non_sched_ext",
+    "common_queued_move_move_queued_task",
+    "common_queued_move_move_queued_task_locked"
+  ],
+  "paths": [
+    {
+      "id": "ordinary_cfs_final_run",
+      "classification": "supported",
+      "required_before_support": [
+        "pre_settle_validation",
+        "class_picker_ineligibility",
+        "same_candidate_negative_test"
+      ]
+    },
+    {
+      "id": "common_queued_move",
+      "classification": "supported",
+      "required_before_support": [
+        "move_tuple",
+        "destination_validation",
+        "denied_move_negative_test"
+      ]
+    },
+    {
+      "id": "fair_direct_load_balance",
+      "classification": "excluded",
+      "future_support_required": true
+    },
+    {
+      "id": "rt_final_run_push_pull",
+      "classification": "excluded",
+      "future_support_required": true
+    },
+    {
+      "id": "deadline_final_run_server_push_pull",
+      "classification": "excluded",
+      "future_support_required": true
+    },
+    {
+      "id": "sched_ext",
+      "classification": "disabled",
+      "future_support_required": true
+    },
+    {
+      "id": "core_scheduling",
+      "classification": "disabled",
+      "future_support_required": true
+    },
+    {
+      "id": "proxy_execution",
+      "classification": "disabled",
+      "future_support_required": true
+    },
+    {
+      "id": "idle",
+      "classification": "excluded",
+      "future_support_required": false
+    },
+    {
+      "id": "stopper_hotplug_migration_kthreads",
+      "classification": "excluded",
+      "future_support_required": true
+    },
+    {
+      "id": "generic_kthreads_workqueues",
+      "classification": "excluded",
+      "future_support_required": true
+    },
+    {
+      "id": "io_uring_workers",
+      "classification": "excluded",
+      "future_support_required": true
+    }
+  ],
+  "claim_scope": {
+    "test_only_denial_experiment": true,
+    "runtime_coverage_all_scheduler_paths": false,
+    "production_protection": false,
+    "hypervisor_grade": false,
+    "cost_efficiency": false
+  },
+  "safety_flags": {
+    "implementation_approved": false,
+    "runtime_denial_approved": false,
+    "runtime_coverage": false,
+    "sched_ext_supported": false,
+    "core_scheduling_supported": false,
+    "proxy_execution_supported": false,
+    "rt_supported": false,
+    "deadline_supported": false,
+    "async_supported": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false
+  }
+}
