@@ -3830,8 +3830,9 @@ P4 allow-only skeleton implementation / validation 0147:
   status:
     Applied to Linux and partially validated. Full vmlinux off/on validation is
     complete in validation/0148. QEMU off/on boot/workload validation is
-    complete in validation/0149. Full P4 acceptance is still pending final
-    overclaim/security review.
+    complete in validation/0149. Final overclaim/security review is complete
+    in analysis/0128 and validation/0150. P4 allow-only compatibility slice is
+    closed.
 
   Linux:
     commit:
@@ -3890,4 +3891,6 @@ P4 allow-only skeleton implementation / validation 0147:
     deployment readiness, and P5 denial remain false.
 
   next:
-    Run final P4 overclaim/security review. Keep P5 denial blocked.
+    Reopen P5 readiness against the actual P4 code. Keep P5 denial blocked
+    until denial source shape, negative tests, path classification, and runtime
+    evidence are refreshed.

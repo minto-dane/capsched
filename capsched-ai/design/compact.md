@@ -3276,8 +3276,10 @@ P4 allow-only skeleton implementation:
       build/qemu/sched-exec-lease-p4-allow-only-matrix/20260702T221639Z-on
     both qemu_status=0 and WORKLOAD_RET 0.
 
-  Not yet done:
-    final overclaim/security review.
+  Analysis 0128 / validation 0150:
+    final overclaim/security review passed.
+    findings_reported=0.
+    P4 allow-only compatibility slice closed.
 
   Non-claims:
     no runtime denial, runtime coverage, budget enforcement, monitor
