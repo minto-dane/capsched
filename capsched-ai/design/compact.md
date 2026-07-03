@@ -3670,3 +3670,28 @@ P5A-R upstream drift/source-shape refresh:
     validation/0170 rerun 20260703T234210Z now requires 8 validations and 8
     models, includes upstream 71dfdfb0209b4, and still allows only drafting
     Linux `0009`. No runtime/protection/cost/datacenter claim is approved.
+
+P5A-R Linux 0009 source gate:
+  Linux patch `0009` is drafted at commit
+  7a402107fd63faf7063c2dea05e88e7f8a23f4bf and recorded in patch queue
+  `0009-sched-fair-Draft-ordinary-CFS-exec-lease-candidate.patch`.
+
+  Shape:
+    ordinary CFS fast path uses `pick_task_fair_sched_exec_lease()`.
+    normal class picker and DL fair-server picker still use `pick_task_fair()`.
+    static key is false and has no enable site.
+    active predicate excludes sched_ext, core scheduling, and proxy execution.
+    carrier is attempt-local with one denied task receipt, one blocked group
+    receipt, and retry limit 1.
+
+  Validation:
+    validation/0172 run 20260703T-p5ar-0009-source passed.
+    patch queue replay reached exact HEAD.
+    checkpatch and diff-check passed.
+    formal/0113 safe TLC passed with 5 generated states, 4 distinct states,
+    depth 4; 10 unsafe configs produced expected counterexamples.
+
+  Still false:
+    accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
+    runtime coverage, build/QEMU compatibility, production protection, cost,
+    deployment, datacenter readiness.

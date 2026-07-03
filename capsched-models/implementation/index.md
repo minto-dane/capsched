@@ -244,6 +244,20 @@ Current SchedExecLease L0 readiness:
     tests, security diff review, and final overclaim review. Runtime denial,
     CFS deny-and-repick correctness, runtime coverage, protection, cost,
     deployment, and datacenter claims remain unapproved.
+- `0034-sched-exec-lease-p5a-r-0009-ordinary-cfs-draft.md`
+  - Status: concrete `0009` Linux patch drafted and source-gated as an
+    untrusted ordinary-CFS-only behavior candidate; not accepted.
+  - Linux commit:
+    `7a402107fd63faf7063c2dea05e88e7f8a23f4bf`.
+  - Rule: the patch adds a dormant dedicated ordinary CFS wrapper,
+    attempt-local denied-task and blocked-group receipts, bounded retry, and
+    picker-visible candidate filtering in `pick_eevdf()` without adding public
+    ABI, trace ABI, exported symbols, monitor calls, unbounded scans, or
+    persistent hot denial fields. The static key has no enable site, and
+    validation/0172 records source/formal/checkpatch/replay evidence only.
+    Runtime denial correctness, CFS deny-and-repick correctness, build/QEMU
+    compatibility, runtime coverage, protection, cost, deployment, and
+    datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

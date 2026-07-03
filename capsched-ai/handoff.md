@@ -4459,3 +4459,44 @@ P5A-R upstream drift/source-shape refresh / validation 0171:
     upstream/master 71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5, and still
     concludes only that Linux `0009` may be drafted. Runtime/protection/cost
     claims remain false.
+
+P5A-R Linux 0009 source gate / validation 0172:
+  status:
+    Linux patch `0009` has been drafted and source-gated as an untrusted,
+    dormant ordinary-CFS-only behavior candidate. It is not accepted.
+
+  Linux / patch queue:
+    parent: d812f83c033a9f9b3d533e667e7106a5734eb30b
+    commit: 7a402107fd63faf7063c2dea05e88e7f8a23f4bf
+    subject: sched/fair: Draft ordinary CFS exec lease candidate
+    patch: linux-patches/patches/capsched-linux-l0/0009-sched-fair-Draft-ordinary-CFS-exec-lease-candidate.patch
+    patch sha256: 21dd92416d8309b82a2da7ead8fa9998661cff645f845dcdd0066b6393cd2d25
+    replay: build/replay/capsched-linux-l0-0009-20260703T231733Z
+    replay final HEAD: 7a402107fd63faf7063c2dea05e88e7f8a23f4bf
+
+  validation:
+    Run 20260703T-p5ar-0009-source passed.
+    checkpatch_clean=true.
+    diff_check_clean=true.
+    delta_files_exact_allowlist=true.
+    ordinary_cfs_wrapper_before_settlement=true.
+    static_key_dormant=true.
+    cross_path_predicate_present=true.
+    attempt_local_carrier_present=true.
+    pick_eevdf_pickable_checks=6.
+    safe TLC: 5 generated states, 4 distinct states, depth 4.
+    unsafe TLC: 10 expected counterexamples.
+
+  build note:
+    Targeted scheduler object build was attempted but not passed because the
+    host lacks `/usr/include/gelf.h`, required by objtool.
+
+  non-claims:
+    `0009` is not accepted. Runtime denial correctness, CFS deny-and-repick
+    correctness, runtime coverage, build/QEMU compatibility, production
+    protection, cost, deployment, and datacenter claims remain false.
+
+  next:
+    Acceptance evidence: full off/on builds after host dependency is available,
+    object/layout review, QEMU denial-disabled compatibility, negative ordinary
+    CFS denial tests, security diff review, and final overclaim review.

@@ -177,6 +177,7 @@ Updated: 2026-07-03
 | 0169 | Source/formal patch-plan gate passed; safe model passed; 16 unsafe configs produced expected counterexamples; 0009 may be drafted but behavior remains unaccepted | SchedExecLease P5A-R Ordinary-CFS Patch Plan |
 | 0170 | Final audit passed; required gates/models present; 0009 may be drafted but remains unaccepted | SchedExecLease P5A-R Implementation-Ready Audit |
 | 0171 | Upstream/source-shape refresh passed; P5A-R direct scheduler shape unchanged, lifecycle drift recorded and non-claimed | SchedExecLease P5A-R Upstream Drift Source-Shape Refresh |
+| 0172 | Source/formal/checkpatch/replay gate passed for dormant 0009 draft; build/QEMU/runtime/protection claims remain unapproved | SchedExecLease P5A-R 0009 Source Gate |
 
 ## Principles
 
