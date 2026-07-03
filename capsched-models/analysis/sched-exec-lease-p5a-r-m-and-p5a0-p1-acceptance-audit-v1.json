@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-m-and-p5a0-p1-acceptance-audit-v1",
+  "date": "2026-07-02",
+  "status": "design_audit_no_linux_code_approved",
+  "analysis": "analysis/0134-sched-exec-lease-p5a-r-m-and-p5a0-p1-acceptance-audit.md",
+  "inputs": {
+    "linux_head": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "source_gate": "validation/0156-sched-exec-lease-p5a0-p1-0008-source.md",
+    "subagent_reviews": [
+      "p5a_r_cfs_picker_eligibility",
+      "p5a_m_move_status_settlement",
+      "p5a0_p1_full_acceptance_gap"
+    ]
+  },
+  "p5a_r": {
+    "ready_for_behavior_patch": false,
+    "primary_blocker": "no_cfs_picker_visible_denied_candidate_state",
+    "current_hook_sufficient": false,
+    "key_source_functions": [
+      "kernel/sched/core.c: sched_exec_lease_validate_run_edge",
+      "kernel/sched/core.c: put_prev_set_next_task",
+      "kernel/sched/sched.h: put_prev_task",
+      "kernel/sched/sched.h: set_next_task",
+      "kernel/sched/fair.c: pick_task_fair",
+      "kernel/sched/fair.c: pick_next_entity",
+      "kernel/sched/fair.c: pick_eevdf",
+      "kernel/sched/fair.c: entity_eligible"
+    ],
+    "hazards": [
+      "pre_rq_curr_is_not_pre_settlement",
+      "same_denied_task_repick",
+      "nr_queued_nonzero_null_pick_spin",
+      "singleton_picker_bypass",
+      "idle_or_newidle_as_authority",
+      "cgroup_hierarchy_missed",
+      "buddy_or_protect_slice_missed"
+    ],
+    "required_artifacts": [
+      "cfs_picker_eligibility_source_map",
+      "ordinary_cfs_pre_settlement_map",
+      "cfs_denied_candidate_retry_model",
+      "negative_denial_validation_plan_update",
+      "denied_task_not_switched_source_checker"
+    ]
+  },
+  "p5a_m": {
+    "ready_for_behavior_patch": false,
+    "primary_blocker": "move_callers_assume_success_and_have_no_non_allow_status_settlement",
+    "current_hook_sufficient": false,
+    "key_source_functions": [
+      "kernel/sched/core.c: move_queued_task",
+      "kernel/sched/sched.h: move_queued_task_locked",
+      "kernel/sched/core.c: __migrate_task",
+      "kernel/sched/core.c: migration_cpu_stop",
+      "kernel/sched/core.c: affine_move_task",
+      "kernel/sched/core.c: migrate_swap_stop",
+      "kernel/sched/core.c: try_steal_cookie",
+      "kernel/sched/fair.c: detach_tasks",
+      "kernel/sched/sched.h: detach_task"
+    ],
+    "settlement_gaps": [
+      "migration_pending_completion_without_denied_status",
+      "affinity_mask_mutation_before_move_settlement",
+      "swap_two_task_atomicity",
+      "rt_dl_push_progress_assumptions",
+      "hotplug_push_progress_assumptions",
+      "core_cookie_steal_success_without_denied_status",
+      "fair_direct_load_balance_bypass"
+    ],
+    "required_artifacts": [
+      "move_result_carrier_design",
+      "caller_settlement_map",
+      "fair_direct_load_balance_scope_decision",
+      "move_denial_settlement_model",
+      "function_scoped_ordered_pattern_checker"
+    ]
+  },
+  "p5a0_p1": {
+    "source_gate_accepted": true,
+    "full_acceptance_complete": false,
+    "required_evidence": [
+      "config_off_full_vmlinux_build",
+      "config_on_full_vmlinux_build",
+      "object_or_section_equality",
+      "symbol_surface_diff",
+      "hot_function_disassembly_diff",
+      "section_size_diff",
+      "layout_evidence",
+      "fresh_upstream_drift",
+      "merge_tree",
+      "strict_checkpatch",
+      "get_maintainer",
+      "final_overclaim_security_review"
+    ]
+  },
+  "safety_flags": {
+    "linux_code_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "broad_move_denial_approved": false,
+    "runtime_coverage_claim": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false,
+    "datacenter_readiness": false
+  }
+}

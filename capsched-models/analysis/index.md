@@ -139,6 +139,7 @@ Updated: 2026-07-02
 | 0131 | P5A0 no-behavior infrastructure proposal recorded; no Linux patch approved | SchedExecLease P5A0 No-Behavior Infrastructure Proposal |
 | 0132 | P5A0.E prepatch evidence recorded; no Linux patch approved | SchedExecLease P5A0.E Prepatch Evidence |
 | 0133 | P5A0.P1 patch plan recorded; no Linux patch approved | SchedExecLease P5A0.P1 No-Behavior Patch Plan |
+| 0134 | Subagent-assisted audit; P5A-R/M remain blocked and P5A0.P1 full acceptance evidence is enumerated | SchedExecLease P5A-R/M and P5A0.P1 Acceptance Audit |
 
 ## Planned Analysis Notes
 
@@ -240,3 +241,4 @@ Updated: 2026-07-02
 | `sched-exec-lease-p5a0-no-behavior-infrastructure-proposal-v1.json` | P5A0 proposal | Machine-readable no-behavior infrastructure proposal, future patch constraints, move/run/test/setup shapes, required validation, and non-claims |
 | `sched-exec-lease-p5a0-e-prepatch-evidence-v1.json` | P5A0.E evidence | Machine-readable prepatch evidence package, candidate-scoped drift, future patch identity, source observations, low-overhead constraints, and non-claims |
 | `sched-exec-lease-p5a0-p1-no-behavior-patch-plan-v1.json` | P5A0.P1 patch plan | Machine-readable no-behavior patch-plan gate, per-0008 delta rule, lifecycle freeze, no-overhead acceptance evidence, and non-claims |
+| `sched-exec-lease-p5a-r-m-and-p5a0-p1-acceptance-audit-v1.json` | P5A blockers and acceptance audit | Machine-readable P5A-R picker blocker, P5A-M move settlement blocker, P5A0.P1 full-acceptance evidence gap, and forbidden claims |
