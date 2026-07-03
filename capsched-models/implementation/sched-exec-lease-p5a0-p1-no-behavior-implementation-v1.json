@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a0-p1-no-behavior-implementation-v1",
   "date": "2026-07-02",
-  "status": "linux_0008_source_replay_formal_full_build_object_layout_upstream_qemu_validated_full_acceptance_pending",
+  "status": "accepted_no_behavior_source_contract_slice",
   "implementation": "implementation/0032-sched-exec-lease-p5a0-p1-no-behavior-implementation.md",
   "candidate": {
     "id": "P5A0.P1",
@@ -13,7 +13,8 @@
     "object_layout_validated": true,
     "upstream_maintenance_validated": true,
     "qemu_validated": true,
-    "full_acceptance_complete": false,
+    "final_overclaim_security_review": true,
+    "full_acceptance_complete": true,
     "behavior_change_approved": false
   },
   "linux": {
@@ -72,14 +73,16 @@
     "qemu_on_status": 0,
     "qemu_off_workload_ret": 0,
     "qemu_on_workload_ret": 0,
+    "codex_security_diff_scan_complete": true,
+    "codex_security_reportable_findings": 0,
+    "codex_security_coverage_complete": true,
+    "final_overclaim_security_review_passed": true,
     "patch_queue_replay_exact_head": true,
     "patch_queue_replay_exact_tree": true,
     "formal_safe_passed": true,
     "formal_unsafe_expected_counterexamples": 11
   },
-  "pending_acceptance": [
-    "final_overclaim_security_review"
-  ],
+  "pending_acceptance": [],
   "safety_flags": {
     "runtime_denial_approved": false,
     "fair_picker_ineligibility": false,

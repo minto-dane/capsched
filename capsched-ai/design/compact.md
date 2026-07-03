@@ -40,8 +40,9 @@ task identity shadow, P3 no-op scheduler touchpoints, P4 allow-only final
 run/move validation helpers, and P5A0.P1 source-contract comments have been
 validated only as no-denial/no-ABI/no-monitor compatibility scaffolding.
 P5A0.P1 has source/replay/formal/full-build/object-layout/upstream/QEMU
-evidence, but not final overclaim acceptance. There is no runtime denial,
-monitor call, budget charging, runtime coverage, or protection claim.
+evidence and final overclaim/security review. It is accepted only as a
+no-behavior source-contract slice. There is no runtime denial, monitor call,
+budget charging, runtime coverage, or protection claim.
 Latest fetched upstream/master is
 `87320be9f0d24fce67631b7eef919f0b79c3e45c`.
 
@@ -3454,8 +3455,11 @@ P5A0.P1 concrete 0008 source/full-build/object-layout/upstream/QEMU gate:
       qemu_status=0.
       workload_ret=0.
 
-  Pending:
-    final overclaim/security review.
+  Acceptance:
+    validation/0161 final overclaim/security review passed.
+    Codex Security diff scan reported 0 findings with complete diff-scoped
+    coverage.
+    P5A0.P1 is accepted only as a no-behavior source-contract slice.
 
   Next:
     P5A-R fair-picker eligibility integration before CFS deny-one-pick-next.

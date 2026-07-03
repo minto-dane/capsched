@@ -65,8 +65,9 @@ d812f83c033a9f9b3d533e667e7106a5734eb30b
 ```
 
 That head includes P5A0.P1 `0008`, a comment-only no-behavior source-contract
-patch. It has source/replay/formal/full-build/object-layout/upstream/QEMU
-evidence, but final overclaim acceptance remains pending.
+patch. It is accepted only as a no-behavior source-contract slice after
+source/replay/formal/full-build/object-layout/upstream/QEMU evidence and final
+overclaim/security review in validation/0161.
 
 ADR-0007 fixes the N-series traceability policy. `N-*` remains a chronological
 work ledger for past and future work. Semantic meaning, Linux anchors, drift

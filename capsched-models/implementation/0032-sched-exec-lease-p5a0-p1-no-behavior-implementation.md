@@ -2,8 +2,7 @@
 
 Date: 2026-07-02
 
-Status: Linux `0008` patch created and source/replay/formal validated; full
-build, QEMU, object/layout, and final overclaim acceptance remain pending.
+Status: accepted as P5A0.P1 no-behavior source-contract slice only.
 
 ## Purpose
 
@@ -93,20 +92,24 @@ cost-efficiency
 deployment or datacenter readiness
 ```
 
-## Remaining Acceptance Work
+## Acceptance Closure
 
-The source gate, full `vmlinux` build, and object/layout checks are not full
-implementation closure. Validation/0157 records successful
-`CONFIG_SCHED_EXEC_LEASE=off/on` full builds. Validation/0158 records
-object/symbol/section-size review, hot scheduler function-size review, and
-build-only task layout probe evidence. Validation/0159 records
-candidate-scoped upstream drift, merge-tree, strict checkpatch, and
-get_maintainer evidence. Validation/0160 records QEMU off/on boot/workload
-smoke. Before treating P5A0.P1 as fully accepted, still run and record:
+P5A0.P1 is closed as a no-behavior source-contract slice. The closure evidence
+is:
 
 ```text
-final overclaim/security review
+validation/0156: source checker, patch replay, and formal source gate
+validation/0157: full vmlinux CONFIG_SCHED_EXEC_LEASE=off/on builds
+validation/0158: object, symbol, section-size, hot function-size, and layout
+validation/0159: candidate-scoped upstream drift and maintenance evidence
+validation/0160: QEMU off/on boot/workload compatibility smoke
+validation/0161: final overclaim and Codex Security diff review
 ```
+
+This closure does not approve behavior-changing enforcement, runtime denial,
+runtime coverage, public ABI, trace ABI, monitor calls, monitor verification,
+production protection, cost-efficiency, deployment readiness, or datacenter
+readiness.
 
 ## Next Design Direction
 
