@@ -33,12 +33,13 @@ file paths remain stable for traceability.
 
 Upstream Linux source has been fetched into sibling repository `linux/`.
 The current work branch is `capsched-linux-l0` at commit
-`a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8` after the SchedExecLease P4
-allow-only validation skeleton. No behavior-changing implementation patch
-points are accepted yet. P1 private object vocabulary, P2 task identity shadow,
-P3 no-op scheduler touchpoints, and P4 allow-only final-run/move validation
-helpers have been validated as no-denial/no-ABI/no-monitor compatibility only.
-There is no runtime denial, monitor call, budget charging, runtime coverage, or
+`d812f83c033a9f9b3d533e667e7106a5734eb30b` after the P5A0.P1 `0008`
+comment-only no-behavior source-contract patch. No behavior-changing
+implementation patch points are accepted yet. P1 private object vocabulary, P2
+task identity shadow, P3 no-op scheduler touchpoints, P4 allow-only final
+run/move validation helpers, and P5A0.P1 source-contract comments have been
+validated only as no-denial/no-ABI/no-monitor compatibility scaffolding. There
+is no runtime denial, monitor call, budget charging, runtime coverage, or
 protection claim.
 Latest fetched upstream/master is
 `87320be9f0d24fce67631b7eef919f0b79c3e45c`.
@@ -3417,4 +3418,30 @@ P5A0.P1 patch-plan gate:
   Next:
     Future P5A0.P1 no-behavior Linux patch draft under the gate. P5A-R and
     P5A-M remain blocked by fair-picker eligibility and move-status settlement.
+
+P5A0.P1 concrete 0008 source gate:
+  implementation/0032, formal/0103, and validation/0156 record the concrete
+  `0008` Linux patch at d812f83c033a9f9b3d533e667e7106a5734eb30b.
+
+  Shape:
+    comment-only delta.
+    files: include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c.
+    21 inserted comment lines.
+    no helper body, lifecycle body, task layout, scheduler branch, ABI,
+    monitor, allocation, locking, refcount, runtime-denial, or claim change.
+
+  Validation:
+    run-sched-exec-lease-p5a0-p1-0008-source-check.sh passed.
+    patch queue replay matched exact Linux head and tree.
+    formal/0103 safe passed.
+    11 unsafe configs produced expected counterexamples.
+
+  Pending:
+    full off/on build, QEMU denial-disabled smoke, object/symbol/disassembly,
+    section-size, hot-function growth, layout, and final overclaim/security
+    review.
+
+  Next:
+    P5A-R fair-picker eligibility integration before CFS deny-one-pick-next.
+    P5A-M status settlement before broad common move denial.
 ```

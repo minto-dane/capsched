@@ -161,6 +161,7 @@ Updated: 2026-07-02
 | 0153 | Strengthened JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5A0 remains no-behavior and no Linux patch is approved | SchedExecLease P5A0 No-Behavior Gate |
 | 0154 | Source/JSON gate passed; safe model passed; unsafe models produced expected counterexamples; P5A0.E prepatch evidence is recorded and no Linux patch is approved | SchedExecLease P5A0.E Prepatch Evidence |
 | 0155 | Source/JSON gate passed; safe model passed; 20 unsafe configs produced expected counterexamples; P5A0.P1 patch plan is recorded and no Linux patch is approved | SchedExecLease P5A0.P1 Patch Plan |
+| 0156 | Source checker, patch replay, and formal gate passed for concrete 0008; full build/QEMU/object/layout acceptance remains pending | SchedExecLease P5A0.P1 0008 Source Gate |
 
 ## Principles
 

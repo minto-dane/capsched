@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a0-p1-no-behavior-implementation-v1",
+  "date": "2026-07-02",
+  "status": "linux_0008_source_replay_formal_validated_full_acceptance_pending",
+  "implementation": "implementation/0032-sched-exec-lease-p5a0-p1-no-behavior-implementation.md",
+  "candidate": {
+    "id": "P5A0.P1",
+    "linux_patch_created": true,
+    "patch_queue_slot": "0008",
+    "source_contract_accepted": true,
+    "full_acceptance_complete": false,
+    "behavior_change_approved": false
+  },
+  "linux": {
+    "parent_commit": "a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8",
+    "future_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "patch_name": "0008-sched-exec_lease-Document-P5A0.P1-no-behavior-bounda.patch",
+    "patch_sha256": "f3622196210b7953ce34f145cecec8fb23f95cfffc4852c87e3dedbb12a4ea48",
+    "series_sha256": "6ad90da9bf1f96eabe7a84c333ec15e46810a015ccb7b539f8e941e82dfaa9ac",
+    "changed_files": [
+      "include/linux/sched_exec_lease.h",
+      "kernel/sched/exec_lease.c"
+    ],
+    "delta_kind": "comment_only",
+    "inserted_comment_lines": 21
+  },
+  "validated_source_facts": {
+    "checkpatch_clean": true,
+    "delta_files_exact_allowlist": true,
+    "delta_comment_only": true,
+    "hot_helper_bodies_unchanged": true,
+    "lifecycle_helper_bodies_unchanged": true,
+    "sched_exec_task_layout_changed": false,
+    "helper_return_set_allow_only": true,
+    "scheduler_branch_on_validation_result": false,
+    "scheduler_validation_callsite_count": 3,
+    "fair_picker_ineligibility": false,
+    "public_abi_or_monitor": false,
+    "runtime_denial": false,
+    "runtime_coverage_claim": false,
+    "production_or_cost_claim": false,
+    "patch_queue_replay_exact_head": true,
+    "patch_queue_replay_exact_tree": true,
+    "formal_safe_passed": true,
+    "formal_unsafe_expected_counterexamples": 11
+  },
+  "pending_acceptance": [
+    "config_off_full_vmlinux_build",
+    "config_on_full_vmlinux_build",
+    "qemu_denial_disabled_boot_workload_smoke",
+    "object_symbol_disassembly_review",
+    "exec_lease_object_section_size_review",
+    "hot_scheduler_function_growth_review",
+    "task_rq_sched_entity_cfs_rq_layout_review",
+    "final_overclaim_security_review"
+  ],
+  "safety_flags": {
+    "runtime_denial_approved": false,
+    "fair_picker_ineligibility": false,
+    "broad_common_move_denial": false,
+    "retry_fail_closed_or_quarantine": false,
+    "runtime_coverage": false,
+    "budget_enforcement": false,
+    "public_abi": false,
+    "public_tracepoint_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_readiness": false,
+    "datacenter_readiness": false
+  }
+}

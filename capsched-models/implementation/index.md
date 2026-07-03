@@ -216,6 +216,20 @@ Current SchedExecLease L0 readiness:
     denial-disabled smoke, object/symbol/disassembly, section-size and hot
     scheduler function growth review, layout review, and overclaim/security
     review.
+- `0032-sched-exec-lease-p5a0-p1-no-behavior-implementation.md`
+  - Status: concrete `0008` Linux patch created and source/replay/formal
+    validated; full build, QEMU, object/layout, and final overclaim acceptance
+    remain pending.
+  - Linux commit:
+    `d812f83c033a9f9b3d533e667e7106a5734eb30b`.
+  - Rule: the `0008` delta is comment-only and changes only
+    `include/linux/sched_exec_lease.h` and `kernel/sched/exec_lease.c`.
+    Hot-path helper bodies, lifecycle helper bodies, task layout, scheduler
+    control flow, validation return behavior, ABI, monitor surface, runtime
+    denial, runtime coverage, protection, cost, deployment, and datacenter
+    claims remain unchanged and unapproved. P5A-R still requires fair-picker
+    eligibility integration; P5A-M still requires status settlement across
+    migration, affinity, swap, push, and core-cookie-steal paths.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

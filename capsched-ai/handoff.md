@@ -58,6 +58,16 @@ renaming the inert Linux scaffold to `CONFIG_SCHED_EXEC_LEASE`,
 `include/linux/sched_exec_lease.h`, and `kernel/sched/exec_lease.c`. No
 behavior-changing scheduler patch points are accepted yet.
 
+Current Linux work branch `capsched-linux-l0` is at:
+
+```text
+d812f83c033a9f9b3d533e667e7106a5734eb30b
+```
+
+That head includes P5A0.P1 `0008`, a comment-only no-behavior source-contract
+patch. It has source/replay/formal evidence, but full build, QEMU,
+object/layout, and final overclaim acceptance remain pending.
+
 ADR-0007 fixes the N-series traceability policy. `N-*` remains a chronological
 work ledger for past and future work. Semantic meaning, Linux anchors, drift
 state, validation class, and claim limits live in overlay rows under
@@ -4073,3 +4083,39 @@ P5A0.P1 patch-plan gate / validation 0155:
   next:
     Future P5A0.P1 no-behavior Linux patch draft under this gate. P5A-R CFS
     denial and P5A-M broad move denial remain blocked.
+
+P5A0.P1 concrete 0008 source gate / validation 0156:
+  status:
+    Concrete `0008` exists and is accepted as source-contract/no-behavior
+    evidence only. Full build, QEMU, object/layout, and final
+    overclaim/security acceptance remain pending.
+
+  linux:
+    parent: a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8
+    head:   d812f83c033a9f9b3d533e667e7106a5734eb30b
+    patch:  linux-patches/patches/capsched-linux-l0/0008-sched-exec_lease-Document-P5A0.P1-no-behavior-bounda.patch
+
+  artifacts:
+    capsched-models/implementation/0032-sched-exec-lease-p5a0-p1-no-behavior-implementation.md
+    capsched-models/implementation/sched-exec-lease-p5a0-p1-no-behavior-implementation-v1.json
+    capsched-models/formal/0103-p5a0-p1-0008-source-gate-model/
+    capsched-models/validation/0156-sched-exec-lease-p5a0-p1-0008-source.md
+    capsched-models/validation/run-sched-exec-lease-p5a0-p1-0008-source-check.sh
+
+  validation:
+    Source gate run 20260702T-p5a0-p1-0008-source passed.
+    Patch queue replay matched exact Linux head and tree.
+    formal/0103 safe passed.
+    11 unsafe configs produced expected counterexamples.
+
+  non-claims:
+    No behavior change, runtime denial, fair-picker ineligibility, broad move
+    denial, runtime coverage, ABI, monitor call, monitor verification,
+    production protection, hypervisor-grade isolation, cost, deployment, or
+    datacenter claim is approved.
+
+  next:
+    Finish P5A0.P1 full acceptance if desired, then design the first behavior
+    slice. P5A-R must start with fair-picker eligibility integration. P5A-M
+    must start with status settlement for migration, affinity, swap, push, and
+    core-cookie-steal.
