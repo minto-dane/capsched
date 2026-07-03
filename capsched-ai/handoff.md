@@ -4274,3 +4274,33 @@ P5A-R group hierarchy settlement / validation 0165:
 
   next:
     P5A-R core/DL/proxy/SCX exclusion-or-settlement gate.
+
+P5A-R cross-path exclusion/settlement / validation 0166:
+  status:
+    Source/formal gate passed. No Linux behavior patch, runtime denial, CFS
+    deny-and-repick, core/DL/proxy/SCX implementation, runtime coverage, monitor
+    verification, protection, cost, deployment, or datacenter claim is approved.
+
+  artifacts:
+    capsched-models/analysis/0139-sched-exec-lease-p5a-r-cross-path-exclusion-settlement.md
+    capsched-models/analysis/sched-exec-lease-p5a-r-cross-path-exclusion-settlement-v1.json
+    capsched-models/formal/0107-p5a-r-cross-path-exclusion-settlement-model/
+    capsched-models/validation/0166-sched-exec-lease-p5a-r-cross-path-exclusion-settlement.md
+    capsched-models/validation/run-sched-exec-lease-p5a-r-cross-path-exclusion-settlement.sh
+
+  validation:
+    Run 20260703T220432Z passed.
+    source anchors 34/34, missing 0, line drift 0.
+    semantic cross-path source shape ok.
+    safe TLC: 5 generated states, 4 distinct states, depth 4.
+    unsafe TLC: 18 expected counterexamples.
+
+  result:
+    P5A-R ordinary-CFS-only behavior must exclude or separately settle core
+    scheduling cached/sibling/cookie paths, DL fair/ext servers, proxy
+    donor/executor rewriting, sched_ext/switched-all, and class-loop non-fair
+    selection before deny-one-pick-next semantics are claimed.
+
+  next:
+    no-O(n)/no-hot-layout disabled-overhead gate, negative validation plan, and
+    implementation patch plan.

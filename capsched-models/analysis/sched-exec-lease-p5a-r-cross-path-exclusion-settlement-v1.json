@@ -1,0 +1,358 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-cross-path-exclusion-settlement-v1",
+  "date": "2026-07-03",
+  "status": "formal_source_gate_recorded_no_linux_patch_approved",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "prior_gate": "analysis/sched-exec-lease-p5a-r-group-hierarchy-settlement-v1.json"
+  },
+  "scope": {
+    "slice": "P5A-R",
+    "goal": "cross-path exclusion-or-settlement gate before ordinary-CFS-only behavior patch readiness",
+    "ordinary_cfs_only": true,
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "cross_path_behavior_patch_approved": false,
+    "core_settlement_approved": false,
+    "deadline_server_settlement_approved": false,
+    "proxy_settlement_approved": false,
+    "sched_ext_settlement_approved": false
+  },
+  "required_state_distinctions": [
+    "OrdinaryCfsPick",
+    "ClassLoopNonFairPick",
+    "CoreCachedPick",
+    "CoreSiblingPick",
+    "CoreCookieReplacement",
+    "CoreCookieSteal",
+    "DlFairServerPick",
+    "DlExtServerPick",
+    "ProxyDonorPick",
+    "ProxyExecutorPick",
+    "ScxClassPick",
+    "ScxSwitchedAll",
+    "CrossPathExcluded",
+    "CrossPathSettled"
+  ],
+  "required_invariants": {
+    "all_non_ordinary_cfs_paths_excluded_or_settled_before_behavior": true,
+    "core_enabled_requires_exclusion_or_settlement": true,
+    "core_cached_pick_requires_revalidation_or_exclusion": true,
+    "core_sibling_pick_requires_revalidation_or_exclusion": true,
+    "core_cookie_replacement_requires_revalidation_or_exclusion": true,
+    "core_cookie_steal_requires_move_settlement_or_exclusion": true,
+    "deadline_server_requires_server_identity_budget_retry_settlement_or_exclusion": true,
+    "proxy_requires_donor_executor_settlement_or_exclusion": true,
+    "sched_ext_requires_exclusion_or_settlement": true,
+    "class_loop_non_fair_requires_exclusion_or_settlement": true,
+    "retry_task_is_not_denial_proof": true,
+    "ordinary_cfs_only_scope": true
+  },
+  "source_anchors": [
+    {
+      "id": "scx_enabled_gates_fair_fastpath",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6137,
+      "pattern": "if (scx_enabled())"
+    },
+    {
+      "id": "ordinary_cfs_fastpath_pick_task_fair",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6149,
+      "pattern": "p = pick_task_fair(rq, rf);"
+    },
+    {
+      "id": "ordinary_cfs_fastpath_settlement",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6157,
+      "pattern": "put_prev_set_next_task(rq, rq->donor, p);"
+    },
+    {
+      "id": "class_loop_pick_task",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6165,
+      "pattern": "p = class->pick_task(rq, rf);"
+    },
+    {
+      "id": "sched_core_enabled_helper",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "sched_core_enabled(struct rq",
+      "expected_line": 1460,
+      "pattern": "static inline bool sched_core_enabled(struct rq *rq)"
+    },
+    {
+      "id": "core_wrapper_disabled_returns_plain_pick",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "pick_next_task(struct rq",
+      "expected_line": 6234,
+      "pattern": "return __pick_next_task(rq, rf);"
+    },
+    {
+      "id": "core_cached_pick_sequence",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "pick_next_task(struct rq",
+      "expected_line": 6259,
+      "pattern": "if (rq->core->core_pick_seq == rq->core->core_task_seq &&"
+    },
+    {
+      "id": "core_cached_pick_next",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "pick_next_task(struct rq",
+      "expected_line": 6264,
+      "pattern": "next = rq->core_pick;"
+    },
+    {
+      "id": "core_sibling_pick_task",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "pick_next_task(struct rq",
+      "expected_line": 6345,
+      "pattern": "p = pick_task(rq_i, rf);"
+    },
+    {
+      "id": "core_sibling_pick_cached",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "pick_next_task(struct rq",
+      "expected_line": 6349,
+      "pattern": "rq_i->core_pick = p;"
+    },
+    {
+      "id": "core_cookie_replacement_find",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "pick_next_task(struct rq",
+      "expected_line": 6369,
+      "pattern": "p = sched_core_find(rq_i, cookie);"
+    },
+    {
+      "id": "core_cookie_replacement_cached",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "p = sched_core_find(rq_i, cookie);",
+      "expected_line": 6374,
+      "pattern": "rq_i->core_pick = p;"
+    },
+    {
+      "id": "core_out_set_next",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "pick_next_task(struct rq",
+      "expected_line": 6453,
+      "pattern": "put_prev_set_next_task(rq, rq->donor, next);"
+    },
+    {
+      "id": "sched_core_find_symbol",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "sched_core_find(struct rq",
+      "expected_line": 373,
+      "pattern": "static struct task_struct *sched_core_find(struct rq *rq, unsigned long cookie)"
+    },
+    {
+      "id": "try_steal_cookie_symbol",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "try_steal_cookie(int",
+      "expected_line": 6460,
+      "pattern": "static bool try_steal_cookie(int this, int that)"
+    },
+    {
+      "id": "try_steal_cookie_moves_task",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "try_steal_cookie(int",
+      "expected_line": 6499,
+      "pattern": "move_queued_task_locked(src, dst, p);"
+    },
+    {
+      "id": "dl_server_init_callback_storage",
+      "path": "linux/kernel/sched/deadline.c",
+      "symbol": "void dl_server_init",
+      "expected_line": 1838,
+      "pattern": "dl_se->server_pick_task = pick_task;"
+    },
+    {
+      "id": "deadline_pick_task_dl_symbol",
+      "path": "linux/kernel/sched/deadline.c",
+      "symbol": "__pick_task_dl(struct rq",
+      "expected_line": 2814,
+      "pattern": "static struct task_struct *__pick_task_dl(struct rq *rq, struct rq_flags *rf)"
+    },
+    {
+      "id": "deadline_server_pick_callback",
+      "path": "linux/kernel/sched/deadline.c",
+      "symbol": "__pick_task_dl(struct rq",
+      "expected_line": 2828,
+      "pattern": "p = dl_se->server_pick_task(dl_se, rf);"
+    },
+    {
+      "id": "deadline_server_sets_rq_dl_server",
+      "path": "linux/kernel/sched/deadline.c",
+      "symbol": "__pick_task_dl(struct rq",
+      "expected_line": 2833,
+      "pattern": "rq->dl_server = dl_se;"
+    },
+    {
+      "id": "fair_server_pick_task_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "fair_server_pick_task(struct",
+      "expected_line": 9957,
+      "pattern": "fair_server_pick_task(struct sched_dl_entity *dl_se, struct rq_flags *rf)"
+    },
+    {
+      "id": "fair_server_returns_pick_task_fair",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "fair_server_pick_task(struct",
+      "expected_line": 9960,
+      "pattern": "return pick_task_fair(dl_se->rq, rf);"
+    },
+    {
+      "id": "put_prev_set_next_dl_server_copies_server",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "__put_prev_set_next_dl_server",
+      "expected_line": 2754,
+      "pattern": "next->dl_server = rq->dl_server;"
+    },
+    {
+      "id": "proxy_find_proxy_task_symbol",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "find_proxy_task(struct rq",
+      "expected_line": 6876,
+      "pattern": "find_proxy_task(struct rq *rq, struct task_struct *donor, struct rq_flags *rf)"
+    },
+    {
+      "id": "proxy_schedule_guard",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__schedule(int sched_mode)",
+      "expected_line": 7156,
+      "pattern": "if (sched_proxy_exec()) {"
+    },
+    {
+      "id": "proxy_sets_donor_before_rewrite",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__schedule(int sched_mode)",
+      "expected_line": 7159,
+      "pattern": "rq_set_donor(rq, next);"
+    },
+    {
+      "id": "proxy_rewrites_next",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__schedule(int sched_mode)",
+      "expected_line": 7162,
+      "pattern": "next = find_proxy_task(rq, next, &rf);"
+    },
+    {
+      "id": "scx_enabled_macro",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "scx_enabled()",
+      "expected_line": 1868,
+      "pattern": "#define scx_enabled()"
+    },
+    {
+      "id": "scx_switched_all_skips_fair",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "next_active_class",
+      "expected_line": 2806,
+      "pattern": "if (scx_switched_all() && class == &fair_sched_class)"
+    },
+    {
+      "id": "scx_pick_task_symbol",
+      "path": "linux/kernel/sched/ext/ext.c",
+      "symbol": "pick_task_scx(struct rq",
+      "expected_line": 3223,
+      "pattern": "static struct task_struct *pick_task_scx(struct rq *rq, struct rq_flags *rf)"
+    },
+    {
+      "id": "scx_pick_task_uses_do_pick",
+      "path": "linux/kernel/sched/ext/ext.c",
+      "symbol": "pick_task_scx(struct rq",
+      "expected_line": 3225,
+      "pattern": "return do_pick_task_scx(rq, rf, false);"
+    },
+    {
+      "id": "ext_server_pick_task_symbol",
+      "path": "linux/kernel/sched/ext/ext.c",
+      "symbol": "ext_server_pick_task(struct",
+      "expected_line": 3235,
+      "pattern": "ext_server_pick_task(struct sched_dl_entity *dl_se, struct rq_flags *rf)"
+    },
+    {
+      "id": "ext_server_forces_scx_pick",
+      "path": "linux/kernel/sched/ext/ext.c",
+      "symbol": "ext_server_pick_task(struct",
+      "expected_line": 3240,
+      "pattern": "return do_pick_task_scx(dl_se->rq, rf, true);"
+    },
+    {
+      "id": "ext_sched_class_pick_task_scx",
+      "path": "linux/kernel/sched/ext/ext.c",
+      "symbol": "DEFINE_SCHED_CLASS(ext)",
+      "expected_line": 4575,
+      "pattern": "pick_task_scx"
+    }
+  ],
+  "required_checks": {
+    "source_anchors_symbol_scoped": true,
+    "ordinary_cfs_fastpath_shape_recorded": true,
+    "core_cached_pick_shape_recorded": true,
+    "core_sibling_and_cookie_replacement_shape_recorded": true,
+    "core_cookie_steal_move_shape_recorded": true,
+    "deadline_server_callback_shape_recorded": true,
+    "fair_server_borrows_pick_task_fair_recorded": true,
+    "ext_server_borrows_scx_pick_recorded": true,
+    "proxy_donor_executor_rewrite_shape_recorded": true,
+    "sched_ext_switched_all_shape_recorded": true,
+    "formal_safe_passed": true,
+    "formal_unsafe_counterexamples": true,
+    "non_claim_checks": true
+  },
+  "rejected_design_families": [
+    "fair_only_hook_with_core_enabled",
+    "core_cached_pick_without_revalidation",
+    "core_sibling_pick_without_revalidation",
+    "core_cookie_replacement_without_revalidation",
+    "core_cookie_steal_without_move_settlement",
+    "deadline_server_borrow_without_server_settlement",
+    "dl_fair_server_as_plain_cfs",
+    "dl_ext_server_as_plain_scx",
+    "proxy_donor_equals_executor",
+    "proxy_executor_without_donor_relation",
+    "sched_ext_as_security_root",
+    "scx_switched_all_as_cfs_coverage",
+    "class_loop_fallback_after_cfs_denial",
+    "retry_task_as_denial_proof",
+    "behavior_patch_before_cross_path_gate"
+  ],
+  "formal": {
+    "model": "formal/0107-p5a-r-cross-path-exclusion-settlement-model/P5ARCrossPathExclusionSettlement.tla",
+    "safe_cfg": "P5ARCrossPathExclusionSettlementSafe.cfg",
+    "unsafe_cfg_count": 18,
+    "safe_passed": true,
+    "unsafe_expected_counterexamples": 18
+  },
+  "safety_flags": {
+    "linux_code_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "cross_path_behavior_patch_approved": false,
+    "core_settlement_approved": false,
+    "deadline_server_settlement_approved": false,
+    "proxy_settlement_approved": false,
+    "sched_ext_settlement_approved": false,
+    "runtime_coverage_claim": false,
+    "budget_enforcement_claim": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

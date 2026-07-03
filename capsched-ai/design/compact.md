@@ -3544,7 +3544,23 @@ P5A-R group hierarchy settlement:
     ChildCfsRqExhausted. ParentOverDenied is an explicit unsafe state.
     Accounting aliases are not child exhaustion proof.
 
+P5A-R cross-path exclusion/settlement:
+  analysis/0139, formal/0107, and validation/0166 are complete as a pre-code
+  source/formal gate only.
+
+  Validation:
+    run 20260703T220432Z
+    source anchors 34/34, line drift 0
+    semantic cross-path source shape ok
+    safe TLC: 5 generated states, 4 distinct states, depth 4
+    unsafe TLC: 18 expected counterexamples
+
+  Result:
+    Ordinary-CFS-only denial semantics may not be claimed unless core
+    scheduling, DL servers, proxy execution, sched_ext, and class-loop non-fair
+    paths are excluded or separately settled. RETRY_TASK is not denial proof.
+
   Still open:
-    core/DL/proxy/SCX exclusion-or-settlement gate, then no-O(n)/no-hot-layout
-    disabled-overhead gate.
+    no-O(n)/no-hot-layout disabled-overhead gate, negative validation plan, and
+    implementation patch plan.
 ```

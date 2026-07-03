@@ -171,6 +171,7 @@ Updated: 2026-07-03
 | 0163 | Source/JSON gate passed; safe model passed; 28 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Picker Ineligibility Gate |
 | 0164 | Source-shape checker passed; safe model passed; 11 unsafe configs produced expected counterexamples; P5A-R hierarchy settlement remains open | SchedExecLease P5A-R EEVDF Return Dominance |
 | 0165 | Source/formal gate passed; safe model passed; 13 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Group Hierarchy Settlement |
+| 0166 | Source/formal gate passed; safe model passed; 18 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Cross-Path Exclusion/Settlement |
 
 ## Principles
 
