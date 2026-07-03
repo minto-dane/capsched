@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-02
+Updated: 2026-07-03
 
 Read this first when resuming the project.
 
@@ -65,8 +65,9 @@ d812f83c033a9f9b3d533e667e7106a5734eb30b
 ```
 
 That head includes P5A0.P1 `0008`, a comment-only no-behavior source-contract
-patch. It has source/replay/formal evidence, but full build, QEMU,
-object/layout, and final overclaim acceptance remain pending.
+patch. It has source/replay/formal/full-build evidence, but QEMU,
+object/layout, upstream-maintenance, and final overclaim acceptance remain
+pending.
 
 ADR-0007 fixes the N-series traceability policy. `N-*` remains a chronological
 work ledger for past and future work. Semantic meaning, Linux anchors, drift
@@ -4084,11 +4085,13 @@ P5A0.P1 patch-plan gate / validation 0155:
     Future P5A0.P1 no-behavior Linux patch draft under this gate. P5A-R CFS
     denial and P5A-M broad move denial remain blocked.
 
-P5A0.P1 concrete 0008 source gate / validation 0156:
+P5A0.P1 concrete 0008 source/full-build gate / validations 0156-0157:
   status:
     Concrete `0008` exists and is accepted as source-contract/no-behavior
-    evidence only. Full build, QEMU, object/layout, and final
-    overclaim/security acceptance remain pending.
+    evidence only. Full `vmlinux` build passed for
+    `CONFIG_SCHED_EXEC_LEASE=off/on`. QEMU, object/layout,
+    upstream-maintenance, and final overclaim/security acceptance remain
+    pending.
 
   linux:
     parent: a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8
@@ -4100,6 +4103,7 @@ P5A0.P1 concrete 0008 source gate / validation 0156:
     capsched-models/implementation/sched-exec-lease-p5a0-p1-no-behavior-implementation-v1.json
     capsched-models/formal/0103-p5a0-p1-0008-source-gate-model/
     capsched-models/validation/0156-sched-exec-lease-p5a0-p1-0008-source.md
+    capsched-models/validation/0157-sched-exec-lease-p5a0-p1-full-build.md
     capsched-models/validation/run-sched-exec-lease-p5a0-p1-0008-source-check.sh
 
   validation:
@@ -4107,6 +4111,9 @@ P5A0.P1 concrete 0008 source gate / validation 0156:
     Patch queue replay matched exact Linux head and tree.
     formal/0103 safe passed.
     11 unsafe configs produced expected counterexamples.
+    Systemd unit capsched-p5a0-p1-0008-full-build.service passed.
+    CONFIG_SCHED_EXEC_LEASE=off full vmlinux built with exec_lease.o absent.
+    CONFIG_SCHED_EXEC_LEASE=on full vmlinux built with exec_lease.o present.
 
   non-claims:
     No behavior change, runtime denial, fair-picker ineligibility, broad move
@@ -4115,7 +4122,7 @@ P5A0.P1 concrete 0008 source gate / validation 0156:
     datacenter claim is approved.
 
   next:
-    Finish P5A0.P1 full acceptance if desired, then design the first behavior
+    Finish P5A0.P1 full acceptance evidence, then design the first behavior
     slice. P5A-R must start with fair-picker eligibility integration. P5A-M
-    must start with status settlement for migration, affinity, swap, push, and
-    core-cookie-steal.
+    must start with status settlement for migration, affinity, swap/push/pull,
+    hotplug, and core-cookie-steal.

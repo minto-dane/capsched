@@ -95,11 +95,11 @@ deployment or datacenter readiness
 
 ## Remaining Acceptance Work
 
-The source gate is not full implementation closure. Before treating P5A0.P1 as
-fully accepted, run and record:
+The source gate and full `vmlinux` build are not full implementation closure.
+Validation/0157 records successful `CONFIG_SCHED_EXEC_LEASE=off/on` full
+builds. Before treating P5A0.P1 as fully accepted, still run and record:
 
 ```text
-CONFIG_SCHED_EXEC_LEASE=off/on full vmlinux builds
 QEMU denial-disabled boot/workload smoke
 object/symbol/disassembly review
 exec_lease.o section-size review

@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-02
+Updated: 2026-07-03
 
 ## Project
 
@@ -38,9 +38,11 @@ comment-only no-behavior source-contract patch. No behavior-changing
 implementation patch points are accepted yet. P1 private object vocabulary, P2
 task identity shadow, P3 no-op scheduler touchpoints, P4 allow-only final
 run/move validation helpers, and P5A0.P1 source-contract comments have been
-validated only as no-denial/no-ABI/no-monitor compatibility scaffolding. There
-is no runtime denial, monitor call, budget charging, runtime coverage, or
-protection claim.
+validated only as no-denial/no-ABI/no-monitor compatibility scaffolding.
+P5A0.P1 has source/replay/formal/full-build evidence, but not QEMU,
+object/layout, upstream-maintenance, or final overclaim acceptance. There is no
+runtime denial, monitor call, budget charging, runtime coverage, or protection
+claim.
 Latest fetched upstream/master is
 `87320be9f0d24fce67631b7eef919f0b79c3e45c`.
 
@@ -3419,9 +3421,10 @@ P5A0.P1 patch-plan gate:
     Future P5A0.P1 no-behavior Linux patch draft under the gate. P5A-R and
     P5A-M remain blocked by fair-picker eligibility and move-status settlement.
 
-P5A0.P1 concrete 0008 source gate:
-  implementation/0032, formal/0103, and validation/0156 record the concrete
-  `0008` Linux patch at d812f83c033a9f9b3d533e667e7106a5734eb30b.
+P5A0.P1 concrete 0008 source/full-build gate:
+  implementation/0032, formal/0103, validation/0156, and validation/0157
+  record the concrete `0008` Linux patch at
+  d812f83c033a9f9b3d533e667e7106a5734eb30b.
 
   Shape:
     comment-only delta.
@@ -3435,11 +3438,13 @@ P5A0.P1 concrete 0008 source gate:
     patch queue replay matched exact Linux head and tree.
     formal/0103 safe passed.
     11 unsafe configs produced expected counterexamples.
+    full CONFIG_SCHED_EXEC_LEASE=off/on vmlinux builds passed.
+    off build has exec_lease.o absent; on build has exec_lease.o present.
 
   Pending:
-    full off/on build, QEMU denial-disabled smoke, object/symbol/disassembly,
-    section-size, hot-function growth, layout, and final overclaim/security
-    review.
+    QEMU denial-disabled smoke, object/symbol/disassembly, section-size,
+    hot-function growth, layout, upstream drift/merge-tree, get_maintainer, and
+    final overclaim/security review.
 
   Next:
     P5A-R fair-picker eligibility integration before CFS deny-one-pick-next.
