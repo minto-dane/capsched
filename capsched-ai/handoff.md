@@ -4086,14 +4086,14 @@ P5A0.P1 patch-plan gate / validation 0155:
     denial and P5A-M broad move denial remain blocked.
 
 P5A0.P1 concrete 0008 source/full-build/object-layout/upstream/QEMU gate /
-validations 0156-0160:
+validations 0156-0161:
   status:
     Concrete `0008` exists and is accepted as source-contract/no-behavior
     evidence only. Full `vmlinux` build passed for
     `CONFIG_SCHED_EXEC_LEASE=off/on`. Object/symbol/section-size, hot
     scheduler function-size, build-only task layout checks, and
     candidate-scoped upstream maintenance checks, and QEMU off/on boot/workload
-    smoke passed. Final overclaim/security acceptance remains pending.
+    smoke passed. Final overclaim/security review passed in validation/0161.
 
   linux:
     parent: a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8
@@ -4109,6 +4109,7 @@ validations 0156-0160:
     capsched-models/validation/0158-sched-exec-lease-p5a0-p1-object-layout.md
     capsched-models/validation/0159-sched-exec-lease-p5a0-p1-upstream-maintenance.md
     capsched-models/validation/0160-sched-exec-lease-p5a0-p1-qemu-boot-smoke.md
+    capsched-models/validation/0161-sched-exec-lease-p5a0-p1-final-overclaim-security-review.md
     capsched-models/validation/run-sched-exec-lease-p5a0-p1-0008-source-check.sh
     capsched-models/validation/run-sched-exec-lease-p5a0-p1-0008-object-check.sh
     capsched-models/validation/run-sched-exec-lease-p5a0-p1-0008-upstream-check.sh
@@ -4131,6 +4132,8 @@ validations 0156-0160:
     get_maintainer emitted 12 rows.
     QEMU matrix run 20260703T010812Z passed off/on.
     workload_mode=all, qemu_status=0, workload_ret=0 for both modes.
+    Codex Security diff scan reported 0 findings with complete diff-scoped
+    coverage for include/linux/sched_exec_lease.h and kernel/sched/exec_lease.c.
 
   non-claims:
     No behavior change, runtime denial, fair-picker ineligibility, broad move
@@ -4139,7 +4142,34 @@ validations 0156-0160:
     datacenter claim is approved.
 
   next:
-    Finish P5A0.P1 full acceptance evidence, then design the first behavior
-    slice. P5A-R must start with fair-picker eligibility integration. P5A-M
-    must start with status settlement for migration, affinity, swap/push/pull,
+    P5A-R must start with fair-picker eligibility integration. P5A-M must
+    start with status settlement for migration, affinity, swap/push/pull,
     hotplug, and core-cookie-steal.
+
+P5A-R CFS picker source map / validation 0162:
+  status:
+    Recorded and source-map validated only. No Linux behavior patch, runtime
+    denial, CFS deny-and-repick, runtime coverage, monitor verification,
+    protection, cost, deployment, or datacenter claim is approved.
+
+  artifacts:
+    capsched-models/analysis/0135-sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map.md
+    capsched-models/analysis/sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map-v1.json
+    capsched-models/validation/0162-sched-exec-lease-p5a-r-cfs-picker-source-map.md
+
+  source findings:
+    P4 run-edge validation is after pick_next_task and put_prev_set_next_task
+    settlement, so it is too late for deny-and-repick without rollback.
+    pick_task_fair descends CFS group hierarchy through pick_next_entity and
+    pick_eevdf.
+    sched_delayed is delayed dequeue, not lease denial.
+    RETRY_TASK alone can spin unless denied candidates are picker-visible.
+    Core scheduling can cache core_pick and replace picks through cookie search.
+    DL servers can nest fair picks.
+    Proxy execution splits donor and executor.
+    sched_ext switched-all paths bypass CFS.
+
+  next:
+    P5A-R picker ineligibility gate: attempt-local denied-candidate carrier,
+    bounded retry, hierarchy settlement, core/DL/proxy/SCX exclusion or
+    settlement, and accounting separation.

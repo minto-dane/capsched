@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map-v1",
+  "date": "2026-07-03",
+  "status": "source_map_only_no_linux_patch_approved",
+  "linux": {
+    "branch": "capsched-linux-l0",
+    "work_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c"
+  },
+  "scope": {
+    "slice": "P5A-R",
+    "goal": "deny one CFS task and pick the next CFS task",
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "deny_one_cfs_pick_next_approved": false
+  },
+  "source_anchors": [
+    {
+      "id": "fair_vruntime_eligible",
+      "path": "linux/kernel/sched/fair.c",
+      "line": 894,
+      "symbol": "vruntime_eligible",
+      "role": "EEVDF eligibility predicate"
+    },
+    {
+      "id": "fair_entity_eligible",
+      "path": "linux/kernel/sched/fair.c",
+      "line": 939,
+      "symbol": "entity_eligible",
+      "role": "sched_entity eligibility wrapper"
+    },
+    {
+      "id": "fair_pick_eevdf",
+      "path": "linux/kernel/sched/fair.c",
+      "line": 1136,
+      "symbol": "pick_eevdf",
+      "role": "CFS EEVDF entity picker"
+    },
+    {
+      "id": "fair_pick_next_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "line": 6376,
+      "symbol": "pick_next_entity",
+      "role": "CFS entity picker wrapper and sched_delayed consumer"
+    },
+    {
+      "id": "fair_pick_task",
+      "path": "linux/kernel/sched/fair.c",
+      "line": 9912,
+      "symbol": "pick_task_fair",
+      "role": "CFS task picker and group hierarchy descent"
+    },
+    {
+      "id": "fair_server_pick_task",
+      "path": "linux/kernel/sched/fair.c",
+      "line": 9957,
+      "symbol": "fair_server_pick_task",
+      "role": "DL server nested fair picker"
+    },
+    {
+      "id": "core_pick_next_fastpath",
+      "path": "linux/kernel/sched/core.c",
+      "line": 6128,
+      "symbol": "__pick_next_task",
+      "role": "class picker with all-fair fast path"
+    },
+    {
+      "id": "core_sched_pick",
+      "path": "linux/kernel/sched/core.c",
+      "line": 6220,
+      "symbol": "pick_next_task",
+      "role": "core scheduling wrapper and core_pick cache"
+    },
+    {
+      "id": "schedule_final_run_hook",
+      "path": "linux/kernel/sched/core.c",
+      "line": 7199,
+      "symbol": "sched_exec_lease_validate_run_edge",
+      "role": "current P4 final-run allow-only hook, not deny-and-repick safe"
+    },
+    {
+      "id": "retry_task_sentinel",
+      "path": "linux/kernel/sched/sched.h",
+      "line": 2575,
+      "symbol": "RETRY_TASK",
+      "role": "existing picker restart sentinel"
+    },
+    {
+      "id": "proxy_resolution",
+      "path": "linux/kernel/sched/core.c",
+      "line": 6876,
+      "symbol": "find_proxy_task",
+      "role": "proxy execution donor-to-executor resolution"
+    },
+    {
+      "id": "sched_ext_class",
+      "path": "linux/kernel/sched/ext/ext.c",
+      "line": 4567,
+      "symbol": "ext_sched_class",
+      "role": "SCX class outside CFS-only P5A-R claim"
+    }
+  ],
+  "source_facts": {
+    "p4_final_run_hook_after_pick": true,
+    "p4_final_run_hook_after_put_prev_set_next_task": true,
+    "p4_final_run_hook_before_rq_curr": true,
+    "fair_picker_visibility_required": true,
+    "pick_task_fair_descends_group_hierarchy": true,
+    "pick_next_entity_consumes_sched_delayed": true,
+    "sched_delayed_is_not_run_denial": true,
+    "retry_task_exists": true,
+    "retry_task_alone_sufficient": false,
+    "core_sched_can_cache_picks": true,
+    "core_cookie_search_can_replace_local_pick": true,
+    "dl_server_can_nest_fair_pick": true,
+    "proxy_splits_donor_and_executor": true,
+    "scx_enabled_path_out_of_scope": true
+  },
+  "design_blockers": [
+    "fair-picker-visible denied-candidate ineligibility",
+    "bounded retry or fail-closed/quarantine rule",
+    "group hierarchy rollback or aggregate denial semantics",
+    "current/protect/buddy/leftmost shortcut denial integration",
+    "core-scheduling core_pick cache and core-cookie search settlement or exclusion",
+    "DL-server nested fair-pick settlement or exclusion",
+    "proxy donor/executor authority subject rule",
+    "sched_ext exclusion or separate settlement gate",
+    "denial accounting separation from sleep, throttle, delayed dequeue, yield, and EEVDF lag"
+  ],
+  "allowed_next_artifacts": [
+    "P5A-R picker ineligibility gate",
+    "P5A-R bounded retry TLA/source model",
+    "P5A-R group hierarchy settlement source map",
+    "P5A-R core-sched exclusion or settlement gate",
+    "P5A-R DL-server/proxy exclusion or settlement gate"
+  ],
+  "non_claims": {
+    "linux_code_changed": false,
+    "runtime_denial": false,
+    "cfs_deny_and_repick": false,
+    "broad_move_denial": false,
+    "runtime_coverage": false,
+    "budget_enforcement": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

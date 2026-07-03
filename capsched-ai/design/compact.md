@@ -3464,4 +3464,24 @@ P5A0.P1 concrete 0008 source/full-build/object-layout/upstream/QEMU gate:
   Next:
     P5A-R fair-picker eligibility integration before CFS deny-one-pick-next.
     P5A-M status settlement before broad common move denial.
+
+P5A-R CFS picker source map:
+  analysis/0135 and validation/0162 record source-map evidence only.
+
+  Findings:
+    P4 run-edge validation is after pick_next_task and put_prev_set_next_task
+    settlement.
+    pick_task_fair descends CFS group hierarchy through pick_next_entity and
+    pick_eevdf.
+    sched_delayed is not lease denial.
+    RETRY_TASK alone can spin unless denied candidates are picker-visible.
+    Core scheduling caches core_pick and has core-cookie replacement paths.
+    DL servers can nest fair picks.
+    Proxy execution splits donor and executor.
+    sched_ext switched-all paths bypass CFS.
+
+  Next:
+    P5A-R picker ineligibility gate with attempt-local denied-candidate
+    carrier, bounded retry, hierarchy settlement, core/DL/proxy/SCX exclusion
+    or settlement, and accounting separation.
 ```

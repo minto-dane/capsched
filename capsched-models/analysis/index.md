@@ -242,3 +242,4 @@ Updated: 2026-07-02
 | `sched-exec-lease-p5a0-e-prepatch-evidence-v1.json` | P5A0.E evidence | Machine-readable prepatch evidence package, candidate-scoped drift, future patch identity, source observations, low-overhead constraints, and non-claims |
 | `sched-exec-lease-p5a0-p1-no-behavior-patch-plan-v1.json` | P5A0.P1 patch plan | Machine-readable no-behavior patch-plan gate, per-0008 delta rule, lifecycle freeze, no-overhead acceptance evidence, and non-claims |
 | `sched-exec-lease-p5a-r-m-and-p5a0-p1-acceptance-audit-v1.json` | P5A blockers and acceptance audit | Machine-readable P5A-R picker blocker, P5A-M move settlement blocker, P5A0.P1 full-acceptance evidence gap, and forbidden claims |
+| `sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map-v1.json` | P5A-R CFS picker source map | Machine-readable CFS picker eligibility anchors, denied-candidate blockers, bounded-retry requirements, cross-path exclusions, and non-claims |
