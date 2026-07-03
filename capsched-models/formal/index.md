@@ -113,6 +113,7 @@ Updated: 2026-07-03
 | 0105 | Checked with safe pass and expected unsafe counterexamples | P5A-R EEVDF Return Dominance Model |
 | 0106 | Checked with safe pass and expected unsafe counterexamples | P5A-R Group Hierarchy Settlement Model |
 | 0107 | Checked with safe pass and expected unsafe counterexamples | P5A-R Cross-Path Exclusion/Settlement Model |
+| 0108 | Checked with safe pass and expected unsafe counterexamples | P5A-R Overhead and Layout Gate Model |
 
 ## Planned
 

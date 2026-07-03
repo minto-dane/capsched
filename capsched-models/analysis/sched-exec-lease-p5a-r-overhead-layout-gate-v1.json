@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-overhead-layout-gate-v1",
+  "date": "2026-07-03",
+  "status": "formal_source_gate_recorded_no_linux_patch_approved",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "prior_gate": "analysis/sched-exec-lease-p5a-r-cross-path-exclusion-settlement-v1.json",
+    "layout_evidence": "validation/0158-sched-exec-lease-p5a0-p1-object-layout.md"
+  },
+  "scope": {
+    "slice": "P5A-R",
+    "goal": "no-O(n), no-hot-layout, disabled-overhead gate before ordinary-CFS-only behavior patch readiness",
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "hot_layout_change_approved": false,
+    "disabled_overhead_change_approved": false,
+    "performance_claim_approved": false
+  },
+  "required_shape": {
+    "attempt_local_carrier": true,
+    "rq_lock_protected": true,
+    "fixed_retry_budget": true,
+    "fixed_denied_receipt_capacity": true,
+    "pre_frozen_authority_tuple": true,
+    "candidate_identity_compare_only": true,
+    "no_linear_rb_tree_scan": true,
+    "no_full_hierarchy_scan": true,
+    "no_domain_table_lookup_in_picker": true,
+    "no_denied_list_or_map_unbounded_scan": true,
+    "no_allocation_in_picker": true,
+    "no_sleep_in_picker": true,
+    "no_monitor_call_in_picker": true,
+    "no_policy_lookup_in_picker": true,
+    "no_persistent_task_denial_bit": true,
+    "no_persistent_sched_entity_denial_bit": true,
+    "no_persistent_rq_denial_field": true,
+    "no_persistent_cfs_rq_denial_field": true,
+    "no_per_cgroup_denied_map": true,
+    "disabled_config_no_new_runtime_object_without_evidence": true,
+    "disabled_config_no_new_hot_branch_without_evidence": true,
+    "hot_function_growth_requires_object_evidence": true,
+    "task_layout_change_requires_separate_gate": true,
+    "cost_claim_requires_benchmark_evidence": true
+  },
+  "source_anchors": [
+    {
+      "id": "sched_exec_task_layout",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "symbol": "struct sched_exec_task",
+      "expected_line": 67,
+      "pattern": "struct sched_exec_task {"
+    },
+    {
+      "id": "task_struct_sched_exec_config_gate",
+      "path": "linux/include/linux/sched.h",
+      "symbol": "CONFIG_SCHED_EXEC_LEASE",
+      "expected_line": 976,
+      "pattern": "#ifdef CONFIG_SCHED_EXEC_LEASE"
+    },
+    {
+      "id": "task_struct_sched_exec_field",
+      "path": "linux/include/linux/sched.h",
+      "symbol": "CONFIG_SCHED_EXEC_LEASE",
+      "expected_line": 977,
+      "pattern": "struct sched_exec_task"
+    },
+    {
+      "id": "sched_exec_lease_enabled_inline",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "symbol": "sched_exec_lease_enabled",
+      "expected_line": 104,
+      "pattern": "static inline bool sched_exec_lease_enabled(void)"
+    },
+    {
+      "id": "sched_exec_lease_enabled_is_enabled",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "symbol": "sched_exec_lease_enabled",
+      "expected_line": 106,
+      "pattern": "return IS_ENABLED(CONFIG_SCHED_EXEC_LEASE);"
+    },
+    {
+      "id": "validate_run_edge_allow",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "symbol": "sched_exec_lease_validate_run_edge",
+      "expected_line": 160,
+      "pattern": "return SCHED_EXEC_VALIDATION_ALLOW;"
+    },
+    {
+      "id": "validate_move_edge_allow",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "symbol": "sched_exec_lease_validate_move_edge(struct",
+      "expected_line": 169,
+      "pattern": "return SCHED_EXEC_VALIDATION_ALLOW;"
+    },
+    {
+      "id": "validate_move_edge_locked_allow",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "symbol": "sched_exec_lease_validate_move_edge_locked",
+      "expected_line": 178,
+      "pattern": "return SCHED_EXEC_VALIDATION_ALLOW;"
+    },
+    {
+      "id": "p4_run_edge_callsite",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "sched_exec_lease_validate_run_edge",
+      "expected_line": 7199,
+      "pattern": "(void)sched_exec_lease_validate_run_edge(prev, next);"
+    },
+    {
+      "id": "p4_common_move_edge_callsite",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "sched_exec_lease_validate_move_edge",
+      "expected_line": 2552,
+      "pattern": "(void)sched_exec_lease_validate_move_edge(p, new_cpu);"
+    },
+    {
+      "id": "p4_locked_move_edge_callsite",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "sched_exec_lease_validate_move_edge_locked",
+      "expected_line": 4125,
+      "pattern": "(void)sched_exec_lease_validate_move_edge_locked(task, dst_rq->cpu);"
+    },
+    {
+      "id": "sched_entity_hot_layout",
+      "path": "linux/include/linux/sched.h",
+      "symbol": "struct sched_entity",
+      "expected_line": 576,
+      "pattern": "struct sched_entity {"
+    },
+    {
+      "id": "cfs_rq_hot_layout",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct cfs_rq",
+      "expected_line": 680,
+      "pattern": "struct cfs_rq {"
+    },
+    {
+      "id": "rq_hot_layout",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct rq",
+      "expected_line": 1135,
+      "pattern": "struct rq {"
+    },
+    {
+      "id": "rq_hot_loop_comment",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct rq",
+      "expected_line": 1138,
+      "pattern": "extremely hot loop"
+    },
+    {
+      "id": "pick_task_fair_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9912,
+      "pattern": "struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)"
+    },
+    {
+      "id": "pick_eevdf_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1136,
+      "pattern": "static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq, bool protect)"
+    },
+    {
+      "id": "pick_eevdf_single_entity_shortcut",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1147,
+      "pattern": "if (cfs_rq->nr_queued == 1)"
+    },
+    {
+      "id": "pick_eevdf_heap_search_shape",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1173,
+      "pattern": "while (node) {"
+    },
+    {
+      "id": "prior_core_function_size_evidence",
+      "path": "capsched/capsched-models/validation/0158-sched-exec-lease-p5a0-p1-object-layout.md",
+      "symbol": "core_function_size_table_equal",
+      "expected_line": 58,
+      "pattern": "core_function_size_table_equal=true"
+    },
+    {
+      "id": "prior_disabled_task_field_absent_evidence",
+      "path": "capsched/capsched-models/validation/0158-sched-exec-lease-p5a0-p1-object-layout.md",
+      "symbol": "CONFIG_SCHED_EXEC_LEASE=off",
+      "expected_line": 143,
+      "pattern": "sched_exec field is absent from task_struct."
+    },
+    {
+      "id": "prior_no_new_hot_layout_evidence",
+      "path": "capsched/capsched-models/validation/0158-sched-exec-lease-p5a0-p1-object-layout.md",
+      "symbol": "P2 task shadow layout remains as expected",
+      "expected_line": 154,
+      "pattern": "P2 task shadow layout remains as expected"
+    }
+  ],
+  "required_checks": {
+    "source_anchors_symbol_scoped": true,
+    "current_helpers_allow_only": true,
+    "current_scheduler_does_not_branch_on_validation_result": true,
+    "current_disabled_layout_evidence_referenced": true,
+    "hot_structures_identified": true,
+    "formal_safe_passed": true,
+    "formal_unsafe_counterexamples": true,
+    "non_claim_checks": true
+  },
+  "rejected_design_families": [
+    "linear_rb_tree_scan",
+    "full_hierarchy_scan",
+    "domain_table_lookup_in_picker",
+    "unbounded_retry",
+    "persistent_task_struct_denial_bit",
+    "persistent_sched_entity_denial_bit",
+    "persistent_rq_denial_field",
+    "persistent_cfs_rq_denial_field",
+    "per_cgroup_denied_map",
+    "allocation_in_picker",
+    "sleep_in_picker",
+    "monitor_call_in_picker",
+    "policy_lookup_in_picker",
+    "disabled_hot_branch_without_evidence",
+    "disabled_object_growth_without_evidence",
+    "task_layout_change_without_gate",
+    "hot_function_growth_without_object_evidence",
+    "cost_claim_from_model_only"
+  ],
+  "formal": {
+    "model": "formal/0108-p5a-r-overhead-layout-gate-model/P5AROverheadLayoutGate.tla",
+    "safe_cfg": "P5AROverheadLayoutGateSafe.cfg",
+    "unsafe_cfg_count": 18,
+    "safe_passed": true,
+    "unsafe_expected_counterexamples": 18
+  },
+  "safety_flags": {
+    "linux_code_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "hot_layout_change_approved": false,
+    "disabled_overhead_change_approved": false,
+    "runtime_coverage_claim": false,
+    "benchmark_claim": false,
+    "budget_enforcement_claim": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

@@ -4302,5 +4302,36 @@ P5A-R cross-path exclusion/settlement / validation 0166:
     selection before deny-one-pick-next semantics are claimed.
 
   next:
-    no-O(n)/no-hot-layout disabled-overhead gate, negative validation plan, and
-    implementation patch plan.
+    overhead/layout gate is recorded below; current remaining work is negative
+    validation plan and implementation patch plan.
+
+P5A-R overhead/layout gate / validation 0167:
+  status:
+    Source/formal gate passed. No Linux behavior patch, runtime denial, CFS
+    deny-and-repick, hot layout change, disabled-overhead change, runtime
+    coverage, benchmark, monitor verification, protection, cost, deployment, or
+    datacenter claim is approved.
+
+  artifacts:
+    capsched-models/analysis/0140-sched-exec-lease-p5a-r-overhead-layout-gate.md
+    capsched-models/analysis/sched-exec-lease-p5a-r-overhead-layout-gate-v1.json
+    capsched-models/formal/0108-p5a-r-overhead-layout-gate-model/
+    capsched-models/validation/0167-sched-exec-lease-p5a-r-overhead-layout-gate.md
+    capsched-models/validation/run-sched-exec-lease-p5a-r-overhead-layout-gate.sh
+
+  validation:
+    Run 20260703T221311Z passed.
+    source anchors 22/22, missing 0, line drift 0.
+    allow_return_count=3, non_allow_return_count=0.
+    branch_on_validation_count=0.
+    safe TLC: 6 generated states, 5 distinct states, depth 5.
+    unsafe TLC: 18 expected counterexamples.
+
+  result:
+    P5A-R first behavior candidate must remain attempt-local, bounded,
+    pre-frozen, candidate-identity-only, and free of unbounded scans or
+    persistent hot denial layout. Disabled overhead and hot layout/function
+    changes require separate object/layout evidence.
+
+  next:
+    negative validation plan and implementation patch plan.

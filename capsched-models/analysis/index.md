@@ -251,3 +251,4 @@ Updated: 2026-07-03
 | `sched-exec-lease-p5a-r-eevdf-return-dominance-v1.json` | P5A-R source-shape gate | Machine-readable EEVDF return-site dominance, semantic candidate families, source-shape outputs, drift handling, and non-claim gate |
 | `sched-exec-lease-p5a-r-group-hierarchy-settlement-v1.json` | P5A-R hierarchy gate | Machine-readable leaf/path/child-exhaustion/parent-skip distinctions, source anchors, formal results, and non-claim gate |
 | `sched-exec-lease-p5a-r-cross-path-exclusion-settlement-v1.json` | P5A-R cross-path gate | Machine-readable ordinary-CFS-only cross-path exclusion/settlement contract for core, DL server, proxy, sched_ext, class-loop, source anchors, formal results, and non-claim gate |
+| `sched-exec-lease-p5a-r-overhead-layout-gate-v1.json` | P5A-R overhead/layout gate | Machine-readable no-O(n), no-hot-layout, disabled-overhead, source-shape, formal-result, and non-claim gate |

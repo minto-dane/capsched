@@ -3560,7 +3560,27 @@ P5A-R cross-path exclusion/settlement:
     scheduling, DL servers, proxy execution, sched_ext, and class-loop non-fair
     paths are excluded or separately settled. RETRY_TASK is not denial proof.
 
+  Follow-up:
+    overhead/layout gate is recorded below; current remaining work is negative
+    validation plan and implementation patch plan.
+
+P5A-R overhead/layout gate:
+  analysis/0140, formal/0108, and validation/0167 are complete as a pre-code
+  source/formal gate only.
+
+  Validation:
+    run 20260703T221311Z
+    source anchors 22/22, line drift 0
+    allow returns 3, non-allow returns 0
+    scheduler branch on validation result 0
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe TLC: 18 expected counterexamples
+
+  Result:
+    P5A-R may not use linear rb-tree scans, full hierarchy scans, unbounded
+    retry, persistent hot denial fields, picker allocation/sleep/monitor/policy
+    lookup, or disabled/hot-layout overhead without object/layout evidence.
+
   Still open:
-    no-O(n)/no-hot-layout disabled-overhead gate, negative validation plan, and
-    implementation patch plan.
+    negative validation plan and implementation patch plan.
 ```
