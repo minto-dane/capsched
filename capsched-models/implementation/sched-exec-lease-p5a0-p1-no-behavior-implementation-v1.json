@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a0-p1-no-behavior-implementation-v1",
   "date": "2026-07-02",
-  "status": "linux_0008_source_replay_formal_full_build_object_layout_validated_full_acceptance_pending",
+  "status": "linux_0008_source_replay_formal_full_build_object_layout_upstream_validated_full_acceptance_pending",
   "implementation": "implementation/0032-sched-exec-lease-p5a0-p1-no-behavior-implementation.md",
   "candidate": {
     "id": "P5A0.P1",
@@ -11,6 +11,7 @@
     "source_contract_accepted": true,
     "full_build_validated": true,
     "object_layout_validated": true,
+    "upstream_maintenance_validated": true,
     "full_acceptance_complete": false,
     "behavior_change_approved": false
   },
@@ -58,6 +59,10 @@
     "exec_lease_object_data": 32,
     "exec_lease_object_bss": 0,
     "exec_lease_object_dec": 321,
+    "candidate_scoped_upstream_drift": false,
+    "merge_tree_clean": true,
+    "strict_checkpatch_clean": true,
+    "get_maintainer_rows": 12,
     "patch_queue_replay_exact_head": true,
     "patch_queue_replay_exact_tree": true,
     "formal_safe_passed": true,
@@ -65,8 +70,6 @@
   },
   "pending_acceptance": [
     "qemu_denial_disabled_boot_workload_smoke",
-    "fresh_upstream_drift_and_merge_tree",
-    "strict_checkpatch_and_get_maintainer_output",
     "final_overclaim_security_review"
   ],
   "safety_flags": {

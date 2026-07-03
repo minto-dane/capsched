@@ -39,9 +39,9 @@ implementation patch points are accepted yet. P1 private object vocabulary, P2
 task identity shadow, P3 no-op scheduler touchpoints, P4 allow-only final
 run/move validation helpers, and P5A0.P1 source-contract comments have been
 validated only as no-denial/no-ABI/no-monitor compatibility scaffolding.
-P5A0.P1 has source/replay/formal/full-build/object-layout evidence, but not
-QEMU, upstream-maintenance, or final overclaim acceptance. There is no runtime
-denial, monitor call, budget charging, runtime coverage, or protection claim.
+P5A0.P1 has source/replay/formal/full-build/object-layout/upstream evidence,
+but not QEMU or final overclaim acceptance. There is no runtime denial, monitor
+call, budget charging, runtime coverage, or protection claim.
 Latest fetched upstream/master is
 `87320be9f0d24fce67631b7eef919f0b79c3e45c`.
 
@@ -3420,9 +3420,9 @@ P5A0.P1 patch-plan gate:
     Future P5A0.P1 no-behavior Linux patch draft under the gate. P5A-R and
     P5A-M remain blocked by fair-picker eligibility and move-status settlement.
 
-P5A0.P1 concrete 0008 source/full-build/object-layout gate:
-  implementation/0032, formal/0103, validation/0156, validation/0157, and
-  validation/0158 record the concrete `0008` Linux patch at
+P5A0.P1 concrete 0008 source/full-build/object-layout/upstream gate:
+  implementation/0032, formal/0103, validation/0156, validation/0157,
+  validation/0158, and validation/0159 record the concrete `0008` Linux patch at
   d812f83c033a9f9b3d533e667e7106a5734eb30b.
 
   Shape:
@@ -3444,10 +3444,14 @@ P5A0.P1 concrete 0008 source/full-build/object-layout gate:
       validation helpers emit no symbols.
       exec_lease.o has expected lifecycle symbols.
       task layout remains the existing P2 config-gated shape.
+    upstream checker passed:
+      candidate_anchor_drift_count=0.
+      merge_tree_clean=true.
+      strict checkpatch clean.
+      get_maintainer rows=12.
 
   Pending:
-    QEMU denial-disabled smoke, upstream drift/merge-tree, get_maintainer, and
-    final overclaim/security review.
+    QEMU denial-disabled smoke and final overclaim/security review.
 
   Next:
     P5A-R fair-picker eligibility integration before CFS deny-one-pick-next.

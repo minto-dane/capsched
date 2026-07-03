@@ -99,13 +99,13 @@ The source gate, full `vmlinux` build, and object/layout checks are not full
 implementation closure. Validation/0157 records successful
 `CONFIG_SCHED_EXEC_LEASE=off/on` full builds. Validation/0158 records
 object/symbol/section-size review, hot scheduler function-size review, and
-build-only task layout probe evidence. Before treating P5A0.P1 as fully
-accepted, still run and record:
+build-only task layout probe evidence. Validation/0159 records
+candidate-scoped upstream drift, merge-tree, strict checkpatch, and
+get_maintainer evidence. Before treating P5A0.P1 as fully accepted, still run
+and record:
 
 ```text
 QEMU denial-disabled boot/workload smoke
-fresh upstream drift and merge-tree evidence
-strict checkpatch and get_maintainer output
 final overclaim/security review
 ```
 
