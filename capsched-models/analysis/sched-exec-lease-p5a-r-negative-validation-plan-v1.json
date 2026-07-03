@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-negative-validation-plan-v1",
+  "date": "2026-07-03",
+  "status": "formal_validation_plan_recorded_no_linux_patch_approved",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "prior_validation_gates": [
+      "validation/0163-sched-exec-lease-p5a-r-picker-ineligibility-gate.md",
+      "validation/0164-sched-exec-lease-p5a-r-eevdf-return-dominance.md",
+      "validation/0165-sched-exec-lease-p5a-r-group-hierarchy-settlement.md",
+      "validation/0166-sched-exec-lease-p5a-r-cross-path-exclusion-settlement.md",
+      "validation/0167-sched-exec-lease-p5a-r-overhead-layout-gate.md"
+    ]
+  },
+  "scope": {
+    "slice": "P5A-R",
+    "goal": "negative validation plan before ordinary-CFS-only behavior patch readiness",
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "test_instrumentation_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false
+  },
+  "negative_test_families": [
+    "post_settlement_denial",
+    "denied_reaches_execution",
+    "same_candidate_repick",
+    "retry_without_picker_visible_ineligibility",
+    "idle_fallback_with_allowed_candidate",
+    "eevdf_return_family_bypass",
+    "parent_over_denial",
+    "child_exhaustion_alias",
+    "cross_path_enabled_without_exclusion_or_settlement",
+    "stale_identity",
+    "wakeup_preempt_bleed",
+    "newidle_lock_drop_leak",
+    "o_n_or_hot_layout_regression",
+    "claim_overreach"
+  ],
+  "required_observables": [
+    "task_stable_identifier",
+    "task_generation",
+    "exec_generation",
+    "domain_epoch",
+    "grant_epoch",
+    "attempt_epoch",
+    "candidate_cpu",
+    "candidate_path",
+    "denial_result",
+    "retry_count",
+    "denied_receipt_count",
+    "settlement_point",
+    "rq_curr_observation",
+    "sched_switch_observation",
+    "group_path_observation",
+    "eevdf_return_family",
+    "cross_path_exclusion_or_settlement_state",
+    "overhead_layout_checker_result",
+    "claim_flags"
+  ],
+  "validation_layers": {
+    "static_source_layer_required": true,
+    "build_object_layout_layer_required": true,
+    "runtime_negative_layer_required": true,
+    "claim_layer_required": true
+  },
+  "source_anchors": [
+    {
+      "id": "current_p4_run_edge_is_late",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "sched_exec_lease_validate_run_edge",
+      "expected_line": 7199,
+      "pattern": "(void)sched_exec_lease_validate_run_edge(prev, next);"
+    },
+    {
+      "id": "rq_curr_publication",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "RCU_INIT_POINTER(rq->curr",
+      "expected_line": 7207,
+      "pattern": "RCU_INIT_POINTER(rq->curr, next);"
+    },
+    {
+      "id": "sched_switch_observation_point",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "trace_sched_switch",
+      "expected_line": 7237,
+      "pattern": "trace_sched_switch(preempt, prev, next, prev_state);"
+    },
+    {
+      "id": "ordinary_cfs_pick_task_fair",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6149,
+      "pattern": "p = pick_task_fair(rq, rf);"
+    },
+    {
+      "id": "pick_task_fair_leaf_task_materialization",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9939,
+      "pattern": "p = task_of(se);"
+    }
+  ],
+  "required_checks": {
+    "prior_validation_gates_present": true,
+    "source_anchors_symbol_scoped": true,
+    "negative_test_family_count": 14,
+    "required_observable_count": 19,
+    "formal_safe_passed": true,
+    "formal_unsafe_counterexamples": true,
+    "non_claim_checks": true
+  },
+  "formal": {
+    "model": "formal/0109-p5a-r-negative-validation-plan-model/P5ARNegativeValidationPlan.tla",
+    "safe_cfg": "P5ARNegativeValidationPlanSafe.cfg",
+    "unsafe_cfg_count": 17,
+    "safe_passed": true,
+    "unsafe_expected_counterexamples": 17
+  },
+  "safety_flags": {
+    "linux_code_approved": false,
+    "behavior_change_approved": false,
+    "test_instrumentation_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "runtime_coverage_claim": false,
+    "benchmark_claim": false,
+    "budget_enforcement_claim": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

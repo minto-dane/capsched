@@ -4334,4 +4334,36 @@ P5A-R overhead/layout gate / validation 0167:
     changes require separate object/layout evidence.
 
   next:
-    negative validation plan and implementation patch plan.
+    negative validation plan is recorded below; current remaining work is the
+    implementation patch plan.
+
+P5A-R negative validation plan / validation 0168:
+  status:
+    Source/formal validation-plan gate passed. No Linux behavior patch, test
+    instrumentation, runtime denial, CFS deny-and-repick, runtime coverage,
+    benchmark, monitor verification, protection, cost, deployment, or
+    datacenter claim is approved.
+
+  artifacts:
+    capsched-models/analysis/0141-sched-exec-lease-p5a-r-negative-validation-plan.md
+    capsched-models/analysis/sched-exec-lease-p5a-r-negative-validation-plan-v1.json
+    capsched-models/formal/0109-p5a-r-negative-validation-plan-model/
+    capsched-models/validation/0168-sched-exec-lease-p5a-r-negative-validation-plan.md
+    capsched-models/validation/run-sched-exec-lease-p5a-r-negative-validation-plan.sh
+
+  validation:
+    Run 20260703T222038Z passed.
+    source anchors 5/5, prior_missing_count=0.
+    negative_test_family_count=14.
+    required_observable_count=19.
+    safe TLC: 6 generated states, 5 distinct states, depth 5.
+    unsafe TLC: 17 expected counterexamples.
+
+  result:
+    Future P5A-R behavior tests must prove denied candidates do not reach
+    rq->curr or sched_switch, cannot be repicked in the same attempt, do not
+    over-deny parents, do not bypass EEVDF/cross-path gates, and do not
+    introduce O(n)/hot-layout or claim-overreach regressions.
+
+  next:
+    implementation patch plan.

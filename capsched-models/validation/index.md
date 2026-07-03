@@ -173,6 +173,7 @@ Updated: 2026-07-03
 | 0165 | Source/formal gate passed; safe model passed; 13 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Group Hierarchy Settlement |
 | 0166 | Source/formal gate passed; safe model passed; 18 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Cross-Path Exclusion/Settlement |
 | 0167 | Source/formal gate passed; safe model passed; 18 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Overhead and Layout Gate |
+| 0168 | Source/formal validation-plan gate passed; safe model passed; 17 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Negative Validation Plan |
 
 ## Principles
 

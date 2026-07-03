@@ -3581,6 +3581,27 @@ P5A-R overhead/layout gate:
     retry, persistent hot denial fields, picker allocation/sleep/monitor/policy
     lookup, or disabled/hot-layout overhead without object/layout evidence.
 
+  Follow-up:
+    negative validation plan is recorded below; current remaining work is the
+    implementation patch plan.
+
+P5A-R negative validation plan:
+  analysis/0141, formal/0109, and validation/0168 are complete as a pre-code
+  validation-plan gate only.
+
+  Validation:
+    run 20260703T222038Z
+    source anchors 5/5, prior gates present
+    negative test families 14, required observables 19
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe TLC: 17 expected counterexamples
+
+  Result:
+    Future P5A-R tests must reject late denial, denied execution publication,
+    same-candidate repick, retry-only denial, parent over-denial, child
+    exhaustion aliases, EEVDF/cross-path/stale identity/wakeup/newidle/overhead
+    failures, and claim overreach.
+
   Still open:
-    negative validation plan and implementation patch plan.
+    implementation patch plan.
 ```
