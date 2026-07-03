@@ -37,6 +37,13 @@ if [ "$actual_linux_commit" != "$expected_linux_commit" ]; then
 	exit 1
 fi
 
+expected_upstream_commit=$(jq -r '.source_basis.upstream_commit' "$CONFIG")
+actual_upstream_commit=$(git -C "$LINUX_DIR" rev-parse upstream/master)
+if [ "$actual_upstream_commit" != "$expected_upstream_commit" ]; then
+	echo "upstream commit mismatch: expected=$expected_upstream_commit actual=$actual_upstream_commit" >&2
+	exit 1
+fi
+
 jq -e '
 	.readiness.ordinary_cfs_only == true and
 	.readiness.linux_0009_may_be_drafted == true and
@@ -168,6 +175,7 @@ cat > "$OUT_DIR/result.json" <<EOF_JSON
   "status": "passed",
   "config": "$CONFIG",
   "linux_commit": "$actual_linux_commit",
+  "upstream_commit": "$actual_upstream_commit",
   "required_validation_count": $(jq '.required_validations | length' "$CONFIG"),
   "missing_validation_count": $missing_validation,
   "required_model_count": $(jq '.required_models | length' "$CONFIG"),

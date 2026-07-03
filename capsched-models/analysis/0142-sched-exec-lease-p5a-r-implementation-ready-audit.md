@@ -42,11 +42,16 @@ All are present and validated at pre-code/source/formal level.
 linux_branch=capsched-linux-l0
 linux_commit=d812f83c033a9f9b3d533e667e7106a5734eb30b
 upstream_ref=upstream/master
-upstream_commit=87320be9f0d24fce67631b7eef919f0b79c3e45c
+upstream_commit=71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5
 next_patch_slot=0009
 ```
 
 The patch queue currently ends at `0008`; no `0009` patch exists yet.
+
+The upstream/source-shape refresh is recorded in analysis/0143 and
+validation/0171. It found no direct P5A-R scheduler source-shape drift, while
+recording fork/exec lifecycle drift as nonblocking for the ordinary-CFS-only
+`0009` draft and blocking for broader lifecycle/global freshness claims.
 
 ## Readiness Meaning
 
@@ -97,6 +102,7 @@ object/function-size evidence
 task_struct/rq/sched_entity/cfs_rq layout evidence
 QEMU denial-disabled boot/workload smoke
 QEMU negative denial tests
+upstream/source-shape refresh if upstream moves before acceptance
 security diff review
 final overclaim review
 ```

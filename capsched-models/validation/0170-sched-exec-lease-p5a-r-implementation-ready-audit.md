@@ -37,7 +37,7 @@ validation/run-sched-exec-lease-p5a-r-implementation-ready-audit.sh
 Run output:
 
 ```text
-build/source-check/sched-exec-lease-p5a-r-implementation-ready-audit/20260703T231125Z/
+build/source-check/sched-exec-lease-p5a-r-implementation-ready-audit/20260703T234210Z/
 ```
 
 ## Checks
@@ -45,10 +45,11 @@ build/source-check/sched-exec-lease-p5a-r-implementation-ready-audit/20260703T23
 Audit checks:
 
 ```text
-required_validation_count=7
+required_validation_count=8
 missing_validation_count=0
-required_model_count=7
+required_model_count=8
 missing_model_count=0
+upstream_commit=71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5
 linux_0009_may_be_drafted=true
 linux_0009_exists=false
 linux_0009_accepted=false
@@ -67,10 +68,17 @@ unsafe_expected_counterexamples=10
 ```
 
 The runner also re-runs the P5A-R ordinary-CFS patch-plan validator as a nested
-check, using:
+check, and requires validation/0171 to be present and passed after upstream
+advanced to:
 
 ```text
-RUN_ID=20260703T231125Z-patch-plan
+upstream/master=71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5
+```
+
+Nested patch-plan run:
+
+```text
+RUN_ID=20260703T234210Z-patch-plan
 ```
 
 ## Result

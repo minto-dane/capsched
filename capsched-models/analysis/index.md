@@ -148,6 +148,7 @@ Updated: 2026-07-03
 | 0140 | Source/formal gate recorded; P5A-R overhead/layout constraints checked | SchedExecLease P5A-R Overhead and Layout Gate |
 | 0141 | Source/formal validation-plan gate recorded; future P5A-R negative tests enumerated | SchedExecLease P5A-R Negative Validation Plan |
 | 0142 | Final audit passed for ordinary-CFS-only patch drafting; behavior remains unaccepted | SchedExecLease P5A-R Implementation-Ready Audit |
+| 0143 | Upstream/source-shape refresh passed; P5A-R direct scheduler shape fresh for 0009 draft | SchedExecLease P5A-R Upstream Drift Source-Shape Refresh |
 
 ## Planned Analysis Notes
 

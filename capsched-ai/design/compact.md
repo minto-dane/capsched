@@ -3651,3 +3651,22 @@ P5A-R implementation-ready audit:
   Result:
     Next step may be Linux patch `0009` draft under implementation/0033.
     Acceptance and all runtime/protection/cost/datacenter claims remain open.
+
+P5A-R upstream drift/source-shape refresh:
+  analysis/0143, formal/0112, and validation/0171 complete the explicit
+  upstream/source-shape gate after upstream/master advanced.
+
+  Validation:
+    run 20260703T233452Z
+    upstream 87320be9f0d24 -> 71dfdfb0209b4
+    direct P5A-R scheduler source-shape drift 0
+    lifecycle drift 2: fs/exec.c and kernel/fork.c
+    merge_tree_clean=true
+    ordinary_cfs_0009_draft_reviewable=true
+    safe TLC: 5 generated states, 4 distinct states, depth 4
+    unsafe TLC: 9 expected counterexamples
+
+  Final audit refresh:
+    validation/0170 rerun 20260703T234210Z now requires 8 validations and 8
+    models, includes upstream 71dfdfb0209b4, and still allows only drafting
+    Linux `0009`. No runtime/protection/cost/datacenter claim is approved.

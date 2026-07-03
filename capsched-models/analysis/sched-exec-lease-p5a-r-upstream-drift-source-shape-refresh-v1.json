@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-upstream-drift-source-shape-refresh-v1",
+  "date": "2026-07-03",
+  "status": "p5a_r_direct_source_shape_fresh_for_0009_draft",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "previous_upstream_ref": "upstream/master",
+    "previous_upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "current_upstream_ref": "upstream/master",
+    "current_upstream_commit": "71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5"
+  },
+  "drift_classification": {
+    "upstream_advanced": true,
+    "previous_upstream_is_ancestor": true,
+    "merge_tree_clean": true,
+    "p5a_r_direct_scheduler_source_shape_changed": false,
+    "lifecycle_source_changed": true,
+    "nonblocking_for_ordinary_cfs_0009_draft": true,
+    "blocks_lifecycle_patch_claims": true,
+    "blocks_global_all_angles_claims": true
+  },
+  "p5a_r_direct_source_shape_files": [
+    "kernel/sched/core.c",
+    "kernel/sched/fair.c",
+    "kernel/sched/sched.h",
+    "kernel/sched/ext/ext.c",
+    "kernel/sched/core_sched.c"
+  ],
+  "changed_between_previous_and_current_upstream": [
+    "fs/exec.c",
+    "kernel/fork.c"
+  ],
+  "required_anchor_refresh": [
+    "ordinary_cfs_fast_path_pick",
+    "ordinary_cfs_fast_path_settle",
+    "p4_run_edge_is_late_for_p5ar_denial",
+    "rq_curr_publication",
+    "sched_switch_observation",
+    "pick_task_fair_leaf_task",
+    "pick_task_fair_core_idle_boundary",
+    "fair_server_nested_pick",
+    "sched_ext_restart_boundary",
+    "proxy_execution_rewrite_boundary"
+  ],
+  "required_counts": {
+    "direct_source_shape_file_count": 5,
+    "changed_upstream_file_count": 2,
+    "required_anchor_refresh_count": 10,
+    "formal_unsafe_cfg_count": 9
+  },
+  "formal": {
+    "model": "formal/0112-p5a-r-upstream-drift-source-shape-refresh-model/P5ARUpstreamDriftSourceShapeRefresh.tla",
+    "safe_cfg": "P5ARUpstreamDriftSourceShapeRefreshSafe.cfg",
+    "unsafe_cfg_count": 9,
+    "safe_passed": true,
+    "unsafe_expected_counterexamples": 9
+  },
+  "safety_flags": {
+    "linux_patch_accepted": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "lifecycle_freshness_claim": false,
+    "global_all_angles_freshness_claim": false,
+    "runtime_coverage_claim": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

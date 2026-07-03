@@ -4434,3 +4434,28 @@ P5A-R implementation-ready audit / validation 0170:
     untrusted candidate. Do not claim runtime correctness, runtime coverage,
     production protection, cost-efficiency, deployment, or datacenter readiness
     until direct acceptance evidence exists.
+
+P5A-R upstream drift/source-shape refresh / validation 0171:
+  status:
+    Passed after fetching upstream/master to
+    71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5. P5A-R direct scheduler
+    source-shape drift is zero; fork/exec lifecycle drift is recorded and not
+    claimed fresh.
+
+  validation:
+    Run 20260703T233452Z passed.
+    previous_upstream=87320be9f0d24fce67631b7eef919f0b79c3e45c.
+    current_upstream=71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5.
+    direct_source_shape_changed_count=0.
+    lifecycle_changed_count=2.
+    merge_tree_clean=true.
+    ordinary_cfs_0009_draft_reviewable=true.
+    safe TLC: 5 generated states, 4 distinct states, depth 4.
+    unsafe TLC: 9 expected counterexamples.
+
+  final audit refresh:
+    validation/0170 was rerun after this refresh with run
+    20260703T234210Z. It now requires 8 validations and 8 models, includes
+    upstream/master 71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5, and still
+    concludes only that Linux `0009` may be drafted. Runtime/protection/cost
+    claims remain false.
