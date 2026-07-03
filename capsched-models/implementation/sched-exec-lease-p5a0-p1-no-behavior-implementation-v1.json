@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a0-p1-no-behavior-implementation-v1",
   "date": "2026-07-02",
-  "status": "linux_0008_source_replay_formal_full_build_validated_full_acceptance_pending",
+  "status": "linux_0008_source_replay_formal_full_build_object_layout_validated_full_acceptance_pending",
   "implementation": "implementation/0032-sched-exec-lease-p5a0-p1-no-behavior-implementation.md",
   "candidate": {
     "id": "P5A0.P1",
@@ -10,6 +10,7 @@
     "patch_queue_slot": "0008",
     "source_contract_accepted": true,
     "full_build_validated": true,
+    "object_layout_validated": true,
     "full_acceptance_complete": false,
     "behavior_change_approved": false
   },
@@ -45,6 +46,18 @@
     "config_on_full_vmlinux_build": true,
     "config_off_exec_lease_object_absent": true,
     "config_on_exec_lease_object_present": true,
+    "object_symbol_disassembly_review": true,
+    "exec_lease_object_section_size_review": true,
+    "hot_scheduler_function_growth_review": true,
+    "task_rq_sched_entity_cfs_rq_layout_review": true,
+    "core_o_file_size_equal_off_on": true,
+    "core_function_size_table_equal_off_on": true,
+    "core_function_count": 396,
+    "validation_symbols_emitted": false,
+    "exec_lease_object_text": 289,
+    "exec_lease_object_data": 32,
+    "exec_lease_object_bss": 0,
+    "exec_lease_object_dec": 321,
     "patch_queue_replay_exact_head": true,
     "patch_queue_replay_exact_tree": true,
     "formal_safe_passed": true,
@@ -52,10 +65,8 @@
   },
   "pending_acceptance": [
     "qemu_denial_disabled_boot_workload_smoke",
-    "object_symbol_disassembly_review",
-    "exec_lease_object_section_size_review",
-    "hot_scheduler_function_growth_review",
-    "task_rq_sched_entity_cfs_rq_layout_review",
+    "fresh_upstream_drift_and_merge_tree",
+    "strict_checkpatch_and_get_maintainer_output",
     "final_overclaim_security_review"
   ],
   "safety_flags": {

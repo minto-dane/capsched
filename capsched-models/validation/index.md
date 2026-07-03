@@ -163,6 +163,7 @@ Updated: 2026-07-03
 | 0155 | Source/JSON gate passed; safe model passed; 20 unsafe configs produced expected counterexamples; P5A0.P1 patch plan is recorded and no Linux patch is approved | SchedExecLease P5A0.P1 Patch Plan |
 | 0156 | Source checker, patch replay, and formal gate passed for concrete 0008; full build/QEMU/object/layout acceptance remains pending | SchedExecLease P5A0.P1 0008 Source Gate |
 | 0157 | Passed for full `vmlinux` CONFIG_SCHED_EXEC_LEASE=off/on build; QEMU/object/layout/upstream/final overclaim evidence remains pending | SchedExecLease P5A0.P1 Full vmlinux Build |
+| 0158 | Passed for object/symbol/section-size review, hot scheduler function-size review, and build-only task layout probe; QEMU/upstream/final overclaim evidence remains pending | SchedExecLease P5A0.P1 Object and Layout Evidence |
 
 ## Principles
 
