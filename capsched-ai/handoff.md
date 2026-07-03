@@ -4210,3 +4210,37 @@ P5A-R picker ineligibility gate / validation 0163:
   next:
     Build a source-shape checker for EEVDF return dominance, then a group
     hierarchy settlement model. P5A-M move settlement remains separate.
+
+P5A-R EEVDF return dominance / validation 0164:
+  status:
+    Executable source-shape checker passed. No Linux behavior patch, runtime
+    denial, CFS deny-and-repick, group hierarchy settlement, runtime coverage,
+    monitor verification, protection, cost, deployment, or datacenter claim is
+    approved.
+
+  artifacts:
+    capsched-models/analysis/0137-sched-exec-lease-p5a-r-eevdf-return-dominance.md
+    capsched-models/analysis/sched-exec-lease-p5a-r-eevdf-return-dominance-v1.json
+    capsched-models/formal/0105-p5a-r-eevdf-return-dominance-model/
+    capsched-models/validation/0164-sched-exec-lease-p5a-r-eevdf-return-dominance.md
+    capsched-models/validation/run-sched-exec-lease-p5a-r-eevdf-return-dominance.sh
+
+  validation:
+    Run 20260703T085043Z passed.
+    source anchors 17/17, missing 0, line drift 0.
+    pick_eevdf direct return count 4.
+    semantic candidate families 6.
+    forbidden scan count 0.
+    safe TLC: 13 generated states, 7 distinct states, depth 2.
+    unsafe TLC: 11 expected counterexamples.
+
+  source-shape result:
+    Current pick_eevdf has four syntactic direct returns but six semantic
+    candidate families: singleton, next buddy, protected current, leftmost
+    eligible, heap search, and final current override. Any future denial must
+    dominate all six. Passing this checker proves only the recorded source
+    shape, not group hierarchy settlement.
+
+  next:
+    P5A-R group hierarchy settlement gate: LeafDenied, PathDenied,
+    ChildCfsRqExhausted, ParentSkipJustified, and ParentOverDenied unsafe case.

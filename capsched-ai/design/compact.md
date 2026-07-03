@@ -3504,4 +3504,27 @@ P5A-R picker ineligibility gate:
 
   Next:
     source-shape checker for EEVDF return dominance, then hierarchy settlement.
+
+P5A-R EEVDF return dominance:
+  analysis/0137, formal/0105, and validation/0164 are complete as a source-
+  shape gate only.
+
+  Validation:
+    run 20260703T085043Z
+    source anchors 17/17, line drift 0
+    pick_eevdf direct returns 4
+    semantic candidate families 6
+    forbidden scan count 0
+    safe TLC: 13 generated states, 7 distinct states, depth 2
+    unsafe TLC: 11 expected counterexamples
+
+  Result:
+    Current pick_eevdf source shape is known: singleton, next buddy, protected
+    current, leftmost eligible, heap search, and final current override must all
+    be dominated by any future denial/funnel design.
+
+  Still open:
+    group hierarchy settlement. Do not approve CFS deny-and-repick before
+    LeafDenied/PathDenied/ChildCfsRqExhausted/ParentSkipJustified/ParentOverDenied
+    are modeled and validated.
 ```

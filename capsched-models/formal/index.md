@@ -110,6 +110,7 @@ Updated: 2026-07-03
 | 0102 | Checked with safe pass and expected unsafe counterexamples | P5A0.P1 Patch Plan Gate Model |
 | 0103 | Checked with safe pass and expected unsafe counterexamples | P5A0.P1 0008 Source Gate Model |
 | 0104 | Checked with safe pass and expected unsafe counterexamples | P5A-R Picker Ineligibility Gate Model |
+| 0105 | Checked with safe pass and expected unsafe counterexamples | P5A-R EEVDF Return Dominance Model |
 
 ## Planned
 

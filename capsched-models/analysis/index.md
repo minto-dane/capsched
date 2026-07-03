@@ -142,6 +142,7 @@ Updated: 2026-07-03
 | 0134 | Subagent-assisted audit; P5A-R/M remain blocked and P5A0.P1 full acceptance evidence is enumerated | SchedExecLease P5A-R/M and P5A0.P1 Acceptance Audit |
 | 0135 | Source-map validated; P5A-R remains blocked pending picker-visible CFS ineligibility | SchedExecLease P5A-R CFS Picker Eligibility Source Map |
 | 0136 | Formal gate recorded; P5A-R behavior remains unapproved pending source-shape and hierarchy settlement | SchedExecLease P5A-R Picker Ineligibility Gate |
+| 0137 | Source-shape gate recorded; EEVDF return dominance checked but hierarchy settlement remains open | SchedExecLease P5A-R EEVDF Return Dominance |
 
 ## Planned Analysis Notes
 
@@ -246,3 +247,4 @@ Updated: 2026-07-03
 | `sched-exec-lease-p5a-r-m-and-p5a0-p1-acceptance-audit-v1.json` | P5A blockers and acceptance audit | Machine-readable P5A-R picker blocker, P5A-M move settlement blocker, P5A0.P1 full-acceptance evidence gap, and forbidden claims |
 | `sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map-v1.json` | P5A-R CFS picker source map | Machine-readable CFS picker eligibility anchors, denied-candidate blockers, bounded-retry requirements, cross-path exclusions, and non-claims |
 | `sched-exec-lease-p5a-r-picker-ineligibility-gate-v1.json` | P5A-R formal gate | Machine-readable attempt-local ineligibility, bounded retry, cost/layout, EEVDF return coverage, cross-path settlement, and non-claim gate |
+| `sched-exec-lease-p5a-r-eevdf-return-dominance-v1.json` | P5A-R source-shape gate | Machine-readable EEVDF return-site dominance, semantic candidate families, source-shape outputs, drift handling, and non-claim gate |

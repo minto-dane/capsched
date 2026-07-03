@@ -169,6 +169,7 @@ Updated: 2026-07-03
 | 0161 | Passed final overclaim/security review; P5A0.P1 accepted as no-behavior source-contract slice only with no runtime, protection, cost, deployment, or datacenter claim | SchedExecLease P5A0.P1 Final Overclaim and Security Review |
 | 0162 | Passed for P5A-R CFS picker source-map consistency; P5A-R remains blocked and no behavior patch is approved | SchedExecLease P5A-R CFS Picker Source Map |
 | 0163 | Source/JSON gate passed; safe model passed; 28 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Picker Ineligibility Gate |
+| 0164 | Source-shape checker passed; safe model passed; 11 unsafe configs produced expected counterexamples; P5A-R hierarchy settlement remains open | SchedExecLease P5A-R EEVDF Return Dominance |
 
 ## Principles
 

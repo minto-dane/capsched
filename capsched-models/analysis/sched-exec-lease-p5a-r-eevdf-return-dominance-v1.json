@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-eevdf-return-dominance-v1",
+  "date": "2026-07-03",
+  "status": "source_shape_gate_recorded_no_linux_patch_approved",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "prior_gate": "analysis/sched-exec-lease-p5a-r-picker-ineligibility-gate-v1.json"
+  },
+  "scope": {
+    "slice": "P5A-R",
+    "goal": "source-shape gate for pick_eevdf return dominance before any deny-one-CFS-and-pick-next patch",
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "group_hierarchy_settlement_approved": false
+  },
+  "source_shape": {
+    "pick_eevdf_direct_return_count": 4,
+    "pick_eevdf_semantic_candidate_families": 6,
+    "required_direct_returns": [
+      "singleton_curr_or_first",
+      "next_buddy",
+      "protected_current",
+      "final_best_funnel"
+    ],
+    "required_indirect_funnel_paths": [
+      "leftmost_eligible_goto_found",
+      "heap_search_break_to_found",
+      "final_current_override_before_return_best"
+    ],
+    "required_callsite_classification": [
+      "schedule_pick_task_fair_descent",
+      "wakeup_preempt_pick_next_entity_use"
+    ],
+    "forbidden_scan_patterns_for_future_denial": [
+      "rb_next",
+      "rb_first",
+      "list_for_each",
+      "for_each_leaf_cfs_rq",
+      "for_each_sched_entity_denial_scan",
+      "retry_bound_depends_on_nr_queued",
+      "retry_bound_depends_on_denied_list_size",
+      "retry_bound_depends_on_cgroup_depth"
+    ]
+  },
+  "source_anchors": [
+    {
+      "id": "pick_eevdf_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1136,
+      "pattern": "static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq, bool protect)"
+    },
+    {
+      "id": "pick_eevdf_singleton_return",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1148,
+      "pattern": "return curr && curr->on_rq ? curr : se;"
+    },
+    {
+      "id": "pick_eevdf_next_buddy_return",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1157,
+      "pattern": "return cfs_rq->next;"
+    },
+    {
+      "id": "pick_eevdf_protected_curr_return",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1164,
+      "pattern": "return curr;"
+    },
+    {
+      "id": "pick_eevdf_leftmost_goto_found",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1169,
+      "pattern": "goto found;"
+    },
+    {
+      "id": "pick_eevdf_heap_search",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1173,
+      "pattern": "while (node) {"
+    },
+    {
+      "id": "pick_eevdf_found_label",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1200,
+      "pattern": "found:"
+    },
+    {
+      "id": "pick_eevdf_final_current_override",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1201,
+      "pattern": "if (!best || (curr && entity_before(curr, best)))"
+    },
+    {
+      "id": "pick_eevdf_final_return",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1204,
+      "pattern": "return best;"
+    },
+    {
+      "id": "pick_next_entity_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_next_entity",
+      "expected_line": 6376,
+      "pattern": "pick_next_entity(struct rq *rq, struct cfs_rq *cfs_rq, bool protect)"
+    },
+    {
+      "id": "pick_next_entity_pick_eevdf_call",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_next_entity",
+      "expected_line": 6380,
+      "pattern": "se = pick_eevdf(cfs_rq, protect);"
+    },
+    {
+      "id": "pick_next_entity_lifetime_warning",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_next_entity",
+      "expected_line": 6384,
+      "pattern": "Must not reference @se again"
+    },
+    {
+      "id": "wakeup_preempt_pick_next_entity_call",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "check_preempt_wakeup_fair",
+      "expected_line": 9885,
+      "pattern": "nse = pick_next_entity(rq, cfs_rq, preempt_action != PREEMPT_WAKEUP_SHORT);"
+    },
+    {
+      "id": "pick_task_fair_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9912,
+      "pattern": "struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)"
+    },
+    {
+      "id": "pick_task_fair_pick_next_entity_call",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9933,
+      "pattern": "se = pick_next_entity(rq, cfs_rq, true);"
+    },
+    {
+      "id": "pick_task_fair_group_descent",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9936,
+      "pattern": "cfs_rq = group_cfs_rq(se);"
+    },
+    {
+      "id": "pick_task_fair_task_materialization",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9939,
+      "pattern": "p = task_of(se);"
+    }
+  ],
+  "required_checks": {
+    "function_body_extraction_by_symbol": true,
+    "normalized_body_hash_recorded": true,
+    "exact_direct_return_count": true,
+    "semantic_candidate_family_count_recorded": true,
+    "return_path_classification": true,
+    "relative_order_checks": true,
+    "leftmost_and_heap_funnel_checks": true,
+    "final_current_override_check": true,
+    "pick_next_entity_boundary_check": true,
+    "pick_task_fair_hierarchy_descent_check": true,
+    "wakeup_preempt_separation_check": true,
+    "forbidden_linear_scan_pattern_check": true,
+    "line_drift_reported_but_not_main_gate": true,
+    "non_claim_checks": true
+  },
+  "runner_outputs": [
+    "result.json",
+    "summary.env",
+    "semantic-source-units.json",
+    "return-dominance.json",
+    "callgraph-contexts.json",
+    "drift-results.json",
+    "nonclaim-results.json",
+    "blockers.tsv"
+  ],
+  "formal": {
+    "model": "formal/0105-p5a-r-eevdf-return-dominance-model/P5AREevdfReturnDominance.tla",
+    "safe_cfg": "P5AREevdfReturnDominanceSafe.cfg",
+    "unsafe_cfg_count": 11,
+    "safe_passed": true,
+    "safe_states_generated": 13,
+    "safe_distinct_states": 7,
+    "safe_depth": 2,
+    "unsafe_expected_counterexamples": 11
+  },
+  "allowed_claims": [
+    "EEVDF return-dominance source shape holds for the recorded Linux commit",
+    "no Linux behavior patch is approved by this evidence"
+  ],
+  "supported_configs": [
+    "ordinary CFS source-shape analysis only"
+  ],
+  "excluded_paths": [
+    "core scheduling behavior approval",
+    "DL-server behavior approval",
+    "proxy execution behavior approval",
+    "sched_ext behavior approval",
+    "group hierarchy settlement approval"
+  ],
+  "rejected_design_implications": [
+    "post_task_of_only_denial",
+    "normal_best_path_only_check",
+    "unchecked_singleton_fast_path",
+    "unchecked_next_buddy_fast_path",
+    "unchecked_protected_current_fast_path",
+    "unchecked_final_current_override",
+    "wakeup_preempt_denial_bleed",
+    "line_only_drift_gate_without_control_shape",
+    "behavior_patch_before_group_hierarchy_settlement"
+  ],
+  "safety_flags": {
+    "linux_code_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "group_hierarchy_settlement_approved": false,
+    "runtime_coverage_claim": false,
+    "budget_enforcement_claim": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}
