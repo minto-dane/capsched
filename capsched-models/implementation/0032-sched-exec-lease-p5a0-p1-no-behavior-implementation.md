@@ -101,11 +101,10 @@ implementation closure. Validation/0157 records successful
 object/symbol/section-size review, hot scheduler function-size review, and
 build-only task layout probe evidence. Validation/0159 records
 candidate-scoped upstream drift, merge-tree, strict checkpatch, and
-get_maintainer evidence. Before treating P5A0.P1 as fully accepted, still run
-and record:
+get_maintainer evidence. Validation/0160 records QEMU off/on boot/workload
+smoke. Before treating P5A0.P1 as fully accepted, still run and record:
 
 ```text
-QEMU denial-disabled boot/workload smoke
 final overclaim/security review
 ```
 

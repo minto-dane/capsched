@@ -165,6 +165,7 @@ Updated: 2026-07-03
 | 0157 | Passed for full `vmlinux` CONFIG_SCHED_EXEC_LEASE=off/on build; QEMU/object/layout/upstream/final overclaim evidence remains pending | SchedExecLease P5A0.P1 Full vmlinux Build |
 | 0158 | Passed for object/symbol/section-size review, hot scheduler function-size review, and build-only task layout probe; QEMU/upstream/final overclaim evidence remains pending | SchedExecLease P5A0.P1 Object and Layout Evidence |
 | 0159 | Passed for candidate-scoped upstream drift, merge-tree, strict checkpatch, and get_maintainer evidence; QEMU/final overclaim evidence remains pending | SchedExecLease P5A0.P1 Upstream Maintenance Evidence |
+| 0160 | Passed for QEMU off/on boot/workload smoke with all workload and kprobe observation where available; final overclaim/security review remains pending | SchedExecLease P5A0.P1 QEMU Boot Smoke |
 
 ## Principles
 

@@ -65,8 +65,8 @@ d812f83c033a9f9b3d533e667e7106a5734eb30b
 ```
 
 That head includes P5A0.P1 `0008`, a comment-only no-behavior source-contract
-patch. It has source/replay/formal/full-build/object-layout/upstream evidence,
-but QEMU and final overclaim acceptance remain pending.
+patch. It has source/replay/formal/full-build/object-layout/upstream/QEMU
+evidence, but final overclaim acceptance remains pending.
 
 ADR-0007 fixes the N-series traceability policy. `N-*` remains a chronological
 work ledger for past and future work. Semantic meaning, Linux anchors, drift
@@ -4084,15 +4084,15 @@ P5A0.P1 patch-plan gate / validation 0155:
     Future P5A0.P1 no-behavior Linux patch draft under this gate. P5A-R CFS
     denial and P5A-M broad move denial remain blocked.
 
-P5A0.P1 concrete 0008 source/full-build/object-layout/upstream gate /
-validations 0156-0159:
+P5A0.P1 concrete 0008 source/full-build/object-layout/upstream/QEMU gate /
+validations 0156-0160:
   status:
     Concrete `0008` exists and is accepted as source-contract/no-behavior
     evidence only. Full `vmlinux` build passed for
     `CONFIG_SCHED_EXEC_LEASE=off/on`. Object/symbol/section-size, hot
     scheduler function-size, build-only task layout checks, and
-    candidate-scoped upstream maintenance checks passed. QEMU and final
-    overclaim/security acceptance remain pending.
+    candidate-scoped upstream maintenance checks, and QEMU off/on boot/workload
+    smoke passed. Final overclaim/security acceptance remains pending.
 
   linux:
     parent: a937c67f51d1b82297c4f8b7c471f63e8f1a4fe8
@@ -4107,6 +4107,7 @@ validations 0156-0159:
     capsched-models/validation/0157-sched-exec-lease-p5a0-p1-full-build.md
     capsched-models/validation/0158-sched-exec-lease-p5a0-p1-object-layout.md
     capsched-models/validation/0159-sched-exec-lease-p5a0-p1-upstream-maintenance.md
+    capsched-models/validation/0160-sched-exec-lease-p5a0-p1-qemu-boot-smoke.md
     capsched-models/validation/run-sched-exec-lease-p5a0-p1-0008-source-check.sh
     capsched-models/validation/run-sched-exec-lease-p5a0-p1-0008-object-check.sh
     capsched-models/validation/run-sched-exec-lease-p5a0-p1-0008-upstream-check.sh
@@ -4127,6 +4128,8 @@ validations 0156-0159:
     candidate_anchor_drift_count=0, merge_tree_clean=true.
     strict checkpatch passed with 0 errors and 0 warnings.
     get_maintainer emitted 12 rows.
+    QEMU matrix run 20260703T010812Z passed off/on.
+    workload_mode=all, qemu_status=0, workload_ret=0 for both modes.
 
   non-claims:
     No behavior change, runtime denial, fair-picker ineligibility, broad move
