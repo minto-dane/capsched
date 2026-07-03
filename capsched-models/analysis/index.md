@@ -144,6 +144,10 @@ Updated: 2026-07-03
 | 0136 | Formal gate recorded; P5A-R behavior remains unapproved pending source-shape and hierarchy settlement | SchedExecLease P5A-R Picker Ineligibility Gate |
 | 0137 | Source-shape gate recorded; EEVDF return dominance checked but hierarchy settlement remains open | SchedExecLease P5A-R EEVDF Return Dominance |
 | 0138 | Source/formal gate recorded; group hierarchy settlement checked at pre-code level | SchedExecLease P5A-R Group Hierarchy Settlement |
+| 0139 | Source/formal gate recorded; ordinary-CFS-only cross-path exclusion/settlement checked | SchedExecLease P5A-R Cross-Path Exclusion/Settlement |
+| 0140 | Source/formal gate recorded; P5A-R overhead/layout constraints checked | SchedExecLease P5A-R Overhead and Layout Gate |
+| 0141 | Source/formal validation-plan gate recorded; future P5A-R negative tests enumerated | SchedExecLease P5A-R Negative Validation Plan |
+| 0142 | Final audit passed for ordinary-CFS-only patch drafting; behavior remains unaccepted | SchedExecLease P5A-R Implementation-Ready Audit |
 
 ## Planned Analysis Notes
 

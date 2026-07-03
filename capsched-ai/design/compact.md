@@ -3631,3 +3631,23 @@ P5A-R ordinary-CFS patch plan:
     actual Linux 0009 draft and full acceptance validation. Runtime denial,
     CFS deny-and-repick correctness, runtime coverage, protection, cost,
     deployment, and datacenter claims remain false.
+
+P5A-R implementation-ready audit:
+  analysis/0142, formal/0111, and validation/0170 complete the pre-code
+  implementation-ready goal for drafting only.
+
+  Validation:
+    run 20260703T231125Z
+    required validations 7/7, missing 0
+    required models 7/7, missing 0
+    linux_0009_may_be_drafted=true
+    linux_0009_exists=false
+    linux_0009_accepted=false
+    runtime_denial_approved=false
+    cfs_deny_and_repick_approved=false
+    safe TLC: 5 generated states, 4 distinct states, depth 4
+    unsafe TLC: 10 expected counterexamples
+
+  Result:
+    Next step may be Linux patch `0009` draft under implementation/0033.
+    Acceptance and all runtime/protection/cost/datacenter claims remain open.

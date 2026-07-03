@@ -175,6 +175,7 @@ Updated: 2026-07-03
 | 0167 | Source/formal gate passed; safe model passed; 18 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Overhead and Layout Gate |
 | 0168 | Source/formal validation-plan gate passed; safe model passed; 17 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Negative Validation Plan |
 | 0169 | Source/formal patch-plan gate passed; safe model passed; 16 unsafe configs produced expected counterexamples; 0009 may be drafted but behavior remains unaccepted | SchedExecLease P5A-R Ordinary-CFS Patch Plan |
+| 0170 | Final audit passed; required gates/models present; 0009 may be drafted but remains unaccepted | SchedExecLease P5A-R Implementation-Ready Audit |
 
 ## Principles
 

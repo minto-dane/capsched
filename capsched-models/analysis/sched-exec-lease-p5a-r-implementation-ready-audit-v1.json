@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-implementation-ready-audit-v1",
+  "date": "2026-07-03",
+  "status": "p5a_r_ordinary_cfs_patch_drafting_ready",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "next_patch_slot": "0009"
+  },
+  "required_validations": [
+    "validation/0163-sched-exec-lease-p5a-r-picker-ineligibility-gate.md",
+    "validation/0164-sched-exec-lease-p5a-r-eevdf-return-dominance.md",
+    "validation/0165-sched-exec-lease-p5a-r-group-hierarchy-settlement.md",
+    "validation/0166-sched-exec-lease-p5a-r-cross-path-exclusion-settlement.md",
+    "validation/0167-sched-exec-lease-p5a-r-overhead-layout-gate.md",
+    "validation/0168-sched-exec-lease-p5a-r-negative-validation-plan.md",
+    "validation/0169-sched-exec-lease-p5a-r-ordinary-cfs-patch-plan.md"
+  ],
+  "required_models": [
+    "formal/0104-p5a-r-picker-ineligibility-gate-model",
+    "formal/0105-p5a-r-eevdf-return-dominance-model",
+    "formal/0106-p5a-r-group-hierarchy-settlement-model",
+    "formal/0107-p5a-r-cross-path-exclusion-settlement-model",
+    "formal/0108-p5a-r-overhead-layout-gate-model",
+    "formal/0109-p5a-r-negative-validation-plan-model",
+    "formal/0110-p5a-r-ordinary-cfs-patch-plan-model"
+  ],
+  "readiness": {
+    "ordinary_cfs_only": true,
+    "linux_0009_may_be_drafted": true,
+    "linux_0009_exists": false,
+    "linux_0009_accepted": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "broad_move_denial_approved": false
+  },
+  "must_hold_for_0009_draft": [
+    "ordinary_cfs_only_scope",
+    "pre_settle_picker_visible_denial",
+    "attempt_local_bounded_carrier",
+    "fixed_retry_budget",
+    "fixed_denied_receipt_capacity",
+    "hierarchy_settlement_or_rejection",
+    "cross_path_exclusion_or_settlement",
+    "no_o_n_scan",
+    "no_persistent_hot_denial_layout",
+    "scheduler_private_surface"
+  ],
+  "acceptance_required_before_claims": [
+    "patch_queue_replay",
+    "upstream_replay_or_merge_tree",
+    "strict_checkpatch_get_maintainer",
+    "source_allowlist_and_anchor_checks",
+    "pre_settle_denial_dominance_checks",
+    "cross_path_exclusion_predicate_checks",
+    "no_public_abi_trace_abi_monitor_or_export_checks",
+    "no_o_n_no_unbounded_retry_no_hot_layout_checks",
+    "full_vmlinux_off",
+    "full_vmlinux_on_denial_disabled",
+    "full_vmlinux_on_denial_test_mode_if_present",
+    "object_function_size_evidence",
+    "hot_layout_evidence",
+    "qemu_denial_disabled_smoke",
+    "qemu_negative_denial_tests",
+    "security_diff_review",
+    "final_overclaim_review"
+  ],
+  "required_counts": {
+    "required_validation_count": 7,
+    "required_model_count": 7,
+    "must_hold_for_0009_draft_count": 10,
+    "acceptance_required_before_claims_count": 17,
+    "formal_unsafe_cfg_count": 10
+  },
+  "formal": {
+    "model": "formal/0111-p5a-r-implementation-ready-audit-model/P5ARImplementationReadyAudit.tla",
+    "safe_cfg": "P5ARImplementationReadyAuditSafe.cfg",
+    "unsafe_cfg_count": 10,
+    "safe_passed": true,
+    "unsafe_expected_counterexamples": 10
+  },
+  "safety_flags": {
+    "linux_0009_accepted": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "broad_move_denial_approved": false,
+    "runtime_coverage_claim": false,
+    "benchmark_claim": false,
+    "budget_enforcement_claim": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

@@ -4403,3 +4403,34 @@ P5A-R ordinary-CFS patch plan / validation 0169:
     get_maintainer, source-shape checks, full off/on builds, object/layout
     evidence, QEMU denial-disabled smoke, QEMU negative denial tests, security
     diff review, and final overclaim review.
+
+P5A-R implementation-ready audit / validation 0170:
+  status:
+    Final audit passed for patch drafting only. This completes the P5A-R
+    pre-code implementation-ready goal: the future Linux `0009` patch may be
+    drafted, but remains unaccepted.
+
+  artifacts:
+    capsched-models/analysis/0142-sched-exec-lease-p5a-r-implementation-ready-audit.md
+    capsched-models/analysis/sched-exec-lease-p5a-r-implementation-ready-audit-v1.json
+    capsched-models/formal/0111-p5a-r-implementation-ready-audit-model/
+    capsched-models/validation/0170-sched-exec-lease-p5a-r-implementation-ready-audit.md
+    capsched-models/validation/run-sched-exec-lease-p5a-r-implementation-ready-audit.sh
+
+  validation:
+    Run 20260703T231125Z passed.
+    required validations 7/7, missing 0.
+    required models 7/7, missing 0.
+    linux_0009_may_be_drafted=true.
+    linux_0009_exists=false.
+    linux_0009_accepted=false.
+    runtime_denial_approved=false.
+    cfs_deny_and_repick_approved=false.
+    safe TLC: 5 generated states, 4 distinct states, depth 4.
+    unsafe TLC: 10 expected counterexamples.
+
+  next:
+    Draft Linux patch `0009` under implementation/0033, then validate it as an
+    untrusted candidate. Do not claim runtime correctness, runtime coverage,
+    production protection, cost-efficiency, deployment, or datacenter readiness
+    until direct acceptance evidence exists.
