@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-07-02
+Updated: 2026-07-03
 
 ## Current Formal Records
 
@@ -109,6 +109,7 @@ Updated: 2026-07-02
 | 0101 | Checked with safe pass and expected unsafe counterexamples | P5A0.E Prepatch Evidence Gate Model |
 | 0102 | Checked with safe pass and expected unsafe counterexamples | P5A0.P1 Patch Plan Gate Model |
 | 0103 | Checked with safe pass and expected unsafe counterexamples | P5A0.P1 0008 Source Gate Model |
+| 0104 | Checked with safe pass and expected unsafe counterexamples | P5A-R Picker Ineligibility Gate Model |
 
 ## Planned
 

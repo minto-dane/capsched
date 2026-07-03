@@ -3484,4 +3484,24 @@ P5A-R CFS picker source map:
     P5A-R picker ineligibility gate with attempt-local denied-candidate
     carrier, bounded retry, hierarchy settlement, core/DL/proxy/SCX exclusion
     or settlement, and accounting separation.
+
+P5A-R picker ineligibility gate:
+  analysis/0136, formal/0104, and validation/0163 are complete as a pre-code
+  gate only.
+
+  Validation:
+    source anchors 15/15
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe TLC: 28 expected counterexamples
+
+  The gate rejects:
+    late denial, sched_delayed reuse, RETRY_TASK-only denial, idle fallback,
+    linear candidate search, unbounded retry, hot persistent denial fields,
+    wakeup-preempt bleed, stale generation/epoch, unsettled cgroup mutation,
+    uncovered pick_eevdf returns, DL-server retry leakage, delayed-dequeue or
+    throttle lifetime aliasing, core sequence/hotplug leakage, Linux-local
+    authority forgery, and unsupported core/proxy/SCX/DL-server claims.
+
+  Next:
+    source-shape checker for EEVDF return dominance, then hierarchy settlement.
 ```

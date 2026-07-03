@@ -4173,3 +4173,40 @@ P5A-R CFS picker source map / validation 0162:
     P5A-R picker ineligibility gate: attempt-local denied-candidate carrier,
     bounded retry, hierarchy settlement, core/DL/proxy/SCX exclusion or
     settlement, and accounting separation.
+
+P5A-R picker ineligibility gate / validation 0163:
+  status:
+    Recorded and validated as a pre-code formal/source gate only. No Linux
+    behavior patch, runtime denial, CFS deny-and-repick, runtime coverage,
+    monitor verification, protection, cost, deployment, or datacenter claim is
+    approved.
+
+  artifacts:
+    capsched-models/analysis/0136-sched-exec-lease-p5a-r-picker-ineligibility-gate.md
+    capsched-models/analysis/sched-exec-lease-p5a-r-picker-ineligibility-gate-v1.json
+    capsched-models/formal/0104-p5a-r-picker-ineligibility-gate-model/
+    capsched-models/validation/0163-sched-exec-lease-p5a-r-picker-ineligibility-gate.md
+    capsched-models/validation/run-sched-exec-lease-p5a-r-picker-ineligibility-gate.sh
+
+  validation:
+    Source anchors passed with anchor_count=15.
+    TLC safe passed with 6 generated states, 5 distinct states, depth 5.
+    28 unsafe configs produced expected counterexamples.
+
+  constraints now enforced by the gate:
+    attempt-local rq-locked denied-candidate carrier
+    bounded retry and picker-visible ineligibility
+    pre-class-state and pre-rq-curr validation
+    no linear search or unbounded retry
+    no hot persistent denial layout in the first candidate
+    no wakeup-preempt bleed
+    task/exec/domain/grant generation freshness
+    hierarchy and cgroup mutation settlement
+    all pick_eevdf return paths covered
+    core/DL/proxy/SCX settlement or exclusion
+    no delayed-dequeue/throttle lifetime alias
+    no Linux-local authority forgery
+
+  next:
+    Build a source-shape checker for EEVDF return dominance, then a group
+    hierarchy settlement model. P5A-M move settlement remains separate.

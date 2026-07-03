@@ -168,6 +168,7 @@ Updated: 2026-07-03
 | 0160 | Passed for QEMU off/on boot/workload smoke with all workload and kprobe observation where available; final overclaim/security review is recorded separately in 0161 | SchedExecLease P5A0.P1 QEMU Boot Smoke |
 | 0161 | Passed final overclaim/security review; P5A0.P1 accepted as no-behavior source-contract slice only with no runtime, protection, cost, deployment, or datacenter claim | SchedExecLease P5A0.P1 Final Overclaim and Security Review |
 | 0162 | Passed for P5A-R CFS picker source-map consistency; P5A-R remains blocked and no behavior patch is approved | SchedExecLease P5A-R CFS Picker Source Map |
+| 0163 | Source/JSON gate passed; safe model passed; 28 unsafe configs produced expected counterexamples; P5A-R behavior remains unapproved | SchedExecLease P5A-R Picker Ineligibility Gate |
 
 ## Principles
 

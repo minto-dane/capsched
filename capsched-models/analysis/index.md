@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-02
+Updated: 2026-07-03
 
 ## Current Analysis Notes
 
@@ -140,6 +140,8 @@ Updated: 2026-07-02
 | 0132 | P5A0.E prepatch evidence recorded; no Linux patch approved | SchedExecLease P5A0.E Prepatch Evidence |
 | 0133 | P5A0.P1 patch plan recorded; no Linux patch approved | SchedExecLease P5A0.P1 No-Behavior Patch Plan |
 | 0134 | Subagent-assisted audit; P5A-R/M remain blocked and P5A0.P1 full acceptance evidence is enumerated | SchedExecLease P5A-R/M and P5A0.P1 Acceptance Audit |
+| 0135 | Source-map validated; P5A-R remains blocked pending picker-visible CFS ineligibility | SchedExecLease P5A-R CFS Picker Eligibility Source Map |
+| 0136 | Formal gate recorded; P5A-R behavior remains unapproved pending source-shape and hierarchy settlement | SchedExecLease P5A-R Picker Ineligibility Gate |
 
 ## Planned Analysis Notes
 
@@ -243,3 +245,4 @@ Updated: 2026-07-02
 | `sched-exec-lease-p5a0-p1-no-behavior-patch-plan-v1.json` | P5A0.P1 patch plan | Machine-readable no-behavior patch-plan gate, per-0008 delta rule, lifecycle freeze, no-overhead acceptance evidence, and non-claims |
 | `sched-exec-lease-p5a-r-m-and-p5a0-p1-acceptance-audit-v1.json` | P5A blockers and acceptance audit | Machine-readable P5A-R picker blocker, P5A-M move settlement blocker, P5A0.P1 full-acceptance evidence gap, and forbidden claims |
 | `sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map-v1.json` | P5A-R CFS picker source map | Machine-readable CFS picker eligibility anchors, denied-candidate blockers, bounded-retry requirements, cross-path exclusions, and non-claims |
+| `sched-exec-lease-p5a-r-picker-ineligibility-gate-v1.json` | P5A-R formal gate | Machine-readable attempt-local ineligibility, bounded retry, cost/layout, EEVDF return coverage, cross-path settlement, and non-claim gate |

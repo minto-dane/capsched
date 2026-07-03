@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-picker-ineligibility-gate-v1",
+  "date": "2026-07-03",
+  "status": "formal_gate_recorded_no_linux_patch_approved",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "source_map": "analysis/0135-sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map.md"
+  },
+  "scope": {
+    "slice": "P5A-R",
+    "goal": "deny one CFS task and pick the next CFS task",
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false
+  },
+  "required_shape": {
+    "attempt_local_denied_candidate_carrier": true,
+    "rq_lock_protected": true,
+    "pre_class_state_settlement": true,
+    "pre_rq_curr_publication": true,
+    "picker_visible_ineligibility": true,
+    "fresh_allowed_candidate_required": true,
+    "bounded_retry_required": true,
+    "fail_closed_or_quarantine_required_when_no_allowed_candidate": true,
+    "no_linear_candidate_search": true,
+    "no_unbounded_retry": true,
+    "no_persistent_hot_denial_layout_in_first_candidate": true,
+    "schedule_pick_epoch_gates_wakeup_preempt_bleed": true,
+    "newidle_lock_drop_clears_or_versions_carrier": true,
+    "task_generation_key_required": true,
+    "exec_generation_key_required": true,
+    "domain_and_grant_epoch_key_required": true,
+    "hierarchy_settlement_required": true,
+    "cgroup_mutation_settlement_required": true,
+    "all_pick_eevdf_return_paths_covered": true,
+    "core_sched_settlement_or_exclusion_required": true,
+    "core_sequence_and_hotplug_settlement_required": true,
+    "dl_server_settlement_or_exclusion_required": true,
+    "dl_server_retry_task_settlement_required": true,
+    "proxy_subject_rule_required": true,
+    "sched_ext_settlement_or_exclusion_required": true,
+    "accounting_separation_required": true,
+    "delayed_dequeue_pointer_lifetime_separation_required": true,
+    "throttle_limbo_separation_required": true,
+    "linux_local_state_cannot_mint_run_authority": true
+  },
+  "source_anchors": [
+    {
+      "id": "pick_eevdf",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_eevdf",
+      "expected_line": 1136,
+      "pattern": "static struct sched_entity *pick_eevdf"
+    },
+    {
+      "id": "pick_next_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_next_entity",
+      "expected_line": 6376,
+      "pattern": "pick_next_entity(struct rq *rq, struct cfs_rq *cfs_rq, bool protect)"
+    },
+    {
+      "id": "pick_task_fair",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9912,
+      "pattern": "struct task_struct *pick_task_fair"
+    },
+    {
+      "id": "fair_server_pick_task",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "fair_server_pick_task",
+      "expected_line": 9957,
+      "pattern": "fair_server_pick_task"
+    },
+    {
+      "id": "pick_next_entity_wakeup_preempt_use",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "check_preempt_wakeup_fair",
+      "expected_line": 9885,
+      "pattern": "nse = pick_next_entity(rq, cfs_rq, preempt_action != PREEMPT_WAKEUP_SHORT);"
+    },
+    {
+      "id": "newidle_balance_lock_drop",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "sched_balance_newidle",
+      "expected_line": 14337,
+      "pattern": "sched_balance_newidle is called by schedule()"
+    },
+    {
+      "id": "delayed_dequeue_lifetime_warning",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_next_entity",
+      "expected_line": 6384,
+      "pattern": "Must not reference @se again"
+    },
+    {
+      "id": "core_pick_next_task",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6129,
+      "pattern": "__pick_next_task(struct rq *rq, struct rq_flags *rf)"
+    },
+    {
+      "id": "core_cached_pick_fastpath",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "core_pick_seq",
+      "expected_line": 6259,
+      "pattern": "rq->core->core_pick_seq == rq->core->core_task_seq"
+    },
+    {
+      "id": "core_cookie_find",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "sched_core_find",
+      "expected_line": 373,
+      "pattern": "static struct task_struct *sched_core_find"
+    },
+    {
+      "id": "p4_final_run_edge",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "sched_exec_lease_validate_run_edge",
+      "expected_line": 7199,
+      "pattern": "(void)sched_exec_lease_validate_run_edge(prev, next);"
+    },
+    {
+      "id": "proxy_find_task",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "find_proxy_task",
+      "expected_line": 6876,
+      "pattern": "find_proxy_task(struct rq *rq, struct task_struct *donor, struct rq_flags *rf)"
+    },
+    {
+      "id": "retry_task_sentinel",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "RETRY_TASK",
+      "expected_line": 2575,
+      "pattern": "#define RETRY_TASK"
+    },
+    {
+      "id": "sched_ext_class",
+      "path": "linux/kernel/sched/ext/ext.c",
+      "symbol": "ext_sched_class",
+      "expected_line": 4567,
+      "pattern": "DEFINE_SCHED_CLASS(ext)"
+    },
+    {
+      "id": "dl_server_pick",
+      "path": "linux/kernel/sched/deadline.c",
+      "symbol": "__pick_task_dl",
+      "expected_line": 2814,
+      "pattern": "static struct task_struct *__pick_task_dl"
+    }
+  ],
+  "rejected_design_families": [
+    "late_hook_denial",
+    "sched_delayed_reuse",
+    "retry_task_only_denial",
+    "idle_fallback_authority",
+    "linear_candidate_search",
+    "unbounded_retry",
+    "persistent_task_struct_denial_bit",
+    "persistent_sched_entity_denial_bit",
+    "persistent_cfs_rq_or_rq_denial_field",
+    "persistent_per_cgroup_denied_map",
+    "wakeup_preempt_bleed",
+    "newidle_lock_drop_carrier_leak",
+    "stale_task_or_exec_or_domain_generation",
+    "cgroup_mutation_without_settlement",
+    "uncovered_pick_eevdf_return_path",
+    "core_cached_pick_authority",
+    "core_sequence_or_hotplug_leak",
+    "dl_server_authority",
+    "dl_server_retry_task_leak",
+    "proxy_executor_authority",
+    "sched_ext_dispatch_authority",
+    "delayed_dequeue_pointer_lifetime_alias",
+    "throttle_limbo_alias",
+    "linux_local_authority_forgery"
+  ],
+  "formal": {
+    "model": "formal/0104-p5a-r-picker-ineligibility-gate-model/P5ARPickerIneligibilityGate.tla",
+    "safe_cfg": "P5ARPickerIneligibilityGateSafe.cfg",
+    "unsafe_cfg_count": 28,
+    "safe_passed": true,
+    "safe_states_generated": 6,
+    "safe_distinct_states": 5,
+    "safe_depth": 5,
+    "unsafe_expected_counterexamples": 28,
+    "subagent_review_integrated": true
+  },
+  "safety_flags": {
+    "linux_code_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "broad_move_denial_approved": false,
+    "runtime_coverage_claim": false,
+    "budget_enforcement_claim": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}
