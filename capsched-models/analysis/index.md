@@ -143,6 +143,7 @@ Updated: 2026-07-03
 | 0135 | Source-map validated; P5A-R remains blocked pending picker-visible CFS ineligibility | SchedExecLease P5A-R CFS Picker Eligibility Source Map |
 | 0136 | Formal gate recorded; P5A-R behavior remains unapproved pending source-shape and hierarchy settlement | SchedExecLease P5A-R Picker Ineligibility Gate |
 | 0137 | Source-shape gate recorded; EEVDF return dominance checked but hierarchy settlement remains open | SchedExecLease P5A-R EEVDF Return Dominance |
+| 0138 | Source/formal gate recorded; group hierarchy settlement checked at pre-code level | SchedExecLease P5A-R Group Hierarchy Settlement |
 
 ## Planned Analysis Notes
 
@@ -248,3 +249,4 @@ Updated: 2026-07-03
 | `sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map-v1.json` | P5A-R CFS picker source map | Machine-readable CFS picker eligibility anchors, denied-candidate blockers, bounded-retry requirements, cross-path exclusions, and non-claims |
 | `sched-exec-lease-p5a-r-picker-ineligibility-gate-v1.json` | P5A-R formal gate | Machine-readable attempt-local ineligibility, bounded retry, cost/layout, EEVDF return coverage, cross-path settlement, and non-claim gate |
 | `sched-exec-lease-p5a-r-eevdf-return-dominance-v1.json` | P5A-R source-shape gate | Machine-readable EEVDF return-site dominance, semantic candidate families, source-shape outputs, drift handling, and non-claim gate |
+| `sched-exec-lease-p5a-r-group-hierarchy-settlement-v1.json` | P5A-R hierarchy gate | Machine-readable leaf/path/child-exhaustion/parent-skip distinctions, source anchors, formal results, and non-claim gate |

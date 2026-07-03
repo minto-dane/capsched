@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-group-hierarchy-settlement-v1",
+  "date": "2026-07-03",
+  "status": "formal_source_gate_recorded_no_linux_patch_approved",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "prior_gate": "analysis/sched-exec-lease-p5a-r-eevdf-return-dominance-v1.json"
+  },
+  "scope": {
+    "slice": "P5A-R",
+    "goal": "group hierarchy settlement gate for ordinary-CFS-only deny-one-CFS-and-pick-next readiness",
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "group_hierarchy_implementation_approved": false
+  },
+  "required_state_distinctions": [
+    "LeafDenied",
+    "PathDenied",
+    "ChildCfsRqExhausted",
+    "ParentSkipJustified",
+    "ParentOverDenied"
+  ],
+  "required_invariants": {
+    "parent_skip_requires_child_exhaustion": true,
+    "leaf_denial_does_not_imply_parent_skip": true,
+    "path_denial_is_not_cgroup_authority": true,
+    "allowed_sibling_descendant_remains_pickable": true,
+    "same_denied_leaf_not_repicked": true,
+    "child_exhaustion_not_accounting_alias": true,
+    "task_of_only_after_leaf_entity": true,
+    "ordinary_cfs_only_scope": true,
+    "core_dl_proxy_scx_not_settled_by_this_gate": true
+  },
+  "source_anchors": [
+    {
+      "id": "entity_is_task_macro",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "entity_is_task",
+      "expected_line": 938,
+      "pattern": "#define entity_is_task(se)"
+    },
+    {
+      "id": "task_of_symbol",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "task_of",
+      "expected_line": 1708,
+      "pattern": "static inline struct task_struct *task_of(struct sched_entity *se)"
+    },
+    {
+      "id": "task_of_warns_group_entity",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "task_of",
+      "expected_line": 1710,
+      "pattern": "WARN_ON_ONCE(!entity_is_task(se));"
+    },
+    {
+      "id": "group_cfs_rq_symbol",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "group_cfs_rq",
+      "expected_line": 1726,
+      "pattern": "static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)"
+    },
+    {
+      "id": "group_cfs_rq_returns_my_q",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "group_cfs_rq",
+      "expected_line": 1728,
+      "pattern": "return grp->my_q;"
+    },
+    {
+      "id": "pick_task_fair_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9912,
+      "pattern": "struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)"
+    },
+    {
+      "id": "pick_task_fair_root_cfs",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9922,
+      "pattern": "cfs_rq = &rq->cfs;"
+    },
+    {
+      "id": "pick_task_fair_descent_loop",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9928,
+      "pattern": "do {"
+    },
+    {
+      "id": "pick_task_fair_pick_next_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9933,
+      "pattern": "se = pick_next_entity(rq, cfs_rq, true);"
+    },
+    {
+      "id": "pick_task_fair_delayed_retry",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9935,
+      "pattern": "goto again;"
+    },
+    {
+      "id": "pick_task_fair_group_descent",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9936,
+      "pattern": "cfs_rq = group_cfs_rq(se);"
+    },
+    {
+      "id": "pick_task_fair_descent_until_leaf",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9937,
+      "pattern": "} while (cfs_rq);"
+    },
+    {
+      "id": "pick_task_fair_task_materialization",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9939,
+      "pattern": "p = task_of(se);"
+    },
+    {
+      "id": "pick_next_entity_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_next_entity",
+      "expected_line": 6376,
+      "pattern": "pick_next_entity(struct rq *rq, struct cfs_rq *cfs_rq, bool protect)"
+    },
+    {
+      "id": "pick_next_entity_delayed_dequeue",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_next_entity",
+      "expected_line": 6382,
+      "pattern": "dequeue_entities(rq, se, DEQUEUE_SLEEP | DEQUEUE_DELAYED);"
+    },
+    {
+      "id": "core_fair_fastpath_pick_task_fair",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6149,
+      "pattern": "p = pick_task_fair(rq, rf);"
+    },
+    {
+      "id": "core_fair_fastpath_settlement",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6157,
+      "pattern": "put_prev_set_next_task(rq, rq->donor, p);"
+    },
+    {
+      "id": "set_next_task_fair_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "set_next_task_fair",
+      "expected_line": 15033,
+      "pattern": "static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)"
+    },
+    {
+      "id": "set_next_task_fair_ancestor_walk",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "set_next_task_fair",
+      "expected_line": 15038,
+      "pattern": "for_each_sched_entity(se) {"
+    },
+    {
+      "id": "set_next_entity_symbol",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "set_next_entity",
+      "expected_line": 6325,
+      "pattern": "set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, bool first)"
+    },
+    {
+      "id": "set_next_entity_curr_write",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "set_next_entity",
+      "expected_line": 6346,
+      "pattern": "cfs_rq->curr = se;"
+    }
+  ],
+  "required_checks": {
+    "source_anchors_symbol_scoped": true,
+    "pick_task_fair_descent_order": true,
+    "task_of_after_descent": true,
+    "task_of_warns_on_group_entity": true,
+    "group_cfs_rq_child_runqueue_shape": true,
+    "delayed_dequeue_not_child_exhaustion": true,
+    "settlement_after_pick_task_fair": true,
+    "formal_safe_passed": true,
+    "formal_unsafe_counterexamples": true,
+    "non_claim_checks": true
+  },
+  "rejected_design_families": [
+    "post_task_of_only_denial",
+    "leaf_denial_implies_parent_skip",
+    "parent_skip_without_child_exhaustion",
+    "child_exhaustion_from_nr_queued_zero",
+    "child_exhaustion_from_sleep",
+    "child_exhaustion_from_throttle",
+    "child_exhaustion_from_delayed_dequeue",
+    "child_exhaustion_from_yield",
+    "child_exhaustion_from_eevdf_lag",
+    "task_of_group_entity",
+    "path_evidence_as_positive_authority",
+    "behavior_patch_before_core_dl_proxy_scx_gate"
+  ],
+  "formal": {
+    "model": "formal/0106-p5a-r-group-hierarchy-settlement-model/P5ARGroupHierarchySettlement.tla",
+    "safe_cfg": "P5ARGroupHierarchySettlementSafe.cfg",
+    "unsafe_cfg_count": 13,
+    "safe_passed": true,
+    "unsafe_expected_counterexamples": 13
+  },
+  "safety_flags": {
+    "linux_code_approved": false,
+    "behavior_change_approved": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "group_hierarchy_implementation_approved": false,
+    "runtime_coverage_claim": false,
+    "budget_enforcement_claim": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

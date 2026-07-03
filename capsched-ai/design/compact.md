@@ -3527,4 +3527,24 @@ P5A-R EEVDF return dominance:
     group hierarchy settlement. Do not approve CFS deny-and-repick before
     LeafDenied/PathDenied/ChildCfsRqExhausted/ParentSkipJustified/ParentOverDenied
     are modeled and validated.
+
+P5A-R group hierarchy settlement:
+  analysis/0138, formal/0106, and validation/0165 are complete as a pre-code
+  source/formal gate only.
+
+  Validation:
+    run 20260703T214938Z
+    source anchors 21/21, line drift 0
+    semantic hierarchy source shape ok
+    safe TLC: 9 generated states, 7 distinct states, depth 5
+    unsafe TLC: 13 expected counterexamples
+
+  Result:
+    LeafDenied does not imply parent group skip. ParentSkipJustified requires
+    ChildCfsRqExhausted. ParentOverDenied is an explicit unsafe state.
+    Accounting aliases are not child exhaustion proof.
+
+  Still open:
+    core/DL/proxy/SCX exclusion-or-settlement gate, then no-O(n)/no-hot-layout
+    disabled-overhead gate.
 ```

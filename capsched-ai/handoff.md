@@ -4244,3 +4244,33 @@ P5A-R EEVDF return dominance / validation 0164:
   next:
     P5A-R group hierarchy settlement gate: LeafDenied, PathDenied,
     ChildCfsRqExhausted, ParentSkipJustified, and ParentOverDenied unsafe case.
+
+P5A-R group hierarchy settlement / validation 0165:
+  status:
+    Source/formal gate passed. No Linux behavior patch, runtime denial, CFS
+    deny-and-repick, group hierarchy implementation, runtime coverage, monitor
+    verification, protection, cost, deployment, or datacenter claim is approved.
+
+  artifacts:
+    capsched-models/analysis/0138-sched-exec-lease-p5a-r-group-hierarchy-settlement.md
+    capsched-models/analysis/sched-exec-lease-p5a-r-group-hierarchy-settlement-v1.json
+    capsched-models/formal/0106-p5a-r-group-hierarchy-settlement-model/
+    capsched-models/validation/0165-sched-exec-lease-p5a-r-group-hierarchy-settlement.md
+    capsched-models/validation/run-sched-exec-lease-p5a-r-group-hierarchy-settlement.sh
+
+  validation:
+    Run 20260703T214938Z passed.
+    source anchors 21/21, missing 0, line drift 0.
+    semantic hierarchy source shape ok.
+    safe TLC: 9 generated states, 7 distinct states, depth 5.
+    unsafe TLC: 13 expected counterexamples.
+
+  result:
+    LeafDenied, PathDenied, ChildCfsRqExhausted, ParentSkipJustified, and
+    ParentOverDenied are now separated at pre-code design level. Parent skip
+    requires explicit child exhaustion, and allowed sibling descendants must
+    remain pickable. Linux accounting aliases such as nr_queued, sleep,
+    throttle, delayed dequeue, yield, or EEVDF lag cannot prove exhaustion.
+
+  next:
+    P5A-R core/DL/proxy/SCX exclusion-or-settlement gate.
