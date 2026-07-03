@@ -3605,3 +3605,29 @@ P5A-R negative validation plan:
   Still open:
     implementation patch plan.
 ```
+
+P5A-R ordinary-CFS patch plan:
+  implementation/0033, formal/0110, and validation/0169 are complete as a
+  source/formal patch-plan gate only.
+
+  Validation:
+    run 20260703T230145Z
+    source anchors 10/10, prior gates present
+    pre_settle_window_ok=true
+    p4_late_for_p5ar_ok=true
+    cross_path_anchors_ok=true
+    acceptance validation obligations 22
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe TLC: 16 expected counterexamples
+
+  Result:
+    Linux patch `0009` may now be drafted as an ordinary-CFS-only behavior
+    candidate. It is not accepted. The future patch must keep denial
+    pre-settle/picker-visible, bounded and attempt-local, hierarchy-aware,
+    cross-path excluded or settled, private to scheduler internals, and free of
+    O(n) scans or persistent hot denial layout.
+
+  Still open:
+    actual Linux 0009 draft and full acceptance validation. Runtime denial,
+    CFS deny-and-repick correctness, runtime coverage, protection, cost,
+    deployment, and datacenter claims remain false.

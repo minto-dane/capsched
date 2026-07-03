@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-ordinary-cfs-patch-plan-v1",
+  "date": "2026-07-03",
+  "status": "behavior_patch_draft_plan_recorded_no_linux_code_modified",
+  "source_basis": {
+    "linux_branch": "capsched-linux-l0",
+    "linux_commit": "d812f83c033a9f9b3d533e667e7106a5734eb30b",
+    "upstream_ref": "upstream/master",
+    "upstream_commit": "87320be9f0d24fce67631b7eef919f0b79c3e45c",
+    "next_patch_slot": "linux-patches/patches/capsched-linux-l0/0009-...",
+    "prior_validation_gates": [
+      "validation/0163-sched-exec-lease-p5a-r-picker-ineligibility-gate.md",
+      "validation/0164-sched-exec-lease-p5a-r-eevdf-return-dominance.md",
+      "validation/0165-sched-exec-lease-p5a-r-group-hierarchy-settlement.md",
+      "validation/0166-sched-exec-lease-p5a-r-cross-path-exclusion-settlement.md",
+      "validation/0167-sched-exec-lease-p5a-r-overhead-layout-gate.md",
+      "validation/0168-sched-exec-lease-p5a-r-negative-validation-plan.md"
+    ]
+  },
+  "scope": {
+    "slice": "P5A-R",
+    "ordinary_cfs_only": true,
+    "linux_behavior_patch_may_be_drafted": true,
+    "linux_patch_accepted": false,
+    "linux_code_modified_by_this_record": false,
+    "behavior_change_accepted": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "broad_move_denial_approved": false
+  },
+  "file_boundary": {
+    "default_allowed_files": [
+      "include/linux/sched_exec_lease.h",
+      "kernel/sched/exec_lease.c",
+      "kernel/sched/fair.c"
+    ],
+    "conditional_allowed_files": [
+      "kernel/sched/core.c",
+      "kernel/sched/sched.h"
+    ],
+    "requires_new_scope_gate_outside_allowed_files": true,
+    "public_abi_allowed": false,
+    "public_trace_abi_allowed": false,
+    "exported_symbols_allowed": false,
+    "monitor_calls_allowed": false,
+    "lsm_hooks_allowed": false,
+    "cgroup_interface_changes_allowed": false
+  },
+  "required_code_shape": {
+    "ordinary_cfs_fast_path_only": true,
+    "rq_lock_held": true,
+    "attempt_local_carrier": true,
+    "fixed_retry_budget": true,
+    "fixed_denied_receipt_capacity": true,
+    "pre_frozen_identity_tuple": true,
+    "candidate_identity_comparison_only": true,
+    "pre_settle_candidate_rejection": true,
+    "same_attempt_no_same_task_generation_repick": true,
+    "allowed_sibling_descendant_remains_pickable": true,
+    "unsupported_cross_paths_excluded_or_settled": true
+  },
+  "required_identity_tuple": [
+    "task_stable_identity",
+    "task_generation",
+    "exec_generation",
+    "domain_epoch",
+    "grant_epoch",
+    "attempt_epoch",
+    "candidate_cpu",
+    "candidate_path_family"
+  ],
+  "allowed_private_results": [
+    "ALLOW",
+    "DENY_THIS_CANDIDATE_FOR_THIS_ATTEMPT",
+    "UNSUPPORTED_PATH"
+  ],
+  "forbidden_code_shape": [
+    "deny_with_existing_p4_final_run_hook",
+    "post_put_prev_set_next_task_denial",
+    "post_set_next_task_or_set_next_entity_denial",
+    "post_rq_curr_denial",
+    "post_sched_switch_denial",
+    "retry_task_only_denial",
+    "idle_fallback_with_allowed_candidate",
+    "linear_rb_tree_scan",
+    "full_cgroup_descendant_scan",
+    "nr_queued_as_child_exhaustion_proof",
+    "delayed_dequeue_sleep_throttle_yield_or_lag_as_authority",
+    "persistent_hot_denial_fields",
+    "picker_allocation_sleep_policy_or_monitor_call",
+    "unscoped_wakeup_preempt_effect",
+    "stale_carrier_reuse_across_lock_drop_newidle"
+  ],
+  "cross_path_support_predicate": {
+    "sched_ext_inactive_required": true,
+    "core_scheduling_inactive_for_rq_required": true,
+    "proxy_execution_not_rewriting_executor_required": true,
+    "dl_server_fair_pick_excluded_or_settled_required": true,
+    "class_loop_non_fair_selection_excluded_required": true
+  },
+  "required_acceptance_validation": [
+    "patch_queue_replay_exact_head",
+    "upstream_replay_or_merge_tree",
+    "strict_checkpatch_get_maintainer",
+    "source_allowlist_and_anchor_checker",
+    "pre_settle_denial_dominance_checker",
+    "cross_path_exclusion_predicate_checker",
+    "no_public_abi_or_trace_abi_checker",
+    "no_monitor_calls_or_exported_symbols_checker",
+    "no_o_n_no_unbounded_retry_no_persistent_hot_layout_checker",
+    "full_vmlinux_config_off",
+    "full_vmlinux_config_on_denial_disabled",
+    "full_vmlinux_config_on_denial_test_mode_if_present",
+    "hot_function_size_evidence",
+    "task_rq_sched_entity_cfs_rq_layout_evidence",
+    "qemu_denial_disabled_boot_workload_smoke",
+    "qemu_negative_deny_a_schedule_b",
+    "qemu_negative_denied_a_not_rq_curr_or_sched_switch",
+    "qemu_negative_same_generation_not_repicked",
+    "qemu_negative_allowed_sibling_schedulable",
+    "qemu_negative_idle_only_when_no_supported_allowed_candidate",
+    "security_diff_scan",
+    "final_overclaim_review"
+  ],
+  "source_anchors": [
+    {
+      "id": "ordinary_cfs_fast_path_pick",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6149,
+      "pattern": "p = pick_task_fair(rq, rf);"
+    },
+    {
+      "id": "ordinary_cfs_fast_path_settle",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6157,
+      "pattern": "put_prev_set_next_task(rq, rq->donor, p);"
+    },
+    {
+      "id": "p4_run_edge_is_late_for_p5ar_denial",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "sched_exec_lease_validate_run_edge",
+      "expected_line": 7199,
+      "pattern": "(void)sched_exec_lease_validate_run_edge(prev, next);"
+    },
+    {
+      "id": "rq_curr_publication",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "RCU_INIT_POINTER(rq->curr",
+      "expected_line": 7207,
+      "pattern": "RCU_INIT_POINTER(rq->curr, next);"
+    },
+    {
+      "id": "sched_switch_observation",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "trace_sched_switch",
+      "expected_line": 7237,
+      "pattern": "trace_sched_switch(preempt, prev, next, prev_state);"
+    },
+    {
+      "id": "pick_task_fair_leaf_task",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9939,
+      "pattern": "p = task_of(se);"
+    },
+    {
+      "id": "pick_task_fair_core_idle_boundary",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "pick_task_fair",
+      "expected_line": 9945,
+      "pattern": "if (sched_core_enabled(rq))"
+    },
+    {
+      "id": "fair_server_nested_pick",
+      "path": "linux/kernel/sched/fair.c",
+      "symbol": "fair_server_pick_task",
+      "expected_line": 9960,
+      "pattern": "return pick_task_fair(dl_se->rq, rf);"
+    },
+    {
+      "id": "sched_ext_restart_boundary",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "__pick_next_task",
+      "expected_line": 6137,
+      "pattern": "if (scx_enabled())"
+    },
+    {
+      "id": "proxy_execution_rewrite_boundary",
+      "path": "linux/kernel/sched/core.c",
+      "symbol": "find_proxy_task",
+      "expected_line": 7162,
+      "pattern": "next = find_proxy_task(rq, next, &rf);"
+    }
+  ],
+  "required_checks": {
+    "prior_validation_gate_count": 6,
+    "source_anchor_count": 10,
+    "default_allowed_file_count": 3,
+    "conditional_allowed_file_count": 2,
+    "required_acceptance_validation_count": 22,
+    "formal_safe_passed": true,
+    "formal_unsafe_counterexamples": true,
+    "formal_unsafe_cfg_count": 16
+  },
+  "formal": {
+    "model": "formal/0110-p5a-r-ordinary-cfs-patch-plan-model/P5AROrdinaryCfsPatchPlan.tla",
+    "safe_cfg": "P5AROrdinaryCfsPatchPlanSafe.cfg",
+    "unsafe_cfg_count": 16,
+    "safe_passed": true,
+    "unsafe_expected_counterexamples": 16
+  },
+  "safety_flags": {
+    "linux_code_modified_by_this_record": false,
+    "linux_patch_accepted": false,
+    "behavior_change_accepted": false,
+    "runtime_denial_approved": false,
+    "cfs_deny_and_repick_approved": false,
+    "broad_move_denial_approved": false,
+    "runtime_coverage_claim": false,
+    "benchmark_claim": false,
+    "budget_enforcement_claim": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "monitor_call": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "hypervisor_grade_isolation": false,
+    "cost_efficiency_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

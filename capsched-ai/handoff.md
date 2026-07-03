@@ -4367,3 +4367,39 @@ P5A-R negative validation plan / validation 0168:
 
   next:
     implementation patch plan.
+
+P5A-R ordinary-CFS patch plan / validation 0169:
+  status:
+    Source/formal patch-plan gate passed. Linux `0009` may now be drafted as
+    an ordinary-CFS-only behavior candidate, but the patch is not accepted and
+    runtime denial/CFS deny-and-repick correctness remains unapproved.
+
+  artifacts:
+    capsched-models/implementation/0033-sched-exec-lease-p5a-r-ordinary-cfs-patch-plan.md
+    capsched-models/implementation/sched-exec-lease-p5a-r-ordinary-cfs-patch-plan-v1.json
+    capsched-models/formal/0110-p5a-r-ordinary-cfs-patch-plan-model/
+    capsched-models/validation/0169-sched-exec-lease-p5a-r-ordinary-cfs-patch-plan.md
+    capsched-models/validation/run-sched-exec-lease-p5a-r-ordinary-cfs-patch-plan.sh
+
+  validation:
+    Run 20260703T230145Z passed.
+    source anchors 10/10, prior gates present.
+    pre_settle_window_ok=true.
+    p4_late_for_p5ar_ok=true.
+    cross_path_anchors_ok=true.
+    acceptance_validation_count=22.
+    safe TLC: 6 generated states, 5 distinct states, depth 5.
+    unsafe TLC: 16 expected counterexamples.
+
+  result:
+    Next Linux patch slot is `0009`. It may be drafted only as an
+    ordinary-CFS-only behavior candidate with pre-settle picker-visible denial,
+    bounded attempt-local carrier, hierarchy and cross-path settlement or
+    exclusion, no O(n) scan, no persistent hot denial layout, and no public
+    ABI/trace ABI/monitor call/exported symbol.
+
+  still required before accepting 0009:
+    patch replay, upstream replay or merge-tree, strict checkpatch and
+    get_maintainer, source-shape checks, full off/on builds, object/layout
+    evidence, QEMU denial-disabled smoke, QEMU negative denial tests, security
+    diff review, and final overclaim review.

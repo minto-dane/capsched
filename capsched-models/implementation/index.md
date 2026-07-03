@@ -230,6 +230,20 @@ Current SchedExecLease L0 readiness:
     claims remain unchanged and unapproved. P5A-R still requires fair-picker
     eligibility integration; P5A-M still requires status settlement across
     migration, affinity, swap, push, and core-cookie-steal paths.
+- `0033-sched-exec-lease-p5a-r-ordinary-cfs-patch-plan.md`
+  - Status: patch plan passed as source/formal gate; Linux code is not
+    modified and the future `0009` patch is not accepted.
+  - Rule: `0009` may now be drafted only as an ordinary-CFS-only behavior
+    candidate. The draft must keep denial pre-settle and picker-visible, use an
+    attempt-local bounded carrier, preserve hierarchy and cross-path
+    settlement/exclusion requirements, avoid O(n) scans and persistent hot
+    denial layout, and remain private to scheduler internals. Acceptance still
+    requires patch replay, upstream replay/merge-tree, strict
+    checkpatch/get_maintainer, source-shape checks, full off/on builds,
+    object/layout evidence, QEMU denial-disabled smoke, QEMU negative denial
+    tests, security diff review, and final overclaim review. Runtime denial,
+    CFS deny-and-repick correctness, runtime coverage, protection, cost,
+    deployment, and datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

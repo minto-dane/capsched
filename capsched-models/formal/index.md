@@ -115,6 +115,7 @@ Updated: 2026-07-03
 | 0107 | Checked with safe pass and expected unsafe counterexamples | P5A-R Cross-Path Exclusion/Settlement Model |
 | 0108 | Checked with safe pass and expected unsafe counterexamples | P5A-R Overhead and Layout Gate Model |
 | 0109 | Checked with safe pass and expected unsafe counterexamples | P5A-R Negative Validation Plan Model |
+| 0110 | Checked with safe pass and expected unsafe counterexamples | P5A-R Ordinary-CFS Patch Plan Model |
 
 ## Planned
 
