@@ -4718,6 +4718,13 @@ P5A-R 0010 negative harness implementation:
     Rerun QEMU negative runtime validation again. The first expected marker is
     `NEGATIVE_ALLOWED_RELEASED`.
 
+  allowed-first run started:
+    `capsched-p5a-r-0010-negative-qemu-allowedfirst-20260704T051039Z.service`
+    with log
+    `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-allowedfirst-20260704T051039Z.log`.
+    First expected markers are `NEGATIVE_ALLOWED_RELEASED` and then
+    `NEGATIVE_CHILDREN_RELEASED`.
+
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,
     CFS deny-and-repick correctness, runtime coverage, capability semantics,

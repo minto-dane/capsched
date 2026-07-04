@@ -3839,6 +3839,10 @@ P5A-R 0010 negative harness:
     release allowed first, print `NEGATIVE_ALLOWED_RELEASED`, then release
     denied.
 
+  Allowed-first run:
+    `capsched-p5a-r-0010-negative-qemu-allowedfirst-20260704T051039Z.service`,
+    log `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-allowedfirst-20260704T051039Z.log`.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or
