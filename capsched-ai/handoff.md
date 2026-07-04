@@ -4652,6 +4652,13 @@ P5A-R 0010 negative harness implementation:
     `capsched/capsched-models/validation/run-sched-exec-lease-p5a-r-0010-negative-qemu.sh`.
     This should be started under systemd if it becomes long-running.
 
+  started run:
+    `capsched-p5a-r-0010-negative-qemu-20260704T043512Z.service`
+    with log
+    `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-20260704T043512Z.log`.
+    Check `systemctl --user status ...` and the log before recording
+    validation/0178.
+
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,
     CFS deny-and-repick correctness, runtime coverage, capability semantics,

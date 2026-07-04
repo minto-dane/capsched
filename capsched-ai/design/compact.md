@@ -3797,7 +3797,11 @@ P5A-R 0010 negative harness:
     whitespace checks, config resolution, and targeted `fair.o` build.
 
   Pending:
-    QEMU negative runtime run, security diff review, final overclaim review.
+    QEMU negative runtime result, security diff review, final overclaim review.
+
+  Started QEMU:
+    `capsched-p5a-r-0010-negative-qemu-20260704T043512Z.service`, log
+    `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-20260704T043512Z.log`.
 
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
