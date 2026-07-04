@@ -3778,3 +3778,28 @@ P5A-R 0009 negative runtime harness:
     path. It does not prove capability semantics, monitor enforcement,
     production runtime denial correctness, runtime coverage, protection, cost,
     deployment, or datacenter readiness.
+
+P5A-R 0010 negative harness:
+  Concrete test-only patch drafted at Linux commit
+  `9f2b3996688849eb0ddc13531f735cc4eb16b63d`.
+
+  Patch:
+    `sched/fair: Add test-only CFS exec lease denial harness`
+    adds default-off `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST`.
+
+  Test behavior:
+    under that config only, enable `sched_exec_cfs_candidate_key` at late init
+    and make `task->comm` prefix `seldeny` return
+    `SCHED_EXEC_VALIDATION_INELIGIBLE`.
+
+  Validation so far:
+    validation/0177 passed for workload compile, runner syntax,
+    whitespace checks, config resolution, and targeted `fair.o` build.
+
+  Pending:
+    QEMU negative runtime run, security diff review, final overclaim review.
+
+  Non-claims:
+    still no accepted runtime denial correctness, CFS deny-and-repick
+    correctness, runtime coverage, production protection, cost, deployment, or
+    datacenter claim.

@@ -277,6 +277,21 @@ Current SchedExecLease L0 readiness:
     ABI, debugfs/sysctl/proc controls, monitor calls, LSM/cgroup interfaces,
     persistent hot denial fields, allocator/sleeping operations in the picker,
     or any protection/cost/datacenter claim.
+- `0036-sched-exec-lease-p5a-r-0010-negative-harness.md`
+  - Status: concrete test-only `0010` Linux patch drafted; not accepted as
+    production policy or protection.
+  - Linux commit:
+    `9f2b3996688849eb0ddc13531f735cc4eb16b63d`.
+  - JSON:
+    `sched-exec-lease-p5a-r-0010-negative-harness-v1.json`.
+  - Rule: the patch adds default-off
+    `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST`, enables the existing ordinary-CFS
+    candidate static key only under that config, and synthetically denies
+    tasks whose `task->comm` begins with `seldeny`. validation/0177 records
+    source/config/workload/targeted `fair.o` build evidence. QEMU negative
+    runtime validation, security diff review, final overclaim review, runtime
+    coverage, protection, cost, deployment, and datacenter claims remain
+    unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

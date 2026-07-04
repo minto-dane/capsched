@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-0010-negative-harness-v1",
+  "date": "2026-07-04",
+  "status": "concrete_test_only_patch_drafted_not_accepted",
+  "linux_patch": {
+    "commit": "9f2b3996688849eb0ddc13531f735cc4eb16b63d",
+    "subject": "sched/fair: Add test-only CFS exec lease denial harness",
+    "patch_queue_file": "linux-patches/patches/capsched-linux-l0/0010-sched-fair-Add-test-only-CFS-exec-lease-denial-harne.patch",
+    "patch_queue_sha256": "72a5d00ea28f75ea426aa7eb600dd27deae41629ee74a54db611817654fce2dd",
+    "series_sha256": "32e071609a60df58acd9997650554d87a7e5a59d9b9ab5c49581b253f8b020d4",
+    "touched_files": [
+      "init/Kconfig",
+      "kernel/sched/fair.c"
+    ]
+  },
+  "config": {
+    "name": "CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST",
+    "depends_on": [
+      "SCHED_EXEC_LEASE",
+      "DEBUG_KERNEL"
+    ],
+    "default": "n",
+    "production_enablement_allowed": false
+  },
+  "test_behavior": {
+    "static_key_enabled": "sched_exec_cfs_candidate_key",
+    "static_key_enable_phase": "late_initcall",
+    "synthetic_denied_comm_prefix": "seldeny",
+    "denied_result": "SCHED_EXEC_VALIDATION_INELIGIBLE",
+    "compiled_out_unless_enabled": true
+  },
+  "validation_harness": {
+    "workload": "capsched-models/validation/workloads/sched_exec_lease_negative_workload.c",
+    "workload_sha256": "9cfae6259c29c3bafddbdd99bf206e3394ec5482348308427de1831b3b78f7de",
+    "runner": "capsched-models/validation/run-sched-exec-lease-p5a-r-0010-negative-qemu.sh",
+    "runner_sha256": "5f064ee14b1629bf763cc032b068357a2372e065db1fcc88b7ba162ee7a56fc7",
+    "base_qemu_runner": "capsched-models/validation/run-sched-exec-lease-qemu-boot-smoke.sh",
+    "base_qemu_runner_sha256": "8e6b367a9e370c2061b95f07004bfaf0fb0d8bedba7fb0984b67d4b4add5a2b3",
+    "expected_guest_markers": [
+      "NEGATIVE_ALLOWED_NEXT > 0",
+      "NEGATIVE_DENIED_NEXT == 0",
+      "NEGATIVE_RESULT PASS"
+    ]
+  },
+  "fast_validation": {
+    "workload_host_compile": true,
+    "runner_shell_syntax": true,
+    "linux_diff_check": true,
+    "capsched_diff_check": true,
+    "olddefconfig_config_y": true,
+    "targeted_fair_o_build": true,
+    "targeted_build_dir": "build/linux-l0-sched-exec-lease-on-p5a-r-0010-targeted-x86_64",
+    "fair_o_size": 160304,
+    "fair_o_sha256": "612ba1d25f71c87846310276e73a900cf38800a08244b33b8b805380f3abf4f2"
+  },
+  "pending_validation": [
+    "qemu_negative_runtime",
+    "security_diff_review",
+    "final_overclaim_review",
+    "claim_ledger_update"
+  ],
+  "safety_flags": {
+    "accepted": false,
+    "test_only_overlay": true,
+    "production_policy": false,
+    "public_abi": false,
+    "public_tracepoint_abi": false,
+    "debugfs_control": false,
+    "sysctl_control": false,
+    "proc_control": false,
+    "lsm_hook": false,
+    "cgroup_interface": false,
+    "monitor_call": false,
+    "persistent_hot_denial_fields": false,
+    "runtime_denial_correctness": false,
+    "cfs_deny_and_repick_correctness": false,
+    "runtime_coverage_claim": false,
+    "protection": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

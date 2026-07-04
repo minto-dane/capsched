@@ -4624,3 +4624,36 @@ P5A-R 0009 negative runtime harness / analysis 0144 + implementation 0035:
     This is not real capability semantics, not production runtime denial
     correctness, not runtime coverage beyond the observed synthetic path, and
     not protection/cost/datacenter evidence.
+
+P5A-R 0010 negative harness implementation:
+  status:
+    Concrete test-only Linux patch drafted and source/targeted-build checked;
+    not accepted as production policy or protection.
+
+  Linux:
+    commit `9f2b3996688849eb0ddc13531f735cc4eb16b63d`
+    (`sched/fair: Add test-only CFS exec lease denial harness`).
+    Patch queue file:
+    `linux-patches/patches/capsched-linux-l0/0010-sched-fair-Add-test-only-CFS-exec-lease-denial-harne.patch`.
+
+  behavior:
+    Adds default-off `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST`, depending on
+    `SCHED_EXEC_LEASE && DEBUG_KERNEL`. When enabled, it enables the existing
+    ordinary-CFS candidate static key at late init and denies tasks whose
+    `task->comm` begins with `seldeny`.
+
+  validation:
+    validation/0177 records workload host compile, runner `bash -n`,
+    `diff --check`, `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST=y` olddefconfig,
+    and targeted `kernel/sched/fair.o` build success.
+
+  next:
+    Run QEMU negative runtime validation:
+    `capsched/capsched-models/validation/run-sched-exec-lease-p5a-r-0010-negative-qemu.sh`.
+    This should be started under systemd if it becomes long-running.
+
+  non-claims:
+    0009 and 0010 remain unaccepted. Runtime denial correctness,
+    CFS deny-and-repick correctness, runtime coverage, capability semantics,
+    monitor enforcement, protection, cost, deployment, and datacenter claims
+    remain false.

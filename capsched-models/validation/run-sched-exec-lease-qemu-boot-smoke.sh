@@ -13,7 +13,7 @@ MODE="${SCHED_EXEC_LEASE_QEMU_MODE:-on}"
 BUILD="${SCHED_EXEC_LEASE_QEMU_BUILD:-$ROOT/build/linux-l0-sched-exec-lease-$MODE-qemu-x86_64}"
 OUT_ROOT="${SCHED_EXEC_LEASE_QEMU_OUT_ROOT:-$ROOT/build/qemu/sched-exec-lease-boot-smoke}"
 TOOLS="$ROOT/tools/apt-local/root"
-WORKLOAD_SRC="$ROOT/capsched/capsched-models/validation/workloads/slice0c_sched_workload.c"
+WORKLOAD_SRC="${SCHED_EXEC_LEASE_QEMU_WORKLOAD_SRC:-$ROOT/capsched/capsched-models/validation/workloads/slice0c_sched_workload.c}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_DIR="$OUT_ROOT/$STAMP-$MODE"
 INITRD_DIR="$RUN_DIR/initramfs"
@@ -28,6 +28,9 @@ QEMU_MEM="${SCHED_EXEC_LEASE_QEMU_MEM:-1024M}"
 QEMU_SMP="${SCHED_EXEC_LEASE_QEMU_SMP:-2}"
 WORKLOAD_MODE="${SCHED_EXEC_LEASE_QEMU_WORKLOAD_MODE:-forkexec}"
 ENABLE_KPROBES="${SCHED_EXEC_LEASE_QEMU_ENABLE_KPROBES:-0}"
+ENABLE_CFS_DENY_TEST="${SCHED_EXEC_LEASE_QEMU_ENABLE_CFS_DENY_TEST:-0}"
+EXPECT_NEGATIVE="${SCHED_EXEC_LEASE_QEMU_EXPECT_NEGATIVE:-0}"
+ENABLE_FUNCTION_TRACER="${SCHED_EXEC_LEASE_QEMU_ENABLE_FUNCTION_TRACER:-1}"
 
 EVENTS="
 sched/sched_waking
@@ -86,6 +89,9 @@ affinity)
 	;;
 pressure)
 	WORKLOAD_ARGV=("$WORKLOAD_MODE" "${SCHED_EXEC_LEASE_QEMU_PRESSURE_THREADS:-8}" "${SCHED_EXEC_LEASE_QEMU_WORKLOAD_ITERS:-500000}")
+	;;
+negative)
+	WORKLOAD_ARGV=("$WORKLOAD_MODE")
 	;;
 all)
 	WORKLOAD_ARGV=("$WORKLOAD_MODE")
@@ -156,8 +162,13 @@ build_kernel()
 	if [ "$MODE" = "on" ]; then
 		"$LINUX/scripts/config" --file "$BUILD/.config" --enable EXPERT
 		"$LINUX/scripts/config" --file "$BUILD/.config" --enable SCHED_EXEC_LEASE
+		if [ "$ENABLE_CFS_DENY_TEST" = "1" ]; then
+			"$LINUX/scripts/config" --file "$BUILD/.config" --enable DEBUG_KERNEL
+			"$LINUX/scripts/config" --file "$BUILD/.config" --enable SCHED_EXEC_LEASE_CFS_DENY_TEST
+		fi
 	else
 		"$LINUX/scripts/config" --file "$BUILD/.config" --disable SCHED_EXEC_LEASE
+		"$LINUX/scripts/config" --file "$BUILD/.config" --disable SCHED_EXEC_LEASE_CFS_DENY_TEST
 	fi
 	"$LINUX/scripts/config" --file "$BUILD/.config" --enable FUNCTION_TRACER
 	"$LINUX/scripts/config" --file "$BUILD/.config" --enable DYNAMIC_FTRACE
@@ -215,6 +226,7 @@ fi
 echo "SCHED_EXEC_LEASE_QEMU_BEGIN"
 echo "KERNEL_UNAME \$(uname -a)"
 grep '^CONFIG_SCHED_EXEC_LEASE=' /etc/kernel.config || true
+grep '^CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST=' /etc/kernel.config || true
 grep '^CONFIG_FUNCTION_TRACER=' /etc/kernel.config || true
 grep '^CONFIG_KPROBE_EVENTS=' /etc/kernel.config || true
 echo "TRACEFS \$TRACEFS"
@@ -268,7 +280,10 @@ if [ "\$ENABLE_KPROBES" = "1" ] && [ -w "\$TRACEFS/kprobe_events" ]; then
 	done
 fi
 
-if [ -r "\$TRACEFS/available_filter_functions" ] && [ -w "\$TRACEFS/set_ftrace_filter" ]; then
+ENABLE_FUNCTION_TRACER=$ENABLE_FUNCTION_TRACER
+if [ "\$ENABLE_FUNCTION_TRACER" = "1" ] &&
+   [ -r "\$TRACEFS/available_filter_functions" ] &&
+   [ -w "\$TRACEFS/set_ftrace_filter" ]; then
 	for func in $FUNCTION_LIST; do
 		if grep -qw "\$func" "\$TRACEFS/available_filter_functions"; then
 			echo "FUNCTION_ENABLED \$func"
@@ -281,7 +296,9 @@ else
 	echo "FUNCTION_FILTER_UNAVAILABLE"
 fi
 
-if [ -r "\$TRACEFS/available_tracers" ] && grep -qw function "\$TRACEFS/available_tracers"; then
+if [ "\$ENABLE_FUNCTION_TRACER" = "1" ] &&
+   [ -r "\$TRACEFS/available_tracers" ] &&
+   grep -qw function "\$TRACEFS/available_tracers"; then
 	echo function > "\$TRACEFS/current_tracer"
 	echo "TRACER function"
 else
@@ -376,7 +393,11 @@ run_qemu()
 		echo "qemu_timeout_seconds=$QEMU_TIMEOUT"
 		echo "workload_mode=$WORKLOAD_MODE"
 		echo "workload_args=$WORKLOAD_ARG_LINE"
+		echo "workload_src=$WORKLOAD_SRC"
 		echo "kprobes_enabled=$ENABLE_KPROBES"
+		echo "function_tracer_enabled=$ENABLE_FUNCTION_TRACER"
+		echo "cfs_deny_test_enabled=$ENABLE_CFS_DENY_TEST"
+		echo "expect_negative=$EXPECT_NEGATIVE"
 		if [[ -w /dev/kvm ]]; then
 			echo "kvm=enabled"
 		else
@@ -388,6 +409,12 @@ run_qemu()
 	grep -q '^SCHED_EXEC_LEASE_QEMU_END workload_ret=0' "$SERIAL_LOG"
 	if [ "$MODE" = "on" ]; then
 		grep -q '^CONFIG_SCHED_EXEC_LEASE=y' "$SERIAL_LOG"
+	fi
+	if [ "$EXPECT_NEGATIVE" = "1" ]; then
+		grep -q '^CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST=y' "$SERIAL_LOG"
+		grep -q '^NEGATIVE_RESULT PASS' "$SERIAL_LOG"
+		grep -Eq '^NEGATIVE_ALLOWED_NEXT[[:space:]]+[1-9][0-9]*' "$SERIAL_LOG"
+		grep -q '^NEGATIVE_DENIED_NEXT 0' "$SERIAL_LOG"
 	fi
 	[ "$status" = "0" ]
 }

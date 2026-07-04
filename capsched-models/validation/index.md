@@ -182,6 +182,7 @@ Updated: 2026-07-04
 | 0174 | Passed for full CONFIG off/on `vmlinux` build; runtime/QEMU/protection claims remain unapproved | SchedExecLease P5A-R 0009 Full Build |
 | 0175 | Passed for object/function-size and task layout evidence; runtime/QEMU/protection claims remain unapproved | SchedExecLease P5A-R 0009 Object and Layout |
 | 0176 | Passed for QEMU off/on boot/workload smoke; runtime coverage and denial correctness remain unapproved | SchedExecLease P5A-R 0009 QEMU Boot Smoke |
+| 0177 | Passed for 0010 source/config/workload and targeted `fair.o` build; QEMU negative runtime validation remains pending | SchedExecLease P5A-R 0010 Source and Targeted Build |
 
 ## Principles
 

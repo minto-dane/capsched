@@ -1,0 +1,149 @@
+# Implementation 0036: SchedExecLease P5A-R 0010 Negative Harness
+
+Date: 2026-07-04
+
+Status: concrete test-only Linux patch drafted. Not accepted as production
+policy or protection.
+
+## Purpose
+
+Patch `0009` added a dormant ordinary-CFS deny-and-repick candidate path. It
+had no enable site for `sched_exec_cfs_candidate_key`, so runtime negative
+tests could not exercise the path.
+
+Patch `0010` adds a default-off test harness overlay so QEMU can validate the
+mechanics without adding a production policy surface.
+
+## Linux Patch
+
+```text
+linux_commit=9f2b3996688849eb0ddc13531f735cc4eb16b63d
+linux_subject=sched/fair: Add test-only CFS exec lease denial harness
+patch_queue_file=linux-patches/patches/capsched-linux-l0/0010-sched-fair-Add-test-only-CFS-exec-lease-denial-harne.patch
+patch_queue_sha256=72a5d00ea28f75ea426aa7eb600dd27deae41629ee74a54db611817654fce2dd
+series_sha256=32e071609a60df58acd9997650554d87a7e5a59d9b9ab5c49581b253f8b020d4
+```
+
+Touched Linux files:
+
+```text
+init/Kconfig
+kernel/sched/fair.c
+```
+
+## Behavior
+
+The patch adds:
+
+```text
+CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST
+```
+
+Properties:
+
+```text
+depends on SCHED_EXEC_LEASE && DEBUG_KERNEL
+default n
+compiled out unless explicitly enabled
+```
+
+When enabled, the patch:
+
+```text
+1. enables the existing sched_exec_cfs_candidate_key at late init
+2. treats task->comm prefix "seldeny" as SCHED_EXEC_VALIDATION_INELIGIBLE
+```
+
+When disabled, there is no enable site for the candidate static key and normal
+`CONFIG_SCHED_EXEC_LEASE=y` behavior remains the denial-disabled `0009` shape.
+
+## Validation Harness
+
+Validation-side files:
+
+```text
+capsched-models/validation/workloads/sched_exec_lease_negative_workload.c
+capsched-models/validation/run-sched-exec-lease-p5a-r-0010-negative-qemu.sh
+capsched-models/validation/run-sched-exec-lease-qemu-boot-smoke.sh
+```
+
+Hashes:
+
+```text
+negative_workload_sha256=9cfae6259c29c3bafddbdd99bf206e3394ec5482348308427de1831b3b78f7de
+negative_runner_sha256=5f064ee14b1629bf763cc032b068357a2372e065db1fcc88b7ba162ee7a56fc7
+qemu_smoke_runner_sha256=8e6b367a9e370c2061b95f07004bfaf0fb0d8bedba7fb0984b67d4b4add5a2b3
+```
+
+The negative workload creates:
+
+```text
+seldenyA:
+  synthetic denied ordinary-CFS child
+
+selallowB:
+  allowed ordinary-CFS sibling child
+```
+
+Both children are pinned to CPU 0 after trace reset. The workload expects:
+
+```text
+NEGATIVE_ALLOWED_NEXT > 0
+NEGATIVE_DENIED_NEXT == 0
+NEGATIVE_RESULT PASS
+```
+
+## Fast Evidence
+
+Validation/0177 records the first local source/config/workload checks:
+
+```text
+workload host compile: passed
+runner shell syntax: passed
+linux diff --check: passed
+capsched diff --check: passed
+CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST=y olddefconfig: passed
+targeted fair.o build: passed
+```
+
+Targeted object:
+
+```text
+build_dir=build/linux-l0-sched-exec-lease-on-p5a-r-0010-targeted-x86_64
+fair_o_size=160304
+fair_o_sha256=612ba1d25f71c87846310276e73a900cf38800a08244b33b8b805380f3abf4f2
+```
+
+## Non-Claims
+
+This patch does not approve:
+
+```text
+production execution lease policy
+capability semantics
+public ABI
+public tracepoint ABI
+debugfs/sysctl/proc control
+LSM/cgroup/namespace policy hook
+monitor call
+persistent hot denial fields
+runtime denial correctness
+CFS deny-and-repick correctness
+runtime coverage
+protection
+cost efficiency
+deployment readiness
+datacenter readiness
+```
+
+## Pending
+
+Before any acceptance:
+
+```text
+QEMU negative runtime run
+security diff review
+final overclaim review
+claim-ledger update
+decision on whether 0010 remains test-only overlay or is dropped after use
+```
