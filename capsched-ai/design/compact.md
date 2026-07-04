@@ -3816,6 +3816,16 @@ P5A-R 0010 negative harness:
     `capsched-p5a-r-0010-negative-qemu-rerun-20260704T045417Z.service`, log
     `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-rerun-20260704T045417Z.log`.
 
+  Rerun result:
+    validation/0179 records `qemu_status=124` after
+    `NEGATIVE_CHILDREN_READY`. The workload had released denied before allowed
+    and yielded in between, so the intended "denied plus allowed sibling"
+    condition was not established.
+
+  Release-order fix:
+    release denied and allowed before yielding, then expect
+    `NEGATIVE_CHILDREN_RELEASED`.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or

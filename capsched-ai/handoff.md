@@ -4678,7 +4678,24 @@ P5A-R 0010 negative harness implementation:
     `capsched-p5a-r-0010-negative-qemu-rerun-20260704T045417Z.service`
     with log
     `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-rerun-20260704T045417Z.log`.
-    Check this unit/log next.
+    Completed as timeout/failure with `qemu_status=124`.
+
+  rerun result:
+    validation/0179 records that the guest reached
+    `NEGATIVE_CHILDREN_READY`, then timed out before
+    `NEGATIVE_CHILDREN_RELEASED`. The workload released the denied child,
+    yielded/slept, and only then would release the allowed child, so the
+    intended allowed-sibling property was not actually measured.
+
+  release-order fix:
+    workload now writes denied and allowed start pipes before yielding and
+    prints `NEGATIVE_CHILDREN_RELEASED`.
+    Updated workload sha256:
+    `9739a225d7022dfed37359094d5e9247e172a16b8320a95dbcbe5e7babd4cb0b`.
+
+  next:
+    Rerun QEMU negative runtime validation again under systemd and record the
+    result as the next validation entry.
 
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,

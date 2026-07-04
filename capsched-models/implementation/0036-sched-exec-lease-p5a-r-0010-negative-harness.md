@@ -70,7 +70,7 @@ capsched-models/validation/run-sched-exec-lease-qemu-boot-smoke.sh
 Hashes:
 
 ```text
-negative_workload_sha256=90e58321cb1204844fed6400993d88179f9ed39dbac9517202eff009d8f3d0b6
+negative_workload_sha256=9739a225d7022dfed37359094d5e9247e172a16b8320a95dbcbe5e7babd4cb0b
 negative_runner_sha256=5f064ee14b1629bf763cc032b068357a2372e065db1fcc88b7ba162ee7a56fc7
 qemu_smoke_runner_sha256=8e6b367a9e370c2061b95f07004bfaf0fb0d8bedba7fb0984b67d4b4add5a2b3
 ```
@@ -141,7 +141,7 @@ datacenter readiness
 Before any acceptance:
 
 ```text
-QEMU negative runtime rerun after validation/0178 harness fix
+QEMU negative runtime rerun after validation/0179 workload release-order fix
 security diff review
 final overclaim review
 claim-ledger update
@@ -169,3 +169,21 @@ optional:
 ```
 
 This does not change the Linux patch or the synthetic denial predicate.
+
+Validation/0179 then found a second workload issue. The workload released the
+denied child, yielded/slept, and only then released the allowed sibling. If the
+parent was not eligible after yielding, there was no allowed sibling runnable
+yet, so the test could time out before measuring the intended property.
+
+The workload now releases both children before yielding:
+
+```text
+write denied_start
+write allowed_start
+print NEGATIVE_CHILDREN_RELEASED
+sched_yield()
+```
+
+This restores the intended measurement: denied and allowed ordinary-CFS
+children are runnable together, and the picker must choose the allowed sibling
+without running the denied one.

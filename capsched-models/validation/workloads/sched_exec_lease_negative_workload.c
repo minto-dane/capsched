@@ -329,14 +329,15 @@ static int mode_negative(void)
 		pass = 0;
 	}
 	close(denied_start[1]);
-	sched_yield();
-	tiny_sleep_ns(10000000L);
 
 	if (write_full(allowed_start[1], &byte, sizeof(byte)) < 0) {
 		perror("start allowed");
 		pass = 0;
 	}
 	close(allowed_start[1]);
+	printf("NEGATIVE_CHILDREN_RELEASED\n");
+	fflush(stdout);
+	sched_yield();
 
 	if (wait_child_timeout(allowed, &status, 5000)) {
 		printf("NEGATIVE_ALLOWED_STATUS timeout\n");

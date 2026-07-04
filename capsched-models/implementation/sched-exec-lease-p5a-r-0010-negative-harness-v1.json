@@ -32,7 +32,7 @@
   },
   "validation_harness": {
     "workload": "capsched-models/validation/workloads/sched_exec_lease_negative_workload.c",
-    "workload_sha256": "90e58321cb1204844fed6400993d88179f9ed39dbac9517202eff009d8f3d0b6",
+    "workload_sha256": "9739a225d7022dfed37359094d5e9247e172a16b8320a95dbcbe5e7babd4cb0b",
     "runner": "capsched-models/validation/run-sched-exec-lease-p5a-r-0010-negative-qemu.sh",
     "runner_sha256": "5f064ee14b1629bf763cc032b068357a2372e065db1fcc88b7ba162ee7a56fc7",
     "base_qemu_runner": "capsched-models/validation/run-sched-exec-lease-qemu-boot-smoke.sh",
@@ -55,7 +55,7 @@
     "fair_o_sha256": "612ba1d25f71c87846310276e73a900cf38800a08244b33b8b805380f3abf4f2"
   },
   "pending_validation": [
-    "qemu_negative_runtime_rerun_after_validation_0178_harness_fix",
+    "qemu_negative_runtime_rerun_after_validation_0179_workload_release_order_fix",
     "security_diff_review",
     "final_overclaim_review",
     "claim_ledger_update"
@@ -65,6 +65,10 @@
     "first_qemu_attempt_qemu_status": 124,
     "first_qemu_attempt_failure": "tracefs reset failed because trace_marker was treated as required",
     "trace_marker_required": false,
+    "second_qemu_attempt_validation": "capsched-models/validation/0179-sched-exec-lease-p5a-r-0010-qemu-negative-rerun.md",
+    "second_qemu_attempt_qemu_status": 124,
+    "second_qemu_attempt_failure": "workload yielded after releasing the denied child but before releasing the allowed sibling",
+    "children_released_before_yield": true,
     "required_trace_reset_steps": [
       "tracing_on=0",
       "trace clear",
