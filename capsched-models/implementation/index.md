@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-07-02
+Updated: 2026-07-04
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -264,8 +264,19 @@ Current SchedExecLease L0 readiness:
     `__schedule` function observation were unavailable, `dlease_pick_next_task`
     kprobe failed/missing, and `sched_process_exec` count was 0. Runtime denial
     correctness, CFS deny-and-repick correctness, runtime coverage, protection,
-    cost,
-    deployment, and datacenter claims remain unapproved.
+    cost, deployment, and datacenter claims remain unapproved.
+- `0035-sched-exec-lease-p5a-r-0010-negative-harness-plan.md`
+  - Status: test-only harness plan; Linux code is not modified by this record.
+  - JSON:
+    `sched-exec-lease-p5a-r-0010-negative-harness-plan-v1.json`.
+  - Rule: the next reviewable patch is a separate `0010` harness overlay, not
+    production policy. It may add only a default-off
+    `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST` and synthetic `task->comm` prefix
+    denial for names beginning with `seldeny`, so QEMU can exercise the dormant
+    0009 deny-and-repick mechanics. It must not add syscall ABI, tracepoint
+    ABI, debugfs/sysctl/proc controls, monitor calls, LSM/cgroup interfaces,
+    persistent hot denial fields, allocator/sleeping operations in the picker,
+    or any protection/cost/datacenter claim.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

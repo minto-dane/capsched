@@ -3753,3 +3753,28 @@ P5A-R Linux 0009 QEMU boot smoke:
     was 0. This is compatibility evidence only. It cannot accept 0009 or prove
     runtime denial, CFS deny-and-repick correctness, runtime coverage,
     protection, cost, deployment, or datacenter readiness.
+
+P5A-R 0009 negative runtime harness:
+  analysis/0144 and implementation/0035 record the next boundary. `0009` is
+  dormant because `sched_exec_cfs_candidate_key` has no enable site, so
+  negative runtime tests need a separate test-only `0010` overlay.
+
+  Planned shape:
+    default-off `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST`, limited to
+    `init/Kconfig` and `kernel/sched/fair.c`, with no syscall ABI, tracepoint
+    ABI, debugfs/sysctl/proc control, monitor call, LSM/cgroup interface, or
+    persistent hot denial field.
+
+  Synthetic predicate:
+    under the test config only, enable the existing static key and deny
+    ordinary CFS tasks whose `task->comm` starts with `seldeny`.
+
+  QEMU workload:
+    `seldenyA` denied child and `selallowB` allowed sibling child, both pinned
+    to the same CPU after trace reset.
+
+  Claim limit:
+    this can only test deny-and-repick mechanics for a synthetic ordinary-CFS
+    path. It does not prove capability semantics, monitor enforcement,
+    production runtime denial correctness, runtime coverage, protection, cost,
+    deployment, or datacenter readiness.

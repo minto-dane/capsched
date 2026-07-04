@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-03
+Updated: 2026-07-04
 
 ## Current Analysis Notes
 
@@ -149,6 +149,7 @@ Updated: 2026-07-03
 | 0141 | Source/formal validation-plan gate recorded; future P5A-R negative tests enumerated | SchedExecLease P5A-R Negative Validation Plan |
 | 0142 | Final audit passed for ordinary-CFS-only patch drafting; behavior remains unaccepted | SchedExecLease P5A-R Implementation-Ready Audit |
 | 0143 | Upstream/source-shape refresh passed; P5A-R direct scheduler shape fresh for 0009 draft | SchedExecLease P5A-R Upstream Drift Source-Shape Refresh |
+| 0144 | Test-only negative runtime harness design recorded; no Linux patch approved | SchedExecLease P5A-R 0009 Negative Runtime Harness |
 
 ## Planned Analysis Notes
 
@@ -258,3 +259,4 @@ Updated: 2026-07-03
 | `sched-exec-lease-p5a-r-cross-path-exclusion-settlement-v1.json` | P5A-R cross-path gate | Machine-readable ordinary-CFS-only cross-path exclusion/settlement contract for core, DL server, proxy, sched_ext, class-loop, source anchors, formal results, and non-claim gate |
 | `sched-exec-lease-p5a-r-overhead-layout-gate-v1.json` | P5A-R overhead/layout gate | Machine-readable no-O(n), no-hot-layout, disabled-overhead, source-shape, formal-result, and non-claim gate |
 | `sched-exec-lease-p5a-r-negative-validation-plan-v1.json` | P5A-R negative validation plan | Machine-readable negative test families, required observables, validation layers, formal result, and non-claim gate |
+| `sched-exec-lease-p5a-r-0009-negative-runtime-harness-v1.json` | P5A-R 0009 negative harness design | Machine-readable test-only CFS denial harness boundary, synthetic denial predicate, targeted negative families, and non-claim gate |
