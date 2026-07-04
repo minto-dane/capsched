@@ -4738,6 +4738,13 @@ P5A-R 0010 negative harness implementation:
     Updated workload sha256:
     `5989c84eefa1ca10600642baf015edad11e848189e517187d80b590913a00934`.
 
+  equal-priority run started:
+    `capsched-p5a-r-0010-negative-qemu-equalprio-20260704T051528Z.service`
+    with log
+    `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-equalprio-20260704T051528Z.log`.
+    Check whether it reaches `NEGATIVE_CHILDREN_RELEASED`,
+    `NEGATIVE_ALLOWED_STARTED`, and `NEGATIVE_RESULT`.
+
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,
     CFS deny-and-repick correctness, runtime coverage, capability semantics,

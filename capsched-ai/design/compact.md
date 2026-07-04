@@ -3851,6 +3851,10 @@ P5A-R 0010 negative harness:
   Equal-priority fix:
     both children now use `nice -20`.
 
+  Equal-priority run:
+    `capsched-p5a-r-0010-negative-qemu-equalprio-20260704T051528Z.service`,
+    log `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-equalprio-20260704T051528Z.log`.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or
