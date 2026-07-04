@@ -115,8 +115,21 @@ NEGATIVE_RESULT PASS
 ```
 
 This closes the immediate synthetic ordinary-CFS forward-progress failure
-exposed by validations/0181, 0182, and 0184. Security-diff review and final
-overclaim review remain required before any acceptance decision.
+exposed by validations/0181, 0182, and 0184.
+
+Validation/0187 records the security/overclaim boundary review. It found no
+immediate memory-safety finding in the reviewed diff, but keeps `0012`
+experimental because the fallback still has production blockers:
+
+```text
+unbounded rb-tree scan when denial blockage is active
+forced progress over ordinary CFS eligibility
+single-denial receipt capacity / single retry
+ordinary-CFS-only coverage
+synthetic comm-prefix denial rather than real authority, including task-name
+race unsuitability
+patch-queue metadata/style cleanup still needed before RFC/mainline-style use
+```
 
 ## Non-Claims
 

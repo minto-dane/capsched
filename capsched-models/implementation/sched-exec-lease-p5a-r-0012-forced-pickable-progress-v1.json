@@ -51,9 +51,24 @@
     }
   },
   "required_next_validation": [
-    "security_diff_review",
-    "final_overclaim_review"
+    "patch_queue_metadata_cleanup_or_history_rewrite_plan",
+    "production_picker_visible_eligibility_design",
+    "fairness_latency_cost_model"
   ],
+  "security_overclaim_review": {
+    "validation": "capsched-models/validation/0187-sched-exec-lease-p5a-r-0012-security-overclaim-review.md",
+    "status": "review_complete_narrow_test_claim_only",
+    "no_immediate_memory_safety_finding": true,
+    "production_acceptance_blocked": true,
+    "blockers": [
+      "unbounded rb-tree scan fallback under denial blockage",
+      "forced progress over ordinary CFS eligibility",
+      "single-denial receipt capacity and single retry",
+      "ordinary-CFS-only coverage",
+      "synthetic comm-prefix denial and task-name race unsuitability",
+      "patch queue metadata/style cleanup"
+    ]
+  },
   "qemu_negative_validation": {
     "validation": "capsched-models/validation/0186-sched-exec-lease-p5a-r-0012-qemu-negative.md",
     "status": "passed_for_synthetic_ordinary_cfs_negative_path",

@@ -46,11 +46,16 @@ history mirror. It stores upstream base metadata, the private DomainLease Linux
 patch series, and a recreate script. The local full Linux working tree remains
 under `linux/`, but it is not committed into the superproject.
 
-Recreate local Linux from the superproject with:
+Recreate a fresh or disposable Linux tree from the patch queue with:
 
 ```sh
-./linux-patches/scripts/recreate-capsched-linux-l0.sh ./linux
+./linux-patches/scripts/recreate-capsched-linux-l0.sh ./linux-replay
 ```
+
+Do not run this against the current `./linux` tree unless intentionally
+normalizing it to the patch-queue replay commit. The current local Linux HEAD
+and the patch-queue replay HEAD have the same tree but different commit IDs
+because of commit-date normalization after `0011`.
 
 Upstream Linux has been fetched into sibling repository `linux/`. Slice 0A and
 Slice 0B were committed under the legacy `CONFIG_CAPSCHED` scaffold. N-156 is
@@ -58,16 +63,32 @@ renaming the inert Linux scaffold to `CONFIG_SCHED_EXEC_LEASE`,
 `include/linux/sched_exec_lease.h`, and `kernel/sched/exec_lease.c`. No
 behavior-changing scheduler patch points are accepted yet.
 
-Current Linux work branch `capsched-linux-l0` is at:
+Current local Linux work branch `capsched-linux-l0` is at:
 
 ```text
-d812f83c033a9f9b3d533e667e7106a5734eb30b
+bd71af5daeae808ac948cbd12af2663151936f22
 ```
 
-That head includes P5A0.P1 `0008`, a comment-only no-behavior source-contract
-patch. It is accepted only as a no-behavior source-contract slice after
-source/replay/formal/full-build/object-layout/upstream/QEMU evidence and final
-overclaim/security review in validation/0161.
+That head includes P5A-R `0012`, the experimental forced-pickable-progress
+draft. Validation/0186 passed only the synthetic ordinary-CFS test-only
+negative QEMU workload. Validation/0187 keeps production acceptance blocked.
+
+Patch queue recreation normalizes commit metadata and therefore ends at a
+different commit ID with the same tree:
+
+```text
+patch_queue_replay_head:
+  1b572a3fad95b78f4ee89061ba441f77cf24e297
+tree:
+  25dbe4e04baa112ab9a872a897f67bec094df209
+local_linux_head:
+  bd71af5daeae808ac948cbd12af2663151936f22
+```
+
+Validation/0188 records this distinction and the passing replay. `0009` through
+`0012` remain experimental. No production runtime denial, complete CFS
+deny-and-repick, runtime coverage, protection, cost, deployment, or datacenter
+claim is accepted.
 
 ADR-0007 fixes the N-series traceability policy. `N-*` remains a chronological
 work ledger for past and future work. Semantic meaning, Linux anchors, drift
@@ -4838,3 +4859,49 @@ P5A-R 0012 forced pickable progress corrective patch:
     denial correctness, complete CFS deny-and-repick correctness, runtime
     coverage, capability semantics, monitor enforcement, protection, cost,
     deployment, and datacenter claims remain false.
+
+P5A-R 0012 security/overclaim boundary:
+  Validation/0187 is complete. It accepts only the narrow 0186 result:
+  synthetic ordinary-CFS negative QEMU workload completed, allowed sibling ran,
+  denied synthetic sibling was not observed as `next_comm`.
+
+  It does not accept `0012` as production policy. Blockers:
+    - `sched_exec_cfs_pickable_scan()` is an rb-tree scan when denial blockage
+      is active.
+    - the second pass can prefer allowed runnable progress over ordinary CFS
+      eligibility.
+    - denial receipts and retry are intentionally bounded to one, so complete
+      CFS deny-and-repick is not proven.
+    - coverage is ordinary-CFS-only; core scheduling, proxy execution,
+      sched_ext, DL fair-server nesting, RT/deadline/idle/class-loop paths are
+      not covered.
+    - the test predicate is `task->comm` prefix `seldeny`, not real authority;
+      it is also race-prone as a task-name predicate and only acceptable as a
+      synthetic harness.
+    - patch queue 0010 has missing Signed-off-by and an overlong commit
+      description line; 0009 has a strict checkpatch style CHECK.
+
+  Next:
+    treat 0009-0012 as experimental evidence. Before production acceptance,
+    design picker-visible lease eligibility or another bounded selection
+    structure with fairness/latency/cost proof. Patch queue metadata cleanup
+    should be a separate maintenance operation because it changes hashes and
+    possibly recreated commit IDs.
+
+P5A-R 0012 patch queue replay:
+  Validation/0188 repairs the `linux-patches/upstream/base.txt` expected
+  `work_commit` and confirms `recreate-capsched-linux-l0.sh` passes.
+
+  Result:
+    local Linux HEAD:
+      `bd71af5daeae808ac948cbd12af2663151936f22`
+    replay-normalized HEAD:
+      `1b572a3fad95b78f4ee89061ba441f77cf24e297`
+    shared tree:
+      `25dbe4e04baa112ab9a872a897f67bec094df209`
+
+  Reason:
+    the original 0011 local commit had a committer date later than its author
+    date. The recreate script uses `git am --committer-date-is-author-date`, so
+    0011 and descendants replay to normalized commit IDs while preserving the
+    exact tree.

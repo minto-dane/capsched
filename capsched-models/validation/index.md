@@ -192,6 +192,8 @@ Updated: 2026-07-04
 | 0184 | Timed out after allowed child started under corrective 0011; shows eligible-only fallback is still insufficient; no deny-correctness claim | SchedExecLease P5A-R 0011 QEMU Negative Rerun |
 | 0185 | Passed strict checkpatch and targeted CONFIG off/on scheduler object build for corrective 0012; QEMU negative runtime remains pending | SchedExecLease P5A-R 0012 Targeted Build |
 | 0186 | Passed synthetic ordinary-CFS negative QEMU workload for corrective 0012; production/runtime coverage/protection claims remain false | SchedExecLease P5A-R 0012 QEMU Negative |
+| 0187 | Security/overclaim boundary review complete; 0012 remains experimental and production acceptance is blocked | SchedExecLease P5A-R 0012 Security and Overclaim Review |
+| 0188 | Patch queue replay metadata fixed and replay passed to normalized 0012 HEAD with tree equality to local Linux HEAD | SchedExecLease P5A-R 0012 Patch Queue Replay |
 
 ## Principles
 

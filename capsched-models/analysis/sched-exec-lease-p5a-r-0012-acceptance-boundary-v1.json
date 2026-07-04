@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r-0012-acceptance-boundary-v1",
+  "date": "2026-07-04",
+  "status": "review_complete_narrow_test_claim_only",
+  "subject": {
+    "linux_commit": "bd71af5daeae808ac948cbd12af2663151936f22",
+    "patch_queue_file": "linux-patches/patches/capsched-linux-l0/0012-sched-fair-Force-exec-lease-pickable-CFS-progress.patch",
+    "validation": "capsched/capsched-models/validation/0186-sched-exec-lease-p5a-r-0012-qemu-negative.md"
+  },
+  "accepted_claims": [
+    "synthetic ordinary-CFS test-only denial path completed the 0186 QEMU negative workload",
+    "the denied synthetic comm-prefix task was not observed as sched_switch next_comm in that workload",
+    "the allowed sibling was observed and completed in that workload"
+  ],
+  "blocked_claims": [
+    "production execution lease denial",
+    "complete CFS deny-and-repick correctness",
+    "runtime coverage",
+    "fairness correctness",
+    "cost efficiency",
+    "capability semantics",
+    "monitor enforcement",
+    "protection",
+    "deployment readiness",
+    "datacenter readiness"
+  ],
+  "design_findings": [
+    {
+      "id": "P5AR-0012-FINDING-001",
+      "class": "production_blocker",
+      "summary": "post-filter fallback can require progress over ordinary CFS eligibility",
+      "source_lines": [
+        "linux/kernel/sched/fair.c:1378",
+        "linux/kernel/sched/fair.c:1386"
+      ],
+      "required_resolution": "production design needs picker-visible eligibility or an explicitly modeled bounded fallback with fairness and latency proof"
+    },
+    {
+      "id": "P5AR-0012-FINDING-002",
+      "class": "production_blocker",
+      "summary": "fallback scan walks the CFS rb-tree when denial blockage is active",
+      "source_lines": [
+        "linux/kernel/sched/fair.c:1343",
+        "linux/kernel/sched/fair.c:1351"
+      ],
+      "required_resolution": "production design needs no unbounded O(n) hot-path scan or a separately accepted bounded data structure"
+    },
+    {
+      "id": "P5AR-0012-FINDING-003",
+      "class": "claim_limit",
+      "summary": "coverage is ordinary-CFS-only and excludes core scheduling, proxy execution, sched_ext, and DL fair-server claims",
+      "source_lines": [
+        "linux/kernel/sched/fair.c:1025",
+        "linux/kernel/sched/core.c:6149",
+        "linux/kernel/sched/core.c:6164",
+        "linux/kernel/sched/fair.c:10330",
+        "linux/kernel/sched/fair.c:15733"
+      ],
+      "required_resolution": "each excluded path needs explicit support, disablement, or exclusion before broad runtime coverage claims"
+    },
+    {
+      "id": "P5AR-0012-FINDING-004",
+      "class": "claim_limit",
+      "summary": "denial receipt capacity and retry count are intentionally bounded to one, so the draft cannot claim complete CFS deny-and-repick",
+      "source_lines": [
+        "linux/kernel/sched/fair.c:954",
+        "linux/kernel/sched/fair.c:955",
+        "linux/kernel/sched/fair.c:1108"
+      ],
+      "required_resolution": "production design must either prove bounded capacity sufficient for a scoped claim or define a complete picker-visible selection structure"
+    },
+    {
+      "id": "P5AR-0012-FINDING-005",
+      "class": "test_only_limit",
+      "summary": "synthetic denial predicate uses task->comm and can race with task-name changes; it is not authority",
+      "source_lines": [
+        "linux/kernel/sched/fair.c:962",
+        "linux/kernel/sched/fair.c:1091"
+      ],
+      "required_resolution": "replace test predicate with real frozen authority before any production denial claim"
+    }
+  ],
+  "next_actions": [
+    "record validation 0187 security and overclaim boundary review",
+    "treat patch queue metadata/style cleanup as a separate maintenance operation",
+    "design production-quality picker-visible lease eligibility before claiming P5A-R acceptance"
+  ],
+  "safety_flags": {
+    "accepted_production_policy": false,
+    "runtime_denial_correctness": false,
+    "cfs_deny_and_repick_correctness": false,
+    "runtime_coverage_claim": false,
+    "fairness_correctness": false,
+    "cost_efficiency": false,
+    "monitor_verified": false,
+    "protection": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

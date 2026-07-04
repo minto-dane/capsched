@@ -150,6 +150,7 @@ Updated: 2026-07-04
 | 0142 | Final audit passed for ordinary-CFS-only patch drafting; behavior remains unaccepted | SchedExecLease P5A-R Implementation-Ready Audit |
 | 0143 | Upstream/source-shape refresh passed; P5A-R direct scheduler shape fresh for 0009 draft | SchedExecLease P5A-R Upstream Drift Source-Shape Refresh |
 | 0144 | Test-only negative runtime harness design recorded; no Linux patch approved | SchedExecLease P5A-R 0009 Negative Runtime Harness |
+| 0145 | 0012 boundary review recorded; synthetic QEMU claim only, production acceptance blocked | SchedExecLease P5A-R 0012 Acceptance Boundary |
 
 ## Planned Analysis Notes
 
@@ -260,3 +261,4 @@ Updated: 2026-07-04
 | `sched-exec-lease-p5a-r-overhead-layout-gate-v1.json` | P5A-R overhead/layout gate | Machine-readable no-O(n), no-hot-layout, disabled-overhead, source-shape, formal-result, and non-claim gate |
 | `sched-exec-lease-p5a-r-negative-validation-plan-v1.json` | P5A-R negative validation plan | Machine-readable negative test families, required observables, validation layers, formal result, and non-claim gate |
 | `sched-exec-lease-p5a-r-0009-negative-runtime-harness-v1.json` | P5A-R 0009 negative harness design | Machine-readable test-only CFS denial harness boundary, synthetic denial predicate, targeted negative families, and non-claim gate |
+| `sched-exec-lease-p5a-r-0012-acceptance-boundary-v1.json` | P5A-R 0012 boundary review | Machine-readable accepted/blocked claim set and production design blockers after validation/0186 |

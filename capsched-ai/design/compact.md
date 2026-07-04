@@ -32,19 +32,21 @@ Old claim IDs, evidence IDs, counterexample IDs, TLA modules, and historical
 file paths remain stable for traceability.
 
 Upstream Linux source has been fetched into sibling repository `linux/`.
-The current work branch is `capsched-linux-l0` at commit
-`d812f83c033a9f9b3d533e667e7106a5734eb30b` after the P5A0.P1 `0008`
-comment-only no-behavior source-contract patch. No behavior-changing
-implementation patch points are accepted yet. P1 private object vocabulary, P2
-task identity shadow, P3 no-op scheduler touchpoints, P4 allow-only final
-run/move validation helpers, and P5A0.P1 source-contract comments have been
-validated only as no-denial/no-ABI/no-monitor compatibility scaffolding.
-P5A0.P1 has source/replay/formal/full-build/object-layout/upstream/QEMU
-evidence and final overclaim/security review. It is accepted only as a
-no-behavior source-contract slice. There is no runtime denial, monitor call,
-budget charging, runtime coverage, or protection claim.
+The current local work branch is `capsched-linux-l0` at commit
+`bd71af5daeae808ac948cbd12af2663151936f22` after P5A-R `0012`, an
+experimental forced-pickable-progress draft. Patch queue recreation normalizes
+commit metadata and now ends at replay commit
+`1b572a3fad95b78f4ee89061ba441f77cf24e297`; local and replay trees are both
+`25dbe4e04baa112ab9a872a897f67bec094df209`.
+
+Validation/0186 passed only the synthetic ordinary-CFS test-only negative QEMU
+workload. Validation/0187 keeps production acceptance blocked. Validation/0188
+records the patch-queue replay repair. `0009` through `0012` remain
+experimental; there is no accepted production runtime denial, complete CFS
+deny-and-repick, runtime coverage, monitor call, budget charging, protection,
+cost, deployment, or datacenter claim.
 Latest fetched upstream/master is
-`87320be9f0d24fce67631b7eef919f0b79c3e45c`.
+`71dfdfb0209b43dfd6f494f84f5548e4cfd18cb5`.
 
 Private GitHub publication uses a superproject:
 
@@ -61,6 +63,13 @@ minto-dane/capsched-linux:
 
 ADR-0010 records this. The local full Linux tree stays under `linux/`; it is
 recreated from `linux-patches/` when cloning the superproject.
+
+Recreate the patch queue in a fresh or disposable target, not over the current
+`./linux` tree unless intentionally normalizing commit IDs:
+
+```sh
+./linux-patches/scripts/recreate-capsched-linux-l0.sh ./linux-replay
+```
 
 ADR-0007 adds a project-wide traceability rule: `N-*` ids are only
 chronological work records, for both N-001 through N-105 and N-106 onward.
@@ -3916,3 +3925,26 @@ P5A-R 0012 forced pickable progress:
     still no accepted production runtime denial correctness, complete CFS
     deny-and-repick correctness, runtime coverage, production protection, cost,
     deployment, or datacenter claim.
+
+P5A-R 0012 boundary review:
+  Validation/0187 records the security/overclaim review. The narrow 0186 QEMU
+  result is accepted only as synthetic ordinary-CFS test-path evidence.
+
+  No immediate memory-safety issue was identified in the reviewed diff, but
+  production acceptance is blocked by: unbounded rb-tree fallback scan under
+  denial blockage, forced progress over ordinary CFS eligibility, single-denial
+  receipt/retry capacity, ordinary-CFS-only coverage, synthetic `task->comm`
+  denial rather than real authority, and patch queue metadata/style cleanup.
+
+  Next design direction:
+    move away from post-filter fallback as the production root; analyze
+    picker-visible lease eligibility, domain/lease partitioning before CFS
+    pick, or another bounded structure with explicit fairness/latency/cost
+    proof.
+
+P5A-R 0012 patch queue replay:
+  Validation/0188 records the replay metadata repair. `linux-patches` now
+  expects replay-normalized HEAD
+  `1b572a3fad95b78f4ee89061ba441f77cf24e297`, while the local Linux HEAD is
+  `bd71af5daeae808ac948cbd12af2663151936f22`. Both have tree
+  `25dbe4e04baa112ab9a872a897f67bec094df209`.
