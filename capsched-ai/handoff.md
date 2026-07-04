@@ -5001,3 +5001,39 @@ P5A-R2 invalidation source map:
     create the P5A-R2 invalidation semantics gate: stale versus refreshed
     summary states, affected leaf/current/group propagation, lock ownership per
     invalidation family, and future monitor receipt revoke integration.
+
+P5A-R2 invalidation semantics gate:
+  Analysis/0149, formal/0116, and validation/0192 are complete.
+
+  Validation result:
+    RUN_ID `20260704T-p5a-r2-invalidation-semantics-gate`
+    Linux commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe configs: 23 expected counterexamples
+
+  Core rule:
+    only Fresh summary state can be picker proof. Stale, Refreshing, and
+    Blocked fail closed.
+
+  Refresh rule:
+    refresh is not a bit flip. It must recheck frozen authority,
+    generation/epoch, budget, affinity, affected current/group membership, and
+    future monitor receipt freshness. In-place stale-to-fresh, enqueue-only
+    refresh, Linux policy lookup in picker, and monitor call in picker are
+    rejected.
+
+  Propagation rule:
+    leaf/current/group/monitor-revoke propagation and lock ownership are
+    required. Group summary false positives and silent false negatives are
+    both rejected; current entity remains separate from rb-tree summary.
+
+  Still false:
+    Linux patch approval, 0009-0012 acceptance, runtime denial correctness,
+    complete CFS deny-and-repick correctness, runtime coverage, hot layout
+    approval, monitor enforcement, production protection, cost efficiency,
+    deployment readiness, datacenter readiness.
+
+  Next:
+    P5A-R2 selector patch plan as a source/design gate. It should define
+    object/layout/cost evidence and negative runtime validation requirements
+    before any Linux behavior patch.

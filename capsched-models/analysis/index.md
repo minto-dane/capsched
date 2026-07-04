@@ -154,6 +154,7 @@ Updated: 2026-07-04
 | 0146 | P5A-R2 selector direction recorded; production path moves away from post-filter fallback | SchedExecLease P5A-R2 Selector Direction |
 | 0147 | P5A-R2 selector model gate defined; EEVDF-compatible min-pickable summary required | SchedExecLease P5A-R2 Selector Model Gate |
 | 0148 | P5A-R2 invalidation source map defined; enqueue/dequeue-only summary freshness rejected | SchedExecLease P5A-R2 Invalidation Source Map |
+| 0149 | P5A-R2 invalidation semantics gate defined; stale/refreshing/blocked summaries cannot be picker proof | SchedExecLease P5A-R2 Invalidation Semantics Gate |
 
 ## Planned Analysis Notes
 
@@ -268,3 +269,4 @@ Updated: 2026-07-04
 | `sched-exec-lease-p5a-r2-selector-direction-v1.json` | P5A-R2 selector direction | Machine-readable candidate matrix for picker-visible lease eligibility, separate eligible timeline, lease bucket before CFS, bounded window, and explicit quarantine settlement |
 | `sched-exec-lease-p5a-r2-selector-model-gate-v1.json` | P5A-R2 selector model gate | Machine-readable selector gate conditions, source anchors, EEVDF-compatible min-pickable summary requirement, unsafe families, and non-claim flags |
 | `sched-exec-lease-p5a-r2-invalidation-source-map-v1.json` | P5A-R2 invalidation source map | Machine-readable Linux source anchors for lifecycle, affinity, migration, group, cpuset, budget, current, and future monitor receipt invalidation families |
+| `sched-exec-lease-p5a-r2-invalidation-semantics-gate-v1.json` | P5A-R2 invalidation semantics gate | Machine-readable Fresh/Stale/Refreshing/Blocked summary semantics, propagation rules, refresh preconditions, picker trust rules, unsafe families, and non-claim flags |

@@ -4000,3 +4000,23 @@ P5A-R2 invalidation source map:
 
   Next:
     P5A-R2 invalidation semantics gate before any new Linux selector patch.
+
+P5A-R2 invalidation semantics gate:
+  Validation/0192 passed. Analysis/0149 and formal/0116 define the semantics.
+
+  Result:
+    safe TLC passed with 6 generated states, 5 distinct states, depth 5; 23
+    unsafe configs produced expected counterexamples.
+
+  Core rule:
+    only Fresh summaries are picker proof. Stale, Refreshing, and Blocked
+    states fail closed. Refresh requires frozen authority plus generation,
+    epoch, budget, affinity, current/group, and future monitor receipt checks.
+
+  Rejected:
+    in-place stale-to-fresh, enqueue-only refresh, group false positives,
+    silent group false negatives, current/tree collapse, policy lookup in
+    picker, monitor call in picker, and production/cost/datacenter claims.
+
+  Next:
+    P5A-R2 selector patch plan as source/design gate.
