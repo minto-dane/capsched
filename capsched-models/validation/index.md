@@ -194,6 +194,7 @@ Updated: 2026-07-04
 | 0186 | Passed synthetic ordinary-CFS negative QEMU workload for corrective 0012; production/runtime coverage/protection claims remain false | SchedExecLease P5A-R 0012 QEMU Negative |
 | 0187 | Security/overclaim boundary review complete; 0012 remains experimental and production acceptance is blocked | SchedExecLease P5A-R 0012 Security and Overclaim Review |
 | 0188 | Patch queue replay metadata fixed and replay passed to normalized 0012 HEAD with tree equality to local Linux HEAD | SchedExecLease P5A-R 0012 Patch Queue Replay |
+| 0189 | Source/design gate recorded; next production direction is picker-visible lease eligibility constrained by outer Domain/SchedContext selection | SchedExecLease P5A-R2 Selector Direction |
 
 ## Principles
 

@@ -3948,3 +3948,21 @@ P5A-R 0012 patch queue replay:
   `1b572a3fad95b78f4ee89061ba441f77cf24e297`, while the local Linux HEAD is
   `bd71af5daeae808ac948cbd12af2663151936f22`. Both have tree
   `25dbe4e04baa112ab9a872a897f67bec094df209`.
+
+P5A-R2 selector direction:
+  Analysis/0146 and validation/0189 record the next direction. Do not keep
+  extending the 0012 post-filter fallback as production design.
+
+  Immediate source/model target:
+    Candidate A, picker-visible lease eligibility summary in/near the existing
+    CFS augmented tree, but only for frozen task-local admission state with a
+    modeled invalidation path.
+
+  Long-horizon constraint:
+    Candidate C, selecting Domain/SchedContext/ExecutionGrant buckets before
+    ordinary CFS, remains the best fit for HyperTag, MemoryView switch cost,
+    root budgets, and datacenter single-OS goals.
+
+  Rejected for production:
+    unbounded scans, bounded-window completeness claims, synthetic comm-prefix
+    authority, and pick-time policy lookup.

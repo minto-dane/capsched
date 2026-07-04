@@ -151,6 +151,7 @@ Updated: 2026-07-04
 | 0143 | Upstream/source-shape refresh passed; P5A-R direct scheduler shape fresh for 0009 draft | SchedExecLease P5A-R Upstream Drift Source-Shape Refresh |
 | 0144 | Test-only negative runtime harness design recorded; no Linux patch approved | SchedExecLease P5A-R 0009 Negative Runtime Harness |
 | 0145 | 0012 boundary review recorded; synthetic QEMU claim only, production acceptance blocked | SchedExecLease P5A-R 0012 Acceptance Boundary |
+| 0146 | P5A-R2 selector direction recorded; production path moves away from post-filter fallback | SchedExecLease P5A-R2 Selector Direction |
 
 ## Planned Analysis Notes
 
@@ -262,3 +263,4 @@ Updated: 2026-07-04
 | `sched-exec-lease-p5a-r-negative-validation-plan-v1.json` | P5A-R negative validation plan | Machine-readable negative test families, required observables, validation layers, formal result, and non-claim gate |
 | `sched-exec-lease-p5a-r-0009-negative-runtime-harness-v1.json` | P5A-R 0009 negative harness design | Machine-readable test-only CFS denial harness boundary, synthetic denial predicate, targeted negative families, and non-claim gate |
 | `sched-exec-lease-p5a-r-0012-acceptance-boundary-v1.json` | P5A-R 0012 boundary review | Machine-readable accepted/blocked claim set and production design blockers after validation/0186 |
+| `sched-exec-lease-p5a-r2-selector-direction-v1.json` | P5A-R2 selector direction | Machine-readable candidate matrix for picker-visible lease eligibility, separate eligible timeline, lease bucket before CFS, bounded window, and explicit quarantine settlement |

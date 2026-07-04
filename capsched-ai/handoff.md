@@ -4905,3 +4905,32 @@ P5A-R 0012 patch queue replay:
     date. The recreate script uses `git am --committer-date-is-author-date`, so
     0011 and descendants replay to normalized commit IDs while preserving the
     exact tree.
+
+P5A-R2 selector direction:
+  Analysis/0146 and validation/0189 are complete. They record that production
+  should not continue extending the 0012 post-filter fallback.
+
+  Source facts:
+    current CFS/EEVDF already uses an augmented rb-tree with `min_vruntime` for
+    picker-visible eligibility pruning. The next production-shaped SchedExec
+    direction must make lease eligibility similarly visible before selection,
+    or select a Domain/SchedContext bucket before CFS.
+
+  Candidate matrix:
+    A. augment existing CFS tree with lease-pickable subtree metadata:
+       immediate P5A-R2 source/model target only if eligibility is frozen
+       before enqueue and invalidation is modeled.
+    B. separate eligible timeline:
+       semantically clean but too invasive for next upstream-shaped L0 slice.
+    C. lease bucket before CFS:
+       best long-horizon datacenter/HyperTag direction.
+    D. bounded candidate window:
+       experimental only, not production.
+    E. block/quarantine before pick:
+       required settlement state, not sufficient picker mechanism.
+
+  Next:
+    create the P5A-R2 selector model gate before another Linux behavior patch.
+    It must define pre-pick lease-pickable state, invalidation events, group
+    hierarchy summaries, current entity handling, fail-closed settlement,
+    cross-path exclusions, object/layout evidence, and fairness/cost evidence.

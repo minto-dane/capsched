@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-selector-direction-v1",
+  "date": "2026-07-04",
+  "status": "design_direction_recorded_no_linux_patch_approved",
+  "trigger": {
+    "prior_validation": "capsched-models/validation/0187-sched-exec-lease-p5a-r-0012-security-overclaim-review.md",
+    "reason": "0012 passed synthetic negative QEMU but exposed production blockers in post-filter denial"
+  },
+  "source_anchors": {
+    "eevdf_augmented_tree": [
+      "linux/kernel/sched/fair.c:1246",
+      "linux/kernel/sched/fair.c:1277",
+      "linux/kernel/sched/fair.c:1301",
+      "linux/kernel/sched/fair.c:1307",
+      "linux/kernel/sched/fair.c:1430",
+      "linux/kernel/sched/fair.c:1441",
+      "linux/kernel/sched/fair.c:1493",
+      "linux/kernel/sched/fair.c:1501"
+    ],
+    "hot_structures": [
+      "linux/include/linux/sched.h:576",
+      "linux/include/linux/sched.h:579",
+      "linux/include/linux/sched.h:581",
+      "linux/kernel/sched/sched.h:680",
+      "linux/kernel/sched/sched.h:697",
+      "linux/kernel/sched/sched.h:703"
+    ],
+    "enqueue_dequeue_propagation": [
+      "linux/kernel/sched/fair.c:6436",
+      "linux/kernel/sched/fair.c:6482",
+      "linux/kernel/sched/fair.c:6651",
+      "linux/kernel/sched/fair.c:6663",
+      "linux/kernel/sched/fair.c:8132",
+      "linux/kernel/sched/fair.c:8170",
+      "linux/kernel/sched/fair.c:8209",
+      "linux/kernel/sched/fair.c:8366"
+    ],
+    "coverage_limits": [
+      "linux/kernel/sched/core.c:6146",
+      "linux/kernel/sched/core.c:6164",
+      "linux/kernel/sched/fair.c:10330",
+      "linux/kernel/sched/fair.c:15733"
+    ]
+  },
+  "authority_stability_requirements": [
+    "eligibility cached in CFS metadata must be derived from stable frozen admission state",
+    "caller-dependent or per-attempt policy lookup must not be cached in CFS tree metadata",
+    "revocation and refresh events must propagate before any production picker-visible claim"
+  ],
+  "candidate_matrix": [
+    {
+      "id": "A",
+      "name": "augment_existing_cfs_tree",
+      "summary": "add picker-visible lease eligibility summary analogous to min_vruntime",
+      "strength": "closest to existing EEVDF pruning and can avoid scan",
+      "risk": "hot sched_entity augmentation, invalidation complexity, cannot encode caller-dependent authority",
+      "verdict": "next P5A-R2 design target only if eligibility is frozen, task-local, and invalidation-modeled"
+    },
+    {
+      "id": "B",
+      "name": "separate_eligible_timeline",
+      "summary": "maintain a second CFS-local tree containing only pickable entities",
+      "strength": "clear runnable versus execution-eligible split",
+      "risk": "large hot layout and upstream drift impact",
+      "verdict": "semantic reference, too invasive for next upstream-shaped L0 slice"
+    },
+    {
+      "id": "C",
+      "name": "lease_bucket_before_cfs",
+      "summary": "select Domain/SchedContext/ExecutionGrant bucket before ordinary CFS",
+      "strength": "best match for HyperTag, Domain switch cost, and datacenter single-OS goals",
+      "risk": "larger architecture requiring cgroup, load-balance, migration, wakeup, and tick integration",
+      "verdict": "long-horizon production direction and constraint on L0"
+    },
+    {
+      "id": "D",
+      "name": "bounded_candidate_window",
+      "summary": "inspect only a fixed number of alternate CFS candidates",
+      "strength": "small bounded L0 experiment",
+      "risk": "cannot claim complete deny-and-repick",
+      "verdict": "experimental only, not production"
+    },
+    {
+      "id": "E",
+      "name": "block_or_quarantine_before_pick",
+      "summary": "remove denied tasks from eligibility through explicit settlement state",
+      "strength": "explicit fail-closed settlement",
+      "risk": "pick-time mutation is too late unless modeled; compatibility risk",
+      "verdict": "required settlement state, not sufficient picker mechanism"
+    }
+  ],
+  "recommended_next": {
+    "name": "P5A-R2 selector model gate",
+    "direction": "Candidate A constrained by Candidate C",
+    "must_not_do": [
+      "continue extending 0012 fallback as production path",
+      "claim production runtime denial from synthetic comm-prefix tests",
+      "add hot layout fields without object/layout gate"
+    ],
+    "required_questions": [
+      "exact pre-pick lease-pickable state",
+      "invalidation events",
+      "state ownership level",
+      "CFS lag/load inclusion of ineligible tasks",
+      "group hierarchy pickable-subtree semantics",
+      "current entity participation",
+      "fail-closed settlement",
+      "cross-path settlement or exclusion",
+      "generated-object and layout evidence",
+      "benchmark and cost evidence"
+    ]
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "accept_0009_0012": false,
+    "runtime_denial_correctness": false,
+    "complete_cfs_deny_and_repick": false,
+    "runtime_coverage": false,
+    "hot_layout_change_approved": false,
+    "public_abi": false,
+    "monitor_verified": false,
+    "protection": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}
