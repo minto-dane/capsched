@@ -254,12 +254,14 @@ Current SchedExecLease L0 readiness:
     picker-visible candidate filtering in `pick_eevdf()` without adding public
     ABI, trace ABI, exported symbols, monitor calls, unbounded scans, or
     persistent hot denial fields. The static key has no enable site.
-    validation/0172 records source/formal/checkpatch/replay evidence, and
+    validation/0172 records source/formal/checkpatch/replay evidence,
     validation/0173 records targeted `fair.o`/`core.o` build evidence for
-    CONFIG off/on, and validation/0174 records full CONFIG off/on `vmlinux`
-    build evidence. validation/0175 records object/function-size and task
-    layout evidence. Runtime denial correctness, CFS deny-and-repick correctness,
-    QEMU compatibility, runtime coverage, protection, cost,
+    CONFIG off/on, validation/0174 records full CONFIG off/on `vmlinux`
+    build evidence, and validation/0175 records object/function-size and task
+    layout evidence. validation/0176 records the running QEMU denial-disabled
+    matrix runner; its result is not yet known. Runtime denial correctness,
+    CFS deny-and-repick correctness, QEMU compatibility, runtime coverage,
+    protection, cost,
     deployment, and datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of

@@ -162,6 +162,17 @@ on core.o size=347744 sha256=d48b9bd593ae53468b246bbaede0e92a95b1cd8c9598d945be4
 task_layout_probe=build/task-layout/sched-exec-lease-p5a-r-0009-20260704T034710Z
 ```
 
+QEMU runner:
+
+```text
+validation=0176
+status=running
+unit=capsched-p5a-r-0009-qemu-matrix.service
+invocation_id=ea20a9d013034ee886e89ecfced9104e
+log=/media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log
+out_root=/media/nia/scsiusb/dev/linux-cap/build/qemu/sched-exec-lease-p5a-r-0009-matrix
+```
+
 ## Claims
 
 Allowed claim:
@@ -189,7 +200,7 @@ monitor-backed enforcement
 
 ## Next
 
-Run validation/0172. If it passes, `0009` remains only a source-gated draft.
-Acceptance still requires the remaining matrix from implementation/0033,
-including QEMU compatibility, negative denial tests, security diff review, and
-final overclaim review.
+Wait for validation/0176 to complete and record the QEMU matrix as passed or
+failed. Acceptance still requires the remaining matrix from implementation/0033,
+including negative denial tests, security diff review, and final overclaim
+review.

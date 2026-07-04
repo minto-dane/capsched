@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-03
+Updated: 2026-07-04
 
 Read this first when resuming the project.
 
@@ -4561,3 +4561,28 @@ P5A-R Linux 0009 object/layout / validation 0175:
   next:
     QEMU denial-disabled compatibility, then negative ordinary-CFS denial tests,
     security diff review, and final overclaim review.
+
+P5A-R Linux 0009 QEMU runner / validation 0176:
+  status:
+    Running under systemd user unit.
+
+  unit:
+    capsched-p5a-r-0009-qemu-matrix.service
+
+  invocation:
+    ea20a9d013034ee886e89ecfced9104e
+
+  log:
+    /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log
+
+  output root:
+    /media/nia/scsiusb/dev/linux-cap/build/qemu/sched-exec-lease-p5a-r-0009-matrix
+
+  resume:
+    systemctl --user status capsched-p5a-r-0009-qemu-matrix.service --no-pager
+    tail -f /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log
+
+  non-claims:
+    Accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
+    runtime coverage, protection, cost, deployment, and datacenter claims
+    remain false.

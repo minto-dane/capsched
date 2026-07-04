@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-03
+Updated: 2026-07-04
 
 ## Project
 
@@ -3729,3 +3729,19 @@ P5A-R Linux 0009 object/layout:
     accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
     runtime coverage, QEMU compatibility, production protection, cost,
     deployment, datacenter readiness.
+
+P5A-R Linux 0009 QEMU runner:
+  validation/0176 records a running systemd user runner:
+  `capsched-p5a-r-0009-qemu-matrix.service`, invocation
+  `ea20a9d013034ee886e89ecfced9104e`.
+
+  Log:
+    /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log
+
+  Output root:
+    /media/nia/scsiusb/dev/linux-cap/build/qemu/sched-exec-lease-p5a-r-0009-matrix
+
+  The result is not yet known. This can only become denial-disabled QEMU
+  compatibility evidence. It cannot accept 0009 or prove runtime denial,
+  CFS deny-and-repick correctness, runtime coverage, protection, cost,
+  deployment, or datacenter readiness.

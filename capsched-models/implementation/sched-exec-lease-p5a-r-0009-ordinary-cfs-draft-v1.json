@@ -109,6 +109,19 @@
       "off_core_function_count": 396,
       "on_core_function_count": 396,
       "task_layout_root": "build/task-layout/sched-exec-lease-p5a-r-0009-20260704T034710Z"
+    },
+    "qemu_runner_validation": "validation/0176-sched-exec-lease-p5a-r-0009-qemu-runner.md",
+    "qemu_runner_status": "running",
+    "qemu_runner_unit": "capsched-p5a-r-0009-qemu-matrix.service",
+    "qemu_runner_invocation_id": "ea20a9d013034ee886e89ecfced9104e",
+    "qemu_runner_log": "build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log",
+    "qemu_runner_output_root": "build/qemu/sched-exec-lease-p5a-r-0009-matrix",
+    "qemu_runner_matrix": {
+      "workload_mode": "all",
+      "kprobes_enabled": true,
+      "jobs": 8,
+      "config_off_build": "build/linux-l0-sched-exec-lease-off-p5a-r-0009-qemu-x86_64",
+      "config_on_build": "build/linux-l0-sched-exec-lease-on-p5a-r-0009-qemu-x86_64"
     }
   },
   "pending_acceptance_validation": [
