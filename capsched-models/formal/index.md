@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-07-03
+Updated: 2026-07-04
 
 ## Current Formal Records
 
@@ -122,6 +122,7 @@ Updated: 2026-07-03
 | 0114 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Selector Model Gate |
 | 0115 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Invalidation Source Map Model |
 | 0116 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Invalidation Semantics Gate Model |
+| 0117 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Selector Patch Plan Model |
 
 ## Planned
 

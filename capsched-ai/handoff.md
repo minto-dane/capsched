@@ -5037,3 +5037,37 @@ P5A-R2 invalidation semantics gate:
     P5A-R2 selector patch plan as a source/design gate. It should define
     object/layout/cost evidence and negative runtime validation requirements
     before any Linux behavior patch.
+
+P5A-R2 selector patch plan:
+  Analysis/0150, formal/0117, and validation/0193 are complete.
+
+  Validation result:
+    RUN_ID `20260704T-p5a-r2-selector-patch-plan-r2`
+    Linux commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    Linux tree `25dbe4e04baa112ab9a872a897f67bec094df209`
+    prior validations present: 6/6
+    source anchors: 21 checked, 0 missing, 0 line drift
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe configs: 30 expected counterexamples
+
+  Core rule:
+    do not extend the experimental `0012` post-filter fallback as production
+    design. Future P5A-R2 work must use an EEVDF-compatible
+    `min_pickable_vruntime`-style fresh summary or equivalent proof, preserve
+    Candidate C as the outer Domain/SchedContext selector, and keep local CFS
+    state as a projection of frozen authority.
+
+  Existing blockers recorded:
+    `sched_exec_cfs_pickable_scan()` and
+    `sched_exec_cfs_pickable_fallback()` are negative evidence and replacement
+    targets, not accepted production foundations.
+
+  Still false:
+    Linux patch approval, 0009-0012 acceptance, runtime denial correctness,
+    complete CFS deny-and-repick correctness, runtime coverage, hot layout
+    approval, monitor enforcement, production protection, cost efficiency,
+    deployment readiness, datacenter readiness.
+
+  Next:
+    minimal P5A-R2 source sketch plus object/layout, disabled-overhead, and
+    negative stale-summary runtime validation requirements.

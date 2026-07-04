@@ -4020,3 +4020,25 @@ P5A-R2 invalidation semantics gate:
 
   Next:
     P5A-R2 selector patch plan as source/design gate.
+
+P5A-R2 selector patch plan:
+  Validation/0193 passed. Analysis/0150 and formal/0117 define the patch-plan
+  gate.
+
+  Result:
+    21 source anchors checked with 0 missing and 0 line drift; prior
+    validations 0187, 0188, 0189, 0190, 0191, and 0192 were present. Safe TLC
+    passed with 6 generated states, 5 distinct states, depth 5; 30 unsafe
+    configs produced expected counterexamples.
+
+  Core rule:
+    production P5A-R2 must not extend the experimental `0012` post-filter
+    fallback or unbounded rb-tree scan. It must move toward an
+    EEVDF-compatible fresh-summary proof (`min_pickable_vruntime` style or
+    equivalent), preserve the outer Domain/SchedContext selector, and require
+    object/layout, disabled-overhead, negative runtime, QEMU, security, and
+    upstream replay evidence before any behavior patch can be accepted.
+
+  Next:
+    minimal source sketch for the fresh-summary placement and invalidation
+    plumbing. Linux patch approval remains false.

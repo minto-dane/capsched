@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-selector-patch-plan-v1",
+  "date": "2026-07-04",
+  "status": "source_design_patch_plan_no_linux_patch_approved",
+  "source_basis": {
+    "linux_commit": "bd71af5daeae808ac948cbd12af2663151936f22",
+    "linux_commit_short": "bd71af5daeae8",
+    "local_tree": "25dbe4e04baa112ab9a872a897f67bec094df209",
+    "patch_queue_replay_head": "1b572a3fad95b78f4ee89061ba441f77cf24e297",
+    "patch_queue_replay_tree": "25dbe4e04baa112ab9a872a897f67bec094df209",
+    "prior_validations": [
+      "validation/0187-sched-exec-lease-p5a-r-0012-security-overclaim-review.md",
+      "validation/0188-sched-exec-lease-p5a-r-0012-patch-queue-replay.md",
+      "validation/0189-sched-exec-lease-p5a-r2-selector-direction.md",
+      "validation/0190-sched-exec-lease-p5a-r2-selector-model-gate.md",
+      "validation/0191-sched-exec-lease-p5a-r2-invalidation-source-map.md",
+      "validation/0192-sched-exec-lease-p5a-r2-invalidation-semantics-gate.md"
+    ],
+    "reason": "P5A-R 0012 is experimental negative evidence only; production direction requires picker-visible fresh summaries instead of post-filter fallback extension"
+  },
+  "source_anchors": [
+    {
+      "id": "eevdf_min_vruntime_update",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1246,
+      "pattern": "static inline void __min_vruntime_update"
+    },
+    {
+      "id": "eevdf_augmented_callbacks",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1301,
+      "pattern": "RB_DECLARE_CALLBACKS(static, min_vruntime_cb"
+    },
+    {
+      "id": "eevdf_enqueue_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1307,
+      "pattern": "static void __enqueue_entity"
+    },
+    {
+      "id": "eevdf_dequeue_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1316,
+      "pattern": "static void __dequeue_entity"
+    },
+    {
+      "id": "experimental_pickable_scan",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1344,
+      "pattern": "sched_exec_cfs_pickable_scan"
+    },
+    {
+      "id": "experimental_pickable_scan_rb_next",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1352,
+      "pattern": "node = rb_next(node)) {"
+    },
+    {
+      "id": "experimental_pickable_fallback",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1369,
+      "pattern": "sched_exec_cfs_pickable_fallback"
+    },
+    {
+      "id": "pick_eevdf",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1450,
+      "pattern": "pick_eevdf"
+    },
+    {
+      "id": "eevdf_single_entity_return",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1462,
+      "pattern": "if (cfs_rq->nr_queued == 1)"
+    },
+    {
+      "id": "eevdf_heap_search",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1494,
+      "pattern": "while (node)"
+    },
+    {
+      "id": "experimental_fallback_call",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1523,
+      "pattern": "best = sched_exec_cfs_pickable_fallback"
+    },
+    {
+      "id": "sched_entity_layout",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 576,
+      "pattern": "struct sched_entity {"
+    },
+    {
+      "id": "sched_entity_min_vruntime",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 581,
+      "pattern": "min_vruntime"
+    },
+    {
+      "id": "cfs_rq_layout",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 680,
+      "pattern": "struct cfs_rq {"
+    },
+    {
+      "id": "cfs_tasks_timeline",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 697,
+      "pattern": "tasks_timeline"
+    },
+    {
+      "id": "cfs_curr",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 703,
+      "pattern": "*curr"
+    },
+    {
+      "id": "ordinary_cfs_direct_pick",
+      "path": "linux/kernel/sched/core.c",
+      "expected_line": 6149,
+      "pattern": "p = pick_task_fair_sched_exec_lease"
+    },
+    {
+      "id": "class_loop_boundary",
+      "path": "linux/kernel/sched/core.c",
+      "expected_line": 6164,
+      "pattern": "for_each_active_class(class)"
+    },
+    {
+      "id": "sched_exec_pick_entry",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10317,
+      "pattern": "pick_task_fair_sched_exec_lease"
+    },
+    {
+      "id": "fair_server_plain_pick",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10330,
+      "pattern": "return pick_task_fair(dl_se->rq, rf)"
+    },
+    {
+      "id": "fair_class_pick_task",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 15733,
+      "pattern": ".pick_task"
+    }
+  ],
+  "required_patch_contract": {
+    "prior_gates_passed": true,
+    "source_basis_fresh": true,
+    "patch_queue_boundary_recorded": true,
+    "candidate_a_selected": true,
+    "candidate_c_constraint_preserved": true,
+    "eevdf_min_pickable_summary_required": true,
+    "boolean_only_summary_rejected": true,
+    "post_filter_fallback_rejected": true,
+    "no_unbounded_scan": true,
+    "freshness_semantics_required": true,
+    "invalidation_map_required": true,
+    "leaf_current_group_monitor_invalidation_required": true,
+    "fail_closed_summary_states_required": true,
+    "group_no_false_positive_required": true,
+    "group_no_silent_false_negative_required": true,
+    "current_entity_separate_required": true,
+    "accounting_separated": true,
+    "cross_path_settlement_required": true,
+    "file_boundary_minimal": true,
+    "hot_layout_evidence_required": true,
+    "disabled_overhead_evidence_required": true,
+    "benchmark_plan_required": true,
+    "negative_validation_plan_required": true,
+    "qemu_runtime_plan_required": true,
+    "security_review_required": true,
+    "upstream_replay_required": true,
+    "no_public_abi": true,
+    "no_trace_abi": true,
+    "no_exported_symbols": true,
+    "no_picker_policy_lookup": true,
+    "no_monitor_call_in_picker": true
+  },
+  "file_boundary": {
+    "default_allowed_files": [
+      "kernel/sched/fair.c",
+      "kernel/sched/sched.h"
+    ],
+    "conditional_allowed_files": [
+      {
+        "path": "include/linux/sched.h",
+        "condition": "only after object layout, task layout, disabled-overhead, and hot-function-size evidence is defined and validated"
+      }
+    ],
+    "forbidden_surfaces": [
+      "public ABI",
+      "trace ABI",
+      "exported symbols",
+      "LSM hooks",
+      "cgroup interface changes",
+      "monitor calls from picker"
+    ]
+  },
+  "existing_experimental_blockers": {
+    "post_filter_fallback_present": true,
+    "unbounded_rb_next_scan_present": true,
+    "future_patch_must_replace_not_extend": true,
+    "existing_0012_accepted": false
+  },
+  "required_acceptance_validation": [
+    "patch queue replay",
+    "upstream drift refresh",
+    "merge-tree refresh",
+    "strict checkpatch",
+    "get_maintainer evidence",
+    "source-shape checker",
+    "CONFIG off/on targeted scheduler build",
+    "CONFIG off/on full vmlinux build",
+    "object layout evidence",
+    "hot function size evidence",
+    "disabled-overhead evidence",
+    "QEMU compatibility smoke",
+    "negative stale-summary bypass tests",
+    "negative denied-CFS forward-progress tests",
+    "negative group false-positive tests",
+    "negative silent false-negative tests",
+    "negative current-entity/tree-collapse tests",
+    "negative cross-path exclusion tests",
+    "security diff review",
+    "final overclaim review"
+  ],
+  "unsafe_families": [
+    "missing_prior_gates",
+    "missing_source_basis",
+    "missing_patch_queue_boundary",
+    "missing_candidate_a",
+    "missing_candidate_c",
+    "missing_eevdf_min_pickable_summary",
+    "boolean_only_summary",
+    "post_filter_extension",
+    "unbounded_scan",
+    "missing_freshness_semantics",
+    "missing_invalidation_map",
+    "missing_invalidation_coverage",
+    "missing_fail_closed_states",
+    "group_false_positive",
+    "group_silent_false_negative",
+    "current_tree_collapse",
+    "missing_accounting_separation",
+    "missing_cross_path_settlement",
+    "missing_file_boundary",
+    "missing_hot_layout_evidence",
+    "missing_disabled_overhead_evidence",
+    "missing_benchmark_plan",
+    "missing_negative_validation",
+    "missing_qemu_runtime_plan",
+    "missing_security_review",
+    "missing_upstream_replay",
+    "public_abi_or_export",
+    "picker_policy_or_monitor_call",
+    "linux_patch_or_0009_0012_acceptance",
+    "runtime_protection_cost_datacenter_claim"
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0117-p5a-r2-selector-patch-plan-model",
+    "model": "P5AR2SelectorPatchPlan.tla",
+    "safe_cfg": "P5AR2SelectorPatchPlanSafe.cfg",
+    "safe_expected_states_generated": 6,
+    "safe_expected_distinct_states": 5,
+    "safe_expected_depth": 5,
+    "unsafe_cfg_count": 30,
+    "unsafe_expected_counterexamples": 30
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "accept_0009_0012": false,
+    "runtime_denial_correctness": false,
+    "complete_cfs_deny_and_repick": false,
+    "runtime_coverage": false,
+    "hot_layout_change_approved": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "exported_symbol": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  },
+  "next": {
+    "name": "P5A-R2 minimal source sketch",
+    "linux_patch_allowed_after_this_gate": false,
+    "future_work": [
+      "smallest source sketch for min_pickable summary",
+      "object/layout and disabled-overhead evidence plan",
+      "negative stale-summary runtime test plan"
+    ]
+  }
+}
