@@ -4488,12 +4488,20 @@ P5A-R Linux 0009 source gate / validation 0172:
     unsafe TLC: 10 expected counterexamples.
 
   build note:
-    Targeted scheduler object build was attempted but not passed because the
-    host lacks `/usr/include/gelf.h`, required by objtool.
+    The initial targeted scheduler object build was blocked because the host
+    lacked `/usr/include/gelf.h`, required by objtool. After installing
+    `libelf-dev`, validation/0173 passed targeted CONFIG off/on builds.
+
+  targeted build / validation 0173:
+    Run 20260704T-p5ar-0009-targeted-build passed.
+    off fair.o size=164608 sha256=00d68ab37b06b4f84cf303949600666df5fc3376c0df28120c067fd3994b8dea.
+    off core.o size=364448 sha256=82db4e1ee48088a9cc85fa2694efc24ce7416b68a704a0d534391c547a1a1f69.
+    on fair.o size=166376 sha256=ef39d7414cf451770f093e1962d59cb766afecb06157a4f3b7942d1a9b5f512b.
+    on core.o size=364448 sha256=d8a85d9edc8578c8a991ec928d5e953734965a7dcc2e18ec5365640f76128863.
 
   non-claims:
     `0009` is not accepted. Runtime denial correctness, CFS deny-and-repick
-    correctness, runtime coverage, build/QEMU compatibility, production
+    correctness, runtime coverage, full build/QEMU compatibility, production
     protection, cost, deployment, and datacenter claims remain false.
 
   next:

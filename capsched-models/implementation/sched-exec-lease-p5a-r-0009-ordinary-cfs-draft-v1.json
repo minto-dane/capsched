@@ -65,8 +65,11 @@
     "checkpatch_clean": true,
     "diff_check_clean": true,
     "targeted_build_attempted": true,
-    "targeted_build_passed": false,
-    "targeted_build_blocker": "missing host gelf.h for tools/objtool"
+    "targeted_build_passed": true,
+    "targeted_build_blocker": null,
+    "targeted_build_validation": "validation/0173-sched-exec-lease-p5a-r-0009-targeted-build.md",
+    "targeted_build_run_id": "20260704T-p5ar-0009-targeted-build",
+    "targeted_build_result": "build/source-check/sched-exec-lease-p5a-r-0009-targeted-build/20260704T-p5ar-0009-targeted-build/result.json"
   },
   "pending_acceptance_validation": [
     "full_vmlinux_config_off",

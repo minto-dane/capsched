@@ -115,15 +115,30 @@ Already executed:
 git diff --check HEAD^..HEAD
 checkpatch --no-tree 0009 patch
 patch queue replay to 7a402107fd63faf7063c2dea05e88e7f8a23f4bf
+CONFIG_SCHED_EXEC_LEASE=off targeted scheduler object build
+CONFIG_SCHED_EXEC_LEASE=on targeted scheduler object build
 ```
 
-Targeted object build was attempted but blocked by host dependency:
+The initial targeted build attempt was blocked by a missing host dependency:
 
 ```text
 missing /usr/include/gelf.h required by tools/objtool
 ```
 
-This is recorded as missing build evidence, not as source acceptance.
+After installing `libelf-dev`, validation/0173 reran the targeted build and
+passed for both CONFIG states.
+
+Object evidence:
+
+```text
+off fair.o size=164608 sha256=00d68ab37b06b4f84cf303949600666df5fc3376c0df28120c067fd3994b8dea
+off core.o size=364448 sha256=82db4e1ee48088a9cc85fa2694efc24ce7416b68a704a0d534391c547a1a1f69
+on fair.o size=166376 sha256=ef39d7414cf451770f093e1962d59cb766afecb06157a4f3b7942d1a9b5f512b
+on core.o size=364448 sha256=d8a85d9edc8578c8a991ec928d5e953734965a7dcc2e18ec5365640f76128863
+```
+
+This is targeted scheduler object build evidence only, not full `vmlinux`
+build acceptance.
 
 ## Claims
 

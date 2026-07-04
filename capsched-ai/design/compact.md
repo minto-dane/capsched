@@ -3690,8 +3690,10 @@ P5A-R Linux 0009 source gate:
     checkpatch and diff-check passed.
     formal/0113 safe TLC passed with 5 generated states, 4 distinct states,
     depth 4; 10 unsafe configs produced expected counterexamples.
+    validation/0173 run 20260704T-p5ar-0009-targeted-build passed targeted
+    CONFIG off/on builds for `kernel/sched/fair.o` and `kernel/sched/core.o`.
 
   Still false:
     accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
-    runtime coverage, build/QEMU compatibility, production protection, cost,
-    deployment, datacenter readiness.
+    runtime coverage, full build/QEMU compatibility, production protection,
+    cost, deployment, datacenter readiness.
