@@ -4697,6 +4697,12 @@ P5A-R 0010 negative harness implementation:
     Rerun QEMU negative runtime validation again under systemd and record the
     result as the next validation entry.
 
+  release-order-fixed run started:
+    `capsched-p5a-r-0010-negative-qemu-releasefix-20260704T050521Z.service`
+    with log
+    `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-releasefix-20260704T050521Z.log`.
+    First marker to check is `NEGATIVE_CHILDREN_RELEASED`.
+
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,
     CFS deny-and-repick correctness, runtime coverage, capability semantics,

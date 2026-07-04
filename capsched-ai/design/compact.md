@@ -3826,6 +3826,10 @@ P5A-R 0010 negative harness:
     release denied and allowed before yielding, then expect
     `NEGATIVE_CHILDREN_RELEASED`.
 
+  Release-fix run:
+    `capsched-p5a-r-0010-negative-qemu-releasefix-20260704T050521Z.service`,
+    log `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-releasefix-20260704T050521Z.log`.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or
