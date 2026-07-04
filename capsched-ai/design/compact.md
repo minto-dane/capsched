@@ -3812,6 +3812,10 @@ P5A-R 0010 negative harness:
   Harness fix:
     `trace_marker` is optional now; trace clear remains the machine boundary.
 
+  Rerun:
+    `capsched-p5a-r-0010-negative-qemu-rerun-20260704T045417Z.service`, log
+    `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-rerun-20260704T045417Z.log`.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or

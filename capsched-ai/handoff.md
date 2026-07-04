@@ -4674,6 +4674,12 @@ P5A-R 0010 negative harness implementation:
     Rerun QEMU negative runtime validation under systemd and record the result
     as the next validation entry.
 
+  rerun started:
+    `capsched-p5a-r-0010-negative-qemu-rerun-20260704T045417Z.service`
+    with log
+    `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-rerun-20260704T045417Z.log`.
+    Check this unit/log next.
+
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,
     CFS deny-and-repick correctness, runtime coverage, capability semantics,
