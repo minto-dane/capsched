@@ -189,6 +189,8 @@ Updated: 2026-07-04
 | 0181 | Manually stopped after RCU stall in `pick_eevdf()`; workload priority skew fixed for a cleaner rerun; no deny-correctness claim | SchedExecLease P5A-R 0010 QEMU Negative Allowed-First Run |
 | 0182 | Timed out after equal-priority allowed/denied siblings were released; confirms draft CFS deny-and-repick forward-progress bug; no deny-correctness claim | SchedExecLease P5A-R 0010 QEMU Negative Equal-Priority Run |
 | 0183 | Passed strict checkpatch and targeted CONFIG off/on scheduler object build for corrective 0011; QEMU negative runtime remains pending | SchedExecLease P5A-R 0011 Targeted Build |
+| 0184 | Timed out after allowed child started under corrective 0011; shows eligible-only fallback is still insufficient; no deny-correctness claim | SchedExecLease P5A-R 0011 QEMU Negative Rerun |
+| 0185 | Passed strict checkpatch and targeted CONFIG off/on scheduler object build for corrective 0012; QEMU negative runtime remains pending | SchedExecLease P5A-R 0012 Targeted Build |
 
 ## Principles
 

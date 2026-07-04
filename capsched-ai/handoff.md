@@ -4793,14 +4793,45 @@ P5A-R 0011 denied repick progress corrective patch:
     modeled bounded search with explicit cost/fairness evidence.
 
   next:
-    QEMU negative runtime workload against `0011` is running under systemd.
-    Check:
-    `systemctl --user status capsched-p5a-r-0011-negative-qemu-20260704T053810Z.service --no-pager`.
-    Log:
-    `build/logs/sched-exec-lease-p5a-r-0011-negative-qemu-20260704T053810Z.log`.
+    validation/0184 records that QEMU negative runtime against `0011` timed
+    out after `NEGATIVE_ALLOWED_STARTED`, `NEGATIVE_ALLOWED_RELEASED`, and
+    `NEGATIVE_CHILDREN_RELEASED`, without `NEGATIVE_ALLOWED_DONE` or
+    `NEGATIVE_RESULT`.
+
+P5A-R 0012 forced pickable progress corrective patch:
+  status:
+    Corrective draft Linux patch applied and targeted-build checked; not
+    accepted as production policy, production fairness policy, cost evidence,
+    or protection.
+
+  Linux:
+    commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    (`sched/fair: Force exec lease pickable CFS progress`).
+    Patch queue file:
+    `linux-patches/patches/capsched-linux-l0/0012-sched-fair-Force-exec-lease-pickable-CFS-progress.patch`.
+    Patch sha256:
+    `f306bbfb16265df5a02632f8b2551b5f3e5a8420180ea13d6a59d4291fd2fa35`.
+
+  diagnosis:
+    `0011` remained too conservative. If denial hides the only eligible CFS
+    entity while an allowed runnable entity is temporarily ineligible, returning
+    NULL can idle the CPU instead of making allowed progress.
+
+  behavior:
+    After denied blockage has already been observed, first scan for eligible
+    pickable entities. If none exist, scan for any pickable runnable entity and
+    prefer it over idle. Known denied candidates still cannot run.
+
+  validation:
+    validation/0185 records strict checkpatch clean plus targeted CONFIG
+    off/on builds for `kernel/sched/fair.o` and `kernel/sched/core.o`.
+
+  next:
+    Rerun QEMU negative runtime workload against `0012` under systemd if it is
+    long-running.
 
   non-claims:
-    0009, 0010, and 0011 remain unaccepted for production. Runtime denial
+    0009 through 0012 remain unaccepted for production. Runtime denial
     correctness, CFS deny-and-repick correctness, runtime coverage, capability
     semantics, monitor enforcement, protection, cost, deployment, and
     datacenter claims remain false.

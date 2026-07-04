@@ -307,6 +307,22 @@ Current SchedExecLease L0 readiness:
     the immediate draft-path forward-progress bug, but does not settle final
     production picker data structures, runtime denial correctness, runtime
     coverage, protection, cost, deployment, or datacenter claims.
+- `0038-sched-exec-lease-p5a-r-0012-forced-pickable-progress.md`
+  - Status: corrective draft `0012` Linux patch applied after validation/0184
+    showed the `0011` eligible-only fallback still allowed a timeout; not
+    accepted as production policy, fairness policy, cost evidence, or
+    protection.
+  - Linux commit:
+    `bd71af5daeae808ac948cbd12af2663151936f22`.
+  - JSON:
+    `sched-exec-lease-p5a-r-0012-forced-pickable-progress-v1.json`.
+  - Rule: after denied blockage has already been observed, preserve ordinary
+    CFS eligibility if an eligible pickable entity exists; otherwise prefer
+    any allowed pickable runnable entity over idle. This keeps known denied
+    candidates from running while preventing the draft test path from idling
+    forever with allowed runnable work. Runtime denial correctness, final
+    fairness semantics, runtime coverage, protection, cost, deployment, and
+    datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

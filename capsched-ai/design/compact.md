@@ -3886,10 +3886,28 @@ P5A-R 0011 denied repick progress:
     cost/fairness evidence.
 
   Next:
-    QEMU negative runtime validation against `0011` is running under
-    `capsched-p5a-r-0011-negative-qemu-20260704T053810Z.service`.
-    Log:
-    `build/logs/sched-exec-lease-p5a-r-0011-negative-qemu-20260704T053810Z.log`.
+    validation/0184 records QEMU negative runtime against `0011` timing out
+    after the allowed child started.
+
+P5A-R 0012 forced pickable progress:
+  Corrective draft Linux patch:
+    commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    (`sched/fair: Force exec lease pickable CFS progress`).
+
+  Patch queue:
+    `linux-patches/patches/capsched-linux-l0/0012-sched-fair-Force-exec-lease-pickable-CFS-progress.patch`.
+
+  Fix shape:
+    after denied blockage, scan first for eligible pickable entities; if none
+    exist, prefer any pickable runnable entity over idle. Known denied
+    candidates still cannot run.
+
+  Validation:
+    validation/0185 records strict checkpatch clean plus targeted CONFIG off/on
+    `kernel/sched/fair.o` and `kernel/sched/core.o` builds.
+
+  Next:
+    rerun QEMU negative runtime validation against `0012`.
 
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
