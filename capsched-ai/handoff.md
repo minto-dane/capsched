@@ -4745,8 +4745,59 @@ P5A-R 0010 negative harness implementation:
     Check whether it reaches `NEGATIVE_CHILDREN_RELEASED`,
     `NEGATIVE_ALLOWED_STARTED`, and `NEGATIVE_RESULT`.
 
+  equal-priority result:
+    validation/0182 records timeout with `qemu_status=124` after
+    `NEGATIVE_ALLOWED_STARTED`, `NEGATIVE_ALLOWED_RELEASED`, and
+    `NEGATIVE_CHILDREN_RELEASED`, but without `NEGATIVE_ALLOWED_DONE` or
+    `NEGATIVE_RESULT`. This removes the priority-skew ambiguity and confirms a
+    draft CFS deny-and-repick forward-progress bug rather than a primary host
+    environment issue.
+
+P5A-R 0011 denied repick progress corrective patch:
+  status:
+    Corrective draft Linux patch applied and targeted-build checked; not
+    accepted as production policy or protection.
+
+  Linux:
+    commit `38340eceafa88119ba3e0bcdc10f309bfff6462b`
+    (`sched/fair: Fix exec lease denied CFS repick progress`).
+    Patch queue file:
+    `linux-patches/patches/capsched-linux-l0/0011-sched-fair-Fix-exec-lease-denied-CFS-repick-progress.patch`.
+    Patch sha256:
+    `a2e93e499321e85e4c886ed2e3c7436fe1c1b59e1faa439e2ffa0e1cdd0eafd5`.
+
+  diagnosis:
+    Upstream CFS could treat `pick_next_entity()` returning NULL while queued
+    as delayed-entity dequeue. SchedExecLease denial filtering introduced a
+    new NULL reason: denied-candidate blockage. That made
+    `__pick_task_fair()` retry/newidle around the same blocked state.
+
+  behavior:
+    Adds a denial-only `sched_exec_cfs_pickable_fallback()` that scans the
+    current CFS runqueue for the next eligible and pickable entity only after
+    denied blockage has already been observed. It also clears stale denied
+    blockage when an allowed delayed entity is dequeued and avoids newidle
+    retry loops when blocked only by a denied candidate.
+
+  validation:
+    validation/0183 records strict checkpatch clean plus targeted CONFIG
+    off/on builds for `kernel/sched/fair.o` and `kernel/sched/core.o`.
+    Object hashes:
+    off fair `80b826bcc394177419dc9a2d2c19a4074957d5aa02e1ca19022c47681dc6a9cb`,
+    on fair `ee5d2d5b5655368731884826d6b21ab312c96864c384a33f3d94551802b79961`.
+
+  design caveat:
+    This fallback repairs the immediate draft-path forward-progress bug, but it
+    is not the final production picker data structure. A production-quality
+    design still needs pickability-aware scheduler selection or a separately
+    modeled bounded search with explicit cost/fairness evidence.
+
+  next:
+    Rerun the QEMU negative runtime workload against `0011`. This should be
+    launched under systemd if it becomes long-running.
+
   non-claims:
-    0009 and 0010 remain unaccepted. Runtime denial correctness,
-    CFS deny-and-repick correctness, runtime coverage, capability semantics,
-    monitor enforcement, protection, cost, deployment, and datacenter claims
-    remain false.
+    0009, 0010, and 0011 remain unaccepted for production. Runtime denial
+    correctness, CFS deny-and-repick correctness, runtime coverage, capability
+    semantics, monitor enforcement, protection, cost, deployment, and
+    datacenter claims remain false.

@@ -292,6 +292,21 @@ Current SchedExecLease L0 readiness:
     runtime validation, security diff review, final overclaim review, runtime
     coverage, protection, cost, deployment, and datacenter claims remain
     unapproved.
+- `0037-sched-exec-lease-p5a-r-0011-denied-repick-progress.md`
+  - Status: corrective draft `0011` Linux patch applied after validations/0181
+    and 0182 exposed a CFS deny-and-repick forward-progress bug; not accepted
+    as production policy or protection.
+  - Linux commit:
+    `38340eceafa88119ba3e0bcdc10f309bfff6462b`.
+  - JSON:
+    `sched-exec-lease-p5a-r-0011-denied-repick-progress-v1.json`.
+  - Rule: the patch distinguishes denied-candidate blockage from ordinary
+    delayed-dequeue retry behavior by adding a denial-only pickable fallback,
+    clearing stale denied blockage for delayed allowed dequeue, and avoiding
+    newidle retry loops when blocked only by a denied candidate. This repairs
+    the immediate draft-path forward-progress bug, but does not settle final
+    production picker data structures, runtime denial correctness, runtime
+    coverage, protection, cost, deployment, or datacenter claims.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

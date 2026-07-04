@@ -3855,6 +3855,39 @@ P5A-R 0010 negative harness:
     `capsched-p5a-r-0010-negative-qemu-equalprio-20260704T051528Z.service`,
     log `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-equalprio-20260704T051528Z.log`.
 
+  Equal-priority result:
+    validation/0182 records timeout with `qemu_status=124` after
+    `NEGATIVE_ALLOWED_STARTED`, `NEGATIVE_ALLOWED_RELEASED`, and
+    `NEGATIVE_CHILDREN_RELEASED`, but without `NEGATIVE_ALLOWED_DONE` or
+    `NEGATIVE_RESULT`. This confirms the draft CFS deny-and-repick
+    forward-progress bug without relying on the earlier priority-skewed run.
+
+P5A-R 0011 denied repick progress:
+  Corrective draft Linux patch:
+    commit `38340eceafa88119ba3e0bcdc10f309bfff6462b`
+    (`sched/fair: Fix exec lease denied CFS repick progress`).
+
+  Patch queue:
+    `linux-patches/patches/capsched-linux-l0/0011-sched-fair-Fix-exec-lease-denied-CFS-repick-progress.patch`.
+
+  Fix shape:
+    denial-only pickable fallback after denied blockage has already been
+    observed, stale blockage clear for delayed allowed dequeue, and no newidle
+    retry loop when blocked only by a denied candidate.
+
+  Validation:
+    validation/0183 records strict checkpatch clean plus targeted CONFIG off/on
+    `kernel/sched/fair.o` and `kernel/sched/core.o` builds.
+
+  Caveat:
+    this repairs the immediate draft-path forward-progress bug, but it is not
+    the final production picker structure. Future production work still needs
+    pickability-aware selection or a separately modeled bounded search with
+    cost/fairness evidence.
+
+  Next:
+    rerun QEMU negative runtime validation against `0011`.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or
