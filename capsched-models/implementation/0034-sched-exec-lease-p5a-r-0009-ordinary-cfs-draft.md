@@ -151,6 +151,17 @@ on exec_lease.o sha256=75e4085156ebb0610edbef3af9bf281bfc560edc1a59c2246a79c26f6
 off exec_lease.o absent
 ```
 
+Object/layout evidence:
+
+```text
+validation=0175
+off fair.o size=157712 sha256=9ef74eed7997d5898b16fb52117c29ca3ecd67423ee527399ab4bbc5ad1854aa
+on fair.o size=159416 sha256=ae6605af1b0e133c3faf37f135ed7bf55cff94b2b761e27536c450addcf7e409
+off core.o size=347744 sha256=b10d6f05c8be1fd5654ff0686235a4bb2e6c752873518a74d52c697fb189dd1b
+on core.o size=347744 sha256=d48b9bd593ae53468b246bbaede0e92a95b1cd8c9598d945be4977936acb8aea
+task_layout_probe=build/task-layout/sched-exec-lease-p5a-r-0009-20260704T034710Z
+```
+
 ## Claims
 
 Allowed claim:
@@ -180,5 +191,5 @@ monitor-backed enforcement
 
 Run validation/0172. If it passes, `0009` remains only a source-gated draft.
 Acceptance still requires the remaining matrix from implementation/0033,
-including object/layout evidence, QEMU compatibility, negative denial tests,
-security diff review, and final overclaim review.
+including QEMU compatibility, negative denial tests, security diff review, and
+final overclaim review.

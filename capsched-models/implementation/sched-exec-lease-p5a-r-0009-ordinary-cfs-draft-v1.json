@@ -88,11 +88,30 @@
         "exec_lease_o_sha256": "75e4085156ebb0610edbef3af9bf281bfc560edc1a59c2246a79c26f6807dd1e",
         "exec_lease_o_present": true
       }
+    },
+    "object_layout_validation": "validation/0175-sched-exec-lease-p5a-r-0009-object-layout.md",
+    "object_layout_passed": true,
+    "object_layout_run_id": "20260704T-p5ar-0009-object-layout",
+    "object_layout_result": "build/source-check/sched-exec-lease-p5a-r-0009-object-layout/20260704T-p5ar-0009-object-layout/result.json",
+    "object_layout_summary": {
+      "off_fair_o_size": 157712,
+      "on_fair_o_size": 159416,
+      "off_core_o_size": 347744,
+      "on_core_o_size": 347744,
+      "on_exec_lease_o_size": 2304,
+      "off_fair_o_sha256": "9ef74eed7997d5898b16fb52117c29ca3ecd67423ee527399ab4bbc5ad1854aa",
+      "on_fair_o_sha256": "ae6605af1b0e133c3faf37f135ed7bf55cff94b2b761e27536c450addcf7e409",
+      "off_core_o_sha256": "b10d6f05c8be1fd5654ff0686235a4bb2e6c752873518a74d52c697fb189dd1b",
+      "on_core_o_sha256": "d48b9bd593ae53468b246bbaede0e92a95b1cd8c9598d945be4977936acb8aea",
+      "on_exec_lease_o_sha256": "75e4085156ebb0610edbef3af9bf281bfc560edc1a59c2246a79c26f6807dd1e",
+      "off_fair_function_count": 118,
+      "on_fair_function_count": 118,
+      "off_core_function_count": 396,
+      "on_core_function_count": 396,
+      "task_layout_root": "build/task-layout/sched-exec-lease-p5a-r-0009-20260704T034710Z"
     }
   },
   "pending_acceptance_validation": [
-    "object_function_size_evidence",
-    "layout_evidence",
     "qemu_denial_disabled_boot_workload_smoke",
     "qemu_negative_deny_a_schedule_b",
     "qemu_negative_denied_a_not_rq_curr_or_sched_switch",

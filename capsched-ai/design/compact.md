@@ -3714,3 +3714,18 @@ P5A-R Linux 0009 full build:
     accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
     runtime coverage, QEMU compatibility, production protection, cost,
     deployment, datacenter readiness.
+
+P5A-R Linux 0009 object/layout:
+  validation/0175 passed.
+
+  Evidence:
+    off fair.o size=157712; on fair.o size=159416.
+    off/on core.o size=347744.
+    on exec_lease.o size=2304.
+    task layout probe root:
+    build/task-layout/sched-exec-lease-p5a-r-0009-20260704T034710Z.
+
+  Still false:
+    accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
+    runtime coverage, QEMU compatibility, production protection, cost,
+    deployment, datacenter readiness.

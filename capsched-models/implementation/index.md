@@ -257,7 +257,8 @@ Current SchedExecLease L0 readiness:
     validation/0172 records source/formal/checkpatch/replay evidence, and
     validation/0173 records targeted `fair.o`/`core.o` build evidence for
     CONFIG off/on, and validation/0174 records full CONFIG off/on `vmlinux`
-    build evidence. Runtime denial correctness, CFS deny-and-repick correctness,
+    build evidence. validation/0175 records object/function-size and task
+    layout evidence. Runtime denial correctness, CFS deny-and-repick correctness,
     QEMU compatibility, runtime coverage, protection, cost,
     deployment, and datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
