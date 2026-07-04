@@ -70,7 +70,7 @@ capsched-models/validation/run-sched-exec-lease-qemu-boot-smoke.sh
 Hashes:
 
 ```text
-negative_workload_sha256=9cfae6259c29c3bafddbdd99bf206e3394ec5482348308427de1831b3b78f7de
+negative_workload_sha256=90e58321cb1204844fed6400993d88179f9ed39dbac9517202eff009d8f3d0b6
 negative_runner_sha256=5f064ee14b1629bf763cc032b068357a2372e065db1fcc88b7ba162ee7a56fc7
 qemu_smoke_runner_sha256=8e6b367a9e370c2061b95f07004bfaf0fb0d8bedba7fb0984b67d4b4add5a2b3
 ```
@@ -141,9 +141,31 @@ datacenter readiness
 Before any acceptance:
 
 ```text
-QEMU negative runtime run
+QEMU negative runtime rerun after validation/0178 harness fix
 security diff review
 final overclaim review
 claim-ledger update
 decision on whether 0010 remains test-only overlay or is dropped after use
 ```
+
+## Harness Fix
+
+Validation/0178 found that the first QEMU negative attempt reached the guest
+with `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST=y`, but timed out after
+`tracefs reset: Bad file descriptor`. The workload treated `trace_marker` as a
+required reset step even though the decision only depends on clearing trace and
+counting `sched_switch next_comm` after the reset.
+
+The workload now treats `trace_marker` as optional:
+
+```text
+required:
+  tracing_on=0
+  trace clear
+  tracing_on=1
+
+optional:
+  trace_marker DOMAINLEASE_NEGATIVE_START
+```
+
+This does not change the Linux patch or the synthetic denial predicate.

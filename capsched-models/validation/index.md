@@ -183,6 +183,7 @@ Updated: 2026-07-04
 | 0175 | Passed for object/function-size and task layout evidence; runtime/QEMU/protection claims remain unapproved | SchedExecLease P5A-R 0009 Object and Layout |
 | 0176 | Passed for QEMU off/on boot/workload smoke; runtime coverage and denial correctness remain unapproved | SchedExecLease P5A-R 0009 QEMU Boot Smoke |
 | 0177 | Passed for 0010 source/config/workload and targeted `fair.o` build; QEMU negative runtime validation remains pending | SchedExecLease P5A-R 0010 Source and Targeted Build |
+| 0178 | Failed due to validation harness trace reset issue; workload fixed to make `trace_marker` optional; no Linux deny-path claim | SchedExecLease P5A-R 0010 QEMU Negative Attempt 1 |
 
 ## Principles
 

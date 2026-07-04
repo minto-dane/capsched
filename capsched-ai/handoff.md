@@ -4656,8 +4656,23 @@ P5A-R 0010 negative harness implementation:
     `capsched-p5a-r-0010-negative-qemu-20260704T043512Z.service`
     with log
     `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-20260704T043512Z.log`.
-    Check `systemctl --user status ...` and the log before recording
-    validation/0178.
+    Completed as timeout/failure with `qemu_status=124`.
+
+  attempt 1 result:
+    validation/0178 records that the guest reached
+    `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST=y`, then failed in the workload with
+    `tracefs reset: Bad file descriptor`. This is a validation harness failure,
+    not a Linux deny-path verdict.
+
+  harness fix:
+    `trace_marker` is now optional. Required reset steps are only
+    `tracing_on=0`, trace clear, and `tracing_on=1`.
+    Updated workload sha256:
+    `90e58321cb1204844fed6400993d88179f9ed39dbac9517202eff009d8f3d0b6`.
+
+  next:
+    Rerun QEMU negative runtime validation under systemd and record the result
+    as the next validation entry.
 
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,

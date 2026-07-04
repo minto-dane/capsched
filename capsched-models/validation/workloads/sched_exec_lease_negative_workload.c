@@ -122,6 +122,28 @@ static int clear_trace(const char *root)
 	return 0;
 }
 
+static int reset_trace_window(const char *root)
+{
+	if (write_tracefs_file(root, "tracing_on", "0\n") < 0) {
+		perror("tracefs tracing_off");
+		return -1;
+	}
+	if (clear_trace(root) < 0) {
+		perror("tracefs clear");
+		return -1;
+	}
+	if (write_tracefs_file(root, "trace_marker",
+			       "DOMAINLEASE_NEGATIVE_START\n") < 0) {
+		printf("NEGATIVE_TRACE_MARKER_SKIPPED errno=%d\n", errno);
+		fflush(stdout);
+	}
+	if (write_tracefs_file(root, "tracing_on", "1\n") < 0) {
+		perror("tracefs tracing_on");
+		return -1;
+	}
+	return 0;
+}
+
 static int count_trace_lines(const char *root, const char *needle)
 {
 	char path[256];
@@ -289,12 +311,10 @@ static int mode_negative(void)
 	}
 	close(ready[0]);
 
-	if (write_tracefs_file(tracefs, "tracing_on", "0\n") ||
-	    clear_trace(tracefs) ||
-	    write_tracefs_file(tracefs, "trace_marker",
-			       "DOMAINLEASE_NEGATIVE_START\n") ||
-	    write_tracefs_file(tracefs, "tracing_on", "1\n")) {
+	if (reset_trace_window(tracefs)) {
 		perror("tracefs reset");
+		close(denied_start[1]);
+		close(allowed_start[1]);
 		kill(denied, SIGKILL);
 		kill(allowed, SIGKILL);
 		return 1;

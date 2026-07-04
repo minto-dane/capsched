@@ -3803,6 +3803,15 @@ P5A-R 0010 negative harness:
     `capsched-p5a-r-0010-negative-qemu-20260704T043512Z.service`, log
     `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-20260704T043512Z.log`.
 
+  Attempt 1:
+    validation/0178 records failure with `qemu_status=124` after
+    `tracefs reset: Bad file descriptor`. The guest reached
+    `CONFIG_SCHED_EXEC_LEASE_CFS_DENY_TEST=y`, so this is a workload trace reset
+    issue, not a deny-path verdict.
+
+  Harness fix:
+    `trace_marker` is optional now; trace clear remains the machine boundary.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or
