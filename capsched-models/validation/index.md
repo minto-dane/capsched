@@ -196,6 +196,7 @@ Updated: 2026-07-04
 | 0188 | Patch queue replay metadata fixed and replay passed to normalized 0012 HEAD with tree equality to local Linux HEAD | SchedExecLease P5A-R 0012 Patch Queue Replay |
 | 0189 | Source/design gate recorded; next production direction is picker-visible lease eligibility constrained by outer Domain/SchedContext selection | SchedExecLease P5A-R2 Selector Direction |
 | 0190 | Source/design/formal gate passed; P5A-R2 requires EEVDF-compatible min-pickable summary and rejects 21 unsafe families | SchedExecLease P5A-R2 Selector Model Gate |
+| 0191 | Source/design/formal gate passed; 41 invalidation source anchors mapped and enqueue/dequeue-only freshness rejected | SchedExecLease P5A-R2 Invalidation Source Map |
 
 ## Principles
 

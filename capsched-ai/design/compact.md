@@ -3983,3 +3983,20 @@ P5A-R2 selector model gate:
 
   Next:
     P5A-R2 invalidation source map before any new Linux selector patch.
+
+P5A-R2 invalidation source map:
+  Validation/0191 passed. Analysis/0148 and formal/0115 define the map.
+
+  Result:
+    41 source anchors checked with 0 failures; safe TLC passed with 7 generated
+    states, 6 distinct states, depth 6; 17 unsafe configs produced expected
+    counterexamples.
+
+  Core rule:
+    future P5A-R2 summary freshness cannot depend only on enqueue/dequeue.
+    Lifecycle, affinity, queued move, `set_task_cpu`, fair migration, cgroup,
+    cpuset, budget/throttle/refill, current entity, group summary, and future
+    monitor receipt events must update affected summaries or mark them stale.
+
+  Next:
+    P5A-R2 invalidation semantics gate before any new Linux selector patch.

@@ -4971,3 +4971,33 @@ P5A-R2 selector model gate:
     create the P5A-R2 invalidation source map tying each required invalidation
     event to concrete Linux source surfaces before drafting another selector
     patch.
+
+P5A-R2 invalidation source map:
+  Analysis/0148, formal/0115, and validation/0191 are complete.
+
+  Validation result:
+    RUN_ID `20260704T-p5a-r2-invalidation-source-map`
+    Linux commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    source anchors: 41 checked, 0 failures
+    safe TLC: 7 generated states, 6 distinct states, depth 6
+    unsafe configs: 17 expected counterexamples
+
+  Key result:
+    A future picker-visible lease summary cannot be updated only on
+    enqueue/dequeue. The source map requires invalidation or refresh for:
+    lifecycle reset, fork generation, exec generation, exit, affinity mask
+    changes, queued moves, `set_task_cpu`, fair migration, cgroup movement,
+    cpuset effective-cpumask updates, budget charge, CFS throttle,
+    unthrottle/refill, current entity handling, group summary handling, future
+    monitor receipt revoke, and lock-boundary ownership.
+
+  Still false:
+    Linux patch approval, 0009-0012 acceptance, runtime denial correctness,
+    complete CFS deny-and-repick correctness, runtime coverage, hot layout
+    approval, monitor enforcement, production protection, cost efficiency,
+    deployment readiness, datacenter readiness.
+
+  Next:
+    create the P5A-R2 invalidation semantics gate: stale versus refreshed
+    summary states, affected leaf/current/group propagation, lock ownership per
+    invalidation family, and future monitor receipt revoke integration.

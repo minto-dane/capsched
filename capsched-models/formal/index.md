@@ -120,6 +120,7 @@ Updated: 2026-07-03
 | 0112 | Checked with safe pass and expected unsafe counterexamples | P5A-R Upstream Drift Source-Shape Refresh Model |
 | 0113 | Checked with safe pass and expected unsafe counterexamples | P5A-R 0009 Source Gate Model |
 | 0114 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Selector Model Gate |
+| 0115 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Invalidation Source Map Model |
 
 ## Planned
 
