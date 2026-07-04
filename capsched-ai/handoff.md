@@ -4827,8 +4827,11 @@ P5A-R 0012 forced pickable progress corrective patch:
     off/on builds for `kernel/sched/fair.o` and `kernel/sched/core.o`.
 
   next:
-    Rerun QEMU negative runtime workload against `0012` under systemd if it is
-    long-running.
+    QEMU negative runtime workload against `0012` is running under systemd.
+    Check:
+    `systemctl --user status capsched-p5a-r-0012-negative-qemu-20260704T061035Z.service --no-pager`.
+    Log:
+    `build/logs/sched-exec-lease-p5a-r-0012-negative-qemu-20260704T061035Z.log`.
 
   non-claims:
     0009 through 0012 remain unaccepted for production. Runtime denial
