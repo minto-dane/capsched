@@ -4793,8 +4793,11 @@ P5A-R 0011 denied repick progress corrective patch:
     modeled bounded search with explicit cost/fairness evidence.
 
   next:
-    Rerun the QEMU negative runtime workload against `0011`. This should be
-    launched under systemd if it becomes long-running.
+    QEMU negative runtime workload against `0011` is running under systemd.
+    Check:
+    `systemctl --user status capsched-p5a-r-0011-negative-qemu-20260704T053810Z.service --no-pager`.
+    Log:
+    `build/logs/sched-exec-lease-p5a-r-0011-negative-qemu-20260704T053810Z.log`.
 
   non-claims:
     0009, 0010, and 0011 remain unaccepted for production. Runtime denial

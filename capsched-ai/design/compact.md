@@ -3886,7 +3886,10 @@ P5A-R 0011 denied repick progress:
     cost/fairness evidence.
 
   Next:
-    rerun QEMU negative runtime validation against `0011`.
+    QEMU negative runtime validation against `0011` is running under
+    `capsched-p5a-r-0011-negative-qemu-20260704T053810Z.service`.
+    Log:
+    `build/logs/sched-exec-lease-p5a-r-0011-negative-qemu-20260704T053810Z.log`.
 
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
