@@ -258,10 +258,13 @@ Current SchedExecLease L0 readiness:
     validation/0173 records targeted `fair.o`/`core.o` build evidence for
     CONFIG off/on, validation/0174 records full CONFIG off/on `vmlinux`
     build evidence, and validation/0175 records object/function-size and task
-    layout evidence. validation/0176 records the running QEMU denial-disabled
-    matrix runner; its result is not yet known. Runtime denial correctness,
-    CFS deny-and-repick correctness, QEMU compatibility, runtime coverage,
-    protection, cost,
+    layout evidence. validation/0176 records QEMU denial-disabled off/on
+    boot/workload smoke success with `qemu_status=0` and `workload_ret=0` for
+    both guests. Trace coverage remains incomplete because `pick_next_task` and
+    `__schedule` function observation were unavailable, `dlease_pick_next_task`
+    kprobe failed/missing, and `sched_process_exec` count was 0. Runtime denial
+    correctness, CFS deny-and-repick correctness, runtime coverage, protection,
+    cost,
     deployment, and datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of

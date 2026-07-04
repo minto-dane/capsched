@@ -181,7 +181,7 @@ Updated: 2026-07-04
 | 0173 | Targeted CONFIG off/on `fair.o` and `core.o` build passed; full build/QEMU/runtime/protection claims remain unapproved | SchedExecLease P5A-R 0009 Targeted Build |
 | 0174 | Passed for full CONFIG off/on `vmlinux` build; runtime/QEMU/protection claims remain unapproved | SchedExecLease P5A-R 0009 Full Build |
 | 0175 | Passed for object/function-size and task layout evidence; runtime/QEMU/protection claims remain unapproved | SchedExecLease P5A-R 0009 Object and Layout |
-| 0176 | Running under systemd user runner; QEMU denial-disabled matrix result not yet known | SchedExecLease P5A-R 0009 QEMU Runner |
+| 0176 | Passed for QEMU off/on boot/workload smoke; runtime coverage and denial correctness remain unapproved | SchedExecLease P5A-R 0009 QEMU Boot Smoke |
 
 ## Principles
 

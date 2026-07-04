@@ -4501,13 +4501,12 @@ P5A-R Linux 0009 source gate / validation 0172:
 
   non-claims:
     `0009` is not accepted. Runtime denial correctness, CFS deny-and-repick
-    correctness, runtime coverage, full build/QEMU compatibility, production
-    protection, cost, deployment, and datacenter claims remain false.
+    correctness, runtime coverage, production protection, cost, deployment, and
+    datacenter claims remain false.
 
   next:
-    Acceptance evidence: full off/on builds after host dependency is available,
-    object/layout review, QEMU denial-disabled compatibility, negative ordinary
-    CFS denial tests, security diff review, and final overclaim review.
+    Acceptance evidence still requires negative ordinary CFS denial tests,
+    security diff review, and final overclaim review.
 
 P5A-R Linux 0009 full build / validation 0174:
   status:
@@ -4541,8 +4540,8 @@ P5A-R Linux 0009 full build / validation 0174:
 
   non-claims:
     Runtime denial correctness, CFS deny-and-repick correctness,
-    runtime coverage, QEMU compatibility, protection, cost, deployment, and
-    datacenter claims remain false.
+    runtime coverage, protection, cost, deployment, and datacenter claims
+    remain false.
 
 P5A-R Linux 0009 object/layout / validation 0175:
   status:
@@ -4559,12 +4558,12 @@ P5A-R Linux 0009 object/layout / validation 0175:
     task layout probe root: build/task-layout/sched-exec-lease-p5a-r-0009-20260704T034710Z.
 
   next:
-    QEMU denial-disabled compatibility, then negative ordinary-CFS denial tests,
-    security diff review, and final overclaim review.
+    Negative ordinary-CFS denial tests, then security diff review and final
+    overclaim review.
 
-P5A-R Linux 0009 QEMU runner / validation 0176:
+P5A-R Linux 0009 QEMU boot smoke / validation 0176:
   status:
-    Running under systemd user unit.
+    Passed for QEMU off/on boot/workload smoke.
 
   unit:
     capsched-p5a-r-0009-qemu-matrix.service
@@ -4578,9 +4577,18 @@ P5A-R Linux 0009 QEMU runner / validation 0176:
   output root:
     /media/nia/scsiusb/dev/linux-cap/build/qemu/sched-exec-lease-p5a-r-0009-matrix
 
-  resume:
-    systemctl --user status capsched-p5a-r-0009-qemu-matrix.service --no-pager
-    tail -f /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log
+  result:
+    systemd Result=success, ExecMainStatus=0.
+    off run: 20260704T035139Z-off, qemu_status=0, workload_ret=0.
+    on run: 20260704T035938Z-on, CONFIG_SCHED_EXEC_LEASE=y,
+    qemu_status=0, workload_ret=0.
+    off serial sha256=7428f3b851010dacfb739b1d91091947776dd33e3894e402cfcec15245af514d.
+    on serial sha256=603aa90b3f3c3af0ef629c7e4a05075540c60604d37040a95a27acba6c0e96a9.
+
+  coverage limitation:
+    pick_next_task and __schedule function observation unavailable in both
+    guests, dlease_pick_next_task kprobe failed/missing, and
+    sched_process_exec count was 0.
 
   non-claims:
     Accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,

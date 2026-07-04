@@ -166,11 +166,29 @@ QEMU runner:
 
 ```text
 validation=0176
-status=running
+status=passed
 unit=capsched-p5a-r-0009-qemu-matrix.service
 invocation_id=ea20a9d013034ee886e89ecfced9104e
 log=/media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log
 out_root=/media/nia/scsiusb/dev/linux-cap/build/qemu/sched-exec-lease-p5a-r-0009-matrix
+off_run=20260704T035139Z-off
+off_qemu_status=0
+off_workload_ret=0
+off_serial_sha256=7428f3b851010dacfb739b1d91091947776dd33e3894e402cfcec15245af514d
+on_run=20260704T035938Z-on
+on_config_sched_exec_lease=y
+on_qemu_status=0
+on_workload_ret=0
+on_serial_sha256=603aa90b3f3c3af0ef629c7e4a05075540c60604d37040a95a27acba6c0e96a9
+```
+
+QEMU coverage limitation:
+
+```text
+pick_next_task function observation unavailable in both guests
+__schedule function observation unavailable in both guests
+dlease_pick_next_task kprobe failed/missing in both guests
+sched_process_exec count was 0 in both guests
 ```
 
 ## Claims
@@ -179,6 +197,7 @@ Allowed claim:
 
 ```text
 0009 is drafted as a dormant ordinary-CFS-only source candidate
+0009 passed denial-disabled QEMU off/on boot/workload smoke
 ```
 
 Not claimed:
@@ -189,7 +208,6 @@ runtime denial correctness
 CFS deny-and-repick correctness
 broad move denial
 runtime coverage
-QEMU compatibility
 object/layout overhead
 production protection
 hypervisor-grade isolation
@@ -200,7 +218,6 @@ monitor-backed enforcement
 
 ## Next
 
-Wait for validation/0176 to complete and record the QEMU matrix as passed or
-failed. Acceptance still requires the remaining matrix from implementation/0033,
-including negative denial tests, security diff review, and final overclaim
-review.
+Run the negative ordinary-CFS denial validation. Acceptance still requires the
+remaining matrix from implementation/0033, including negative denial tests,
+security diff review, and final overclaim review.

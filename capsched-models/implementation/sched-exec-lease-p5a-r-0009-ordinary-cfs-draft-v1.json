@@ -110,10 +110,12 @@
       "on_core_function_count": 396,
       "task_layout_root": "build/task-layout/sched-exec-lease-p5a-r-0009-20260704T034710Z"
     },
-    "qemu_runner_validation": "validation/0176-sched-exec-lease-p5a-r-0009-qemu-runner.md",
-    "qemu_runner_status": "running",
+    "qemu_boot_smoke_validation": "validation/0176-sched-exec-lease-p5a-r-0009-qemu-runner.md",
+    "qemu_boot_smoke_passed": true,
     "qemu_runner_unit": "capsched-p5a-r-0009-qemu-matrix.service",
     "qemu_runner_invocation_id": "ea20a9d013034ee886e89ecfced9104e",
+    "qemu_runner_systemd_result": "success",
+    "qemu_runner_exec_main_status": 0,
     "qemu_runner_log": "build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log",
     "qemu_runner_output_root": "build/qemu/sched-exec-lease-p5a-r-0009-matrix",
     "qemu_runner_matrix": {
@@ -122,10 +124,40 @@
       "jobs": 8,
       "config_off_build": "build/linux-l0-sched-exec-lease-off-p5a-r-0009-qemu-x86_64",
       "config_on_build": "build/linux-l0-sched-exec-lease-on-p5a-r-0009-qemu-x86_64"
+    },
+    "qemu_boot_smoke_results": {
+      "config_off": {
+        "run_dir": "build/qemu/sched-exec-lease-p5a-r-0009-matrix/20260704T035139Z-off",
+        "qemu_status": 0,
+        "workload_ret": 0,
+        "kvm": "enabled",
+        "sched_switch_count": 15088,
+        "enqueue_task_count": 14942,
+        "serial_sha256": "7428f3b851010dacfb739b1d91091947776dd33e3894e402cfcec15245af514d",
+        "counts_sha256": "3b676b05455f69109899acf966fc882db3554c33db89392193b2054b0fa7a5b0",
+        "summary_sha256": "1053e91fc52fa7a8dea6f29aaad3ccd32f94bcc2c6b36c6d53e7a9230ea516a1"
+      },
+      "config_on": {
+        "run_dir": "build/qemu/sched-exec-lease-p5a-r-0009-matrix/20260704T035938Z-on",
+        "config_sched_exec_lease": true,
+        "qemu_status": 0,
+        "workload_ret": 0,
+        "kvm": "enabled",
+        "sched_switch_count": 15112,
+        "enqueue_task_count": 14962,
+        "serial_sha256": "603aa90b3f3c3af0ef629c7e4a05075540c60604d37040a95a27acba6c0e96a9",
+        "counts_sha256": "7d3ad3e7d3f4523f3390eb408657b5b8d411d35fbe446e8e752c9af39658d2f4",
+        "summary_sha256": "56a88b561e850128c2a0e870dc3f20200edabf267844706b4e2676d7d7c647f3"
+      },
+      "coverage_limitations": [
+        "pick_next_task function observation unavailable in both guests",
+        "__schedule function observation unavailable in both guests",
+        "dlease_pick_next_task kprobe failed or missing in both guests",
+        "sched_process_exec count was 0 in both guests"
+      ]
     }
   },
   "pending_acceptance_validation": [
-    "qemu_denial_disabled_boot_workload_smoke",
     "qemu_negative_deny_a_schedule_b",
     "qemu_negative_denied_a_not_rq_curr_or_sched_switch",
     "qemu_negative_same_generation_not_repicked",

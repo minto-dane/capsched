@@ -3695,8 +3695,8 @@ P5A-R Linux 0009 source gate:
 
   Still false:
     accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
-    runtime coverage, full build/QEMU compatibility, production protection,
-    cost, deployment, datacenter readiness.
+    runtime coverage, production protection, cost, deployment, datacenter
+    readiness.
 
 P5A-R Linux 0009 full build:
   validation/0174 passed under systemd user unit
@@ -3712,8 +3712,8 @@ P5A-R Linux 0009 full build:
 
   Still false:
     accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
-    runtime coverage, QEMU compatibility, production protection, cost,
-    deployment, datacenter readiness.
+    runtime coverage, production protection, cost, deployment, datacenter
+    readiness.
 
 P5A-R Linux 0009 object/layout:
   validation/0175 passed.
@@ -3727,13 +3727,14 @@ P5A-R Linux 0009 object/layout:
 
   Still false:
     accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
-    runtime coverage, QEMU compatibility, production protection, cost,
-    deployment, datacenter readiness.
+    runtime coverage, production protection, cost, deployment, datacenter
+    readiness.
 
-P5A-R Linux 0009 QEMU runner:
-  validation/0176 records a running systemd user runner:
-  `capsched-p5a-r-0009-qemu-matrix.service`, invocation
-  `ea20a9d013034ee886e89ecfced9104e`.
+P5A-R Linux 0009 QEMU boot smoke:
+  validation/0176 passed for denial-disabled QEMU off/on boot/workload smoke.
+  Systemd unit `capsched-p5a-r-0009-qemu-matrix.service`, invocation
+  `ea20a9d013034ee886e89ecfced9104e`, completed with Result=success and
+  ExecMainStatus=0.
 
   Log:
     /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-p5a-r-0009-qemu-matrix-20260704T035139Z.log
@@ -3741,7 +3742,14 @@ P5A-R Linux 0009 QEMU runner:
   Output root:
     /media/nia/scsiusb/dev/linux-cap/build/qemu/sched-exec-lease-p5a-r-0009-matrix
 
-  The result is not yet known. This can only become denial-disabled QEMU
-  compatibility evidence. It cannot accept 0009 or prove runtime denial,
-  CFS deny-and-repick correctness, runtime coverage, protection, cost,
-  deployment, or datacenter readiness.
+  Results:
+    off run 20260704T035139Z-off: qemu_status=0, workload_ret=0.
+    on run 20260704T035938Z-on: CONFIG_SCHED_EXEC_LEASE=y, qemu_status=0,
+    workload_ret=0.
+
+  Limitation:
+    pick_next_task and __schedule function observation were unavailable,
+    dlease_pick_next_task kprobe failed/missing, and sched_process_exec count
+    was 0. This is compatibility evidence only. It cannot accept 0009 or prove
+    runtime denial, CFS deny-and-repick correctness, runtime coverage,
+    protection, cost, deployment, or datacenter readiness.
