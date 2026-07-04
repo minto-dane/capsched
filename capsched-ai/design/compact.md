@@ -3830,6 +3830,15 @@ P5A-R 0010 negative harness:
     `capsched-p5a-r-0010-negative-qemu-releasefix-20260704T050521Z.service`,
     log `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-releasefix-20260704T050521Z.log`.
 
+  Release-fix result:
+    validation/0180 records manual stop after `NEGATIVE_CHILDREN_READY` without
+    `NEGATIVE_CHILDREN_RELEASED`. Denied-first wakeup can preempt parent before
+    allowed is released.
+
+  Allowed-first fix:
+    release allowed first, print `NEGATIVE_ALLOWED_RELEASED`, then release
+    denied.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or

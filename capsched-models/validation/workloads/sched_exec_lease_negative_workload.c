@@ -324,17 +324,19 @@ static int mode_negative(void)
 	       denied, allowed, tracefs);
 	fflush(stdout);
 
-	if (write_full(denied_start[1], &byte, sizeof(byte)) < 0) {
-		perror("start denied");
-		pass = 0;
-	}
-	close(denied_start[1]);
-
 	if (write_full(allowed_start[1], &byte, sizeof(byte)) < 0) {
 		perror("start allowed");
 		pass = 0;
 	}
 	close(allowed_start[1]);
+	printf("NEGATIVE_ALLOWED_RELEASED\n");
+	fflush(stdout);
+
+	if (write_full(denied_start[1], &byte, sizeof(byte)) < 0) {
+		perror("start denied");
+		pass = 0;
+	}
+	close(denied_start[1]);
 	printf("NEGATIVE_CHILDREN_RELEASED\n");
 	fflush(stdout);
 	sched_yield();

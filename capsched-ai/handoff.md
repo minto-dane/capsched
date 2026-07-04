@@ -4703,6 +4703,21 @@ P5A-R 0010 negative harness implementation:
     `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-releasefix-20260704T050521Z.log`.
     First marker to check is `NEGATIVE_CHILDREN_RELEASED`.
 
+  release-fix run result:
+    validation/0180 records that the run was manually stopped after reaching
+    `NEGATIVE_CHILDREN_READY` but not `NEGATIVE_CHILDREN_RELEASED`. This showed
+    that waking denied first can preempt the parent before allowed is released.
+
+  allowed-first fix:
+    workload now writes allowed_start first, prints `NEGATIVE_ALLOWED_RELEASED`,
+    then writes denied_start and prints `NEGATIVE_CHILDREN_RELEASED`.
+    Updated workload sha256:
+    `21e7baafcb56ec5a92d6ee1b1e49b2aa4ad246d71ab420b17851e5825d994739`.
+
+  next:
+    Rerun QEMU negative runtime validation again. The first expected marker is
+    `NEGATIVE_ALLOWED_RELEASED`.
+
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,
     CFS deny-and-repick correctness, runtime coverage, capability semantics,
