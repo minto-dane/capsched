@@ -4508,3 +4508,32 @@ P5A-R Linux 0009 source gate / validation 0172:
     Acceptance evidence: full off/on builds after host dependency is available,
     object/layout review, QEMU denial-disabled compatibility, negative ordinary
     CFS denial tests, security diff review, and final overclaim review.
+
+P5A-R Linux 0009 full build runner / validation 0174:
+  status:
+    Running under systemd user runner. This is not yet a passed validation.
+
+  unit:
+    capsched-p5a-r-0009-full-build.service
+    invocation_id=f9b4db8339574e9fb88a90056ce6d989
+
+  command:
+    systemd-run --user --unit=capsched-p5a-r-0009-full-build --collect
+    --property=WorkingDirectory=/media/nia/scsiusb/dev/linux-cap
+    /usr/bin/env BUILD_TAG=p5a-r-0009 JOBS=8
+    /media/nia/scsiusb/dev/linux-cap/capsched/capsched-models/validation/run-sched-exec-lease-full-build-validation.sh
+
+  log:
+    /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260704T032455Z.log
+
+  resume:
+    systemctl --user status capsched-p5a-r-0009-full-build.service --no-pager
+    tail -f /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260704T032455Z.log
+
+  expected outputs:
+    build/linux-l0-sched-exec-lease-off-p5a-r-0009-x86_64/vmlinux
+    build/linux-l0-sched-exec-lease-on-p5a-r-0009-x86_64/vmlinux
+
+  non-claims:
+    Full build has not passed until the unit exits successfully and validation
+    0174 is updated. Runtime/protection/cost/datacenter claims remain false.

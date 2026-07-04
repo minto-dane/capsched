@@ -3697,3 +3697,16 @@ P5A-R Linux 0009 source gate:
     accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
     runtime coverage, full build/QEMU compatibility, production protection,
     cost, deployment, datacenter readiness.
+
+P5A-R Linux 0009 full build runner:
+  validation/0174 is running under systemd user unit
+  `capsched-p5a-r-0009-full-build.service`.
+
+  Log:
+    /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260704T032455Z.log
+
+  Check:
+    systemctl --user status capsched-p5a-r-0009-full-build.service --no-pager
+
+  Until this unit finishes successfully and validation/0174 is updated, full
+  build compatibility remains unproven.
