@@ -3843,6 +3843,14 @@ P5A-R 0010 negative harness:
     `capsched-p5a-r-0010-negative-qemu-allowedfirst-20260704T051039Z.service`,
     log `build/logs/sched-exec-lease-p5a-r-0010-negative-qemu-allowedfirst-20260704T051039Z.log`.
 
+  Allowed-first result:
+    validation/0181 records RCU stall in `pick_eevdf()` after
+    `NEGATIVE_ALLOWED_RELEASED`. This is negative evidence against accepting
+    the draft path.
+
+  Equal-priority fix:
+    both children now use `nice -20`.
+
   Non-claims:
     still no accepted runtime denial correctness, CFS deny-and-repick
     correctness, runtime coverage, production protection, cost, deployment, or

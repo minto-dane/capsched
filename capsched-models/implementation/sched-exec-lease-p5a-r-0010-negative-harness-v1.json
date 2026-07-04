@@ -32,7 +32,7 @@
   },
   "validation_harness": {
     "workload": "capsched-models/validation/workloads/sched_exec_lease_negative_workload.c",
-    "workload_sha256": "21e7baafcb56ec5a92d6ee1b1e49b2aa4ad246d71ab420b17851e5825d994739",
+    "workload_sha256": "5989c84eefa1ca10600642baf015edad11e848189e517187d80b590913a00934",
     "runner": "capsched-models/validation/run-sched-exec-lease-p5a-r-0010-negative-qemu.sh",
     "runner_sha256": "5f064ee14b1629bf763cc032b068357a2372e065db1fcc88b7ba162ee7a56fc7",
     "base_qemu_runner": "capsched-models/validation/run-sched-exec-lease-qemu-boot-smoke.sh",
@@ -55,7 +55,7 @@
     "fair_o_sha256": "612ba1d25f71c87846310276e73a900cf38800a08244b33b8b805380f3abf4f2"
   },
   "pending_validation": [
-    "qemu_negative_runtime_rerun_after_validation_0180_allowed_first_release_fix",
+    "qemu_negative_runtime_rerun_after_validation_0181_equal_priority_workload_fix",
     "security_diff_review",
     "final_overclaim_review",
     "claim_ledger_update"
@@ -73,6 +73,10 @@
     "third_qemu_attempt_status": "manually_stopped_after_reaching_negative_children_ready_without_negative_children_released",
     "third_qemu_attempt_failure": "waking denied child first can preempt parent before allowed child is released",
     "allowed_child_released_before_denied": true,
+    "fourth_qemu_attempt_validation": "capsched-models/validation/0181-sched-exec-lease-p5a-r-0010-qemu-negative-allowedfirst.md",
+    "fourth_qemu_attempt_status": "manually_stopped_after_rcu_stall_in_pick_eevdf",
+    "fourth_qemu_attempt_failure": "allowed child was released before denied but retained low priority, producing a less clean allowed-sibling test and exposing scheduler forward-progress risk",
+    "children_equal_priority": true,
     "required_trace_reset_steps": [
       "tracing_on=0",
       "trace clear",

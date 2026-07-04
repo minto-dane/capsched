@@ -202,7 +202,7 @@ static void child_main(const char *name, int ready_fd, int start_fd,
 	set_comm_or_die(name);
 	if (pin_this_process())
 		perror("sched_setaffinity");
-	if (setpriority(PRIO_PROCESS, 0, denied ? -20 : 19))
+	if (setpriority(PRIO_PROCESS, 0, -20))
 		perror("setpriority");
 
 	if (write_full(ready_fd, &byte, sizeof(byte)) < 0)

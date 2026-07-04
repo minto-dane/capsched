@@ -4725,6 +4725,19 @@ P5A-R 0010 negative harness implementation:
     First expected markers are `NEGATIVE_ALLOWED_RELEASED` and then
     `NEGATIVE_CHILDREN_RELEASED`.
 
+  allowed-first result:
+    validation/0181 records that the run reached `NEGATIVE_ALLOWED_RELEASED`
+    and then produced an RCU stall with CPU 0 in `pick_eevdf()`, called from
+    `__pick_task_fair()` and `pick_task_fair_sched_exec_lease()`. This is
+    strong negative evidence against accepting the current `0009/0010` draft
+    path.
+
+  equal-priority fix:
+    workload now gives both children `nice -20`, removing the low-priority
+    allowed-child skew from the next test.
+    Updated workload sha256:
+    `5989c84eefa1ca10600642baf015edad11e848189e517187d80b590913a00934`.
+
   non-claims:
     0009 and 0010 remain unaccepted. Runtime denial correctness,
     CFS deny-and-repick correctness, runtime coverage, capability semantics,

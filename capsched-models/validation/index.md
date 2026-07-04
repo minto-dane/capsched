@@ -186,6 +186,7 @@ Updated: 2026-07-04
 | 0178 | Failed due to validation harness trace reset issue; workload fixed to make `trace_marker` optional; no Linux deny-path claim | SchedExecLease P5A-R 0010 QEMU Negative Attempt 1 |
 | 0179 | Failed due to validation workload release ordering; workload fixed to release denied and allowed children before yielding; no Linux deny-path claim | SchedExecLease P5A-R 0010 QEMU Negative Rerun |
 | 0180 | Manually stopped after reproducing denied-first wakeup stall; workload fixed to release allowed before denied; no Linux deny-path claim | SchedExecLease P5A-R 0010 QEMU Negative Release-Fix Run |
+| 0181 | Manually stopped after RCU stall in `pick_eevdf()`; workload priority skew fixed for a cleaner rerun; no deny-correctness claim | SchedExecLease P5A-R 0010 QEMU Negative Allowed-First Run |
 
 ## Principles
 

@@ -70,7 +70,7 @@ capsched-models/validation/run-sched-exec-lease-qemu-boot-smoke.sh
 Hashes:
 
 ```text
-negative_workload_sha256=21e7baafcb56ec5a92d6ee1b1e49b2aa4ad246d71ab420b17851e5825d994739
+negative_workload_sha256=5989c84eefa1ca10600642baf015edad11e848189e517187d80b590913a00934
 negative_runner_sha256=5f064ee14b1629bf763cc032b068357a2372e065db1fcc88b7ba162ee7a56fc7
 qemu_smoke_runner_sha256=8e6b367a9e370c2061b95f07004bfaf0fb0d8bedba7fb0984b67d4b4add5a2b3
 ```
@@ -141,7 +141,7 @@ datacenter readiness
 Before any acceptance:
 
 ```text
-QEMU negative runtime rerun after validation/0180 allowed-first release fix
+QEMU negative runtime rerun after validation/0181 equal-priority workload fix
 security diff review
 final overclaim review
 claim-ledger update
@@ -192,3 +192,9 @@ sched_yield()
 This restores the intended measurement: denied and allowed ordinary-CFS
 children are runnable together, and the picker must choose the allowed sibling
 without running the denied one.
+
+Validation/0181 then exposed an RCU stall in `pick_eevdf()`. The run is
+important negative evidence against accepting `0009/0010`. The workload still
+had a test-shaping issue: allowed used `nice 19` and denied used `nice -20`.
+Both children now use `nice -20` so the next run is a cleaner allowed-sibling
+test.
