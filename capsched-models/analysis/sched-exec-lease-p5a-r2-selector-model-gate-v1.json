@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-selector-model-gate-v1",
+  "date": "2026-07-04",
+  "status": "model_gate_defined_no_linux_patch_approved",
+  "source_basis": {
+    "linux_commit": "bd71af5daeae808ac948cbd12af2663151936f22",
+    "linux_commit_short": "bd71af5daeae8",
+    "prior_analysis": "capsched-models/analysis/0146-sched-exec-lease-p5a-r2-selector-direction.md",
+    "prior_validation": "capsched-models/validation/0189-sched-exec-lease-p5a-r2-selector-direction.md",
+    "reason": "0012 proved only a synthetic ordinary-CFS post-filter negative path and exposed production blockers"
+  },
+  "source_anchors": [
+    {
+      "id": "eevdf_min_vruntime_update",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1246,
+      "pattern": "static inline void __min_vruntime_update"
+    },
+    {
+      "id": "eevdf_augmented_callbacks",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1301,
+      "pattern": "RB_DECLARE_CALLBACKS(static, min_vruntime_cb"
+    },
+    {
+      "id": "eevdf_enqueue_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1307,
+      "pattern": "static void __enqueue_entity"
+    },
+    {
+      "id": "eevdf_comment",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1431,
+      "pattern": "Earliest Eligible Virtual Deadline First"
+    },
+    {
+      "id": "eevdf_o_log_n_comment",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1441,
+      "pattern": "We can do this in O(log n) time due to an augmented RB-tree"
+    },
+    {
+      "id": "eevdf_heap_search",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1494,
+      "pattern": "while (node)"
+    },
+    {
+      "id": "sched_entity_layout",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 576,
+      "pattern": "struct sched_entity {"
+    },
+    {
+      "id": "sched_entity_run_node",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 579,
+      "pattern": "struct rb_node"
+    },
+    {
+      "id": "sched_entity_min_vruntime",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 581,
+      "pattern": "min_vruntime"
+    },
+    {
+      "id": "cfs_rq_layout",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 680,
+      "pattern": "struct cfs_rq {"
+    },
+    {
+      "id": "cfs_tasks_timeline",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 697,
+      "pattern": "tasks_timeline"
+    },
+    {
+      "id": "cfs_curr",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 703,
+      "pattern": "*curr"
+    },
+    {
+      "id": "ordinary_all_fair_experimental_picker",
+      "path": "linux/kernel/sched/core.c",
+      "expected_line": 6149,
+      "pattern": "pick_task_fair_sched_exec_lease"
+    },
+    {
+      "id": "class_loop_boundary",
+      "path": "linux/kernel/sched/core.c",
+      "expected_line": 6164,
+      "pattern": "for_each_active_class(class)"
+    },
+    {
+      "id": "fair_server_plain_picker",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10330,
+      "pattern": "return pick_task_fair(dl_se->rq, rf)"
+    },
+    {
+      "id": "fair_class_plain_picker",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 15733,
+      "pattern": ".pick_task"
+    }
+  ],
+  "required_gate_conditions": {
+    "prior_boundary_recorded": true,
+    "selector_direction_recorded": true,
+    "source_anchors_checked": true,
+    "picker_visible_before_selection": true,
+    "frozen_before_enqueue": true,
+    "task_local_cache_only": true,
+    "caller_independent_cache": true,
+    "invalidation_modeled": true,
+    "generation_epoch_modeled": true,
+    "budget_refill_modeled": true,
+    "affinity_cpuset_modeled": true,
+    "migration_group_refresh_modeled": true,
+    "receipt_exit_invalidation_modeled": true,
+    "group_summary_modeled": true,
+    "eevdf_compatible_min_summary": true,
+    "boolean_only_summary_rejected": true,
+    "current_entity_modeled": true,
+    "fail_closed_settlement_modeled": true,
+    "cross_path_settled_or_excluded": true,
+    "cfs_accounting_separated": true,
+    "outer_domain_constraint_recorded": true,
+    "no_post_filter_production": true,
+    "no_unbounded_scan": true,
+    "no_synthetic_authority": true,
+    "no_pick_time_policy_lookup": true,
+    "layout_evidence_required": true,
+    "benchmark_evidence_required": true
+  },
+  "unsafe_families": [
+    "missing_frozen_before_enqueue",
+    "caller_dependent_cache",
+    "missing_invalidation",
+    "missing_generation_epoch",
+    "missing_budget_affinity",
+    "missing_migration_group_refresh",
+    "missing_receipt_exit_invalidation",
+    "missing_group_summary",
+    "missing_eevdf_min_summary",
+    "boolean_only_summary",
+    "missing_current_entity",
+    "missing_fail_closed",
+    "missing_cross_path",
+    "missing_outer_domain_constraint",
+    "post_filter_production",
+    "unbounded_scan",
+    "synthetic_authority",
+    "pick_time_policy_lookup",
+    "linux_patch_approved",
+    "hot_layout_approved",
+    "runtime_protection_cost_datacenter_claim"
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0114-p5a-r2-selector-model-gate-model",
+    "model": "P5AR2SelectorModelGate.tla",
+    "safe_cfg": "P5AR2SelectorModelGateSafe.cfg",
+    "safe_expected_states_generated": 6,
+    "safe_expected_distinct_states": 5,
+    "safe_expected_depth": 5,
+    "unsafe_cfg_count": 21,
+    "unsafe_expected_counterexamples": 21
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "accept_0009_0012": false,
+    "runtime_denial_correctness": false,
+    "complete_cfs_deny_and_repick": false,
+    "runtime_coverage": false,
+    "hot_layout_change_approved": false,
+    "public_abi": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  },
+  "next": {
+    "name": "P5A-R2 selector model validation",
+    "linux_patch_allowed_after_this_gate": false,
+    "future_work": [
+      "source-only selector design plan",
+      "invalidation-source map",
+      "hot layout/object evidence plan",
+      "cost benchmark plan before any overhead claim"
+    ]
+  }
+}

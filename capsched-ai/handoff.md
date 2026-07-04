@@ -4934,3 +4934,40 @@ P5A-R2 selector direction:
     It must define pre-pick lease-pickable state, invalidation events, group
     hierarchy summaries, current entity handling, fail-closed settlement,
     cross-path exclusions, object/layout evidence, and fairness/cost evidence.
+
+P5A-R2 selector model gate:
+  Analysis/0147, formal/0114, and validation/0190 are complete.
+
+  Validation result:
+    RUN_ID `20260704T-p5a-r2-selector-model-gate`
+    Linux commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    source anchors: 16 checked, 0 failures
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe configs: 21 expected counterexamples
+
+  Key invariant:
+    Candidate A is only a local cache/projection of frozen admission state. It
+    is not authority. The summary must be EEVDF-compatible, meaning a
+    `min_pickable_vruntime`-style infinite-sentinel summary or equivalent
+    proof. A boolean-only "subtree has pickable work" marker is rejected.
+
+  Required invalidations:
+    task generation, exec generation, domain/grant epoch, budget
+    exhaustion/refill, affinity/cpuset, migration, group movement, monitor
+    receipt revoke, task exit.
+
+  Long-horizon constraint:
+    Candidate C remains the architecture: an outer Domain/SchedContext/
+    ExecutionGrant selector before ordinary CFS, preserving HyperTag,
+    MemoryView switch batching, root budgets, and datacenter single-OS goals.
+
+  Still false:
+    Linux patch approval, 0009-0012 acceptance, runtime denial correctness,
+    complete CFS deny-and-repick correctness, runtime coverage, hot layout
+    approval, monitor enforcement, production protection, cost efficiency,
+    deployment readiness, datacenter readiness.
+
+  Next:
+    create the P5A-R2 invalidation source map tying each required invalidation
+    event to concrete Linux source surfaces before drafting another selector
+    patch.

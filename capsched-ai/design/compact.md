@@ -3966,3 +3966,20 @@ P5A-R2 selector direction:
   Rejected for production:
     unbounded scans, bounded-window completeness claims, synthetic comm-prefix
     authority, and pick-time policy lookup.
+
+P5A-R2 selector model gate:
+  Validation/0190 passed. Analysis/0147 and formal/0114 define the gate.
+
+  Result:
+    16 source anchors checked with 0 failures; safe TLC passed with 6 generated
+    states, 5 distinct states, depth 5; 21 unsafe configs produced expected
+    counterexamples.
+
+  Core rule:
+    Candidate A is a local cache of frozen task-local admission state, not
+    authority. The CFS summary must be EEVDF-compatible
+    (`min_pickable_vruntime`-style sentinel or equivalent proof), not a
+    boolean-only subtree marker.
+
+  Next:
+    P5A-R2 invalidation source map before any new Linux selector patch.

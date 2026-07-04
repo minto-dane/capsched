@@ -119,6 +119,7 @@ Updated: 2026-07-03
 | 0111 | Checked with safe pass and expected unsafe counterexamples | P5A-R Implementation-Ready Audit Model |
 | 0112 | Checked with safe pass and expected unsafe counterexamples | P5A-R Upstream Drift Source-Shape Refresh Model |
 | 0113 | Checked with safe pass and expected unsafe counterexamples | P5A-R 0009 Source Gate Model |
+| 0114 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Selector Model Gate |
 
 ## Planned
 
