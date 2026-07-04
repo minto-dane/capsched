@@ -117,6 +117,8 @@ checkpatch --no-tree 0009 patch
 patch queue replay to 7a402107fd63faf7063c2dea05e88e7f8a23f4bf
 CONFIG_SCHED_EXEC_LEASE=off targeted scheduler object build
 CONFIG_SCHED_EXEC_LEASE=on targeted scheduler object build
+CONFIG_SCHED_EXEC_LEASE=off full vmlinux build
+CONFIG_SCHED_EXEC_LEASE=on full vmlinux build
 ```
 
 The initial targeted build attempt was blocked by a missing host dependency:
@@ -140,6 +142,15 @@ on core.o size=364448 sha256=d8a85d9edc8578c8a991ec928d5e953734965a7dcc2e18ec536
 This is targeted scheduler object build evidence only, not full `vmlinux`
 build acceptance.
 
+Full build evidence:
+
+```text
+off vmlinux sha256=f76dbaed7fd47fe812475f26a10d43053911e0d4319a6eb4681db378ba26eb1f
+on vmlinux sha256=367103fd9d3bb1bdebcb87d1cbcf9ac47fee4639b76b06bb7934f9f3c5cd8281
+on exec_lease.o sha256=75e4085156ebb0610edbef3af9bf281bfc560edc1a59c2246a79c26f6807dd1e
+off exec_lease.o absent
+```
+
 ## Claims
 
 Allowed claim:
@@ -156,7 +167,6 @@ runtime denial correctness
 CFS deny-and-repick correctness
 broad move denial
 runtime coverage
-CONFIG off/on build compatibility
 QEMU compatibility
 object/layout overhead
 production protection
@@ -169,6 +179,6 @@ monitor-backed enforcement
 ## Next
 
 Run validation/0172. If it passes, `0009` remains only a source-gated draft.
-Acceptance still requires the full matrix from implementation/0033, including
-builds, object/layout evidence, QEMU compatibility, negative denial tests,
+Acceptance still requires the remaining matrix from implementation/0033,
+including object/layout evidence, QEMU compatibility, negative denial tests,
 security diff review, and final overclaim review.

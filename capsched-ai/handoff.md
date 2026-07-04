@@ -4509,9 +4509,10 @@ P5A-R Linux 0009 source gate / validation 0172:
     object/layout review, QEMU denial-disabled compatibility, negative ordinary
     CFS denial tests, security diff review, and final overclaim review.
 
-P5A-R Linux 0009 full build runner / validation 0174:
+P5A-R Linux 0009 full build / validation 0174:
   status:
-    Running under systemd user runner. This is not yet a passed validation.
+    Passed for full CONFIG off/on `vmlinux` build. This is build
+    compatibility evidence only; `0009` is not accepted.
 
   unit:
     capsched-p5a-r-0009-full-build.service
@@ -4526,14 +4527,19 @@ P5A-R Linux 0009 full build runner / validation 0174:
   log:
     /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260704T032455Z.log
 
-  resume:
-    systemctl --user status capsched-p5a-r-0009-full-build.service --no-pager
-    tail -f /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260704T032455Z.log
+  result:
+    Result=success
+    ExecMainStatus=0
+    off completed at 2026-07-03T23:33:07-04:00
+    on completed at 2026-07-03T23:41:13-04:00
 
-  expected outputs:
-    build/linux-l0-sched-exec-lease-off-p5a-r-0009-x86_64/vmlinux
-    build/linux-l0-sched-exec-lease-on-p5a-r-0009-x86_64/vmlinux
+  outputs:
+    off vmlinux sha256=f76dbaed7fd47fe812475f26a10d43053911e0d4319a6eb4681db378ba26eb1f
+    on vmlinux sha256=367103fd9d3bb1bdebcb87d1cbcf9ac47fee4639b76b06bb7934f9f3c5cd8281
+    on exec_lease.o sha256=75e4085156ebb0610edbef3af9bf281bfc560edc1a59c2246a79c26f6807dd1e
+    off exec_lease.o absent
 
   non-claims:
-    Full build has not passed until the unit exits successfully and validation
-    0174 is updated. Runtime/protection/cost/datacenter claims remain false.
+    Runtime denial correctness, CFS deny-and-repick correctness,
+    runtime coverage, QEMU compatibility, protection, cost, deployment, and
+    datacenter claims remain false.

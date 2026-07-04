@@ -256,8 +256,9 @@ Current SchedExecLease L0 readiness:
     persistent hot denial fields. The static key has no enable site.
     validation/0172 records source/formal/checkpatch/replay evidence, and
     validation/0173 records targeted `fair.o`/`core.o` build evidence for
-    CONFIG off/on. Runtime denial correctness, CFS deny-and-repick correctness,
-    full build/QEMU compatibility, runtime coverage, protection, cost,
+    CONFIG off/on, and validation/0174 records full CONFIG off/on `vmlinux`
+    build evidence. Runtime denial correctness, CFS deny-and-repick correctness,
+    QEMU compatibility, runtime coverage, protection, cost,
     deployment, and datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of

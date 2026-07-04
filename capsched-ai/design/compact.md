@@ -3698,15 +3698,19 @@ P5A-R Linux 0009 source gate:
     runtime coverage, full build/QEMU compatibility, production protection,
     cost, deployment, datacenter readiness.
 
-P5A-R Linux 0009 full build runner:
-  validation/0174 is running under systemd user unit
+P5A-R Linux 0009 full build:
+  validation/0174 passed under systemd user unit
   `capsched-p5a-r-0009-full-build.service`.
 
   Log:
     /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260704T032455Z.log
 
-  Check:
-    systemctl --user status capsched-p5a-r-0009-full-build.service --no-pager
+  Evidence:
+    off vmlinux sha256=f76dbaed7fd47fe812475f26a10d43053911e0d4319a6eb4681db378ba26eb1f
+    on vmlinux sha256=367103fd9d3bb1bdebcb87d1cbcf9ac47fee4639b76b06bb7934f9f3c5cd8281
+    on exec_lease.o sha256=75e4085156ebb0610edbef3af9bf281bfc560edc1a59c2246a79c26f6807dd1e
 
-  Until this unit finishes successfully and validation/0174 is updated, full
-  build compatibility remains unproven.
+  Still false:
+    accepted 0009, runtime denial correctness, CFS deny-and-repick correctness,
+    runtime coverage, QEMU compatibility, production protection, cost,
+    deployment, datacenter readiness.

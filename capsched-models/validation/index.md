@@ -179,7 +179,7 @@ Updated: 2026-07-03
 | 0171 | Upstream/source-shape refresh passed; P5A-R direct scheduler shape unchanged, lifecycle drift recorded and non-claimed | SchedExecLease P5A-R Upstream Drift Source-Shape Refresh |
 | 0172 | Source/formal/checkpatch/replay gate passed for dormant 0009 draft; build/QEMU/runtime/protection claims remain unapproved | SchedExecLease P5A-R 0009 Source Gate |
 | 0173 | Targeted CONFIG off/on `fair.o` and `core.o` build passed; full build/QEMU/runtime/protection claims remain unapproved | SchedExecLease P5A-R 0009 Targeted Build |
-| 0174 | Running under systemd user runner; full build result not yet known | SchedExecLease P5A-R 0009 Full Build Runner |
+| 0174 | Passed for full CONFIG off/on `vmlinux` build; runtime/QEMU/protection claims remain unapproved | SchedExecLease P5A-R 0009 Full Build |
 
 ## Principles
 
