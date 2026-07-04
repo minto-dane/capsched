@@ -3907,12 +3907,12 @@ P5A-R 0012 forced pickable progress:
     `kernel/sched/fair.o` and `kernel/sched/core.o` builds.
 
   Next:
-    QEMU negative runtime validation against `0012` is running under
-    `capsched-p5a-r-0012-negative-qemu-20260704T061035Z.service`.
-    Log:
-    `build/logs/sched-exec-lease-p5a-r-0012-negative-qemu-20260704T061035Z.log`.
+    validation/0186 records QEMU negative runtime against `0012` passing:
+    `NEGATIVE_ALLOWED_NEXT 770`, `NEGATIVE_DENIED_NEXT 0`,
+    `NEGATIVE_RESULT PASS`, `qemu_status=0`.
+    Security diff review and final overclaim review remain next.
 
   Non-claims:
-    still no accepted runtime denial correctness, CFS deny-and-repick
-    correctness, runtime coverage, production protection, cost, deployment, or
-    datacenter claim.
+    still no accepted production runtime denial correctness, complete CFS
+    deny-and-repick correctness, runtime coverage, production protection, cost,
+    deployment, or datacenter claim.

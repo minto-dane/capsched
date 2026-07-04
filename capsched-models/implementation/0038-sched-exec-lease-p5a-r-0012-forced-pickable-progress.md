@@ -105,11 +105,18 @@ on_core_o_sha256=d8a85d9edc8578c8a991ec928d5e953734965a7dcc2e18ec5365640f7612886
 
 ## Required Next Validation
 
-Rerun the P5A-R QEMU negative workload against `0012`:
+Validation/0186 reran the P5A-R QEMU negative workload against `0012`:
 
 ```text
-capsched/capsched-models/validation/run-sched-exec-lease-p5a-r-0010-negative-qemu.sh
+qemu_status=0
+NEGATIVE_ALLOWED_NEXT 770
+NEGATIVE_DENIED_NEXT 0
+NEGATIVE_RESULT PASS
 ```
+
+This closes the immediate synthetic ordinary-CFS forward-progress failure
+exposed by validations/0181, 0182, and 0184. Security-diff review and final
+overclaim review remain required before any acceptance decision.
 
 ## Non-Claims
 

@@ -51,10 +51,20 @@
     }
   },
   "required_next_validation": [
-    "qemu_negative_runtime_rerun_against_0012",
     "security_diff_review",
     "final_overclaim_review"
   ],
+  "qemu_negative_validation": {
+    "validation": "capsched-models/validation/0186-sched-exec-lease-p5a-r-0012-qemu-negative.md",
+    "status": "passed_for_synthetic_ordinary_cfs_negative_path",
+    "qemu_status": 0,
+    "negative_allowed_next": 770,
+    "negative_denied_next": 0,
+    "negative_result": "PASS",
+    "production_runtime_denial_correctness": false,
+    "runtime_coverage_claim": false,
+    "protection": false
+  },
   "safety_flags": {
     "accepted": false,
     "production_policy": false,
