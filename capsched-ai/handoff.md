@@ -5179,3 +5179,44 @@ P5A-R2 layout probe patch plan:
     draft Linux patch `0013` within the no-behavior layout probe scope, then run
     replay, CONFIG off/on normal-build absence checks, probe-on build, symbol
     extraction, source-shape checks, security review, and upstream replay.
+
+P5A-R2 0013 layout probe:
+  Implementation/0039 and validation/0197 are complete.
+
+  Linux patch:
+    local commit `0b79e307dc9536d38557141cfd650f2be9a2af57`
+    subject `sched/exec_lease: Add build-only layout probe`
+    replay commit `077c948be39432971e7273b16b728172251129aa`
+    matching tree `7ef04bf73d26b2813b10016b7eb342a618a66570`
+
+  Patch queue:
+    `linux-patches/patches/capsched-linux-l0/0013-sched-exec_lease-Add-build-only-layout-probe.patch`
+    patch sha256 `cc1fe1754e64bfaa23e8214445b748d0287e7961500d0aa2a7d6f995a295fb38`
+    series sha256 `8f7c96605f816f9ec34015d7c6d8d1e1dbbe2936e60b86f8bc70dc4e1727270e`
+
+  Validation:
+    RUN_ID `20260705T-p5a-r2-0013-layout-probe-r2`
+    replay passed; local/replay trees match
+    checkpatch: 0 errors, 1 expected MAINTAINERS new-file warning
+    normal CONFIG off/on: `exec_lease_layout_probe.o` absent
+    probe CONFIG on: build passed
+    probe object size: 2464
+    probe object sha256 `d688b67c55e9cfb0fdd8d5c0e6978be548d69edaa7d7b6c738baba8c6ae6d4cc`
+    probe symbols: 24
+
+  Scope:
+    default-off build-only scheduler-internal layout probe for `sched_entity`,
+    `cfs_rq`, `rq`, and `task_struct` SchedExecLease fields. This is needed
+    because `cfs_rq` and `rq` are scheduler-internal and cannot be measured by
+    an external module probe alone.
+
+  Still false:
+    behavior patch approval, new hot scheduler runtime fields, runtime denial
+    correctness, complete CFS deny-and-repick correctness, runtime coverage,
+    monitor enforcement, production protection, cost efficiency, deployment
+    readiness, datacenter readiness.
+
+  Next:
+    extract the 0013 probe symbols into a structured layout table and compare
+    CONFIG off/on/probe object evidence before any P5A-R2 hot-field or behavior
+    patch.

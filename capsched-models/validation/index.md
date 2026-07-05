@@ -202,6 +202,7 @@ Updated: 2026-07-04
 | 0194 | Source/design/formal sketch gate passed; 36 anchors checked and 32 unsafe families counterexampled | SchedExecLease P5A-R2 Minimal Source Sketch |
 | 0195 | Source/formal evidence-plan gate passed; 40 anchors checked, future hot fields absent, and 36 unsafe families counterexampled | SchedExecLease P5A-R2 Layout and Overhead Evidence Plan |
 | 0196 | Source/formal patch-plan gate passed; 0013 slot reserved for no-behavior layout probe and 31 unsafe families counterexampled | SchedExecLease P5A-R2 Layout Probe Patch Plan |
+| 0197 | Patch replay, checkpatch-with-exception, normal-build absence, probe-on build, and symbol extraction passed for no-behavior 0013 | SchedExecLease P5A-R2 0013 Layout Probe |
 
 ## Principles
 

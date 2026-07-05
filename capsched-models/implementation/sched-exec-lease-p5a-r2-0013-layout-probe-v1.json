@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-0013-layout-probe-v1",
+  "date": "2026-07-05",
+  "status": "drafted_no_behavior_probe_patch",
+  "source_basis": {
+    "parent_linux_commit": "bd71af5daeae808ac948cbd12af2663151936f22",
+    "local_linux_commit": "0b79e307dc9536d38557141cfd650f2be9a2af57",
+    "patch_queue_replay_commit": "077c948be39432971e7273b16b728172251129aa",
+    "linux_tree": "7ef04bf73d26b2813b10016b7eb342a618a66570",
+    "patch_file": "linux-patches/patches/capsched-linux-l0/0013-sched-exec_lease-Add-build-only-layout-probe.patch",
+    "patch_sha256": "cc1fe1754e64bfaa23e8214445b748d0287e7961500d0aa2a7d6f995a295fb38",
+    "series_sha256": "8f7c96605f816f9ec34015d7c6d8d1e1dbbe2936e60b86f8bc70dc4e1727270e",
+    "prior_patch_plan_validation": "validation/0196-sched-exec-lease-p5a-r2-layout-probe-patch-plan.md"
+  },
+  "scope": {
+    "linux_patch_drafted": true,
+    "linux_patch_accepted": false,
+    "behavior_change": false,
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/Makefile",
+      "kernel/sched/exec_lease_layout_probe.c"
+    ],
+    "config_name": "SCHED_EXEC_LEASE_LAYOUT_PROBE",
+    "config_default_n": true,
+    "depends_on": [
+      "SCHED_EXEC_LEASE",
+      "DEBUG_KERNEL"
+    ],
+    "main_config_selects_probe": false,
+    "normal_config_off_probe_object_absent": true,
+    "normal_config_on_probe_object_absent": true,
+    "probe_on_build_object_present": true
+  },
+  "probe_build": {
+    "output_dir": "build/linux-l0-sched-exec-lease-on-p5a-r2-0013-probe-x86_64",
+    "object": "kernel/sched/exec_lease_layout_probe.o",
+    "object_size": 2464,
+    "object_sha256": "d688b67c55e9cfb0fdd8d5c0e6978be548d69edaa7d7b6c738baba8c6ae6d4cc",
+    "symbol_count": 24
+  },
+  "checkpatch": {
+    "errors": 0,
+    "warnings": 1,
+    "warning_exception": "new file MAINTAINERS review warning; acceptable for private patch queue, revisit before RFC/upstream publication"
+  },
+  "safety_flags": {
+    "runtime_callsite_added": false,
+    "public_abi": false,
+    "trace_abi": false,
+    "exported_symbol": false,
+    "monitor_call": false,
+    "policy_lookup": false,
+    "new_hot_runtime_field": false,
+    "runtime_denial_correctness": false,
+    "complete_cfs_deny_and_repick": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

@@ -4107,3 +4107,27 @@ P5A-R2 layout probe patch plan:
   Next:
     draft `0013` within this probe-only scope. Behavior patch approval remains
     false.
+
+P5A-R2 0013 layout probe:
+  Validation/0197 passed. Implementation/0039 records the concrete no-behavior
+  probe patch.
+
+  Result:
+    local Linux commit `0b79e307dc9536d38557141cfd650f2be9a2af57`;
+    replay commit `077c948be39432971e7273b16b728172251129aa`;
+    matching tree `7ef04bf73d26b2813b10016b7eb342a618a66570`.
+    Patch queue 0013 sha256
+    `cc1fe1754e64bfaa23e8214445b748d0287e7961500d0aa2a7d6f995a295fb38`.
+    Normal CONFIG off/on builds do not emit `exec_lease_layout_probe.o`.
+    Probe CONFIG on builds the object, size 2464, sha256
+    `d688b67c55e9cfb0fdd8d5c0e6978be548d69edaa7d7b6c738baba8c6ae6d4cc`,
+    with 24 probe symbols.
+
+  Core rule:
+    0013 is layout measurement infrastructure only. It does not authorize hot
+    summary fields, behavior changes, runtime denial correctness, monitor
+    enforcement, protection, cost, deployment, or datacenter claims.
+
+  Next:
+    convert probe symbols into a structured layout table and disabled-overhead
+    evidence before any P5A-R2 selector behavior patch.

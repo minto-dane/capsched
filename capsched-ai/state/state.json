@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-07-04",
+  "updated": "2026-07-05",
   "project": {
     "name": "DomainLease-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-p5a-r2-layout-probe-patch-plan-gate",
+    "current_phase": "sched-exec-lease-l0-p5a-r2-0013-layout-probe-validation",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -54,8 +54,8 @@
       "upstream_commit_date": "2026-07-03 05:48:05 -1000",
       "upstream_commit_subject": "Merge tag 'vfs-7.2-rc2.fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs",
       "work_branch": "capsched-linux-l0",
-      "work_commit": "bd71af5daeae808ac948cbd12af2663151936f22",
-      "work_commit_subject": "sched/fair: Force exec lease pickable CFS progress",
+      "work_commit": "0b79e307dc9536d38557141cfd650f2be9a2af57",
+      "work_commit_subject": "sched/exec_lease: Add build-only layout probe",
       "slice0a_status": "applied and build-validated: upstream baseline, CONFIG_CAPSCHED=n, and CONFIG_CAPSCHED=y vmlinux builds completed successfully under systemd user runner",
       "slice0b_status": "applied and build-validated: type-only authority scaffolding in include/linux/capsched.h and kernel/sched/capsched.c; CONFIG_CAPSCHED=n/y vmlinux builds completed successfully",
       "n156_rename_status": "applied and targeted-build-validated: inert Linux scaffold renamed to CONFIG_SCHED_EXEC_LEASE, include/linux/sched_exec_lease.h, and kernel/sched/exec_lease.c; scheduler-subtree build passed for disabled and enabled states",
@@ -96,7 +96,8 @@
       "p5a_r_0009_full_build_runner_status": "completed_success_superseded_by_p5a_r_0009_full_build_status",
       "p5a_r_0009_full_build_status": "passed: validation/0174 records systemd full vmlinux build for Linux commit 7a402107fd63faf7063c2dea05e88e7f8a23f4bf with BUILD_TAG=p5a-r-0009. Unit capsched-p5a-r-0009-full-build.service invocation f9b4db8339574e9fb88a90056ce6d989 completed with Result=success and ExecMainStatus=0. Log path /media/nia/scsiusb/dev/linux-cap/build/logs/sched-exec-lease-full-build-20260704T032455Z.log. CONFIG off build produced vmlinux sha256 f76dbaed7fd47fe812475f26a10d43053911e0d4319a6eb4681db378ba26eb1f and exec_lease.o absent. CONFIG on build produced vmlinux sha256 367103fd9d3bb1bdebcb87d1cbcf9ac47fee4639b76b06bb7934f9f3c5cd8281 and exec_lease.o sha256 75e4085156ebb0610edbef3af9bf281bfc560edc1a59c2246a79c26f6807dd1e. This is full build compatibility evidence only. 0009 remains unaccepted; runtime denial, CFS deny-and-repick, runtime coverage, protection, cost, deployment, and datacenter claims remain false.",
       "p5a_r_0009_object_layout_status": "passed: validation/0175 run 20260704T-p5ar-0009-object-layout records object/function-size and task layout evidence for 0009. off fair.o size 157712 sha256 9ef74eed7997d5898b16fb52117c29ca3ecd67423ee527399ab4bbc5ad1854aa; on fair.o size 159416 sha256 ae6605af1b0e133c3faf37f135ed7bf55cff94b2b761e27536c450addcf7e409; off core.o size 347744 sha256 b10d6f05c8be1fd5654ff0686235a4bb2e6c752873518a74d52c697fb189dd1b; on core.o size 347744 sha256 d48b9bd593ae53468b246bbaede0e92a95b1cd8c9598d945be4977936acb8aea; on exec_lease.o size 2304 sha256 75e4085156ebb0610edbef3af9bf281bfc560edc1a59c2246a79c26f6807dd1e. Task layout probe passed at build/task-layout/sched-exec-lease-p5a-r-0009-20260704T034710Z. This is object/layout evidence only; 0009 remains unaccepted and runtime/QEMU/protection/cost/datacenter claims remain false.",
-      "p5a_r_0009_qemu_status": "passed: validation/0176 records QEMU denial-disabled boot/workload smoke for Linux commit 7a402107fd63faf7063c2dea05e88e7f8a23f4bf. Unit capsched-p5a-r-0009-qemu-matrix.service invocation ea20a9d013034ee886e89ecfced9104e completed with Result=success and ExecMainStatus=0. CONFIG off run build/qemu/sched-exec-lease-p5a-r-0009-matrix/20260704T035139Z-off had qemu_status=0, workload_ret=0, KVM enabled, sched_switch=15088, enqueue_task=14942, serial sha256 7428f3b851010dacfb739b1d91091947776dd33e3894e402cfcec15245af514d. CONFIG on run build/qemu/sched-exec-lease-p5a-r-0009-matrix/20260704T035938Z-on had CONFIG_SCHED_EXEC_LEASE=y, qemu_status=0, workload_ret=0, KVM enabled, sched_switch=15112, enqueue_task=14962, serial sha256 603aa90b3f3c3af0ef629c7e4a05075540c60604d37040a95a27acba6c0e96a9. Trace coverage remains incomplete: pick_next_task and __schedule function observation were unavailable, dlease_pick_next_task kprobe failed/missing, and sched_process_exec count was 0. This closes only QEMU denial-disabled compatibility; 0009 remains unaccepted and runtime denial, CFS deny-and-repick, runtime coverage, protection, cost, deployment, and datacenter claims remain false."
+      "p5a_r_0009_qemu_status": "passed: validation/0176 records QEMU denial-disabled boot/workload smoke for Linux commit 7a402107fd63faf7063c2dea05e88e7f8a23f4bf. Unit capsched-p5a-r-0009-qemu-matrix.service invocation ea20a9d013034ee886e89ecfced9104e completed with Result=success and ExecMainStatus=0. CONFIG off run build/qemu/sched-exec-lease-p5a-r-0009-matrix/20260704T035139Z-off had qemu_status=0, workload_ret=0, KVM enabled, sched_switch=15088, enqueue_task=14942, serial sha256 7428f3b851010dacfb739b1d91091947776dd33e3894e402cfcec15245af514d. CONFIG on run build/qemu/sched-exec-lease-p5a-r-0009-matrix/20260704T035938Z-on had CONFIG_SCHED_EXEC_LEASE=y, qemu_status=0, workload_ret=0, KVM enabled, sched_switch=15112, enqueue_task=14962, serial sha256 603aa90b3f3c3af0ef629c7e4a05075540c60604d37040a95a27acba6c0e96a9. Trace coverage remains incomplete: pick_next_task and __schedule function observation were unavailable, dlease_pick_next_task kprobe failed/missing, and sched_process_exec count was 0. This closes only QEMU denial-disabled compatibility; 0009 remains unaccepted and runtime denial, CFS deny-and-repick, runtime coverage, protection, cost, deployment, and datacenter claims remain false.",
+      "p5a_r2_0013_layout_probe_status": "drafted and validated as a no-behavior build-only layout probe: Linux commit 0b79e307dc9536d38557141cfd650f2be9a2af57 adds default-off CONFIG_SCHED_EXEC_LEASE_LAYOUT_PROBE and kernel/sched/exec_lease_layout_probe.c to measure scheduler-internal structures without normal CONFIG off/on probe object generation. Patch queue replay reached 077c948be39432971e7273b16b728172251129aa with matching tree 7ef04bf73d26b2813b10016b7eb342a618a66570. validation/0197 passed patch replay, checkpatch with the expected MAINTAINERS new-file warning exception, normal off/on probe-object absence checks, probe-on targeted build, and symbol extraction with 24 probe symbols. This is layout evidence infrastructure only; no runtime behavior change, new hot scheduler field, runtime denial correctness, runtime coverage, monitor enforcement, protection, cost, deployment, or datacenter claim is approved."
     }
   },
   "active_analysis": {
@@ -257,7 +258,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "P5A-R2 layout probe patch-plan gate is complete. analysis/0153, formal/0120, and validation/0196 reserve future patch slot 0013 only for no-behavior build-only layout probe infrastructure. Validator run 20260705T-p5a-r2-layout-probe-patch-plan passed with 32 source anchors, 0 missing anchors, 0 line drift, absence_failure_count 0, patch_slot_free=true, kconfig_boundary_observed=true, internal_probe_need_observed=true, hot_layout_basis_observed=true, task_probe_basis_observed=true, safe TLC 6 generated states/5 distinct/depth 5, and 31 expected unsafe counterexamples. It records that cfs_rq/rq require a scheduler-internal build-only probe or equivalent in-tree probe, not an external-module-only task probe. 0013 may be drafted only as default-off probe infrastructure with no normal CONFIG off/on probe object, no runtime call sites, no public ABI, and no exported symbols. Behavior patches, new hot fields, runtime denial correctness, complete CFS deny-and-repick, runtime coverage, monitor enforcement, protection, cost, deployment, and datacenter claims remain false.",
+    "current_focus": "P5A-R2 0013 layout probe is drafted and validation/0197 passed. Linux commit 0b79e307dc9536d38557141cfd650f2be9a2af57 adds a default-off scheduler-internal build-only layout probe for sched_entity, cfs_rq, rq, and task_struct SchedExecLease layout evidence. Patch queue replay reached 077c948be39432971e7273b16b728172251129aa, local/replay trees match at 7ef04bf73d26b2813b10016b7eb342a618a66570, normal CONFIG off/on builds do not produce exec_lease_layout_probe.o, probe CONFIG on builds the object, and 24 probe symbols were extracted. checkpatch has 0 errors and 1 expected MAINTAINERS new-file warning exception. This is measurement infrastructure only; behavior patches, new hot fields, runtime denial correctness, complete CFS deny-and-repick correctness, runtime coverage, monitor enforcement, protection, cost, deployment, and datacenter claims remain false.",
     "p5a_r_0009_negative_runtime_harness": "capsched/capsched-models/analysis/0144-sched-exec-lease-p5a-r-0009-negative-runtime-harness.md",
     "p5a_r_0009_negative_runtime_harness_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r-0009-negative-runtime-harness-v1.json",
     "p5a_r_0010_negative_harness_plan": "capsched/capsched-models/implementation/0035-sched-exec-lease-p5a-r-0010-negative-harness-plan.md",
@@ -341,6 +342,18 @@
     "p5a_r2_layout_probe_patch_plan_formal": "capsched/capsched-models/formal/0120-p5a-r2-layout-probe-patch-plan-model/README.md",
     "p5a_r2_layout_probe_patch_plan_validation": "capsched/capsched-models/validation/0196-sched-exec-lease-p5a-r2-layout-probe-patch-plan.md",
     "p5a_r2_layout_probe_patch_plan_run": "build/source-check/sched-exec-lease-p5a-r2-layout-probe-patch-plan/20260705T-p5a-r2-layout-probe-patch-plan/result.json",
+    "p5a_r2_0013_layout_probe": "capsched/capsched-models/implementation/0039-sched-exec-lease-p5a-r2-0013-layout-probe.md",
+    "p5a_r2_0013_layout_probe_json": "capsched/capsched-models/implementation/sched-exec-lease-p5a-r2-0013-layout-probe-v1.json",
+    "p5a_r2_0013_layout_probe_validation": "capsched/capsched-models/validation/0197-sched-exec-lease-p5a-r2-0013-layout-probe.md",
+    "p5a_r2_0013_layout_probe_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r2-0013-layout-probe.sh",
+    "p5a_r2_0013_layout_probe_run": "build/source-check/sched-exec-lease-p5a-r2-0013-layout-probe/20260705T-p5a-r2-0013-layout-probe-r2/result.json",
+    "p5a_r2_0013_layout_probe_local_commit": "0b79e307dc9536d38557141cfd650f2be9a2af57",
+    "p5a_r2_0013_layout_probe_replay_commit": "077c948be39432971e7273b16b728172251129aa",
+    "p5a_r2_0013_layout_probe_tree": "7ef04bf73d26b2813b10016b7eb342a618a66570",
+    "p5a_r2_0013_layout_probe_patch": "linux-patches/patches/capsched-linux-l0/0013-sched-exec_lease-Add-build-only-layout-probe.patch",
+    "p5a_r2_0013_layout_probe_patch_sha256": "cc1fe1754e64bfaa23e8214445b748d0287e7961500d0aa2a7d6f995a295fb38",
+    "p5a_r2_0013_layout_probe_series_sha256": "8f7c96605f816f9ec34015d7c6d8d1e1dbbe2936e60b86f8bc70dc4e1727270e",
+    "p5a_r2_0013_layout_probe_object_sha256": "d688b67c55e9cfb0fdd8d5c0e6978be548d69edaa7d7b6c738baba8c6ae6d4cc",
     "p5a_r_cfs_picker_source_map": "capsched/capsched-models/analysis/0135-sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map.md",
     "p5a_r_cfs_picker_source_map_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r-cfs-picker-eligibility-source-map-v1.json",
     "p5a_r_cfs_picker_source_map_validation": "capsched/capsched-models/validation/0162-sched-exec-lease-p5a-r-cfs-picker-source-map.md",

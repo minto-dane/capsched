@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-07-04
+Updated: 2026-07-05
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -323,6 +323,25 @@ Current SchedExecLease L0 readiness:
     forever with allowed runnable work. Runtime denial correctness, final
     fairness semantics, runtime coverage, protection, cost, deployment, and
     datacenter claims remain unapproved.
+- `0039-sched-exec-lease-p5a-r2-0013-layout-probe.md`
+  - Status: concrete no-behavior `0013` layout probe patch drafted and
+    validation/0197 passed; not a behavior patch or protection claim.
+  - Linux commit:
+    `0b79e307dc9536d38557141cfd650f2be9a2af57`.
+  - Patch queue replay commit:
+    `077c948be39432971e7273b16b728172251129aa`.
+  - JSON:
+    `sched-exec-lease-p5a-r2-0013-layout-probe-v1.json`.
+  - Rule: the patch adds default-off
+    `CONFIG_SCHED_EXEC_LEASE_LAYOUT_PROBE` and a scheduler-internal build-only
+    `exec_lease_layout_probe.o` object. Normal CONFIG off/on builds omit the
+    probe object; probe-on builds emit 24 `sched_exec_lp_*` measurement
+    symbols for `sched_entity`, `cfs_rq`, `rq`, and `task_struct` layout.
+    validation/0197 records patch replay, checkpatch with 0 errors and one
+    accepted MAINTAINERS warning, normal-build absence checks, probe-on build,
+    and symbol extraction. Runtime behavior, future min-pickable fields,
+    runtime denial correctness, runtime coverage, protection, cost, deployment,
+    and datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
