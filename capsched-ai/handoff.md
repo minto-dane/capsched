@@ -5260,3 +5260,37 @@ P5A-R2 0013 layout table:
   Next:
     disabled-overhead comparison for normal CONFIG off/on builds. Keep it
     separate from the explicit probe build.
+
+P5A-R2 0013 disabled-overhead boundary:
+  Validation/0199 is complete.
+
+  Run:
+    `20260705T-p5a-r2-0013-disabled-overhead`
+
+  Result:
+    changed_files_only_probe_boundary: true
+    touched_existing_hot_or_lifecycle_file: false
+    layout_probe_default_n: true
+    layout_probe_selected_by_normal_config: false
+    normal_config_off_probe_object_absent: true
+    normal_config_on_probe_object_absent: true
+    normal_objects_with_probe_symbols: false
+    normal_object_count: 5
+    normal_object_ledger_sha256 `9e3b71bc4ac6d4db7095c3fde5db5cbe143595e8adc8b82418ee88f20ce5569a`
+
+  Boundary:
+    this is source/build-graph evidence, not a global performance benchmark and
+    not an object byte-identity claim. The reason is deliberate: object bytes
+    can vary with build paths and debug metadata, while the safety question for
+    0013 is whether the explicit probe enters normal scheduler builds. It does
+    not.
+
+  Still false:
+    performance improvement, hot-field approval, behavior patch approval,
+    runtime denial correctness, complete CFS deny-and-repick correctness,
+    runtime coverage, monitor enforcement, production protection, cost
+    efficiency, deployment readiness, datacenter readiness.
+
+  Next:
+    choose between one more evidence-only audit, or return to P5A-R2
+    source/model design for a future Fresh-summary selector patch.

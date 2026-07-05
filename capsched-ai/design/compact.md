@@ -4152,3 +4152,19 @@ P5A-R2 0013 layout table:
   Core rule:
     this is a baseline, not approval for hot fields or behavior. Next evidence
     should compare disabled-overhead for normal CONFIG off/on builds.
+
+P5A-R2 0013 disabled-overhead boundary:
+  Validation/0199 passed.
+
+  Result:
+    0013 changes only `init/Kconfig`, `kernel/sched/Makefile`, and
+    `kernel/sched/exec_lease_layout_probe.c`. It touches no existing hot
+    scheduler or lifecycle file. `CONFIG_SCHED_EXEC_LEASE_LAYOUT_PROBE` is
+    default n and not selected by normal `CONFIG_SCHED_EXEC_LEASE`. Normal
+    CONFIG off/on targeted scheduler object builds do not emit
+    `exec_lease_layout_probe.o` and contain no `sched_exec_lp_*` symbols.
+
+  Core rule:
+    this is source/build-graph evidence, not a performance benchmark and not
+    an object byte-identity claim. Performance/cost/protection claims remain
+    false.
