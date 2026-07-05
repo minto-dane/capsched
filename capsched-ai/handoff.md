@@ -5220,3 +5220,43 @@ P5A-R2 0013 layout probe:
     extract the 0013 probe symbols into a structured layout table and compare
     CONFIG off/on/probe object evidence before any P5A-R2 hot-field or behavior
     patch.
+
+P5A-R2 0013 layout table:
+  Validation/0198 is complete.
+
+  Run:
+    `20260705T-p5a-r2-0013-layout-table`
+
+  Structured result:
+    entries: 14
+    structs: 4
+    fields: 10
+    fields within containing structures: true
+    layout TSV sha256 `466349c5b78cf23d7cc996649372fa003fa82fbeaf89b7fd222ef244a9ae5523`
+    layout JSON sha256 `06bf37fdb4a1ef823f21887f1b61b1df14749dfcf1c7b63a11f52fc2994b97e7`
+
+  Baseline:
+    `sched_entity` size 320
+    `sched_entity.run_node` 16/24
+    `sched_entity.min_vruntime` 48/8
+    `sched_entity.vruntime` 120/8
+    `cfs_rq` size 384
+    `cfs_rq.tasks_timeline` 64/16
+    `cfs_rq.curr` 80/8
+    `cfs_rq.next` 88/8
+    `rq` size 3392
+    `rq.nr_running` 0/4
+    `rq.curr` 16/8
+    `rq.cfs` 128/384
+    `task_struct` size 3328
+    `task_struct.sched_exec` 1424/40
+
+  Still false:
+    hot-field approval, behavior patch approval, runtime denial correctness,
+    complete CFS deny-and-repick correctness, runtime coverage, monitor
+    enforcement, production protection, cost efficiency, deployment readiness,
+    datacenter readiness.
+
+  Next:
+    disabled-overhead comparison for normal CONFIG off/on builds. Keep it
+    separate from the explicit probe build.

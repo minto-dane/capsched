@@ -4131,3 +4131,24 @@ P5A-R2 0013 layout probe:
   Next:
     convert probe symbols into a structured layout table and disabled-overhead
     evidence before any P5A-R2 selector behavior patch.
+
+P5A-R2 0013 layout table:
+  Validation/0198 passed. The 0013 probe symbols are now a structured table.
+
+  Baseline:
+    `sched_entity` 320; `run_node` 16/24; `min_vruntime` 48/8;
+    `vruntime` 120/8.
+    `cfs_rq` 384; `tasks_timeline` 64/16; `curr` 80/8; `next` 88/8.
+    `rq` 3392; `nr_running` 0/4; `curr` 16/8; `cfs` 128/384.
+    `task_struct` 3328; `sched_exec` 1424/40.
+
+  Result:
+    14 entries, 4 structs, 10 fields, all fields within containing structures.
+    Layout TSV sha256
+    `466349c5b78cf23d7cc996649372fa003fa82fbeaf89b7fd222ef244a9ae5523`;
+    layout JSON sha256
+    `06bf37fdb4a1ef823f21887f1b61b1df14749dfcf1c7b63a11f52fc2994b97e7`.
+
+  Core rule:
+    this is a baseline, not approval for hot fields or behavior. Next evidence
+    should compare disabled-overhead for normal CONFIG off/on builds.
