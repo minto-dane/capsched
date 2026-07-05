@@ -158,6 +158,7 @@ Updated: 2026-07-04
 | 0150 | P5A-R2 selector patch-plan gate defined; 0012 fallback extension rejected for production | SchedExecLease P5A-R2 Selector Patch Plan |
 | 0151 | P5A-R2 minimal source sketch defined; EEVDF fresh-summary placement sketched without Linux patch approval | SchedExecLease P5A-R2 Minimal Source Sketch |
 | 0152 | P5A-R2 layout/overhead evidence plan defined; hot-field and cost claims gated before any behavior patch | SchedExecLease P5A-R2 Layout and Overhead Evidence Plan |
+| 0153 | P5A-R2 no-behavior layout probe patch plan defined; 0013 reserved for build-only probe infrastructure | SchedExecLease P5A-R2 Layout Probe Patch Plan |
 
 ## Planned Analysis Notes
 
@@ -276,3 +277,4 @@ Updated: 2026-07-04
 | `sched-exec-lease-p5a-r2-selector-patch-plan-v1.json` | P5A-R2 selector patch plan | Machine-readable source/design patch-plan gate rejecting production extension of 0012 fallback and requiring EEVDF-compatible fresh summaries, evidence gates, and non-claim flags |
 | `sched-exec-lease-p5a-r2-minimal-source-sketch-v1.json` | P5A-R2 minimal source sketch | Machine-readable minimal EEVDF fresh-summary sketch, source anchors, hot-layout evidence requirements, unsafe families, and non-claim flags |
 | `sched-exec-lease-p5a-r2-layout-overhead-evidence-plan-v1.json` | P5A-R2 layout/overhead evidence plan | Machine-readable evidence contract for layout probes, disabled overhead, object/function deltas, negative stale-summary tests, and non-claim flags |
+| `sched-exec-lease-p5a-r2-layout-probe-patch-plan-v1.json` | P5A-R2 layout probe patch plan | Machine-readable no-behavior 0013 probe-patch contract, source anchors, absence checks, measurement requirements, and non-claim flags |

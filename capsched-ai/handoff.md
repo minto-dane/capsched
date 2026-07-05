@@ -5141,3 +5141,41 @@ P5A-R2 layout/overhead evidence plan:
   Next:
     no-behavior layout probe plan or patch for `sched_entity`, `cfs_rq`, `rq`,
     and `task_struct` measurement before any behavior patch.
+
+P5A-R2 layout probe patch plan:
+  Analysis/0153, formal/0120, and validation/0196 are complete.
+
+  Validation result:
+    RUN_ID `20260705T-p5a-r2-layout-probe-patch-plan`
+    Linux commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    Linux tree `25dbe4e04baa112ab9a872a897f67bec094df209`
+    source anchors: 32 checked, 0 missing, 0 line drift
+    absence failures: 0
+    patch_slot_free: true
+    internal_probe_need_observed: true
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe configs: 31 expected counterexamples
+
+  Core rule:
+    Future patch `0013` may be drafted only as no-behavior build-only layout
+    probe infrastructure. It must default off, must not be selected by
+    `CONFIG_SCHED_EXEC_LEASE`, must not build the probe object in normal
+    CONFIG off/on builds, and must not add runtime call sites, public ABI, trace
+    ABI, exported symbols, monitor calls, or policy lookup.
+
+  Key design fact:
+    `task_struct` can be measured by the existing external module probe, but
+    `struct cfs_rq` and `struct rq` are scheduler-internal types in
+    `kernel/sched/sched.h`. A future full layout probe therefore needs a
+    scheduler-internal build-only object or equivalent in-tree build probe.
+
+  Still false:
+    behavior patch approval, new hot fields, runtime denial correctness,
+    complete CFS deny-and-repick correctness, runtime coverage, monitor
+    enforcement, production protection, cost efficiency, deployment readiness,
+    datacenter readiness.
+
+  Next:
+    draft Linux patch `0013` within the no-behavior layout probe scope, then run
+    replay, CONFIG off/on normal-build absence checks, probe-on build, symbol
+    extraction, source-shape checks, security review, and upstream replay.

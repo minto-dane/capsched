@@ -201,6 +201,7 @@ Updated: 2026-07-04
 | 0193 | Source/design/formal patch-plan gate passed; 0012 fallback extension rejected and 30 unsafe families counterexampled | SchedExecLease P5A-R2 Selector Patch Plan |
 | 0194 | Source/design/formal sketch gate passed; 36 anchors checked and 32 unsafe families counterexampled | SchedExecLease P5A-R2 Minimal Source Sketch |
 | 0195 | Source/formal evidence-plan gate passed; 40 anchors checked, future hot fields absent, and 36 unsafe families counterexampled | SchedExecLease P5A-R2 Layout and Overhead Evidence Plan |
+| 0196 | Source/formal patch-plan gate passed; 0013 slot reserved for no-behavior layout probe and 31 unsafe families counterexampled | SchedExecLease P5A-R2 Layout Probe Patch Plan |
 
 ## Principles
 

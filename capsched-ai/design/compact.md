@@ -4087,3 +4087,23 @@ P5A-R2 layout/overhead evidence plan:
   Next:
     no-behavior layout probe plan or patch before any hot field or behavior
     patch. Linux patch approval remains false.
+
+P5A-R2 layout probe patch plan:
+  Validation/0196 passed. Analysis/0153 and formal/0120 reserve `0013` for a
+  no-behavior layout probe patch only.
+
+  Result:
+    32 source anchors checked with 0 missing and 0 line drift. Absence checks
+    found no layout-probe config/object and no P5A-R2 summary field in the
+    current Linux tree. Safe TLC passed with 6 generated states, 5 distinct
+    states, depth 5; 31 unsafe configs produced expected counterexamples.
+
+  Core rule:
+    `0013` may be drafted as default-off build-only probe infrastructure. It
+    must not be selected by normal `CONFIG_SCHED_EXEC_LEASE`, must not add
+    runtime call sites, and must not create ABI/exported-symbol/monitor/policy
+    surfaces.
+
+  Next:
+    draft `0013` within this probe-only scope. Behavior patch approval remains
+    false.

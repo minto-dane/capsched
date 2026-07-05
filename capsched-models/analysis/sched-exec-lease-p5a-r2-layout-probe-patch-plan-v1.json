@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-layout-probe-patch-plan-v1",
+  "date": "2026-07-05",
+  "status": "layout_probe_patch_plan_no_linux_patch_created",
+  "source_basis": {
+    "linux_commit": "bd71af5daeae808ac948cbd12af2663151936f22",
+    "linux_commit_short": "bd71af5daeae8",
+    "local_tree": "25dbe4e04baa112ab9a872a897f67bec094df209",
+    "prior_validation": "validation/0195-sched-exec-lease-p5a-r2-layout-overhead-evidence-plan.md",
+    "prior_evidence_plan": "analysis/0152-sched-exec-lease-p5a-r2-layout-overhead-evidence-plan.md",
+    "reason": "P5A-R2 needs no-behavior layout evidence before adding hot picker-visible summary fields"
+  },
+  "candidate_patch_plan": {
+    "next_patch_slot": "0013",
+    "linux_patch_created": false,
+    "linux_patch_approved": false,
+    "behavior_change_allowed": false,
+    "allowed_linux_paths": [
+      "init/Kconfig",
+      "kernel/sched/Makefile",
+      "kernel/sched/exec_lease_layout_probe.c"
+    ],
+    "normal_config_modes_must_not_build_probe": true,
+    "probe_config_must_default_n": true,
+    "main_config_must_not_select_probe": true,
+    "runtime_callsite_change_allowed": false
+  },
+  "probe_contract": {
+    "probe_kind": "scheduler_internal_build_only_object_or_equivalent_in_tree_probe",
+    "external_module_only_is_insufficient": true,
+    "reason_external_module_only_insufficient": "struct cfs_rq and struct rq are defined in kernel/sched/sched.h, not as public external-module layout types",
+    "normal_config_off_probe_object_absent": true,
+    "normal_config_on_probe_object_absent": true,
+    "probe_on_build_object_present": true,
+    "symbols_non_exported": true,
+    "public_abi": false,
+    "trace_abi": false,
+    "monitor_abi": false,
+    "runtime_behavior": false
+  },
+  "required_measurements": {
+    "sched_entity_size": true,
+    "sched_entity_run_node_offset_size": true,
+    "sched_entity_min_vruntime_offset_size": true,
+    "sched_entity_vruntime_offset_size": true,
+    "cfs_rq_size": true,
+    "cfs_rq_tasks_timeline_offset_size": true,
+    "cfs_rq_curr_offset_size": true,
+    "cfs_rq_next_offset_size": true,
+    "rq_size": true,
+    "rq_nr_running_offset_size": true,
+    "rq_curr_or_donor_curr_offset_size": true,
+    "rq_cfs_offset_size": true,
+    "task_struct_size": true,
+    "task_struct_sched_exec_offset_size_when_enabled": true
+  },
+  "required_validation_after_patch": {
+    "patch_queue_replay": true,
+    "config_off_normal_build": true,
+    "config_on_normal_build": true,
+    "probe_on_build": true,
+    "symbol_table_extraction": true,
+    "normal_build_probe_object_absence": true,
+    "normal_build_runtime_function_absence": true,
+    "source_shape_no_runtime_callsite_change": true,
+    "checkpatch_or_style_exception": true,
+    "security_review": true,
+    "upstream_replay": true
+  },
+  "source_anchors": [
+    {
+      "id": "prior_validation_source_anchor_count",
+      "path": "capsched/capsched-models/validation/0195-sched-exec-lease-p5a-r2-layout-overhead-evidence-plan.md",
+      "expected_line": 32,
+      "pattern": "source_anchor_count: 40"
+    },
+    {
+      "id": "prior_layout_probe_requirements",
+      "path": "capsched/capsched-models/analysis/0152-sched-exec-lease-p5a-r2-layout-overhead-evidence-plan.md",
+      "expected_line": 53,
+      "pattern": "A future P5A-R2 candidate that touches hot layout"
+    },
+    {
+      "id": "prior_future_probe_design",
+      "path": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r2-layout-overhead-evidence-plan-v1.json",
+      "expected_line": 394,
+      "pattern": "build-only sched_entity/cfs_rq/rq layout probe design"
+    },
+    {
+      "id": "kconfig_scheduler_features",
+      "path": "linux/init/Kconfig",
+      "expected_line": 882,
+      "pattern": "menu \"Scheduler features\""
+    },
+    {
+      "id": "kconfig_sched_exec_lease",
+      "path": "linux/init/Kconfig",
+      "expected_line": 884,
+      "pattern": "config SCHED_EXEC_LEASE"
+    },
+    {
+      "id": "kconfig_sched_exec_lease_default",
+      "path": "linux/init/Kconfig",
+      "symbol": "config SCHED_EXEC_LEASE",
+      "expected_line": 887,
+      "pattern": "default n"
+    },
+    {
+      "id": "kconfig_deny_test_existing",
+      "path": "linux/init/Kconfig",
+      "expected_line": 896,
+      "pattern": "config SCHED_EXEC_LEASE_CFS_DENY_TEST"
+    },
+    {
+      "id": "makefile_exec_lease_object",
+      "path": "linux/kernel/sched/Makefile",
+      "expected_line": 43,
+      "pattern": "obj-$(CONFIG_SCHED_EXEC_LEASE) += exec_lease.o"
+    },
+    {
+      "id": "header_nonclaim",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "expected_line": 11,
+      "pattern": "CONFIG_SCHED_EXEC_LEASE does not currently enforce execution leases"
+    },
+    {
+      "id": "header_enabled_helper",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "expected_line": 104,
+      "pattern": "static inline bool sched_exec_lease_enabled"
+    },
+    {
+      "id": "exec_lease_inert_translation_unit",
+      "path": "linux/kernel/sched/exec_lease.c",
+      "expected_line": 5,
+      "pattern": "This translation unit is intentionally inert"
+    },
+    {
+      "id": "exec_lease_allow_all_validation",
+      "path": "linux/kernel/sched/exec_lease.c",
+      "expected_line": 77,
+      "pattern": "sched_exec_allow_all_validation"
+    },
+    {
+      "id": "task_struct_sched_exec_gate",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 976,
+      "pattern": "#ifdef CONFIG_SCHED_EXEC_LEASE"
+    },
+    {
+      "id": "task_struct_sched_exec_field",
+      "path": "linux/include/linux/sched.h",
+      "symbol": "#ifdef CONFIG_SCHED_EXEC_LEASE",
+      "expected_line": 977,
+      "pattern": "struct sched_exec_task"
+    },
+    {
+      "id": "sched_entity_layout",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 576,
+      "pattern": "struct sched_entity {"
+    },
+    {
+      "id": "sched_entity_run_node",
+      "path": "linux/include/linux/sched.h",
+      "symbol": "struct sched_entity {",
+      "expected_line": 579,
+      "pattern": "struct rb_node"
+    },
+    {
+      "id": "sched_entity_min_vruntime",
+      "path": "linux/include/linux/sched.h",
+      "symbol": "struct sched_entity {",
+      "expected_line": 581,
+      "pattern": "min_vruntime"
+    },
+    {
+      "id": "sched_entity_vruntime",
+      "path": "linux/include/linux/sched.h",
+      "symbol": "sum_exec_runtime",
+      "expected_line": 595,
+      "pattern": "vruntime"
+    },
+    {
+      "id": "sched_entity_parent",
+      "path": "linux/include/linux/sched.h",
+      "symbol": "struct sched_entity {",
+      "expected_line": 606,
+      "pattern": "*parent"
+    },
+    {
+      "id": "cfs_rq_layout",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 680,
+      "pattern": "struct cfs_rq {"
+    },
+    {
+      "id": "cfs_rq_tasks_timeline",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct cfs_rq {",
+      "expected_line": 697,
+      "pattern": "tasks_timeline"
+    },
+    {
+      "id": "cfs_rq_curr",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct cfs_rq {",
+      "expected_line": 703,
+      "pattern": "*curr"
+    },
+    {
+      "id": "cfs_rq_next",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct cfs_rq {",
+      "expected_line": 704,
+      "pattern": "*next"
+    },
+    {
+      "id": "rq_layout",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 1135,
+      "pattern": "struct rq {"
+    },
+    {
+      "id": "rq_hot_loop_comment",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct rq {",
+      "expected_line": 1138,
+      "pattern": "extremely hot loop"
+    },
+    {
+      "id": "rq_nr_running",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct rq {",
+      "expected_line": 1144,
+      "pattern": "nr_running"
+    },
+    {
+      "id": "rq_curr_union",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct rq {",
+      "expected_line": 1153,
+      "pattern": "*curr"
+    },
+    {
+      "id": "rq_cfs",
+      "path": "linux/kernel/sched/sched.h",
+      "symbol": "struct rq {",
+      "expected_line": 1187,
+      "pattern": "struct cfs_rq"
+    },
+    {
+      "id": "task_layout_probe_size",
+      "path": "capsched/capsched-models/validation/run-sched-exec-lease-task-layout-probe.sh",
+      "symbol": "cat > \"$dir/sched_exec_layout_probe.c\" <<'EOF'",
+      "expected_line": 56,
+      "pattern": "sched_exec_task_struct_size_probe"
+    },
+    {
+      "id": "task_layout_probe_offset",
+      "path": "capsched/capsched-models/validation/run-sched-exec-lease-task-layout-probe.sh",
+      "symbol": "cat > \"$dir/sched_exec_layout_probe.c\" <<'EOF'",
+      "expected_line": 59,
+      "pattern": "sched_exec_field_offset_plus_one_probe"
+    },
+    {
+      "id": "task_layout_probe_field_size",
+      "path": "capsched/capsched-models/validation/run-sched-exec-lease-task-layout-probe.sh",
+      "symbol": "cat > \"$dir/sched_exec_layout_probe.c\" <<'EOF'",
+      "expected_line": 62,
+      "pattern": "sched_exec_field_size_probe"
+    },
+    {
+      "id": "patch_queue_current_tail",
+      "path": "linux-patches/patches/capsched-linux-l0/series",
+      "expected_line": 12,
+      "pattern": "0012-sched-fair-Force-exec-lease-pickable-CFS-progress.patch"
+    }
+  ],
+  "absence_checks": [
+    {
+      "id": "no_layout_probe_config_yet",
+      "paths": [
+        "linux/init/Kconfig"
+      ],
+      "forbidden_patterns": [
+        "SCHED_EXEC_LEASE_LAYOUT_PROBE"
+      ]
+    },
+    {
+      "id": "no_layout_probe_object_yet",
+      "paths": [
+        "linux/kernel/sched/Makefile",
+        "linux/kernel/sched"
+      ],
+      "forbidden_patterns": [
+        "exec_lease_layout_probe",
+        "layout_probe.o"
+      ]
+    },
+    {
+      "id": "no_p5a_r2_summary_field_yet",
+      "paths": [
+        "linux/include/linux",
+        "linux/kernel/sched"
+      ],
+      "forbidden_patterns": [
+        "sched_exec_min_pickable",
+        "min_pickable_vruntime",
+        "pickable_vruntime"
+      ]
+    }
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0120-p5a-r2-layout-probe-patch-plan-model",
+    "model": "P5AR2LayoutProbePatchPlan.tla",
+    "safe_cfg": "P5AR2LayoutProbePatchPlanSafe.cfg",
+    "safe_expected_states_generated": 6,
+    "safe_expected_distinct_states": 5,
+    "safe_expected_depth": 5,
+    "unsafe_cfg_count": 31,
+    "unsafe_expected_counterexamples": 31
+  },
+  "safety_flags": {
+    "linux_patch_created": false,
+    "linux_patch_approved": false,
+    "behavior_change_approved": false,
+    "runtime_callsite_added": false,
+    "new_hot_field_approved": false,
+    "runtime_denial_correctness": false,
+    "complete_cfs_deny_and_repick": false,
+    "runtime_coverage": false,
+    "public_abi": false,
+    "trace_abi": false,
+    "exported_symbol": false,
+    "monitor_call": false,
+    "policy_lookup": false,
+    "accept_0009_0012": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  },
+  "next": {
+    "name": "P5A-R2 0013 no-behavior layout probe patch draft",
+    "linux_patch_allowed_after_this_gate": true,
+    "linux_patch_allowed_scope": "no-behavior build-only layout probe infrastructure",
+    "behavior_patch_allowed_after_this_gate": false
+  }
+}
