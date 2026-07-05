@@ -4067,3 +4067,23 @@ P5A-R2 minimal source sketch:
   Next:
     object/layout and disabled-overhead evidence plan before any hot field or
     Linux behavior patch.
+
+P5A-R2 layout/overhead evidence plan:
+  Validation/0195 passed. Analysis/0152 and formal/0119 define the evidence
+  contract.
+
+  Result:
+    40 source anchors checked with 0 missing and 0 line drift. Future P5A-R2
+    hot summary fields are absent in the current Linux tree. Safe TLC passed
+    with 6 generated states, 5 distinct states, depth 5; 36 unsafe configs
+    produced expected counterexamples.
+
+  Core rule:
+    future P5A-R2 work must separate CONFIG=n, CONFIG=y selector-disabled,
+    CONFIG=y candidate-enabled, runtime negative, benchmark/perf, security,
+    QEMU, and upstream replay evidence. Build/object/layout evidence cannot
+    support runtime protection, cost, deployment, or datacenter claims.
+
+  Next:
+    no-behavior layout probe plan or patch before any hot field or behavior
+    patch. Linux patch approval remains false.

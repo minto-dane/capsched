@@ -5106,3 +5106,38 @@ P5A-R2 minimal source sketch:
   Next:
     P5A-R2 object/layout and disabled-overhead evidence plan for possible
     `sched_entity` / `cfs_rq` summary fields and affected hot functions.
+
+P5A-R2 layout/overhead evidence plan:
+  Analysis/0152, formal/0119, and validation/0195 are complete.
+
+  Validation result:
+    RUN_ID `20260704T-p5a-r2-layout-overhead-evidence-plan`
+    Linux commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    Linux tree `25dbe4e04baa112ab9a872a897f67bec094df209`
+    source anchors: 40 checked, 0 missing, 0 line drift
+    future P5A-R2 fields absent: true
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe configs: 36 expected counterexamples
+
+  Core rule:
+    before any P5A-R2 hot summary field or CFS/EEVDF behavior patch, evidence
+    must be split across CONFIG=n, CONFIG=y selector-disabled,
+    CONFIG=y candidate-enabled, runtime negative tests, benchmark/perf claims,
+    security review, QEMU coverage, and upstream replay. Object/layout evidence
+    is not runtime or protection evidence.
+
+  Rejected:
+    accepting 0009-0012 as production, extending the 0012 fallback, unbounded
+    rb_next scanning, public ABI/trace ABI/exported symbols, monitor calls or
+    policy lookup in the picker, and production/cost/datacenter claims from
+    build evidence.
+
+  Still false:
+    Linux patch approval, new hot fields, runtime denial correctness, complete
+    CFS deny-and-repick correctness, runtime coverage, monitor enforcement,
+    production protection, cost efficiency, deployment readiness, datacenter
+    readiness.
+
+  Next:
+    no-behavior layout probe plan or patch for `sched_entity`, `cfs_rq`, `rq`,
+    and `task_struct` measurement before any behavior patch.
