@@ -199,6 +199,7 @@ Updated: 2026-07-04
 | 0191 | Source/design/formal gate passed; 41 invalidation source anchors mapped and enqueue/dequeue-only freshness rejected | SchedExecLease P5A-R2 Invalidation Source Map |
 | 0192 | Semantics/formal gate passed; stale/refreshing/blocked summaries rejected as picker proof and 23 unsafe families counterexampled | SchedExecLease P5A-R2 Invalidation Semantics Gate |
 | 0193 | Source/design/formal patch-plan gate passed; 0012 fallback extension rejected and 30 unsafe families counterexampled | SchedExecLease P5A-R2 Selector Patch Plan |
+| 0194 | Source/design/formal sketch gate passed; 36 anchors checked and 32 unsafe families counterexampled | SchedExecLease P5A-R2 Minimal Source Sketch |
 
 ## Principles
 

@@ -5071,3 +5071,38 @@ P5A-R2 selector patch plan:
   Next:
     minimal P5A-R2 source sketch plus object/layout, disabled-overhead, and
     negative stale-summary runtime validation requirements.
+
+P5A-R2 minimal source sketch:
+  Analysis/0151, formal/0118, and validation/0194 are complete.
+
+  Validation result:
+    RUN_ID `20260704T-p5a-r2-minimal-source-sketch-r2`
+    Linux commit `bd71af5daeae808ac948cbd12af2663151936f22`
+    Linux tree `25dbe4e04baa112ab9a872a897f67bec094df209`
+    source anchors: 36 checked, 0 missing, 0 line drift
+    safe TLC: 6 generated states, 5 distinct states, depth 5
+    unsafe configs: 32 expected counterexamples
+
+  Core sketch:
+    future P5A-R2 should piggyback existing EEVDF rb-tree augmentation and add
+    a `min_pickable_vruntime`-style Fresh summary with a U64_MAX-style sentinel.
+    Task entities expose `se->vruntime` only when Fresh and allowed. Group
+    entities expose their `se->vruntime` only when their child `cfs_rq` has a
+    Fresh pickable descendant. `curr` remains outside the rb-tree summary and
+    needs a separate Fresh check.
+
+  Rejected:
+    separate eligible tree, boolean-only summary, extending the `0012`
+    post-filter fallback, unbounded rb_next scan, pick-time policy lookup,
+    monitor call in picker, synthetic task->comm authority, group parent
+    pickable without child Fresh descendant, stale curr shortcut.
+
+  Still false:
+    Linux patch approval, new hot fields, 0009-0012 acceptance, runtime denial
+    correctness, complete CFS deny-and-repick correctness, runtime coverage,
+    monitor enforcement, production protection, cost efficiency, deployment
+    readiness, datacenter readiness.
+
+  Next:
+    P5A-R2 object/layout and disabled-overhead evidence plan for possible
+    `sched_entity` / `cfs_rq` summary fields and affected hot functions.

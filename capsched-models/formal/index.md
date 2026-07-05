@@ -123,6 +123,7 @@ Updated: 2026-07-04
 | 0115 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Invalidation Source Map Model |
 | 0116 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Invalidation Semantics Gate Model |
 | 0117 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Selector Patch Plan Model |
+| 0118 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Minimal Source Sketch Model |
 
 ## Planned
 

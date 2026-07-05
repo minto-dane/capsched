@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-minimal-source-sketch-v1",
+  "date": "2026-07-04",
+  "status": "source_sketch_no_linux_patch_approved",
+  "source_basis": {
+    "linux_commit": "bd71af5daeae808ac948cbd12af2663151936f22",
+    "linux_commit_short": "bd71af5daeae8",
+    "local_tree": "25dbe4e04baa112ab9a872a897f67bec094df209",
+    "prior_validation": "validation/0193-sched-exec-lease-p5a-r2-selector-patch-plan.md",
+    "reason": "P5A-R2 needs a minimal fresh-summary source sketch before any behavior patch or hot-layout proposal"
+  },
+  "source_anchors": [
+    {
+      "id": "sched_exec_task_shadow",
+      "path": "linux/include/linux/sched_exec_lease.h",
+      "expected_line": 67,
+      "pattern": "struct sched_exec_task {"
+    },
+    {
+      "id": "task_sched_exec_field",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 977,
+      "pattern": "struct sched_exec_task"
+    },
+    {
+      "id": "sched_exec_lease_placeholder",
+      "path": "linux/kernel/sched/exec_lease.c",
+      "expected_line": 69,
+      "pattern": "struct sched_exec_lease {"
+    },
+    {
+      "id": "entity_eligible",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 940,
+      "pattern": "int entity_eligible"
+    },
+    {
+      "id": "test_only_comm_denial",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 962,
+      "pattern": "sched_exec_cfs_test_denies"
+    },
+    {
+      "id": "experimental_candidate_validator",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1085,
+      "pattern": "sched_exec_cfs_validate_candidate"
+    },
+    {
+      "id": "eevdf_min_vruntime_update",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1246,
+      "pattern": "static inline void __min_vruntime_update"
+    },
+    {
+      "id": "eevdf_augmented_callbacks",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1301,
+      "pattern": "RB_DECLARE_CALLBACKS(static, min_vruntime_cb"
+    },
+    {
+      "id": "eevdf_enqueue_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1307,
+      "pattern": "static void __enqueue_entity"
+    },
+    {
+      "id": "eevdf_dequeue_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1316,
+      "pattern": "static void __dequeue_entity"
+    },
+    {
+      "id": "experimental_pickable_scan",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1344,
+      "pattern": "sched_exec_cfs_pickable_scan"
+    },
+    {
+      "id": "experimental_pickable_scan_rb_next",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1352,
+      "pattern": "node = rb_next(node)) {"
+    },
+    {
+      "id": "experimental_pickable_fallback",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1369,
+      "pattern": "sched_exec_cfs_pickable_fallback"
+    },
+    {
+      "id": "pick_eevdf",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1450,
+      "pattern": "pick_eevdf"
+    },
+    {
+      "id": "eevdf_single_entity_return",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1462,
+      "pattern": "if (cfs_rq->nr_queued == 1)"
+    },
+    {
+      "id": "eevdf_heap_search",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1494,
+      "pattern": "while (node)"
+    },
+    {
+      "id": "experimental_fallback_call",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 1523,
+      "pattern": "best = sched_exec_cfs_pickable_fallback"
+    },
+    {
+      "id": "sched_entity_layout",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 576,
+      "pattern": "struct sched_entity {"
+    },
+    {
+      "id": "sched_entity_min_vruntime",
+      "path": "linux/include/linux/sched.h",
+      "expected_line": 581,
+      "pattern": "min_vruntime"
+    },
+    {
+      "id": "cfs_rq_layout",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 680,
+      "pattern": "struct cfs_rq {"
+    },
+    {
+      "id": "cfs_tasks_timeline",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 697,
+      "pattern": "tasks_timeline"
+    },
+    {
+      "id": "cfs_curr",
+      "path": "linux/kernel/sched/sched.h",
+      "expected_line": 703,
+      "pattern": "*curr"
+    },
+    {
+      "id": "pick_next_entity",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 6702,
+      "pattern": "pick_next_entity"
+    },
+    {
+      "id": "pick_next_entity_eevdf_call",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 6707,
+      "symbol": "pick_next_entity",
+      "pattern": "se = pick_eevdf"
+    },
+    {
+      "id": "pick_next_entity_delayed_dequeue",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 6710,
+      "symbol": "pick_next_entity",
+      "pattern": "if (se->sched_delayed)"
+    },
+    {
+      "id": "put_prev_entity_reenqueue_current",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 6733,
+      "symbol": "put_prev_entity",
+      "pattern": "__enqueue_entity(cfs_rq, prev)"
+    },
+    {
+      "id": "__pick_task_fair",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10244,
+      "pattern": "__pick_task_fair"
+    },
+    {
+      "id": "pick_task_current_update",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10265,
+      "symbol": "__pick_task_fair",
+      "pattern": "if (cfs_rq->curr && cfs_rq->curr->on_rq)"
+    },
+    {
+      "id": "pick_task_group_descent",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10281,
+      "symbol": "__pick_task_fair",
+      "pattern": "cfs_rq = group_cfs_rq(se)"
+    },
+    {
+      "id": "pick_task_leaf",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10284,
+      "symbol": "__pick_task_fair",
+      "pattern": "p = task_of(se)"
+    },
+    {
+      "id": "late_candidate_validation",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10285,
+      "symbol": "__pick_task_fair",
+      "pattern": "sched_exec_cfs_validate_candidate(sched_exec_pick, p)"
+    },
+    {
+      "id": "newidle_balance_boundary",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10302,
+      "symbol": "__pick_task_fair",
+      "pattern": "new_tasks = sched_balance_newidle"
+    },
+    {
+      "id": "sched_exec_pick_entry",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10317,
+      "pattern": "pick_task_fair_sched_exec_lease"
+    },
+    {
+      "id": "fair_server_plain_pick",
+      "path": "linux/kernel/sched/fair.c",
+      "expected_line": 10330,
+      "pattern": "return pick_task_fair(dl_se->rq, rf)"
+    },
+    {
+      "id": "ordinary_cfs_direct_pick",
+      "path": "linux/kernel/sched/core.c",
+      "expected_line": 6149,
+      "pattern": "p = pick_task_fair_sched_exec_lease"
+    },
+    {
+      "id": "p4_late_run_edge",
+      "path": "linux/kernel/sched/core.c",
+      "expected_line": 7199,
+      "pattern": "sched_exec_lease_validate_run_edge"
+    }
+  ],
+  "minimal_sketch": {
+    "prior_patch_plan_passed": true,
+    "source_basis_fresh": true,
+    "no_linux_patch_approved": true,
+    "piggyback_existing_eevdf_augmentation": true,
+    "single_timeline_only": true,
+    "separate_eligible_tree_rejected": true,
+    "min_pickable_leaf_sentinel": true,
+    "subtree_min_pickable_aggregate": true,
+    "eevdf_pruning_preserved": true,
+    "boolean_summary_rejected": true,
+    "post_filter_fallback_rejected": true,
+    "unbounded_scan_rejected": true,
+    "fresh_only_picker_proof": true,
+    "stale_refreshing_blocked_fail_closed": true,
+    "current_entity_separate": true,
+    "group_descendant_propagation_required": true,
+    "leaf_invalidation_planned": true,
+    "monitor_receipt_placeholder_preserved": true,
+    "generation_epoch_refresh_required": true,
+    "budget_affinity_refresh_required": true,
+    "no_pick_time_policy_lookup": true,
+    "no_monitor_call_in_picker": true,
+    "synthetic_comm_authority_rejected": true,
+    "accounting_separated": true,
+    "cross_path_boundary_recorded": true,
+    "hot_layout_conditional_only": true,
+    "object_layout_plan_required": true,
+    "disabled_overhead_plan_required": true,
+    "hot_function_size_plan_required": true,
+    "benchmark_plan_required": true,
+    "negative_stale_summary_tests_required": true,
+    "qemu_runtime_plan_required": true,
+    "upstream_replay_required": true,
+    "security_review_required": true
+  },
+  "field_sketch": {
+    "names_are_provisional": true,
+    "sentinel": "SCHED_EXEC_PICKABLE_NONE = U64_MAX",
+    "possible_sched_entity_field": "u64 sched_exec_min_pickable_vruntime",
+    "task_entity_leaf_rule": "Fresh and allowed maps to se->vruntime; otherwise sentinel",
+    "group_entity_leaf_rule": "child cfs_rq with Fresh pickable descendant maps to group se->vruntime; otherwise sentinel",
+    "current_entity_rule": "curr is checked separately because it is not represented by the rb-tree summary",
+    "approval_status": "not_approved_without_layout_evidence"
+  },
+  "unsafe_families": [
+    "missing_prior_patch_plan",
+    "missing_source_basis",
+    "linux_patch_approved",
+    "missing_eevdf_piggyback",
+    "missing_single_timeline",
+    "separate_tree",
+    "missing_leaf_sentinel",
+    "missing_subtree_aggregate",
+    "missing_eevdf_pruning",
+    "boolean_summary",
+    "post_filter_extension",
+    "unbounded_scan",
+    "picker_trusts_non_fresh",
+    "missing_fail_closed",
+    "current_tree_collapse",
+    "missing_group_descendant_propagation",
+    "missing_leaf_invalidation",
+    "missing_monitor_receipt_placeholder",
+    "missing_generation_epoch_refresh",
+    "missing_budget_affinity_refresh",
+    "pick_time_policy_lookup",
+    "monitor_call_in_picker",
+    "synthetic_comm_authority",
+    "missing_accounting_separation",
+    "missing_cross_path_boundary",
+    "hot_layout_unconditional",
+    "missing_object_layout_plan",
+    "missing_disabled_overhead_plan",
+    "missing_hot_function_size_plan",
+    "missing_negative_tests",
+    "missing_upstream_security_review",
+    "runtime_protection_cost_datacenter_claim"
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0118-p5a-r2-minimal-source-sketch-model",
+    "model": "P5AR2MinimalSourceSketch.tla",
+    "safe_cfg": "P5AR2MinimalSourceSketchSafe.cfg",
+    "safe_expected_states_generated": 6,
+    "safe_expected_distinct_states": 5,
+    "safe_expected_depth": 5,
+    "unsafe_cfg_count": 32,
+    "unsafe_expected_counterexamples": 32
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "accept_0009_0012": false,
+    "runtime_denial_correctness": false,
+    "complete_cfs_deny_and_repick": false,
+    "runtime_coverage": false,
+    "hot_layout_change_approved": false,
+    "public_abi": false,
+    "public_trace_abi": false,
+    "exported_symbol": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  },
+  "next": {
+    "name": "P5A-R2 object/layout and disabled-overhead evidence plan",
+    "linux_patch_allowed_after_this_gate": false,
+    "future_work": [
+      "layout evidence plan for sched_entity/cfs_rq/task_struct",
+      "hot function-size evidence plan for pick_eevdf and update callbacks",
+      "negative stale-summary runtime test plan"
+    ]
+  }
+}

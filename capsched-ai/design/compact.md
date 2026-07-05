@@ -4042,3 +4042,28 @@ P5A-R2 selector patch plan:
   Next:
     minimal source sketch for the fresh-summary placement and invalidation
     plumbing. Linux patch approval remains false.
+
+P5A-R2 minimal source sketch:
+  Validation/0194 passed. Analysis/0151 and formal/0118 define the source
+  sketch.
+
+  Result:
+    36 source anchors checked with 0 missing and 0 line drift. Safe TLC passed
+    with 6 generated states, 5 distinct states, depth 5; 32 unsafe configs
+    produced expected counterexamples.
+
+  Core rule:
+    future P5A-R2 should piggyback the existing EEVDF augmented rb-tree with a
+    `min_pickable_vruntime`-style Fresh summary and U64_MAX-style sentinel.
+    Task entities expose their `vruntime` only when Fresh and allowed; group
+    entities expose their `vruntime` only when their child `cfs_rq` has a Fresh
+    pickable descendant; `curr` is checked separately.
+
+  Rejected:
+    separate eligible tree, boolean-only summary, extending `0012`, unbounded
+    rb_next scan, pick-time policy lookup, monitor calls in picker, and
+    synthetic task->comm authority.
+
+  Next:
+    object/layout and disabled-overhead evidence plan before any hot field or
+    Linux behavior patch.

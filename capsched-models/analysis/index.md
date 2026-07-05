@@ -156,6 +156,7 @@ Updated: 2026-07-04
 | 0148 | P5A-R2 invalidation source map defined; enqueue/dequeue-only summary freshness rejected | SchedExecLease P5A-R2 Invalidation Source Map |
 | 0149 | P5A-R2 invalidation semantics gate defined; stale/refreshing/blocked summaries cannot be picker proof | SchedExecLease P5A-R2 Invalidation Semantics Gate |
 | 0150 | P5A-R2 selector patch-plan gate defined; 0012 fallback extension rejected for production | SchedExecLease P5A-R2 Selector Patch Plan |
+| 0151 | P5A-R2 minimal source sketch defined; EEVDF fresh-summary placement sketched without Linux patch approval | SchedExecLease P5A-R2 Minimal Source Sketch |
 
 ## Planned Analysis Notes
 
@@ -272,3 +273,4 @@ Updated: 2026-07-04
 | `sched-exec-lease-p5a-r2-invalidation-source-map-v1.json` | P5A-R2 invalidation source map | Machine-readable Linux source anchors for lifecycle, affinity, migration, group, cpuset, budget, current, and future monitor receipt invalidation families |
 | `sched-exec-lease-p5a-r2-invalidation-semantics-gate-v1.json` | P5A-R2 invalidation semantics gate | Machine-readable Fresh/Stale/Refreshing/Blocked summary semantics, propagation rules, refresh preconditions, picker trust rules, unsafe families, and non-claim flags |
 | `sched-exec-lease-p5a-r2-selector-patch-plan-v1.json` | P5A-R2 selector patch plan | Machine-readable source/design patch-plan gate rejecting production extension of 0012 fallback and requiring EEVDF-compatible fresh summaries, evidence gates, and non-claim flags |
+| `sched-exec-lease-p5a-r2-minimal-source-sketch-v1.json` | P5A-R2 minimal source sketch | Machine-readable minimal EEVDF fresh-summary sketch, source anchors, hot-layout evidence requirements, unsafe families, and non-claim flags |
