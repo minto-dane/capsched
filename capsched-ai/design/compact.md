@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-04
+Updated: 2026-07-13
 
 ## Project
 
@@ -4168,3 +4168,117 @@ P5A-R2 0013 disabled-overhead boundary:
     this is source/build-graph evidence, not a performance benchmark and not
     an object byte-identity claim. Performance/cost/protection claims remain
     false.
+
+P5A-R2 vruntime sentinel gate:
+  Analysis/0154, formal/0121, and validation/0200 reject literal `U64_MAX` as
+  an EEVDF vruntime infinity. Linux compares vruntime with a signed wrapping
+  delta, and the gate mechanically observes
+  `(s64)(U64_MAX - 100) = -101`.
+
+  Future summary contract:
+    use explicit validity plus a wrap-aware numeric minimum as an inseparable
+    pair. Invalid means the numeric member is ignored; valid means at least one
+    Fresh/pickable descendant witnesses the minimum. The picker guards
+    validity before `vruntime_eligible()`. `curr` is checked separately from
+    the rb-tree aggregate. Group entities project a child tree-or-curr witness,
+    and ancestor updates cover the full invalidation closure under rq locking.
+
+  Gate result:
+    16 source anchors with 0 failures; safe TLC 7 generated states, 6 distinct
+    states, depth 6; 18 expected counterexamples. No Linux patch, hot field,
+    runtime behavior, protection, performance, cost, deployment, or datacenter
+    claim is approved.
+
+  Next:
+    map every summary update and invalidation source before proposing a
+    selector patch.
+
+P5A-R2 summary update closure:
+  Analysis/0155, formal/0122, and validation/0201 map ten invalidation event
+  families to the current Linux source and rq-lock boundary.
+
+  Core update rule:
+    recompute the changed node or separate-current witness under `rq->lock`,
+    project the child combined witness through its parent group entity, and
+    continue to the root before unlock. Migration removes old-rq validity
+    before unlock and publishes destination validity only after locked
+    activation. Final task-local Fresh validation remains mandatory.
+
+  Gate result:
+    32 source anchors with 0 failures; 4 expected absence checks with 0
+    failures; safe TLC 71 generated states, 61 distinct states, depth 7; 24
+    expected counterexamples.
+
+  Blocker:
+    task-local closure is mapped, but shared domain/grant epoch, budget,
+    monitor-revoke, and outer-selector changes have no runtime authority
+    publication, runnable index, per-rq receipt generation, or fanout protocol.
+    A hot-field/picker patch is not reviewable until a versioned shared
+    invalidation contract closes this gap.
+
+P5A-R2 versioned global invalidation fence:
+  Analysis/0156, formal/0123, and validation/0202 select a conservative L0
+  answer to the shared invalidation gap.
+
+  Publication and trust:
+    write frozen shared state, release-publish a non-reused global projection
+    generation, and queue work for every online rq. The picker acquire-loads
+    the generation and trusts a summary only when its state is Fresh and its
+    built generation matches. A mismatch blocks trust before fanout arrives.
+
+  Rebuild:
+    under the owning rq lock, revalidate every leaf, rebuild rb aggregates,
+    separate current, and group projections, then recheck generation. A raced
+    or partial rebuild remains Stale/Blocked. Final task revalidation remains
+    mandatory; picker scan, repair, policy, and monitor calls are forbidden.
+
+  Boundary:
+    this global baseline avoids an unproven domain index but creates explicit
+    false negatives and potentially O(n) rq-lock hold time. It is not yet a
+    production performance design and does not implement the outer Candidate C
+    selector.
+
+P5A-R2 global-fence layout/rebuild evidence plan:
+  Analysis/0157, formal/0124, and validation/0203 passed an evidence-plan gate
+  with 24 source anchors, 6 future-absence checks, safe TLC 6/5/depth 5, and
+  32 expected counterexamples.
+
+  Candidate rejection envelope:
+    per architecture, `sched_entity` growth <= 8 bytes, `cfs_rq` growth = 0,
+    `rq` growth <= 32 bytes, and `task_struct` growth = 0, with specified hot
+    offsets unchanged. Full rq-locked rebuild is rejected above 25000 ns p99
+    or 50000 ns raw maximum additional irq-disabled lock hold, at one base
+    slice, or on any locking/RCU/lockup warning.
+
+  Boundary:
+    this is a plan, not a layout candidate, rebuild prototype, correctness
+    proof, performance result, or protection claim.
+
+P5A-R2 arm64 0013 layout table:
+  Validation/0204 mechanically structured the existing arm64 probe evidence:
+  24 symbols became 14 entries, all within containing structures, at exact
+  Linux commit/tree `077c948be394`/`7ef04bf73d26`.
+
+  Baseline:
+    `sched_entity` 320, `cfs_rq` 384, `rq` 3520, `task_struct` 4160, and
+    `task_struct.sched_exec` 1232/40. This is architecture-local; it does not
+    claim x86_64 byte identity.
+
+  Next:
+    expanded default-off build-only probe patch plan. Behavior and hot-field
+    approval remain false.
+
+P5A-R2 expanded E1 probe:
+  Analysis/0158/formal/0125/validation/0205 passed the 0014 patch-plan gate:
+  one probe file, 24 existing plus 25 new symbols, per-architecture cacheline
+  derivation, no candidate fields, and no behavior. Evidence was 25 anchors,
+  zero absence failures, safe TLC 5/4/depth 4, and 20 counterexamples.
+
+  Implementation/0040 records local commit `5e1ca3037e348`, replay commit
+  `6537a57d3d4b`, and common tree `54f685aad94f`. Strict checkpatch is clean.
+  Generic long job `p5a-r2-0014-build` owns validation/0206: fresh arm64
+  off/on/probe targets, 49 symbols, and a 23-field cacheline table.
+
+  Boundary:
+    build pass is pending. Hot fields, selector/rebuild behavior, runtime
+    correctness, protection, performance, and cost remain unapproved.

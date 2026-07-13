@@ -342,6 +342,17 @@ Current SchedExecLease L0 readiness:
     and symbol extraction. Runtime behavior, future min-pickable fields,
     runtime denial correctness, runtime coverage, protection, cost, deployment,
     and datacenter claims remain unapproved.
+- `0040-sched-exec-lease-p5a-r2-0014-expanded-layout-probe.md`
+  - Status: one-file no-behavior source and deterministic patch replay passed;
+    monitored arm64 three-mode targeted build is validation/0206.
+  - Linux local/replay commits:
+    `5e1ca3037e34823d1ba0cdd1dc04161fac170280` /
+    `6537a57d3d4bcf61d92b0081275081d69c5ff2fd`, with matching tree
+    `54f685aad94f28f0027cbba18cf5e29aadce234a`.
+  - JSON: `sched-exec-lease-p5a-r2-0014-expanded-layout-probe-v1.json`.
+  - Rule: 0014 changes only the build-only probe, preserves the 24 existing
+    symbols, and adds 25 measurements for a 49-symbol total. It adds no
+    candidate field, runtime callsite, ABI, behavior, or protection claim.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-07-04
+Updated: 2026-07-13
 
 ## Current Formal Records
 
@@ -126,6 +126,11 @@ Updated: 2026-07-04
 | 0118 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Minimal Source Sketch Model |
 | 0119 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Layout and Overhead Evidence Plan Model |
 | 0120 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Layout Probe Patch Plan Model |
+| 0121 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Vruntime Sentinel Gate Model |
+| 0122 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 Summary Update-Closure Model |
+| 0123 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 Versioned Global Invalidation Fence Model |
+| 0124 | Checked with safe pass and 32 expected unsafe counterexamples | P5A-R2 Global-Fence Layout/Rebuild Evidence Plan Model |
+| 0125 | Checked with safe pass and 20 expected unsafe counterexamples | P5A-R2 Expanded Layout Probe Patch Plan Model |
 
 ## Planned
 

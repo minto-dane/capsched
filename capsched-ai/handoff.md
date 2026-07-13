@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-04
+Updated: 2026-07-13
 
 Read this first when resuming the project.
 
@@ -5294,3 +5294,174 @@ P5A-R2 0013 disabled-overhead boundary:
   Next:
     choose between one more evidence-only audit, or return to P5A-R2
     source/model design for a future Fresh-summary selector patch.
+
+P5A-R2 vruntime sentinel gate:
+  Validation/0200 passed. Analysis/0154 supersedes the provisional literal
+  `U64_MAX` sentinel from analysis/0151 for future implementation contracts.
+
+  Mechanical counterexample:
+    `(s64)(U64_MAX - 100) = -101`, so the current signed wrapping vruntime
+    comparison does not treat literal `U64_MAX` as numeric infinity.
+
+  Required representation:
+    explicit validity plus a wrap-aware numeric minimum as one inseparable
+    summary; ignore the numeric member while invalid; keep `curr` separate
+    from the rb-tree aggregate; project child tree-or-curr Fresh witnesses
+    through group entities; propagate the full invalidation closure while
+    holding the runqueue lock.
+
+  Evidence:
+    16 source anchors, 0 failures; safe TLC 7 generated states, 6 distinct
+    states, depth 6; 18 unsafe configurations produced expected
+    counterexamples. The recreated arm64 tree also passed targeted CONFIG
+    off/on scheduler builds and the explicit layout-probe build.
+
+  Still false:
+    Linux patch or hot-field approval, runtime behavior or denial correctness,
+    runtime coverage, monitor enforcement, production protection,
+    performance/cost, deployment, and datacenter readiness.
+
+  Next:
+    create the P5A-R2 summary update-closure source map covering rb-tree
+    augmentation, current transitions, group projection, lifecycle, budget,
+    placement, throttle/refill, and future monitor revoke events.
+
+P5A-R2 summary update closure:
+  Validation/0201 passed with the Linux behavior patch still blocked.
+
+  Evidence:
+    32 source anchors, 0 failures; 4 expected future-absence checks, 0
+    failures; safe TLC 71 generated states, 61 distinct states, depth 7; 24
+    unsafe configurations produced expected counterexamples.
+
+  Closed task-local contract:
+    on-rq changes are owned by `rq->lock`; `curr` remains separate from the
+    rb-tree; child tree-or-current witnesses propagate through every parent
+    group; old-rq validity is removed before migration unlock; destination
+    validity is published only after locked activation; the reached task is
+    revalidated.
+
+  Discovered blocker:
+    the scaffold has no runtime authority publication, domain-to-runnable
+    index, per-rq receipt generation, shared budget fanout, monitor revoke
+    fanout, or selector-generation protocol. Task-local augmentation alone
+    cannot keep shared invalidation coherent.
+
+  Still false:
+    Linux behavior or hot-field approval, runtime denial correctness, runtime
+    coverage, monitor enforcement, production protection, performance/cost,
+    deployment, and datacenter readiness.
+
+  Next:
+    define the versioned shared invalidation and fanout contract before any
+    selector patch.
+
+P5A-R2 versioned global invalidation fence:
+  Validation/0202 passed as a conservative architecture gate.
+
+  Selected baseline:
+    locally publish frozen shared state, then release-publish a non-reused
+    global projection generation. Every picker acquire-checks that generation
+    against its rq built generation before trusting Fresh. Generation mismatch
+    blocks trust before asynchronous fanout arrives. Work then rebuilds every
+    online rq under its rq lock and rechecks generation before Fresh publish.
+
+  Evidence:
+    15 source anchors, 0 failures; 4 expected future-absence checks, 0
+    failures; safe TLC 12 generated states, 10 distinct states, depth 8; 24
+    unsafe configurations produced expected counterexamples. Stable rebuild
+    and publication-raced rebuild paths are both modeled.
+
+  Tradeoff:
+    the baseline rejects targeted fanout and can invalidate unrelated domains.
+    Full rebuild can be O(n) while holding each rq lock. This is a safety
+    baseline, not a latency/performance design.
+
+  Still false:
+    Linux behavior/hot-field approval, bounded rebuild latency, runtime denial
+    correctness, runtime coverage, monitor delivery/enforcement, production
+    protection, performance/cost, deployment, and datacenter readiness.
+
+  Next:
+    create the global-fence data-layout and rebuild evidence plan.
+
+P5A-R2 global-fence layout/rebuild evidence plan:
+  Validation/0203 passed for implementation-evidence planning only.
+
+  Evidence:
+    24 source anchors and 6 future-absence checks passed with zero failures.
+    Safe TLC explored 6 generated states, 5 distinct states, depth 5; 32
+    unsafe configurations produced expected counterexamples.
+
+  Layout envelope:
+    future per-architecture candidates may grow `sched_entity` by at most 8
+    bytes and `rq` by at most 32 bytes; `cfs_rq` and `task_struct` must have
+    zero growth. Named hot offsets must remain unchanged.
+
+  Rebuild rejection gate:
+    reject full rq-locked rebuild if p99 additional irq-disabled lock hold
+    exceeds 25000 ns, raw maximum exceeds 50000 ns, any sample reaches the
+    current 700000 ns base slice, or lockdep/irqsoff/RCU/lockup warnings occur.
+
+  Still false:
+    Linux patch/hot-field approval, rebuild correctness or bounded latency,
+    runtime denial correctness, protection, performance/cost, deployment, and
+    datacenter readiness.
+
+P5A-R2 arm64 0013 layout table:
+  Validation/0204 passed against the completed 20260713T140445Z arm64 build.
+
+  Evidence:
+    exact Linux commit `077c948be39432971e7273b16b728172251129aa` and tree
+    `7ef04bf73d26b2813b10016b7eb342a618a66570`; 24 probe symbols; 14 table
+    entries comprising 4 structures and 10 fields; all fields within their
+    containing structures.
+
+  arm64 baseline:
+    `sched_entity` 320; `run_node` 16/24; `min_vruntime` 48/8;
+    `vruntime` 120/8.
+    `cfs_rq` 384; `tasks_timeline` 64/16; `curr` 80/8; `next` 88/8.
+    `rq` 3520; `nr_running` 0/4; `curr` 24/8; `cfs` 128/384.
+    `task_struct` 4160; `sched_exec` 1232/40.
+
+  Boundary:
+    compare arm64 candidates with this arm64 baseline and x86_64 candidates
+    with validation/0198. No cross-architecture byte identity is claimed.
+
+  Next:
+    define the expanded default-off build-only probe patch plan. No behavior
+    patch or hot-field approval exists yet.
+
+P5A-R2 expanded layout probe patch plan:
+  Analysis/0158, formal/0125, and validation/0205 passed.
+
+  Gate result:
+    25 source anchors and 3 absence checks passed with zero failures; safe TLC
+    explored 5 generated states, 4 distinct states, depth 4; 20 unsafe
+    configurations produced expected counterexamples.
+
+  Boundary:
+    0014 may change only `kernel/sched/exec_lease_layout_probe.c`, preserve the
+    existing 24 symbols, and add 25 object-local measurements. Kconfig,
+    Makefile, scheduler structures, callsites, candidate fields, ABI, and
+    behavior are frozen.
+
+P5A-R2 0014 expanded layout probe:
+  Source and deterministic patch replay are complete.
+
+  Identity:
+    local commit `5e1ca3037e34823d1ba0cdd1dc04161fac170280`;
+    replay commit `6537a57d3d4bcf61d92b0081275081d69c5ff2fd`;
+    matching tree `54f685aad94f28f0027cbba18cf5e29aadce234a`;
+    patch queue commit `2a022dce54679ce5ecb86581bf55199dc28c868b`.
+    Strict checkpatch passes with 0 errors and 0 warnings.
+
+  Monitored validation:
+    job `p5a-r2-0014-build` runs fresh arm64 normal-off/on and explicit-probe
+    targeted builds, exact 49-symbol extraction, and a 23-field cacheline
+    table. Monitor with `./tools/long-job.sh watch p5a-r2-0014-build 30` from
+    the project root.
+
+  Boundary:
+    build success remains pending until result.json passes. No hot field,
+    behavior, runtime denial, protection, performance, or cost claim exists.

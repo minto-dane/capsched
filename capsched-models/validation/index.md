@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-04
+Updated: 2026-07-13
 
 ## Current Validation Records
 
@@ -205,6 +205,13 @@ Updated: 2026-07-04
 | 0197 | Patch replay, checkpatch-with-exception, normal-build absence, probe-on build, and symbol extraction passed for no-behavior 0013 | SchedExecLease P5A-R2 0013 Layout Probe |
 | 0198 | Probe symbols converted into a 14-entry structured layout table; all measured fields fit within containing structures | SchedExecLease P5A-R2 0013 Layout Table |
 | 0199 | Source/build-graph disabled-overhead boundary passed: 0013 does not enter normal off/on scheduler objects | SchedExecLease P5A-R2 0013 Disabled-Overhead Boundary |
+| 0200 | Source/representation/formal gate passed; literal U64_MAX sentinel rejected and validity-plus-wrap-min required | SchedExecLease P5A-R2 Vruntime Sentinel Gate |
+| 0201 | Source/locking/formal gate passed with 32 anchors and 24 expected counterexamples; shared invalidation fanout remains unresolved and blocks a behavior patch | SchedExecLease P5A-R2 Summary Update Closure |
+| 0202 | Conservative shared-invalidation architecture passed with 15 anchors and 24 expected counterexamples; global generation/all-rq rebuild selected, targeted fanout and performance approval remain false | SchedExecLease P5A-R2 Versioned Global Invalidation Fence |
+| 0203 | Implementation-evidence plan passed with 24 anchors and 32 expected counterexamples; layout growth envelopes and 25us/50us rq-lock rejection limits fixed | SchedExecLease P5A-R2 Global-Fence Layout/Rebuild Evidence Plan |
+| 0204 | Existing arm64 0013 probe object converted into a 14-entry structured table; exact commit/tree, 24 symbols, hashes, and containing-structure bounds verified | SchedExecLease P5A-R2 arm64 0013 Layout Table |
+| 0205 | 0014 one-file expanded-probe plan passed 25 anchors, safe TLC, and 20 expected counterexamples; 49-symbol target fixed | SchedExecLease P5A-R2 Expanded Layout Probe Patch Plan |
+| 0206 | Source/checkpatch/replay passed; monitored fresh arm64 off/on/probe targeted build launched, result claim pending | SchedExecLease P5A-R2 0014 Expanded Layout Probe |
 
 ## Principles
 

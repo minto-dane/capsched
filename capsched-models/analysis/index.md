@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-04
+Updated: 2026-07-13
 
 ## Current Analysis Notes
 
@@ -159,6 +159,11 @@ Updated: 2026-07-04
 | 0151 | P5A-R2 minimal source sketch defined; EEVDF fresh-summary placement sketched without Linux patch approval | SchedExecLease P5A-R2 Minimal Source Sketch |
 | 0152 | P5A-R2 layout/overhead evidence plan defined; hot-field and cost claims gated before any behavior patch | SchedExecLease P5A-R2 Layout and Overhead Evidence Plan |
 | 0153 | P5A-R2 no-behavior layout probe patch plan defined; 0013 reserved for build-only probe infrastructure | SchedExecLease P5A-R2 Layout Probe Patch Plan |
+| 0154 | Literal U64_MAX vruntime sentinel rejected; explicit validity plus wrap-aware minimum required | SchedExecLease P5A-R2 Vruntime Sentinel Gate |
+| 0155 | Source/locking update closure mapped; shared epoch, budget, monitor, and selector fanout remains an implementation blocker | SchedExecLease P5A-R2 Summary Update-Closure Map |
+| 0156 | Conservative versioned global invalidation fence selected; generation mismatch blocks picker trust before all-rq rebuild fanout | SchedExecLease P5A-R2 Versioned Global Invalidation Fence |
+| 0157 | Global-fence layout/rebuild evidence plan fixes hot-structure growth envelopes and 25us/50us rq-lock rejection limits | SchedExecLease P5A-R2 Global-Fence Layout/Rebuild Evidence Plan |
+| 0158 | Patch 0014 reserved for a one-file, 49-symbol expanded default-off probe; candidate fields and behavior remain forbidden | SchedExecLease P5A-R2 Expanded Layout Probe Patch Plan |
 
 ## Planned Analysis Notes
 
@@ -278,3 +283,8 @@ Updated: 2026-07-04
 | `sched-exec-lease-p5a-r2-minimal-source-sketch-v1.json` | P5A-R2 minimal source sketch | Machine-readable minimal EEVDF fresh-summary sketch, source anchors, hot-layout evidence requirements, unsafe families, and non-claim flags |
 | `sched-exec-lease-p5a-r2-layout-overhead-evidence-plan-v1.json` | P5A-R2 layout/overhead evidence plan | Machine-readable evidence contract for layout probes, disabled overhead, object/function deltas, negative stale-summary tests, and non-claim flags |
 | `sched-exec-lease-p5a-r2-layout-probe-patch-plan-v1.json` | P5A-R2 layout probe patch plan | Machine-readable no-behavior 0013 probe-patch contract, source anchors, absence checks, measurement requirements, and non-claim flags |
+| `sched-exec-lease-p5a-r2-vruntime-sentinel-gate-v1.json` | P5A-R2 vruntime representation gate | Machine-readable literal-sentinel counterexample, validity-plus-wrap-min contract, group/current boundaries, source anchors, and non-claim flags |
+| `sched-exec-lease-p5a-r2-summary-update-closure-map-v1.json` | P5A-R2 update-closure gate | Machine-readable rb/current/group/lifecycle/budget/placement/throttle/shared-event closure map, rq-lock ownership, unresolved shared invalidation mechanisms, source anchors, and non-claim flags |
+| `sched-exec-lease-p5a-r2-versioned-global-invalidation-fence-v1.json` | P5A-R2 shared invalidation architecture | Machine-readable global generation publication, picker fence, all-rq rebuild, mutation integration, targeted-fanout prerequisites, outer-selector boundary, and non-claim flags |
+| `sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan-v1.json` | P5A-R2 implementation evidence plan | Machine-readable architecture baselines, candidate layout envelopes, rebuild oracle/race requirements, live lock-hold matrix and rejection limits, build/disassembly gates, and non-claim flags |
+| `sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan-v1.json` | P5A-R2 expanded probe patch plan | Machine-readable 0014 one-file scope, exact 49-symbol contract, cacheline derivation, candidate-field absence boundary, validation requirements, and non-claim flags |

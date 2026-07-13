@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-summary-update-closure-map-v1",
+  "date": "2026-07-13",
+  "status": "source_locking_update_closure_gate_shared_invalidation_unresolved",
+  "source_basis": {
+    "linux_commit": "077c948be39432971e7273b16b728172251129aa",
+    "linux_tree": "7ef04bf73d26b2813b10016b7eb342a618a66570",
+    "representation_gate": "analysis/0154-sched-exec-lease-p5a-r2-vruntime-sentinel-gate.md",
+    "layout_validation": "validation/0198-sched-exec-lease-p5a-r2-0013-layout-table.md",
+    "disabled_overhead_validation": "validation/0199-sched-exec-lease-p5a-r2-0013-disabled-overhead.md"
+  },
+  "summary_layers": {
+    "rb_node_aggregate": true,
+    "cfs_rq_tree_or_separate_current": true,
+    "group_entity_projects_child": true,
+    "final_task_fresh_recheck": true,
+    "existing_min_vruntime_augmentation_is_fresh_summary": false,
+    "existing_pelt_propagation_is_fresh_summary": false
+  },
+  "locking_contract": {
+    "on_rq_mutation_requires_owning_rq_lock": true,
+    "ancestor_walk_under_same_cpu_rq_lock": true,
+    "unchanged_early_stop_compares_validity_and_numeric": true,
+    "old_rq_invalid_before_unlock": true,
+    "moving_interval_contributes_to_neither_rq": true,
+    "destination_valid_after_locked_activation": true,
+    "valid_on_two_rqs_forbidden": true
+  },
+  "event_closure": {
+    "rb_insert_erase": true,
+    "in_tree_value_change": true,
+    "current_enter_leave": true,
+    "current_vruntime_and_budget_charge": true,
+    "group_child_projection": true,
+    "task_birth_and_wake": true,
+    "exec_exit_generation": true,
+    "affinity_cpuset": true,
+    "queued_and_waking_migration": true,
+    "cgroup_movement": true,
+    "budget_exhaustion_refill": true,
+    "throttle_unthrottle": true,
+    "domain_grant_epoch": true,
+    "future_monitor_revoke": true,
+    "outer_selector_generation": true
+  },
+  "shared_invalidation_gap": {
+    "runtime_authority_publication_exists": false,
+    "domain_to_runnable_membership_index_exists": false,
+    "per_rq_receipt_generation_exists": false,
+    "shared_budget_fanout_exists": false,
+    "monitor_revoke_fanout_exists": false,
+    "selector_generation_protocol_exists": false,
+    "shared_invalidation_mechanism_resolved": false,
+    "behavior_patch_blocked": true
+  },
+  "picker_contract": {
+    "summary_coherent_or_conservatively_invalid_before_pick": true,
+    "picker_repairs_summary": false,
+    "picker_scans_for_freshness": false,
+    "monitor_call_in_picker": false,
+    "policy_lookup_in_picker": false,
+    "final_entity_fresh_recheck": true
+  },
+  "source_anchors": [
+    {"id":"rb_augmentation_callbacks","path":"linux/kernel/sched/fair.c","pattern":"RB_DECLARE_CALLBACKS(static, min_vruntime_cb"},
+    {"id":"rb_insert","path":"linux/kernel/sched/fair.c","pattern":"rb_add_augmented_cached(&se->run_node"},
+    {"id":"rb_erase","path":"linux/kernel/sched/fair.c","pattern":"rb_erase_augmented_cached(&se->run_node"},
+    {"id":"rb_explicit_propagate","path":"linux/kernel/sched/fair.c","pattern":"min_vruntime_cb_propagate(&se->run_node, NULL);"},
+    {"id":"current_outside_tree","path":"linux/kernel/sched/fair.c","pattern":"'current' is not kept within the tree."},
+    {"id":"current_publish","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq->curr = se;"},
+    {"id":"current_clear","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq->curr = NULL;"},
+    {"id":"current_vruntime_charge","path":"linux/kernel/sched/fair.c","pattern":"curr->vruntime += calc_delta_fair(delta_exec, curr);"},
+    {"id":"current_cfs_runtime_charge","path":"linux/kernel/sched/fair.c","pattern":"account_cfs_rq_runtime(cfs_rq, delta_exec);"},
+    {"id":"picker_rq_lock","path":"linux/kernel/sched/fair.c","pattern":"__must_hold(__rq_lockp(rq))"},
+    {"id":"picker_group_descent","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq = group_cfs_rq(se);"},
+    {"id":"group_child_pointer","path":"linux/kernel/sched/fair.c","pattern":"se->my_q = cfs_rq;"},
+    {"id":"group_existing_update","path":"linux/kernel/sched/fair.c","pattern":"static void update_cfs_group(struct sched_entity *se)"},
+    {"id":"pelt_propagation","path":"linux/kernel/sched/fair.c","pattern":"static void propagate_entity_cfs_rq(struct sched_entity *se)"},
+    {"id":"new_task_destination_lock","path":"linux/kernel/sched/core.c","pattern":"rq = __task_rq_lock(p, &rf);"},
+    {"id":"new_task_activation","path":"linux/kernel/sched/core.c","pattern":"activate_task(rq, p, ENQUEUE_NOCLOCK | ENQUEUE_INITIAL);"},
+    {"id":"exec_generation_mutation","path":"linux/kernel/sched/exec_lease.c","pattern":"sched_exec_generation_next(p->sched_exec.exec_generation);"},
+    {"id":"exit_identity_mutation","path":"linux/kernel/sched/exec_lease.c","pattern":"p->sched_exec.flags |= SCHED_EXEC_TASK_F_EXITING;"},
+    {"id":"affinity_task_rq_lock","path":"linux/kernel/sched/core.c","pattern":"rq = task_rq_lock(p, &rf);"},
+    {"id":"affinity_mutation","path":"linux/kernel/sched/core.c","pattern":"do_set_cpus_allowed(p, ctx);"},
+    {"id":"queued_move_lock_assert","path":"linux/kernel/sched/core.c","pattern":"lockdep_assert_rq_held(rq);"},
+    {"id":"queued_move_old_deactivate","path":"linux/kernel/sched/core.c","pattern":"deactivate_task(rq, p, DEQUEUE_NOCLOCK);"},
+    {"id":"queued_move_cpu_change","path":"linux/kernel/sched/core.c","pattern":"set_task_cpu(p, new_cpu);"},
+    {"id":"queued_move_destination_activate","path":"linux/kernel/sched/core.c","pattern":"activate_task(rq, p, 0);"},
+    {"id":"cgroup_task_rq_lock","path":"linux/kernel/sched/core.c","pattern":"CLASS(task_rq_lock, rq_guard)(tsk);"},
+    {"id":"cgroup_change","path":"linux/kernel/sched/core.c","pattern":"sched_change_group(tsk);"},
+    {"id":"cfs_runtime_decrement","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq->runtime_remaining -= delta_exec;"},
+    {"id":"cfs_throttle_publish","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq->throttled = 1;"},
+    {"id":"cfs_unthrottle_publish","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq->throttled = 0;"},
+    {"id":"unthrottle_rq_lock","path":"linux/kernel/sched/fair.c","pattern":"guard(rq_lock)(rq);"},
+    {"id":"scaffold_no_monitor_contract","path":"linux/include/linux/sched_exec_lease.h","pattern":"monitor state, or ABI"},
+    {"id":"scaffold_no_runtime_authority","path":"linux/kernel/sched/exec_lease.c","pattern":"P1 never creates one at runtime."}
+  ],
+  "future_absence_checks": [
+    {"id":"no_summary_refresh_helper","path":"linux","pattern":"sched_exec_refresh_cfs_summary"},
+    {"id":"no_monitor_receipt_handler","path":"linux","pattern":"sched_exec_apply_monitor_receipt"},
+    {"id":"no_per_rq_receipt_generation","path":"linux","pattern":"sched_exec_receipt_generation"},
+    {"id":"no_domain_runnable_index","path":"linux","pattern":"sched_exec_domain_runnable"}
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0122-p5a-r2-summary-update-closure-model",
+    "model": "P5AR2SummaryUpdateClosure.tla",
+    "safe_cfg": "P5AR2SummaryUpdateClosureSafe.cfg",
+    "unsafe_cfg_count": 24,
+    "unsafe_expected_counterexamples": 24
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "new_hot_field_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "complete_cfs_deny_and_repick": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  },
+  "next": {
+    "name": "P5A-R2 versioned shared invalidation and fanout contract",
+    "linux_behavior_patch_allowed_after_this_gate": false
+  }
+}

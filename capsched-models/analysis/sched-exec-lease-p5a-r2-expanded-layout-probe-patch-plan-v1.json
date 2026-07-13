@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan-v1",
+  "date": "2026-07-13",
+  "status": "expanded_probe_patch_plan_no_linux_patch_created",
+  "source_basis": {
+    "linux_commit": "077c948be39432971e7273b16b728172251129aa",
+    "linux_tree": "7ef04bf73d26b2813b10016b7eb342a618a66570",
+    "evidence_plan": "analysis/0157-sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan.md",
+    "evidence_validation": "validation/0203-sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan.md",
+    "arm64_baseline": "validation/0204-sched-exec-lease-p5a-r2-arm64-0013-layout-table.md"
+  },
+  "patch_plan": {
+    "slot": "0014",
+    "linux_patch_created": false,
+    "linux_patch_approved_after_gate": true,
+    "behavior_patch_approved": false,
+    "allowed_linux_paths": ["kernel/sched/exec_lease_layout_probe.c"],
+    "kconfig_change_allowed": false,
+    "makefile_change_allowed": false,
+    "structure_or_hot_field_change_allowed": false,
+    "runtime_function_or_callsite_allowed": false,
+    "existing_probe_symbols_must_remain": true,
+    "expected_existing_symbol_count": 24,
+    "expected_added_symbol_count": 25,
+    "expected_total_symbol_count": 49
+  },
+  "added_measurements": [
+    "smp_cache_bytes",
+    "sched_entity.group_node",
+    "sched_entity.on_rq",
+    "sched_entity.sched_delayed",
+    "sched_entity.rel_deadline",
+    "sched_entity.custom_slice",
+    "sched_entity.exec_start",
+    "sched_entity.avg",
+    "rq.ttwu_pending",
+    "rq.cpu_capacity",
+    "rq.nr_switches",
+    "rq.__lock",
+    "rq.clock_task",
+    "rq.balance_callback"
+  ],
+  "cacheline_contract": {
+    "cacheline_width_measured_from_object": true,
+    "start_index_derived": true,
+    "end_index_derived": true,
+    "runtime_reporting_added": false,
+    "compare_each_architecture_to_own_baseline": true,
+    "cross_arch_byte_identity": false
+  },
+  "candidate_field_contract": {
+    "candidate_fields_exist": false,
+    "placeholder_fields_allowed": false,
+    "candidate_symbols_allowed_in_0014": false,
+    "conditional_symbols_added_with_future_disposable_e2_delta": true,
+    "reserved_symbol_families": [
+      "sched_exec_lp_sched_entity_summary_min",
+      "sched_exec_lp_sched_entity_summary_valid",
+      "sched_exec_lp_rq_built_generation",
+      "sched_exec_lp_rq_summary_state",
+      "sched_exec_lp_rq_rebuild_callback"
+    ]
+  },
+  "required_validation": {
+    "one_file_delta": true,
+    "source_no_runtime_shape": true,
+    "kconfig_default_n_unchanged": true,
+    "main_config_does_not_select_probe": true,
+    "normal_config_off_probe_absent": true,
+    "normal_config_on_probe_absent": true,
+    "probe_on_targeted_build": true,
+    "exact_symbol_count": true,
+    "structured_cacheline_table": true,
+    "architecture_local_comparison": true,
+    "checkpatch": true,
+    "patch_queue_replay": true,
+    "security_nonclaim_review": true
+  },
+  "source_anchors": [
+    {"id":"evidence_plan","path":"capsched/capsched-models/analysis/0157-sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan.md","pattern":"E1: Expanded Build-Only Probe"},
+    {"id":"arm64_baseline","path":"capsched/capsched-models/validation/0204-sched-exec-lease-p5a-r2-arm64-0013-layout-table.md","pattern":"layout entries: 14"},
+    {"id":"series_tail","path":"linux-patches/patches/capsched-linux-l0/series","pattern":"0013-sched-exec_lease-Add-build-only-layout-probe.patch"},
+    {"id":"probe_config","path":"linux/init/Kconfig","pattern":"config SCHED_EXEC_LEASE_LAYOUT_PROBE"},
+    {"id":"probe_default","path":"linux/init/Kconfig","pattern":"default n"},
+    {"id":"probe_makefile","path":"linux/kernel/sched/Makefile","pattern":"obj-$(CONFIG_SCHED_EXEC_LEASE_LAYOUT_PROBE) += exec_lease_layout_probe.o"},
+    {"id":"probe_comment","path":"linux/kernel/sched/exec_lease_layout_probe.c","pattern":"Build-only DomainLease-Linux scheduler layout probe"},
+    {"id":"probe_size_macro","path":"linux/kernel/sched/exec_lease_layout_probe.c","pattern":"#define SCHED_EXEC_SIZE_PROBE"},
+    {"id":"sched_entity","path":"linux/include/linux/sched.h","pattern":"struct sched_entity {"},
+    {"id":"group_node","path":"linux/include/linux/sched.h","pattern":"struct list_head\t\tgroup_node;"},
+    {"id":"on_rq","path":"linux/include/linux/sched.h","pattern":"unsigned char\t\t\ton_rq;"},
+    {"id":"sched_delayed","path":"linux/include/linux/sched.h","pattern":"unsigned char\t\t\tsched_delayed;"},
+    {"id":"rel_deadline","path":"linux/include/linux/sched.h","pattern":"unsigned char\t\t\trel_deadline;"},
+    {"id":"custom_slice","path":"linux/include/linux/sched.h","pattern":"unsigned char\t\t\tcustom_slice;"},
+    {"id":"flag_hole","path":"linux/include/linux/sched.h","pattern":"/* hole */"},
+    {"id":"exec_start","path":"linux/include/linux/sched.h","pattern":"u64\t\t\t\texec_start;"},
+    {"id":"sched_avg","path":"linux/include/linux/sched.h","pattern":"struct sched_avg\t\tavg;"},
+    {"id":"rq","path":"linux/kernel/sched/sched.h","pattern":"struct rq {"},
+    {"id":"ttwu_pending","path":"linux/kernel/sched/sched.h","pattern":"unsigned int\t\tttwu_pending;"},
+    {"id":"cpu_capacity","path":"linux/kernel/sched/sched.h","pattern":"unsigned long\t\tcpu_capacity;"},
+    {"id":"nr_switches","path":"linux/kernel/sched/sched.h","pattern":"u64\t\t\tnr_switches\t____cacheline_aligned;"},
+    {"id":"rq_lock","path":"linux/kernel/sched/sched.h","pattern":"raw_spinlock_t\t\t__lock;"},
+    {"id":"rq_cfs","path":"linux/kernel/sched/sched.h","pattern":"struct cfs_rq\t\tcfs;"},
+    {"id":"clock_task","path":"linux/kernel/sched/sched.h","pattern":"u64\t\t\tclock_task ____cacheline_aligned;"},
+    {"id":"balance_callback","path":"linux/kernel/sched/sched.h","pattern":"struct balance_callback *balance_callback;"}
+  ],
+  "absence_checks": [
+    {"id":"slot_free","path":"linux-patches/patches/capsched-linux-l0/series","pattern":"0014-"},
+    {"id":"new_probe_symbols_absent","path":"linux/kernel/sched/exec_lease_layout_probe.c","pattern":"sched_exec_lp_smp_cache_bytes"},
+    {"id":"candidate_fields_absent","path":"linux","pattern":"sched_exec_built_generation"}
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0125-p5a-r2-expanded-layout-probe-patch-plan-model",
+    "model": "P5AR2ExpandedLayoutProbePatchPlan.tla",
+    "safe_cfg": "P5AR2ExpandedLayoutProbePatchPlanSafe.cfg",
+    "unsafe_cfg_count": 20
+  },
+  "safety_flags": {
+    "hot_field_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "monitor_enforcement": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

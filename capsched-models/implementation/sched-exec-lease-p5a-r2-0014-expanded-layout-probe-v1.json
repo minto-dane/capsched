@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-0014-expanded-layout-probe-v1",
+  "date": "2026-07-13",
+  "status": "source_replay_complete_arm64_build_monitored",
+  "source": {
+    "parent_commit": "077c948be39432971e7273b16b728172251129aa",
+    "local_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "tree": "54f685aad94f28f0027cbba18cf5e29aadce234a",
+    "changed_files": ["kernel/sched/exec_lease_layout_probe.c"],
+    "insertions": 55,
+    "deletions": 0
+  },
+  "patch_queue": {
+    "file": "linux-patches/patches/capsched-linux-l0/0014-sched-exec_lease-Expand-build-only-layout-probe.patch",
+    "patch_sha256": "d3dd3641c24892a205049cf7dc0a9f1656d016c9be5bb3dc7a5cb19512d64b2e",
+    "series_sha256": "7f1ea3b3f4c7083e27e3ad9b5c28210e429e920113fd3c115cdb57a4363c2c1b",
+    "repo_commit": "2a022dce54679ce5ecb86581bf55199dc28c868b",
+    "replay_commit": "6537a57d3d4bcf61d92b0081275081d69c5ff2fd",
+    "replay_tree": "54f685aad94f28f0027cbba18cf5e29aadce234a"
+  },
+  "probe": {
+    "existing_symbols": 24,
+    "added_symbols": 25,
+    "expected_total_symbols": 49,
+    "expected_cacheline_table_fields": 23,
+    "normal_config_builds_probe": false,
+    "symbols_exported": false,
+    "runtime_reporting": false,
+    "candidate_fields_present": false
+  },
+  "arm64_build": {
+    "baseline_root": "build/DomainLeaseLinux.volume/builds/arm64-current/20260713T140445Z",
+    "output_root": "build/DomainLeaseLinux.volume/builds/arm64-current/20260713T-p5a-r2-0014-expanded-probe",
+    "normal_off_targeted": true,
+    "normal_on_targeted": true,
+    "explicit_probe_targeted": true,
+    "progress_job": "p5a-r2-0014-build",
+    "result_status_at_recording": "pending_monitored_job"
+  },
+  "safety_flags": {
+    "hot_field_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "monitor_enforcement": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

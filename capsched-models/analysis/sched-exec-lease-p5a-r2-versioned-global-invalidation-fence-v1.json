@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-versioned-global-invalidation-fence-v1",
+  "date": "2026-07-13",
+  "status": "shared_invalidation_architecture_gate_global_conservative_no_linux_patch",
+  "source_basis": {
+    "linux_commit": "077c948be39432971e7273b16b728172251129aa",
+    "linux_tree": "7ef04bf73d26b2813b10016b7eb342a618a66570",
+    "update_closure": "analysis/0155-sched-exec-lease-p5a-r2-summary-update-closure-map.md",
+    "update_closure_validation": "validation/0201-sched-exec-lease-p5a-r2-summary-update-closure.md"
+  },
+  "decision": {
+    "locally_published_global_projection_generation": true,
+    "per_rq_built_generation": true,
+    "per_rq_semantic_state": true,
+    "picker_generation_fence": true,
+    "all_online_rq_fanout": true,
+    "targeted_domain_fanout": false,
+    "domain_runnable_index_required_for_baseline": false,
+    "conservative_false_negatives_explicit": true
+  },
+  "publication_contract": {
+    "serialized_shared_update": true,
+    "frozen_state_written_before_generation": true,
+    "generation_release_publish": true,
+    "picker_acquire_load": true,
+    "fanout_after_generation_publish": true,
+    "generation_wrap_reuse": false,
+    "generation_saturation_blocks": true,
+    "external_monitor_delivery_proven": false,
+    "contract_starts_at_local_publication": true
+  },
+  "event_fence": {
+    "domain_epoch_or_grant_generation": true,
+    "shared_budget_eligibility_transition": true,
+    "future_monitor_receipt_local_publication": true,
+    "outer_bucket_topology_or_configuration": true,
+    "ordinary_budget_decrement_above_threshold": false,
+    "per_pick_outer_selector_choice": false
+  },
+  "picker_contract": {
+    "requires_state_fresh": true,
+    "requires_built_generation_equals_published": true,
+    "mismatch_is_effectively_stale": true,
+    "safety_independent_of_fanout_latency": true,
+    "final_task_fresh_recheck": true,
+    "picker_scan": false,
+    "picker_rebuild": false,
+    "picker_allocation_or_sleep": false,
+    "picker_policy_lookup": false,
+    "picker_monitor_call": false
+  },
+  "rebuild_contract": {
+    "owning_rq_lock_required": true,
+    "target_generation_snapshotted": true,
+    "state_refreshing_before_rebuild": true,
+    "all_contributing_leaves_revalidated": true,
+    "rb_aggregate_full_rebuild": true,
+    "separate_current_rebuilt": true,
+    "group_projection_to_root_rebuilt": true,
+    "generation_rechecked_before_fresh": true,
+    "raced_rebuild_remains_stale_or_blocked": true,
+    "partial_rebuild_published_fresh": false,
+    "external_call_or_sleep": false,
+    "full_o_n_locked_rebuild_is_performance_approved": false,
+    "chunked_rebuild_approved": false
+  },
+  "mutation_contract": {
+    "incremental_update_only_when_rq_generation_current": true,
+    "mismatch_preserves_nonfresh_state": true,
+    "old_rq_invalid_before_unlock": true,
+    "destination_publish_after_locked_activation": true,
+    "racing_enqueue_cannot_publish_trusted_old_generation": true
+  },
+  "targeted_fanout_requirements": {
+    "runnable_rq_membership_index": true,
+    "enqueue_dequeue_reference_accounting": true,
+    "publication_index_insertion_handshake": true,
+    "migration_old_new_settlement": true,
+    "lifetime_rcu_or_refcount_contract": true,
+    "no_missed_rq_proof": true,
+    "requirements_currently_met": false,
+    "targeted_fanout_approved": false
+  },
+  "outer_selector_contract": {
+    "generation_is_topology_membership_configuration": true,
+    "generation_is_per_pick_choice": false,
+    "candidate_c_implemented": false,
+    "candidate_a_remains_local_projection": true
+  },
+  "source_anchors": [
+    {"id":"picker_lock_boundary","path":"linux/kernel/sched/fair.c","pattern":"__pick_task_fair(struct rq *rq, struct rq_flags *rf,"},
+    {"id":"picker_must_hold_rq","path":"linux/kernel/sched/fair.c","pattern":"__must_hold(__rq_lockp(rq))"},
+    {"id":"final_task_validation","path":"linux/kernel/sched/fair.c","pattern":"sched_exec_cfs_validate_candidate(sched_exec_pick, p)"},
+    {"id":"current_runtime_charge","path":"linux/kernel/sched/fair.c","pattern":"account_cfs_rq_runtime(cfs_rq, delta_exec);"},
+    {"id":"throttle_publication","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq->throttled = 1;"},
+    {"id":"unthrottle_publication","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq->throttled = 0;"},
+    {"id":"rq_lock_fanout_analogue","path":"linux/kernel/sched/fair.c","pattern":"guard(rq_lock)(rq);"},
+    {"id":"rb_augmentation","path":"linux/kernel/sched/fair.c","pattern":"RB_DECLARE_CALLBACKS(static, min_vruntime_cb"},
+    {"id":"current_separate","path":"linux/kernel/sched/fair.c","pattern":"'current' is not kept within the tree."},
+    {"id":"group_descent","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq = group_cfs_rq(se);"},
+    {"id":"move_old_lock","path":"linux/kernel/sched/core.c","pattern":"lockdep_assert_rq_held(rq);"},
+    {"id":"move_old_deactivate","path":"linux/kernel/sched/core.c","pattern":"deactivate_task(rq, p, DEQUEUE_NOCLOCK);"},
+    {"id":"move_destination_activate","path":"linux/kernel/sched/core.c","pattern":"activate_task(rq, p, 0);"},
+    {"id":"scaffold_monitor_absent_contract","path":"linux/include/linux/sched_exec_lease.h","pattern":"monitor state, or ABI"},
+    {"id":"scaffold_runtime_authority_absent","path":"linux/kernel/sched/exec_lease.c","pattern":"P1 never creates one at runtime."}
+  ],
+  "future_absence_checks": [
+    {"id":"no_global_projection_generation","path":"linux","pattern":"sched_exec_projection_generation"},
+    {"id":"no_rq_built_generation","path":"linux","pattern":"sched_exec_built_generation"},
+    {"id":"no_global_rebuild_fanout","path":"linux","pattern":"sched_exec_rebuild_all_rqs"},
+    {"id":"no_full_summary_rebuild","path":"linux","pattern":"sched_exec_rebuild_rq_summary"}
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0123-p5a-r2-versioned-global-invalidation-fence-model",
+    "model": "P5AR2VersionedGlobalInvalidationFence.tla",
+    "safe_cfg": "P5AR2VersionedGlobalInvalidationFenceSafe.cfg",
+    "unsafe_cfg_count": 24,
+    "unsafe_expected_counterexamples": 24
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "new_hot_field_approved": false,
+    "runtime_behavior_approved": false,
+    "cross_path_settled": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "monitor_delivery_proven": false,
+    "monitor_enforcement_proven": false,
+    "production_protection": false,
+    "bounded_rebuild_latency": false,
+    "performance_claim": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  },
+  "next": {
+    "name": "P5A-R2 global-fence data-layout and rebuild evidence plan",
+    "linux_behavior_patch_allowed_after_this_gate": false
+  }
+}
