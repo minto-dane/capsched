@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r2-0014-expanded-layout-probe-v1",
   "date": "2026-07-13",
-  "status": "source_replay_complete_arm64_build_monitored",
+  "status": "passed_arm64_build_validation",
   "source": {
     "parent_commit": "077c948be39432971e7273b16b728172251129aa",
     "local_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
@@ -21,8 +21,8 @@
   },
   "probe": {
     "existing_symbols": 24,
-    "added_symbols": 25,
-    "expected_total_symbols": 49,
+    "added_symbols": 27,
+    "expected_total_symbols": 51,
     "expected_cacheline_table_fields": 23,
     "normal_config_builds_probe": false,
     "symbols_exported": false,
@@ -36,7 +36,21 @@
     "normal_on_targeted": true,
     "explicit_probe_targeted": true,
     "progress_job": "p5a-r2-0014-build",
-    "result_status_at_recording": "pending_monitored_job"
+    "result_status_at_recording": "passed",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-0014-expanded-layout-probe/20260713T-p5a-r2-0014-expanded-probe/result.json",
+    "normal_config_off_build": true,
+    "normal_config_on_build": true,
+    "normal_off_probe_object_absent": true,
+    "normal_on_probe_object_absent": true,
+    "explicit_probe_build": true,
+    "probe_object_size": 21288,
+    "probe_object_sha256": "d204602ad76d9be423a6acf281b07d81320a47520b61b9576661c803c07c77f7",
+    "existing_probe_symbol_count": 24,
+    "added_probe_symbol_count": 27,
+    "missing_existing_probe_symbol_count": 0,
+    "probe_symbol_count": 51,
+    "cacheline_table_field_count": 23,
+    "cacheline_table_sha256": "e6f9dd33b0559811c00e919e77ac04d166dddf0e9de37dae40ead5a8f0ac9aa4"
   },
   "safety_flags": {
     "hot_field_approved": false,

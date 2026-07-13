@@ -12,6 +12,7 @@ MODEL=P5AR2ExpandedLayoutProbePatchPlan.tla
 TLA_JAR=${TLA_JAR:-"$WORKSPACE_DIR/build/tools/tla/tla2tools.jar"}
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
 OUT_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan/$RUN_ID"
+IMPLEMENTED_0014=${DOMAINLEASE_P5AR2_0014_IMPLEMENTED:-0}
 
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
 
@@ -26,8 +27,15 @@ expected_commit=$(jq -r '.source_basis.linux_commit' "$CONFIG")
 expected_tree=$(jq -r '.source_basis.linux_tree' "$CONFIG")
 actual_commit=$(git -C "$LINUX_DIR" rev-parse HEAD)
 actual_tree=$(git -C "$LINUX_DIR" rev-parse HEAD^{tree})
-[ "$actual_commit" = "$expected_commit" ] || die "Linux commit mismatch"
-[ "$actual_tree" = "$expected_tree" ] || die "Linux tree mismatch"
+if [ "$IMPLEMENTED_0014" = 1 ]; then
+	actual_parent=$(git -C "$LINUX_DIR" rev-parse HEAD^)
+	actual_parent_tree=$(git -C "$LINUX_DIR" rev-parse HEAD^^{tree})
+	[ "$actual_parent" = "$expected_commit" ] || die "implemented 0014 parent mismatch"
+	[ "$actual_parent_tree" = "$expected_tree" ] || die "implemented 0014 parent tree mismatch"
+else
+	[ "$actual_commit" = "$expected_commit" ] || die "Linux commit mismatch"
+	[ "$actual_tree" = "$expected_tree" ] || die "Linux tree mismatch"
+fi
 [ -z "$(git -C "$LINUX_DIR" status --porcelain --untracked-files=no)" ] || die 'Linux tracked tree is dirty'
 
 jq -e '
@@ -42,8 +50,8 @@ jq -e '
   .patch_plan.structure_or_hot_field_change_allowed == false and
   .patch_plan.runtime_function_or_callsite_allowed == false and
   .patch_plan.expected_existing_symbol_count == 24 and
-  .patch_plan.expected_added_symbol_count == 25 and
-  .patch_plan.expected_total_symbol_count == 49 and
+  .patch_plan.expected_added_symbol_count == 27 and
+  .patch_plan.expected_total_symbol_count == 51 and
   (.added_measurements | length == 14) and
   (.cacheline_contract.cacheline_width_measured_from_object == true) and
   (.cacheline_contract.start_index_derived == true) and
@@ -82,18 +90,26 @@ while IFS= read -r row; do
 	path=$(jq -r '.path' <<<"$row")
 	pattern=$(jq -r '.pattern' <<<"$row")
 	target="$WORKSPACE_DIR/$path"
-	if [ -d "$target" ]; then
+	if [ "$IMPLEMENTED_0014" = 1 ] && [ "$id" = slot_free ]; then
+		if tail -n 1 "$target" | grep -q '^0014-'; then status=implemented-expected; else status=missing-implementation; fi
+	elif [ "$IMPLEMENTED_0014" = 1 ] && [ "$id" = new_probe_symbols_absent ]; then
+		if grep -Fq "$pattern" "$target"; then status=implemented-expected; else status=missing-implementation; fi
+	elif [ -d "$target" ]; then
 		if git -C "$target" grep -Fq "$pattern" -- .; then status=present; else status=absent; fi
 	else
 		if grep -Fq "$pattern" "$target"; then status=present; else status=absent; fi
 	fi
 	printf '%s\t%s\t%s\t%s\n' "$id" "$status" "$path" "$pattern" >> "$absence"
 done < <(jq -c '.absence_checks[]' "$CONFIG")
-absence_failures=$(awk -F '\t' 'NR > 1 && $2 != "absent" {c++} END {print c+0}' "$absence")
+absence_failures=$(awk -F '\t' 'NR > 1 && $2 != "absent" && $2 != "implemented-expected" {c++} END {print c+0}' "$absence")
 [ "$absence_failures" = 0 ] || die "absence failures: $absence_failures"
 
 series="$PATCH_QUEUE_DIR/patches/capsched-linux-l0/series"
-[ "$(tail -n 1 "$series")" = '0013-sched-exec_lease-Add-build-only-layout-probe.patch' ] || die 'patch queue tail is not 0013'
+if [ "$IMPLEMENTED_0014" = 1 ]; then
+	[ "$(tail -n 1 "$series")" = '0014-sched-exec_lease-Expand-build-only-layout-probe.patch' ] || die 'patch queue tail is not implemented 0014'
+else
+	[ "$(tail -n 1 "$series")" = '0013-sched-exec_lease-Add-build-only-layout-probe.patch' ] || die 'patch queue tail is not 0013'
+fi
 
 (
 	cd "$MODEL_DIR"
@@ -125,10 +141,11 @@ cfg_count=$(find "$MODEL_DIR" -maxdepth 1 -name 'P5AR2ExpandedLayoutProbePatchPl
 
 jq -n \
 	--arg run_id "$RUN_ID" --arg linux_commit "$actual_commit" --arg linux_tree "$actual_tree" \
+	--argjson implemented_0014 "$IMPLEMENTED_0014" \
 	--argjson anchor_count "$anchor_count" --argjson anchor_failures "$anchor_failures" \
 	--argjson absence_failures "$absence_failures" --argjson safe_states "${safe_states:-0}" \
 	--argjson safe_distinct "${safe_distinct:-0}" --argjson safe_depth "${safe_depth:-0}" \
 	--argjson unsafe_expected "$unsafe_expected" \
-	'{schema_version:1,run_id:$run_id,status:"passed_patch_plan_only",linux_commit:$linux_commit,linux_tree:$linux_tree,source_anchor_count:$anchor_count,source_anchor_failures:$anchor_failures,absence_failures:$absence_failures,safe_states_generated:$safe_states,safe_distinct_states:$safe_distinct,safe_depth:$safe_depth,unsafe_expected_counterexamples:$unsafe_expected,patch_slot:"0014",expected_total_probe_symbols:49,linux_patch_may_be_drafted:true,behavior_patch_approved:false,hot_field_approved:false,protection_claim:false}' \
+	'{schema_version:1,run_id:$run_id,status:(if $implemented_0014 == 1 then "passed_retrospective_arithmetic_correction" else "passed_patch_plan_only" end),implemented_0014:($implemented_0014 == 1),linux_commit:$linux_commit,linux_tree:$linux_tree,source_anchor_count:$anchor_count,source_anchor_failures:$anchor_failures,absence_failures:$absence_failures,safe_states_generated:$safe_states,safe_distinct_states:$safe_distinct,safe_depth:$safe_depth,unsafe_expected_counterexamples:$unsafe_expected,patch_slot:"0014",expected_existing_probe_symbols:24,expected_added_probe_symbols:27,expected_total_probe_symbols:51,linux_patch_may_be_drafted:true,behavior_patch_approved:false,hot_field_approved:false,protection_claim:false}' \
 	> "$OUT_DIR/result.json"
 cat "$OUT_DIR/result.json"

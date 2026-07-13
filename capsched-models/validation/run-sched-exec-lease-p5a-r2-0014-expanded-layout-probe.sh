@@ -20,7 +20,7 @@ PROGRESS_FILE=${PROGRESS_FILE:-}
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
 progress() { [ -z "$PROGRESS_FILE" ] || printf '%s\n' "$*" > "$PROGRESS_FILE"; printf '[progress] %s\n' "$*"; }
 
-for cmd in awk cp diff git grep jq make nm nproc sed sha256sum sort stat wc; do
+for cmd in awk comm cp diff git grep jq make nm nproc sed sha256sum sort stat wc; do
 	command -v "$cmd" >/dev/null 2>&1 || die "missing command: $cmd"
 done
 mkdir -p "$OUT_DIR" "$BUILD_ROOT"
@@ -132,6 +132,19 @@ nm -S "$probe_obj" | awk '$4 ~ /^sched_exec_lp_/ {print $1 "\t" $2 "\t" $3 "\t" 
 symbol_count=$(wc -l < "$OUT_DIR/probe-symbols.tsv")
 [ "$symbol_count" = "$expected_symbols" ] || die "symbol count: expected=$expected_symbols actual=$symbol_count"
 
+baseline_probe_obj="$BASELINE_ROOT/probe/kernel/sched/exec_lease_layout_probe.o"
+[ -s "$baseline_probe_obj" ] || die 'baseline 0013 probe object missing'
+nm -S "$baseline_probe_obj" | awk '$4 ~ /^sched_exec_lp_/ {print $4}' | sort -u > "$OUT_DIR/baseline-symbol-names.txt"
+awk '{print $4}' "$OUT_DIR/probe-symbols.tsv" | sort -u > "$OUT_DIR/expanded-symbol-names.txt"
+comm -23 "$OUT_DIR/baseline-symbol-names.txt" "$OUT_DIR/expanded-symbol-names.txt" > "$OUT_DIR/missing-existing-symbols.txt"
+comm -13 "$OUT_DIR/baseline-symbol-names.txt" "$OUT_DIR/expanded-symbol-names.txt" > "$OUT_DIR/added-symbols.txt"
+existing_symbol_count=$(wc -l < "$OUT_DIR/baseline-symbol-names.txt")
+missing_existing_count=$(wc -l < "$OUT_DIR/missing-existing-symbols.txt")
+added_symbol_count=$(wc -l < "$OUT_DIR/added-symbols.txt")
+[ "$existing_symbol_count" = 24 ] || die "baseline symbol count: $existing_symbol_count"
+[ "$missing_existing_count" = 0 ] || die "existing symbols missing: $missing_existing_count"
+[ "$added_symbol_count" = 27 ] || die "added symbol count: $added_symbol_count"
+
 symbol_size()
 {
 	local hex
@@ -198,10 +211,12 @@ table_sha=$(sha256sum "$table" | awk '{print $1}')
 jq -n --arg run_id "$RUN_ID" --arg linux_commit "$actual_local" --arg replay_commit "$actual_replay" \
 	--arg linux_tree "$actual_tree" --arg patch_sha "$patch_sha" --arg series_sha "$series_sha" \
 	--arg probe_object "$probe_obj" --arg probe_sha "$probe_sha" --arg table "$table" --arg table_sha "$table_sha" \
-	--argjson probe_size "$probe_size" --argjson symbol_count "$symbol_count" --argjson cache_bytes "$cache_bytes" \
+	--argjson probe_size "$probe_size" --argjson symbol_count "$symbol_count" \
+	--argjson existing_symbol_count "$existing_symbol_count" --argjson added_symbol_count "$added_symbol_count" \
+	--argjson cache_bytes "$cache_bytes" \
 	--argjson table_fields "$table_fields" --argjson sched_entity_size "$sched_entity_size" \
 	--argjson cfs_rq_size "$cfs_rq_size" --argjson rq_size "$rq_size" --argjson task_struct_size "$task_struct_size" \
-	'{schema_version:1,run_id:$run_id,status:"passed",architecture:"arm64",linux_commit:$linux_commit,patch_queue_replay_commit:$replay_commit,linux_tree:$linux_tree,patch_sha256:$patch_sha,series_sha256:$series_sha,strict_checkpatch_errors:0,strict_checkpatch_warnings:0,normal_config_off_build:true,normal_config_on_build:true,normal_off_probe_object_absent:true,normal_on_probe_object_absent:true,explicit_probe_build:true,probe_object:$probe_object,probe_object_size:$probe_size,probe_object_sha256:$probe_sha,probe_symbol_count:$symbol_count,smp_cache_bytes:$cache_bytes,cacheline_table:$table,cacheline_table_sha256:$table_sha,cacheline_table_field_count:$table_fields,layout:{sched_entity_size:$sched_entity_size,cfs_rq_size:$cfs_rq_size,rq_size:$rq_size,task_struct_size:$task_struct_size},runtime_behavior_change:false,hot_field_added:false,runtime_denial_correctness:false,production_protection:false,performance_claim:false,cost_claim:false}' > "$OUT_DIR/result.json"
+	'{schema_version:1,run_id:$run_id,status:"passed",architecture:"arm64",linux_commit:$linux_commit,patch_queue_replay_commit:$replay_commit,linux_tree:$linux_tree,patch_sha256:$patch_sha,series_sha256:$series_sha,strict_checkpatch_errors:0,strict_checkpatch_warnings:0,normal_config_off_build:true,normal_config_on_build:true,normal_off_probe_object_absent:true,normal_on_probe_object_absent:true,explicit_probe_build:true,probe_object:$probe_object,probe_object_size:$probe_size,probe_object_sha256:$probe_sha,probe_symbol_count:$symbol_count,existing_probe_symbol_count:$existing_symbol_count,added_probe_symbol_count:$added_symbol_count,missing_existing_probe_symbol_count:0,smp_cache_bytes:$cache_bytes,cacheline_table:$table,cacheline_table_sha256:$table_sha,cacheline_table_field_count:$table_fields,layout:{sched_entity_size:$sched_entity_size,cfs_rq_size:$cfs_rq_size,rq_size:$rq_size,task_struct_size:$task_struct_size},runtime_behavior_change:false,hot_field_added:false,runtime_denial_correctness:false,production_protection:false,performance_claim:false,cost_claim:false}' > "$OUT_DIR/result.json"
 jq empty "$OUT_DIR/result.json"
 progress '100% passed; result.json and cacheline table complete'
 cat "$OUT_DIR/result.json"

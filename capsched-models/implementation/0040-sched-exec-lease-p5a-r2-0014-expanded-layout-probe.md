@@ -2,8 +2,8 @@
 
 Date: 2026-07-13
 
-Status: source and patch-queue replay complete; monitored arm64 build validation
-is the remaining asynchronous evidence.
+Status: source, patch-queue replay, and arm64 three-mode targeted build
+validation passed.
 
 ## Linux Delta
 
@@ -39,14 +39,14 @@ matching tree.
 
 ## Measurement Delta
 
-The existing 24 symbols remain. 0014 adds 25 object-local symbols for cacheline
+The existing 24 symbols remain. 0014 adds 27 object-local symbols for cacheline
 width, the sched_entity flag area/exec/avg boundaries, and rq hot/lock/clock/
-callback boundaries. The expected probe total is 49 symbols.
+callback boundaries. The expected probe total is 51 symbols.
 
 Candidate summary/generation/state/callback fields remain absent. This is E1
 measurement infrastructure, not the disposable E2 layout candidate.
 
-## Monitored Validation
+## Arm64 Validation
 
 Runner:
 
@@ -55,9 +55,23 @@ capsched-models/validation/
   run-sched-exec-lease-p5a-r2-0014-expanded-layout-probe.sh
 ```
 
-It performs exact source/replay/checkpatch gates, fresh arm64 normal-off,
-normal-on, and explicit-probe targeted builds, exact 49-symbol extraction, and
-a 23-field cacheline table. Progress is written to the generic long-job state.
+It passed exact source/replay/checkpatch gates, fresh arm64 normal-off,
+normal-on, and explicit-probe targeted builds, exact 51-symbol extraction, and
+a 23-field cacheline table. The 24 existing symbols were preserved, 27 were
+added, and none of the existing symbols was missing. Normal off/on builds omit
+the probe object; the explicit build produced a 21,288-byte probe object.
+
+The result is:
+
+```text
+build/source-check/sched-exec-lease-p5a-r2-0014-expanded-layout-probe/
+  20260713T-p5a-r2-0014-expanded-probe/result.json
+```
+
+The initial post-build check used an incorrect 49-symbol ledger. The corrected
+arithmetic is one cache-width symbol plus 13 offset/size pairs, or 27 added
+symbols and 51 total. The correction did not change the Linux commit, replay
+tree, patch, or series hashes.
 
 ## Non-Claims
 

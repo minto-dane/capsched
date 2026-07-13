@@ -5442,7 +5442,7 @@ P5A-R2 expanded layout probe patch plan:
 
   Boundary:
     0014 may change only `kernel/sched/exec_lease_layout_probe.c`, preserve the
-    existing 24 symbols, and add 25 object-local measurements. Kconfig,
+    existing 24 symbols, and add 27 object-local measurements. Kconfig,
     Makefile, scheduler structures, callsites, candidate fields, ABI, and
     behavior are frozen.
 
@@ -5456,12 +5456,15 @@ P5A-R2 0014 expanded layout probe:
     patch queue commit `2a022dce54679ce5ecb86581bf55199dc28c868b`.
     Strict checkpatch passes with 0 errors and 0 warnings.
 
-  Monitored validation:
-    job `p5a-r2-0014-build` runs fresh arm64 normal-off/on and explicit-probe
-    targeted builds, exact 49-symbol extraction, and a 23-field cacheline
-    table. Monitor with `./tools/long-job.sh watch p5a-r2-0014-build 30` from
-    the project root.
+  Arm64 validation:
+    validation/0206 passed fresh normal-off/on and explicit-probe targeted
+    builds. Normal builds omit the probe object. The explicit build preserved
+    24 existing symbols, added 27, omitted none, extracted exactly 51 total,
+    and emitted a 23-field cacheline table.
 
   Boundary:
-    build success remains pending until result.json passes. No hot field,
+    the first run completed compilation and produced 51 symbols, exposing the
+    erroneous 49-symbol ledger. The corrected `24 + 27 = 51` gate passed
+    without changing the Linux tree. E1 is complete; the next evidence stage
+    is a separately gated disposable E2 layout-only candidate. No hot field,
     behavior, runtime denial, protection, performance, or cost claim exists.

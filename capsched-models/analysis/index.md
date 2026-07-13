@@ -163,7 +163,7 @@ Updated: 2026-07-13
 | 0155 | Source/locking update closure mapped; shared epoch, budget, monitor, and selector fanout remains an implementation blocker | SchedExecLease P5A-R2 Summary Update-Closure Map |
 | 0156 | Conservative versioned global invalidation fence selected; generation mismatch blocks picker trust before all-rq rebuild fanout | SchedExecLease P5A-R2 Versioned Global Invalidation Fence |
 | 0157 | Global-fence layout/rebuild evidence plan fixes hot-structure growth envelopes and 25us/50us rq-lock rejection limits | SchedExecLease P5A-R2 Global-Fence Layout/Rebuild Evidence Plan |
-| 0158 | Patch 0014 reserved for a one-file, 49-symbol expanded default-off probe; candidate fields and behavior remain forbidden | SchedExecLease P5A-R2 Expanded Layout Probe Patch Plan |
+| 0158 | Patch 0014 reserved for a one-file, 51-symbol expanded default-off probe; candidate fields and behavior remain forbidden | SchedExecLease P5A-R2 Expanded Layout Probe Patch Plan |
 
 ## Planned Analysis Notes
 
@@ -287,4 +287,4 @@ Updated: 2026-07-13
 | `sched-exec-lease-p5a-r2-summary-update-closure-map-v1.json` | P5A-R2 update-closure gate | Machine-readable rb/current/group/lifecycle/budget/placement/throttle/shared-event closure map, rq-lock ownership, unresolved shared invalidation mechanisms, source anchors, and non-claim flags |
 | `sched-exec-lease-p5a-r2-versioned-global-invalidation-fence-v1.json` | P5A-R2 shared invalidation architecture | Machine-readable global generation publication, picker fence, all-rq rebuild, mutation integration, targeted-fanout prerequisites, outer-selector boundary, and non-claim flags |
 | `sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan-v1.json` | P5A-R2 implementation evidence plan | Machine-readable architecture baselines, candidate layout envelopes, rebuild oracle/race requirements, live lock-hold matrix and rejection limits, build/disassembly gates, and non-claim flags |
-| `sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan-v1.json` | P5A-R2 expanded probe patch plan | Machine-readable 0014 one-file scope, exact 49-symbol contract, cacheline derivation, candidate-field absence boundary, validation requirements, and non-claim flags |
+| `sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan-v1.json` | P5A-R2 expanded probe patch plan | Machine-readable 0014 one-file scope, exact 51-symbol contract, cacheline derivation, candidate-field absence boundary, validation requirements, and non-claim flags |

@@ -47,7 +47,7 @@ rq.clock_task offset/size
 rq.balance_callback offset/size
 ```
 
-This adds 25 symbols for an expected total of 49. Validation derives start and
+This adds 27 symbols for an expected total of 51. Validation derives start and
 end cacheline indices from offsets, field sizes, and `SMP_CACHE_BYTES`; the
 kernel source does not gain a cacheline-reporting runtime path.
 
@@ -79,7 +79,7 @@ exact one-file delta and no runtime functions/calls
 existing Kconfig remains default n and unselected by SCHED_EXEC_LEASE
 normal CONFIG off/on probe-object absence
 explicit probe-on targeted build
-exact 49-symbol extraction
+exact 51-symbol extraction
 structured field/cacheline table
 architecture-local comparison against validation/0198 and validation/0204
 checkpatch with only a recorded metadata exception, if any

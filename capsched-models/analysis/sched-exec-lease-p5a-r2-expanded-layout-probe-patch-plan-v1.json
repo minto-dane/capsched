@@ -22,8 +22,8 @@
     "runtime_function_or_callsite_allowed": false,
     "existing_probe_symbols_must_remain": true,
     "expected_existing_symbol_count": 24,
-    "expected_added_symbol_count": 25,
-    "expected_total_symbol_count": 49
+    "expected_added_symbol_count": 27,
+    "expected_total_symbol_count": 51
   },
   "added_measurements": [
     "smp_cache_bytes",

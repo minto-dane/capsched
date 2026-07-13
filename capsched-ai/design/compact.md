@@ -4270,15 +4270,18 @@ P5A-R2 arm64 0013 layout table:
 
 P5A-R2 expanded E1 probe:
   Analysis/0158/formal/0125/validation/0205 passed the 0014 patch-plan gate:
-  one probe file, 24 existing plus 25 new symbols, per-architecture cacheline
+  one probe file, 24 existing plus 27 new symbols, per-architecture cacheline
   derivation, no candidate fields, and no behavior. Evidence was 25 anchors,
   zero absence failures, safe TLC 5/4/depth 4, and 20 counterexamples.
 
   Implementation/0040 records local commit `5e1ca3037e348`, replay commit
   `6537a57d3d4b`, and common tree `54f685aad94f`. Strict checkpatch is clean.
-  Generic long job `p5a-r2-0014-build` owns validation/0206: fresh arm64
-  off/on/probe targets, 49 symbols, and a 23-field cacheline table.
+  Validation/0206 passed fresh arm64 off/on/probe targets, normal-build probe
+  absence, preservation of all 24 existing symbols, 27 additions, exactly 51
+  total symbols, and a 23-field cacheline table. The first run completed all
+  builds and exposed the corrected 49-to-51 ledger error.
 
   Boundary:
-    build pass is pending. Hot fields, selector/rebuild behavior, runtime
-    correctness, protection, performance, and cost remain unapproved.
+    E1 is complete. A disposable E2 layout-only candidate requires a separate
+    gate. Hot fields, selector/rebuild behavior, runtime correctness,
+    protection, performance, and cost remain unapproved.

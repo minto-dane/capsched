@@ -2,8 +2,7 @@
 
 Date: 2026-07-13
 
-Status: monitored arm64 build launched; no passed-build claim is recorded until
-the generated result reports `status: passed`.
+Status: passed. The corrected arm64 validation result reports `status: passed`.
 
 ## Completed Before Launch
 
@@ -16,23 +15,43 @@ local/replay tree equality: true
 patch-plan validation/0205: passed
 ```
 
-## Monitored Job
+## Monitored Job Result
 
 ```text
 name: p5a-r2-0014-build
 refresh interval: 30 seconds
 ```
 
-The job runs fresh arm64 targeted builds for normal CONFIG off, normal CONFIG
-on, and explicit layout-probe on. It then requires exactly 49 probe symbols and
-produces a 23-field offset/size/cacheline table.
+The job ran fresh arm64 targeted builds for normal CONFIG off, normal CONFIG
+on, and explicit layout-probe on. It required exactly 51 probe symbols and
+produced a 23-field offset/size/cacheline table.
 
-Expected output:
+Result:
 
 ```text
 build/source-check/sched-exec-lease-p5a-r2-0014-expanded-layout-probe/
   20260713T-p5a-r2-0014-expanded-probe/result.json
 ```
+
+```text
+status: passed
+architecture: arm64
+normal CONFIG off build: passed; probe object absent
+normal CONFIG on build: passed; probe object absent
+explicit probe build: passed
+existing probe symbols: 24
+added probe symbols: 27
+missing existing probe symbols: 0
+total probe symbols: 51
+cacheline table fields: 23
+strict checkpatch: 0 errors, 0 warnings
+```
+
+The first execution completed the builds and extracted the correct 51 symbols,
+but then failed an erroneous `24 + 25 = 49` ledger gate. The actual extension
+contains one cache-width symbol plus 13 field offset/size pairs, so it adds 27
+symbols. Validation/0205 and this runner were corrected to require
+`24 + 27 = 51`; the corrected run passed without changing the Linux tree.
 
 Monitor from the project root:
 
@@ -48,6 +67,7 @@ One-shot status:
 
 ## Claim Boundary
 
-Until the result is passed, build compatibility and the 49-symbol table remain
-pending. Regardless of result, 0014 makes no behavior, runtime denial,
-protection, performance, cost, deployment, or datacenter claim.
+This passes the arm64 targeted build and expanded E1 layout-evidence gate for
+0014. It does not approve an E2 candidate layout. Patch 0014 makes no behavior,
+runtime denial, protection, performance, cost, deployment, or datacenter
+claim.

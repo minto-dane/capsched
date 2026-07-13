@@ -9,7 +9,7 @@ approved.
 
 Validate analysis/0158 and formal/0125 against the exact recreated Linux tree.
 Patch 0014 is limited to `kernel/sched/exec_lease_layout_probe.c` and must add
-25 object-local measurements to the existing 24-symbol probe.
+27 object-local measurements to the existing 24-symbol probe.
 
 ## Result
 
@@ -24,7 +24,7 @@ absence failures: 0
 safe TLC: 5 generated, 4 distinct, depth 4
 unsafe expected counterexamples: 20
 patch slot: 0014
-expected total probe symbols: 49
+expected total probe symbols: 51
 ```
 
 Output:
@@ -50,4 +50,4 @@ deployment, or datacenter readiness.
 ## Next
 
 Draft 0014, create its patch-queue entry, and validate exact replay plus normal
-off/on absence and explicit probe-on 49-symbol extraction.
+off/on absence and explicit probe-on 51-symbol extraction.
