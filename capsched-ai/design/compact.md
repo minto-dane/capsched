@@ -4351,3 +4351,12 @@ P5A-R2 E3 rebuild prototype:
     this accepts only synthetic-fixture rebuild correctness. E4 may be planned,
     but production fields, live integration, bounded lock hold, behavior,
     protection, performance, and cost remain unapproved.
+
+P5A-R2 E4 measurement plan:
+  Analysis/0163/formal/0130/validation/0214 passed 24 anchors, 4 absence
+  checks, safe TLC 6/5/depth 5, and 28 expected counterexamples. The fixed
+  gate is 35 cells, 10,000 paired samples per cell, real irq-disabled rq-lock
+  timing, 25 us additional p99, 50 us additional max, and 700 us base slice.
+  Threshold failure is retained as negative evidence. Only an exact E3-child
+  two-file source draft is authorized; measurement and performance approval
+  remain false.

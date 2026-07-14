@@ -5586,3 +5586,19 @@ P5A-R2 E3 disposable rebuild prototype:
   Next:
     define and formally gate the E4 live lock-hold measurement protocol before
     adding any E4 source.
+
+P5A-R2 E4 lock-hold measurement plan:
+  Analysis/0163/formal/0130/validation/0214 passed the pre-source gate. Run
+  `20260714T-p5a-r2-e4-lock-hold-plan` passed 24 anchors, 4 absence checks,
+  safe TLC 6/5/depth 5, and 28 expected counterexamples. Result SHA-256 is
+  `fff0fc959baebb7a7be4565ee164a8ad7ebad231149413c4f2368ea55a7795fc`.
+
+  Fixed experiment:
+    35 cells from 0/1/8/64/256/1024/4096 leaves and depths 0/1/4/16/64;
+    10,000 paired empty-control/rebuild samples per cell; real irq-disabled
+    rq locking; O(1) fixture callback; statistics outside the measured
+    interval; 25 us p99, 50 us max, and 700 us base-slice rejection gates.
+
+  Boundary:
+    only a direct E3 child changing `init/Kconfig` and `kernel/sched/fair.c`
+    may now be drafted. Measurement launch needs a separate source gate.

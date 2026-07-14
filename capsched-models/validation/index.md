@@ -219,6 +219,7 @@ Updated: 2026-07-13
 | 0211 | Exact arm64/x86_64 evidence closure passed; candidate frozen for E3 planning only with 24 modeled rejection cases | SchedExecLease P5A-R2 E2 Layout Evidence Closure |
 | 0212 | E3 two-file source plan passed 26 anchors, 6 absence checks, safe TLC, and 24 expected counterexamples; source correctness remained pending | SchedExecLease P5A-R2 E3 Rebuild Prototype Evidence Plan |
 | 0213 | Exact E3 source/build matrix and arm64 QEMU KUnit passed 12/12 with zero failures/skips; E4 planning only is allowed | SchedExecLease P5A-R2 E3 Rebuild Prototype |
+| 0214 | E4 two-file measurement plan passed 24 anchors, 4 absence checks, safe TLC, and 28 expected counterexamples; measurement remains separately gated | SchedExecLease P5A-R2 E4 Lock-Hold Measurement Plan |
 
 ## Principles
 
