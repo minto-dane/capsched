@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement-v1",
+  "date": "2026-07-14",
+  "status": "disposable_source_draft_targeted_compile_passed_unaccepted",
+  "source": {
+    "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r2-e4-lock-hold",
+    "branch": "codex/p5a-r2-e4-lock-hold",
+    "parent_commit": "d1d5e78da8484c91eae70f22399c6901da680ea0",
+    "candidate_commit": "dc3618e2bc56d3ede9b8d1378099c7b9ad15e08f",
+    "candidate_tree": "b8a7023993560bcc40077a5db25288c3fdf4765a",
+    "diff_sha256": "9d33d848b13f01e15d6ff6369c465964ca0682829eafbaa3906bbf17e3b18709",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/fair.c"
+    ],
+    "insertions": 356,
+    "deletions": 0,
+    "strict_checkpatch_errors": 0,
+    "strict_checkpatch_warnings": 0,
+    "strict_checkpatch_checks": 0
+  },
+  "prerequisite": {
+    "plan_result": "build/source-check/sched-exec-lease-p5a-r2-e4-lock-hold-measurement-plan/20260714T-p5a-r2-e4-lock-hold-plan/result.json",
+    "plan_result_sha256": "fff0fc959baebb7a7be4565ee164a8ad7ebad231149413c4f2368ea55a7795fc",
+    "e3_result": "build/source-check/sched-exec-lease-p5a-r2-e3-rebuild-prototype/20260714T-p5a-r2-e3-rebuild/result.json",
+    "e3_result_sha256": "fd4ea3fdf283d3d6251c7ac3a685a9d602a1b3dc50ba53779348ac3886d236cc"
+  },
+  "frozen_boundary": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "patch_queue_tail": "0014-sched-exec_lease-Expand-build-only-layout-probe.patch",
+    "e2_fields_unchanged": true,
+    "layout_probe_unchanged": true,
+    "e3_rebuild_unchanged": true,
+    "makefile_unchanged": true,
+    "live_scheduler_callsites_added": false,
+    "primary_linux_change_approved": false,
+    "patch_queue_change_approved": false
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_REBUILD_MEASURE_KUNIT_TEST",
+    "type": "bool",
+    "default_enabled": false,
+    "depends_on": "SCHED_EXEC_LEASE_REBUILD_KUNIT_TEST && KUNIT=y",
+    "same_translation_unit": "kernel/sched/fair.c",
+    "suite_name": "sched_exec_lease_rebuild_measure",
+    "selected_by_ordinary_lease": false,
+    "selected_by_kunit_all_tests": false
+  },
+  "fixture": {
+    "real_rq_cfs_rq_sched_entity_structures": true,
+    "real_rb_and_bottom_up_iterators": true,
+    "registered_with_live_scheduler": false,
+    "allocation_before_measurement": true,
+    "topology_mutation_during_samples": false,
+    "o1_container_leaf_callback": true,
+    "untimed_correctness_and_visit_check_per_cell": true,
+    "generation_race_rate_ppm": 0
+  },
+  "interval": {
+    "clock": "local_clock",
+    "local_irq_save_restore": true,
+    "raw_spin_rq_lock_unlock": true,
+    "clock_boundaries_outside_lock_inside_irq_disabled": true,
+    "paired_empty_control": true,
+    "alternating_pair_order": true,
+    "additional_formula": "max(rebuild_ns-control_ns,0)",
+    "sort_and_report_after_irq_restore": true,
+    "forbidden_operations_inside": [
+      "allocation",
+      "sort",
+      "print",
+      "trace",
+      "sleep",
+      "reschedule",
+      "policy",
+      "monitor",
+      "topology_mutation"
+    ]
+  },
+  "matrix": {
+    "runnable_entities": [0, 1, 8, 64, 256, 1024, 4096],
+    "hierarchy_depths": [0, 1, 4, 16, 64],
+    "cell_count": 35,
+    "warmup_pairs_per_cell": 256,
+    "measured_pairs_per_cell": 10000,
+    "result_rows_required": 35,
+    "arrays": ["control", "rebuild", "additional"],
+    "statistics": ["minimum", "p50", "p95", "p99", "p999", "maximum"]
+  },
+  "gate": {
+    "base_slice_ns": 700000,
+    "additional_p99_limit_ns": 25000,
+    "additional_max_limit_ns": 50000,
+    "sample_may_reach_base_slice": false,
+    "warning_count_allowed": 0,
+    "threshold_breach_classification": "rejected_full_locked_rebuild",
+    "threshold_breach_is_valid_negative_evidence": true,
+    "malformed_or_missing_evidence_classification": "harness_failed"
+  },
+  "targeted_compile": {
+    "architecture": "arm64",
+    "output": "build/DomainLeaseLinux.volume/builds/arm64-current/e4-lock-hold-syntax",
+    "object": "kernel/sched/fair.o",
+    "e4_config_enabled": true,
+    "compiler_warnings": 0,
+    "timed_helper_stack_bytes": 96,
+    "cell_driver_stack_bytes": 384,
+    "passed": true
+  },
+  "authorization_after_source_gate": {
+    "arm64_measurement_may_be_launched": true,
+    "x86_64_measurement_may_be_launched": false,
+    "e4_measurement_accepted": false,
+    "full_locked_rebuild_approved": false
+  },
+  "controlled_source_gate": {
+    "validation": "validation/0215-sched-exec-lease-p5a-r2-e4-lock-hold-source-gate.md",
+    "run_id": "20260714T-p5a-r2-e4-source-gate",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-e4-lock-hold-source-gate/20260714T-p5a-r2-e4-source-gate/result.json",
+    "result_sha256": "e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92"
+  },
+  "safety_flags": {
+    "production_layout_accepted": false,
+    "hot_field_approved": false,
+    "real_picker_fence_approved": false,
+    "real_publisher_approved": false,
+    "real_fanout_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "production_protection": false,
+    "latency_claim": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

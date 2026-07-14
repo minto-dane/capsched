@@ -5602,3 +5602,23 @@ P5A-R2 E4 lock-hold measurement plan:
   Boundary:
     only a direct E3 child changing `init/Kconfig` and `kernel/sched/fair.c`
     may now be drafted. Measurement launch needs a separate source gate.
+
+P5A-R2 E4 lock-hold source gate:
+  Implementation/0043 fixes direct E3 child `dc3618e2bc56`, tree
+  `b8a702399356`, and diff SHA-256 `9d33d848b13f` with 356 additions in exactly
+  `init/Kconfig` and `kernel/sched/fair.c`.
+
+  Validation/0215 run `20260714T-p5a-r2-e4-source-gate` passed the exact
+  identity/frozen-boundary, Kconfig isolation, 35-cell matrix, O(1) callback,
+  measured IRQ/clock/rq-lock order, forbidden-operation, strict checkpatch,
+  E4-enabled arm64 object, enabled-symbol, and stack gates. Checkpatch and
+  compiler warnings are 0/0/0 and 0; timed helper/cell stack frames are 96/384
+  bytes. Result SHA-256 is
+  `e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92`.
+
+  Next:
+    run the exact arm64 Apple Container/QEMU measurement. A 25 us p99, 50 us
+    max, 700 us base-slice, or warning breach is complete negative evidence
+    that rejects the full O(n) locked rebuild. Missing rows or build/boot/KTAP
+    integrity failure is a harness failure. x86_64 remains blocked until the
+    arm64 result is recorded.

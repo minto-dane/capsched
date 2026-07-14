@@ -4360,3 +4360,16 @@ P5A-R2 E4 measurement plan:
   Threshold failure is retained as negative evidence. Only an exact E3-child
   two-file source draft is authorized; measurement and performance approval
   remain false.
+
+P5A-R2 E4 source gate:
+  Implementation/0043 commit `dc3618e2bc56`, tree `b8a702399356`, and diff
+  SHA-256 `9d33d848b13f` add the default-off same-TU measurement in exactly two
+  files. Validation/0215 passed source isolation, exact interval/matrix,
+  strict checkpatch 0/0/0, E4-enabled arm64 `fair.o` with zero compiler
+  warnings, and 96/384-byte timed-helper/cell stack frames. Result SHA-256 is
+  `e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92`.
+
+  The exact arm64 measurement may launch. Threshold or warning failure must be
+  retained as valid `rejected_full_locked_rebuild` evidence; missing/malformed
+  rows are `harness_failed`. x86_64 and all production/performance/protection
+  claims remain blocked.
