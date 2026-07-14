@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-v1",
-  "date": "2026-07-13",
-  "status": "disposable_source_complete_arm64_build_ready",
+  "date": "2026-07-14",
+  "status": "disposable_source_complete_arm64_e2_passed",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout",
     "branch": "codex/p5a-r2-e2-layout",
@@ -92,12 +92,24 @@
       "rq.sched_exec_summary_state": 1,
       "rq.sched_exec_built_generation": 8
     },
+    "arm64_e2_complete": true,
+    "measured_layout": {
+      "sched_entity_size": 320,
+      "cfs_rq_size": 384,
+      "rq_size": 3520,
+      "task_struct_size": 4160,
+      "all_structure_deltas": 0,
+      "protected_offsets_unchanged": true
+    },
     "x86_64_e2_complete": false
   },
   "build": {
     "run_id": "20260713T-p5a-r2-e2-layout",
     "progress_job": "p5a-r2-e2-build",
-    "result_status_at_recording": "retry_pending_after_disabled_kconfig_harness_correction"
+    "result_status_at_recording": "passed",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-e2-arm64-layout-candidate/20260713T-p5a-r2-e2-layout/result.json",
+    "result_sha256": "360f98bd71ed641ba410205925cdec00d55cfbaa990e2dee361798e6afb945f1",
+    "cacheline_table_sha256": "5d1a88d774b1de4e26ccee36dd3bafb94e97abbc2ac599832f639ee4fe2186b0"
   },
   "safety_flags": {
     "layout_candidate_accepted": false,

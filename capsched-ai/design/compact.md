@@ -4296,8 +4296,10 @@ P5A-R2 E2 disposable arm64 candidate:
   to the rq tail gap. It changes four files and no runtime callsite. Initial
   append placements caused forbidden 64-byte growth and were discarded.
 
-  External job `p5a-r2-e2-build` owns the authoritative arm64 off/on/candidate
-  build and 51+8=59 symbol, 27-field, structure/offset comparison.
+  Corrected run `20260713T-p5a-r2-e2-layout` passed the authoritative arm64
+  off/on/candidate build and 51+8=59 symbol, 27-field, structure/offset
+  comparison. All four structure deltas are zero and protected offsets remain
+  fixed.
 
   The first attempt exited before compilation on a harness false negative:
   Kconfig validly omitted the dependency-hidden disabled candidate, but the
@@ -4305,5 +4307,6 @@ P5A-R2 E2 disposable arm64 candidate:
   the exact disposable candidate and frozen primary boundaries are unchanged.
 
   Boundary:
-    arm64 pass is pending result.json; x86_64 E2, accepted hot fields, E3,
-    behavior, denial correctness, protection, performance, and cost are false.
+    arm64 E2 layout evidence passed. x86_64 E2 is separate and next; accepted
+    hot fields, E3, behavior, denial correctness, protection, performance, and
+    cost are false.

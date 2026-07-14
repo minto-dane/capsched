@@ -5488,11 +5488,13 @@ P5A-R2 E2 disposable arm64 layout candidate:
     generation in the tail alignment gap. No cfs_rq/task field, callback,
     runtime callsite, ABI, or behavior exists.
 
-  Monitored validation:
-    external job `p5a-r2-e2-build` owns fresh arm64 off/on/candidate builds,
-    exact preservation of 51 E1 symbol values, eight additions, the 59-symbol
-    object, 27-field table, structure envelope, and protected offsets. Monitor
-    with `./tools/long-job.sh watch p5a-r2-e2-build 30`.
+  Arm64 validation:
+    corrected run `20260713T-p5a-r2-e2-layout` passed fresh arm64 off/on/
+    candidate builds, preserved all 51 E1 symbol values, added eight for 59
+    total, emitted the 27-field table, and preserved protected offsets. All
+    measured structure deltas are zero: sched_entity 320, cfs_rq 384, rq 3520,
+    task_struct 4160. Result SHA-256 is
+    `360f98bd71ed641ba410205925cdec00d55cfbaa990e2dee361798e6afb945f1`.
 
   First-attempt correction:
     run start `2026-07-14T02:14:58Z` exited at `02:16:33Z`, before target
@@ -5500,11 +5502,12 @@ P5A-R2 E2 disposable arm64 layout candidate:
     symbol, while the harness required the alternative not-set comment. The
     runner now fails only if the disabled candidate is unexpectedly `=y` and
     the same external job owns the retry. Candidate, primary Linux, and patch
-    queue identities did not change.
+    queue identities did not change. The corrected retry passed.
 
   Boundary:
     exploratory append placements grew cacheline-aligned structures by 64
     bytes and were rejected. The corrected gap-consuming placement preserved
-    all four E1 structure sizes in exploration, but authoritative arm64 pass
-    remains pending result.json. x86_64 E2, accepted hot fields, E3 rebuild,
-    behavior, denial correctness, protection, performance, and cost are false.
+    all four E1 structure sizes, now confirmed by authoritative arm64 evidence.
+    x86_64 E2 is the next separate architecture-local gate. Accepted hot
+    fields, E3 rebuild, behavior, denial correctness, protection, performance,
+    and cost are false.

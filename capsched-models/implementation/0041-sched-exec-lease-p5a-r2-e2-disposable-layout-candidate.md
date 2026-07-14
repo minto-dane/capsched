@@ -1,9 +1,10 @@
 # Implementation 0041: SchedExecLease P5A-R2 E2 Disposable Layout Candidate
 
-Date: 2026-07-13
+Date: 2026-07-14
 
-Status: disposable source candidate committed; monitored arm64 comparison is
-the remaining evidence. This is not a primary Linux or patch-queue change.
+Status: disposable source candidate committed and arm64 E2 layout validation
+passed. This is not a primary Linux or patch-queue change, and the candidate
+is not accepted as a production layout.
 
 ## Disposable Source Identity
 
@@ -67,6 +68,12 @@ The first monitored attempt stopped before compilation because the harness
 mistook an omitted dependency-hidden Kconfig symbol for an invalid disabled
 state. Validation/0208 records the correction and retry; this was a harness
 false negative and did not change the disposable source candidate.
+
+The corrected retry passed with 59 symbols and a 27-field table. It preserved
+all 51 E1 symbol values and every protected offset. `sched_entity`, `cfs_rq`,
+`rq`, and `task_struct` retained their E1 arm64 sizes of 320, 384, 3520, and
+4160 bytes respectively: all four measured deltas are zero. The authoritative
+result is validation/0208 run `20260713T-p5a-r2-e2-layout`.
 
 ## Non-Claims
 
