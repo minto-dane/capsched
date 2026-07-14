@@ -95,7 +95,9 @@ prepare_config()
 progress '15% preparing normal CONFIG off build'
 prepare_config off "$OFF_O" "$E1_BUILD_ROOT/off"
 make -C "$CANDIDATE_DIR" O="$OFF_O" olddefconfig > "$OUT_DIR/off-olddefconfig.log" 2>&1
-grep -q '^# CONFIG_SCHED_EXEC_LEASE_LAYOUT_CANDIDATE is not set$' "$OFF_O/.config" || die 'off config candidate state wrong'
+if grep -q '^CONFIG_SCHED_EXEC_LEASE_LAYOUT_CANDIDATE=y$' "$OFF_O/.config"; then
+	die 'off config unexpectedly enabled layout candidate'
+fi
 progress '25% building normal CONFIG off scheduler objects'
 make -C "$CANDIDATE_DIR" O="$OFF_O" -j"$(nproc)" kernel/sched/fair.o kernel/sched/core.o > "$OUT_DIR/off-build.log" 2>&1
 [ ! -e "$OFF_O/kernel/sched/exec_lease_layout_probe.o" ] || die 'off build emitted probe object'
@@ -103,7 +105,9 @@ make -C "$CANDIDATE_DIR" O="$OFF_O" -j"$(nproc)" kernel/sched/fair.o kernel/sche
 progress '40% preparing normal CONFIG on, candidate disabled build'
 prepare_config on "$ON_O" "$E1_BUILD_ROOT/on"
 make -C "$CANDIDATE_DIR" O="$ON_O" olddefconfig > "$OUT_DIR/on-olddefconfig.log" 2>&1
-grep -q '^# CONFIG_SCHED_EXEC_LEASE_LAYOUT_CANDIDATE is not set$' "$ON_O/.config" || die 'on config candidate state wrong'
+if grep -q '^CONFIG_SCHED_EXEC_LEASE_LAYOUT_CANDIDATE=y$' "$ON_O/.config"; then
+	die 'on config unexpectedly enabled layout candidate'
+fi
 progress '50% building normal CONFIG on scheduler objects'
 make -C "$CANDIDATE_DIR" O="$ON_O" -j"$(nproc)" kernel/sched/fair.o kernel/sched/core.o kernel/sched/exec_lease.o > "$OUT_DIR/on-build.log" 2>&1
 [ ! -e "$ON_O/kernel/sched/exec_lease_layout_probe.o" ] || die 'on build emitted probe object'

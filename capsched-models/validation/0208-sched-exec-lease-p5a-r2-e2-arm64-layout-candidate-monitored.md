@@ -42,6 +42,18 @@ Monitor from the project root:
 ./tools/long-job.sh watch p5a-r2-e2-build 30
 ```
 
+## Attempt History
+
+The first authoritative attempt started at `2026-07-14T02:14:58Z` and exited
+at `2026-07-14T02:16:33Z`, before any target object build. Its CONFIG-off
+`olddefconfig` correctly omitted the dependency-hidden candidate symbol, but
+the validation harness accepted only the alternative
+`# CONFIG_SCHED_EXEC_LEASE_LAYOUT_CANDIDATE is not set` spelling. The harness
+has been corrected to reject only an unexpected
+`CONFIG_SCHED_EXEC_LEASE_LAYOUT_CANDIDATE=y`; both valid disabled encodings are
+now accepted. The failed attempt makes no layout or build claim, and the exact
+candidate source, primary Linux tree, and patch queue were unchanged.
+
 ## Claim Boundary
 
 Until the result passes, even the arm64 envelope is pending. Regardless of the

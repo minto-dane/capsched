@@ -63,6 +63,11 @@ candidate-probe targeted builds. It compares all E1 symbol names and values,
 checks the exact eight-symbol addition, verifies the structure-growth and
 protected-offset envelope, and records the 27-field table.
 
+The first monitored attempt stopped before compilation because the harness
+mistook an omitted dependency-hidden Kconfig symbol for an invalid disabled
+state. Validation/0208 records the correction and retry; this was a harness
+false negative and did not change the disposable source candidate.
+
 ## Non-Claims
 
 The disposable candidate contains no picker, update, publication, fanout,

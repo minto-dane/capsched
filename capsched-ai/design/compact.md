@@ -4299,6 +4299,11 @@ P5A-R2 E2 disposable arm64 candidate:
   External job `p5a-r2-e2-build` owns the authoritative arm64 off/on/candidate
   build and 51+8=59 symbol, 27-field, structure/offset comparison.
 
+  The first attempt exited before compilation on a harness false negative:
+  Kconfig validly omitted the dependency-hidden disabled candidate, but the
+  harness required a not-set comment. The corrected runner rejects only `=y`;
+  the exact disposable candidate and frozen primary boundaries are unchanged.
+
   Boundary:
     arm64 pass is pending result.json; x86_64 E2, accepted hot fields, E3,
     behavior, denial correctness, protection, performance, and cost are false.

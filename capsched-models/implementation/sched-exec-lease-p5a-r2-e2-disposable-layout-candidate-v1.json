@@ -97,7 +97,7 @@
   "build": {
     "run_id": "20260713T-p5a-r2-e2-layout",
     "progress_job": "p5a-r2-e2-build",
-    "result_status_at_recording": "pending_monitored_job"
+    "result_status_at_recording": "retry_pending_after_disabled_kconfig_harness_correction"
   },
   "safety_flags": {
     "layout_candidate_accepted": false,

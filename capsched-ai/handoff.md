@@ -5494,6 +5494,14 @@ P5A-R2 E2 disposable arm64 layout candidate:
     object, 27-field table, structure envelope, and protected offsets. Monitor
     with `./tools/long-job.sh watch p5a-r2-e2-build 30`.
 
+  First-attempt correction:
+    run start `2026-07-14T02:14:58Z` exited at `02:16:33Z`, before target
+    compilation. `olddefconfig` validly omitted the dependency-hidden candidate
+    symbol, while the harness required the alternative not-set comment. The
+    runner now fails only if the disabled candidate is unexpectedly `=y` and
+    the same external job owns the retry. Candidate, primary Linux, and patch
+    queue identities did not change.
+
   Boundary:
     exploratory append placements grew cacheline-aligned structures by 64
     bytes and were rejected. The corrected gap-consuming placement preserved
