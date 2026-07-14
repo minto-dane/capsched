@@ -21,6 +21,7 @@ OFF_OUT="$BUILD_ROOT/e3-off"
 LAYOUT_OUT="$BUILD_ROOT/e3-layout-test-off"
 KUNIT_OUT="$BUILD_ROOT/e3-kunit-on"
 SERIAL_LOG="$OUT_DIR/qemu-serial.log"
+KTAP_LOG="$OUT_DIR/qemu-ktap.log"
 
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
 progress()
@@ -250,22 +251,23 @@ IMAGE="$KUNIT_OUT/arch/arm64/boot/Image"
 progress '88% booting arm64 Image in QEMU and running filtered KUnit suite'
 set +e
 timeout --signal=TERM "$QEMU_TIMEOUT" qemu-system-aarch64 \
-	-machine virt,gic-version=3 -cpu max -smp 2 -m 1024 \
-	-nographic -no-reboot -kernel "$IMAGE" \
+	-machine virt,gic-version=3 -cpu cortex-a57 -smp 2 -m 1024 \
+	-nic none -nographic -no-reboot -kernel "$IMAGE" \
 	-append 'console=ttyAMA0 earlycon=pl011,0x09000000 kunit.enable=1 kunit.autorun=1 kunit.filter_glob=sched_exec_lease_rebuild panic=1' \
 	> "$SERIAL_LOG" 2>&1
 qemu_rc=$?
 set -e
 
 progress '96% validating KTAP, object/config hashes, and non-claims'
-grep -Fq '# Subtest: sched_exec_lease_rebuild' "$SERIAL_LOG" || die 'KUnit suite did not start'
-grep -Eq '^ok [0-9]+ - sched_exec_lease_rebuild([[:space:]]|$)' "$SERIAL_LOG" || die 'KUnit suite did not pass'
-if grep -Eq '(^|[[:space:]])not ok [0-9]+' "$SERIAL_LOG"; then die 'KUnit reported failure'; fi
-if grep -Fq '# SKIP' "$SERIAL_LOG"; then die 'KUnit reported skipped required case'; fi
-kunit_case_count=$(grep -Ec '^[[:space:]]+ok [0-9]+ - sched_exec_rebuild_.*_test([[:space:]]|$)' "$SERIAL_LOG" || true)
+tr -d '\r' < "$SERIAL_LOG" | sed -E 's/^\[[^]]+\][[:space:]]*//' > "$KTAP_LOG"
+grep -Fq '# Subtest: sched_exec_lease_rebuild' "$KTAP_LOG" || die 'KUnit suite did not start'
+grep -Eq '^ok [0-9]+( -)? sched_exec_lease_rebuild([[:space:]]|$)' "$KTAP_LOG" || die 'KUnit suite did not pass'
+if grep -Eq '^[[:space:]]*not ok [0-9]+' "$KTAP_LOG"; then die 'KUnit reported failure'; fi
+if grep -Fq '# SKIP' "$KTAP_LOG"; then die 'KUnit reported skipped required case'; fi
+kunit_case_count=$(grep -Ec '^[[:space:]]*ok [0-9]+( -)? sched_exec_rebuild_.*_test([[:space:]]|$)' "$KTAP_LOG" || true)
 [ "$kunit_case_count" = 12 ] || die "KUnit case count mismatch: $kunit_case_count"
 for test_name in $(jq -r '.kunit.test_cases[]' "$CONFIG"); do
-	grep -Eq "^[[:space:]]+ok [0-9]+ - $test_name([[:space:]]|$)" "$SERIAL_LOG" || die "KUnit case missing: $test_name"
+	grep -Eq "^[[:space:]]*ok [0-9]+( -)? $test_name([[:space:]]|$)" "$KTAP_LOG" || die "KUnit case missing: $test_name"
 done
 
 parent_object="$PARENT_OUT/kernel/sched/fair.o"
@@ -278,6 +280,7 @@ layout_sha=$(sha256sum "$layout_object" | awk '{print $1}')
 kunit_sha=$(sha256sum "$kunit_object" | awk '{print $1}')
 image_sha=$(sha256sum "$IMAGE" | awk '{print $1}')
 serial_sha=$(sha256sum "$SERIAL_LOG" | awk '{print $1}')
+ktap_sha=$(sha256sum "$KTAP_LOG" | awk '{print $1}')
 parent_size=$(size -A "$parent_object" | awk 'NR > 1 && $1 != "Total" {s += $2} END {print s+0}')
 off_size=$(size -A "$off_object" | awk 'NR > 1 && $1 != "Total" {s += $2} END {print s+0}')
 layout_size=$(size -A "$layout_object" | awk 'NR > 1 && $1 != "Total" {s += $2} END {print s+0}')
@@ -287,10 +290,10 @@ jq -n \
 	--arg run_id "$RUN_ID" --arg source_commit "$expected_commit" --arg source_tree "$expected_tree" \
 	--arg source_diff_sha256 "$diff_hash" --arg parent_commit "$expected_parent" --arg primary_commit "$expected_primary" \
 	--arg parent_fair_sha256 "$parent_sha" --arg off_fair_sha256 "$off_sha" --arg layout_fair_sha256 "$layout_sha" --arg kunit_fair_sha256 "$kunit_sha" \
-	--arg image "$IMAGE" --arg image_sha256 "$image_sha" --arg serial_log "$SERIAL_LOG" --arg serial_sha256 "$serial_sha" \
+	--arg image "$IMAGE" --arg image_sha256 "$image_sha" --arg serial_log "$SERIAL_LOG" --arg serial_sha256 "$serial_sha" --arg ktap_log "$KTAP_LOG" --arg ktap_sha256 "$ktap_sha" \
 	--argjson parent_fair_size "$parent_size" --argjson off_fair_size "$off_size" --argjson layout_fair_size "$layout_size" --argjson kunit_fair_size "$kunit_size" \
 	--argjson qemu_exit_code "$qemu_rc" --argjson kunit_case_count "$kunit_case_count" \
-	'{schema_version:1,run_id:$run_id,status:"passed_e3_rebuild_prototype",architecture:"arm64",source_commit:$source_commit,source_tree:$source_tree,source_diff_sha256:$source_diff_sha256,parent_commit:$parent_commit,primary_linux_commit:$primary_commit,patch_queue_tail:"0014-sched-exec_lease-Expand-build-only-layout-probe.patch",changed_files:["init/Kconfig","kernel/sched/fair.c"],strict_checkpatch:{errors:0,warnings:0,checks:0},source_isolation_passed:true,forbidden_locked_operations_absent:true,frozen_e2_fields_and_probe_unchanged:true,build_matrix:{exact_parent_fair:true,e3_lease_off_fair:true,e3_layout_on_test_off_fair:true,e3_kunit_on_fair:true,e3_kunit_on_image:true},disabled_helper_and_suite_symbols_absent:true,enabled_suite_and_case_symbols_present:true,objects:{parent_fair:{size:$parent_fair_size,sha256:$parent_fair_sha256},e3_off_fair:{size:$off_fair_size,sha256:$off_fair_sha256},e3_layout_test_off_fair:{size:$layout_fair_size,sha256:$layout_fair_sha256},e3_kunit_fair:{size:$kunit_fair_size,sha256:$kunit_fair_sha256}},image:{path:$image,sha256:$image_sha256},qemu:{exit_code:$qemu_exit_code,serial_log:$serial_log,serial_sha256:$serial_sha256,suite:"sched_exec_lease_rebuild",suite_passed:true,case_count:$kunit_case_count,failed_cases:0,skipped_required_cases:0},required_case_family_count:14,exhaustive_leaf_limit:6,exhaustive_wrap_base_count:3,e3_source_accepted_for_disposable_correctness_evidence:true,e3_rebuild_correctness_accepted_for_synthetic_fixtures:true,e4_measurement_may_be_planned:true,production_layout_accepted:false,hot_field_approved:false,primary_linux_change_approved:false,patch_queue_change_approved:false,real_picker_fence_approved:false,real_publisher_approved:false,real_fanout_approved:false,incremental_update_closure_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,e4_measurement_passed:false,performance_claim:false,cost_claim:false,deployment_ready:false,datacenter_ready:false}' \
+	'{schema_version:1,run_id:$run_id,status:"passed_e3_rebuild_prototype",architecture:"arm64",source_commit:$source_commit,source_tree:$source_tree,source_diff_sha256:$source_diff_sha256,parent_commit:$parent_commit,primary_linux_commit:$primary_commit,patch_queue_tail:"0014-sched-exec_lease-Expand-build-only-layout-probe.patch",changed_files:["init/Kconfig","kernel/sched/fair.c"],strict_checkpatch:{errors:0,warnings:0,checks:0},source_isolation_passed:true,forbidden_locked_operations_absent:true,frozen_e2_fields_and_probe_unchanged:true,build_matrix:{exact_parent_fair:true,e3_lease_off_fair:true,e3_layout_on_test_off_fair:true,e3_kunit_on_fair:true,e3_kunit_on_image:true},disabled_helper_and_suite_symbols_absent:true,enabled_suite_and_case_symbols_present:true,objects:{parent_fair:{size:$parent_fair_size,sha256:$parent_fair_sha256},e3_off_fair:{size:$off_fair_size,sha256:$off_fair_sha256},e3_layout_test_off_fair:{size:$layout_fair_size,sha256:$layout_fair_sha256},e3_kunit_fair:{size:$kunit_fair_size,sha256:$kunit_fair_sha256}},image:{path:$image,sha256:$image_sha256},qemu:{exit_code:$qemu_exit_code,cpu_model:"cortex-a57",network_disabled:true,serial_log:$serial_log,serial_sha256:$serial_sha256,normalized_ktap_log:$ktap_log,normalized_ktap_sha256:$ktap_sha256,suite:"sched_exec_lease_rebuild",suite_passed:true,case_count:$kunit_case_count,failed_cases:0,skipped_required_cases:0},required_case_family_count:14,exhaustive_leaf_limit:6,exhaustive_wrap_base_count:3,e3_source_accepted_for_disposable_correctness_evidence:true,e3_rebuild_correctness_accepted_for_synthetic_fixtures:true,e4_measurement_may_be_planned:true,production_layout_accepted:false,hot_field_approved:false,primary_linux_change_approved:false,patch_queue_change_approved:false,real_picker_fence_approved:false,real_publisher_approved:false,real_fanout_approved:false,incremental_update_closure_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,e4_measurement_passed:false,performance_claim:false,cost_claim:false,deployment_ready:false,datacenter_ready:false}' \
 	> "$OUT_DIR/result.json"
 
 progress '100% passed; controlled object matrix, arm64 Image, and KUnit KTAP complete'
