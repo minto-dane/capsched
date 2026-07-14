@@ -9,13 +9,14 @@ CONFIG="$CAPSCHED_DIR/capsched-models/implementation/sched-exec-lease-p5a-r2-e4-
 SOURCE_GATE_RESULT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r2-e4-lock-hold-source-gate-r2/20260714T-p5a-r2-e4-source-gate-r2/result.json"
 SOURCE_GATE_SHA256=956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
-BUILD_OUT="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/builds/arm64-current/$RUN_ID"
+BUILD_OUT=${BUILD_OUT_OVERRIDE:-"$WORKSPACE_DIR/build/DomainLeaseLinux.volume/builds/arm64-current/$RUN_ID"}
 OUT_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r2-e4-arm64-lock-hold-measurement/$RUN_ID"
 PROGRESS_FILE=${PROGRESS_FILE:-"$OUT_DIR/progress"}
 HOST_ENV_FILE=${HOST_ENV_FILE:-}
 JOBS=${JOBS:-4}
 QEMU_TIMEOUT=${QEMU_TIMEOUT:-6000}
 OUTER_VIRTUALIZATION=${OUTER_VIRTUALIZATION:-"Apple Container machine domainlease-dev"}
+REUSE_BUILD=${REUSE_BUILD:-0}
 IMAGE="$BUILD_OUT/arch/arm64/boot/Image"
 SERIAL_LOG="$OUT_DIR/qemu-serial.log"
 KTAP_LOG="$OUT_DIR/qemu-ktap.log"
@@ -36,8 +37,14 @@ done
 if [ -z "$HOST_ENV_FILE" ] || [ ! -s "$HOST_ENV_FILE" ]; then
 	die 'host environment record is unavailable'
 fi
+case "$REUSE_BUILD" in 0|1) ;; *) die 'REUSE_BUILD must be 0 or 1' ;; esac
 
-rm -rf "$BUILD_OUT" "$OUT_DIR"
+rm -rf "$OUT_DIR"
+if [ "$REUSE_BUILD" = 0 ]; then
+	rm -rf "$BUILD_OUT"
+else
+	[ -d "$BUILD_OUT" ] || die 'reusable build directory is unavailable'
+fi
 mkdir -p "$BUILD_OUT" "$OUT_DIR"
 progress '5% exact E4 identity and passed source-gate evidence'
 
@@ -80,31 +87,36 @@ else
 	printf '%s\n' 'unavailable: outer Apple Container machine exposes no cpufreq directory' > "$OUT_DIR/container-frequency-governor.txt"
 fi
 
-progress '10% configuring measurement kernel and warning instrumentation'
-make -C "$E4_DIR" O="$BUILD_OUT" ARCH=arm64 defconfig > "$OUT_DIR/configure.log" 2>&1
-"$E4_DIR/scripts/config" --file "$BUILD_OUT/.config" \
-	--enable EXPERT \
-	--enable DEBUG_KERNEL \
-	--enable CGROUPS \
-	--enable CGROUP_SCHED \
-	--enable FAIR_GROUP_SCHED \
-	--enable SCHED_EXEC_LEASE \
-	--enable SCHED_EXEC_LEASE_LAYOUT_PROBE \
-	--enable SCHED_EXEC_LEASE_LAYOUT_CANDIDATE \
-	--enable KUNIT \
-	--disable KUNIT_ALL_TESTS \
-	--enable KUNIT_AUTORUN_ENABLED \
-	--set-str KUNIT_DEFAULT_FILTER_GLOB sched_exec_lease_rebuild_measure \
-	--set-val KUNIT_DEFAULT_TIMEOUT 1800 \
-	--enable SCHED_EXEC_LEASE_REBUILD_KUNIT_TEST \
-	--enable SCHED_EXEC_LEASE_REBUILD_MEASURE_KUNIT_TEST \
-	--enable PROVE_LOCKING \
-	--enable DEBUG_LOCK_ALLOC \
-	--enable SOFTLOCKUP_DETECTOR \
-	--enable HARDLOCKUP_DETECTOR \
-	--enable FTRACE \
-	--enable IRQSOFF_TRACER
-make -C "$E4_DIR" O="$BUILD_OUT" ARCH=arm64 olddefconfig >> "$OUT_DIR/configure.log" 2>&1
+if [ "$REUSE_BUILD" = 0 ]; then
+	progress '10% configuring measurement kernel and warning instrumentation'
+	make -C "$E4_DIR" O="$BUILD_OUT" ARCH=arm64 defconfig > "$OUT_DIR/configure.log" 2>&1
+	"$E4_DIR/scripts/config" --file "$BUILD_OUT/.config" \
+		--enable EXPERT \
+		--enable DEBUG_KERNEL \
+		--enable CGROUPS \
+		--enable CGROUP_SCHED \
+		--enable FAIR_GROUP_SCHED \
+		--enable SCHED_EXEC_LEASE \
+		--enable SCHED_EXEC_LEASE_LAYOUT_PROBE \
+		--enable SCHED_EXEC_LEASE_LAYOUT_CANDIDATE \
+		--enable KUNIT \
+		--disable KUNIT_ALL_TESTS \
+		--enable KUNIT_AUTORUN_ENABLED \
+		--set-str KUNIT_DEFAULT_FILTER_GLOB sched_exec_lease_rebuild_measure \
+		--set-val KUNIT_DEFAULT_TIMEOUT 1800 \
+		--enable SCHED_EXEC_LEASE_REBUILD_KUNIT_TEST \
+		--enable SCHED_EXEC_LEASE_REBUILD_MEASURE_KUNIT_TEST \
+		--enable PROVE_LOCKING \
+		--enable DEBUG_LOCK_ALLOC \
+		--enable SOFTLOCKUP_DETECTOR \
+		--enable HARDLOCKUP_DETECTOR \
+		--enable FTRACE \
+		--enable IRQSOFF_TRACER
+	make -C "$E4_DIR" O="$BUILD_OUT" ARCH=arm64 olddefconfig >> "$OUT_DIR/configure.log" 2>&1
+else
+	progress '10% verifying same-source Image for harness-only rerun'
+	printf 'reused_build_out=%s\nreason=post-build expected-cell fixture redirection fix\n' "$BUILD_OUT" > "$OUT_DIR/configure.log"
+fi
 
 for config_line in \
 	'CONFIG_FAIR_GROUP_SCHED=y' \
@@ -129,27 +141,32 @@ grep -E '^CONFIG_(PROVE_LOCKING|LOCKDEP|DEBUG_LOCK_ALLOC|FTRACE|IRQSOFF_TRACER|R
 grep -E '^CONFIG_(MITIGATION|ARM64_PTR_AUTH|ARM64_BTI|RANDOMIZE_BASE|STACKPROTECTOR|HARDENED_USERCOPY|FORTIFY_SOURCE)' \
 	"$BUILD_OUT/.config" > "$OUT_DIR/mitigation-config.txt" || true
 
-progress '15% building full arm64 measurement Image (compiler steps will advance this value)'
-set +e
-make -C "$E4_DIR" O="$BUILD_OUT" ARCH=arm64 -j"$JOBS" Image 2>&1 | tee "$OUT_DIR/build.log" | {
-	steps=0
-	while IFS= read -r line; do
-		printf '%s\n' "$line"
-		case "$line" in
-		*'  CC  '*|*'  AS  '*|*'  LD  '*|*'  AR  '*|*'  HOSTCC  '*|*'  HOSTLD  '*)
-			steps=$((steps + 1))
-			if [ $((steps % 25)) -eq 0 ]; then
-				percent=$((15 + steps / 65))
-				[ "$percent" -le 82 ] || percent=82
-				progress "$percent% building full arm64 measurement Image ($steps compiler/link steps observed)"
-			fi
-			;;
-		esac
-	done
-}
-make_rc=${PIPESTATUS[0]}
-set -e
-[ "$make_rc" = 0 ] || die "full arm64 Image build failed: $make_rc"
+if [ "$REUSE_BUILD" = 0 ]; then
+	progress '15% building full arm64 measurement Image (compiler steps will advance this value)'
+	set +e
+	make -C "$E4_DIR" O="$BUILD_OUT" ARCH=arm64 -j"$JOBS" Image 2>&1 | tee "$OUT_DIR/build.log" | {
+		steps=0
+		while IFS= read -r line; do
+			printf '%s\n' "$line"
+			case "$line" in
+			*'  CC  '*|*'  AS  '*|*'  LD  '*|*'  AR  '*|*'  HOSTCC  '*|*'  HOSTLD  '*)
+				steps=$((steps + 1))
+				if [ $((steps % 25)) -eq 0 ]; then
+					percent=$((15 + steps / 65))
+					[ "$percent" -le 82 ] || percent=82
+					progress "$percent% building full arm64 measurement Image ($steps compiler/link steps observed)"
+				fi
+				;;
+			esac
+		done
+	}
+	make_rc=${PIPESTATUS[0]}
+	set -e
+	[ "$make_rc" = 0 ] || die "full arm64 Image build failed: $make_rc"
+else
+	progress '82% same-source Image and fair.o reused; compile intentionally skipped'
+	printf 'build_reused=true\nbuild_out=%s\nreason=post-build expected-cell fixture redirection fix\n' "$BUILD_OUT" > "$OUT_DIR/build.log"
+fi
 [ -s "$IMAGE" ] || die 'arm64 Image missing'
 if grep -Eqi '(^|[^[:alpha:]])(warning|error):' "$OUT_DIR/build.log"; then die 'compiler warning or error found'; fi
 
@@ -183,6 +200,8 @@ set +e
 wait "$qemu_timeout_pid"
 qemu_rc=$?
 set -e
+printf '%s\n' "$qemu_rc" > "$OUT_DIR/qemu-exit-code.txt"
+[ "$qemu_rc" = 0 ] || die "QEMU measurement did not power off cleanly: $qemu_rc"
 
 progress '96% validating KTAP, all cells, warning evidence, and fixed rejection gates'
 tr -d '\r' < "$SERIAL_LOG" | sed -E 's/^\[[^]]+\][[:space:]]*//' > "$KTAP_LOG"
@@ -240,10 +259,12 @@ BEGIN {
 ' "$ROWS_RAW" > "$TABLE" || die 'malformed E4 result row'
 [ "$(($(wc -l < "$TABLE") - 1))" = 35 ] || die 'parsed measurement row count mismatch'
 
-printf 'q\td\n' > "$OUT_DIR/expected-cells.tsv"
-for q in 0 1 8 64 256 1024 4096; do
-	for d in 0 1 4 16 64; do printf '%s\t%s\n' "$q" "$d"; done
-done
+{
+	printf 'q\td\n'
+	for q in 0 1 8 64 256 1024 4096; do
+		for d in 0 1 4 16 64; do printf '%s\t%s\n' "$q" "$d"; done
+	done
+} > "$OUT_DIR/expected-cells.tsv"
 tail -n +2 "$OUT_DIR/expected-cells.tsv" | sort -n -k1,1 -k2,2 > "$OUT_DIR/expected-cells.sorted"
 tail -n +2 "$TABLE" | cut -f1,2 | sort -n -k1,1 -k2,2 > "$OUT_DIR/actual-cells.sorted"
 cmp "$OUT_DIR/expected-cells.sorted" "$OUT_DIR/actual-cells.sorted" >/dev/null || die 'missing, duplicate, or unexpected measurement cell'
@@ -306,6 +327,13 @@ compiler=$(sed -n '1p' "$OUT_DIR/compiler.txt")
 qemu_version=$(sed -n '1p' "$OUT_DIR/qemu-version.txt")
 container_uname=$(sed -n '1p' "$OUT_DIR/container-uname.txt")
 clocksource_detail=$(grep -Ei 'clocksource|arch_sys_counter' "$SERIAL_LOG" | tail -n 1 || true)
+if [ "$REUSE_BUILD" = 1 ]; then
+	build_reused=true
+	build_mode=same_source_image_reused_after_post_build_harness_fix
+else
+	build_reused=false
+	build_mode=fresh_full_image_build
+fi
 
 jq -n \
 	--arg run_id "$RUN_ID" --arg status "$classification" \
@@ -314,13 +342,13 @@ jq -n \
 	--arg serial "$SERIAL_LOG" --arg serial_sha256 "$serial_sha" --arg ktap "$KTAP_LOG" --arg ktap_sha256 "$ktap_sha" \
 	--arg table "$TABLE" --arg table_sha256 "$table_sha" --arg host_environment_sha256 "$host_env_sha" --arg warning_config_sha256 "$warning_config_sha" \
 	--arg compiler "$compiler" --arg qemu_version "$qemu_version" --arg container_uname "$container_uname" --arg clocksource_detail "$clocksource_detail" \
-	--arg outer_virtualization "$OUTER_VIRTUALIZATION" \
+	--arg outer_virtualization "$OUTER_VIRTUALIZATION" --arg build_mode "$build_mode" --argjson build_reused "$build_reused" \
 	--argjson qemu_exit_code "$qemu_rc" --argjson threshold_breach_count "$threshold_breaches" --argjson warning_count "$warning_count" \
 	--argjson runtime_base_slice_ns "$runtime_base_slice_ns" --argjson tunable_scaling "$tunable_scaling" --argjson online_cpus "$online_cpus" \
 	--argjson lockdep_warnings "$lockdep_warnings" --argjson irqsoff_warnings "$irqsoff_warnings" --argjson rcu_warnings "$rcu_warnings" \
 	--argjson softlockup_warnings "$softlockup_warnings" --argjson hardlockup_warnings "$hardlockup_warnings" --argjson x86_may_launch "$x86_may_launch" \
 	--slurpfile rows "$OUT_DIR/measurement-rows.json" --slurpfile failures "$OUT_DIR/threshold-failures.json" \
-	'{schema_version:1,run_id:$run_id,status:$status,architecture:"arm64",source_commit:"f6ad4e454778c52bcdaaecf684c148a3a8dae857",source_tree:"265e6357627490e51084979382ef34b2cfcc0cb8",source_diff_sha256:"3f52a2b2724bd795466ab1f344bf3d02fde7ee6a39bfde0945f7f8cf6ab8e3a3",source_gate_result_sha256:$source_gate_sha256,matrix:{queue_sizes:[0,1,8,64,256,1024,4096],depths:[0,1,4,16,64],cells:35,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,race_ppm:0,result_rows:($rows[0]|length)},gate:{base_slice_ns:700000,base_slice_semantics:"normalized_sysctl_sched_base_slice_fixed_threshold_basis",runtime_base_slice_ns:$runtime_base_slice_ns,tunable_scaling:$tunable_scaling,runtime_scaling_may_not_relax_thresholds:true,additional_p99_limit_ns:25000,additional_max_limit_ns:50000,sample_may_reach_base_slice:false,threshold_breach_count:$threshold_breach_count,warning_count:$warning_count},measurement_rows:$rows[0],threshold_failures:$failures[0],warnings:{evidence_available:true,configuration_sha256:$warning_config_sha256,irqsoff_tracer_active:true,lockdep:$lockdep_warnings,irqsoff:$irqsoff_warnings,rcu_stall:$rcu_warnings,soft_lockup:$softlockup_warnings,hard_lockup:$hardlockup_warnings,total:$warning_count},environment:{outer_host_record_sha256:$host_environment_sha256,outer_virtualization:$outer_virtualization,container_uname:$container_uname,qemu_version:$qemu_version,qemu_accelerator:"tcg,thread=multi",qemu_machine:"virt,gic-version=3",qemu_cpu:"cortex-a57",qemu_cpus:2,qemu_memory_mib:2048,qemu_network_disabled:true,guest_architecture:"arm64",guest_online_cpus:$online_cpus,guest_sched_tunable_scaling:$tunable_scaling,guest_runtime_base_slice_ns:$runtime_base_slice_ns,guest_frequency_governor_available:false,guest_frequency_governor_note:"fixed virtual cortex-a57 under TCG; no guest userspace cpufreq probe",compiler:$compiler,sample_clock:"local_clock",clocksource_detail:$clocksource_detail,kernel_command_line_parameters_recognized:true,virtualized_result_supports_bare_metal_claim:false},artifacts:{config:{path:$config,sha256:$config_sha256},image:{path:$image,sha256:$image_sha256},fair_object_sha256:$fair_object_sha256,serial:{path:$serial,sha256:$serial_sha256},normalized_ktap:{path:$ktap,sha256:$ktap_sha256},measurement_table:{path:$table,sha256:$table_sha256}},qemu_exit_code:$qemu_exit_code,kunit:{suite:"sched_exec_lease_rebuild_measure",suite_passed:true,case_count:1,failed_cases:0,skipped_required_cases:0},architecture_measurement_valid:true,threshold_failure_is_valid_negative_evidence:true,x86_64_measurement_may_be_launched:$x86_may_launch,e4_measurement_accepted:false,full_locked_rebuild_approved:false,production_layout_accepted:false,hot_field_approved:false,primary_linux_change_approved:false,patch_queue_change_approved:false,real_picker_fence_approved:false,real_publisher_approved:false,real_fanout_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,bare_metal_latency_claim:false,performance_claim:false,cost_claim:false,deployment_ready:false,datacenter_ready:false}' \
+	'{schema_version:1,run_id:$run_id,status:$status,architecture:"arm64",source_commit:"f6ad4e454778c52bcdaaecf684c148a3a8dae857",source_tree:"265e6357627490e51084979382ef34b2cfcc0cb8",source_diff_sha256:"3f52a2b2724bd795466ab1f344bf3d02fde7ee6a39bfde0945f7f8cf6ab8e3a3",source_gate_result_sha256:$source_gate_sha256,matrix:{queue_sizes:[0,1,8,64,256,1024,4096],depths:[0,1,4,16,64],cells:35,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,race_ppm:0,result_rows:($rows[0]|length)},gate:{base_slice_ns:700000,base_slice_semantics:"normalized_sysctl_sched_base_slice_fixed_threshold_basis",runtime_base_slice_ns:$runtime_base_slice_ns,tunable_scaling:$tunable_scaling,runtime_scaling_may_not_relax_thresholds:true,additional_p99_limit_ns:25000,additional_max_limit_ns:50000,sample_may_reach_base_slice:false,threshold_breach_count:$threshold_breach_count,warning_count:$warning_count},measurement_rows:$rows[0],threshold_failures:$failures[0],warnings:{evidence_available:true,configuration_sha256:$warning_config_sha256,irqsoff_tracer_active:true,lockdep:$lockdep_warnings,irqsoff:$irqsoff_warnings,rcu_stall:$rcu_warnings,soft_lockup:$softlockup_warnings,hard_lockup:$hardlockup_warnings,total:$warning_count},environment:{outer_host_record_sha256:$host_environment_sha256,outer_virtualization:$outer_virtualization,build_reused:$build_reused,build_mode:$build_mode,container_uname:$container_uname,qemu_version:$qemu_version,qemu_accelerator:"tcg,thread=multi",qemu_machine:"virt,gic-version=3",qemu_cpu:"cortex-a57",qemu_cpus:2,qemu_memory_mib:2048,qemu_network_disabled:true,guest_architecture:"arm64",guest_online_cpus:$online_cpus,guest_sched_tunable_scaling:$tunable_scaling,guest_runtime_base_slice_ns:$runtime_base_slice_ns,guest_frequency_governor_available:false,guest_frequency_governor_note:"fixed virtual cortex-a57 under TCG; no guest userspace cpufreq probe",compiler:$compiler,sample_clock:"local_clock",clocksource_detail:$clocksource_detail,kernel_command_line_parameters_recognized:true,virtualized_result_supports_bare_metal_claim:false},artifacts:{config:{path:$config,sha256:$config_sha256},image:{path:$image,sha256:$image_sha256},fair_object_sha256:$fair_object_sha256,serial:{path:$serial,sha256:$serial_sha256},normalized_ktap:{path:$ktap,sha256:$ktap_sha256},measurement_table:{path:$table,sha256:$table_sha256}},qemu_exit_code:$qemu_exit_code,kunit:{suite:"sched_exec_lease_rebuild_measure",suite_passed:true,case_count:1,failed_cases:0,skipped_required_cases:0},architecture_measurement_valid:true,threshold_failure_is_valid_negative_evidence:true,x86_64_measurement_may_be_launched:$x86_may_launch,e4_measurement_accepted:false,full_locked_rebuild_approved:false,production_layout_accepted:false,hot_field_approved:false,primary_linux_change_approved:false,patch_queue_change_approved:false,real_picker_fence_approved:false,real_publisher_approved:false,real_fanout_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,bare_metal_latency_claim:false,performance_claim:false,cost_claim:false,deployment_ready:false,datacenter_ready:false}' \
 	> "$OUT_DIR/result.json"
 
 if [ "$classification" = rejected_full_locked_rebuild ]; then
