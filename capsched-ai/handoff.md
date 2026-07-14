@@ -5546,3 +5546,14 @@ P5A-R2 E2 x86_64 layout evidence plan:
     remains unaccepted pending a separate E2 acceptance gate; production hot
     fields, primary promotion, E3, runtime, protection, performance, and cost
     remain false.
+
+P5A-R2 E2 evidence closure:
+  Analysis/0161, formal/0128, and validation/0211 passed. Run
+  `20260714T-p5a-r2-e2-layout-closure` verified the exact hashed arm64 and
+  x86_64 results, immutable candidate/source boundaries, 51+8=59 symbols and
+  27 fields per architecture, zero growth, protected measurements, field
+  bounds, and architecture-local offsets. Safe TLC was 5/4/depth 4 and all 24
+  unsafe configurations were rejected. Candidate `162d16640634` is frozen
+  only as E3 planning input. E3 plan drafting is allowed; E3 worktree/source,
+  primary promotion, production layout/hot fields, runtime, protection,
+  performance, and cost remain false.

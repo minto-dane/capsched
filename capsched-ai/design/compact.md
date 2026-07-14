@@ -4332,3 +4332,10 @@ P5A-R2 E2 x86_64 plan:
   fields, and measured zero growth. rq offsets 3380/3384 are correctly
   architecture-local versus arm64 3508/3512. Both E2 architecture builds pass;
   acceptance and E3 remain separately gated.
+
+P5A-R2 E2 closure:
+  Analysis/0161/formal/0128/validation/0211 passed exact dual-architecture
+  evidence closure with safe TLC 5/4/depth 4 and 24 expected counterexamples.
+  Candidate `162d16640634` is frozen only for drafting an E3 plan. No E3
+  worktree/source, production hot field, primary promotion, runtime,
+  protection, performance, or cost claim is approved.

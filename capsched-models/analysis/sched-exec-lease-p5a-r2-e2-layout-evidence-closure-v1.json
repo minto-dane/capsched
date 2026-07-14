@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-e2-layout-evidence-closure-v1",
+  "date": "2026-07-14",
+  "status": "e2_cross_architecture_evidence_closure_plan",
+  "source": {
+    "primary_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "candidate_commit": "162d16640634637a6f7604b90bf2275bea47ec63",
+    "candidate_tree": "a435a65f1b1ae5e4c10d09e5753fc0871f1381d1",
+    "candidate_diff_sha256": "645ef21d82ff3abbe64177a624846e730c30400897cd011190e9abb579aa56ee",
+    "patch_queue_tail": "0014-sched-exec_lease-Expand-build-only-layout-probe.patch",
+    "exact_four_file_scope": true,
+    "default_off_probe_dependent": true
+  },
+  "evidence": {
+    "arm64_result": "build/source-check/sched-exec-lease-p5a-r2-e2-arm64-layout-candidate/20260713T-p5a-r2-e2-layout/result.json",
+    "arm64_result_sha256": "360f98bd71ed641ba410205925cdec00d55cfbaa990e2dee361798e6afb945f1",
+    "x86_64_result": "build/source-check/sched-exec-lease-p5a-r2-e2-x86_64-layout-candidate/20260714T-p5a-r2-e2-x86_64-layout/result.json",
+    "x86_64_result_sha256": "6c7f53da489b2644a2e04ea8f424fdc990e8f1c9b59a9a60089a0251c049bd21",
+    "required_architectures": ["arm64", "x86_64"],
+    "e1_symbols_each": 51,
+    "candidate_additions_each": 8,
+    "candidate_symbols_each": 59,
+    "table_fields_each": 27,
+    "changed_e1_values_allowed": 0,
+    "missing_e1_symbols_allowed": 0,
+    "all_structure_deltas_required": 0,
+    "normal_candidate_absence_required": true,
+    "protected_measurements_required": true,
+    "field_bounds_required": true,
+    "cross_architecture_byte_identity": false
+  },
+  "frozen_fields": [
+    {"structure":"sched_entity","name":"sched_exec_summary_valid","type":"unsigned char","placement":"flag_area_hole"},
+    {"structure":"sched_entity","name":"sched_exec_min_fresh_vruntime","type":"u64","placement":"alignment_gap_before_sched_avg"},
+    {"structure":"rq","name":"sched_exec_summary_state","type":"unsigned char","placement":"tail_after_nr_iowait"},
+    {"structure":"rq","name":"sched_exec_built_generation","type":"u64","placement":"aligned_tail_after_summary_state"}
+  ],
+  "architecture_local_offsets": {
+    "arm64": {"summary_valid":92,"summary_min":200,"rq_state":3508,"rq_generation":3512},
+    "x86_64": {"summary_valid":92,"summary_min":200,"rq_state":3380,"rq_generation":3384}
+  },
+  "decision": {
+    "e2_layout_evidence_complete": true,
+    "exact_disposable_layout_frozen_for_e3_planning": true,
+    "e3_plan_may_be_drafted": true,
+    "e3_worktree_may_be_created": false,
+    "production_layout_accepted": false,
+    "hot_field_approved": false,
+    "primary_linux_change_approved": false,
+    "patch_queue_change_approved": false,
+    "e3_source_approved": false,
+    "e3_rebuild_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  },
+  "formal": {
+    "model_dir": "capsched-models/formal/0128-p5a-r2-e2-layout-evidence-closure-model",
+    "safe_cfg": "P5AR2E2LayoutEvidenceClosureSafe.cfg",
+    "unsafe_cfg_count": 24
+  }
+}

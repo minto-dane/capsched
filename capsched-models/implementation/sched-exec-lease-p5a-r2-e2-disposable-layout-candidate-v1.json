@@ -131,6 +131,16 @@
     "x86_64_result_sha256": "6c7f53da489b2644a2e04ea8f424fdc990e8f1c9b59a9a60089a0251c049bd21",
     "x86_64_cacheline_table_sha256": "db45be6a5695300a4521b0d86a446311907c3290b7439eb0f2d7e2a798976c00"
   },
+  "evidence_closure": {
+    "status": "passed_for_e3_planning_input_only",
+    "run_id": "20260714T-p5a-r2-e2-layout-closure",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-e2-layout-evidence-closure/20260714T-p5a-r2-e2-layout-closure/result.json",
+    "result_sha256": "8530480492cee6b2182bbe5b99a5d886cf5a2559dd8ad1341cba1643d6464031",
+    "exact_disposable_layout_frozen_for_e3_planning": true,
+    "e3_plan_may_be_drafted": true,
+    "e3_worktree_may_be_created": false,
+    "production_layout_accepted": false
+  },
   "safety_flags": {
     "layout_candidate_accepted": false,
     "hot_field_approved": false,
