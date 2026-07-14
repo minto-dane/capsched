@@ -6,8 +6,8 @@ CAPSCHED_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
 WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
 E4_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/worktrees/p5a-r2-e4-lock-hold"
 CONFIG="$CAPSCHED_DIR/capsched-models/implementation/sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement-v1.json"
-SOURCE_GATE_RESULT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r2-e4-lock-hold-source-gate/20260714T-p5a-r2-e4-source-gate/result.json"
-SOURCE_GATE_SHA256=e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92
+SOURCE_GATE_RESULT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r2-e4-lock-hold-source-gate-r2/20260714T-p5a-r2-e4-source-gate-r2/result.json"
+SOURCE_GATE_SHA256=956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
 BUILD_OUT="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/builds/arm64-current/$RUN_ID"
 OUT_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r2-e4-arm64-lock-hold-measurement/$RUN_ID"
@@ -41,17 +41,17 @@ mkdir -p "$BUILD_OUT" "$OUT_DIR"
 progress '5% exact E4 identity and passed source-gate evidence'
 
 jq empty "$CONFIG"
-[ "$(git -C "$E4_DIR" rev-parse HEAD)" = dc3618e2bc56d3ede9b8d1378099c7b9ad15e08f ] || die 'E4 source moved'
-[ "$(git -C "$E4_DIR" rev-parse 'HEAD^{tree}')" = b8a7023993560bcc40077a5db25288c3fdf4765a ] || die 'E4 tree moved'
+[ "$(git -C "$E4_DIR" rev-parse HEAD)" = f6ad4e454778c52bcdaaecf684c148a3a8dae857 ] || die 'E4 source moved'
+[ "$(git -C "$E4_DIR" rev-parse 'HEAD^{tree}')" = 265e6357627490e51084979382ef34b2cfcc0cb8 ] || die 'E4 tree moved'
 [ "$(git -C "$E4_DIR" rev-parse HEAD^)" = d1d5e78da8484c91eae70f22399c6901da680ea0 ] || die 'E4 parent moved'
 [ -z "$(git -C "$E4_DIR" status --porcelain --untracked-files=no)" ] || die 'E4 source dirty'
 [ "$(sha256sum "$SOURCE_GATE_RESULT" | awk '{print $1}')" = "$SOURCE_GATE_SHA256" ] || die 'source-gate result hash mismatch'
 jq -e '
-  .status == "passed_e4_source_gate" and
-  .source_commit == "dc3618e2bc56d3ede9b8d1378099c7b9ad15e08f" and
-  .source_tree == "b8a7023993560bcc40077a5db25288c3fdf4765a" and
-  .source_diff_sha256 == "9d33d848b13f01e15d6ff6369c465964ca0682829eafbaa3906bbf17e3b18709" and
-  .arm64_measurement_may_be_launched == true and
+  .status == "passed_e4_corrected_source_gate" and
+  .source_commit == "f6ad4e454778c52bcdaaecf684c148a3a8dae857" and
+  .source_tree == "265e6357627490e51084979382ef34b2cfcc0cb8" and
+  .source_diff_sha256 == "3f52a2b2724bd795466ab1f344bf3d02fde7ee6a39bfde0945f7f8cf6ab8e3a3" and
+  .arm64_measurement_may_be_relaunched == true and
   .x86_64_measurement_may_be_launched == false and
   .e4_measurement_accepted == false and
   .full_locked_rebuild_approved == false
@@ -162,7 +162,7 @@ set +e
 timeout --signal=TERM "$QEMU_TIMEOUT" qemu-system-aarch64 \
 	-machine virt,gic-version=3 -cpu cortex-a57 -accel tcg,thread=multi \
 	-smp 2 -m 2048 -nic none -nographic -no-reboot -kernel "$IMAGE" \
-	-append 'console=ttyAMA0 earlycon=pl011,0x09000000 kunit.enable=1 kunit.autorun=1 kunit.filter_glob=sched_exec_lease_rebuild_measure kunit_shutdown=poweroff ftrace=irqsoff nmi_watchdog=1 softlockup_panic=0 hardlockup_panic=0 rcu_cpu_stall_suppress=0 panic=1' \
+	-append 'console=ttyAMA0 earlycon=pl011,0x09000000 kunit.enable=1 kunit.autorun=1 kunit.filter_glob=sched_exec_lease_rebuild_measure kunit_shutdown=poweroff ftrace=irqsoff nmi_watchdog=nopanic,1 softlockup_panic=0 rcupdate.rcu_cpu_stall_suppress=0 panic=1' \
 	> "$SERIAL_LOG" 2>&1 &
 qemu_timeout_pid=$!
 set -e
@@ -185,6 +185,9 @@ set -e
 
 progress '96% validating KTAP, all cells, warning evidence, and fixed rejection gates'
 tr -d '\r' < "$SERIAL_LOG" | sed -E 's/^\[[^]]+\][[:space:]]*//' > "$KTAP_LOG"
+if grep -Fq 'Unknown kernel command line parameters' "$SERIAL_LOG"; then
+	die 'guest reported unknown kernel command-line parameters'
+fi
 grep -Fq "Starting tracer 'irqsoff'" "$SERIAL_LOG" || die 'irqsoff tracer did not start'
 grep -Fq '# Subtest: sched_exec_lease_rebuild_measure' "$KTAP_LOG" || die 'measurement KUnit suite did not start'
 grep -Eq '^ok [0-9]+( -)? sched_exec_lease_rebuild_measure([[:space:]]|$)' "$KTAP_LOG" || die 'measurement KUnit suite did not pass'
@@ -194,7 +197,24 @@ kunit_case_count=$(grep -Ec '^[[:space:]]*ok [0-9]+( -)? sched_exec_rebuild_meas
 [ "$kunit_case_count" = 1 ] || die "measurement KUnit case count mismatch: $kunit_case_count"
 grep -F 'E4_META ' "$KTAP_LOG" | sed 's/^.*E4_META /E4_META /' > "$OUT_DIR/e4-meta.txt"
 [ "$(wc -l < "$OUT_DIR/e4-meta.txt" | tr -d ' ')" = 1 ] || die 'E4 metadata row count mismatch'
-grep -Fq 'E4_META cells=35 samples=10000 warmups=256 base_slice_ns=700000 p99_limit_ns=25000 max_limit_ns=50000 clock=local_clock' "$OUT_DIR/e4-meta.txt" || die 'E4 metadata contract mismatch'
+grep -Eq '^E4_META cells=35 samples=10000 warmups=256 base_slice_ns=700000 runtime_base_slice_ns=[0-9]+ tunable_scaling=[0-9]+ online_cpus=2 p99_limit_ns=25000 max_limit_ns=50000 clock=local_clock$' "$OUT_DIR/e4-meta.txt" || die 'E4 metadata contract mismatch'
+meta_value()
+{
+	awk -v key="$1" '{
+		for (i = 2; i <= NF; i++) {
+			split($i, pair, "=");
+			if (pair[1] == key) print pair[2];
+		}
+	}' "$OUT_DIR/e4-meta.txt"
+}
+runtime_base_slice_ns=$(meta_value runtime_base_slice_ns)
+tunable_scaling=$(meta_value tunable_scaling)
+online_cpus=$(meta_value online_cpus)
+[[ "$runtime_base_slice_ns" =~ ^[0-9]+$ ]] || die 'runtime base slice is not numeric'
+[[ "$tunable_scaling" =~ ^[0-9]+$ ]] || die 'tunable scaling is not numeric'
+[[ "$online_cpus" =~ ^[0-9]+$ ]] || die 'online CPU count is not numeric'
+[ "$runtime_base_slice_ns" -ge 700000 ] || die 'runtime base slice is below its normalized basis'
+[ "$online_cpus" = 2 ] || die 'guest online CPU count moved'
 
 grep -F 'E4_RESULT ' "$KTAP_LOG" | sed 's/^.*E4_RESULT /E4_RESULT /' > "$ROWS_RAW"
 [ "$(wc -l < "$ROWS_RAW" | tr -d ' ')" = 35 ] || die 'E4 result row count mismatch'
@@ -294,10 +314,11 @@ jq -n \
 	--arg table "$TABLE" --arg table_sha256 "$table_sha" --arg host_environment_sha256 "$host_env_sha" --arg warning_config_sha256 "$warning_config_sha" \
 	--arg compiler "$compiler" --arg qemu_version "$qemu_version" --arg container_uname "$container_uname" --arg clocksource_detail "$clocksource_detail" \
 	--argjson qemu_exit_code "$qemu_rc" --argjson threshold_breach_count "$threshold_breaches" --argjson warning_count "$warning_count" \
+	--argjson runtime_base_slice_ns "$runtime_base_slice_ns" --argjson tunable_scaling "$tunable_scaling" --argjson online_cpus "$online_cpus" \
 	--argjson lockdep_warnings "$lockdep_warnings" --argjson irqsoff_warnings "$irqsoff_warnings" --argjson rcu_warnings "$rcu_warnings" \
 	--argjson softlockup_warnings "$softlockup_warnings" --argjson hardlockup_warnings "$hardlockup_warnings" --argjson x86_may_launch "$x86_may_launch" \
 	--slurpfile rows "$OUT_DIR/measurement-rows.json" --slurpfile failures "$OUT_DIR/threshold-failures.json" \
-	'{schema_version:1,run_id:$run_id,status:$status,architecture:"arm64",source_commit:"dc3618e2bc56d3ede9b8d1378099c7b9ad15e08f",source_tree:"b8a7023993560bcc40077a5db25288c3fdf4765a",source_diff_sha256:"9d33d848b13f01e15d6ff6369c465964ca0682829eafbaa3906bbf17e3b18709",source_gate_result_sha256:$source_gate_sha256,matrix:{queue_sizes:[0,1,8,64,256,1024,4096],depths:[0,1,4,16,64],cells:35,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,race_ppm:0,result_rows:($rows[0]|length)},gate:{base_slice_ns:700000,additional_p99_limit_ns:25000,additional_max_limit_ns:50000,sample_may_reach_base_slice:false,threshold_breach_count:$threshold_breach_count,warning_count:$warning_count},measurement_rows:$rows[0],threshold_failures:$failures[0],warnings:{evidence_available:true,configuration_sha256:$warning_config_sha256,irqsoff_tracer_active:true,lockdep:$lockdep_warnings,irqsoff:$irqsoff_warnings,rcu_stall:$rcu_warnings,soft_lockup:$softlockup_warnings,hard_lockup:$hardlockup_warnings,total:$warning_count},environment:{outer_host_record_sha256:$host_environment_sha256,outer_virtualization:"Apple Container machine domainlease-dev",container_uname:$container_uname,qemu_version:$qemu_version,qemu_accelerator:"tcg,thread=multi",qemu_machine:"virt,gic-version=3",qemu_cpu:"cortex-a57",qemu_cpus:2,qemu_memory_mib:2048,qemu_network_disabled:true,guest_architecture:"arm64",guest_frequency_governor_available:false,guest_frequency_governor_note:"fixed virtual cortex-a57 under TCG; no guest userspace cpufreq probe",compiler:$compiler,sample_clock:"local_clock",clocksource_detail:$clocksource_detail,virtualized_result_supports_bare_metal_claim:false},artifacts:{config:{path:$config,sha256:$config_sha256},image:{path:$image,sha256:$image_sha256},fair_object_sha256:$fair_object_sha256,serial:{path:$serial,sha256:$serial_sha256},normalized_ktap:{path:$ktap,sha256:$ktap_sha256},measurement_table:{path:$table,sha256:$table_sha256}},qemu_exit_code:$qemu_exit_code,kunit:{suite:"sched_exec_lease_rebuild_measure",suite_passed:true,case_count:1,failed_cases:0,skipped_required_cases:0},architecture_measurement_valid:true,threshold_failure_is_valid_negative_evidence:true,x86_64_measurement_may_be_launched:$x86_may_launch,e4_measurement_accepted:false,full_locked_rebuild_approved:false,production_layout_accepted:false,hot_field_approved:false,primary_linux_change_approved:false,patch_queue_change_approved:false,real_picker_fence_approved:false,real_publisher_approved:false,real_fanout_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,bare_metal_latency_claim:false,performance_claim:false,cost_claim:false,deployment_ready:false,datacenter_ready:false}' \
+	'{schema_version:1,run_id:$run_id,status:$status,architecture:"arm64",source_commit:"f6ad4e454778c52bcdaaecf684c148a3a8dae857",source_tree:"265e6357627490e51084979382ef34b2cfcc0cb8",source_diff_sha256:"3f52a2b2724bd795466ab1f344bf3d02fde7ee6a39bfde0945f7f8cf6ab8e3a3",source_gate_result_sha256:$source_gate_sha256,matrix:{queue_sizes:[0,1,8,64,256,1024,4096],depths:[0,1,4,16,64],cells:35,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,race_ppm:0,result_rows:($rows[0]|length)},gate:{base_slice_ns:700000,base_slice_semantics:"normalized_sysctl_sched_base_slice_fixed_threshold_basis",runtime_base_slice_ns:$runtime_base_slice_ns,tunable_scaling:$tunable_scaling,runtime_scaling_may_not_relax_thresholds:true,additional_p99_limit_ns:25000,additional_max_limit_ns:50000,sample_may_reach_base_slice:false,threshold_breach_count:$threshold_breach_count,warning_count:$warning_count},measurement_rows:$rows[0],threshold_failures:$failures[0],warnings:{evidence_available:true,configuration_sha256:$warning_config_sha256,irqsoff_tracer_active:true,lockdep:$lockdep_warnings,irqsoff:$irqsoff_warnings,rcu_stall:$rcu_warnings,soft_lockup:$softlockup_warnings,hard_lockup:$hardlockup_warnings,total:$warning_count},environment:{outer_host_record_sha256:$host_environment_sha256,outer_virtualization:"Apple Container machine domainlease-dev",container_uname:$container_uname,qemu_version:$qemu_version,qemu_accelerator:"tcg,thread=multi",qemu_machine:"virt,gic-version=3",qemu_cpu:"cortex-a57",qemu_cpus:2,qemu_memory_mib:2048,qemu_network_disabled:true,guest_architecture:"arm64",guest_online_cpus:$online_cpus,guest_sched_tunable_scaling:$tunable_scaling,guest_runtime_base_slice_ns:$runtime_base_slice_ns,guest_frequency_governor_available:false,guest_frequency_governor_note:"fixed virtual cortex-a57 under TCG; no guest userspace cpufreq probe",compiler:$compiler,sample_clock:"local_clock",clocksource_detail:$clocksource_detail,kernel_command_line_parameters_recognized:true,virtualized_result_supports_bare_metal_claim:false},artifacts:{config:{path:$config,sha256:$config_sha256},image:{path:$image,sha256:$image_sha256},fair_object_sha256:$fair_object_sha256,serial:{path:$serial,sha256:$serial_sha256},normalized_ktap:{path:$ktap,sha256:$ktap_sha256},measurement_table:{path:$table,sha256:$table_sha256}},qemu_exit_code:$qemu_exit_code,kunit:{suite:"sched_exec_lease_rebuild_measure",suite_passed:true,case_count:1,failed_cases:0,skipped_required_cases:0},architecture_measurement_valid:true,threshold_failure_is_valid_negative_evidence:true,x86_64_measurement_may_be_launched:$x86_may_launch,e4_measurement_accepted:false,full_locked_rebuild_approved:false,production_layout_accepted:false,hot_field_approved:false,primary_linux_change_approved:false,patch_queue_change_approved:false,real_picker_fence_approved:false,real_publisher_approved:false,real_fanout_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,bare_metal_latency_claim:false,performance_claim:false,cost_claim:false,deployment_ready:false,datacenter_ready:false}' \
 	> "$OUT_DIR/result.json"
 
 if [ "$classification" = rejected_full_locked_rebuild ]; then

@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-13
+Updated: 2026-07-14
 
 ## Current Analysis Notes
 
@@ -167,6 +167,9 @@ Updated: 2026-07-13
 | 0159 | E2 constrained to a disposable four-field, default-off arm64 layout candidate; primary Linux and patch queue remain frozen | SchedExecLease P5A-R2 E2 Disposable Layout Candidate Plan |
 | 0160 | x86_64 E2 constrained to fresh same-toolchain E1/candidate cross-builds with architecture-local envelopes and no runtime inference | SchedExecLease P5A-R2 E2 x86_64 Layout Evidence Plan |
 | 0161 | Cross-architecture E2 evidence closure separates exact disposable E3 planning input from production layout or source approval | SchedExecLease P5A-R2 E2 Layout Evidence Closure |
+| 0162 | E3 constrained to an exact disposable two-file real-traversal KUnit prototype with independent-oracle and controlled-build gates | SchedExecLease P5A-R2 E3 Rebuild Prototype Evidence Plan |
+| 0163 | E4 fixes a paired-control 35-cell lock-hold rejection experiment with immutable 25us/50us limits and two-architecture staging | SchedExecLease P5A-R2 E4 Lock-Hold Measurement Plan |
+| 0164 | Attempt-1 base-slice assertion corrected to distinguish the fixed normalized threshold basis from the separately recorded runtime-scaled value | SchedExecLease P5A-R2 E4 Normalized Base-Slice Correction |
 
 ## Planned Analysis Notes
 

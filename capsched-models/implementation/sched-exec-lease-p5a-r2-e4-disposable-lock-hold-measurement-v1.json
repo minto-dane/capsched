@@ -2,19 +2,19 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement-v1",
   "date": "2026-07-14",
-  "status": "disposable_source_draft_targeted_compile_passed_unaccepted",
+  "status": "corrected_source_gate_passed_arm64_remeasurement_pending",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r2-e4-lock-hold",
     "branch": "codex/p5a-r2-e4-lock-hold",
     "parent_commit": "d1d5e78da8484c91eae70f22399c6901da680ea0",
-    "candidate_commit": "dc3618e2bc56d3ede9b8d1378099c7b9ad15e08f",
-    "candidate_tree": "b8a7023993560bcc40077a5db25288c3fdf4765a",
-    "diff_sha256": "9d33d848b13f01e15d6ff6369c465964ca0682829eafbaa3906bbf17e3b18709",
+    "candidate_commit": "f6ad4e454778c52bcdaaecf684c148a3a8dae857",
+    "candidate_tree": "265e6357627490e51084979382ef34b2cfcc0cb8",
+    "diff_sha256": "3f52a2b2724bd795466ab1f344bf3d02fde7ee6a39bfde0945f7f8cf6ab8e3a3",
     "allowed_files": [
       "init/Kconfig",
       "kernel/sched/fair.c"
     ],
-    "insertions": 356,
+    "insertions": 362,
     "deletions": 0,
     "strict_checkpatch_errors": 0,
     "strict_checkpatch_warnings": 0,
@@ -90,6 +90,9 @@
   },
   "gate": {
     "base_slice_ns": 700000,
+    "base_slice_semantics": "normalized_sysctl_sched_base_slice_fixed_threshold_basis",
+    "runtime_scaled_base_slice_recorded_separately": true,
+    "runtime_scaling_may_not_relax_thresholds": true,
     "additional_p99_limit_ns": 25000,
     "additional_max_limit_ns": 50000,
     "sample_may_reach_base_slice": false,
@@ -114,11 +117,47 @@
     "e4_measurement_accepted": false,
     "full_locked_rebuild_approved": false
   },
-  "controlled_source_gate": {
+  "superseded_source_gate": {
     "validation": "validation/0215-sched-exec-lease-p5a-r2-e4-lock-hold-source-gate.md",
     "run_id": "20260714T-p5a-r2-e4-source-gate",
     "result": "build/source-check/sched-exec-lease-p5a-r2-e4-lock-hold-source-gate/20260714T-p5a-r2-e4-source-gate/result.json",
-    "result_sha256": "e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92"
+    "result_sha256": "e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92",
+    "superseded_by_arm64_attempt_1_harness_failure": true
+  },
+  "arm64_attempt_1": {
+    "validation": "validation/0216-sched-exec-lease-p5a-r2-e4-arm64-lock-hold-attempt-1.md",
+    "run_id": "20260714T-p5a-r2-e4-arm64",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-e4-arm64-lock-hold-measurement/20260714T-p5a-r2-e4-arm64/result.json",
+    "result_sha256": "12370a90745e94edd56a50ecf378c2bd7397d0dfd50805d579309b51bed4ee97",
+    "status": "harness_failed",
+    "measurement_rows": 0,
+    "valid_threshold_evidence": false
+  },
+  "source_correction": {
+    "superseded_commit": "dc3618e2bc56d3ede9b8d1378099c7b9ad15e08f",
+    "superseded_tree": "b8a7023993560bcc40077a5db25288c3fdf4765a",
+    "superseded_diff_sha256": "9d33d848b13f01e15d6ff6369c465964ca0682829eafbaa3906bbf17e3b18709",
+    "correction_diff_sha256": "22cb55c3a8a9841122820a467712c015ba761961676898160f941157fc3414ed",
+    "changed_files": ["kernel/sched/fair.c"],
+    "insertions": 10,
+    "deletions": 4,
+    "normalized_base_slice_ns": 700000,
+    "runtime_scaled_value_recorded": true,
+    "matrix_unchanged": true,
+    "samples_unchanged": true,
+    "thresholds_unchanged": true,
+    "corrected_source_gate_required": false
+  },
+  "controlled_corrected_source_gate": {
+    "validation": "validation/0217-sched-exec-lease-p5a-r2-e4-corrected-source-gate.md",
+    "run_id": "20260714T-p5a-r2-e4-source-gate-r2",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-e4-lock-hold-source-gate-r2/20260714T-p5a-r2-e4-source-gate-r2/result.json",
+    "result_sha256": "956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc",
+    "status": "passed_e4_corrected_source_gate",
+    "target_object_sha256": "a2362391c0125c83c9d311ad9d2fa80838409647136ed00d3aea0c8104416e3a",
+    "target_config_sha256": "57cf7063c1404b31aff0c3617ffbdc7f58ef7e279757872d222a377b6c162c22",
+    "arm64_measurement_may_be_relaunched": true,
+    "x86_64_measurement_may_be_launched": false
   },
   "safety_flags": {
     "production_layout_accepted": false,

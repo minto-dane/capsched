@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-13
+Updated: 2026-07-14
 
 ## Current Validation Records
 
@@ -220,7 +220,9 @@ Updated: 2026-07-13
 | 0212 | E3 two-file source plan passed 26 anchors, 6 absence checks, safe TLC, and 24 expected counterexamples; source correctness remained pending | SchedExecLease P5A-R2 E3 Rebuild Prototype Evidence Plan |
 | 0213 | Exact E3 source/build matrix and arm64 QEMU KUnit passed 12/12 with zero failures/skips; E4 planning only is allowed | SchedExecLease P5A-R2 E3 Rebuild Prototype |
 | 0214 | E4 two-file measurement plan passed 24 anchors, 4 absence checks, safe TLC, and 28 expected counterexamples; measurement remains separately gated | SchedExecLease P5A-R2 E4 Lock-Hold Measurement Plan |
-| 0215 | Exact E4 identity/isolation/interval/style gate and E4-enabled arm64 fair.o build passed with zero warnings and bounded stack frames; arm64 measurement launch only is authorized | SchedExecLease P5A-R2 E4 Lock-Hold Source Gate |
+| 0215 | Historical first-source identity/isolation/interval/style and arm64 fair.o gate passed, then attempt 1 exposed a pre-measurement harness defect; this gate is superseded by 0217 | SchedExecLease P5A-R2 E4 Lock-Hold Source Gate |
+| 0216 | Arm64 attempt 1 built and booted but failed before all measurement rows because it asserted the runtime-scaled base slice against the normalized baseline; no threshold evidence exists | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Attempt 1 |
+| 0217 | Corrected direct-E3 identity, normalized/runtime base-slice semantics, unchanged matrix/interval/thresholds, strict style, and arm64 fair.o rebuild passed; corrected arm64 relaunch only is authorized | SchedExecLease P5A-R2 E4 Corrected Source Gate |
 
 ## Principles
 

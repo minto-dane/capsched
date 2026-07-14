@@ -4361,15 +4361,21 @@ P5A-R2 E4 measurement plan:
   two-file source draft is authorized; measurement and performance approval
   remain false.
 
-P5A-R2 E4 source gate:
-  Implementation/0043 commit `dc3618e2bc56`, tree `b8a702399356`, and diff
-  SHA-256 `9d33d848b13f` add the default-off same-TU measurement in exactly two
-  files. Validation/0215 passed source isolation, exact interval/matrix,
-  strict checkpatch 0/0/0, E4-enabled arm64 `fair.o` with zero compiler
-  warnings, and 96/384-byte timed-helper/cell stack frames. Result SHA-256 is
-  `e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92`.
+P5A-R2 E4 corrected source gate:
+  Validation/0216 preserves arm64 attempt 1 as `harness_failed`: its Image
+  built and booted, but the first source asserted a runtime-scaled base slice
+  against the normalized 700,000ns basis and emitted zero measurement rows.
+  This is neither a pass nor threshold-rejection evidence.
 
-  The exact arm64 measurement may launch. Threshold or warning failure must be
-  retained as valid `rejected_full_locked_rebuild` evidence; missing/malformed
-  rows are `harness_failed`. x86_64 and all production/performance/protection
-  claims remain blocked.
+  Analysis/0164 corrects only the precondition and metadata. Amended direct
+  E3 child `f6ad4e454778`, tree `265e63576274`, full diff SHA-256
+  `3f52a2b2724b`, records normalized and runtime-scaled base slices separately
+  while preserving the measured interval, 35-cell/10,000-pair matrix and
+  25us/50us limits. Validation/0217 passed exact correction, strict checkpatch
+  0/0/0 and arm64 object gates; result SHA-256 is
+  `956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc`.
+
+  External job `p5a-r2-e4-arm64-measure-r2` may run. Threshold/warning failure
+  remains valid `rejected_full_locked_rebuild` evidence; unknown boot params or
+  missing/malformed rows are `harness_failed`. x86_64 and all production,
+  latency, performance, cost, and protection claims remain blocked.

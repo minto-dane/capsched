@@ -378,13 +378,13 @@ Current SchedExecLease L0 readiness:
     contract. E4 planning may begin; production fields, live integration,
     bounded lock hold, runtime behavior, and protection remain unapproved.
 - `0043-sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement.md`
-  - Status: exact disposable two-file E4 source committed on
-    `codex/p5a-r2-e4-lock-hold`; validation/0215 passed the source gate and
-    E4-enabled arm64 targeted compile. The arm64 measurement may be launched,
-    but no measurement or performance result is accepted yet.
+  - Status: arm64 attempt 1 is preserved as a pre-measurement harness failure;
+    validation/0217 passed the corrected source gate and E4-enabled arm64
+    targeted compile. The corrected arm64 measurement may be relaunched, but
+    no measurement or performance result is accepted yet.
   - Candidate commit/tree:
-    `dc3618e2bc56d3ede9b8d1378099c7b9ad15e08f` /
-    `b8a7023993560bcc40077a5db25288c3fdf4765a`.
+    `f6ad4e454778c52bcdaaecf684c148a3a8dae857` /
+    `265e6357627490e51084979382ef34b2cfcc0cb8`.
   - JSON: `sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement-v1.json`.
   - Rule: the immutable 35-cell, 10,000-pair experiment reuses the exact E3
     rebuild under real IRQ disable and rq locking on synthetic fixtures. A

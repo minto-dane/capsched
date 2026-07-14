@@ -2,9 +2,10 @@
 
 Date: 2026-07-14
 
-Status: validation/0215 passed the exact two-file disposable source and
-targeted arm64 compile. The exact arm64 measurement may now be launched; no
-measurement, latency, or production claim is accepted yet.
+Status: arm64 attempt 1 exposed a pre-measurement base-slice semantics error.
+The exact two-file source is corrected and validation/0217 authorizes its
+arm64 remeasurement only. No
+measurement, latency, or production claim is accepted.
 
 ## Source Identity
 
@@ -12,10 +13,10 @@ measurement, latency, or production claim is accepted yet.
 worktree: build/DomainLeaseLinux.volume/worktrees/p5a-r2-e4-lock-hold
 branch:   codex/p5a-r2-e4-lock-hold
 parent:   d1d5e78da8484c91eae70f22399c6901da680ea0
-commit:   dc3618e2bc56d3ede9b8d1378099c7b9ad15e08f
-tree:     b8a7023993560bcc40077a5db25288c3fdf4765a
-diff sha: 9d33d848b13f01e15d6ff6369c465964ca0682829eafbaa3906bbf17e3b18709
-delta:    356 additions, 0 deletions, exactly two files
+commit:   f6ad4e454778c52bcdaaecf684c148a3a8dae857
+tree:     265e6357627490e51084979382ef34b2cfcc0cb8
+diff sha: 3f52a2b2724bd795466ab1f344bf3d02fde7ee6a39bfde0945f7f8cf6ab8e3a3
+delta:    362 additions, 0 deletions, exactly two files
 ```
 
 The only changed files are `init/Kconfig` and `kernel/sched/fair.c`. The
@@ -60,19 +61,50 @@ The immutable matrix is seven queue sizes `{0,1,8,64,256,1024,4096}` by five
 depths `{0,1,4,16,64}`, or 35 required result rows. Each control, rebuild, and
 additional distribution reports minimum, p50, p95, p99, p999, and maximum.
 
+## Base-Slice Semantics Correction
+
+The fixed 700,000ns gate is the scheduler's normalized base-slice baseline,
+`normalized_sysctl_sched_base_slice`. The live `sysctl_sched_base_slice` is
+scaled by `1 + ilog2(num_online_cpus())` under the default logarithmic policy;
+it is 1,400,000ns in the two-CPU QEMU guest. Runtime scaling is now recorded
+separately with the scaling mode and online CPU count and may never relax the
+25,000/50,000ns rejection thresholds or 700,000ns fixed basis.
+
+The correction replaced the invalid runtime-value assertion without changing
+the measured interval, fixture, matrix, sample counts, percentiles, warning
+gate, or rejection classification. The amended commit remains a direct E3
+child. Its correction-only diff from superseded source `dc3618e2bc56` changes
+only `fair.c` (10 additions, 4 deletions), SHA-256
+`22cb55c3a8a9841122820a467712c015ba761961676898160f941157fc3414ed`.
+
+## Arm64 Attempt 1
+
+Run `20260714T-p5a-r2-e4-arm64` built the full Image but failed before any
+measurement row: the old source asserted the two-CPU runtime-scaled base slice
+against 700,000ns. KUnit reported one failed case and zero `E4_RESULT` rows.
+The run is preserved as `harness_failed`, not as threshold or design evidence.
+Its result SHA-256 is
+`12370a90745e94edd56a50ecf378c2bd7397d0dfd50805d579309b51bed4ee97`.
+
 ## Local Checks
 
 Strict checkpatch passed with zero errors, warnings, and checks. An E4-enabled
 arm64 `kernel/sched/fair.o` build passed without compiler warnings. The object
 contains the E4 suite, cell, and timing symbols. `checkstack.pl` reports 384
-bytes for the cell driver, 144 bytes for the matrix case, and 96 bytes for the
+bytes for the cell driver, 160 bytes for the matrix case, and 96 bytes for the
 timed interval helper; the earlier 4,752-byte fixture frame was eliminated by
 allocating the fixture before measurement.
 
-Validation/0215 independently repeated the identity, isolation, Kconfig,
+Validation/0215 independently repeated the original identity, isolation, Kconfig,
 matrix, measured-interval source-order, forbidden-operation, checkpatch,
 enabled-object, symbol, and stack gates. Its result SHA-256 is
 `e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92`.
+That gate is historical evidence for the superseded source and no longer
+authorizes launch. Validation/0217 run
+`20260714T-p5a-r2-e4-source-gate-r2` binds the corrected identity and
+base-slice semantics, rebuilds the targeted arm64 object, and authorizes only
+the corrected arm64 rerun. Its result SHA-256 is
+`956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc`.
 
 ## Non-Claims
 

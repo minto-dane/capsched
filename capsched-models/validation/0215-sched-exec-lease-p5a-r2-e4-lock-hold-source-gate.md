@@ -2,9 +2,11 @@
 
 Date: 2026-07-14
 
-Status: passed for launching the exact arm64 disposable measurement only.
-E4 measurement, cross-architecture acceptance, full locked rebuild, latency,
-performance, production, and protection claims remain unaccepted.
+Status: historical pass for the superseded first E4 source only. Arm64 attempt
+1 exposed a pre-measurement harness defect, so this record no longer authorizes
+launch; validation/0217 controls the corrected source. E4 measurement,
+cross-architecture acceptance, full locked rebuild, latency, performance,
+production, and protection claims remain unaccepted.
 
 ## Scope
 

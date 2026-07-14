@@ -5603,22 +5603,33 @@ P5A-R2 E4 lock-hold measurement plan:
     only a direct E3 child changing `init/Kconfig` and `kernel/sched/fair.c`
     may now be drafted. Measurement launch needs a separate source gate.
 
-P5A-R2 E4 lock-hold source gate:
-  Implementation/0043 fixes direct E3 child `dc3618e2bc56`, tree
-  `b8a702399356`, and diff SHA-256 `9d33d848b13f` with 356 additions in exactly
-  `init/Kconfig` and `kernel/sched/fair.c`.
+P5A-R2 E4 corrected lock-hold source gate:
+  Arm64 attempt 1 built and booted the first E4 source but failed its first
+  KUnit assertion before emitting any of the 35 rows. Validation/0216 preserves
+  result SHA-256 `12370a90745e` as `harness_failed`, not threshold evidence.
+  The source incorrectly compared the two-CPU runtime-scaled base slice with
+  the fixed normalized 700,000ns threshold basis. Serial also exposed two
+  unrecognized boot-parameter spellings.
 
-  Validation/0215 run `20260714T-p5a-r2-e4-source-gate` passed the exact
-  identity/frozen-boundary, Kconfig isolation, 35-cell matrix, O(1) callback,
-  measured IRQ/clock/rq-lock order, forbidden-operation, strict checkpatch,
-  E4-enabled arm64 object, enabled-symbol, and stack gates. Checkpatch and
-  compiler warnings are 0/0/0 and 0; timed helper/cell stack frames are 96/384
-  bytes. Result SHA-256 is
-  `e0895e883f50151b4d239165ad690e3a3a6587a591a0ee81665d33777d6d2b92`.
+  Analysis/0164 defines the constrained correction. Implementation/0043 now
+  fixes amended direct E3 child `f6ad4e454778`, tree `265e63576274`, and full
+  diff SHA-256 `3f52a2b2724b` with 362 additions in exactly `init/Kconfig` and
+  `kernel/sched/fair.c`. The correction-only fair.c diff is 10 additions and 4
+  deletions, SHA-256 `22cb55c3a8a9`. It asserts the normalized baseline,
+  records runtime scale/scaling/CPU count separately, and does not change the
+  interval, 35 cells, 256 warm-ups, 10,000 samples, or 25us/50us limits.
+
+  Validation/0217 run `20260714T-p5a-r2-e4-source-gate-r2` passed exact
+  identity/correction/history, unchanged-interval/matrix/threshold, strict
+  checkpatch 0/0/0, and E4-enabled arm64 fair.o build gates. Stack frames are
+  96/384/160 bytes for the timed helper/cell/matrix case. Result SHA-256 is
+  `956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc`.
 
   Next:
-    run the exact arm64 Apple Container/QEMU measurement. A 25 us p99, 50 us
-    max, 700 us base-slice, or warning breach is complete negative evidence
-    that rejects the full O(n) locked rebuild. Missing rows or build/boot/KTAP
-    integrity failure is a harness failure. x86_64 remains blocked until the
-    arm64 result is recorded.
+    external job `p5a-r2-e4-arm64-measure-r2` owns the exact corrected Apple
+    Container/QEMU remeasurement. Monitor it with
+    `./tools/long-job.sh watch p5a-r2-e4-arm64-measure-r2 30`. A 25us p99,
+    50us max, 700us normalized-basis, or warning breach is complete negative
+    evidence that rejects the full O(n) locked rebuild. Unknown boot params,
+    missing rows, or build/boot/KTAP integrity failure is a harness failure.
+    x86_64 remains blocked until a valid arm64 result is recorded.
