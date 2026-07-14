@@ -353,6 +353,17 @@ Current SchedExecLease L0 readiness:
   - Rule: 0014 changes only the build-only probe, preserves the 24 existing
     symbols, and adds 27 measurements for a 51-symbol total. It adds no
     candidate field, runtime callsite, ABI, behavior, or protection claim.
+- `0041-sched-exec-lease-p5a-r2-e2-disposable-layout-candidate.md`
+  - Status: disposable four-file candidate committed on
+    `codex/p5a-r2-e2-layout`; monitored arm64 validation is 0208.
+  - Candidate commit/tree:
+    `162d16640634637a6f7604b90bf2275bea47ec63` /
+    `a435a65f1b1ae5e4c10d09e5753fc0871f1381d1`.
+  - JSON: `sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-v1.json`.
+  - Rule: the candidate is default-off measurement material in a separate
+    worktree. It does not change the primary Linux branch or patch queue and
+    adds no runtime callsite, accepted hot field, ABI, behavior, or protection
+    claim.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

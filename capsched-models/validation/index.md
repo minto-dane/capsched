@@ -212,6 +212,8 @@ Updated: 2026-07-13
 | 0204 | Existing arm64 0013 probe object converted into a 14-entry structured table; exact commit/tree, 24 symbols, hashes, and containing-structure bounds verified | SchedExecLease P5A-R2 arm64 0013 Layout Table |
 | 0205 | 0014 one-file expanded-probe plan passed 25 anchors, safe TLC, and 20 expected counterexamples; corrected 51-symbol target fixed | SchedExecLease P5A-R2 Expanded Layout Probe Patch Plan |
 | 0206 | Source/checkpatch/replay and arm64 off/on/probe builds passed; 24 existing plus 27 added symbols and the 23-field table verified | SchedExecLease P5A-R2 0014 Expanded Layout Probe |
+| 0207 | Disposable-worktree, four-field, 59-symbol arm64 E2 plan passed 20 anchors, safe TLC, and 30 expected counterexamples | SchedExecLease P5A-R2 E2 Disposable Layout Candidate Plan |
+| 0208 | Disposable source/checkpatch boundary passed; monitored arm64 off/on/candidate-probe comparison prepared | SchedExecLease P5A-R2 E2 arm64 Layout Candidate |
 
 ## Principles
 

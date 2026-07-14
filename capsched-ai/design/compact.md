@@ -4285,3 +4285,20 @@ P5A-R2 expanded E1 probe:
     E1 is complete. A disposable E2 layout-only candidate requires a separate
     gate. Hot fields, selector/rebuild behavior, runtime correctness,
     protection, performance, and cost remain unapproved.
+
+P5A-R2 E2 disposable arm64 candidate:
+  Analysis/0159/formal/0126/validation/0207 passed a disposable-worktree-only
+  gate with 20 anchors, 6 absence checks, safe TLC 5/4/depth 4, and 30 expected
+  counterexamples. Primary Linux stays at E1 and the patch queue at 0014.
+
+  Candidate commit `162d16640634` adds a default-off probe-dependent valid
+  byte/u64 minimum to sched_entity alignment gaps and byte state/u64 generation
+  to the rq tail gap. It changes four files and no runtime callsite. Initial
+  append placements caused forbidden 64-byte growth and were discarded.
+
+  External job `p5a-r2-e2-build` owns the authoritative arm64 off/on/candidate
+  build and 51+8=59 symbol, 27-field, structure/offset comparison.
+
+  Boundary:
+    arm64 pass is pending result.json; x86_64 E2, accepted hot fields, E3,
+    behavior, denial correctness, protection, performance, and cost are false.

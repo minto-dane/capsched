@@ -5468,3 +5468,35 @@ P5A-R2 0014 expanded layout probe:
     without changing the Linux tree. E1 is complete; the next evidence stage
     is a separately gated disposable E2 layout-only candidate. No hot field,
     behavior, runtime denial, protection, performance, or cost claim exists.
+
+P5A-R2 E2 disposable arm64 layout candidate:
+  Analysis/0159, formal/0126, and validation/0207 passed the pre-implementation
+  gate: 20 anchors, 6 absence checks, safe TLC 5/4/depth 4, and 30 expected
+  unsafe counterexamples. Primary Linux and patch queue 0014 are frozen.
+
+  Disposable identity:
+    case-sensitive worktree
+    `build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout`;
+    branch `codex/p5a-r2-e2-layout`;
+    commit `162d16640634637a6f7604b90bf2275bea47ec63`;
+    tree `a435a65f1b1ae5e4c10d09e5753fc0871f1381d1`;
+    four files, 42 additions, strict checkpatch 0/0.
+
+  Candidate:
+    default-off probe-dependent config; sched_entity valid byte in the flag
+    hole and u64 minimum in the pre-avg alignment gap; rq byte state and u64
+    generation in the tail alignment gap. No cfs_rq/task field, callback,
+    runtime callsite, ABI, or behavior exists.
+
+  Monitored validation:
+    external job `p5a-r2-e2-build` owns fresh arm64 off/on/candidate builds,
+    exact preservation of 51 E1 symbol values, eight additions, the 59-symbol
+    object, 27-field table, structure envelope, and protected offsets. Monitor
+    with `./tools/long-job.sh watch p5a-r2-e2-build 30`.
+
+  Boundary:
+    exploratory append placements grew cacheline-aligned structures by 64
+    bytes and were rejected. The corrected gap-consuming placement preserved
+    all four E1 structure sizes in exploration, but authoritative arm64 pass
+    remains pending result.json. x86_64 E2, accepted hot fields, E3 rebuild,
+    behavior, denial correctness, protection, performance, and cost are false.

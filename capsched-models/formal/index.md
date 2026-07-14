@@ -131,6 +131,7 @@ Updated: 2026-07-13
 | 0123 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 Versioned Global Invalidation Fence Model |
 | 0124 | Checked with safe pass and 32 expected unsafe counterexamples | P5A-R2 Global-Fence Layout/Rebuild Evidence Plan Model |
 | 0125 | Checked with safe pass and 20 expected unsafe counterexamples | P5A-R2 Expanded Layout Probe Patch Plan Model |
+| 0126 | Checked with safe pass and 30 expected unsafe counterexamples | P5A-R2 E2 Disposable Layout Candidate Plan Model |
 
 ## Planned
 

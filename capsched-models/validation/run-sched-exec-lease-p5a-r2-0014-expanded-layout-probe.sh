@@ -125,7 +125,7 @@ make -C "$LINUX_DIR" O="$PROBE_O" olddefconfig > "$OUT_DIR/probe-olddefconfig.lo
 progress '80% building explicit 0014 probe object'
 make -C "$LINUX_DIR" O="$PROBE_O" -j"$(nproc)" kernel/sched/exec_lease_layout_probe.o > "$OUT_DIR/probe-build.log" 2>&1
 
-progress '90% extracting 49 symbols and cacheline table'
+progress '90% extracting 51 symbols and cacheline table'
 probe_obj="$PROBE_O/kernel/sched/exec_lease_layout_probe.o"
 [ -s "$probe_obj" ] || die 'probe object missing'
 nm -S "$probe_obj" | awk '$4 ~ /^sched_exec_lp_/ {print $1 "\t" $2 "\t" $3 "\t" $4}' | sort -k4 > "$OUT_DIR/probe-symbols.tsv"
