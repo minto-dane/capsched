@@ -138,8 +138,25 @@
     "result_sha256": "8530480492cee6b2182bbe5b99a5d886cf5a2559dd8ad1341cba1643d6464031",
     "exact_disposable_layout_frozen_for_e3_planning": true,
     "e3_plan_may_be_drafted": true,
-    "e3_worktree_may_be_created": false,
+    "e3_worktree_may_be_created": true,
     "production_layout_accepted": false
+  },
+  "e3_plan": {
+    "status": "passed_for_exact_disposable_two_file_source_draft_only",
+    "run_id": "20260714T-p5a-r2-e3-rebuild-plan",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-e3-rebuild-prototype-evidence-plan/20260714T-p5a-r2-e3-rebuild-plan/result.json",
+    "result_sha256": "b80f5fdadbc035f49304338923fed641faff2c00b9380128599b8b7ae99caf30",
+    "future_worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r2-e3-rebuild-prototype",
+    "future_branch": "codex/p5a-r2-e3-rebuild-prototype",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/fair.c"
+    ],
+    "e3_disposable_worktree_may_be_created": true,
+    "e3_two_file_source_draft_may_be_created": true,
+    "e3_source_accepted": false,
+    "e3_rebuild_correctness_accepted": false,
+    "e4_measurement_approved": false
   },
   "safety_flags": {
     "layout_candidate_accepted": false,
