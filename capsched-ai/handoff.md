@@ -5511,3 +5511,21 @@ P5A-R2 E2 disposable arm64 layout candidate:
     x86_64 E2 is the next separate architecture-local gate. Accepted hot
     fields, E3 rebuild, behavior, denial correctness, protection, performance,
     and cost are false.
+
+P5A-R2 E2 x86_64 layout evidence plan:
+  Analysis/0160, formal/0127, and validation/0209 passed the detached-build
+  launch gate. Run `20260714T-p5a-r2-e2-x86_64-layout-plan` passed 18 anchors,
+  4 absence checks, safe TLC 5/4/depth 4, and 24 expected counterexamples.
+  It requires fresh same-toolchain x86_64 E1 and candidate off/on/probe builds
+  using `ARCH=x86_64` and `CROSS_COMPILE=x86_64-linux-gnu-`, 51 E1 values
+  preserved, 8 additions, 59 total symbols, 27 fields, x86_64-local growth
+  envelopes, and candidate field bounds. Cross-built layout is not runtime
+  evidence. Source change, candidate acceptance, E3, behavior, protection,
+  performance, cost, deployment, and datacenter claims remain false.
+
+  Monitored build:
+    validation/0210 and external job `p5a-r2-e2-x86_64-build` own cross-
+    compiler installation if absent and the fresh E1/off/on/candidate matrix.
+    Monitor with
+    `./tools/long-job.sh watch p5a-r2-e2-x86_64-build 30`. No x86_64 pass is
+    recorded until its exact result.json passes.

@@ -4310,3 +4310,15 @@ P5A-R2 E2 disposable arm64 candidate:
     arm64 E2 layout evidence passed. x86_64 E2 is separate and next; accepted
     hot fields, E3, behavior, denial correctness, protection, performance, and
     cost are false.
+
+P5A-R2 E2 x86_64 plan:
+  Analysis/0160/formal/0127/validation/0209 passed 18 anchors, 4 absence
+  checks, safe TLC 5/4/depth 4, and 24 expected counterexamples. The next
+  evidence is a fresh same-toolchain x86_64 E1 plus candidate off/on/probe
+  cross-build. It must preserve all 51 E1 values, add 8 symbols, emit 27
+  fields, and satisfy x86_64-local size/field gates. No runtime inference,
+  source acceptance, E3, protection, performance, or cost claim exists.
+
+  External job `p5a-r2-e2-x86_64-build` owns validation/0210's fresh E1 and
+  candidate off/on/probe cross-build. Passing evidence remains pending its
+  exact result.json.

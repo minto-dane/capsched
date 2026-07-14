@@ -79,6 +79,8 @@ rq                        3520       3520              0
 task_struct               4160       4160              0
 ```
 
+All four measured deltas are zero.
+
 Candidate field layout:
 
 ```text

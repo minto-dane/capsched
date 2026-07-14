@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-e2-x86_64-layout-evidence-plan-v1",
+  "date": "2026-07-14",
+  "status": "x86_64_e2_cross_build_plan_no_source_change",
+  "source": {
+    "primary_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "candidate_commit": "162d16640634637a6f7604b90bf2275bea47ec63",
+    "candidate_tree": "a435a65f1b1ae5e4c10d09e5753fc0871f1381d1",
+    "candidate_diff_sha256": "645ef21d82ff3abbe64177a624846e730c30400897cd011190e9abb579aa56ee",
+    "patch_queue_tail": "0014-sched-exec_lease-Expand-build-only-layout-probe.patch",
+    "primary_change_allowed": false,
+    "candidate_change_allowed": false,
+    "patch_queue_change_allowed": false
+  },
+  "prerequisites": {
+    "arm64_e2_result": "build/source-check/sched-exec-lease-p5a-r2-e2-arm64-layout-candidate/20260713T-p5a-r2-e2-layout/result.json",
+    "arm64_e2_result_sha256": "360f98bd71ed641ba410205925cdec00d55cfbaa990e2dee361798e6afb945f1",
+    "arm64_e2_passed": true,
+    "x86_64_0013_baseline_validation": "capsched-models/validation/0198-sched-exec-lease-p5a-r2-0013-layout-table.md"
+  },
+  "toolchain": {
+    "build_host_architecture": "arm64",
+    "target_architecture": "x86_64",
+    "kernel_arch": "x86_64",
+    "cross_compile_prefix": "x86_64-linux-gnu-",
+    "required_package": "gcc-x86-64-linux-gnu",
+    "same_toolchain_for_e1_and_candidate": true,
+    "cross_build_is_runtime_evidence": false
+  },
+  "build_matrix": {
+    "fresh_x86_64_defconfig_per_mode": true,
+    "e1_expanded_probe": true,
+    "normal_config_off": true,
+    "normal_config_on_candidate_disabled": true,
+    "explicit_probe_and_candidate": true,
+    "normal_probe_object_absent": true,
+    "normal_candidate_symbols_absent": true
+  },
+  "symbol_contract": {
+    "e1_symbols": 51,
+    "candidate_added_symbols": 8,
+    "candidate_total_symbols": 59,
+    "cacheline_table_fields": 27,
+    "missing_e1_symbols_allowed": 0,
+    "changed_e1_values_allowed": 0
+  },
+  "x86_64_baseline": {
+    "sched_entity_size": 320,
+    "cfs_rq_size": 384,
+    "rq_size": 3392,
+    "task_struct_size": 3328
+  },
+  "delta_limits": {
+    "sched_entity_min": 0,
+    "sched_entity_max": 8,
+    "cfs_rq_required": 0,
+    "rq_min": 0,
+    "rq_max": 32,
+    "task_struct_required": 0,
+    "all_candidate_fields_within_structures": true,
+    "all_51_e1_values_preserved": true
+  },
+  "source_anchors": [
+    {"id":"arm64-result","path":"build/source-check/sched-exec-lease-p5a-r2-e2-arm64-layout-candidate/20260713T-p5a-r2-e2-layout/result.json","pattern":"\"status\": \"passed\""},
+    {"id":"arm64-arch","path":"build/source-check/sched-exec-lease-p5a-r2-e2-arm64-layout-candidate/20260713T-p5a-r2-e2-layout/result.json","pattern":"\"architecture\": \"arm64\""},
+    {"id":"arm64-zero-delta","path":"capsched/capsched-models/validation/0208-sched-exec-lease-p5a-r2-e2-arm64-layout-candidate-monitored.md","pattern":"All four measured deltas are zero"},
+    {"id":"x86-baseline-se","path":"capsched/capsched-models/validation/0198-sched-exec-lease-p5a-r2-0013-layout-table.md","pattern":"sched_entity size: 320"},
+    {"id":"x86-baseline-cfs","path":"capsched/capsched-models/validation/0198-sched-exec-lease-p5a-r2-0013-layout-table.md","pattern":"cfs_rq size: 384"},
+    {"id":"x86-baseline-rq","path":"capsched/capsched-models/validation/0198-sched-exec-lease-p5a-r2-0013-layout-table.md","pattern":"rq size: 3392"},
+    {"id":"x86-baseline-task","path":"capsched/capsched-models/validation/0198-sched-exec-lease-p5a-r2-0013-layout-table.md","pattern":"task_struct size: 3328"},
+    {"id":"arch-local-rule","path":"capsched/capsched-models/analysis/0157-sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan.md","pattern":"architectures must be compared against their own baselines"},
+    {"id":"candidate-config","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout/init/Kconfig","pattern":"config SCHED_EXEC_LEASE_LAYOUT_CANDIDATE"},
+    {"id":"candidate-valid","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout/include/linux/sched.h","pattern":"sched_exec_summary_valid"},
+    {"id":"candidate-min","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout/include/linux/sched.h","pattern":"sched_exec_min_fresh_vruntime"},
+    {"id":"candidate-state","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout/kernel/sched/sched.h","pattern":"sched_exec_summary_state"},
+    {"id":"candidate-generation","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout/kernel/sched/sched.h","pattern":"sched_exec_built_generation"},
+    {"id":"candidate-probe","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout/kernel/sched/exec_lease_layout_probe.c","pattern":"sched_exec_lp_rq_built_generation"},
+    {"id":"primary-commit","path":"linux","git_commit":"5e1ca3037e34823d1ba0cdd1dc04161fac170280"},
+    {"id":"candidate-commit","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout","git_commit":"162d16640634637a6f7604b90bf2275bea47ec63"},
+    {"id":"candidate-result-boundary","path":"capsched/capsched-models/implementation/sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-v1.json","pattern":"\"layout_candidate_accepted\": false"},
+    {"id":"e3-boundary","path":"capsched/capsched-models/implementation/sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-v1.json","pattern":"\"e3_rebuild_approved\": false"}
+  ],
+  "absence_checks": [
+    {"id":"no-rebuild","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout","pattern":"sched_exec_rebuild"},
+    {"id":"no-publish","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout","pattern":"sched_exec_publish"},
+    {"id":"no-fanout","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout","pattern":"sched_exec_fanout"},
+    {"id":"no-layout-export","path":"build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout","pattern":"EXPORT_SYMBOL(sched_exec_lp_"}
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0127-p5a-r2-e2-x86_64-layout-evidence-plan-model",
+    "safe_cfg": "P5AR2E2X8664LayoutEvidencePlanSafe.cfg",
+    "unsafe_cfg_count": 24
+  },
+  "safety_flags": {
+    "cross_architecture_identity_claim": false,
+    "layout_candidate_accepted": false,
+    "hot_field_approved": false,
+    "e3_rebuild_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

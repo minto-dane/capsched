@@ -165,6 +165,7 @@ Updated: 2026-07-13
 | 0157 | Global-fence layout/rebuild evidence plan fixes hot-structure growth envelopes and 25us/50us rq-lock rejection limits | SchedExecLease P5A-R2 Global-Fence Layout/Rebuild Evidence Plan |
 | 0158 | Patch 0014 reserved for a one-file, 51-symbol expanded default-off probe; candidate fields and behavior remain forbidden | SchedExecLease P5A-R2 Expanded Layout Probe Patch Plan |
 | 0159 | E2 constrained to a disposable four-field, default-off arm64 layout candidate; primary Linux and patch queue remain frozen | SchedExecLease P5A-R2 E2 Disposable Layout Candidate Plan |
+| 0160 | x86_64 E2 constrained to fresh same-toolchain E1/candidate cross-builds with architecture-local envelopes and no runtime inference | SchedExecLease P5A-R2 E2 x86_64 Layout Evidence Plan |
 
 ## Planned Analysis Notes
 
@@ -290,3 +291,4 @@ Updated: 2026-07-13
 | `sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan-v1.json` | P5A-R2 implementation evidence plan | Machine-readable architecture baselines, candidate layout envelopes, rebuild oracle/race requirements, live lock-hold matrix and rejection limits, build/disassembly gates, and non-claim flags |
 | `sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan-v1.json` | P5A-R2 expanded probe patch plan | Machine-readable 0014 one-file scope, exact 51-symbol contract, cacheline derivation, candidate-field absence boundary, validation requirements, and non-claim flags |
 | `sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-plan-v1.json` | P5A-R2 E2 disposable layout plan | Machine-readable disposable-worktree boundary, four provisional fields, 59-symbol conditional probe contract, arm64 growth/offset gates, build matrix, and non-claim flags |
+| `sched-exec-lease-p5a-r2-e2-x86_64-layout-evidence-plan-v1.json` | P5A-R2 E2 x86_64 evidence plan | Exact E1/candidate identities, arm64 prerequisite, x86_64 cross-toolchain matrix, 51+8 symbol comparison, architecture-local growth gates, and non-claim flags |
