@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r2-e3-disposable-rebuild-kunit-prototype-v1",
   "date": "2026-07-14",
-  "status": "disposable_source_draft_targeted_compile_passed_unaccepted",
+  "status": "disposable_source_and_synthetic_rebuild_correctness_passed_unaccepted_for_production",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r2-e3-rebuild-prototype",
     "branch": "codex/p5a-r2-e3-rebuild-prototype",
@@ -84,17 +84,35 @@
       "sched_exec_rebuild_publication_race_test",
       "sched_exec_rebuild_saturation_test"
     ],
-    "arm64_qemu_passed": false
+    "arm64_qemu_passed": true,
+    "passed_cases": 12,
+    "failed_cases": 0,
+    "skipped_required_cases": 0
   },
   "targeted_compile": {
     "architecture": "arm64",
     "object": "build/DomainLeaseLinux.volume/builds/arm64-current/e3-rebuild-syntax/kernel/sched/fair.o",
     "passed": true,
-    "controlled_evidence_complete": false
+    "controlled_evidence_complete": true
+  },
+  "controlled_validation": {
+    "validation": "validation/0213-sched-exec-lease-p5a-r2-e3-rebuild-prototype.md",
+    "run_id": "20260714T-p5a-r2-e3-rebuild",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-e3-rebuild-prototype/20260714T-p5a-r2-e3-rebuild/result.json",
+    "result_sha256": "fd4ea3fdf283d3d6251c7ac3a685a9d602a1b3dc50ba53779348ac3886d236cc",
+    "image_sha256": "5b729a86b06669b72d6ffec79d073d47a00e390ee504f8bfdc4a8cbc77fa544c",
+    "raw_serial_sha256": "bee1013c3c9db1dea424f60669245b6a5eb34214cfeb6ef9975a300cdd2bb7a8",
+    "normalized_ktap_sha256": "f1ec72888ab6a4cc5c30fd192355bc33a0082f4375811c57b0710c60db1a3d05",
+    "qemu_cpu_model": "cortex-a57",
+    "qemu_network_disabled": true,
+    "build_matrix_complete": true,
+    "e3_source_accepted_for_disposable_correctness_evidence": true,
+    "e3_rebuild_correctness_accepted_for_synthetic_fixtures": true,
+    "e4_plan_may_be_drafted": true
   },
   "safety_flags": {
-    "e3_source_accepted": false,
-    "e3_rebuild_correctness_accepted": false,
+    "e3_source_accepted": true,
+    "e3_rebuild_correctness_accepted": true,
     "production_layout_accepted": false,
     "hot_field_approved": false,
     "real_picker_fence_approved": false,
@@ -104,6 +122,7 @@
     "runtime_behavior_approved": false,
     "runtime_denial_correctness": false,
     "production_protection": false,
+    "e4_plan_may_be_drafted": true,
     "e4_measurement_approved": false,
     "performance_claim": false,
     "cost_claim": false,

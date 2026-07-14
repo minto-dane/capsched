@@ -217,6 +217,8 @@ Updated: 2026-07-13
 | 0209 | x86_64 same-toolchain cross-build plan passed 18 anchors, safe TLC, and 24 modeled rejection cases | SchedExecLease P5A-R2 E2 x86_64 Layout Evidence Plan |
 | 0210 | Fresh x86_64 E1/off/on/candidate cross-build passed; 51 values preserved, 8 added, 27 fields, all four structure deltas zero | SchedExecLease P5A-R2 E2 x86_64 Layout Candidate |
 | 0211 | Exact arm64/x86_64 evidence closure passed; candidate frozen for E3 planning only with 24 modeled rejection cases | SchedExecLease P5A-R2 E2 Layout Evidence Closure |
+| 0212 | E3 two-file source plan passed 26 anchors, 6 absence checks, safe TLC, and 24 expected counterexamples; source correctness remained pending | SchedExecLease P5A-R2 E3 Rebuild Prototype Evidence Plan |
+| 0213 | Exact E3 source/build matrix and arm64 QEMU KUnit passed 12/12 with zero failures/skips; E4 planning only is allowed | SchedExecLease P5A-R2 E3 Rebuild Prototype |
 
 ## Principles
 

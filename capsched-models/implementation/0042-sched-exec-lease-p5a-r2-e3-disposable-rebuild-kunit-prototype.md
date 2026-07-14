@@ -2,8 +2,9 @@
 
 Date: 2026-07-14
 
-Status: disposable source draft complete and targeted arm64 compile passed.
-The source and rebuild correctness remain unaccepted pending validation/0213.
+Status: validation/0213 passed for the exact disposable source and synthetic-
+fixture rebuild correctness. Production layout, live integration, bounded
+lock hold, runtime behavior, and protection remain unaccepted.
 
 ## Source Identity
 
@@ -69,11 +70,22 @@ Strict checkpatch passed with zero errors, warnings, and checks. An arm64
 targeted build with lease, layout candidate, KUnit, and rebuild test enabled
 compiled `kernel/sched/fair.o` successfully.
 
-These are source and compile facts, not KUnit runtime evidence. The controlled
-off/layout-on/test-on object matrix and QEMU KTAP remain validation/0213 work.
+Validation/0213 completed the controlled parent/off/layout-on/test-on object
+matrix and full arm64 Image build. QEMU KUnit passed all 12 required cases with
+zero failures and zero skips. The raw serial, normalized KTAP, four fair.o
+objects, configs, and Image are hashed in validation/0213; the result JSON
+SHA-256 is
+`fd4ea3fdf283d3d6251c7ac3a685a9d602a1b3dc50ba53779348ac3886d236cc`.
+
+The QEMU runner uses a network-free `cortex-a57` virtual machine because the
+minimal Apple Container guest does not ship the default virtio EFI ROM and
+QEMU 8.2.2 asserts with its broad `max` model during SME/SVE initialization.
+This portability correction changed no E3 Linux source.
 
 ## Non-Claims
 
-This draft does not accept E3 correctness, the E2 layout for production, a
-real generation protocol, runtime denial, protection, lock-hold performance,
-cost, deployment, or datacenter readiness. E4 remains unauthorized.
+This evidence accepts E3 correctness only for the isolated synthetic fixture
+contract. It does not accept the E2 layout for production, a real generation
+protocol, live scheduler integration, runtime denial, protection, bounded
+lock-hold performance, cost, deployment, or datacenter readiness. An E4 plan
+may now be drafted, but E4 source and measurement claims remain unauthorized.

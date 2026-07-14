@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-13
+Updated: 2026-07-14
 
 ## Project
 
@@ -4339,3 +4339,15 @@ P5A-R2 E2 closure:
   Candidate `162d16640634` is frozen only for drafting an E3 plan. No E3
   worktree/source, production hot field, primary promotion, runtime,
   protection, performance, or cost claim is approved.
+
+P5A-R2 E3 rebuild prototype:
+  Analysis/0162/formal/0129/validation/0212 gated a direct two-file E2 child.
+  Implementation/0042 commit `d1d5e78da848` implements the default-off
+  same-TU prototype and independent oracle. Validation/0213 passed the fresh
+  four-mode arm64 build matrix and QEMU KUnit: 12/12 cases, zero failures,
+  zero skips. Result SHA-256 is `fd4ea3fdf283d3d6251c7ac3a685a9d602a1b3dc50ba53779348ac3886d236cc`.
+
+  Core rule:
+    this accepts only synthetic-fixture rebuild correctness. E4 may be planned,
+    but production fields, live integration, bounded lock hold, behavior,
+    protection, performance, and cost remain unapproved.

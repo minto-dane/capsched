@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-13
+Updated: 2026-07-14
 
 Read this first when resuming the project.
 
@@ -5557,3 +5557,32 @@ P5A-R2 E2 evidence closure:
   only as E3 planning input. E3 plan drafting is allowed; E3 worktree/source,
   primary promotion, production layout/hot fields, runtime, protection,
   performance, and cost remain false.
+
+P5A-R2 E3 disposable rebuild prototype:
+  Analysis/0162/formal/0129/validation/0212 authorized an exact two-file
+  descendant of E2. Implementation/0042 records commit `d1d5e78da848`, tree
+  `aa6a5a384841`, and diff SHA-256 `a5351bbdd7a6`; primary Linux and patch queue
+  0014 remain frozen.
+
+  Validation/0213 run `20260714T-p5a-r2-e3-rebuild` passed the fresh parent,
+  lease-off, layout-on-test-off, and KUnit-on arm64 build matrix plus the full
+  KUnit Image. QEMU ran `sched_exec_lease_rebuild`: 12/12 cases passed, with
+  zero failures and zero skips. Result SHA-256 is
+  `fd4ea3fdf283d3d6251c7ac3a685a9d602a1b3dc50ba53779348ac3886d236cc`;
+  normalized KTAP SHA-256 is
+  `f1ec72888ab6a4cc5c30fd192355bc33a0082f4375811c57b0710c60db1a3d05`.
+
+  The first QEMU attempt exposed environmental harness faults: the minimal
+  guest lacked the default virtio EFI ROM and QEMU 8.2.2 asserted under its
+  broad `max` CPU model. The accepted runner uses `-nic none`, `cortex-a57`,
+  and normalized current KTAP spelling; E3 Linux source did not change.
+
+  Boundary:
+    E3 correctness is accepted only for synthetic fixtures. Production fields,
+    live scheduler integration, bounded irq-disabled rq-lock hold, runtime
+    denial, monitor enforcement, protection, performance/cost, deployment,
+    and datacenter readiness remain false.
+
+  Next:
+    define and formally gate the E4 live lock-hold measurement protocol before
+    adding any E4 source.

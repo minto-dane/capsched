@@ -366,6 +366,17 @@ Current SchedExecLease L0 readiness:
     worktree. It does not change the primary Linux branch or patch queue and
     adds no runtime callsite, accepted hot field, ABI, behavior, or protection
     claim.
+- `0042-sched-exec-lease-p5a-r2-e3-disposable-rebuild-kunit-prototype.md`
+  - Status: exact disposable two-file source, controlled arm64 build matrix,
+    and filtered QEMU KUnit validation/0213 passed with 12/12 cases, zero
+    failures, and zero skips.
+  - Candidate commit/tree:
+    `d1d5e78da8484c91eae70f22399c6901da680ea0` /
+    `aa6a5a3848415643f3b67434964b056e30421bb2`.
+  - JSON: `sched-exec-lease-p5a-r2-e3-disposable-rebuild-kunit-prototype-v1.json`.
+  - Rule: correctness is accepted only for the isolated synthetic fixture
+    contract. E4 planning may begin; production fields, live integration,
+    bounded lock hold, runtime behavior, and protection remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
