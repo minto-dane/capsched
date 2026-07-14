@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-v1",
   "date": "2026-07-14",
-  "status": "disposable_source_complete_arm64_e2_passed",
+  "status": "disposable_source_complete_arm64_and_x86_64_e2_passed_unaccepted",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r2-e2-layout",
     "branch": "codex/p5a-r2-e2-layout",
@@ -101,7 +101,21 @@
       "all_structure_deltas": 0,
       "protected_offsets_unchanged": true
     },
-    "x86_64_e2_complete": false
+    "x86_64_e2_complete": true,
+    "x86_64_measured_layout": {
+      "sched_entity_size": 320,
+      "cfs_rq_size": 384,
+      "rq_size": 3392,
+      "task_struct_size": 3328,
+      "all_structure_deltas": 0,
+      "protected_e1_values_unchanged": true,
+      "candidate_offsets": {
+        "sched_entity.sched_exec_summary_valid": 92,
+        "sched_entity.sched_exec_min_fresh_vruntime": 200,
+        "rq.sched_exec_summary_state": 3380,
+        "rq.sched_exec_built_generation": 3384
+      }
+    }
   },
   "build": {
     "run_id": "20260713T-p5a-r2-e2-layout",
@@ -109,7 +123,13 @@
     "result_status_at_recording": "passed",
     "result": "build/source-check/sched-exec-lease-p5a-r2-e2-arm64-layout-candidate/20260713T-p5a-r2-e2-layout/result.json",
     "result_sha256": "360f98bd71ed641ba410205925cdec00d55cfbaa990e2dee361798e6afb945f1",
-    "cacheline_table_sha256": "5d1a88d774b1de4e26ccee36dd3bafb94e97abbc2ac599832f639ee4fe2186b0"
+    "cacheline_table_sha256": "5d1a88d774b1de4e26ccee36dd3bafb94e97abbc2ac599832f639ee4fe2186b0",
+    "x86_64_run_id": "20260714T-p5a-r2-e2-x86_64-layout",
+    "x86_64_progress_job": "p5a-r2-e2-x86_64-build",
+    "x86_64_result_status_at_recording": "passed",
+    "x86_64_result": "build/source-check/sched-exec-lease-p5a-r2-e2-x86_64-layout-candidate/20260714T-p5a-r2-e2-x86_64-layout/result.json",
+    "x86_64_result_sha256": "6c7f53da489b2644a2e04ea8f424fdc990e8f1c9b59a9a60089a0251c049bd21",
+    "x86_64_cacheline_table_sha256": "db45be6a5695300a4521b0d86a446311907c3290b7439eb0f2d7e2a798976c00"
   },
   "safety_flags": {
     "layout_candidate_accepted": false,

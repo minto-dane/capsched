@@ -2,9 +2,9 @@
 
 Date: 2026-07-14
 
-Status: disposable source candidate committed and arm64 E2 layout validation
-passed. This is not a primary Linux or patch-queue change, and the candidate
-is not accepted as a production layout.
+Status: disposable source candidate committed; arm64 and x86_64 E2 layout
+validations passed. This is not a primary Linux or patch-queue change, and the
+candidate is not accepted as a production layout.
 
 ## Disposable Source Identity
 
@@ -74,6 +74,14 @@ all 51 E1 symbol values and every protected offset. `sched_entity`, `cfs_rq`,
 `rq`, and `task_struct` retained their E1 arm64 sizes of 320, 384, 3520, and
 4160 bytes respectively: all four measured deltas are zero. The authoritative
 result is validation/0208 run `20260713T-p5a-r2-e2-layout`.
+
+Validation/0210 independently rebuilt x86_64 E1 and candidate objects with
+GCC 13.3.0. It reproduced the 320/384/3392/3328 baseline, preserved all 51 E1
+values, added eight symbols, emitted 27 fields, and again measured zero growth
+in all four structures. The sched_entity candidate offsets remain 92/200;
+the architecture-local rq tail offsets are 3380/3384 rather than arm64's
+3508/3512. This is expected and confirms that no cross-architecture byte
+identity was assumed.
 
 ## Non-Claims
 

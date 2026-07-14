@@ -5535,3 +5535,14 @@ P5A-R2 E2 x86_64 layout evidence plan:
     compilation because x86_64 defconfig disables `EXPERT`, which hides the
     lease and probe. The common config procedure now enables this declared
     dependency before every mode. Source identities and claims are unchanged.
+
+  Result:
+    corrected validation/0210 run `20260714T-p5a-r2-e2-x86_64-layout`
+    passed with GCC 13.3.0, fresh E1 plus off/on/candidate builds, 51 E1 values
+    preserved, 8 additions, 59 total symbols, 27 fields, and zero growth in
+    all four x86_64 structures (320/384/3392/3328). Candidate offsets are
+    sched_entity 92/200 and rq 3380/3384. Together with arm64 validation/0208,
+    both required architecture-local E2 comparisons pass. The exact candidate
+    remains unaccepted pending a separate E2 acceptance gate; production hot
+    fields, primary promotion, E3, runtime, protection, performance, and cost
+    remain false.

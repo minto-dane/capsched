@@ -355,8 +355,9 @@ Current SchedExecLease L0 readiness:
     candidate field, runtime callsite, ABI, behavior, or protection claim.
 - `0041-sched-exec-lease-p5a-r2-e2-disposable-layout-candidate.md`
   - Status: disposable four-file candidate committed on
-    `codex/p5a-r2-e2-layout`; arm64 E2 validation/0208 passed with zero growth
-    in all four measured structures. x86_64 E2 remains separate.
+    `codex/p5a-r2-e2-layout`; arm64 validation/0208 and x86_64
+    validation/0210 passed with zero growth in all four measured structures.
+    Candidate acceptance remains separate.
   - Candidate commit/tree:
     `162d16640634637a6f7604b90bf2275bea47ec63` /
     `a435a65f1b1ae5e4c10d09e5753fc0871f1381d1`.

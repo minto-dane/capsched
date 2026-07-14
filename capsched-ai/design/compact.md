@@ -4326,3 +4326,9 @@ P5A-R2 E2 x86_64 plan:
   Attempt one installed the cross compiler but stopped before compilation
   because x86_64 defconfig disables the lease's `EXPERT` dependency. The
   corrected common mode setup enables `EXPERT`; no source identity changed.
+
+  Corrected validation/0210 passed: x86_64 GCC 13.3.0 reproduced E1 sizes
+  320/384/3392/3328, preserved 51 values, added 8 for 59 total, emitted 27
+  fields, and measured zero growth. rq offsets 3380/3384 are correctly
+  architecture-local versus arm64 3508/3512. Both E2 architecture builds pass;
+  acceptance and E3 remain separately gated.
