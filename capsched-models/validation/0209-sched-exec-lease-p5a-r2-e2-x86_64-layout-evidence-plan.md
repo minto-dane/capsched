@@ -66,3 +66,9 @@ candidate identity, build result, or safety claim changed.
 A subsequent direct macOS-host invocation could not locate Java. The
 authoritative run therefore executed in the existing Linux machine with
 OpenJDK 21, consistent with prior project TLC runs.
+
+After validation/0210 exposed x86_64 defconfig's disabled `EXPERT` dependency,
+the plan was made explicit that all four modes enable `EXPERT` before applying
+their lease/probe settings. The same run ID was re-executed against that
+updated plan and again passed 18 anchors, 4 absence checks, safe TLC, and all
+24 expected counterexamples with the same result hash.

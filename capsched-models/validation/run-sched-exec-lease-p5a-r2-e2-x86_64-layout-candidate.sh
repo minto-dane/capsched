@@ -67,6 +67,7 @@ prepare_config()
 	local source=$1 mode=$2 out=$3
 	mkdir -p "$out"
 	make -C "$source" O="$out" ARCH="$ARCH" CROSS_COMPILE="$CROSS_COMPILE" defconfig > "$OUT_DIR/$mode-defconfig.log" 2>&1
+	"$source/scripts/config" --file "$out/.config" -e EXPERT
 	case "$mode" in
 		e1) "$source/scripts/config" --file "$out/.config" -e SCHED_EXEC_LEASE -e DEBUG_KERNEL -e SCHED_EXEC_LEASE_LAYOUT_PROBE ;;
 		off) "$source/scripts/config" --file "$out/.config" -d SCHED_EXEC_LEASE -d SCHED_EXEC_LEASE_LAYOUT_PROBE -d SCHED_EXEC_LEASE_LAYOUT_CANDIDATE ;;

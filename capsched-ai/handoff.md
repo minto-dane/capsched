@@ -5529,3 +5529,9 @@ P5A-R2 E2 x86_64 layout evidence plan:
     Monitor with
     `./tools/long-job.sh watch p5a-r2-e2-x86_64-build 30`. No x86_64 pass is
     recorded until its exact result.json passes.
+
+  First-attempt correction:
+    cross-compiler installation passed, then the runner stopped before target
+    compilation because x86_64 defconfig disables `EXPERT`, which hides the
+    lease and probe. The common config procedure now enables this declared
+    dependency before every mode. Source identities and claims are unchanged.

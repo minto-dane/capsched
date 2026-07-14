@@ -4322,3 +4322,7 @@ P5A-R2 E2 x86_64 plan:
   External job `p5a-r2-e2-x86_64-build` owns validation/0210's fresh E1 and
   candidate off/on/probe cross-build. Passing evidence remains pending its
   exact result.json.
+
+  Attempt one installed the cross compiler but stopped before compilation
+  because x86_64 defconfig disables the lease's `EXPERT` dependency. The
+  corrected common mode setup enables `EXPERT`; no source identity changed.

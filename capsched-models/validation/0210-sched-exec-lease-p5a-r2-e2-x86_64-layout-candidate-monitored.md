@@ -44,3 +44,12 @@ A pass is compiler/object layout evidence only. Cross-compilation is not
 x86_64 boot, runtime, bare-metal, latency, protection, performance, or cost
 evidence. The layout remains disposable and unaccepted; E3 remains blocked
 until this result passes and a separate acceptance gate is completed.
+
+## Attempt History
+
+The first attempt installed the cross compiler successfully and stopped at
+12%, before compiling any target object. x86_64 `defconfig` leaves `EXPERT`
+disabled; because `SCHED_EXEC_LEASE` depends on `EXPERT`, `olddefconfig`
+correctly removed the requested E1 probe. The common configuration procedure
+now enables `EXPERT` before applying each mode. This is a harness prerequisite
+correction, not a Linux or candidate source change.

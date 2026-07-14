@@ -38,7 +38,8 @@ No source change is authorized by this plan.
 
 ## Controlled Build Matrix
 
-Every output directory begins from x86_64 `defconfig`. The same compiler and
+Every output directory begins from x86_64 `defconfig`, then explicitly enables
+`EXPERT`, the declared dependency of `SCHED_EXEC_LEASE`. The same compiler and
 configuration procedure are used for:
 
 ```text

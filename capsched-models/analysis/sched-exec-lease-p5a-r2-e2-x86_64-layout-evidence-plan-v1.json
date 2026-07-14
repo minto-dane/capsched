@@ -30,6 +30,7 @@
   },
   "build_matrix": {
     "fresh_x86_64_defconfig_per_mode": true,
+    "expert_enabled_for_all_modes": true,
     "e1_expanded_probe": true,
     "normal_config_off": true,
     "normal_config_on_candidate_disabled": true,
