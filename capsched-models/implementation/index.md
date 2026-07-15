@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-07-05
+Updated: 2026-07-15
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -390,6 +390,21 @@ Current SchedExecLease L0 readiness:
     threshold breaches are retained as valid design-rejection evidence.
     Production, protection, latency,
     performance, cost, deployment, and datacenter claims remain unapproved.
+- `0044-sched-exec-lease-p5a-r3-e2-private-layout-candidate.md`
+  - Status: exact two-file disposable candidate and fresh arm64/x86_64
+    four-mode layout evidence passed; validation/0223 closes it for E3
+    planning only.
+  - Candidate commit/tree:
+    `63313b329e1d44901acfce30698613c38615c8d5` /
+    `8d51c596d3d73a6c6dc507b84fdcd4ac8aa7f8eb`.
+  - Input/result JSON:
+    `sched-exec-lease-p5a-r3-e2-private-layout-candidate-v1.json` /
+    `sched-exec-lease-p5a-r3-e2-private-layout-candidate-result-v1.json`.
+  - Rule: all 51 existing values remain unchanged, ordinary structure growth
+    is zero, disabled private symbols/relocations/strings are absent, and the
+    measured 53,696-byte/rq private state passes the 65,536-byte bound. A
+    separate E3 plan may be drafted; E3 source and every runtime or production
+    claim remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

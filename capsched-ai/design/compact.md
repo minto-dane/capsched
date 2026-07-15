@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-14
+Updated: 2026-07-15
 
 ## Project
 
@@ -4431,3 +4431,19 @@ P5A-R3 E1 source/locking/lifetime gate:
   init/Kconfig and kernel/sched/exec_lease.c is now allowed. E3/E4 source,
   behavior, primary/patch-queue promotion, denial/protection/performance/cost,
   deployment, and datacenter claims remain false.
+
+P5A-R3 E2 private layout gate:
+  Implementation/0044 and validation/0221-0223 freeze exact direct-primary
+  child `63313b329e1d`, tree `8d51c596d3d7`, changing only init/Kconfig and
+  kernel/sched/exec_lease.c. The option is default-off and build-only.
+
+  Fresh arm64 and x86_64 four-mode builds each preserve 51 existing values,
+  add 43 private-on symbols, leave zero disabled symbols/relocations/strings,
+  and measure zero sched_entity/cfs_rq/rq/task_struct growth. Private
+  key/bucket/projection/rq-state is 64/128/832/448 bytes; B_max=64 totals
+  53,696 bytes/rq <=65,536. Build result SHA-256 is `48a4a0f35889` and
+  independent closure SHA-256 is `d9b63a3efd0f`.
+
+  E2 is complete. E3 plan drafting is allowed; E3 worktree/source is not.
+  Runtime behavior/denial, primary promotion, production layout/protection,
+  performance/cost, deployment, and datacenter claims remain false.

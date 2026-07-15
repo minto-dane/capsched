@@ -226,6 +226,9 @@ Updated: 2026-07-15
 | 0218 | Complete arm64 r4 evidence breached 36 fixed gates in 20/35 cells with clean KTAP/warning integrity; full O(n) rq-locked rebuild rejected and x86_64 stopped | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Rejection |
 | 0219 | Exact E4 rejection, 20 source anchors, 6 absence checks, safe TLC, and 34 fault counterexamples select bucket-local targeted projection; R3-E1 plan only is allowed | SchedExecLease P5A-R3 Bucket-Local Targeted Projection |
 | 0220 | R3-E1 passed 38 anchors, 8 absence checks, safe TLC 12/11/depth 11, and 36 fault counterexamples; exact default-off two-file R3-E2 layout draft only is allowed | SchedExecLease P5A-R3 E1 Source/Locking/Lifetime Evidence Plan |
+| 0221 | Exact direct-child/two-file source gate passed checkpatch 0/0/0, 13/13 layout anchors, zero runtime/surface additions, and a unique 43-symbol manifest | SchedExecLease P5A-R3 E2 Source Gate |
+| 0222 | Fresh arm64/x86_64 four-mode builds preserved 51 existing values, added 43 private-on symbols, kept disabled artifacts absent, and passed the private envelope | SchedExecLease P5A-R3 E2 Dual-Architecture Layout |
+| 0223 | Independent ELF/config/source/identity closure passed with zero ordinary structure growth and 53,696 bytes/rq; E3 planning only is allowed | SchedExecLease P5A-R3 E2 Evidence Closure |
 
 ## Principles
 

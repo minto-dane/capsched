@@ -72,9 +72,31 @@ candidate_tree=$(git -C "$CANDIDATE_DIR" rev-parse 'HEAD^{tree}')
 [ "$candidate_commit" = "$expected_candidate" ] || die "candidate moved: $candidate_commit"
 [ "$candidate_parent" = "$expected_parent" ] || die "candidate is not direct child: $candidate_parent"
 [ "$candidate_tree" = "$expected_tree" ] || die "candidate tree moved: $candidate_tree"
+verify_source_file()
+{
+	local tree=$1 path=$2 expected_blob working_blob
+	expected_blob=$(git -C "$tree" rev-parse "HEAD:$path")
+	working_blob=$(git -C "$tree" hash-object "$path")
+	[ "$working_blob" = "$expected_blob" ] || die "build-relevant source differs from HEAD: $tree/$path"
+}
 for tree in "$PRIMARY_DIR" "$CANDIDATE_DIR"; do
-	git -C "$tree" diff-files --quiet -- init/Kconfig include/linux kernel/sched || die "build-relevant worktree dirty: $tree"
-	git -C "$tree" diff-index --cached --quiet HEAD -- init/Kconfig include/linux kernel/sched || die "build-relevant index dirty: $tree"
+	for path in \
+		init/Kconfig \
+		include/linux/sched.h \
+		include/linux/sched_exec_lease.h \
+		include/linux/cpumask.h \
+		include/linux/refcount.h \
+		include/linux/stddef.h \
+		include/linux/workqueue.h \
+		include/linux/xarray.h \
+		kernel/sched/Makefile \
+		kernel/sched/sched.h \
+		kernel/sched/core.c \
+		kernel/sched/fair.c \
+		kernel/sched/exec_lease.c \
+		kernel/sched/exec_lease_layout_probe.c; do
+		verify_source_file "$tree" "$path"
+	done
 done
 
 series_tail=$(tail -n 1 "$PATCH_QUEUE_DIR/patches/capsched-linux-l0/series")

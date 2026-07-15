@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-14
+Updated: 2026-07-15
 
 Read this first when resuming the project.
 
@@ -5720,3 +5720,39 @@ P5A-R3 E1 source/locking/lifetime evidence plan:
     E3/E4 source, real scheduler hooks, primary or patch-queue changes,
     runtime denial, monitor enforcement, protection, performance/cost,
     deployment, and datacenter claims remain blocked.
+
+P5A-R3 E2 private layout closure:
+  Implementation/0044 and validation/0221-0223 complete the exact disposable
+  E2 candidate. Branch `codex/p5a-r3-e2-layout` commit
+  `63313b329e1d44901acfce30698613c38615c8d5`, tree
+  `8d51c596d3d73a6c6dc507b84fdcd4ac8aa7f8eb`, is a direct child of primary
+  `5e1ca3037e34823d1ba0cdd1dc04161fac170280`. Its diff SHA-256 is
+  `fe8b75cb31bb5612d2f32f95b9988c4e7796ae5b919ecd8f5dacc2e0c12ffe09`
+  and changes exactly init/Kconfig and kernel/sched/exec_lease.c.
+
+  Build boundary/result:
+    default-off CONFIG_SCHED_EXEC_LEASE_BUCKET_LAYOUT_PROBE defines only
+    build-time private key/bucket/projection/rq-state layouts and ELF probes.
+    Monitored run `20260715T-p5a-r3-e2-dual-arch` completed four fresh modes
+    per architecture. Arm64 and x86_64 each preserved all 51 existing values,
+    added exactly 43 private symbols in private-on, and emitted zero private
+    symbols/relocations/strings in disabled modes. Ordinary sched_entity,
+    cfs_rq, rq, and task_struct deltas are all zero. Build result SHA-256 is
+    `48a4a0f358896f0e552173f5e308970ef14dc83a58beef62caaed03e360e7038`.
+
+  Measured envelope:
+    key=64, bucket=128, projection=832, private rq state=448 bytes. With
+    B_max=64, active private memory is 53,696 bytes/rq, below 65,536; maximum
+    private alignment is 64 bytes. These are architecture-local builds, not a
+    cross-architecture byte-identity claim.
+
+  Independent closure/next:
+    run `20260715T-p5a-r3-e2-closure` re-extracted both ELF sets, checked four
+    configs per architecture, 28 source blobs, exact parent/tree/two-file
+    scope, input-contract hash, patch-queue series, and all result hashes.
+    Closure SHA-256 is
+    `d9b63a3efd0fd6b60223190418b3baacc3c0ac2d275fd99aa594d1fe6c18efba`.
+    R3-E2 is complete and a separate R3-E3 plan may now be drafted. Do not
+    create E3 source before that plan passes. Primary/patch-queue promotion,
+    runtime behavior or denial, production layout/protection,
+    performance/cost, deployment, and datacenter claims remain false.

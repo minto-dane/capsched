@@ -2,9 +2,9 @@
 
 Date: 2026-07-15
 
-Status: exact disposable source candidate committed; dual-architecture E2
-layout evidence is pending. This candidate is build-only and is not accepted
-for runtime or production use.
+Status: exact disposable source candidate committed and dual-architecture E2
+layout evidence closed. The candidate is accepted only as input to a separate
+E3 plan; it remains build-only and is not accepted for runtime or production.
 
 ## Disposable Source Identity
 
@@ -47,9 +47,40 @@ sched_exec_bucket_rq_state        embedded private outer cfs_rq and rq state
 ```
 
 Forty-three new ELF symbol sizes encode private sizes, alignments, and offsets.
-The dual-architecture gate must rebuild and preserve all 51 existing expanded
-probe values, prove that all new symbols and relocations disappear while the
-new option is disabled, and enforce the E1 private-memory envelope.
+
+## Dual-Architecture Result
+
+Run `20260715T-p5a-r3-e2-dual-arch` rebuilt fresh architecture-local primary,
+private-off, private-on, and normal configurations for arm64 and x86_64. Its
+result SHA-256 is
+`48a4a0f358896f0e552173f5e308970ef14dc83a58beef62caaed03e360e7038`.
+
+Both architectures preserved all 51 existing expanded-probe values, emitted
+exactly 43 private symbols only in private-on mode, and emitted zero private
+symbols, relocations, or strings in disabled modes. The ordinary structure
+deltas are all zero:
+
+```text
+                 arm64  x86_64  delta
+sched_entity        320     320      0
+cfs_rq              384     384      0
+rq                 3520    3392      0
+task_struct        4160    3328      0
+```
+
+The private layout is 64-byte key, 128-byte bucket, 832-byte projection, and
+448-byte rq state on both measured architectures. With `B_max=64`, measured
+active private memory is `64 * 832 + 448 = 53,696` bytes per rq, below the
+65,536-byte limit. Maximum measured private alignment is 64 bytes.
+
+Independent closure run `20260715T-p5a-r3-e2-closure` re-extracted the ELF
+tables and rechecked all four configs, 28 source blobs, direct-child/two-file
+identity, patch-queue series identity, disabled absence, arithmetic, and result
+hashes. Closure result SHA-256 is
+`d9b63a3efd0fd6b60223190418b3baacc3c0ac2d275fd99aa594d1fe6c18efba`.
+
+E2 is complete. A separate E3 evidence plan may now be drafted; E3 source may
+not be created until that plan passes.
 
 ## Non-Claims
 
