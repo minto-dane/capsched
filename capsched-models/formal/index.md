@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-07-13
+Updated: 2026-07-15
 
 ## Current Formal Records
 
@@ -134,6 +134,9 @@ Updated: 2026-07-13
 | 0126 | Checked with safe pass and 30 expected unsafe counterexamples | P5A-R2 E2 Disposable Layout Candidate Plan Model |
 | 0127 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 E2 x86_64 Layout Evidence Plan Model |
 | 0128 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 E2 Layout Evidence Closure Model |
+| 0129 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 E3 Rebuild Prototype Evidence Plan Model |
+| 0130 | Checked with safe pass and 28 expected unsafe counterexamples | P5A-R2 E4 Lock-Hold Measurement Plan Model |
+| 0131 | Checked with 16/14/depth-10 safe pass and 34 expected unsafe counterexamples | P5A-R3 Bucket-Local Targeted Projection Model |
 
 ## Planned
 

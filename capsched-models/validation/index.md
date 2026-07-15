@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-14
+Updated: 2026-07-15
 
 ## Current Validation Records
 
@@ -224,6 +224,7 @@ Updated: 2026-07-14
 | 0216 | Arm64 attempt 1 built and booted but failed before all measurement rows because it asserted the runtime-scaled base slice against the normalized baseline; no threshold evidence exists | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Attempt 1 |
 | 0217 | Corrected direct-E3 identity, normalized/runtime base-slice semantics, unchanged matrix/interval/thresholds, strict style, and arm64 fair.o rebuild passed; corrected arm64 relaunch only is authorized | SchedExecLease P5A-R2 E4 Corrected Source Gate |
 | 0218 | Complete arm64 r4 evidence breached 36 fixed gates in 20/35 cells with clean KTAP/warning integrity; full O(n) rq-locked rebuild rejected and x86_64 stopped | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Rejection |
+| 0219 | Exact E4 rejection, 20 source anchors, 6 absence checks, safe TLC, and 34 fault counterexamples select bucket-local targeted projection; R3-E1 plan only is allowed | SchedExecLease P5A-R3 Bucket-Local Targeted Projection |
 
 ## Principles
 

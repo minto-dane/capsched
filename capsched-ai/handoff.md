@@ -5651,3 +5651,41 @@ P5A-R2 E4 corrected lock-hold source gate:
     separate bounded-rq-lock-work design and gate; no successor source is yet
     authorized. Production, behavior, protection, latency/performance/cost,
     deployment, and datacenter claims remain false.
+
+P5A-R3 bucket-local targeted projection:
+  Analysis/0166/formal/0131/validation/0219 select the bounded-work successor
+  architecture. Canonical run `20260715T-p5a-r3-bucket-local-plan-r2`
+  rechecked exact E4 negative evidence, primary Linux commit/tree, 20 source
+  anchors, and 6 future-absence gates. Safe TLC passed 16 generated/14
+  distinct/depth 10 and all 34 injected faults produced expected
+  counterexamples. Result SHA-256 is
+  `250f35d8756378d7cf17a032a2a6734818e6291f317f335b4af01b15d1dc55ba`.
+
+  Selected shape:
+    an authority-equivalent Domain/SchedContext/grant/MemoryView/placement/
+    selector-generation bucket owns a non-wrapping local generation/state and
+    preallocated per-CPU projections. Runnable, delayed, and current
+    contributions maintain per-rq counts and an active-rq index. Every
+    publication takes a fresh snapshot under the membership lock. Enqueue
+    before the snapshot is selected; enqueue after it observes the new
+    generation and cannot publish old Fresh state.
+
+    Mutation lock order is rq -> at most one bucket membership lock. The
+    publisher never takes rq lock while membership-locked. Targeted work takes
+    one rq lock and changes one bucket projection only; it cannot scan leaves,
+    loop over buckets, allocate, sleep, or call policy/monitor code. Migration
+    is remove-neutral-add. Picker trust requires Fresh/current generation/key
+    and final task-local recheck. Task/projection/work refs plus RCU gate free.
+
+  Counterexample-driven correction:
+    the first safe-model draft reused the old active-rq snapshot on republish.
+    TLC exposed the missed late-joining rq. The accepted protocol now repeats
+    publication and snapshot acquisition for every generation.
+
+  Boundary/next:
+    only an R3-E1 exact source/locking/lifetime/finite-B_max evidence plan may
+    be drafted. It must freeze CPU-hotplug/callback drain, one outer layer,
+    configuration-off/layout gates, cross-path exclusions, and later
+    measurement rejection limits. No disposable Linux source, hot field,
+    behavior, chunked rebuild, runtime/protection/performance/cost, deployment,
+    or datacenter claim is approved.

@@ -4388,3 +4388,28 @@ P5A-R2 E4 corrected source gate:
   disposable line is not promoted. A successor requires a separate bounded
   rq-lock-work design/gate. Production, latency, performance, cost,
   protection, deployment, and datacenter claims remain blocked.
+
+P5A-R3 bucket-local successor gate:
+  Analysis/0166/formal/0131/validation/0219 replace the rejected all-leaf
+  rebuild direction with an indexed bucket-local Candidate C projection.
+  Run `20260715T-p5a-r3-bucket-local-plan-r2` passed 20 anchors, 6 absence
+  checks, safe TLC 16/14/depth 10, and 34 expected fault counterexamples;
+  result SHA-256 is
+  `250f35d8756378d7cf17a032a2a6734818e6291f317f335b4af01b15d1dc55ba`.
+
+  Each authority-equivalent bucket has a non-wrapping generation/state,
+  preallocated per-CPU projections, per-rq runnable/current counts, and an
+  active-rq index. Publication snapshots that index under the membership lock
+  on every generation. The insertion handshake proves: before snapshot means
+  targeted work; after snapshot means new-generation observation. Lock order
+  is rq -> one bucket lock; publisher holds no rq lock. One work interval
+  updates one bucket projection and never scans leaves or all buckets.
+  Migration is remove-neutral-add; picker trust requires current generation,
+  eligibility/key match, and final task recheck; lifetime uses explicit task,
+  projection, work refs, and RCU.
+
+  The initial model omitted a new snapshot on republish; TLC exposed the
+  missed late-joining rq and the accepted model corrected it. Only R3-E1
+  source/locking/lifetime/finite-B_max evidence-plan drafting is allowed.
+  Linux source, hot fields, behavior, bounded latency, monitor protection,
+  performance/cost, deployment, and datacenter claims remain blocked.
