@@ -41,12 +41,40 @@ expected_tree=$(jq -r '.source.candidate_tree' "$CONFIG")
 [ "$(git -C "$CANDIDATE_DIR" rev-parse HEAD)" = "$expected_candidate" ] || die 'candidate moved'
 [ "$(git -C "$CANDIDATE_DIR" rev-parse HEAD^)" = "$expected_parent" ] || die 'candidate parent moved'
 [ "$(git -C "$CANDIDATE_DIR" rev-parse 'HEAD^{tree}')" = "$expected_tree" ] || die 'candidate tree moved'
-for tree in "$PRIMARY_DIR" "$CANDIDATE_DIR"; do
-	git -C "$tree" diff-files --quiet -- init/Kconfig include/linux kernel/sched || die "build-relevant worktree dirty: $tree"
-	git -C "$tree" diff-index --cached --quiet HEAD -- init/Kconfig include/linux kernel/sched || die "build-relevant index dirty: $tree"
+source_manifest="$OUT_DIR/source-file-hashes.tsv"
+printf 'tree\tpath\texpected_blob\tworking_blob\n' > "$source_manifest"
+verify_source_file()
+{
+	local label=$1 tree=$2 path=$3 expected_blob working_blob
+	expected_blob=$(git -C "$tree" rev-parse "HEAD:$path")
+	working_blob=$(git -C "$tree" hash-object "$path")
+	printf '%s\t%s\t%s\t%s\n' "$label" "$path" "$expected_blob" "$working_blob" >> "$source_manifest"
+	[ "$working_blob" = "$expected_blob" ] || die "$label source content differs from HEAD: $path"
+}
+for tree_spec in "primary:$PRIMARY_DIR" "candidate:$CANDIDATE_DIR"; do
+	label=${tree_spec%%:*}
+	tree=${tree_spec#*:}
+	for path in \
+		init/Kconfig \
+		include/linux/sched.h \
+		include/linux/sched_exec_lease.h \
+		include/linux/cpumask.h \
+		include/linux/refcount.h \
+		include/linux/stddef.h \
+		include/linux/workqueue.h \
+		include/linux/xarray.h \
+		kernel/sched/Makefile \
+		kernel/sched/sched.h \
+		kernel/sched/core.c \
+		kernel/sched/fair.c \
+		kernel/sched/exec_lease.c \
+		kernel/sched/exec_lease_layout_probe.c; do
+		verify_source_file "$label" "$tree" "$path"
+	done
 done
 jq -r '.probe.expected_added_symbol_names[]' "$CONFIG" | sort > "$OUT_DIR/expected-private-symbols.txt"
 source_gate_sha=$(sha256sum "$SOURCE_GATE" | awk '{print $1}')
+source_manifest_sha=$(sha256sum "$source_manifest" | awk '{print $1}')
 progress '5% exact source gate, compiler, and architecture matrix'
 
 prepare_config()
@@ -282,10 +310,11 @@ jq -n \
 	--arg run_id "$RUN_ID" --arg primary_commit "$expected_parent" --arg candidate_commit "$expected_candidate" \
 	--arg candidate_tree "$expected_tree" --arg config "$CONFIG" --arg config_sha "$config_sha" \
 	--arg source_gate "$SOURCE_GATE" --arg source_gate_sha "$source_gate_sha" \
+	--arg source_manifest "$source_manifest" --arg source_manifest_sha "$source_manifest_sha" \
 	--arg arm_result "$ARM_OUT/result.json" --arg arm_sha "$arm_sha" \
 	--arg x86_result "$X86_OUT/result.json" --arg x86_sha "$x86_sha" \
 	--slurpfile arm64 "$ARM_OUT/result.json" --slurpfile x86_64 "$X86_OUT/result.json" \
-	'{schema_version:1,run_id:$run_id,status:"passed",primary_linux_commit:$primary_commit,candidate_commit:$candidate_commit,candidate_tree:$candidate_tree,config:$config,config_sha256:$config_sha,source_gate:$source_gate,source_gate_sha256:$source_gate_sha,architectures:["arm64","x86_64"],fresh_architecture_local_baselines:true,cross_architecture_byte_identity_required:false,arm64_result:$arm_result,arm64_result_sha256:$arm_sha,x86_64_result:$x86_result,x86_64_result_sha256:$x86_sha,results:{arm64:$arm64[0],x86_64:$x86_64[0]},existing_expanded_probe_values_preserved:51,private_probe_symbols_enabled:43,private_symbols_and_relocations_absent_when_disabled:true,ordinary_scheduler_layout_delta_zero:true,private_memory_envelope_passed:true,dual_arch_e2_complete:true,e3_plan_may_start:true,e3_source_may_start:false,primary_linux_changed:false,patch_queue_changed:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,performance_claim:false,cost_claim:false,deployment_ready:false,datacenter_ready:false}' \
+	'{schema_version:1,run_id:$run_id,status:"passed",primary_linux_commit:$primary_commit,candidate_commit:$candidate_commit,candidate_tree:$candidate_tree,config:$config,config_sha256:$config_sha,source_gate:$source_gate,source_gate_sha256:$source_gate_sha,source_file_hash_manifest:$source_manifest,source_file_hash_manifest_sha256:$source_manifest_sha,source_files_match_head:true,architectures:["arm64","x86_64"],fresh_architecture_local_baselines:true,cross_architecture_byte_identity_required:false,arm64_result:$arm_result,arm64_result_sha256:$arm_sha,x86_64_result:$x86_result,x86_64_result_sha256:$x86_sha,results:{arm64:$arm64[0],x86_64:$x86_64[0]},existing_expanded_probe_values_preserved:51,private_probe_symbols_enabled:43,private_symbols_and_relocations_absent_when_disabled:true,ordinary_scheduler_layout_delta_zero:true,private_memory_envelope_passed:true,dual_arch_e2_complete:true,e3_plan_may_start:true,e3_source_may_start:false,primary_linux_changed:false,patch_queue_changed:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,performance_claim:false,cost_claim:false,deployment_ready:false,datacenter_ready:false}' \
 	> "$OUT_DIR/result.json"
 jq empty "$OUT_DIR/result.json"
 progress '100% passed; arm64/x86_64 E2 layout evidence complete'
