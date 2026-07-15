@@ -2,10 +2,9 @@
 
 Date: 2026-07-14
 
-Status: arm64 attempt 1 exposed a pre-measurement base-slice semantics error.
-The exact two-file source is corrected and validation/0217 authorizes its
-arm64 remeasurement only. No
-measurement, latency, or production claim is accepted.
+Status: complete as negative evidence. Validation/0218 records a valid arm64
+measurement that rejects the full O(n) locked rebuild. x86_64 is not launched,
+and no latency, performance, or production claim is accepted.
 
 ## Source Identity
 
@@ -106,10 +105,31 @@ base-slice semantics, rebuilds the targeted arm64 object, and authorizes only
 the corrected arm64 rerun. Its result SHA-256 is
 `956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc`.
 
+## Arm64 Final Measurement
+
+Run `20260714T-p5a-r2-e4-arm64-r4` completed a fresh QEMU execution over all
+35 required cells using the exact corrected source and hash-verified same-source
+Image. It emitted 10,000 measured pairs per cell, passed the required KUnit
+case, reported zero generation races and zero lockdep/irqsoff/RCU/lockup
+warnings, and exited zero. Result SHA-256 is
+`21cad0c9d6923e3e6a42749c315aca150126424ca14dd717c868e80eeba9bccc`.
+
+Twenty distinct cells breached at least one fixed gate. The 36 total breaches
+comprise 12 additional-p99 failures, 20 additional-maximum failures, and four
+samples reaching the 700,000ns normalized base-slice boundary. At 4,096
+runnable entities and depth 64, additional p99 was 520,992ns and maximum was
+2,440,048ns, versus limits of 25,000ns and 50,000ns.
+
+Validation/0218 therefore classifies the complete result as
+`rejected_full_locked_rebuild`. The earlier r2 post-build fixture failure and
+r3 worker-lifetime interruption are not merged into this evidence. Since the
+arm64 result already falsifies the design against fixed gates, x86_64 is not
+authorized and the disposable source is not promoted.
+
 ## Non-Claims
 
-This source does not itself supply measurement evidence. It does not accept
-the E2 layout for production, a full locked rebuild, bounded latency,
+This source plus validation evidence rejects, rather than accepts, the full
+locked rebuild. It does not accept the E2 layout for production, bounded latency,
 performance, live scheduler integration, runtime denial, protection, cost,
-deployment, or datacenter readiness. A threshold breach must be preserved as
-valid negative evidence and reject this full O(n) locked rebuild design.
+deployment, or datacenter readiness. Any bounded-work successor needs a new
+plan and source gate.

@@ -4375,7 +4375,16 @@ P5A-R2 E4 corrected source gate:
   0/0/0 and arm64 object gates; result SHA-256 is
   `956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc`.
 
-  External job `p5a-r2-e4-arm64-measure-r2` may run. Threshold/warning failure
-  remains valid `rejected_full_locked_rebuild` evidence; unknown boot params or
-  missing/malformed rows are `harness_failed`. x86_64 and all production,
-  latency, performance, cost, and protection claims remain blocked.
+  Analysis/0165 and validation/0218 close E4 with canonical arm64 run
+  `20260714T-p5a-r2-e4-arm64-r4`, result SHA-256
+  `21cad0c9d6923e3e6a42749c315aca150126424ca14dd717c868e80eeba9bccc`.
+  QEMU/KUnit/integrity/warning gates passed and all 35 rows completed. Twenty
+  cells produced 36 fixed-threshold breaches: 12 p99, 20 max, and four
+  normalized-base-slice breaches. Worst q=4096/depth=64 additional p99/max is
+  520,992/2,440,048ns. This is valid `rejected_full_locked_rebuild` evidence,
+  not a harness failure. r2/r3 partial infrastructure attempts are not merged.
+
+  Full O(n) rq-locked rebuild is rejected; x86_64 is not launched and the
+  disposable line is not promoted. A successor requires a separate bounded
+  rq-lock-work design/gate. Production, latency, performance, cost,
+  protection, deployment, and datacenter claims remain blocked.

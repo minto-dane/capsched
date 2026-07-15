@@ -5625,11 +5625,29 @@ P5A-R2 E4 corrected lock-hold source gate:
   96/384/160 bytes for the timed helper/cell/matrix case. Result SHA-256 is
   `956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc`.
 
-  Next:
-    external job `p5a-r2-e4-arm64-measure-r2` owns the exact corrected Apple
-    Container/QEMU remeasurement. Monitor it with
-    `./tools/long-job.sh watch p5a-r2-e4-arm64-measure-r2 30`. A 25us p99,
-    50us max, 700us normalized-basis, or warning breach is complete negative
-    evidence that rejects the full O(n) locked rebuild. Unknown boot params,
-    missing rows, or build/boot/KTAP integrity failure is a harness failure.
-    x86_64 remains blocked until a valid arm64 result is recorded.
+  Terminal result:
+    Analysis/0165 and validation/0218 record canonical run
+    `20260714T-p5a-r2-e4-arm64-r4`, result SHA-256
+    `21cad0c9d6923e3e6a42749c315aca150126424ca14dd717c868e80eeba9bccc`,
+    as valid `rejected_full_locked_rebuild` evidence. QEMU exited zero, KUnit
+    passed, all 35 rows completed with 10,000 measured pairs per cell, race
+    ppm is zero, irqsoff evidence was active, and all warning counts are zero.
+
+    Twenty cells breached 36 fixed gates: 12 p99, 20 maximum, and four
+    normalized-base-slice breaches. Worst q=4096/depth=64 additional p99/max
+    are 520,992/2,440,048ns against 25,000/50,000ns limits. The separately
+    recorded runtime base slice is 1,400,000ns; it does not relax the fixed
+    700,000ns normalized basis.
+
+  Attempt separation:
+    r2's post-build expected-cell fixture defect and r3's worker-lifetime
+    interruption after 12/35 rows are noncanonical and are not merged. r4 ran
+    a fresh QEMU guest with a hash-checked same-source Image and completed the
+    matrix independently.
+
+  Boundary/next:
+    the full O(n) rq-locked rebuild is rejected and x86_64 is not launched.
+    Do not promote E2/E3/E4 source or fields. Any successor must begin with a
+    separate bounded-rq-lock-work design and gate; no successor source is yet
+    authorized. Production, behavior, protection, latency/performance/cost,
+    deployment, and datacenter claims remain false.

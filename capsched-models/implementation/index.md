@@ -378,18 +378,17 @@ Current SchedExecLease L0 readiness:
     contract. E4 planning may begin; production fields, live integration,
     bounded lock hold, runtime behavior, and protection remain unapproved.
 - `0043-sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement.md`
-  - Status: arm64 attempt 1 is preserved as a pre-measurement harness failure;
-    validation/0217 passed the corrected source gate and E4-enabled arm64
-    targeted compile. The corrected arm64 measurement may be relaunched, but
-    no measurement or performance result is accepted yet.
+  - Status: validation/0218 records complete valid arm64 negative evidence:
+    36 fixed-gate breaches across 20/35 cells reject the full O(n) rq-locked
+    rebuild. x86_64 is not launched and no performance result is accepted.
   - Candidate commit/tree:
     `f6ad4e454778c52bcdaaecf684c148a3a8dae857` /
     `265e6357627490e51084979382ef34b2cfcc0cb8`.
   - JSON: `sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement-v1.json`.
-  - Rule: the immutable 35-cell, 10,000-pair experiment reuses the exact E3
-    rebuild under real IRQ disable and rq locking on synthetic fixtures. A
-    threshold breach is retained as valid design-rejection evidence; malformed
-    evidence is a harness failure. Production, protection, latency,
+  - Rule: the immutable 35-cell, 10,000-pair experiment measured the exact E3
+    rebuild under real IRQ disable and rq locking on synthetic fixtures. Its
+    threshold breaches are retained as valid design-rejection evidence.
+    Production, protection, latency,
     performance, cost, deployment, and datacenter claims remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of

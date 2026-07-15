@@ -223,6 +223,7 @@ Updated: 2026-07-14
 | 0215 | Historical first-source identity/isolation/interval/style and arm64 fair.o gate passed, then attempt 1 exposed a pre-measurement harness defect; this gate is superseded by 0217 | SchedExecLease P5A-R2 E4 Lock-Hold Source Gate |
 | 0216 | Arm64 attempt 1 built and booted but failed before all measurement rows because it asserted the runtime-scaled base slice against the normalized baseline; no threshold evidence exists | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Attempt 1 |
 | 0217 | Corrected direct-E3 identity, normalized/runtime base-slice semantics, unchanged matrix/interval/thresholds, strict style, and arm64 fair.o rebuild passed; corrected arm64 relaunch only is authorized | SchedExecLease P5A-R2 E4 Corrected Source Gate |
+| 0218 | Complete arm64 r4 evidence breached 36 fixed gates in 20/35 cells with clean KTAP/warning integrity; full O(n) rq-locked rebuild rejected and x86_64 stopped | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Rejection |
 
 ## Principles
 

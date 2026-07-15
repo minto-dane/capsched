@@ -170,6 +170,7 @@ Updated: 2026-07-14
 | 0162 | E3 constrained to an exact disposable two-file real-traversal KUnit prototype with independent-oracle and controlled-build gates | SchedExecLease P5A-R2 E3 Rebuild Prototype Evidence Plan |
 | 0163 | E4 fixes a paired-control 35-cell lock-hold rejection experiment with immutable 25us/50us limits and two-architecture staging | SchedExecLease P5A-R2 E4 Lock-Hold Measurement Plan |
 | 0164 | Attempt-1 base-slice assertion corrected to distinguish the fixed normalized threshold basis from the separately recorded runtime-scaled value | SchedExecLease P5A-R2 E4 Normalized Base-Slice Correction |
+| 0165 | Valid arm64 evidence breaches 36 fixed gates across 20/35 cells and rejects the full O(n) rq-locked rebuild without launching x86_64 | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Rejection |
 
 ## Planned Analysis Notes
 
@@ -299,3 +300,4 @@ Updated: 2026-07-14
 | `sched-exec-lease-p5a-r2-e2-layout-evidence-closure-v1.json` | P5A-R2 E2 evidence closure | Exact hashed arm64/x86_64 results, immutable four-field candidate, architecture-local offsets, E3-plan-only freeze, and production/source non-claims |
 | `sched-exec-lease-p5a-r2-e3-rebuild-prototype-evidence-plan-v1.json` | P5A-R2 E3 rebuild evidence plan | Exact E2 parent, disposable two-file source boundary, real traversal and independent-oracle obligations, controlled build/QEMU matrix, and production non-claims |
 | `sched-exec-lease-p5a-r2-e4-lock-hold-measurement-plan-v1.json` | P5A-R2 E4 lock-hold plan | Exact E3 boundary, real irq/rq lock timing interval, paired controls, immutable 35-cell/10,000-sample matrix, fixed rejection limits, architecture split, and non-claims |
+| `sched-exec-lease-p5a-r2-e4-arm64-lock-hold-rejection-v1.json` | P5A-R2 E4 arm64 rejection | Exact source/result hashes, complete 35-cell evidence, breach accounting, full-locked-rebuild rejection, x86_64 stop, and successor-gate boundary |
