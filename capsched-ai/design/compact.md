@@ -4413,3 +4413,21 @@ P5A-R3 bucket-local successor gate:
   source/locking/lifetime/finite-B_max evidence-plan drafting is allowed.
   Linux source, hot fields, behavior, bounded latency, monitor protection,
   performance/cost, deployment, and datacenter claims remain blocked.
+
+P5A-R3 E1 source/locking/lifetime gate:
+  Analysis/0167/formal/0132/validation/0220 passed 38 anchors, 8 absences,
+  safe TLC 12/11/depth 11, and 36 expected counterexamples. Canonical result
+  SHA-256 is `bc6f5bca4fb3c6d94bc8cdf129d399dfebf9b723bc18d8bd4f9727bd44d6b692`
+  and is byte-reproducible for the same RUN_ID.
+
+  The first implementation bound is B_max=64, one outer layer, rb height
+  <=12, sparse projections, <=64KiB private active state/rq, and zero growth
+  of ordinary scheduler/task structures. Lock order is rq -> one bucket lock;
+  publisher holds no rq lock; one unbound coalesced work owner updates one
+  projection. Fair rq online/offline callbacks own hotplug settlement. Teardown
+  stops queueing, drains work outside locks, releases refs, then waits for RCU.
+
+  Only a disposable default-off layout/probe direct child changing
+  init/Kconfig and kernel/sched/exec_lease.c is now allowed. E3/E4 source,
+  behavior, primary/patch-queue promotion, denial/protection/performance/cost,
+  deployment, and datacenter claims remain false.

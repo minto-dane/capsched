@@ -5689,3 +5689,34 @@ P5A-R3 bucket-local targeted projection:
     measurement rejection limits. No disposable Linux source, hot field,
     behavior, chunked rebuild, runtime/protection/performance/cost, deployment,
     or datacenter claim is approved.
+
+P5A-R3 E1 source/locking/lifetime evidence plan:
+  Analysis/0167, formal/0132, and validation/0220 pass the pre-source gate.
+  Canonical run `20260715T-p5a-r3-e1-plan-r2` checked exact primary Linux
+  `5e1ca3037e348`/tree `54f685aad94f`, patch queue `2a022dce5467`, and R3
+  predecessor result SHA-256 `250f35d87563`. It passed 38 source anchors,
+  8 future absences, safe TLC 12/11/depth 11, and all 36 injected faults.
+  Replaying the same RUN_ID reproduced result SHA-256
+  `bc6f5bca4fb3c6d94bc8cdf129d399dfebf9b723bc18d8bd4f9727bd44d6b692`.
+
+  Fixed engineering boundary:
+    `B_max=64`, one outer feature layer, maximum outer rb height 12, sparse
+    projection storage, <=64KiB active private state per rq, and zero size
+    delta in ordinary sched_entity/cfs_rq/rq/task_struct. The projection
+    layout must include the real inner cfs_rq and outer sched_entity so E2
+    cannot hide Candidate C's dominant memory.
+
+  Lock/lifetime boundary:
+    rq -> at most one raw membership lock; publisher never takes rq lock;
+    one unbound high-priority reclaim-safe work owner per projection; online/
+    offline through fair rq callbacks; stop new queues before sleepable
+    cancel_work_sync; settle canceled owner refs; empty task/contribution/
+    active/work state; then RCU grace before free.
+
+  Authorization/next:
+    create a disposable direct child of primary changing exactly init/Kconfig
+    and kernel/sched/exec_lease.c under default-off
+    CONFIG_SCHED_EXEC_LEASE_BUCKET_LAYOUT_PROBE. It is layout/probe only.
+    E3/E4 source, real scheduler hooks, primary or patch-queue changes,
+    runtime denial, monitor enforcement, protection, performance/cost,
+    deployment, and datacenter claims remain blocked.

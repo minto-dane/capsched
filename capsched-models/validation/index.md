@@ -225,6 +225,7 @@ Updated: 2026-07-15
 | 0217 | Corrected direct-E3 identity, normalized/runtime base-slice semantics, unchanged matrix/interval/thresholds, strict style, and arm64 fair.o rebuild passed; corrected arm64 relaunch only is authorized | SchedExecLease P5A-R2 E4 Corrected Source Gate |
 | 0218 | Complete arm64 r4 evidence breached 36 fixed gates in 20/35 cells with clean KTAP/warning integrity; full O(n) rq-locked rebuild rejected and x86_64 stopped | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Rejection |
 | 0219 | Exact E4 rejection, 20 source anchors, 6 absence checks, safe TLC, and 34 fault counterexamples select bucket-local targeted projection; R3-E1 plan only is allowed | SchedExecLease P5A-R3 Bucket-Local Targeted Projection |
+| 0220 | R3-E1 passed 38 anchors, 8 absence checks, safe TLC 12/11/depth 11, and 36 fault counterexamples; exact default-off two-file R3-E2 layout draft only is allowed | SchedExecLease P5A-R3 E1 Source/Locking/Lifetime Evidence Plan |
 
 ## Principles
 
