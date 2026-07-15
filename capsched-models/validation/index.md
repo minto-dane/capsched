@@ -229,6 +229,7 @@ Updated: 2026-07-15
 | 0221 | Exact direct-child/two-file source gate passed checkpatch 0/0/0, 13/13 layout anchors, zero runtime/surface additions, and a unique 43-symbol manifest | SchedExecLease P5A-R3 E2 Source Gate |
 | 0222 | Fresh arm64/x86_64 four-mode builds preserved 51 existing values, added 43 private-on symbols, kept disabled artifacts absent, and passed the private envelope | SchedExecLease P5A-R3 E2 Dual-Architecture Layout |
 | 0223 | Independent ELF/config/source/identity closure passed with zero ordinary structure growth and 53,696 bytes/rq; E3 planning only is allowed | SchedExecLease P5A-R3 E2 Evidence Closure |
+| 0224 | Exact R3-E3 pre-source gate passed 58 anchors, 10 absences, safe TLC 17/16/depth 16, and 51 fault counterexamples; only the two-file disposable draft is allowed | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
 
 ## Principles
 

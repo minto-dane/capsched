@@ -4447,3 +4447,20 @@ P5A-R3 E2 private layout gate:
   E2 is complete. E3 plan drafting is allowed; E3 worktree/source is not.
   Runtime behavior/denial, primary promotion, production layout/protection,
   performance/cost, deployment, and datacenter claims remain false.
+
+P5A-R3 E3 concurrency-plan gate:
+  Analysis/0168, formal/0133, and validation/0224 authorize only an exact
+  direct-E2-child, two-file, default-off same-TU KUnit draft in init/Kconfig
+  and kernel/sched/exec_lease.c. The suite is `sched_exec_lease_bucket`.
+
+  The plan fixes B_max 0/1/63/64/rejected-65, six pre-runnable allocation
+  faults, 20 deterministic publication/work/migration/hotplug/retirement case
+  families, an independent reference/state oracle, five-second race timeouts,
+  1,024 diagnostic stress iterations, and four arm64/x86_64 KUnit/KASAN/KCSAN/
+  lockdep/work-debug/RCU QEMU boots.
+
+  Run `20260715T-p5a-r3-e3-plan` passed 25 source hashes, 58 anchors, 10
+  absences, safe TLC 17/16/depth 16, and 51 expected unsafe counterexamples;
+  result SHA-256 is `438496a960e5`. E3 source correctness, E4, primary/patch
+  promotion, runtime behavior/denial, monitor/cross-path coverage, latency,
+  performance/cost, protection, deployment, and datacenter claims remain false.

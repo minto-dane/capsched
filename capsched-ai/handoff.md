@@ -5756,3 +5756,37 @@ P5A-R3 E2 private layout closure:
     create E3 source before that plan passes. Primary/patch-queue promotion,
     runtime behavior or denial, production layout/protection,
     performance/cost, deployment, and datacenter claims remain false.
+
+P5A-R3 E3 bucket concurrency evidence plan:
+  Analysis/0168, formal/0133, and validation/0224 pass the pre-source gate.
+  Future branch `codex/p5a-r3-e3-bucket-concurrency-prototype` must be a direct
+  child of E2 commit `63313b329e1d44901acfce30698613c38615c8d5` and may
+  change only init/Kconfig and kernel/sched/exec_lease.c. The only new option
+  is default-off CONFIG_SCHED_EXEC_LEASE_BUCKET_KUNIT_TEST and the suite name
+  is `sched_exec_lease_bucket`; all code remains in exec_lease.c.
+
+  Fixed correctness contract:
+    B_max cases are 0/1/63/64/rejected-65. Six allocation sites must fail
+    before runnable visibility with complete rollback. Twenty deterministic
+    families force publication, coalesced work ownership, queue-false,
+    generation saturation, three contribution classes, active-bit edges,
+    remove-neutral-add migration, destination failure, online/offline,
+    retirement, cancel, and RCU-reader schedules against an independent
+    oracle. Race proof uses completions/barriers, five-second timeouts, and
+    1,024 diagnostic stress iterations, never timing sleeps.
+
+  Evidence/result:
+    run `20260715T-p5a-r3-e3-plan` revalidated E2 closure and dual-arch hashes,
+    exact source/patch identities, 25 HEAD blobs, 58/58 source anchors, and
+    10/10 future absences. Safe TLC is 17 generated/16 distinct/depth 16; all
+    51 unsafe faults have expected counterexamples. Result SHA-256 is
+    `438496a960e566a3cfc2972c226072099b501de0b000378eef130aaca73aa24d`.
+
+  Authorization/next:
+    create only the exact disposable two-file E3 draft. Its later source gate
+    must run fresh arm64/x86_64 disabled/enabled builds plus four exact-suite
+    QEMU boots: both standard debug, arm64 generic KASAN, and x86_64 KCSAN,
+    with lockdep, DEBUG_OBJECTS_WORK, and PROVE_RCU. E3 source/correctness and
+    E4 remain false until that matrix passes. Primary/patch queue, runtime
+    hooks/behavior/denial, monitor/cross-class/latency/performance/cost,
+    production protection, deployment, and datacenter claims remain false.

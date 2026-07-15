@@ -173,6 +173,7 @@ Updated: 2026-07-15
 | 0165 | Valid arm64 evidence breaches 36 fixed gates across 20/35 cells and rejects the full O(n) rq-locked rebuild without launching x86_64 | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Rejection |
 | 0166 | Bucket-local Candidate C projection selected: indexed active-rq fanout, snapshot/insertion handshake, and one-bucket rq-lock work replace all-leaf rebuild | SchedExecLease P5A-R3 Bucket-Local Targeted Projection |
 | 0167 | R3-E1 fixes B_max=64, sparse private projections, zero ordinary hot-structure growth, unbound-work/hotplug/drain lifetime, exact two-file E2 scope, and later rejection thresholds | SchedExecLease P5A-R3 E1 Source/Locking/Lifetime Evidence Plan |
+| 0168 | R3-E3 fixes an exact same-TU two-file KUnit prototype with B_max/fault/race/oracle matrices and four arm64/x86_64 diagnostic boots | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
 
 ## Planned Analysis Notes
 
@@ -305,3 +306,4 @@ Updated: 2026-07-15
 | `sched-exec-lease-p5a-r2-e4-arm64-lock-hold-rejection-v1.json` | P5A-R2 E4 arm64 rejection | Exact source/result hashes, complete 35-cell evidence, breach accounting, full-locked-rebuild rejection, x86_64 stop, and successor-gate boundary |
 | `sched-exec-lease-p5a-r3-bucket-local-targeted-projection-v1.json` | P5A-R3 bucket-local successor | E4 rejection trigger, authority-equivalent bucket key, active-rq index and handshake, one-bucket work/lifetime bounds, staged source boundary, and non-claims |
 | `sched-exec-lease-p5a-r3-e1-source-locking-lifetime-evidence-plan-v1.json` | P5A-R3 E1 pre-source plan | Finite B_max/depth/memory envelopes, exact two-file E2 layout scope, rq/membership/work ownership, hotplug and RCU drain, E3 race cases, E4 rejection limits, and non-claims |
+| `sched-exec-lease-p5a-r3-e3-bucket-concurrency-evidence-plan-v1.json` | P5A-R3 E3 pre-source plan | Exact E2 child/two-file same-TU KUnit boundary, B_max and allocation faults, deterministic publication/work/migration/hotplug/retirement races, independent oracle, sanitizer matrix, and non-claims |
