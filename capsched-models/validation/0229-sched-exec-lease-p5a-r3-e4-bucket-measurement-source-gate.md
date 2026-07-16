@@ -2,9 +2,9 @@
 
 Date: 2026-07-16
 
-Status: corrected rerun launch-ready and source-smoke passed. Attempt 1 is the
-invalid harness result recorded in validation/0230. Fresh dual-architecture
-build evidence must come from corrected run r2. E4 measurement remains blocked.
+Status: corrected run r2 passed. Attempt 1 remains the invalid harness result
+recorded in validation/0230. The exact-E4-source E3 regression diagnostic in
+validation/0231 is now required. E4 measurement remains blocked.
 
 ## Candidate and Prerequisites
 
@@ -43,15 +43,17 @@ any compiler warning, proves E4 symbol/relocation/string absence while
 disabled, and proves the E4 suite while enabled. Configs and objects receive
 SHA-256 manifests.
 
-On success, the result status is
+Run `20260716T-p5a-r3-e4-source-gate-r2` produced status
 `passed_static_source_gate_awaiting_e3_regression_diagnostic`. That result may
 launch only an exact-source E3 regression diagnostic. It deliberately keeps
 `e4_measurement_may_start`, E4 acceptance, and E5 authorization false.
 
+Result SHA-256:
+`8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c`.
+
 ## Monitoring
 
-The corrected external Apple Container job is `p5a-r3-e4-source-gate-r2`. From the project
-root, one command refreshes the percentage and log tail every 30 seconds:
+The completed external Apple Container job is `p5a-r3-e4-source-gate-r2`:
 
 ```text
 ./tools/long-job.sh watch p5a-r3-e4-source-gate-r2 30
