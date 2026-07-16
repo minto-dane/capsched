@@ -5792,27 +5792,38 @@ P5A-R3 E3 bucket concurrency evidence plan:
     production protection, deployment, and datacenter claims remain false.
 
 P5A-R3 E3 disposable source and source gate:
-  Implementation/0045 fixes branch
+  Implementation/0045 now fixes branch
   `codex/p5a-r3-e3-bucket-concurrency-prototype` at direct-E2-child commit
-  `60e148fa0476c742b13a743345d1383db04fc843`, tree
-  `326da04e5b11e8036a4074b1d363410b21033ef8`, and diff SHA-256
-  `1f591cfd4d6c05e6eb42f2f14120f23d6645c0e0b6cb6b0615f069f10a93d0d7`.
-  It adds 1,999 lines and deletes none in exactly init/Kconfig and
+  `be9339363a99fb31a5b7d03f3d70430d64a45593`, tree
+  `a92d096ef4779f20c5e652de3c21b8f85b2476c7`, and diff SHA-256
+  `c6ce0d8f4e1bac985ad2141d60d0928b501d38d3610a13e4f7a5e63f343f1d25`.
+  It adds 2,044 lines and deletes none in exactly init/Kconfig and
   kernel/sched/exec_lease.c; the E2 private layout/probe block is byte-identical.
 
   Source-gate result:
-    validation/0225 run `20260716T-p5a-r3-e3-source-gate` passed strict
+    validation/0225 corrected run `20260716T-p5a-r3-e3-source-gate-r2` passed strict
     checkpatch 0/0/0; exact 20-family and six-fault manifests; default-off
     same-TU config; independent plain oracle; bounded capacity, lock/work, and
     retirement source checks; and fresh E2/all-off/layout-off/test-on objects
     for arm64 and x86_64. All-off omits exec_lease.o, layout-on/test-off has
     zero E3 symbols/relocations/strings, and test-on contains the exact suite.
     Result SHA-256 is
-    `a1dc71e32dbacfad8479a167417c8a2e425b1b0ef169cc9f6cf05d95762272a1`.
+    `a78e1672afc904ee40a7ec019ed94f8bea16713ab101d2518f595c9bbbe3be53`.
+
+  Diagnostic attempt 1 and correction:
+    the immutable run `20260716T-p5a-r3-e3-diagnostic-matrix` built and booted
+    arm64 standard-debug, passed 19/20 cases, then correctly rejected the
+    candidate. It recorded one invalid-wait-context report from XArray mutation
+    under raw locks, five stack-work ODEBUG reports, one failed running-queue
+    classification case, and one refcount-zero report caused by releasing the
+    owner while a next invocation was queued. Validation/0227 records exact
+    artifact hashes. The corrected candidate moves XArray mutation outside raw
+    locks, uses KUnit-managed heap gate work, tracks worker-start epochs, and
+    retains the work owner across an already-queued next invocation.
 
   Monitored next step:
     validation/0226 and the root tools prepare job
-    `p5a-r3-e3-diagnostic-matrix`: arm64/x86_64 standard debug with KUnit,
+    `p5a-r3-e3-diagnostic-matrix-r2`: arm64/x86_64 standard debug with KUnit,
     lockdep, DEBUG_OBJECTS_WORK and PROVE_RCU; arm64 generic KASAN; and x86_64
     KCSAN. Every boot requires the exact 20 cases and zero failure, skip,
     timeout, diagnostic warning, or lockup. Until its result passes, synthetic

@@ -5,8 +5,8 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 CAPSCHED_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
 WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
 E3_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/worktrees/p5a-r3-e3-bucket-concurrency-prototype"
-SOURCE_GATE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r3-e3-bucket-concurrency-source-gate/20260716T-p5a-r3-e3-source-gate/result.json"
-SOURCE_GATE_SHA=a1dc71e32dbacfad8479a167417c8a2e425b1b0ef169cc9f6cf05d95762272a1
+SOURCE_GATE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r3-e3-bucket-concurrency-source-gate/20260716T-p5a-r3-e3-source-gate-r2/result.json"
+SOURCE_GATE_SHA=a78e1672afc904ee40a7ec019ed94f8bea16713ab101d2518f595c9bbbe3be53
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
 BUILD_ROOT="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/builds/p5a-r3-e3-diagnostic-matrix/$RUN_ID"
 OUT_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r3-e3-bucket-concurrency-diagnostic-matrix/$RUN_ID"
@@ -15,8 +15,8 @@ JOBS=${JOBS:-2}
 QEMU_TIMEOUT_STANDARD=${QEMU_TIMEOUT_STANDARD:-900}
 QEMU_TIMEOUT_SANITIZER=${QEMU_TIMEOUT_SANITIZER:-1800}
 
-E3_COMMIT=60e148fa0476c742b13a743345d1383db04fc843
-E3_TREE=326da04e5b11e8036a4074b1d363410b21033ef8
+E3_COMMIT=be9339363a99fb31a5b7d03f3d70430d64a45593
+E3_TREE=a92d096ef4779f20c5e652de3c21b8f85b2476c7
 E2_COMMIT=63313b329e1d44901acfce30698613c38615c8d5
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=2a022dce54679ce5ecb86581bf55199dc28c868b
@@ -44,7 +44,7 @@ progress '2% locking source-gate and repository identities'
 [ "$(sha256sum "$SOURCE_GATE" | awk '{print $1}')" = "$SOURCE_GATE_SHA" ] || die 'source-gate result hash changed'
 jq -e '
   .status == "passed_source_gate_awaiting_diagnostic_matrix" and
-  .candidate_commit == "60e148fa0476c742b13a743345d1383db04fc843" and
+  .candidate_commit == "be9339363a99fb31a5b7d03f3d70430d64a45593" and
   .exact_direct_e2_child == true and
   .exact_two_file_boundary == true and
   .deterministic_case_families == 20 and
@@ -159,8 +159,8 @@ normalize_and_validate()
 	while IFS= read -r case_name; do
 		grep -Eq "^[[:space:]]*ok [0-9]+( -)? ${case_name}([[:space:]]|$)" "$ktap" || die "$label missing case: $case_name"
 	done < "$OUT_DIR/expected-cases.txt"
-	if grep -Eiq 'KASAN:|BUG: KCSAN:|possible circular locking dependency|refcount_t: underflow|ODEBUG:|RCU Stall|WARNING:|BUG:|soft lockup|hard LOCKUP|workqueue lockup' "$serial"; then
-		grep -Ein 'KASAN:|BUG: KCSAN:|possible circular locking dependency|refcount_t: underflow|ODEBUG:|RCU Stall|WARNING:|BUG:|soft lockup|hard LOCKUP|workqueue lockup' "$serial" > "$OUT_DIR/$label-warning-reports.txt" || true
+	if grep -Eiq 'KASAN:|BUG: KCSAN:|Invalid wait context|possible circular locking dependency|refcount_t: (underflow|decrement hit 0)|ODEBUG:|RCU Stall|WARNING:|BUG:|soft lockup|hard LOCKUP|workqueue lockup' "$serial"; then
+		grep -Ein 'KASAN:|BUG: KCSAN:|Invalid wait context|possible circular locking dependency|refcount_t: (underflow|decrement hit 0)|ODEBUG:|RCU Stall|WARNING:|BUG:|soft lockup|hard LOCKUP|workqueue lockup' "$serial" > "$OUT_DIR/$label-warning-reports.txt" || true
 		die "$label diagnostic warning report"
 	fi
 	: > "$OUT_DIR/$label-warning-reports.txt"

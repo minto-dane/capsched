@@ -2,16 +2,16 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype-v1",
   "date": "2026-07-16",
-  "status": "source_gate_passed_awaiting_diagnostic_matrix",
+  "status": "corrected_source_gate_passed_awaiting_diagnostic_matrix_r2",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r3-e3-bucket-concurrency-prototype",
     "branch": "codex/p5a-r3-e3-bucket-concurrency-prototype",
     "parent_commit": "63313b329e1d44901acfce30698613c38615c8d5",
-    "candidate_commit": "60e148fa0476c742b13a743345d1383db04fc843",
-    "candidate_tree": "326da04e5b11e8036a4074b1d363410b21033ef8",
-    "diff_sha256": "1f591cfd4d6c05e6eb42f2f14120f23d6645c0e0b6cb6b0615f069f10a93d0d7",
+    "candidate_commit": "be9339363a99fb31a5b7d03f3d70430d64a45593",
+    "candidate_tree": "a92d096ef4779f20c5e652de3c21b8f85b2476c7",
+    "diff_sha256": "c6ce0d8f4e1bac985ad2141d60d0928b501d38d3610a13e4f7a5e63f343f1d25",
     "allowed_files": ["init/Kconfig", "kernel/sched/exec_lease.c"],
-    "insertions": 1999,
+    "insertions": 2044,
     "deletions": 0,
     "strict_checkpatch": {"errors": 0, "warnings": 0, "checks": 0}
   },
@@ -34,12 +34,30 @@
     "remove_neutral_add_migration": true,
     "rcu_unpublish_and_retirement_drain": true
   },
+  "diagnostic_attempt_1": {
+    "status": "failed_arm64_standard_debug_19_of_20_with_three_warning_families",
+    "candidate_commit": "60e148fa0476c742b13a743345d1383db04fc843",
+    "evidence_run_id": "20260716T-p5a-r3-e3-diagnostic-matrix",
+    "passed_cases": 19,
+    "failed_cases": 1,
+    "invalid_wait_context_reports": 1,
+    "stack_work_odebug_reports": 5,
+    "refcount_zero_reports": 1,
+    "serial_sha256": "aa6d8007c19aca1aae93f0cb30b7623435e84e9c5bcff33229a31bc3f03601c3",
+    "ktap_sha256": "3705e87af9f996e6c869eb763bc9ab3624ef3866a8922cc9af77c0b3db50a478"
+  },
+  "corrective_changes": {
+    "xarray_mutation_outside_raw_spinlocks": true,
+    "kunit_managed_heap_gate_work": true,
+    "worker_start_epoch_queue_classification": true,
+    "queued_next_invocation_retains_work_owner": true
+  },
   "boundaries": {
     "e2_private_layout_and_probe_block_preserved": true,
     "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
     "patch_queue_commit": "2a022dce54679ce5ecb86581bf55199dc28c868b",
     "real_scheduler_attachment": false,
-    "source_gate_result_sha256": "a1dc71e32dbacfad8479a167417c8a2e425b1b0ef169cc9f6cf05d95762272a1",
+    "source_gate_result_sha256": "a78e1672afc904ee40a7ec019ed94f8bea16713ab101d2518f595c9bbbe3be53",
     "runtime_correctness_proven": false,
     "production_ready": false
   }

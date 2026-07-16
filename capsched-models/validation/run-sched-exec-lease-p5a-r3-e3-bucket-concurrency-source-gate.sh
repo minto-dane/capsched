@@ -16,9 +16,9 @@ BUILD_ROOT="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/builds/p5a-r3-e3-source
 PROGRESS_FILE=${PROGRESS_FILE:-}
 
 E2_COMMIT=63313b329e1d44901acfce30698613c38615c8d5
-E3_COMMIT=60e148fa0476c742b13a743345d1383db04fc843
-E3_TREE=326da04e5b11e8036a4074b1d363410b21033ef8
-E3_DIFF_SHA=1f591cfd4d6c05e6eb42f2f14120f23d6645c0e0b6cb6b0615f069f10a93d0d7
+E3_COMMIT=be9339363a99fb31a5b7d03f3d70430d64a45593
+E3_TREE=a92d096ef4779f20c5e652de3c21b8f85b2476c7
+E3_DIFF_SHA=c6ce0d8f4e1bac985ad2141d60d0928b501d38d3610a13e4f7a5e63f343f1d25
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PRIMARY_TREE=54f685aad94f28f0027cbba18cf5e29aadce234a
 PATCH_QUEUE_COMMIT=2a022dce54679ce5ecb86581bf55199dc28c868b
@@ -78,7 +78,7 @@ git -C "$E3_DIR" diff --check "$E2_COMMIT..$E3_COMMIT"
 git -C "$E3_DIR" diff --name-only "$E2_COMMIT..$E3_COMMIT" | sort > "$OUT_DIR/changed-files.txt"
 printf '%s\n' init/Kconfig kernel/sched/exec_lease.c > "$OUT_DIR/expected-files.txt"
 diff -u "$OUT_DIR/expected-files.txt" "$OUT_DIR/changed-files.txt" > "$OUT_DIR/changed-files.diff" || die 'source escaped two-file boundary'
-[ "$(git -C "$E3_DIR" diff --numstat "$E2_COMMIT..$E3_COMMIT" | awk '{a += $1; d += $2} END {print a+0, d+0}')" = '1999 0' ] || die 'unexpected source line totals'
+[ "$(git -C "$E3_DIR" diff --numstat "$E2_COMMIT..$E3_COMMIT" | awk '{a += $1; d += $2} END {print a+0, d+0}')" = '2044 0' ] || die 'unexpected source line totals'
 git -C "$E3_DIR" diff --binary "$E2_COMMIT..$E3_COMMIT" > "$OUT_DIR/e3-source.diff"
 [ "$(sha256sum "$OUT_DIR/e3-source.diff" | awk '{print $1}')" = "$E3_DIFF_SHA" ] || die 'E3 diff hash changed'
 
@@ -146,7 +146,7 @@ grep -q 'destroy_workqueue(environment->workqueue)' "$SOURCE" || die 'workqueue 
 
 awk '
   /raw_spin_lock\(/ { depth++ }
-  /queue_work\(|cancel_work_sync\(|kzalloc_obj\(|zalloc_cpumask_var\(|xa_reserve\(|kfree\(/ {
+  /queue_work\(|cancel_work_sync\(|kzalloc_obj\(|zalloc_cpumask_var\(|xa_reserve\(|xa_store\(|xa_erase\(|kfree\(/ {
     if (depth > 0) { print NR ":" $0; bad=1 }
   }
   /raw_spin_unlock\(/ { depth-- }
@@ -272,7 +272,7 @@ jq -n \
   patch_queue_commit: $patch_queue,
   exact_direct_e2_child: true,
   exact_two_file_boundary: true,
-  insertions: 1999,
+  insertions: 2044,
   deletions: 0,
   e2_private_layout_and_43_probes_preserved: true,
   config_default_off: true,

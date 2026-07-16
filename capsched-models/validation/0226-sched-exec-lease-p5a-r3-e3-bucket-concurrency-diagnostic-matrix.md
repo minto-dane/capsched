@@ -2,9 +2,12 @@
 
 Date: 2026-07-16
 
-Status: reproducible monitored runner prepared. The authoritative result is
-generated under
+Status: attempt 1 failed and is preserved by validation/0227. The corrected
+candidate passed its replacement source gate, and a reproducible monitored r2
+runner generates its authoritative result under
 `build/source-check/sched-exec-lease-p5a-r3-e3-bucket-concurrency-diagnostic-matrix/`.
+The corrected run ID is `20260716T-p5a-r3-e3-diagnostic-matrix-r2`, exposed as
+long-job name `p5a-r3-e3-diagnostic-matrix-r2`.
 
 The runner consumes the exact source-gate result from validation/0225 and
 creates four independent full-kernel outputs:

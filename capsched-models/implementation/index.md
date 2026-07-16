@@ -406,12 +406,13 @@ Current SchedExecLease L0 readiness:
     separate E3 plan may be drafted; E3 source and every runtime or production
     claim remain unapproved.
 - `0045-sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype.md`
-  - Status: exact direct-E2-child, two-file disposable candidate committed;
-    validation/0225 source gate passed fresh arm64/x86_64 four-mode builds.
-    The four-boot diagnostic matrix remains separately monitored.
+  - Status: corrected direct-E2-child, two-file disposable candidate
+    committed; validation/0225 corrected source gate passed fresh
+    arm64/x86_64 four-mode builds. Attempt 1 is retained as negative evidence;
+    the corrected four-boot matrix remains separately monitored.
   - Candidate commit/tree:
-    `60e148fa0476c742b13a743345d1383db04fc843` /
-    `326da04e5b11e8036a4074b1d363410b21033ef8`.
+    `be9339363a99fb31a5b7d03f3d70430d64a45593` /
+    `a92d096ef4779f20c5e652de3c21b8f85b2476c7`.
   - JSON: `sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype-v1.json`.
   - Rule: default-off, same-TU synthetic KUnit covers 20 deterministic
     concurrency families, six allocation faults, B_max=64, independent plain
