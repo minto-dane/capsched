@@ -45,6 +45,7 @@ for command in awk diff git grep jq make nm readelf sed sha256sum sort strings w
 done
 command -v x86_64-linux-gnu-gcc >/dev/null 2>&1 \
 	|| die 'missing x86_64 cross compiler'
+clock_skew_retries=0
 
 rm -rf "$OUT_DIR" "$BUILD_ROOT"
 mkdir -p "$OUT_DIR" "$BUILD_ROOT"
@@ -274,7 +275,7 @@ build_and_check_arch()
 	local arch=$1 cross=$2 nm_command=$3 readelf_command=$4 label=$5
 	local root="$BUILD_ROOT/$label"
 	local parent="$root/e3-parent" off="$root/e4-off" on="$root/e4-on"
-	local entry source out mode object
+	local entry source out mode object build_log retry_log
 
 	prepare_config "$E3_DIR" "$arch" "$cross" e3-parent "$parent" "$label-e3-parent"
 	prepare_config "$E4_DIR" "$arch" "$cross" e4-off "$off" "$label-e4-off"
@@ -292,13 +293,29 @@ build_and_check_arch()
 			x86_64:e4-off) progress '71% building fresh x86_64 E4-disabled object' ;;
 			x86_64:e4-on) progress '79% building fresh x86_64 E4-enabled object' ;;
 		esac
+		build_log="$OUT_DIR/$label-$mode-build.log"
+		retry_log="$OUT_DIR/$label-$mode-clock-skew-retry.log"
 		make -C "$source" O="$out" ARCH="$arch" CROSS_COMPILE="$cross" \
 			W=1 -j"$(nproc)" kernel/sched/exec_lease.o \
-			> "$OUT_DIR/$label-$mode-build.log" 2>&1
+			> "$build_log" 2>&1
 		test -s "$out/kernel/sched/exec_lease.o" \
 			|| die "$label $mode object missing"
-		! grep -Eq '(^|[[:space:]])warning:' "$OUT_DIR/$label-$mode-build.log" \
+		! grep -Eq ':[0-9]+(:[0-9]+)?: warning:' "$build_log" \
 			|| die "$label $mode compiler warning"
+		: > "$retry_log"
+		if grep -Fq 'Clock skew detected' "$build_log"; then
+			clock_skew_retries=$((clock_skew_retries + 1))
+			progress "verifying $label $mode after shared-filesystem clock skew"
+			make -C "$source" O="$out" ARCH="$arch" CROSS_COMPILE="$cross" \
+				W=1 -j"$(nproc)" kernel/sched/exec_lease.o \
+				> "$retry_log" 2>&1
+			! grep -Fq 'Clock skew detected' "$retry_log" \
+				|| die "$label $mode persistent clock skew"
+			! grep -Eq ':[0-9]+(:[0-9]+)?: warning:' "$retry_log" \
+				|| die "$label $mode retry compiler warning"
+			test -s "$out/kernel/sched/exec_lease.o" \
+				|| die "$label $mode retry object missing"
+		fi
 	done
 
 	for mode in e3-parent e4-off e4-on; do
@@ -366,6 +383,7 @@ jq -n \
 	--arg e3_result_sha256 "$E3_RESULT_SHA" \
 	--arg plan_patch_queue_commit "$PLAN_PATCH_QUEUE_COMMIT" \
 	--arg observed_patch_queue_commit "$patch_queue_commit" \
+	--argjson clock_skew_retries "$clock_skew_retries" \
 '
 {
   schema_version: 1,
@@ -398,6 +416,8 @@ jq -n \
   architectures: ["arm64","x86_64"],
   fresh_modes_per_architecture: ["exact_e3_parent","e4_disabled","e4_enabled"],
   w1_compiler_warnings: 0,
+  shared_filesystem_clock_skew_retries: $clock_skew_retries,
+  final_clock_skew_warnings: 0,
   e2_private_probe_count: 43,
   e2_private_probe_values_changed: 0,
   disabled_e4_symbols_relocations_strings: 0,

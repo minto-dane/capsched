@@ -2,9 +2,9 @@
 
 Date: 2026-07-16
 
-Status: launch-ready and source-smoke passed. Fresh dual-architecture build
-evidence is running separately under the monitored long-job contract. E4
-measurement remains blocked.
+Status: corrected rerun launch-ready and source-smoke passed. Attempt 1 is the
+invalid harness result recorded in validation/0230. Fresh dual-architecture
+build evidence must come from corrected run r2. E4 measurement remains blocked.
 
 ## Candidate and Prerequisites
 
@@ -50,11 +50,11 @@ launch only an exact-source E3 regression diagnostic. It deliberately keeps
 
 ## Monitoring
 
-The external Apple Container job is `p5a-r3-e4-source-gate`. From the project
+The corrected external Apple Container job is `p5a-r3-e4-source-gate-r2`. From the project
 root, one command refreshes the percentage and log tail every 30 seconds:
 
 ```text
-./tools/long-job.sh watch p5a-r3-e4-source-gate 30
+./tools/long-job.sh watch p5a-r3-e4-source-gate-r2 30
 ```
 
 Stopping the display with Ctrl-C does not stop the build.
