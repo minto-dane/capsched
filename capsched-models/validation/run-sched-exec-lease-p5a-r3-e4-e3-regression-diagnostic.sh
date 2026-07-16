@@ -8,12 +8,14 @@ E4_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/worktrees/p5a-r3-e4-bucket-
 SOURCE_GATE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r3-e4-bucket-measurement-source-gate/20260716T-p5a-r3-e4-source-gate-r2/result.json"
 SOURCE_GATE_SHA=8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
-BUILD_ROOT="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/builds/p5a-r3-e4-e3-regression/$RUN_ID"
+BUILD_ROOT=${BUILD_ROOT:-"/var/tmp/linux-cap-builds/p5a-r3-e4-e3-regression/$RUN_ID"}
 OUT_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r3-e4-e3-regression-diagnostic/$RUN_ID"
+ARTIFACT_ROOT="$OUT_DIR/boot-artifacts"
 PROGRESS_FILE=${PROGRESS_FILE:-"$OUT_DIR/progress"}
 JOBS=${JOBS:-2}
 QEMU_TIMEOUT_STANDARD=${QEMU_TIMEOUT_STANDARD:-900}
 QEMU_TIMEOUT_SANITIZER=${QEMU_TIMEOUT_SANITIZER:-1800}
+BUILD_STORAGE_MIN_KIB=${BUILD_STORAGE_MIN_KIB:-16777216}
 
 E4_COMMIT=f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1
 E4_TREE=61541cb0c8aedef941e534c73effdea1f6b3d938
@@ -22,6 +24,8 @@ PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PLAN_PATCH_QUEUE_COMMIT=2a022dce54679ce5ecb86581bf55199dc28c868b
 PATCH_QUEUE_SERIES_BLOB=298567f8e0bd18168222da4e64da32750b9ea818
 clock_skew_retries=0
+preserved_boot_artifacts=0
+pruned_build_outputs=0
 
 die()
 {
@@ -36,15 +40,33 @@ progress()
 	printf '[progress] %s\n' "$*"
 }
 
-for command in awk cp gcc git grep jq make qemu-system-aarch64 qemu-system-x86_64 \
-	sed sha256sum strings timeout tr uname wc; do
+for command in awk cp df gcc git grep jq make qemu-system-aarch64 \
+	qemu-system-x86_64 readelf sed sha256sum stat strings timeout tr uname wc \
+	zstd; do
 	command -v "$command" >/dev/null 2>&1 || die "missing command: $command"
 done
 command -v x86_64-linux-gnu-gcc >/dev/null 2>&1 \
 	|| die 'missing x86_64 cross compiler'
 
+case "$BUILD_ROOT" in
+	/var/tmp/linux-cap-builds/p5a-r3-e4-e3-regression/*) ;;
+	*) die "unsafe or non-internal build root: $BUILD_ROOT" ;;
+esac
 rm -rf "$BUILD_ROOT" "$OUT_DIR"
-mkdir -p "$BUILD_ROOT" "$OUT_DIR"
+mkdir -p "$BUILD_ROOT" "$OUT_DIR" "$ARTIFACT_ROOT"
+build_storage_type=$(stat -f -c %T "$BUILD_ROOT")
+[ "$build_storage_type" = ext2/ext3 ] \
+	|| die "build root is not on internal ext4-compatible storage: $build_storage_type"
+build_storage_available_kib=$(df -Pk "$BUILD_ROOT" | awk 'NR == 2 { print $4 }')
+[ "$build_storage_available_kib" -ge "$BUILD_STORAGE_MIN_KIB" ] \
+	|| die "internal build storage below ${BUILD_STORAGE_MIN_KIB}KiB: ${build_storage_available_kib}KiB"
+{
+	printf 'build_root=%s\n' "$BUILD_ROOT"
+	printf 'filesystem=%s\n' "$build_storage_type"
+	printf 'available_kib_at_start=%s\n' "$build_storage_available_kib"
+	printf 'shared_host_build_output=false\n'
+	df -Pk "$BUILD_ROOT" "$OUT_DIR"
+} > "$OUT_DIR/build-storage.txt"
 progress '2% locking passed source gate and exact E4 source identity'
 [ "$(sha256sum "$SOURCE_GATE" | awk '{print $1}')" = "$SOURCE_GATE_SHA" ] \
 	|| die 'source-gate result hash changed'
@@ -177,7 +199,10 @@ build_image()
 	make_rc=$?
 	set -e
 	rm -f "$fifo"
-	[ "$make_rc" = 0 ] || die "$label image build failed: $make_rc"
+	if [ "$make_rc" != 0 ]; then
+		preserve_invalid_archive_member "$label" "$out" "$log"
+		die "$label image build failed: $make_rc"
+	fi
 	! grep -Eq ':[0-9]+(:[0-9]+)?: warning:' "$log" \
 		|| die "$label compiler warning"
 	: > "$retry_log"
@@ -191,6 +216,91 @@ build_image()
 		! grep -Eq ':[0-9]+(:[0-9]+)?: warning:' "$retry_log" \
 			|| die "$label retry compiler warning"
 	fi
+	test -s "$out/kernel/sched/exec_lease.o" \
+		|| die "$label exec_lease object missing"
+	readelf -h "$out/kernel/sched/exec_lease.o" \
+		> "$OUT_DIR/$label-exec-lease-readelf.txt" \
+		|| die "$label exec_lease object is not ELF"
+}
+
+preserve_invalid_archive_member()
+{
+	local label=$1 out=$2 log=$3 member bad safe archive
+
+	member=$(sed -n 's/^ld: .*: member \(.*\.o\) in archive is not an object$/\1/p' \
+		"$log" | sed -n '1p')
+	[ -n "$member" ] || return 0
+	case "$member" in
+		/*|*../*|*/../*|../*) die "$label invalid archive member path: $member" ;;
+		*.o) ;;
+		*) die "$label unexpected invalid archive member: $member" ;;
+	esac
+	bad="$out/$member"
+	test -f "$bad" || return 0
+	safe=$(printf '%s' "$member" | tr '/' '_')
+	archive="$OUT_DIR/$label-invalid-$safe.zst"
+	zstd -T0 -9 -q -f "$bad" -o "$archive"
+	zstd -q -t "$archive"
+	{
+		printf 'member=%s\n' "$member"
+		printf 'size=%s\n' "$(stat -c %s "$bad")"
+		printf 'source_sha256=%s\n' "$(sha256sum "$bad" | awk '{print $1}')"
+		printf 'archive_sha256=%s\n' "$(sha256sum "$archive" | awk '{print $1}')"
+		printf 'restored_sha256=%s\n' "$(zstd -q -dc "$archive" | sha256sum | awk '{print $1}')"
+		if readelf -h "$bad" >/dev/null 2>&1; then
+			printf 'elf_header=valid\n'
+		else
+			printf 'elf_header=invalid\n'
+		fi
+	} > "$OUT_DIR/$label-invalid-$safe.txt"
+	grep -Fq "source_sha256=$(zstd -q -dc "$archive" | sha256sum | awk '{print $1}')" \
+		"$OUT_DIR/$label-invalid-$safe.txt" \
+		|| die "$label invalid-object archive restore hash mismatch"
+}
+
+preserve_and_prune_build()
+{
+	local label=$1 out=$2 image=$3 artifact_dir image_archive object object_archive
+	local image_sha image_restored_sha object_sha object_restored_sha
+
+	test -s "$image" || die "$label boot image missing before preservation"
+	object="$out/kernel/sched/exec_lease.o"
+	test -s "$object" || die "$label exec_lease object missing before preservation"
+	artifact_dir="$ARTIFACT_ROOT/$label"
+	mkdir -p "$artifact_dir"
+	image_archive="$artifact_dir/$(basename "$image").zst"
+	object_archive="$artifact_dir/exec_lease.o.zst"
+	zstd -T0 -9 -q -f "$image" -o "$image_archive"
+	zstd -T0 -9 -q -f "$object" -o "$object_archive"
+	zstd -q -t "$image_archive"
+	zstd -q -t "$object_archive"
+	image_sha=$(sha256sum "$image" | awk '{print $1}')
+	image_restored_sha=$(zstd -q -dc "$image_archive" | sha256sum | awk '{print $1}')
+	object_sha=$(sha256sum "$object" | awk '{print $1}')
+	object_restored_sha=$(zstd -q -dc "$object_archive" | sha256sum | awk '{print $1}')
+	[ "$image_sha" = "$image_restored_sha" ] \
+		|| die "$label preserved image restore hash mismatch"
+	[ "$object_sha" = "$object_restored_sha" ] \
+		|| die "$label preserved object restore hash mismatch"
+	{
+		printf 'label=%s\n' "$label"
+		printf 'build_storage_filesystem=%s\n' "$build_storage_type"
+		printf 'image_source=%s\n' "$image"
+		printf 'image_source_sha256=%s\n' "$image_sha"
+		printf 'image_archive=%s\n' "$image_archive"
+		printf 'image_archive_sha256=%s\n' "$(sha256sum "$image_archive" | awk '{print $1}')"
+		printf 'image_restored_sha256=%s\n' "$image_restored_sha"
+		printf 'object_source=%s\n' "$object"
+		printf 'object_source_sha256=%s\n' "$object_sha"
+		printf 'object_archive=%s\n' "$object_archive"
+		printf 'object_archive_sha256=%s\n' "$(sha256sum "$object_archive" | awk '{print $1}')"
+		printf 'object_restored_sha256=%s\n' "$object_restored_sha"
+		printf 'compression=zstd-level-9-lossless\n'
+		printf 'build_output_pruned_after_boot=true\n'
+	} > "$artifact_dir/manifest.txt"
+	rm -rf "$out"
+	preserved_boot_artifacts=$((preserved_boot_artifacts + 2))
+	pruned_build_outputs=$((pruned_build_outputs + 1))
 }
 
 normalize_and_validate()
@@ -290,6 +400,8 @@ progress '6% building arm64 standard debug Image'
 build_image arm64 '' Image "$ARM_STD" arm64-standard-debug 6 15
 progress '21% booting arm64 standard debug E3 KUnit'
 run_arm64 arm64-standard-debug "$ARM_STD" "$QEMU_TIMEOUT_STANDARD" 2048
+preserve_and_prune_build arm64-standard-debug "$ARM_STD" \
+	"$ARM_STD/arch/arm64/boot/Image"
 
 progress '25% configuring x86_64 standard debug with E4 measurement disabled'
 configure_boot x86_64 x86_64-linux-gnu- standard "$X86_STD" x86_64-standard-debug
@@ -297,6 +409,8 @@ progress '27% building x86_64 standard debug bzImage'
 build_image x86_64 x86_64-linux-gnu- bzImage "$X86_STD" x86_64-standard-debug 27 15
 progress '42% booting x86_64 standard debug E3 KUnit'
 run_x86_64 x86_64-standard-debug "$X86_STD" "$QEMU_TIMEOUT_STANDARD" 2048
+preserve_and_prune_build x86_64-standard-debug "$X86_STD" \
+	"$X86_STD/arch/x86/boot/bzImage"
 
 progress '46% configuring arm64 generic KASAN with E4 measurement disabled'
 configure_boot arm64 '' kasan "$ARM_KASAN" arm64-generic-kasan
@@ -304,6 +418,8 @@ progress '48% building arm64 generic KASAN Image'
 build_image arm64 '' Image "$ARM_KASAN" arm64-generic-kasan 48 18
 progress '66% booting arm64 generic KASAN E3 KUnit'
 run_arm64 arm64-generic-kasan "$ARM_KASAN" "$QEMU_TIMEOUT_SANITIZER" 4096
+preserve_and_prune_build arm64-generic-kasan "$ARM_KASAN" \
+	"$ARM_KASAN/arch/arm64/boot/Image"
 
 progress '72% configuring x86_64 KCSAN with E4 measurement disabled'
 configure_boot x86_64 x86_64-linux-gnu- kcsan "$X86_KCSAN" x86_64-kcsan
@@ -311,13 +427,18 @@ progress '74% building x86_64 KCSAN bzImage'
 build_image x86_64 x86_64-linux-gnu- bzImage "$X86_KCSAN" x86_64-kcsan 74 18
 progress '92% booting x86_64 KCSAN E3 KUnit'
 run_x86_64 x86_64-kcsan "$X86_KCSAN" "$QEMU_TIMEOUT_SANITIZER" 4096
+preserve_and_prune_build x86_64-kcsan "$X86_KCSAN" \
+	"$X86_KCSAN/arch/x86/boot/bzImage"
 
 progress '97% writing exact-E4-source four-boot regression result'
 jq -n \
 	--arg run_id "$RUN_ID" --arg candidate "$E4_COMMIT" \
 	--arg tree "$E4_TREE" --arg parent "$E3_COMMIT" \
 	--arg primary "$PRIMARY_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" \
+	--arg build_storage_type "$build_storage_type" \
 	--argjson clock_skew_retries "$clock_skew_retries" \
+	--argjson preserved_boot_artifacts "$preserved_boot_artifacts" \
+	--argjson pruned_build_outputs "$pruned_build_outputs" \
 '
 {
   schema_version: 1,
@@ -343,6 +464,12 @@ jq -n \
   exact_e4_source_shared_helper_regression_passed: true,
   fresh_build_output_per_boot: true,
   compiler_config_image_object_qemu_ktap_console_recorded: true,
+  build_storage_filesystem: $build_storage_type,
+  internal_ext4_build_storage_verified: true,
+  shared_host_build_output: false,
+  losslessly_compressed_boot_artifacts: $preserved_boot_artifacts,
+  lossless_artifact_restore_hashes_verified: true,
+  successful_build_outputs_pruned: $pruned_build_outputs,
   shared_filesystem_clock_skew_retries: $clock_skew_retries,
   final_clock_skew_warnings: 0,
   e3_regression_diagnostic_passed: true,

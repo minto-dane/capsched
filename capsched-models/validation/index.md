@@ -237,6 +237,7 @@ Updated: 2026-07-16
 | 0229 | Corrected r2 passed exact identity, checkpatch 0/0/0, fresh arm64/x86_64 E3-parent/E4-off/E4-on W=1 builds, 43 frozen values, and zero disabled E4 artifacts | SchedExecLease P5A-R3 E4 Bucket Measurement Source Gate |
 | 0230 | Source-gate attempt 1 completed all six objects but a 7ms shared-filesystem clock skew was misclassified as a compiler warning; no result exists and a zero-skew verification rerun only is allowed | SchedExecLease P5A-R3 E4 Source Gate Attempt 1 |
 | 0231 | Source-gate r2 result `8529ceac...b14b2e7c` is fixed; exact-E4-source E3 regression requires four fresh arm64/x86_64 standard/KASAN/KCSAN boots at 20/20 with E4 measurement disabled | SchedExecLease P5A-R3 E4 Source Gate and E3 Regression Launch |
+| 0232 | Attempt 1 failed before boot on two independently corrupted shared-APFS objects; exact corrupt bytes and rebuild proof are preserved, and only a fresh internal-ext4 four-boot rerun is authorized | SchedExecLease P5A-R3 E4 Exact-Source E3 Regression Attempt 1 |
 
 ## Principles
 
