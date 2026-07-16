@@ -234,6 +234,7 @@ Updated: 2026-07-16
 | 0226 | Corrected r2 passed all four independent arm64/x86_64 standard-debug, arm64 KASAN, and x86_64 KCSAN boots at 20/20 cases with zero failures, skips, timeouts, or warnings; E4 planning only is authorized | SchedExecLease P5A-R3 E3 Diagnostic Matrix |
 | 0227 | arm64 standard-debug attempt 1 built and booted but failed 19/20 with XArray lock-context, stack-work ODEBUG, and queued-next owner/refcount defects; corrected rerun only is authorized | SchedExecLease P5A-R3 E3 arm64 Standard-Debug Attempt 1 |
 | 0228 | R3-E4 plan passed 30 anchors, 6 absences, frozen E3 20-case count, safe TLC 8/7/depth 7, and 40 fault counterexamples; only the exact two-file disposable measurement draft is allowed | SchedExecLease P5A-R3 E4 Bucket Measurement Plan |
+| 0229 | Exact E4 two-file source smoke passed identity, strict style, frozen manifests, 42-cell shape, and non-attachment; monitored fresh arm64/x86_64 three-mode builds remain the acceptance boundary | SchedExecLease P5A-R3 E4 Bucket Measurement Source Gate |
 
 ## Principles
 

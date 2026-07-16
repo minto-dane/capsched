@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-15
+Updated: 2026-07-16
 
 ## Current Analysis Notes
 
@@ -175,6 +175,7 @@ Updated: 2026-07-15
 | 0167 | R3-E1 fixes B_max=64, sparse private projections, zero ordinary hot-structure growth, unbound-work/hotplug/drain lifetime, exact two-file E2 scope, and later rejection thresholds | SchedExecLease P5A-R3 E1 Source/Locking/Lifetime Evidence Plan |
 | 0168 | R3-E3 fixes an exact same-TU two-file KUnit prototype with B_max/fault/race/oracle matrices and four arm64/x86_64 diagnostic boots | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
 | 0169 | R3-E4 fixes a default-off same-TU rejection experiment with real rq locking, paired controls, 32 one-projection, 5 hotplug, and 5 targeted-fanout cells, immutable limits, and virtual-evidence non-claims | SchedExecLease P5A-R3 E4 Bucket Measurement Plan |
+| 0170 | Exact direct-E3-child two-file E4 draft implements the 42-cell measurement suite, shared transition helpers, strict style, dual-arch compile smoke, and keeps measurement blocked on independent gates | SchedExecLease P5A-R3 E4 Bucket Measurement Source Draft |
 
 ## Planned Analysis Notes
 
