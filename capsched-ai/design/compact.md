@@ -4516,3 +4516,9 @@ P5A-R3 E4 source and exact-source regression gate:
   live scheduler behavior, primary/patch promotion, production protection,
   bare-metal latency, performance/cost, deployment, and datacenter claims
   remain false.
+
+  Validation/0234 provides the monitored arm64 runner. It uses a 64-vCPU guest
+  for the full fanout matrix, independently recomputes every gate, treats
+  missing/malformed evidence as harness failure, and preserves the exact Image
+  and object losslessly while pruning internal-ext4 scratch after QEMU. Config
+  smoke passed; job `p5a-r3-e4-arm64-measurement-r1` is the next execution.

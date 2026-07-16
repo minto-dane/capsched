@@ -89,6 +89,20 @@
     "lossless_restore_hashes_verified": true,
     "successful_build_outputs_pruned": 4
   },
+  "arm64_measurement_launch": {
+    "runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement.sh",
+    "validation": "capsched/capsched-models/validation/0234-sched-exec-lease-p5a-r3-e4-arm64-measurement-launch.md",
+    "job_name": "p5a-r3-e4-arm64-measurement-r1",
+    "run_id": "20260716T-p5a-r3-e4-arm64-measurement-r1",
+    "guest_vcpus": 64,
+    "qemu_timeout_seconds": 7200,
+    "internal_ext4_build_storage_required": true,
+    "independent_gate_recomputation": true,
+    "valid_rejection_separate_from_harness_failure": true,
+    "lossless_image_and_object_retention": true,
+    "build_output_pruned_after_qemu": true,
+    "config_smoke_passed": true
+  },
   "authorization": {
     "e4_measurement_may_start": true,
     "e4_measurement_accepted": false,

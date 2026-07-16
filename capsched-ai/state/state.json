@@ -1001,7 +1001,9 @@
     "p5a_r3_e4_source_gate_validation": "capsched/capsched-models/validation/0229-sched-exec-lease-p5a-r3-e4-bucket-measurement-source-gate.md",
     "p5a_r3_e4_source_gate_result": "build/source-check/sched-exec-lease-p5a-r3-e4-bucket-measurement-source-gate/20260716T-p5a-r3-e4-source-gate-r2/result.json",
     "p5a_r3_e4_exact_source_regression_validation": "capsched/capsched-models/validation/0233-sched-exec-lease-p5a-r3-e4-exact-source-e3-regression.md",
-    "p5a_r3_e4_exact_source_regression_result": "build/source-check/sched-exec-lease-p5a-r3-e4-e3-regression-diagnostic/20260716T-p5a-r3-e4-e3-regression-r2/result.json"
+    "p5a_r3_e4_exact_source_regression_result": "build/source-check/sched-exec-lease-p5a-r3-e4-e3-regression-diagnostic/20260716T-p5a-r3-e4-e3-regression-r2/result.json",
+    "p5a_r3_e4_arm64_measurement_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement.sh",
+    "p5a_r3_e4_arm64_measurement_launch_validation": "capsched/capsched-models/validation/0234-sched-exec-lease-p5a-r3-e4-arm64-measurement-launch.md"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only DomainLease-Linux L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",

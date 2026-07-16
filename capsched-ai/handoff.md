@@ -5896,3 +5896,23 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     primary/patch changes, runtime denial, monitor/cross-path coverage,
     production protection, bare-metal latency, performance/cost, deployment,
     and datacenter claims remain false.
+
+  Arm64 measurement runner:
+    validation/0234 freezes detached job
+    `p5a-r3-e4-arm64-measurement-r1` and runner
+    `run-sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement.sh`. Its 64-vCPU
+    arm64 QEMU covers the full fixed fanout range, independently recomputes
+    all source-emitted gates, requires 42 unique rows and three zero-harness-
+    error summaries, and separates valid threshold rejection from harness
+    failure. Config smoke passed with NR_CPUS=64, exact KUnit filter, lockdep,
+    DEBUG_OBJECTS_WORK, PROVE_RCU, IRQ-off tracing, and no full build.
+
+    Build output is internal ext4 only. The exact Image and exec_lease.o are
+    zstd-tested and restored-hash checked before QEMU; scratch is pruned after
+    QEMU even on boot failure. Monitor with:
+
+      ./tools/long-job.sh watch p5a-r3-e4-arm64-measurement-r1 30
+
+    A valid arm64 pass may authorize same-source x86_64 measurement. A valid
+    arm64 rejection stops E5. Neither outcome is a bare-metal or production
+    claim.
