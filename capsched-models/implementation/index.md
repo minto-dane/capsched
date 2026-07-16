@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-07-15
+Updated: 2026-07-16
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -405,6 +405,19 @@ Current SchedExecLease L0 readiness:
     measured 53,696-byte/rq private state passes the 65,536-byte bound. A
     separate E3 plan may be drafted; E3 source and every runtime or production
     claim remain unapproved.
+- `0045-sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype.md`
+  - Status: exact direct-E2-child, two-file disposable candidate committed;
+    validation/0225 source gate passed fresh arm64/x86_64 four-mode builds.
+    The four-boot diagnostic matrix remains separately monitored.
+  - Candidate commit/tree:
+    `60e148fa0476c742b13a743345d1383db04fc843` /
+    `326da04e5b11e8036a4074b1d363410b21033ef8`.
+  - JSON: `sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype-v1.json`.
+  - Rule: default-off, same-TU synthetic KUnit covers 20 deterministic
+    concurrency families, six allocation faults, B_max=64, independent plain
+    oracle, and RCU retirement drain without a real scheduler attachment.
+    Source-gate passage authorizes only the diagnostic matrix; runtime and
+    production claims remain false.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

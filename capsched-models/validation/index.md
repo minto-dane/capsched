@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-15
+Updated: 2026-07-16
 
 ## Current Validation Records
 
@@ -230,6 +230,8 @@ Updated: 2026-07-15
 | 0222 | Fresh arm64/x86_64 four-mode builds preserved 51 existing values, added 43 private-on symbols, kept disabled artifacts absent, and passed the private envelope | SchedExecLease P5A-R3 E2 Dual-Architecture Layout |
 | 0223 | Independent ELF/config/source/identity closure passed with zero ordinary structure growth and 53,696 bytes/rq; E3 planning only is allowed | SchedExecLease P5A-R3 E2 Evidence Closure |
 | 0224 | Exact R3-E3 pre-source gate passed 58 anchors, 10 absences, safe TLC 17/16/depth 16, and 51 fault counterexamples; only the two-file disposable draft is allowed | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
+| 0225 | Exact direct-E2-child source gate passed checkpatch 0/0/0 and fresh arm64/x86_64 four-mode builds with 20 cases, 6 fault sites, frozen E2 values, and zero disabled E3 artifacts | SchedExecLease P5A-R3 E3 Bucket Concurrency Source Gate |
+| 0226 | Reproducible monitored four-boot runner prepared for arm64/x86_64 standard debug, arm64 generic KASAN, and x86_64 KCSAN | SchedExecLease P5A-R3 E3 Diagnostic Matrix |
 
 ## Principles
 

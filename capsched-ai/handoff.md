@@ -5790,3 +5790,31 @@ P5A-R3 E3 bucket concurrency evidence plan:
     E4 remain false until that matrix passes. Primary/patch queue, runtime
     hooks/behavior/denial, monitor/cross-class/latency/performance/cost,
     production protection, deployment, and datacenter claims remain false.
+
+P5A-R3 E3 disposable source and source gate:
+  Implementation/0045 fixes branch
+  `codex/p5a-r3-e3-bucket-concurrency-prototype` at direct-E2-child commit
+  `60e148fa0476c742b13a743345d1383db04fc843`, tree
+  `326da04e5b11e8036a4074b1d363410b21033ef8`, and diff SHA-256
+  `1f591cfd4d6c05e6eb42f2f14120f23d6645c0e0b6cb6b0615f069f10a93d0d7`.
+  It adds 1,999 lines and deletes none in exactly init/Kconfig and
+  kernel/sched/exec_lease.c; the E2 private layout/probe block is byte-identical.
+
+  Source-gate result:
+    validation/0225 run `20260716T-p5a-r3-e3-source-gate` passed strict
+    checkpatch 0/0/0; exact 20-family and six-fault manifests; default-off
+    same-TU config; independent plain oracle; bounded capacity, lock/work, and
+    retirement source checks; and fresh E2/all-off/layout-off/test-on objects
+    for arm64 and x86_64. All-off omits exec_lease.o, layout-on/test-off has
+    zero E3 symbols/relocations/strings, and test-on contains the exact suite.
+    Result SHA-256 is
+    `a1dc71e32dbacfad8479a167417c8a2e425b1b0ef169cc9f6cf05d95762272a1`.
+
+  Monitored next step:
+    validation/0226 and the root tools prepare job
+    `p5a-r3-e3-diagnostic-matrix`: arm64/x86_64 standard debug with KUnit,
+    lockdep, DEBUG_OBJECTS_WORK and PROVE_RCU; arm64 generic KASAN; and x86_64
+    KCSAN. Every boot requires the exact 20 cases and zero failure, skip,
+    timeout, diagnostic warning, or lockup. Until its result passes, synthetic
+    runtime correctness, E4, real scheduler attachment, primary/patch queue,
+    production, deployment, latency, performance, and protection remain false.
