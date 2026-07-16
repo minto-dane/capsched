@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r3-e4-bucket-measurement-v1",
+  "date": "2026-07-16",
+  "status": "source_and_exact_source_regression_passed_measurement_authorized",
+  "source": {
+    "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r3-e4-bucket-measurement",
+    "branch": "codex/p5a-r3-e4-bucket-measurement",
+    "parent_commit": "be9339363a99fb31a5b7d03f3d70430d64a45593",
+    "candidate_commit": "f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1",
+    "candidate_tree": "61541cb0c8aedef941e534c73effdea1f6b3d938",
+    "diff_sha256": "ec369f6b40b427f1297b9ef5061d91bebb2e26c25d9f145a54b995b4b4a73205",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "insertions": 1006,
+    "deletions": 10,
+    "strict_checkpatch": {
+      "errors": 0,
+      "warnings": 0,
+      "checks": 0
+    }
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_BUCKET_MEASURE_KUNIT_TEST",
+    "default_enabled": false,
+    "depends_on": [
+      "SCHED_EXEC_LEASE_BUCKET_KUNIT_TEST",
+      "KUNIT=y"
+    ],
+    "same_translation_unit": "kernel/sched/exec_lease.c",
+    "suite_name": "sched_exec_lease_bucket_measure",
+    "case_count": 3
+  },
+  "matrix": {
+    "one_projection_cells": 32,
+    "hotplug_cells": 5,
+    "fanout_cells": 5,
+    "total_cells": 42,
+    "warmup_pairs_per_cell": 256,
+    "measured_pairs_per_cell": 10000,
+    "normalized_base_slice_ns": 700000,
+    "one_projection_limits_ns": {
+      "additional_p99": 5000,
+      "additional_p999": 25000,
+      "additional_max": 50000
+    },
+    "hotplug_limits_ns": {
+      "additional_p99": 25000,
+      "additional_max": 50000
+    },
+    "fanout_limits_ns": {
+      "absolute_p99": 10000000,
+      "absolute_max": 100000000
+    }
+  },
+  "source_gate": {
+    "run_id": "20260716T-p5a-r3-e4-source-gate-r2",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e4-bucket-measurement-source-gate/20260716T-p5a-r3-e4-source-gate-r2/result.json",
+    "result_sha256": "8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c",
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "w1_compiler_warnings": 0,
+    "frozen_e2_values": 43,
+    "disabled_e4_artifacts": 0
+  },
+  "exact_source_e3_regression": {
+    "run_id": "20260716T-p5a-r3-e4-e3-regression-r2",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e4-e3-regression-diagnostic/20260716T-p5a-r3-e4-e3-regression-r2/result.json",
+    "result_sha256": "3d02a2b6c52a856e6bde5417665bfc41e1fa547c774f9274f1f85d53167b5707",
+    "qemu_boots": [
+      "arm64_standard_debug",
+      "x86_64_standard_debug",
+      "arm64_generic_kasan",
+      "x86_64_kcsan"
+    ],
+    "required_cases_per_boot": 20,
+    "passed_cases_per_boot": 20,
+    "failed_cases": 0,
+    "skipped_cases": 0,
+    "qemu_timeouts": 0,
+    "warning_reports": 0,
+    "internal_ext4_build_storage": true,
+    "shared_host_build_output": false,
+    "lossless_boot_artifacts": 8,
+    "lossless_restore_hashes_verified": true,
+    "successful_build_outputs_pruned": 4
+  },
+  "authorization": {
+    "e4_measurement_may_start": true,
+    "e4_measurement_accepted": false,
+    "e5_plan_may_start": false,
+    "e5_source_may_start": false,
+    "primary_linux_may_change": false,
+    "patch_queue_may_change": false,
+    "real_scheduler_attachment": false,
+    "runtime_behavior_approved": false,
+    "production_protection": false,
+    "bare_metal_latency_claim": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

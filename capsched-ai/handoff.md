@@ -5856,3 +5856,43 @@ P5A-R3 E4 bucket measurement plan:
     live scheduler attachment, primary/patch queue changes, runtime denial,
     monitor/cross-path coverage, production protection, bare-metal latency,
     performance/cost, deployment, and datacenter claims remain false.
+
+P5A-R3 E4 source, source gate, and regression prerequisite:
+  Analysis/0170 and implementation/0046 fix the disposable direct-E3-child
+  source at commit `f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1`, tree
+  `61541cb0c8aedef941e534c73effdea1f6b3d938`, and diff SHA-256
+  `ec369f6b40b427f1297b9ef5061d91bebb2e26c25d9f145a54b995b4b4a73205`.
+  It changes only init/Kconfig and kernel/sched/exec_lease.c. The default-off
+  same-TU measurement suite fixes 42 rows and 10,000 pairs per row.
+
+  Corrected source gate:
+    validation/0229 run `20260716T-p5a-r3-e4-source-gate-r2` passed exact
+    identity/scope, strict checkpatch 0/0/0, fresh arm64/x86_64 E3-parent,
+    E4-off, and E4-on W=1 objects, 43 frozen E2 values, and zero disabled E4
+    symbols/relocations/strings. Result SHA-256 is
+    `8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c`.
+
+  Storage failure and correction:
+    validation/0232 preserves attempt 1 as infrastructure failure before boot.
+    Shared APFS/virtiofs output contained two independently damaged objects;
+    exact corrupt bytes and same-command rebuild evidence remain archived. The
+    corrected runner refuses shared build output, requires internal ext4 with
+    >=16GiB free, losslessly preserves the boot image and exec_lease.o after
+    every pass, verifies restored hashes, and prunes that boot's scratch tree.
+
+  Exact-source regression closure:
+    validation/0233 run `20260716T-p5a-r3-e4-e3-regression-r2` passed arm64 and
+    x86_64 standard debug, arm64 generic KASAN, and x86_64 strict KCSAN at
+    exactly 20/20 E3 cases with E4 measurement disabled, QEMU exit zero, zero
+    failure/skip, and zero gated diagnostic reports. Result SHA-256 is
+    `3d02a2b6c52a856e6bde5417665bfc41e1fa547c774f9274f1f85d53167b5707`.
+    Independent audit passed all eight zstd archives, archive SHA values, and
+    restored source SHA values; all four build outputs were pruned.
+
+  Boundary/next:
+    the exact immutable 42-cell E4 virtual measurement may now start. Classify
+    threshold breach as valid negative evidence and missing/malformed evidence
+    as harness failure. E4 remains unaccepted; E5, live scheduler attachment,
+    primary/patch changes, runtime denial, monitor/cross-path coverage,
+    production protection, bare-metal latency, performance/cost, deployment,
+    and datacenter claims remain false.

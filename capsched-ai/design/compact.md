@@ -4490,3 +4490,29 @@ P5A-R3 E4 bucket-measurement plan gate:
   live behavior, cross-path/monitor coverage, production protection,
   bare-metal latency, performance/cost, deployment, and datacenter claims are
   false.
+
+P5A-R3 E4 source and exact-source regression gate:
+  Analysis/0170 and implementation/0046 bind exact direct-E3-child commit
+  `f20c62a2ad5a`, tree `61541cb0c8ad`, and diff SHA-256 `ec369f6b40b4`
+  to exactly init/Kconfig and kernel/sched/exec_lease.c. The default-off same-TU
+  suite emits 32 one-projection, 5 hotplug, and 5 fanout rows with immutable
+  10,000-pair counts and rejection limits.
+
+  Validation/0229 corrected run `20260716T-p5a-r3-e4-source-gate-r2` passed
+  strict checkpatch, arm64/x86_64 E3-parent/E4-off/E4-on W=1 objects, 43 frozen
+  E2 values, and disabled E4 artifact absence; result SHA-256 is
+  `8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c`.
+
+  Validation/0232 preserves attempt 1 as infrastructure failure: two unrelated
+  shared-APFS/virtiofs objects lost bytes under critical host capacity before
+  QEMU. Validation/0233 corrected run
+  `20260716T-p5a-r3-e4-e3-regression-r2` used internal ext4 storage and passed
+  arm64/x86_64 standard, arm64 KASAN, and x86_64 KCSAN at 20/20 with E4
+  measurement off. Result SHA-256 is `3d02a2b6c52a`. Eight exact boot/object
+  archives passed independent archive/restored hashes and all four scratch
+  builds were pruned.
+
+  The controlled 42-cell E4 virtual measurement may start. E4 acceptance, E5,
+  live scheduler behavior, primary/patch promotion, production protection,
+  bare-metal latency, performance/cost, deployment, and datacenter claims
+  remain false.
