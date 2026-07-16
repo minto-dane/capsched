@@ -174,6 +174,7 @@ Updated: 2026-07-15
 | 0166 | Bucket-local Candidate C projection selected: indexed active-rq fanout, snapshot/insertion handshake, and one-bucket rq-lock work replace all-leaf rebuild | SchedExecLease P5A-R3 Bucket-Local Targeted Projection |
 | 0167 | R3-E1 fixes B_max=64, sparse private projections, zero ordinary hot-structure growth, unbound-work/hotplug/drain lifetime, exact two-file E2 scope, and later rejection thresholds | SchedExecLease P5A-R3 E1 Source/Locking/Lifetime Evidence Plan |
 | 0168 | R3-E3 fixes an exact same-TU two-file KUnit prototype with B_max/fault/race/oracle matrices and four arm64/x86_64 diagnostic boots | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
+| 0169 | R3-E4 fixes a default-off same-TU rejection experiment with real rq locking, paired controls, 32 one-projection, 5 hotplug, and 5 targeted-fanout cells, immutable limits, and virtual-evidence non-claims | SchedExecLease P5A-R3 E4 Bucket Measurement Plan |
 
 ## Planned Analysis Notes
 
@@ -307,3 +308,4 @@ Updated: 2026-07-15
 | `sched-exec-lease-p5a-r3-bucket-local-targeted-projection-v1.json` | P5A-R3 bucket-local successor | E4 rejection trigger, authority-equivalent bucket key, active-rq index and handshake, one-bucket work/lifetime bounds, staged source boundary, and non-claims |
 | `sched-exec-lease-p5a-r3-e1-source-locking-lifetime-evidence-plan-v1.json` | P5A-R3 E1 pre-source plan | Finite B_max/depth/memory envelopes, exact two-file E2 layout scope, rq/membership/work ownership, hotplug and RCU drain, E3 race cases, E4 rejection limits, and non-claims |
 | `sched-exec-lease-p5a-r3-e3-bucket-concurrency-evidence-plan-v1.json` | P5A-R3 E3 pre-source plan | Exact E2 child/two-file same-TU KUnit boundary, B_max and allocation faults, deterministic publication/work/migration/hotplug/retirement races, independent oracle, sanitizer matrix, and non-claims |
+| `sched-exec-lease-p5a-r3-e4-bucket-measurement-plan-v1.json` | P5A-R3 E4 pre-source plan | Exact E3 child/two-file same-TU boundary, real rq-lock one-projection and bounded hotplug timing, targeted fanout availability, paired controls, immutable 42-cell/10,000-pair gates, architecture split, and non-claims |

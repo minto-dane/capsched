@@ -4464,3 +4464,29 @@ P5A-R3 E3 concurrency-plan gate:
   result SHA-256 is `438496a960e5`. E3 source correctness, E4, primary/patch
   promotion, runtime behavior/denial, monitor/cross-path coverage, latency,
   performance/cost, protection, deployment, and datacenter claims remain false.
+
+P5A-R3 E3 diagnostic closure:
+  Corrected direct-E2-child commit `be9339363a99`, tree `a92d096ef477`, passed
+  validation/0225 source gating and validation/0226 run
+  `20260716T-p5a-r3-e3-diagnostic-matrix-r2`. Arm64/x86_64 standard debug,
+  arm64 generic KASAN, and x86_64 KCSAN each passed 20/20 exact-suite cases
+  with zero failure, skip, timeout, warning, or lockup. Result SHA-256 is
+  `3ec1cd9b54b3`. Attempt 1 remains immutable negative evidence in 0227.
+
+  This proves only the isolated same-TU synthetic protocol. Real scheduler
+  attachment, runtime behavior/denial, and production remain false.
+
+P5A-R3 E4 bucket-measurement plan gate:
+  Analysis/0169, formal/0134, and validation/0228 authorize only an exact
+  direct-E3-child default-off two-file source draft. The plan fixes real rq
+  locking with paired controls; 32 one-projection, 5 bounded hotplug, and 5
+  targeted-fanout cells; 10,000 samples per cell; and immutable 5/25/50us,
+  25/50us, 10/100ms, and 700us rejection gates.
+
+  Run `20260716T-p5a-r3-e4-bucket-measurement-plan` passed 30 anchors, 6
+  absences, the frozen E3 20-case count, safe TLC 8/7/depth 7, and 40 expected
+  unsafe counterexamples; result SHA-256 is `107cf025ccb3`. E4 measurement is
+  blocked on a separate source gate. E4 acceptance, E5, primary/patch changes,
+  live behavior, cross-path/monitor coverage, production protection,
+  bare-metal latency, performance/cost, deployment, and datacenter claims are
+  false.

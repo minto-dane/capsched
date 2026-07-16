@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype-v1",
   "date": "2026-07-16",
-  "status": "corrected_source_gate_passed_awaiting_diagnostic_matrix_r2",
+  "status": "passed_corrected_four_boot_synthetic_diagnostic_matrix",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r3-e3-bucket-concurrency-prototype",
     "branch": "codex/p5a-r3-e3-bucket-concurrency-prototype",
@@ -52,12 +52,33 @@
     "worker_start_epoch_queue_classification": true,
     "queued_next_invocation_retains_work_owner": true
   },
+  "diagnostic_matrix_r2": {
+    "status": "passed_four_boot_diagnostic_matrix",
+    "run_id": "20260716T-p5a-r3-e3-diagnostic-matrix-r2",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e3-bucket-concurrency-diagnostic-matrix/20260716T-p5a-r3-e3-diagnostic-matrix-r2/result.json",
+    "result_sha256": "3ec1cd9b54b326d889c5ef3d6398e70530f3f50e5fd7cd89e3f3aa0c2f45c756",
+    "qemu_boots": [
+      "arm64_standard_debug",
+      "x86_64_standard_debug",
+      "arm64_generic_kasan",
+      "x86_64_kcsan"
+    ],
+    "required_cases_per_boot": 20,
+    "passed_cases_per_boot": 20,
+    "failed_cases": 0,
+    "skipped_cases": 0,
+    "timeouts": 0,
+    "warning_reports": 0,
+    "synthetic_protocol_diagnostic_matrix_passed": true
+  },
   "boundaries": {
     "e2_private_layout_and_probe_block_preserved": true,
     "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
     "patch_queue_commit": "2a022dce54679ce5ecb86581bf55199dc28c868b",
     "real_scheduler_attachment": false,
     "source_gate_result_sha256": "a78e1672afc904ee40a7ec019ed94f8bea16713ab101d2518f595c9bbbe3be53",
+    "r3_e4_measurement_plan_may_be_drafted": true,
+    "r3_e4_source_may_be_created": false,
     "runtime_correctness_proven": false,
     "production_ready": false
   }

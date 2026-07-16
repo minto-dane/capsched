@@ -406,10 +406,9 @@ Current SchedExecLease L0 readiness:
     separate E3 plan may be drafted; E3 source and every runtime or production
     claim remain unapproved.
 - `0045-sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype.md`
-  - Status: corrected direct-E2-child, two-file disposable candidate
-    committed; validation/0225 corrected source gate passed fresh
-    arm64/x86_64 four-mode builds. Attempt 1 is retained as negative evidence;
-    the corrected four-boot matrix remains separately monitored.
+  - Status: corrected direct-E2-child, two-file disposable candidate passed
+    validation/0225 source gating and validation/0226's complete four-boot
+    diagnostic matrix. Attempt 1 remains immutable negative evidence.
   - Candidate commit/tree:
     `be9339363a99fb31a5b7d03f3d70430d64a45593` /
     `a92d096ef4779f20c5e652de3c21b8f85b2476c7`.
@@ -417,8 +416,8 @@ Current SchedExecLease L0 readiness:
   - Rule: default-off, same-TU synthetic KUnit covers 20 deterministic
     concurrency families, six allocation faults, B_max=64, independent plain
     oracle, and RCU retirement drain without a real scheduler attachment.
-    Source-gate passage authorizes only the diagnostic matrix; runtime and
-    production claims remain false.
+    The matrix closes only synthetic-protocol E3 evidence and authorizes R3-E4
+    planning. Real-scheduler, runtime, and production claims remain false.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

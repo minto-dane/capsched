@@ -5821,11 +5821,38 @@ P5A-R3 E3 disposable source and source gate:
     locks, uses KUnit-managed heap gate work, tracks worker-start epochs, and
     retains the work owner across an already-queued next invocation.
 
-  Monitored next step:
-    validation/0226 and the root tools prepare job
-    `p5a-r3-e3-diagnostic-matrix-r2`: arm64/x86_64 standard debug with KUnit,
-    lockdep, DEBUG_OBJECTS_WORK and PROVE_RCU; arm64 generic KASAN; and x86_64
-    KCSAN. Every boot requires the exact 20 cases and zero failure, skip,
-    timeout, diagnostic warning, or lockup. Until its result passes, synthetic
-    runtime correctness, E4, real scheduler attachment, primary/patch queue,
-    production, deployment, latency, performance, and protection remain false.
+  Diagnostic closure:
+    validation/0226 run `20260716T-p5a-r3-e3-diagnostic-matrix-r2` passed all
+    four independent boots: arm64/x86_64 standard debug, arm64 generic KASAN,
+    and x86_64 KCSAN. Each passed exactly 20/20 required cases with zero
+    failure, skip, timeout, diagnostic warning, or lockup. Result SHA-256 is
+    `3ec1cd9b54b326d889c5ef3d6398e70530f3f50e5fd7cd89e3f3aa0c2f45c756`.
+    This closes only synthetic same-TU protocol evidence; real scheduler
+    attachment, runtime behavior, and production remain false.
+
+P5A-R3 E4 bucket measurement plan:
+  Analysis/0169, formal/0134, and validation/0228 pass the pre-source gate.
+  Run `20260716T-p5a-r3-e4-bucket-measurement-plan` bound the exact E3 result,
+  primary/E2/E3/patch identities, 30/30 current source anchors, 6/6 future
+  absences, and the unchanged E3 20-case suite. Safe TLC passed at 8 generated,
+  7 distinct, depth 7; all 40 unsafe faults produced expected counterexamples.
+  Result SHA-256 is
+  `107cf025ccb3030cafe6a142a994fdf5d5e7a6d4cf8b8fc07f5b49bb8e878cab`.
+
+  Fixed measurement contract:
+    direct child of E3 commit `be9339363a99fb31a5b7d03f3d70430d64a45593`,
+    changing exactly init/Kconfig and kernel/sched/exec_lease.c under default-off
+    CONFIG_SCHED_EXEC_LEASE_BUCKET_MEASURE_KUNIT_TEST. The matrix has 32
+    one-projection cells, 5 bounded hotplug cells, and 5 targeted-fanout cells,
+    each with 10,000 samples. Paired controls and fixed 5/25/50 microsecond,
+    25/50 microsecond, 10/100 millisecond, and 700 microsecond rejection gates
+    are immutable. Threshold breach is valid negative evidence; malformed or
+    missing evidence is a harness failure.
+
+  Authorization/next:
+    create only branch `codex/p5a-r3-e4-bucket-measurement` and its exact
+    disposable two-file source draft, then run a separate source gate. Do not
+    launch measurement before that gate. E4 acceptance, E5 planning/source,
+    live scheduler attachment, primary/patch queue changes, runtime denial,
+    monitor/cross-path coverage, production protection, bare-metal latency,
+    performance/cost, deployment, and datacenter claims remain false.

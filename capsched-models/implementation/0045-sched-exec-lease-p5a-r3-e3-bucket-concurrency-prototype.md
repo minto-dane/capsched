@@ -3,9 +3,9 @@
 Date: 2026-07-16
 
 Status: corrected disposable source candidate committed. The corrected source
-gate passed; diagnostic matrix attempt 1 remains immutable negative evidence
-and the corrected matrix rerun is recorded separately. This record makes no
-runtime or production claim.
+gate and complete four-boot diagnostic matrix passed. Diagnostic attempt 1
+remains immutable negative evidence. This record makes no real-scheduler,
+runtime-behavior, or production claim.
 
 ## Disposable identity
 
@@ -55,10 +55,23 @@ a five-second bound, and the coalescing, migration, hotplug, and retirement
 stress paths repeat 1,024 times. Expected state is held in a plain oracle record
 which contains no E2 private type and calls no prototype transition helper.
 
+## Diagnostic closure
+
+Validation/0226 run `20260716T-p5a-r3-e3-diagnostic-matrix-r2` passed arm64
+and x86_64 standard-debug boots, arm64 generic KASAN, and x86_64 KCSAN. Every
+boot passed all 20 required cases with zero failures, skips, timeouts, warning
+reports, sanitizer findings, lockdep findings, work-object diagnostics, RCU
+diagnostics, or lockups. The authoritative result SHA-256 is
+`3ec1cd9b54b326d889c5ef3d6398e70530f3f50e5fd7cd89e3f3aa0c2f45c756`.
+
+This closes the E3 same-TU synthetic protocol gate and authorizes only a new
+R3-E4 measurement plan. It does not authorize E4 source before that plan
+passes.
+
 ## Non-claims
 
 This source is a disposable diagnostic candidate, not a scheduler feature. A
-source-gate pass permits only the specified build/QEMU diagnostic matrix. It
-does not prove runtime correctness, authorize primary Linux or patch-queue
-changes, or establish protection, latency, performance, deployment, or
-production readiness.
+four-boot matrix pass proves only the isolated same-TU protocol against its
+synthetic fixtures and diagnostics. It does not prove real-scheduler behavior,
+authorize primary Linux or patch-queue changes, or establish runtime denial,
+protection, latency, performance, deployment, or production readiness.

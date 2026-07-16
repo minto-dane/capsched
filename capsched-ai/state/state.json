@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-07-15",
+  "updated": "2026-07-16",
   "project": {
     "name": "DomainLease-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
@@ -985,7 +985,15 @@
     "sched_exec_lease_p3_placement_only_implementation_json": "capsched/capsched-models/implementation/sched-exec-lease-p3-placement-only-implementation-v1.json",
     "sched_exec_lease_p3_overclaim_review_json": "capsched/capsched-models/analysis/sched-exec-lease-p3-overclaim-review-v1.json",
     "sched_exec_lease_qemu_boot_smoke_validation": "capsched/capsched-models/validation/0131-sched-exec-lease-qemu-boot-smoke.md",
-    "sched_exec_lease_p1_full_build_validation": "capsched/capsched-models/validation/0132-sched-exec-lease-p1-full-build.md"
+    "sched_exec_lease_p1_full_build_validation": "capsched/capsched-models/validation/0132-sched-exec-lease-p1-full-build.md",
+    "p5a_r3_e3_implementation": "capsched/capsched-models/implementation/0045-sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype.md",
+    "p5a_r3_e3_diagnostic_validation": "capsched/capsched-models/validation/0226-sched-exec-lease-p5a-r3-e3-bucket-concurrency-diagnostic-matrix.md",
+    "p5a_r3_e3_diagnostic_result": "build/source-check/sched-exec-lease-p5a-r3-e3-bucket-concurrency-diagnostic-matrix/20260716T-p5a-r3-e3-diagnostic-matrix-r2/result.json",
+    "p5a_r3_e4_measurement_plan_analysis": "capsched/capsched-models/analysis/0169-sched-exec-lease-p5a-r3-e4-bucket-measurement-plan.md",
+    "p5a_r3_e4_measurement_plan_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r3-e4-bucket-measurement-plan-v1.json",
+    "p5a_r3_e4_measurement_plan_formal": "capsched/capsched-models/formal/0134-p5a-r3-e4-bucket-measurement-plan-model/README.md",
+    "p5a_r3_e4_measurement_plan_validation": "capsched/capsched-models/validation/0228-sched-exec-lease-p5a-r3-e4-bucket-measurement-plan.md",
+    "p5a_r3_e4_measurement_plan_result": "build/source-check/sched-exec-lease-p5a-r3-e4-bucket-measurement-plan/20260716T-p5a-r3-e4-bucket-measurement-plan/result.json"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only DomainLease-Linux L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -2679,6 +2687,12 @@
       "blocked_by": [
         "N-126"
       ]
+    },
+    {
+      "id": "N-128",
+      "text": "Create the exact disposable P5A-R3 E4 bucket measurement draft authorized by validation/0228, then pass a separate source gate before launching any measurement build or QEMU matrix.",
+      "status": "pending",
+      "blocked_by": []
     }
   ],
   "canonical_files": {

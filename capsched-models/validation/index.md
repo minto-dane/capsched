@@ -231,8 +231,9 @@ Updated: 2026-07-16
 | 0223 | Independent ELF/config/source/identity closure passed with zero ordinary structure growth and 53,696 bytes/rq; E3 planning only is allowed | SchedExecLease P5A-R3 E2 Evidence Closure |
 | 0224 | Exact R3-E3 pre-source gate passed 58 anchors, 10 absences, safe TLC 17/16/depth 16, and 51 fault counterexamples; only the two-file disposable draft is allowed | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
 | 0225 | Corrected direct-E2-child source gate passed checkpatch 0/0/0, XArray-under-lock rejection, and fresh arm64/x86_64 four-mode builds with frozen E2 values and zero disabled E3 artifacts | SchedExecLease P5A-R3 E3 Bucket Concurrency Source Gate |
-| 0226 | Attempt 1 failed; corrected monitored r2 four-boot runner prepared for arm64/x86_64 standard debug, arm64 generic KASAN, and x86_64 KCSAN | SchedExecLease P5A-R3 E3 Diagnostic Matrix |
+| 0226 | Corrected r2 passed all four independent arm64/x86_64 standard-debug, arm64 KASAN, and x86_64 KCSAN boots at 20/20 cases with zero failures, skips, timeouts, or warnings; E4 planning only is authorized | SchedExecLease P5A-R3 E3 Diagnostic Matrix |
 | 0227 | arm64 standard-debug attempt 1 built and booted but failed 19/20 with XArray lock-context, stack-work ODEBUG, and queued-next owner/refcount defects; corrected rerun only is authorized | SchedExecLease P5A-R3 E3 arm64 Standard-Debug Attempt 1 |
+| 0228 | R3-E4 plan passed 30 anchors, 6 absences, frozen E3 20-case count, safe TLC 8/7/depth 7, and 40 fault counterexamples; only the exact two-file disposable measurement draft is allowed | SchedExecLease P5A-R3 E4 Bucket Measurement Plan |
 
 ## Principles
 
