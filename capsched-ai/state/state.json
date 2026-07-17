@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-p5a-r4-e2-layout-build-running",
+    "current_phase": "sched-exec-lease-l0-p5a-r4-e3-concurrency-plan-next",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -2757,11 +2757,20 @@
     {
       "id": "N-132",
       "text": "Create and dual-architecture validate the exact disposable R4-E2 default-off private layout candidate, measuring the bucket notifier, projection dirty node, per-rq irq-work/work owner, all existing probes, config-off symbol absence, and the 65536-byte per-rq envelope without runtime behavior.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-131"
       ],
-      "partial_progress": "Disposable direct-primary candidate a429fc30252ac6af94c51d96cd4ac24e72d9f83b/tree fffd419bbc05bab87ad304c1e4a3213439d62bab adds 254 lines in exactly init/Kconfig and kernel/sched/exec_lease.c under default-off CONFIG_SCHED_EXEC_LEASE_R4_LAYOUT_PROBE. Source-gate run 20260717T-p5a-r4-e2-source-gate-r1 passed forward/reverse replay, strict checkpatch 0/0/0, 22 anchors, exact notifier/dirty/irq/work cardinalities, zero runtime/function/surface additions, and a unique 58-symbol manifest; result SHA-256 9e79d3e58151960b397a715116eb545de4c1ecc1988e619b88139022f6395a82. Detached job p5a-r4-e2-dual-arch-build launched run 20260717T-p5a-r4-e2-dual-arch-r1 in Apple Container with 30-second monitoring and reached arm64 baseline preparation. N-132 remains pending until the final arm64/x86_64 result passes."
+      "completed_on": "2026-07-17",
+      "partial_progress": "Disposable direct-primary candidate a429fc30252ac6af94c51d96cd4ac24e72d9f83b/tree fffd419bbc05bab87ad304c1e4a3213439d62bab adds 254 lines in exactly init/Kconfig and kernel/sched/exec_lease.c under default-off CONFIG_SCHED_EXEC_LEASE_R4_LAYOUT_PROBE. Source-gate run 20260717T-p5a-r4-e2-source-gate-r1 passed forward/reverse replay, strict checkpatch 0/0/0, 22 anchors, exact notifier/dirty/irq/work cardinalities, zero runtime/function/surface additions, and a unique 58-symbol manifest; result SHA-256 9e79d3e58151960b397a715116eb545de4c1ecc1988e619b88139022f6395a82. Monitored run 20260717T-p5a-r4-e2-dual-arch-r1 completed in 315 seconds and independently preserved 51 existing values, emitted 58 private symbols only when enabled, emitted zero disabled symbols/relocations/strings, kept ordinary structure growth zero, and measured 64/200/768/512 bytes with 49664 bytes/rq on arm64 and x86_64. Build result SHA-256 is 6346c3570008942fae533395ff4eb1165c3d42c6572d134c945e20fb57cbad1e. Independent ELF/config/source/hash closure result SHA-256 is fed621ee76effc554df806f40f6289d375dafe3f127427a9be73d6ff2ddcc048. The clean disposable checkout was retired after verifying local/fork commit identity; APFS verification passed before and after sparsebundle compaction, which reclaimed 1803584 KiB while retaining the 68 MiB canonical object evidence. Post-retirement closure rerun 20260717T-p5a-r4-e2-closure-post-retirement-r1 passed from retained Git objects with identical stable fields; result SHA-256 27f5a7acc52cc3852ca049a6abc07a72bce2c4e99e7a1a2e02167548a7b3d0f6. R4-E3 planning may start; source and all runtime/production claims remain blocked."
+    },
+    {
+      "id": "N-133",
+      "text": "Draft and validate the exact R4-E3 pre-source concurrency evidence plan for the irq-work to unbound-work bridge, notifier cursor/restart and late admission, one-projection recovery, current-stop observation, migration, hotplug/lifetime drain, allocation faults, and the required dual-architecture diagnostic matrix.",
+      "status": "pending",
+      "blocked_by": [
+        "N-132"
+      ]
     }
   ],
   "canonical_files": {

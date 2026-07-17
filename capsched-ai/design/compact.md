@@ -4609,3 +4609,24 @@ P5A-R3 E4 source and exact-source regression gate:
   remains pending until both architectures preserve the 51 existing values,
   prove disabled R4 absence and zero ordinary growth, and pass the private
   envelope. No E3/runtime/protection/performance/deployment claim is approved.
+
+- P5A-R4 N-132 E2 is complete:
+
+  Monitored arm64/x86_64 run `20260717T-p5a-r4-e2-dual-arch-r1` preserved 51
+  existing values, emitted 58 enabled-only R4 symbols, produced zero disabled
+  artifacts and zero ordinary growth, and measured `64/200/768/512` bytes for
+  key/bucket+notifier/projection+dirty/rq-state+bridge. `B_max=64` uses 49,664
+  bytes/rq below 62,016 planned and 65,536 hard limits. Build result SHA-256 is
+  `6346c3570008942fae533395ff4eb1165c3d42c6572d134c945e20fb57cbad1e`.
+
+  Independent closure result SHA-256 is
+  `fed621ee76effc554df806f40f6289d375dafe3f127427a9be73d6ff2ddcc048`.
+  It re-extracted objects and rechecked all configs, hashes, offsets, absence,
+  and arithmetic. The disposable checkout was retired and sparsebundle
+  compaction reclaimed 1,803,584 KiB without removing canonical object
+  evidence. A post-retirement rerun passed from retained Git objects with
+  identical stable fields; result SHA-256 is
+  `27f5a7acc52cc3852ca049a6abc07a72bce2c4e99e7a1a2e02167548a7b3d0f6`.
+
+  Next is N-133: an exact R4-E3 pre-source concurrency/diagnostic plan. No E3
+  source or runtime/protection/performance/deployment claim is approved.

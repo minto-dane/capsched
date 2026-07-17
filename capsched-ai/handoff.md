@@ -6088,3 +6088,41 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     ordinary growth, and passes the private envelope. E3 source, runtime,
     protection, latency, performance/cost, deployment, and datacenter claims
     remain false.
+
+- N-132 P5A-R4 E2 dual-architecture evidence is complete:
+
+  Build and independent closure:
+    detached run `20260717T-p5a-r4-e2-dual-arch-r1` completed in 315 seconds.
+    Arm64 and x86_64 each preserved all 51 existing values, emitted exactly 58
+    R4 symbols only when enabled, had zero disabled symbols/relocations/strings
+    and zero ordinary scheduler-object growth, and measured key/bucket with
+    notifier/projection with dirty node/rq state with bridge as
+    `64/200/768/512` bytes. Active private storage is `49,664 bytes/rq`, below
+    both 62,016 planned and 65,536 hard limits. Build result SHA-256 is
+    `6346c3570008942fae533395ff4eb1165c3d42c6572d134c945e20fb57cbad1e`.
+
+    Validation/0240 closure run `20260717T-p5a-r4-e2-closure-r1`
+    independently re-extracted stored ELF tables, checked all eight configs,
+    object/result/source hashes, dominant offsets, disabled absence, and
+    arithmetic. Closure result SHA-256 is
+    `fed621ee76effc554df806f40f6289d375dafe3f127427a9be73d6ff2ddcc048`.
+    Post-retirement rerun `20260717T-p5a-r4-e2-closure-post-retirement-r1`
+    passed without recreating the checkout and produced identical stable
+    fields; result SHA-256 is
+    `27f5a7acc52cc3852ca049a6abc07a72bce2c4e99e7a1a2e02167548a7b3d0f6`.
+
+  Storage:
+    the clean 1.7 GiB disposable checkout was retired after local/fork/PR
+    identity verification. The 68 MiB canonical objects remain. APFS verified
+    clean before and after sparsebundle compaction; 1,803,584 KiB was reclaimed,
+    the volume was remounted and Git identities rechecked, and the Apple
+    Container machine is stopped.
+
+  Next:
+    N-133 is an R4-E3 pre-source concurrency evidence plan. It must freeze the
+    irq-to-work bridge, notifier restart/late-admission handshake,
+    one-projection recovery, current-stop observation, migration,
+    hotplug/lifetime drain, allocation faults, and diagnostic matrix before
+    any E3 source. Runtime behavior, primary/patch changes, monitor protection,
+    bounded latency, performance/cost, deployment, and datacenter claims remain
+    false.
