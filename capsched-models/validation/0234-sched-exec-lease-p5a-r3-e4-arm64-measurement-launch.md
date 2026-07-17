@@ -2,8 +2,8 @@
 
 Date: 2026-07-16
 
-Status: launch-ready after exact-source prerequisite closure. This record
-defines the monitored arm64 run; it is not a measurement result.
+Status: historical launch contract, now completed. Validation/0235 records the
+terminal arm64 rejection; this record remains the immutable launch boundary.
 
 ## Runner
 
@@ -68,6 +68,15 @@ Detached job name: `p5a-r3-e4-arm64-measurement-r1`.
 Ctrl-C stops only the display. A passing arm64 architecture may authorize an
 exact-source x86_64 measurement. A valid arm64 rejection stops E5 and does not
 need an x86_64 latency claim.
+
+## Outcome
+
+The arm64 run completed build and QEMU, then exposed a host parser defect after
+all raw evidence was durable. The runner now uses explicit numeric coercion,
+preserves the first parser error, and supports fully verified postprocess-only
+recovery. Validation/0235 records deterministic result SHA-256
+`edba124b804beeaa7a2d723027fa3a6345f2d546fb0ab861428c6a4727b5cb7b`,
+19 rejected cells, and 26 fixed-gate breaches. x86_64 and E5 are stopped.
 
 ## Non-claims
 

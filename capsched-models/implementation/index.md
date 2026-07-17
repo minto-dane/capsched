@@ -419,17 +419,19 @@ Current SchedExecLease L0 readiness:
     The matrix closes only synthetic-protocol E3 evidence and authorizes R3-E4
     planning. Real-scheduler, runtime, and production claims remain false.
 - `0046-sched-exec-lease-p5a-r3-e4-bucket-measurement.md`
-  - Status: exact direct-E3-child two-file source passed validation/0229's
-    corrected dual-architecture static/build gate and validation/0233's exact-
-    source four-boot E3 regression. The controlled E4 measurement may start.
+  - Status: validation/0235 records complete valid arm64 negative evidence:
+    19/42 cells and 26 fixed-gate conditions reject R3. Clean QEMU/KUnit,
+    warning, summary, artifact, and deterministic postprocess-recovery evidence
+    separate the result from a harness failure. x86_64 and E5 are stopped.
   - Candidate commit/tree:
     `f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1` /
     `61541cb0c8aedef941e534c73effdea1f6b3d938`.
   - JSON: `sched-exec-lease-p5a-r3-e4-bucket-measurement-v1.json`.
-  - Rule: the default-off same-TU experiment fixes 42 cells, 10,000 measured
-    pairs per cell, paired controls, and immutable rejection gates. Measurement
-    launch is authorized, but E4/E5, live scheduler behavior, production,
-    latency, performance, protection, cost, and deployment claims remain false.
+  - Rule: the default-off same-TU experiment completed all 42 cells at 10,000
+    measured pairs each. R3 and synchronous targeted-fanout settlement as a
+    publication-authority condition are rejected. A successor design gate may
+    be drafted, but source, E5, live behavior, production, latency,
+    performance, protection, cost, and deployment claims remain false.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

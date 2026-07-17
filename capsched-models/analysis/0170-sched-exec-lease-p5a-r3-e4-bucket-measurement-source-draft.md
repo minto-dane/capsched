@@ -2,9 +2,9 @@
 
 Date: 2026-07-16
 
-Status: exact disposable source draft, awaiting the independent static/build
-source gate and a later E3 regression diagnostic. No E4 measurement or runtime
-claim is accepted.
+Status: historical exact disposable source draft. The source and exact-source
+regression gates later passed, but validation/0235 and analysis/0171 record the
+terminal arm64 E4 rejection. No runtime or production claim is accepted.
 
 ## Exact Candidate
 
@@ -67,3 +67,11 @@ The draft does not prove E3 regression correctness, E4 latency, bare-metal
 bounds, performance, cost, fairness, runtime denial, monitor enforcement,
 cross-path coverage, production protection, deployment readiness, or
 datacenter readiness.
+
+## Terminal outcome
+
+Exact arm64 run `20260716T-p5a-r3-e4-arm64-measurement-r1` completed all 42
+cells but rejected 19 with 26 fixed-gate breaches. Result SHA-256 is
+`edba124b804beeaa7a2d723027fa3a6345f2d546fb0ab861428c6a4727b5cb7b`.
+See analysis/0171 and validation/0235. The disposable source is not promoted;
+x86_64 and E5 are stopped.

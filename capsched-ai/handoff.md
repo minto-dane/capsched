@@ -5889,30 +5889,45 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     Independent audit passed all eight zstd archives, archive SHA values, and
     restored source SHA values; all four build outputs were pruned.
 
+  Arm64 terminal result:
+    analysis/0171, implementation/0046, and validation/0235 record complete
+    run `20260716T-p5a-r3-e4-arm64-measurement-r1`. QEMU exited zero, all three
+    KUnit cases passed, all 42 cells emitted 10,000 pairs, source and derived
+    summaries/gates agreed, warning count was zero, lossless artifacts and
+    restored hashes passed, and internal scratch was pruned. Result status is
+    `rejected_r3_bucket_measurement`; SHA-256 is
+    `edba124b804beeaa7a2d723027fa3a6345f2d546fb0ab861428c6a4727b5cb7b`.
+
+    Nineteen cells produced 26 fixed-gate breaches: one-projection 12/32 cells
+    and 16 breaches, hotplug 3/5 and 4, fanout 4/5 and 6. Fanout passed only at
+    one active rq; at 64 active rqs treatment p99/max were 494,241,840ns and
+    1,660,608,240ns against 10/100ms limits.
+
+  Postprocess recovery:
+    the original job stopped after clean QEMU poweroff because AWK compared
+    numeric strings from `substr()` lexically and its END block masked exit 8
+    as 17. The runner now explicitly coerces metrics, preserves the first
+    parser failure, and supports postprocess-only recovery with full source,
+    prerequisite, build, artifact, QEMU, KUnit, row, summary, warning, and gate
+    revalidation. Two recoveries over unchanged raw measurement inputs produced
+    the same result SHA. The unavailable cpufreq/governor record is now
+    explicit rather than silently treated as present.
+
   Boundary/next:
-    the exact immutable 42-cell E4 virtual measurement may now start. Classify
-    threshold breach as valid negative evidence and missing/malformed evidence
-    as harness failure. E4 remains unaccepted; E5, live scheduler attachment,
-    primary/patch changes, runtime denial, monitor/cross-path coverage,
-    production protection, bare-metal latency, performance/cost, deployment,
-    and datacenter claims remain false.
+    R3, x86_64 continuation, E4 acceptance, and E5 are stopped. N-130 is the
+    next scheduler work: a separate successor design gate may retain an O(1)
+    untrusted generation fence but must remove synchronous targeted-fanout
+    completion from publication authority and prove bounded asynchronous
+    recovery before any source. Primary/patch changes, live behavior, runtime
+    denial, monitor/cross-path coverage, protection, bare-metal latency,
+    performance/cost, deployment, and datacenter claims remain false.
 
-  Arm64 measurement runner:
-    validation/0234 freezes detached job
-    `p5a-r3-e4-arm64-measurement-r1` and runner
-    `run-sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement.sh`. Its 64-vCPU
-    arm64 QEMU covers the full fixed fanout range, independently recomputes
-    all source-emitted gates, requires 42 unique rows and three zero-harness-
-    error summaries, and separates valid threshold rejection from harness
-    failure. Config smoke passed with NR_CPUS=64, exact KUnit filter, lockdep,
-    DEBUG_OBJECTS_WORK, PROVE_RCU, IRQ-off tracing, and no full build.
-
-    Build output is internal ext4 only. The exact Image and exec_lease.o are
-    zstd-tested and restored-hash checked before QEMU; scratch is pruned after
-    QEMU even on boot failure. Monitor with:
-
-      ./tools/long-job.sh watch p5a-r3-e4-arm64-measurement-r1 30
-
-    A valid arm64 pass may authorize same-source x86_64 measurement. A valid
-    arm64 rejection stops E5. Neither outcome is a bare-metal or production
-    claim.
+  Storage maintenance:
+    clean disposable E2/E3/E4 worktrees were removed after their commits and
+    `fork/codex/...` tracking branches were verified, reclaiming 5.1GB logical
+    data without losing source history. `DomainLeaseLinux.sparsebundle` was
+    detached and compacted from 16GB to 9.5GB, then remounted; macOS free space
+    recovered from 3.1GB to 18GB. Canonical measurement evidence and compressed
+    boot/object artifacts were retained. Apple Container machine
+    `domainlease-dev` is stopped with no job running and starts on the next
+    `container machine run`.

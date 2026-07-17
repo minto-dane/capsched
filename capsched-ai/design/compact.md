@@ -4512,13 +4512,26 @@ P5A-R3 E4 source and exact-source regression gate:
   archives passed independent archive/restored hashes and all four scratch
   builds were pruned.
 
-  The controlled 42-cell E4 virtual measurement may start. E4 acceptance, E5,
-  live scheduler behavior, primary/patch promotion, production protection,
-  bare-metal latency, performance/cost, deployment, and datacenter claims
-  remain false.
+  Validation/0235 closes arm64 run
+  `20260716T-p5a-r3-e4-arm64-measurement-r1` as valid negative evidence.
+  QEMU exited zero, KUnit passed 3/3, all 42 cells and summaries completed,
+  warnings were zero, and artifacts/restored hashes passed. Result SHA-256 is
+  `edba124b804beeaa`; 19/42 cells produced 26 fixed-gate breaches
+  (one-projection 12, hotplug 3, fanout 4). Fanout passed only at one active rq
+  and reached 494,241,840ns p99 / 1,660,608,240ns maximum at 64 active rqs.
 
-  Validation/0234 provides the monitored arm64 runner. It uses a 64-vCPU guest
-  for the full fanout matrix, independently recomputes every gate, treats
-  missing/malformed evidence as harness failure, and preserves the exact Image
-  and object losslessly while pruning internal-ext4 scratch after QEMU. Config
-  smoke passed; job `p5a-r3-e4-arm64-measurement-r1` is the next execution.
+  The job's post-QEMU AWK string-comparison defect was fixed with explicit
+  numeric coercion, preserved diagnostics, and a postprocess-only verifier.
+  Two recovery runs over unchanged raw evidence reproduced the same result
+  hash. R3, x86_64, E4 acceptance, and E5 are stopped.
+
+  Next is N-130: separately gate a successor that retains an O(1) untrusted
+  generation mismatch but removes synchronous fanout completion from
+  publication authority and proves bounded asynchronous recovery. No source,
+  live behavior, primary/patch promotion, production protection, bare-metal
+  latency, performance/cost, deployment, or datacenter claim is approved.
+
+  Clean E2/E3/E4 worktrees were removed after branch/remote verification;
+  commits remain reproducible from the parent repo. Sparsebundle compaction
+  reduced 16GB to 9.5GB and restored macOS free space from 3.1GB to 18GB.
+  Canonical evidence remains; `domainlease-dev` is stopped until next use.

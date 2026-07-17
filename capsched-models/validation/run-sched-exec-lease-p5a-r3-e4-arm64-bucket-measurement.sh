@@ -23,6 +23,8 @@ HOST_ENV_FILE=${HOST_ENV_FILE:-}
 JOBS=${JOBS:-2}
 QEMU_TIMEOUT=${QEMU_TIMEOUT:-7200}
 BUILD_STORAGE_MIN_KIB=${BUILD_STORAGE_MIN_KIB:-16777216}
+POSTPROCESS_ONLY=${POSTPROCESS_ONLY:-0}
+POSTPROCESS_RECOVERY=${POSTPROCESS_RECOVERY:-0}
 IMAGE="$BUILD_OUT/arch/arm64/boot/Image"
 OBJECT="$BUILD_OUT/kernel/sched/exec_lease.o"
 SERIAL="$OUT_DIR/qemu-serial.log"
@@ -50,43 +52,65 @@ for command in awk cmp cp cut df find gcc git grep jq lscpu make mkdir mkfifo \
 	timeout tr uname wc zstd; do
 	command -v "$command" >/dev/null 2>&1 || die "missing command: $command"
 done
-[ -n "$HOST_ENV_FILE" ] && [ -s "$HOST_ENV_FILE" ] \
-	|| die 'host environment record is unavailable'
-case "$BUILD_ROOT" in
-	/var/tmp/linux-cap-builds/p5a-r3-e4-measurement/*) ;;
-	*) die "unsafe or non-internal build root: $BUILD_ROOT" ;;
+case "$POSTPROCESS_ONLY:$POSTPROCESS_RECOVERY" in
+	0:0|1:0|1:1) ;;
+	*) die 'POSTPROCESS_ONLY and POSTPROCESS_RECOVERY must be 0/1, and recovery requires postprocess-only mode' ;;
 esac
+postprocess_only_json=false
+if [ "$POSTPROCESS_ONLY" = 1 ]; then
+	postprocess_only_json=true
+fi
 
-rm -rf "$BUILD_ROOT" "$OUT_DIR"
-mkdir -p "$BUILD_OUT" "$OUT_DIR" "$ARTIFACT_DIR"
-build_storage_type=$(stat -f -c %T "$BUILD_ROOT")
-[ "$build_storage_type" = ext2/ext3 ] \
-	|| die "build root is not internal ext4-compatible storage: $build_storage_type"
-build_storage_available_kib=$(df -Pk "$BUILD_ROOT" | awk 'NR == 2 {print $4}')
-[ "$build_storage_available_kib" -ge "$BUILD_STORAGE_MIN_KIB" ] \
-	|| die "internal build storage below ${BUILD_STORAGE_MIN_KIB}KiB"
-{
-	printf 'build_root=%s\n' "$BUILD_ROOT"
-	printf 'filesystem=%s\n' "$build_storage_type"
-	printf 'available_kib_at_start=%s\n' "$build_storage_available_kib"
-	printf 'shared_host_build_output=false\n'
-	df -Pk "$BUILD_ROOT" "$OUT_DIR"
-} > "$OUT_DIR/build-storage.txt"
+if [ "$POSTPROCESS_ONLY" = 0 ]; then
+	if [ -z "$HOST_ENV_FILE" ] || [ ! -s "$HOST_ENV_FILE" ]; then
+		die 'host environment record is unavailable'
+	fi
+	case "$BUILD_ROOT" in
+		/var/tmp/linux-cap-builds/p5a-r3-e4-measurement/*) ;;
+		*) die "unsafe or non-internal build root: $BUILD_ROOT" ;;
+	esac
+
+	rm -rf "$BUILD_ROOT" "$OUT_DIR"
+	mkdir -p "$BUILD_OUT" "$OUT_DIR" "$ARTIFACT_DIR"
+	build_storage_type=$(stat -f -c %T "$BUILD_ROOT")
+	[ "$build_storage_type" = ext2/ext3 ] \
+		|| die "build root is not internal ext4-compatible storage: $build_storage_type"
+	build_storage_available_kib=$(df -Pk "$BUILD_ROOT" | awk 'NR == 2 {print $4}')
+	[ "$build_storage_available_kib" -ge "$BUILD_STORAGE_MIN_KIB" ] \
+		|| die "internal build storage below ${BUILD_STORAGE_MIN_KIB}KiB"
+	{
+		printf 'build_root=%s\n' "$BUILD_ROOT"
+		printf 'filesystem=%s\n' "$build_storage_type"
+		printf 'available_kib_at_start=%s\n' "$build_storage_available_kib"
+		printf 'shared_host_build_output=false\n'
+		df -Pk "$BUILD_ROOT" "$OUT_DIR"
+	} > "$OUT_DIR/build-storage.txt"
+else
+	[ -d "$OUT_DIR" ] || die "postprocess evidence directory missing: $OUT_DIR"
+	[ -d "$ARTIFACT_DIR" ] || die 'postprocess artifact directory missing'
+fi
 
 progress '3% locking exact source, prerequisite results, and immutable measurement contract'
 [ "$(sha256sum "$SOURCE_GATE" | awk '{print $1}')" = "$SOURCE_GATE_SHA" ] \
 	|| die 'source-gate result hash changed'
 [ "$(sha256sum "$REGRESSION" | awk '{print $1}')" = "$REGRESSION_SHA" ] \
 	|| die 'exact-source regression result hash changed'
-jq -e '
-  .status == "source_and_exact_source_regression_passed_measurement_authorized" and
+jq -e --argjson postprocess_only "$postprocess_only_json" '
+  (
+    ($postprocess_only == false and
+     .status == "source_and_exact_source_regression_passed_measurement_authorized" and
+     .authorization.e4_measurement_may_start == true) or
+    ($postprocess_only == true and
+     .status == "rejected_r3_bucket_measurement" and
+     .authorization.e4_measurement_complete == true and
+     .authorization.e4_measurement_may_start == false)
+  ) and
   .source.candidate_commit == "f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1" and
   .matrix.one_projection_cells == 32 and .matrix.hotplug_cells == 5 and
   .matrix.fanout_cells == 5 and .matrix.total_cells == 42 and
   .matrix.warmup_pairs_per_cell == 256 and
   .matrix.measured_pairs_per_cell == 10000 and
   .matrix.normalized_base_slice_ns == 700000 and
-  .authorization.e4_measurement_may_start == true and
   .authorization.e4_measurement_accepted == false
 ' "$CONTRACT" >/dev/null
 jq -e '
@@ -106,19 +130,34 @@ jq -e '
   .internal_ext4_build_storage_verified == true and
   .e4_measurement_may_start == true and .e4_measurement_accepted == false
 ' "$REGRESSION" >/dev/null
-[ "$(git -C "$E4_DIR" rev-parse HEAD)" = "$E4_COMMIT" ] \
-	|| die 'E4 commit moved'
-[ "$(git -C "$E4_DIR" rev-parse 'HEAD^{tree}')" = "$E4_TREE" ] \
+if git -C "$E4_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+	source_repo="$E4_DIR"
+	source_ref=HEAD
+	[ "$(git -C "$source_repo" rev-parse HEAD)" = "$E4_COMMIT" ] \
+		|| die 'E4 worktree commit moved'
+elif [ "$POSTPROCESS_ONLY" = 1 ]; then
+	source_repo="$WORKSPACE_DIR/linux"
+	source_ref="$E4_COMMIT"
+	git -C "$source_repo" cat-file -e "$E4_COMMIT^{commit}" \
+		|| die 'preserved E4 commit object is unavailable'
+else
+	die "E4 measurement worktree is unavailable: $E4_DIR"
+fi
+[ "$(git -C "$source_repo" rev-parse "$source_ref^{tree}")" = "$E4_TREE" ] \
 	|| die 'E4 tree moved'
-[ "$(git -C "$E4_DIR" rev-parse HEAD^)" = "$E3_COMMIT" ] \
+[ "$(git -C "$source_repo" rev-parse "$source_ref^")" = "$E3_COMMIT" ] \
 	|| die 'E4 parent moved'
 [ "$(git -C "$WORKSPACE_DIR/linux" rev-parse HEAD)" = "$PRIMARY_COMMIT" ] \
 	|| die 'primary Linux moved'
-git -C "$E4_DIR" diff --quiet HEAD -- init/Kconfig kernel/sched/exec_lease.c \
-	include/linux/sched.h include/linux/sched_exec_lease.h kernel/sched/Makefile \
-	kernel/sched/sched.h kernel/sched/fair.c kernel/sched/core.c \
-	|| die 'E4 source boundary is dirty'
+if [ "$source_ref" = HEAD ]; then
+	git -C "$source_repo" diff --quiet HEAD -- init/Kconfig \
+		kernel/sched/exec_lease.c include/linux/sched.h \
+		include/linux/sched_exec_lease.h kernel/sched/Makefile \
+		kernel/sched/sched.h kernel/sched/fair.c kernel/sched/core.c \
+		|| die 'E4 source boundary is dirty'
+fi
 
+if [ "$POSTPROCESS_ONLY" = 0 ]; then
 cp "$HOST_ENV_FILE" "$OUT_DIR/host-environment.txt"
 uname -a > "$OUT_DIR/container-uname.txt"
 lscpu > "$OUT_DIR/container-lscpu.txt"
@@ -131,6 +170,10 @@ if [ -d /sys/devices/system/cpu/cpufreq ]; then
 		> "$OUT_DIR/container-frequency-governor.txt" 2>/dev/null || true
 else
 	printf '%s\n' 'unavailable in Apple Container machine' \
+		> "$OUT_DIR/container-frequency-governor.txt"
+fi
+if [ ! -s "$OUT_DIR/container-frequency-governor.txt" ]; then
+	printf '%s\n' 'unavailable: no cpufreq governor or frequency files exposed' \
 		> "$OUT_DIR/container-frequency-governor.txt"
 fi
 
@@ -277,6 +320,113 @@ rm -rf "$BUILD_OUT"
 printf 'successful_or_failed_qemu_build_output_pruned=true\n' \
 	>> "$ARTIFACT_DIR/manifest.txt"
 [ "$qemu_rc" = 0 ] || die "QEMU measurement did not power off cleanly: $qemu_rc"
+else
+	progress '95% resuming deterministic postprocessing from preserved QEMU evidence'
+	for required_file in \
+		"$SERIAL" "$OUT_DIR/qemu-exit-code.txt" "$OUT_DIR/arm64.config" \
+		"$OUT_DIR/host-environment.txt" "$OUT_DIR/container-uname.txt" \
+		"$OUT_DIR/compiler.txt" "$OUT_DIR/qemu-version.txt" \
+		"$OUT_DIR/warning-config.txt" "$OUT_DIR/mitigation-config.txt" \
+		"$OUT_DIR/build.log" "$OUT_DIR/build-storage.txt" \
+		"$OUT_DIR/exec-lease-nm.txt" "$OUT_DIR/exec-lease-strings.txt" \
+		"$OUT_DIR/qemu-command.txt" "$ARTIFACT_DIR/manifest.txt" \
+		"$ARTIFACT_DIR/Image.zst" "$ARTIFACT_DIR/exec_lease.o.zst"; do
+		[ -s "$required_file" ] || die "preserved postprocess input missing or empty: $required_file"
+	done
+	[ -e "$OUT_DIR/container-frequency-governor.txt" ] \
+		|| die 'preserved frequency/governor availability record is missing'
+	qemu_rc=$(sed -n '1p' "$OUT_DIR/qemu-exit-code.txt")
+	[ "$qemu_rc" = 0 ] || die "preserved QEMU exit code is not clean: $qemu_rc"
+	grep -Fxq 'filesystem=ext2/ext3' "$OUT_DIR/build-storage.txt" \
+		|| die 'preserved build did not use internal ext4-compatible storage'
+	grep -Fxq 'shared_host_build_output=false' "$OUT_DIR/build-storage.txt" \
+		|| die 'preserved build-storage record permits shared-host output'
+	! grep -Eq ':[0-9]+(:[0-9]+)?: warning:' "$OUT_DIR/build.log" \
+		|| die 'preserved build log contains a compiler warning'
+	grep -q 'sched_exec_bucket_measure_test_suite' "$OUT_DIR/exec-lease-nm.txt" \
+		|| die 'preserved object symbol record lacks the measurement suite'
+	grep -qx 'sched_exec_lease_bucket_measure' "$OUT_DIR/exec-lease-strings.txt" \
+		|| die 'preserved object string record lacks the measurement suite'
+	for required_config in \
+		CONFIG_SCHED_EXEC_LEASE_BUCKET_KUNIT_TEST=y \
+		CONFIG_SCHED_EXEC_LEASE_BUCKET_MEASURE_KUNIT_TEST=y \
+		CONFIG_KUNIT=y CONFIG_KUNIT_AUTORUN_ENABLED=y \
+		'CONFIG_KUNIT_DEFAULT_FILTER_GLOB="sched_exec_lease_bucket_measure"' \
+		CONFIG_PROVE_LOCKING=y CONFIG_DEBUG_OBJECTS_WORK=y CONFIG_PROVE_RCU=y \
+		CONFIG_FTRACE=y CONFIG_IRQSOFF_TRACER=y; do
+		grep -Fxq "$required_config" "$OUT_DIR/arm64.config" \
+			|| die "preserved measurement config missing: $required_config"
+	done
+	grep -Fxq '# CONFIG_KUNIT_ALL_TESTS is not set' "$OUT_DIR/arm64.config" \
+		|| die 'preserved measurement config enabled KUNIT_ALL_TESTS'
+
+	manifest="$ARTIFACT_DIR/manifest.txt"
+	awk -F= '
+	BEGIN {
+	  required="build_storage_filesystem image_source_sha256 image_archive_sha256 image_restored_sha256 object_source_sha256 object_archive_sha256 object_restored_sha256 compression successful_or_failed_qemu_build_output_pruned";
+	}
+	NF != 2 || $1 == "" || $2 == "" || seen[$1]++ {exit 2}
+	{value[$1]=$2}
+	END {
+	  if (NR != 9) exit 3;
+	  n=split(required,key," ");
+	  for (i=1;i<=n;i++) if (!(key[i] in value)) exit 4;
+	}
+	' "$manifest" || die 'preserved artifact manifest is malformed or incomplete'
+	manifest_value()
+	{
+		awk -F= -v key="$1" '$1 == key {print $2}' "$manifest"
+	}
+	build_storage_type=$(manifest_value build_storage_filesystem)
+	image_sha=$(manifest_value image_source_sha256)
+	image_archive_sha=$(manifest_value image_archive_sha256)
+	image_restored_sha=$(manifest_value image_restored_sha256)
+	object_sha=$(manifest_value object_source_sha256)
+	object_archive_sha=$(manifest_value object_archive_sha256)
+	object_restored_sha=$(manifest_value object_restored_sha256)
+	[ "$build_storage_type" = ext2/ext3 ] \
+		|| die 'preserved artifact manifest storage type changed'
+	[ "$(manifest_value compression)" = zstd-level-9-lossless ] \
+		|| die 'preserved artifact manifest compression changed'
+	[ "$(manifest_value successful_or_failed_qemu_build_output_pruned)" = true ] \
+		|| die 'preserved build output was not recorded as pruned'
+	for digest in "$image_sha" "$image_archive_sha" "$image_restored_sha" \
+		"$object_sha" "$object_archive_sha" "$object_restored_sha"; do
+		printf '%s\n' "$digest" | grep -Eq '^[0-9a-f]{64}$' \
+			|| die "invalid preserved artifact digest: $digest"
+	done
+	image_archive="$ARTIFACT_DIR/Image.zst"
+	object_archive="$ARTIFACT_DIR/exec_lease.o.zst"
+	zstd -q -t "$image_archive"
+	zstd -q -t "$object_archive"
+	[ "$(sha256sum "$image_archive" | awk '{print $1}')" = "$image_archive_sha" ] \
+		|| die 'preserved Image archive hash mismatch'
+	[ "$(sha256sum "$object_archive" | awk '{print $1}')" = "$object_archive_sha" ] \
+		|| die 'preserved object archive hash mismatch'
+	[ "$(zstd -q -dc "$image_archive" | sha256sum | awk '{print $1}')" = "$image_sha" ] \
+		|| die 'preserved Image restore hash mismatch'
+	[ "$(zstd -q -dc "$object_archive" | sha256sum | awk '{print $1}')" = "$object_sha" ] \
+		|| die 'preserved object restore hash mismatch'
+	[ "$image_sha" = "$image_restored_sha" ] \
+		|| die 'preserved Image manifest restore hash mismatch'
+	[ "$object_sha" = "$object_restored_sha" ] \
+		|| die 'preserved object manifest restore hash mismatch'
+fi
+
+frequency_governor_source_empty=false
+frequency_governor_available=true
+if [ ! -s "$OUT_DIR/container-frequency-governor.txt" ]; then
+	frequency_governor_source_empty=true
+	frequency_governor_available=false
+elif grep -Eq '^unavailable([ :]|$)' "$OUT_DIR/container-frequency-governor.txt"; then
+	frequency_governor_available=false
+fi
+{
+	printf 'availability_recorded=true\n'
+	printf 'available=%s\n' "$frequency_governor_available"
+	printf 'source_record_empty=%s\n' "$frequency_governor_source_empty"
+	printf 'context=Apple Container guest running QEMU TCG\n'
+} > "$OUT_DIR/frequency-governor-availability.txt"
 
 progress '96% validating KTAP, exact cells, statistics, warnings, and fixed gates'
 tr -d '\r' < "$SERIAL" | sed -E 's/^\[[^]]+\][[:space:]]*//' > "$KTAP"
@@ -298,56 +448,63 @@ grep -F 'E4_RESULT ' "$KTAP" | sed 's/^.*E4_RESULT /E4_RESULT /' > "$ROWS_RAW"
 [ "$(wc -l < "$ROWS_RAW" | tr -d ' ')" = 42 ] \
 	|| die 'E4 result row count mismatch'
 awk '
+function fail(code) { parser_status=code; exit code }
 BEGIN {
   OFS="\t";
   metrics="control_min control_p50 control_p95 control_p99 control_p999 control_max treatment_min treatment_p50 treatment_p95 treatment_p99 treatment_p999 treatment_max additional_min additional_p50 additional_p95 additional_p99 additional_p999 additional_max";
   print "family","key","occupancy","inner","generation","active_rqs","samples","control_min","control_p50","control_p95","control_p99","control_p999","control_max","treatment_min","treatment_p50","treatment_p95","treatment_p99","treatment_p999","treatment_max","additional_min","additional_p50","additional_p95","additional_p99","additional_p999","additional_max","gate","recomputed_gate";
 }
 {
-  if ($1 != "E4_RESULT") exit 2;
-  delete value; delete seen;
+  if ($1 != "E4_RESULT") fail(2);
+  delete value; delete seen; delete number;
   for (i = 2; i <= NF; i++) {
     at = index($i, "=");
-    if (!at) exit 3;
+    if (!at) fail(3);
     key = substr($i, 1, at - 1); val = substr($i, at + 1);
-    if (key == "" || val == "" || seen[key]++) exit 4;
+    if (key == "" || val == "" || seen[key]++) fail(4);
     value[key] = val;
   }
-  if (!("family" in value) || !("samples" in value) || !("gate" in value)) exit 5;
-  if (value["samples"] != "10000" || value["gate"] !~ /^(pass|reject)$/) exit 6;
+  if (!("family" in value) || !("samples" in value) || !("gate" in value)) fail(5);
+  if (value["samples"] != "10000" || value["gate"] !~ /^(pass|reject)$/) fail(6);
   n = split(metrics, required, " ");
-  for (i = 1; i <= n; i++)
-    if (!(required[i] in value) || value[required[i]] !~ /^[0-9]+$/) exit 7;
-  if (!(value["control_min"] <= value["control_p50"] && value["control_p50"] <= value["control_p95"] && value["control_p95"] <= value["control_p99"] && value["control_p99"] <= value["control_p999"] && value["control_p999"] <= value["control_max"])) exit 8;
-  if (!(value["treatment_min"] <= value["treatment_p50"] && value["treatment_p50"] <= value["treatment_p95"] && value["treatment_p95"] <= value["treatment_p99"] && value["treatment_p99"] <= value["treatment_p999"] && value["treatment_p999"] <= value["treatment_max"])) exit 9;
-  if (!(value["additional_min"] <= value["additional_p50"] && value["additional_p50"] <= value["additional_p95"] && value["additional_p95"] <= value["additional_p99"] && value["additional_p99"] <= value["additional_p999"] && value["additional_p999"] <= value["additional_max"])) exit 10;
+  for (i = 1; i <= n; i++) {
+    if (!(required[i] in value) || value[required[i]] !~ /^[0-9]+$/) fail(7);
+    number[required[i]] = value[required[i]] + 0;
+  }
+  if (!(number["control_min"] <= number["control_p50"] && number["control_p50"] <= number["control_p95"] && number["control_p95"] <= number["control_p99"] && number["control_p99"] <= number["control_p999"] && number["control_p999"] <= number["control_max"])) fail(8);
+  if (!(number["treatment_min"] <= number["treatment_p50"] && number["treatment_p50"] <= number["treatment_p95"] && number["treatment_p95"] <= number["treatment_p99"] && number["treatment_p99"] <= number["treatment_p999"] && number["treatment_p999"] <= number["treatment_max"])) fail(9);
+  if (!(number["additional_min"] <= number["additional_p50"] && number["additional_p50"] <= number["additional_p95"] && number["additional_p95"] <= number["additional_p99"] && number["additional_p99"] <= number["additional_p999"] && number["additional_p999"] <= number["additional_max"])) fail(10);
   occupancy=inner=generation=active="-";
   if (value["family"] == "one_projection") {
-    if (value["occupancy"] !~ /^(1|8|32|64)$/ || value["inner"] !~ /^(0|1|64|4096)$/ || value["generation"] !~ /^(stable|raced)$/) exit 11;
+    if (value["occupancy"] !~ /^(1|8|32|64)$/ || value["inner"] !~ /^(0|1|64|4096)$/ || value["generation"] !~ /^(stable|raced)$/) fail(11);
     occupancy=value["occupancy"]; inner=value["inner"]; generation=value["generation"];
     cell="one_projection:" occupancy ":" inner ":" generation;
-    rejected=(value["additional_p99"] > 5000 || value["additional_p999"] > 25000 || value["additional_max"] > 50000 || value["additional_max"] >= 700000);
+    rejected=(number["additional_p99"] > 5000 || number["additional_p999"] > 25000 || number["additional_max"] > 50000 || number["additional_max"] >= 700000);
     family_count["one_projection"]++;
   } else if (value["family"] == "hotplug") {
-    if (value["occupancy"] !~ /^(0|1|8|32|64)$/) exit 12;
+    if (value["occupancy"] !~ /^(0|1|8|32|64)$/) fail(12);
     occupancy=value["occupancy"]; cell="hotplug:" occupancy;
-    rejected=(value["additional_p99"] > 25000 || value["additional_max"] > 50000 || value["additional_max"] >= 700000);
+    rejected=(number["additional_p99"] > 25000 || number["additional_max"] > 50000 || number["additional_max"] >= 700000);
     family_count["hotplug"]++;
   } else if (value["family"] == "fanout") {
-    if (value["active_rqs"] !~ /^(1|2|8|32|64)$/) exit 13;
+    if (value["active_rqs"] !~ /^(1|2|8|32|64)$/) fail(13);
     active=value["active_rqs"]; cell="fanout:" active;
-    rejected=(value["treatment_p99"] > 10000000 || value["treatment_max"] > 100000000);
+    rejected=(number["treatment_p99"] > 10000000 || number["treatment_max"] > 100000000);
     family_count["fanout"]++;
-  } else exit 14;
-  if (cell_seen[cell]++) exit 15;
+  } else fail(14);
+  if (cell_seen[cell]++) fail(15);
   recomputed=rejected ? "reject" : "pass";
-  if (value["gate"] != recomputed) exit 16;
+  if (value["gate"] != recomputed) fail(16);
   print value["family"],cell,occupancy,inner,generation,active,value["samples"],value["control_min"],value["control_p50"],value["control_p95"],value["control_p99"],value["control_p999"],value["control_max"],value["treatment_min"],value["treatment_p50"],value["treatment_p95"],value["treatment_p99"],value["treatment_p999"],value["treatment_max"],value["additional_min"],value["additional_p50"],value["additional_p95"],value["additional_p99"],value["additional_p999"],value["additional_max"],value["gate"],recomputed;
 }
 END {
+  if (parser_status) exit parser_status;
   if (NR != 42 || family_count["one_projection"] != 32 || family_count["hotplug"] != 5 || family_count["fanout"] != 5) exit 17;
 }
-' "$ROWS_RAW" > "$TABLE" || die 'malformed, incomplete, or self-inconsistent E4 rows'
+' "$ROWS_RAW" > "$TABLE" || {
+	parser_rc=$?
+	die "malformed, incomplete, or self-inconsistent E4 rows (parser exit $parser_rc)"
+}
 
 {
 	for occupancy in 1 8 32 64; do
@@ -390,17 +547,17 @@ cmp "$OUT_DIR/e4-summaries.tsv" "$OUT_DIR/derived-summaries.tsv" >/dev/null \
 printf 'family\tkey\treason\tobserved_ns\tlimit_ns\n' > "$FAILURES"
 awk -F '\t' 'BEGIN{OFS="\t"} NR>1 {
   if ($1=="one_projection") {
-    if ($23>5000) print $1,$2,"additional_p99",$23,5000;
-    if ($24>25000) print $1,$2,"additional_p999",$24,25000;
-    if ($25>50000) print $1,$2,"additional_max",$25,50000;
-    if ($25>=700000) print $1,$2,"additional_reached_base_slice",$25,699999;
+    if (($23+0)>5000) print $1,$2,"additional_p99",$23,5000;
+    if (($24+0)>25000) print $1,$2,"additional_p999",$24,25000;
+    if (($25+0)>50000) print $1,$2,"additional_max",$25,50000;
+    if (($25+0)>=700000) print $1,$2,"additional_reached_base_slice",$25,699999;
   } else if ($1=="hotplug") {
-    if ($23>25000) print $1,$2,"additional_p99",$23,25000;
-    if ($25>50000) print $1,$2,"additional_max",$25,50000;
-    if ($25>=700000) print $1,$2,"additional_reached_base_slice",$25,699999;
+    if (($23+0)>25000) print $1,$2,"additional_p99",$23,25000;
+    if (($25+0)>50000) print $1,$2,"additional_max",$25,50000;
+    if (($25+0)>=700000) print $1,$2,"additional_reached_base_slice",$25,699999;
   } else if ($1=="fanout") {
-    if ($17>10000000) print $1,$2,"treatment_p99",$17,10000000;
-    if ($19>100000000) print $1,$2,"treatment_max",$19,100000000;
+    if (($17+0)>10000000) print $1,$2,"treatment_p99",$17,10000000;
+    if (($19+0)>100000000) print $1,$2,"treatment_max",$19,100000000;
   }
 }' "$TABLE" >> "$FAILURES"
 threshold_breaches=$(($(wc -l < "$FAILURES") - 1))
@@ -446,10 +603,22 @@ ktap_sha=$(sha256sum "$KTAP" | awk '{print $1}')
 table_sha=$(sha256sum "$TABLE" | awk '{print $1}')
 host_env_sha=$(sha256sum "$OUT_DIR/host-environment.txt" | awk '{print $1}')
 warning_config_sha=$(sha256sum "$OUT_DIR/warning-config.txt" | awk '{print $1}')
+frequency_governor_source_sha=$(sha256sum "$OUT_DIR/container-frequency-governor.txt" | awk '{print $1}')
+frequency_governor_availability_sha=$(sha256sum "$OUT_DIR/frequency-governor-availability.txt" | awk '{print $1}')
 compiler=$(sed -n '1p' "$OUT_DIR/compiler.txt")
 qemu_version=$(sed -n '1p' "$OUT_DIR/qemu-version.txt")
 container_uname=$(sed -n '1p' "$OUT_DIR/container-uname.txt")
 clocksource_detail=$(grep -Ei 'clocksource|arch_sys_counter' "$SERIAL" | tail -n 1 || true)
+postprocess_recovery_json=false
+if [ "$POSTPROCESS_RECOVERY" = 1 ]; then
+	postprocess_recovery_json=true
+	printf '%s\n' \
+		'build_reused=true' \
+		'qemu_evidence_reused=true' \
+		'raw_inputs_modified=false' \
+		'reason=post-QEMU parser defect fixed after complete clean measurement' \
+		> "$OUT_DIR/postprocess-recovery.txt"
+fi
 
 jq -n \
 	--arg run_id "$RUN_ID" --arg status "$classification" \
@@ -460,9 +629,15 @@ jq -n \
 	--arg object_archive_sha "$object_archive_sha" --arg serial_sha "$serial_sha" \
 	--arg ktap_sha "$ktap_sha" --arg table_sha "$table_sha" \
 	--arg host_env_sha "$host_env_sha" --arg warning_config_sha "$warning_config_sha" \
+	--arg frequency_governor_source_sha "$frequency_governor_source_sha" \
+	--arg frequency_governor_availability_sha "$frequency_governor_availability_sha" \
 	--argjson qemu_rc "$qemu_rc" --argjson threshold_breaches "$threshold_breaches" \
 	--argjson rejected_cells "$rejected_cells" --argjson warning_count "$warning_count" \
 	--argjson x86_may_start "$x86_may_start" \
+	--argjson postprocess_only "$postprocess_only_json" \
+	--argjson postprocess_recovery "$postprocess_recovery_json" \
+	--argjson frequency_governor_available "$frequency_governor_available" \
+	--argjson frequency_governor_source_empty "$frequency_governor_source_empty" \
 	--argjson lockdep "$lockdep_warnings" --argjson irqsoff "$irqsoff_warnings" \
 	--argjson rcu "$rcu_warnings" --argjson workqueue "$workqueue_warnings" \
 	--argjson kasan "$kasan_warnings" --argjson kcsan "$kcsan_warnings" \
@@ -481,11 +656,12 @@ jq -n \
   source_parent:"be9339363a99fb31a5b7d03f3d70430d64a45593",
   source_gate_sha256:"8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c",
   exact_source_e3_regression_sha256:"3d02a2b6c52a856e6bde5417665bfc41e1fa547c774f9274f1f85d53167b5707",
+  evidence_processing:{postprocess_only:$postprocess_only,postprocess_recovery:$postprocess_recovery,build_reused:$postprocess_recovery,qemu_evidence_reused:$postprocess_recovery,raw_inputs_modified:false},
   matrix:{one_projection_cells:32,hotplug_cells:5,fanout_cells:5,total_cells:42,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,result_rows:($rows[0]|length)},
   gates_ns:{one_projection:{additional_p99:5000,additional_p999:25000,additional_max:50000},hotplug:{additional_p99:25000,additional_max:50000},fanout:{absolute_treatment_p99:10000000,absolute_treatment_max:100000000},normalized_base_slice:700000},
   measurement_rows:$rows[0],threshold_failures:$failures[0],threshold_breach_count:$threshold_breaches,rejected_cell_count:$rejected_cells,
   warnings:{evidence_available:true,configuration_sha256:$warning_config_sha,lockdep:$lockdep,irqsoff:$irqsoff,rcu_stall:$rcu,workqueue:$workqueue,kasan:$kasan,kcsan:$kcsan,warning:$warning,bug:$bug,soft_lockup:$softlockup,hard_lockup:$hardlockup,total:$warning_count},
-  environment:{outer_host_record_sha256:$host_env_sha,outer_virtualization:"Apple Container machine domainlease-dev",container_uname:$container_uname,compiler:$compiler,qemu_version:$qemu_version,qemu_accelerator:"tcg,thread=multi",qemu_machine:"virt,gic-version=3",qemu_cpu:"cortex-a57",qemu_vcpus:64,qemu_memory_mib:4096,qemu_network_disabled:true,sample_clock:"local_clock",clocksource_detail:$clocksource_detail,frequency_governor_recorded:true,mitigation_config_recorded:true,virtualized_result_supports_bare_metal_claim:false},
+  environment:{outer_host_record_sha256:$host_env_sha,outer_virtualization:"Apple Container machine domainlease-dev",container_uname:$container_uname,compiler:$compiler,qemu_version:$qemu_version,qemu_accelerator:"tcg,thread=multi",qemu_machine:"virt,gic-version=3",qemu_cpu:"cortex-a57",qemu_vcpus:64,qemu_memory_mib:4096,qemu_network_disabled:true,sample_clock:"local_clock",clocksource_detail:$clocksource_detail,frequency_governor_availability_recorded:true,frequency_governor_available:$frequency_governor_available,frequency_governor_source_record_empty:$frequency_governor_source_empty,frequency_governor_source_sha256:$frequency_governor_source_sha,frequency_governor_availability_sha256:$frequency_governor_availability_sha,mitigation_config_recorded:true,virtualized_result_supports_bare_metal_claim:false},
   artifacts:{config_sha256:$config_sha,image:{archive:"boot-artifacts/arm64/Image.zst",source_sha256:$image_sha,archive_sha256:$image_archive_sha,restore_verified:true},exec_lease_object:{archive:"boot-artifacts/arm64/exec_lease.o.zst",source_sha256:$object_sha,archive_sha256:$object_archive_sha,restore_verified:true},serial_sha256:$serial_sha,normalized_ktap_sha256:$ktap_sha,measurement_table_sha256:$table_sha,build_output_pruned:true},
   qemu_exit_code:$qemu_rc,
   kunit:{suite:"sched_exec_lease_bucket_measure",suite_passed:true,case_count:3,failed_cases:0,skipped_required_cases:0},

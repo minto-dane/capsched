@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement-rejection-v1",
+  "date": "2026-07-16",
+  "status": "rejected_r3_bucket_measurement",
+  "source": {
+    "parent_commit": "be9339363a99fb31a5b7d03f3d70430d64a45593",
+    "candidate_commit": "f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1",
+    "candidate_tree": "61541cb0c8aedef941e534c73effdea1f6b3d938",
+    "source_gate_sha256": "8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c",
+    "exact_source_e3_regression_sha256": "3d02a2b6c52a856e6bde5417665bfc41e1fa547c774f9274f1f85d53167b5707"
+  },
+  "measurement": {
+    "architecture": "arm64",
+    "run_id": "20260716T-p5a-r3-e4-arm64-measurement-r1",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e4-bucket-measurement/20260716T-p5a-r3-e4-arm64-measurement-r1/result.json",
+    "result_sha256": "edba124b804beeaa7a2d723027fa3a6345f2d546fb0ab861428c6a4727b5cb7b",
+    "result_rows": 42,
+    "required_rows": 42,
+    "warmup_pairs_per_cell": 256,
+    "measured_pairs_per_cell": 10000,
+    "qemu_exit_code": 0,
+    "kunit_cases_passed": 3,
+    "kunit_cases_required": 3,
+    "failed_cases": 0,
+    "skipped_required_cases": 0,
+    "warning_count": 0,
+    "architecture_measurement_valid": true,
+    "virtualized_result_supports_bare_metal_claim": false
+  },
+  "postprocess_recovery": {
+    "original_failure_phase": "after_clean_qemu_exit_before_result_generation",
+    "defect": "awk_substr_numeric_strings_compared_lexically",
+    "original_parser_exit": 8,
+    "masked_parser_exit": 17,
+    "explicit_numeric_coercion_added": true,
+    "first_parser_failure_preserved": true,
+    "postprocess_only_mode_added": true,
+    "build_reused": true,
+    "qemu_evidence_reused": true,
+    "raw_inputs_modified": false,
+    "artifact_restore_hashes_reverified": true,
+    "deterministic_replays": 2,
+    "deterministic_result_sha256": true,
+    "postprocess_without_disposable_worktree_verified": true,
+    "source_commit_verified_from_parent_repository": true,
+    "frequency_governor_availability_recorded": true,
+    "frequency_governor_available": false,
+    "frequency_governor_source_record_empty": true,
+    "frequency_governor_source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frequency_governor_availability_sha256": "5f20489aa6a97eeb0144f9755e8f22d204c9fb958ce1d4a024754c4f46a71df1"
+  },
+  "gate": {
+    "rejected_cells": 19,
+    "total_cells": 42,
+    "threshold_breaches": 26,
+    "additional_max_breaches": 15,
+    "additional_base_slice_breaches": 5,
+    "fanout_treatment_p99_breaches": 4,
+    "fanout_treatment_max_breaches": 2,
+    "families": {
+      "one_projection": {
+        "rejected_cells": 12,
+        "total_cells": 32,
+        "threshold_breaches": 16,
+        "worst_additional_p99_ns": 784,
+        "worst_additional_p999_ns": 13696,
+        "worst_additional_max_ns": 849584
+      },
+      "hotplug": {
+        "rejected_cells": 3,
+        "total_cells": 5,
+        "threshold_breaches": 4,
+        "worst_additional_max_ns": 1277904
+      },
+      "fanout": {
+        "rejected_cells": 4,
+        "total_cells": 5,
+        "threshold_breaches": 6,
+        "first_rejected_active_rqs": 2,
+        "active_rqs_64_treatment_p99_ns": 494241840,
+        "active_rqs_64_treatment_max_ns": 1660608240
+      }
+    }
+  },
+  "artifacts": {
+    "image_source_sha256": "59813a8f2b9421ccea631966d9c16696876f0f73c1f337ff6771cf4904e15847",
+    "image_archive_sha256": "b5d63b415dd40025793c20ddb55dec6ab1109cdadc75b72ab2360e72f639c9cb",
+    "object_source_sha256": "4a8a3fb99ecb9167cbb48e93406ecca03f08c374709094ec30a376823fb49636",
+    "object_archive_sha256": "9e69fc603f5f2ad3af118d3df1804ef5b571d10c1f2b33a14b0ffe3bdbec0cff",
+    "serial_sha256": "0a92b0c19aab6c8507864050594409e92863aa717f1fe2049129566684b7c35b",
+    "normalized_ktap_sha256": "08ddddec8c34449a060de9453650a3a5e436d9c4110767ff1b393b51cdabacaa",
+    "measurement_table_sha256": "9fe89e77b2c6b9008fe7a93bf8e83d1638de19cc4b60dd7fa2a8e37d3223acc6",
+    "configuration_sha256": "9015e7cdd2ccc97e5fba3380c85002a6105884c6cea40d7d9be238aff7aa65f5",
+    "build_output_pruned": true
+  },
+  "successor_boundary": {
+    "r3_approved": false,
+    "r3_rejected": true,
+    "generation_mismatch_may_remain_untrusted_fence": true,
+    "synchronous_fanout_completion_may_be_publication_authority": false,
+    "asynchronous_fanout_requires_separate_gate": true,
+    "bounded_recovery_proof_required": true,
+    "picker_unbounded_repair_forbidden": true,
+    "new_source_authorized": false
+  },
+  "decision": {
+    "e4_measurement_complete": true,
+    "threshold_failure_is_valid_negative_evidence": true,
+    "x86_64_measurement_may_start": false,
+    "e4_measurement_accepted": false,
+    "e5_plan_may_start": false,
+    "e5_source_may_start": false,
+    "production_layout_accepted": false,
+    "hot_field_approved": false,
+    "primary_linux_change_approved": false,
+    "patch_queue_change_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "production_protection": false,
+    "bare_metal_latency_claim": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}
