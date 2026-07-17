@@ -167,9 +167,29 @@ VM-internal ext4 scratch. The detached launcher repeats every identity,
 cleanliness, absence, VM, and storage gate before starting job
 `p5a-r4-e3-six-boot-r2`.
 
+## N-135 Attempt 2 Evidence-Runner Rejection
+
+Run `20260717T-p5a-r4-e3-six-boot-r2` built and booted the first arm64
+standard-debug configuration. QEMU exited zero and the suite produced 36/36
+passes, zero failures/skips, 36 receipts, and no specified warning. The
+evidence runner nevertheless failed before sealing the boot because it
+treated JSONL loaded with jq `--slurpfile` as a nested array. The invalid
+`$receipts[0][]` traversal yielded scalar values and failed on `.fault_site`.
+Validation/0251 freezes the failure and gives this boot no credit; no result
+JSON was sealed and the remaining five configurations did not start.
+
+Corrected runner SHA-256
+`0fd64ef6aa75330b18a87934fde4ad32978ff077ef9189891bb6ae45920ddb06`
+uses `$receipts[]`, requires the exact three non-`none` fault records with
+object/string type checks, runs a synthetic JSONL serializer self-test before
+any build, and binds the attempt-2 rejection record. A noncanonical
+pre-commit regression smoke passed the self-test and all six configurations
+with zero builds/boots. A fresh post-commit configuration smoke remains
+required before a complete r3 retry may launch.
+
 ## Non-Claims
 
-The committed correction does not accept R4-E3 source correctness,
+The committed source correction and evidence-runner correction do not accept R4-E3 source correctness,
 concurrency correctness, runtime behavior, denial correctness, the six-boot
 diagnostic matrix, primary/patch promotion, bounded latency, performance,
 monitor enforcement, production protection, deployment, multi-node,

@@ -256,6 +256,7 @@ Updated: 2026-07-17
 | 0248 | Attempt 1 built and booted arm64 cleanly but rejected the suite at 34/36; two deterministic KUnit-harness defects are fixed in a new direct-E2 child that must repeat source gate and closure before all six boots | SchedExecLease P5A-R4 E3 Six-Boot Attempt 1 Rejection |
 | 0249 | Corrected candidate passed eight fresh arm64/x86_64 modes; two independent read-only 105-artifact closures validate exactly two cleanly recovered clock-skew retries and authorize only a complete six-boot retry | SchedExecLease P5A-R4 E3 Corrected Source-Gate Closure |
 | 0250 | Corrected runner locks source gate, dual closures, and the prior rejection; all six configs resolve with zero builds/boots; lossless compaction plus proven orphan-Git-temporary cleanup restores 53,436,640 KiB host free and the exact r2 preflight passes | SchedExecLease P5A-R4 E3 Corrected Six-Boot Retry Readiness |
+| 0251 | Attempt 2 built and booted arm64 with QEMU 0 and 36/36 KUnit cases, but rejects all credit because a JSONL `--slurpfile` traversal failed before sealing; corrected replay proves the exact three fault receipts and requires a pre-build serializer self-test plus a fresh full retry | SchedExecLease P5A-R4 E3 Six-Boot Attempt 2 Rejection |
 
 ## Principles
 

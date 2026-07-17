@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r4-e3-six-boot-attempt-2-rejection-v1",
+  "date": "2026-07-17",
+  "status": "rejected_before_boot_seal_due_to_receipt_ledger_serializer_type_error",
+  "run": {
+    "run_id": "20260717T-p5a-r4-e3-six-boot-r2",
+    "job_name": "p5a-r4-e3-six-boot-r2",
+    "started_at": "2026-07-17T16:18:31Z",
+    "finished_at": "2026-07-17T17:03:03Z",
+    "runner_exit_code": 5,
+    "runner_sha256": "184d8a0f898466474f1dc11fae7b4fa6f90b33decce78549f76173201e4d2964",
+    "job_log_sha256": "37dee6c25252f0f9a51f5855eca8274fb29b11a51bf7ec95617f0af6e95514cb"
+  },
+  "locked_inputs": {
+    "candidate_commit": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "candidate_parent": "a429fc30252ac6af94c51d96cd4ac24e72d9f83b",
+    "candidate_tree": "58c6510c6f517004e37107786d006bb8333b79b8",
+    "candidate_diff_sha256": "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08",
+    "plan_sha256": "f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677",
+    "source_gate_result_sha256": "f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24",
+    "source_gate_closure_result_sha256": [
+      "f6763fbb940c42d67390cae46c20e148f86020a3c2af4431e12562c198fcf613",
+      "92e9918d0c04147a9b78c66744081cf165564458204a18c43501d82617318e6e"
+    ]
+  },
+  "arm64_standard_debug": {
+    "config_sha256": "4e9ae559b9de405119794a3cce84324170986c556e77064a58138db2ad361fd2",
+    "config_matches_corrected_smoke": true,
+    "build_log_sha256": "9795ebf26f68b6e3f4b8013f80e24aa633a902161683651721b4df4cf84c9a8b",
+    "qemu_command_sha256": "d14ca8dcefc15a1a0f952b72880e46ef9c548328559f75654cfb4016ab2a4021",
+    "console_sha256": "4e270dd844621d094f2cd73792a7e6bfa4bee9f570b7878d3859b9a47d41adbb",
+    "ktap_sha256": "962ed6ed95158df96196ae1837c85cb3874defa08fa12eccedb2fbeb70eff259",
+    "receipts_sha256": "fe906eaa1bfccd7fc195a77c535e571ac5a55d694a7a2f793c9c3b671bdf378b",
+    "receipt_cases_sha256": "abd9c82708e46a29c767b79654f501253d4903164128b7fb41ac8c67753cfa01",
+    "seed_set_sha256": "2851cf89bcd65d04547d3f2848729ce2c836d09db5265320741529f7077f881b",
+    "qemu_exit_code": 0,
+    "required_cases_passed": 36,
+    "case_failures": 0,
+    "case_skips": 0,
+    "receipts": 36,
+    "warning_reports": 0,
+    "compiler_diagnostics": 0,
+    "clock_skew_warnings": 0,
+    "clock_skew_retries": 0
+  },
+  "failure": {
+    "stage": "fault_ledger_serialization_before_boot_result_seal",
+    "error": "jq: error (at <unknown>): Cannot index string with string fault_site",
+    "incorrect_expression": "[$receipts[0][] | select(.fault_site != \"none\")]",
+    "root_cause": "jq --slurpfile over JSONL produces an array of receipt objects; indexing element zero and then iterating traversed the first receipt object's scalar values",
+    "correct_expression": "[$receipts[] | select(.fault_site != \"none\")]",
+    "corrected_read_only_replay_passed": true,
+    "corrected_replay_matching_receipts": 3,
+    "corrected_replay_matching_cases": [
+      "sched_exec_r4_test_allocation_fault_every_pre_runnable_site_and_retry",
+      "sched_exec_r4_test_migration_destination_capacity_failure_stays_neutral",
+      "sched_exec_r4_test_reference_equation_and_cleanup_after_each_failure"
+    ]
+  },
+  "matrix_accounting": {
+    "builds_started": 1,
+    "boots_started": 1,
+    "boot_results_sealed": 0,
+    "remaining_configurations_started": 0,
+    "arm64_standard_debug_credited": false,
+    "matrix_passed": false,
+    "full_fresh_retry_required": true
+  },
+  "cleanup": {
+    "run_owned_internal_build_root_removed": true,
+    "run_owned_disposable_worktree_removed": true,
+    "source_modified": false,
+    "patch_queue_modified": false
+  },
+  "safety_flags": {
+    "r4_e3_source_accepted": false,
+    "r4_e3_concurrency_correctness_accepted": false,
+    "runtime_behavior_approved": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

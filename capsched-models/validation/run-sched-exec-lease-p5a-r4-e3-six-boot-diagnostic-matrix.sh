@@ -16,6 +16,7 @@ PLAN_SOURCE="$CAPSCHED_DIR/capsched-models/analysis/sched-exec-lease-p5a-r4-e3-c
 SOURCE_GATE_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-source-gate/20260717T-p5a-r4-e3-source-gate-r3/result.json"
 CLOSURE_R3_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure/20260717T-p5a-r4-e3-source-gate-closure-r3/result.json"
 CLOSURE_R4_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure/20260717T-p5a-r4-e3-source-gate-closure-r4/result.json"
+SIX_BOOT_ATTEMPT_2_REJECTION_SOURCE="$SCRIPT_DIR/sched-exec-lease-p5a-r4-e3-six-boot-attempt-2-rejection-v1.json"
 HARDENING_LIB_SOURCE="$SCRIPT_DIR/lib/immutable-evidence-inputs.sh"
 RUNNER_SOURCE=${BASH_SOURCE[0]}
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
@@ -36,6 +37,7 @@ CLOSURE_R3_SHA=f6763fbb940c42d67390cae46c20e148f86020a3c2af4431e12562c198fcf613
 CLOSURE_R4_SHA=92e9918d0c04147a9b78c66744081cf165564458204a18c43501d82617318e6e
 SOURCE_GATE_SHA=f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24
 SIX_BOOT_ATTEMPT_1_REJECTION_SHA=c67648292f091d79e752c174f4360deee6b0a22ae696d7cbf76d5fd13cc22871
+SIX_BOOT_ATTEMPT_2_REJECTION_SHA=eb02c397ce25e522eab88f346913b4284649f83201805cdd14b1afbc1a9d0564
 HARDENING_LIB_SHA=4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
@@ -48,6 +50,7 @@ REQUIRED_CASES=36
 REQUIRED_RECEIPTS=36
 STRESS_ITERATIONS=2048
 clock_skew_retries=0
+receipt_ledger_selftest_passed=0
 current_build=
 active_child_pid=
 
@@ -184,12 +187,36 @@ capsched_snapshot_verified_file "$PLAN_SOURCE" "$PLAN_SHA" "$INPUT_DIR/plan.json
 capsched_snapshot_verified_file "$SOURCE_GATE_SOURCE" "$SOURCE_GATE_SHA" "$INPUT_DIR/source-gate-result.json" || die 'could not snapshot source gate'
 capsched_snapshot_verified_file "$CLOSURE_R3_SOURCE" "$CLOSURE_R3_SHA" "$INPUT_DIR/source-gate-closure-r3.json" || die 'could not snapshot closure r3'
 capsched_snapshot_verified_file "$CLOSURE_R4_SOURCE" "$CLOSURE_R4_SHA" "$INPUT_DIR/source-gate-closure-r4.json" || die 'could not snapshot closure r4'
+capsched_snapshot_verified_file "$SIX_BOOT_ATTEMPT_2_REJECTION_SOURCE" "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" "$INPUT_DIR/six-boot-attempt-2-rejection.json" || die 'could not snapshot attempt-2 rejection'
 PLAN="$INPUT_DIR/plan.json"
 SOURCE_GATE="$INPUT_DIR/source-gate-result.json"
 CLOSURE_R3="$INPUT_DIR/source-gate-closure-r3.json"
 CLOSURE_R4="$INPUT_DIR/source-gate-closure-r4.json"
+SIX_BOOT_ATTEMPT_2_REJECTION="$INPUT_DIR/six-boot-attempt-2-rejection.json"
 
 progress '2% locking N-134 closure, exact matrix, and repository identities'
+jq -e '
+  .status == "rejected_before_boot_seal_due_to_receipt_ledger_serializer_type_error" and
+  .run.run_id == "20260717T-p5a-r4-e3-six-boot-r2" and
+  .run.runner_sha256 == "184d8a0f898466474f1dc11fae7b4fa6f90b33decce78549f76173201e4d2964" and
+  .run.runner_exit_code == 5 and
+  .locked_inputs.candidate_commit == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
+  .locked_inputs.source_gate_result_sha256 == "f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24" and
+  .arm64_standard_debug.qemu_exit_code == 0 and
+  .arm64_standard_debug.required_cases_passed == 36 and
+  .arm64_standard_debug.case_failures == 0 and
+  .arm64_standard_debug.case_skips == 0 and
+  .arm64_standard_debug.receipts == 36 and
+  .failure.corrected_read_only_replay_passed == true and
+  .failure.corrected_replay_matching_receipts == 3 and
+  .matrix_accounting.boot_results_sealed == 0 and
+  .matrix_accounting.arm64_standard_debug_credited == false and
+  .matrix_accounting.matrix_passed == false and
+  .matrix_accounting.full_fresh_retry_required == true and
+  .safety_flags.r4_e3_source_accepted == false and
+  .safety_flags.production_protection == false and
+  .safety_flags.datacenter_ready == false
+' "$SIX_BOOT_ATTEMPT_2_REJECTION" >/dev/null
 jq -e '
   .status == "passed_source_gate_awaiting_six_boot_diagnostic_matrix" and
   .candidate_commit == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
@@ -471,11 +498,48 @@ write_seed_and_fault_ledgers()
 	jq -n --arg boot "$label" --arg profile "$profile" \
 		--slurpfile fault_sites "$OUT_DIR/expected-fault-sites.json" \
 		--slurpfile receipts "$receipts" \
-		'{schema_version:1,boot:$boot,profile:$profile,kernel_fault_frameworks:{FAULT_INJECTION:($profile == "standard" or $profile == "fault"),FAILSLAB:($profile == "standard" or $profile == "fault"),FAIL_PAGE_ALLOC:($profile == "standard" or $profile == "fault"),globally_armed_during_early_boot:false},deterministic_test_control_plane:true,pre_runnable_fault_sites:$fault_sites[0],clean_retry_required:true,matching_receipts:[$receipts[0][] | select(.fault_site != "none")]}' \
+		'{schema_version:1,boot:$boot,profile:$profile,kernel_fault_frameworks:{FAULT_INJECTION:($profile == "standard" or $profile == "fault"),FAILSLAB:($profile == "standard" or $profile == "fault"),FAIL_PAGE_ALLOC:($profile == "standard" or $profile == "fault"),globally_armed_during_early_boot:false},deterministic_test_control_plane:true,pre_runnable_fault_sites:$fault_sites[0],clean_retry_required:true,matching_receipts:[$receipts[] | select(.fault_site != "none")]}' \
 		> "$OUT_DIR/$label-fault-ledger.json"
 	jq -e --slurpfile expected "$OUT_DIR/expected-fault-sites.json" \
-		'.pre_runnable_fault_sites == $expected[0] and (.pre_runnable_fault_sites | length) == 6 and .clean_retry_required == true' \
+		'.pre_runnable_fault_sites == $expected[0] and
+		 (.pre_runnable_fault_sites | length) == 6 and
+		 .clean_retry_required == true and
+		 (.matching_receipts | length) == 3 and
+		 all(.matching_receipts[];
+		   type == "object" and
+		   (.case | type == "string") and
+		   (.fault_site | type == "string") and .fault_site != "none") and
+		 ([.matching_receipts[].case] | sort) == [
+		   "sched_exec_r4_test_allocation_fault_every_pre_runnable_site_and_retry",
+		   "sched_exec_r4_test_migration_destination_capacity_failure_stays_neutral",
+		   "sched_exec_r4_test_reference_equation_and_cleanup_after_each_failure"
+		 ]' \
 		"$OUT_DIR/$label-fault-ledger.json" >/dev/null || die "$label fault-site ledger changed"
+}
+
+receipt_ledger_selftest()
+{
+	local label=receipt-ledger-selftest
+	local fixture="$OUT_DIR/$label-receipts.jsonl"
+
+	jq -nc --argjson stress "$STRESS_ITERATIONS" '[
+	  {case:"sched_exec_r4_test_duplicate_irq_kick_coalesces",forced_schedule:"selftest",fault_site:"none",oracle_checkpoints:$stress,cleanup_outcome:"drained"},
+	  {case:"sched_exec_r4_test_notifier_old_partial_final_republish_restart_bound",forced_schedule:"selftest",fault_site:"none",oracle_checkpoints:$stress,cleanup_outcome:"drained"},
+	  {case:"sched_exec_r4_test_migration_success_remove_neutral_add",forced_schedule:"selftest",fault_site:"none",oracle_checkpoints:$stress,cleanup_outcome:"drained"},
+	  {case:"sched_exec_r4_test_online_initializes_before_accepting",forced_schedule:"selftest",fault_site:"none",oracle_checkpoints:$stress,cleanup_outcome:"drained"},
+	  {case:"sched_exec_r4_test_retire_vs_publisher_and_owner_clear",forced_schedule:"selftest",fault_site:"none",oracle_checkpoints:$stress,cleanup_outcome:"drained"},
+	  {case:"sched_exec_r4_test_allocation_fault_every_pre_runnable_site_and_retry",forced_schedule:"inject-fail-clean-retry",fault_site:"all-six",oracle_checkpoints:12,cleanup_outcome:"drained"},
+	  {case:"sched_exec_r4_test_migration_destination_capacity_failure_stays_neutral",forced_schedule:"selftest",fault_site:"capacity",oracle_checkpoints:4,cleanup_outcome:"drained"},
+	  {case:"sched_exec_r4_test_reference_equation_and_cleanup_after_each_failure",forced_schedule:"selftest",fault_site:"all-six",oracle_checkpoints:9,cleanup_outcome:"drained"}
+	][]' > "$fixture"
+	write_seed_and_fault_ledgers "$label" standard "$fixture"
+	jq -e '
+	  .boot == "receipt-ledger-selftest" and
+	  (.matching_receipts | length) == 3 and
+	  all(.matching_receipts[]; type == "object")
+	' "$OUT_DIR/$label-fault-ledger.json" >/dev/null || die 'receipt-ledger self-test changed'
+	rm -f "$fixture" "$OUT_DIR/$label-seed-set.json" "$OUT_DIR/$label-fault-ledger.json"
+	receipt_ledger_selftest_passed=1
 }
 
 normalize_and_validate()
@@ -630,6 +694,9 @@ run_boot()
 	progress "$boot_percent% sealed $label evidence and retired fresh build output"
 }
 
+progress '3% validating receipt-ledger JSONL serializer before any build'
+receipt_ledger_selftest
+
 if [ "${CONFIG_SMOKE_ONLY:-0}" = 1 ]; then
 	progress '5% config-smoke arm64 standard debug'
 	current_build="$BUILD_ROOT/arm64-standard-debug"
@@ -657,8 +724,9 @@ if [ "${CONFIG_SMOKE_ONLY:-0}" = 1 ]; then
 	retire_build "$current_build"
 	capsched_verify_file_sha256 "$RUNNER_SOURCE" "$runner_initial_sha" || die 'runner changed during config smoke'
 	capsched_verify_file_sha256 "$SOURCE_GATE" "$SOURCE_GATE_SHA" || die 'source gate snapshot changed during config smoke'
-	jq -n --arg run_id "$RUN_ID" --arg runner_sha "$runner_initial_sha" --arg candidate "$E3_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" --arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" --argjson retries "$clock_skew_retries" \
-		'{schema_version:1,status:"passed_corrected_six_config_smoke_without_build_or_boot",run_id:$run_id,runner_sha256:$runner_sha,candidate_commit:$candidate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_rejected:true,full_six_boot_retry_required:true,configs:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],clock_skew_retries:$retries,builds_started:0,boots_started:0,matrix_passed:false,r4_e3_source_accepted:false,production_protection:false,datacenter_ready:false}' > "$OUT_DIR/config-smoke-result.json"
+	capsched_verify_file_sha256 "$SIX_BOOT_ATTEMPT_2_REJECTION" "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" || die 'attempt-2 rejection snapshot changed during config smoke'
+	jq -n --arg run_id "$RUN_ID" --arg runner_sha "$runner_initial_sha" --arg candidate "$E3_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" --arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" --arg rejection_2_sha "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" --argjson retries "$clock_skew_retries" --argjson ledger_selftest "$receipt_ledger_selftest_passed" \
+		'{schema_version:1,status:"passed_corrected_six_config_smoke_without_build_or_boot",run_id:$run_id,runner_sha256:$runner_sha,candidate_commit:$candidate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_2_rejection_sha256:$rejection_2_sha,prior_six_boot_attempt_rejected:true,prior_six_boot_attempt_2_rejected:true,receipt_ledger_jsonl_selftest_passed:($ledger_selftest == 1),full_six_boot_retry_required:true,configs:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],clock_skew_retries:$retries,builds_started:0,boots_started:0,matrix_passed:false,r4_e3_source_accepted:false,production_protection:false,datacenter_ready:false}' > "$OUT_DIR/config-smoke-result.json"
 	progress '100% all six diagnostic configs resolved; no build or boot started'
 	exit 0
 fi
@@ -677,6 +745,7 @@ capsched_verify_file_sha256 "$PLAN" "$PLAN_SHA" || die 'plan snapshot changed'
 capsched_verify_file_sha256 "$SOURCE_GATE" "$SOURCE_GATE_SHA" || die 'source gate snapshot changed'
 capsched_verify_file_sha256 "$CLOSURE_R3" "$CLOSURE_R3_SHA" || die 'closure r3 snapshot changed'
 capsched_verify_file_sha256 "$CLOSURE_R4" "$CLOSURE_R4_SHA" || die 'closure r4 snapshot changed'
+capsched_verify_file_sha256 "$SIX_BOOT_ATTEMPT_2_REJECTION" "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" || die 'attempt-2 rejection snapshot changed'
 [ -z "$(git -C "$E3_DIR" status --porcelain --untracked-files=no)" ] || die 'source worktree changed during matrix'
 [ -z "$(find "$BUILD_ROOT" -mindepth 1 -maxdepth 1 -print -quit)" ] || die 'fresh build output was not retired'
 
@@ -693,13 +762,13 @@ jq -e 'length == 6 and all(.status == "passed") and all(.cases_passed == 36) and
 jq -n \
 	--arg run_id "$RUN_ID" --arg candidate "$E3_COMMIT" --arg parent "$E2_COMMIT" --arg tree "$E3_TREE" --arg diff_sha "$E3_DIFF_SHA" \
 	--arg primary "$PRIMARY_COMMIT" --arg patch_queue "$PATCH_QUEUE_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" \
-	--arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" \
+	--arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" --arg rejection_2_sha "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" \
 	--arg runner "$INPUT_DIR/runner.sh" --arg runner_sha "$runner_initial_sha" --arg plan "$PLAN" --arg plan_sha "$PLAN_SHA" \
 	--arg source_gate "$SOURCE_GATE" \
 	--arg boot_results "$boot_results_json" --arg boot_results_sha "$(sha256sum "$boot_results_json" | awk '{print $1}')" \
-	--slurpfile results "$boot_results_json" --argjson clock_skew_retries "$clock_skew_retries" \
-	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix-result-v1",run_id:$run_id,status:"passed_six_boot_diagnostic_matrix_awaiting_independent_closure",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,source_gate_result:$source_gate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_rejected:true,full_six_boot_retry_completed:true,runner:$runner,runner_sha256:$runner_sha,plan:$plan,plan_sha256:$plan_sha,architectures:["arm64","x86_64"],qemu_boots:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],suite:"sched_exec_lease_r4_concurrency",required_cases_per_boot:36,passed_cases_per_boot:36,total_passed_cases:216,receipts_per_boot:36,total_receipts:216,stress_families:["bridge","notifier","migration","hotplug","retirement"],stress_iterations_per_family_per_boot:2048,allocation_fault_sites:6,case_failures:0,case_skips:0,case_timeouts:0,warning_reports:0,build_clock_skew_retries:$clock_skew_retries,final_build_clock_skew_warnings:0,matrix_reduction:false,fresh_build_output_per_boot:true,sequential_build_retirement:true,compiler_config_image_object_qemu_ktap_console_seed_fault_receipts_recorded:true,boot_results:$boot_results,boot_results_sha256:$boot_results_sha,results:$results[0],six_boot_matrix_passed:true,independent_matrix_closure_pending:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,primary_linux_changed:false,patch_queue_changed:false,real_scheduler_attachment:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,monitor_delivery_or_enforcement:false,cross_class_coverage:false,bounded_wall_clock_latency_claim:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
-jq -e '.status == "passed_six_boot_diagnostic_matrix_awaiting_independent_closure" and .qemu_boots == ["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"] and .total_passed_cases == 216 and .total_receipts == 216 and .case_failures == 0 and .case_skips == 0 and .case_timeouts == 0 and .warning_reports == 0 and .six_boot_matrix_passed == true and .independent_matrix_closure_pending == true and .r4_e3_source_accepted == false and .production_protection == false and .datacenter_ready == false' "$OUT_DIR/result.json.pending" >/dev/null
+	--slurpfile results "$boot_results_json" --argjson clock_skew_retries "$clock_skew_retries" --argjson ledger_selftest "$receipt_ledger_selftest_passed" \
+	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix-result-v1",run_id:$run_id,status:"passed_six_boot_diagnostic_matrix_awaiting_independent_closure",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,source_gate_result:$source_gate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_2_rejection_sha256:$rejection_2_sha,prior_six_boot_attempt_rejected:true,prior_six_boot_attempt_2_rejected:true,receipt_ledger_jsonl_selftest_passed:($ledger_selftest == 1),full_six_boot_retry_completed:true,runner:$runner,runner_sha256:$runner_sha,plan:$plan,plan_sha256:$plan_sha,architectures:["arm64","x86_64"],qemu_boots:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],suite:"sched_exec_lease_r4_concurrency",required_cases_per_boot:36,passed_cases_per_boot:36,total_passed_cases:216,receipts_per_boot:36,total_receipts:216,stress_families:["bridge","notifier","migration","hotplug","retirement"],stress_iterations_per_family_per_boot:2048,allocation_fault_sites:6,case_failures:0,case_skips:0,case_timeouts:0,warning_reports:0,build_clock_skew_retries:$clock_skew_retries,final_build_clock_skew_warnings:0,matrix_reduction:false,fresh_build_output_per_boot:true,sequential_build_retirement:true,compiler_config_image_object_qemu_ktap_console_seed_fault_receipts_recorded:true,boot_results:$boot_results,boot_results_sha256:$boot_results_sha,results:$results[0],six_boot_matrix_passed:true,independent_matrix_closure_pending:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,primary_linux_changed:false,patch_queue_changed:false,real_scheduler_attachment:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,monitor_delivery_or_enforcement:false,cross_class_coverage:false,bounded_wall_clock_latency_claim:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
+jq -e '.status == "passed_six_boot_diagnostic_matrix_awaiting_independent_closure" and .prior_six_boot_attempt_2_rejected == true and .receipt_ledger_jsonl_selftest_passed == true and .qemu_boots == ["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"] and .total_passed_cases == 216 and .total_receipts == 216 and .case_failures == 0 and .case_skips == 0 and .case_timeouts == 0 and .warning_reports == 0 and .six_boot_matrix_passed == true and .independent_matrix_closure_pending == true and .r4_e3_source_accepted == false and .production_protection == false and .datacenter_ready == false' "$OUT_DIR/result.json.pending" >/dev/null
 mv "$OUT_DIR/result.json.pending" "$OUT_DIR/result.json"
 sha256sum "$OUT_DIR/result.json" > "$OUT_DIR/result.sha256"
 progress '100% exact six-boot diagnostic matrix passed; independent closure still required'
