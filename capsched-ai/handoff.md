@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-15
+Updated: 2026-07-17
 
 Read this first when resuming the project.
 
@@ -6126,3 +6126,71 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     any E3 source. Runtime behavior, primary/patch changes, monitor protection,
     bounded latency, performance/cost, deployment, and datacenter claims remain
     false.
+
+- N-133 P5A-R4 E3 concurrency and diagnostic plan is complete:
+
+  Exact boundary:
+    analysis/0174 and validation/0241 bind the future source to the direct
+    child of R4-E2 candidate
+    `a429fc30252ac6af94c51d96cd4ac24e72d9f83b`, tree
+    `fffd419bbc05bab87ad304c1e4a3213439d62bab`. Only `init/Kconfig` and
+    `kernel/sched/exec_lease.c` may change. The new option is default-off
+    `CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST`, depends on the R4 layout probe and
+    built-in KUnit, and registers only exact suite
+    `sched_exec_lease_r4_concurrency` in the same translation unit. Primary
+    Linux and patch queue remain frozen.
+
+  Protocol and oracle:
+    the prototype may instantiate the E2-private objects with real hard
+    irq-work, unbound `WQ_UNBOUND|WQ_HIGHPRI|WQ_MEM_RECLAIM` work, raw locks,
+    refs, cpumask/XArray, and RCU, but only behind synthetic rq/current/
+    contribution inputs. A separately represented plain-record oracle checks
+    every forced transition and cleanup. Machine-readable case receipts bind
+    forced schedule, fault, checkpoints, reference equation, and cleanup.
+
+  Fixed future matrix:
+    36 deterministic case families cover capacity 0/1/63/64/rejected-65, six
+    pre-runnable allocation failures and retry, every irq/work pending/running
+    state, false queue returns, final-empty insertion, self-requeue, one-
+    projection quanta, notifier generation/membership restart and late
+    admission, separate current observation, remove-neutral-add migration,
+    offline/cancel, retirement/RCU, saturation, and reference cleanup. Six
+    fresh boots require arm64/x86_64 standard debug, both-architecture hotplug
+    plus allocation-fault stress, arm64 KASAN, and x86_64 KCSAN, with 2,048
+    stress iterations and zero fail/skip/timeout/warning.
+
+  Model correction and reproducibility:
+    r1 exposed a runner path-class bug. r2 produced 75/76 unsafe
+    counterexamples and correctly rejected its own missing
+    `NewestDesiredLost` invariant. Corrected r3/r4 first established semantic
+    reproduction. Historical r5/r6 added a first generator seal, but an
+    exhaustive 14-file diff review reproduced `..`/output reuse, count-only
+    plan substitution, and hash-then-reopen evidence races. Validation/0242
+    supersedes that seal. The fixed runner requires an alphanumeric-leading
+    token and atomically fresh output, snapshots and exact-hash verifies the
+    helper before sourcing, exact-hash binds plan/model/TLC before use, keeps
+    private 0444 input snapshots, rehashes after use, requires unique
+    safe-token plan arrays, and atomically publishes the result. Focused
+    malicious and legitimate controls pass.
+
+    Final canonical r13 and independent r14 pass 48/48 anchors, 10/10
+    absences, safe TLC 30 generated/29 distinct/depth 29, four liveness
+    properties, and 76/76 unsafe counterexamples. Result SHA-256 values are
+    `79a9c62edc8dfa58645028c9ab43af9554f7672bbae267f8b5c7ab0c9157c912`
+    and
+    `2be94265244a7cde6ff5f4d353133fa6315b692b65ad762b743ac0a89d309537`.
+    Their normalized SHA-256 is
+    `bea904bf500ab43f768364f72d45f73ea843434ad5d3a0f9f86b22583e9a7f26`.
+    Both bind runner SHA-256
+    `450114f0ca6004869630a827369b454fe2f0c0b86459c4e1212fd50d25b7ea9b`
+    and helper SHA-256
+    `4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6`.
+
+  Next:
+    N-134 may create only the exact disposable two-file source draft and must
+    pass an independent identity/replay/style/disabled-artifact/dual-
+    architecture build and test-matrix source gate before any diagnostic boot
+    launch. R4-E3 source correctness, R4-E4, live scheduler behavior,
+    primary/patch promotion, runtime denial, monitor enforcement, latency,
+    performance/cost, production protection, deployment, multi-node,
+    multi-cluster, and datacenter claims remain false.
