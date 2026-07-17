@@ -2,8 +2,8 @@
 
 Date: 2026-07-17
 
-Status: launch contract prepared. The canonical dual-architecture build has
-not yet produced a result, so this record does not claim a source-gate pass.
+Status: attempt 1 completed but is invalidated by validation/0244. This launch
+record never claimed a pass. Corrected r2 is the only allowed rerun.
 
 ## Frozen Inputs
 
@@ -70,6 +70,11 @@ monitor:  ./tools/long-job.sh watch p5a-r4-e3-source-gate 30
 
 The detached wrapper records progress, process/result probes, runner exit
 status, and a validated completion state across chat or host-terminal exits.
+
+Attempt 1 returned exit zero and a provisional result, but independent log
+closure found two x86_64 modes with future-mtime and GNU make clock-skew
+warnings. The old runner had no build-warning gate. Therefore its provisional
+result cannot authorize the diagnostic matrix; see validation/0244.
 
 ## Decision Boundary
 

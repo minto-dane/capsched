@@ -2,9 +2,10 @@
 
 Date: 2026-07-17
 
-Status: exact disposable source candidate committed and preflight source checks
-passed. The independent dual-architecture source gate is prepared but has not
-yet produced a result. No R4-E3 correctness or runtime claim is accepted.
+Status: exact disposable source candidate committed. Source-gate attempt 1
+completed its semantic and object checks but is invalidated by independently
+detected shared-filesystem clock-skew warnings. A corrected W=1 r2 rerun is
+required. No R4-E3 correctness or runtime claim is accepted.
 
 ## Disposable Source Identity
 
@@ -68,11 +69,22 @@ build result and removed its temporary worktrees and scratch.
 
 ## Pending Gate
 
-Canonical source-gate run `20260717T-p5a-r4-e3-source-gate-r1` must freshly
-build four modes on both arm64 and x86_64: exact E2 parent, all R4 options off,
-R4 layout on with E3 off, and E3 on. It must preserve the 58 E2 private and 51
-expanded values, prove zero disabled E3 symbols/relocations/strings/initcalls,
-and verify all enabled suite/bridge objects before any diagnostic boot.
+Source-gate attempt 1 `20260717T-p5a-r4-e3-source-gate-r1` completed all eight
+fresh objects and emitted result SHA-256
+`fb2bc59d01cda4110a2022fc5e810d0b0b445bfb80498f25558476e74667369a`.
+Independent closure then found 2.1--2.8ms future mtimes and GNU make `Clock
+skew detected. Your build may be incomplete.` warnings in the x86_64 layout-
+off and test-on logs. Because the old runner did not scan build warnings, its
+result is invalid evidence even though the object, table, and disabled-artifact
+checks passed.
+
+Corrected run `20260717T-p5a-r4-e3-source-gate-r2` adds W=1 compiler-diagnostic
+rejection. A clock-skewed initial output triggers an immediate same-target
+verification build; the verification must contain zero compiler diagnostics,
+future-mtime notices, or clock-skew warnings. Corrected-runner preflight
+`20260717T-p5a-r4-e3-source-preflight-r7` passed the full non-build boundary
+and intentionally created no source-gate result. Only a valid r2 result can
+authorize diagnostic boots.
 
 ## Non-Claims
 

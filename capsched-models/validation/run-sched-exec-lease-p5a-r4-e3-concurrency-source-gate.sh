@@ -36,6 +36,7 @@ PLAN_R13_SHA=79a9c62edc8dfa58645028c9ab43af9554f7672bbae267f8b5c7ab0c9157c912
 PLAN_R14_SHA=2be94265244a7cde6ff5f4d353133fa6315b692b65ad762b743ac0a89d309537
 PLAN_SHA=f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677
 HARDENING_LIB_SHA=4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6
+clock_skew_retries=0
 
 die()
 {
@@ -302,14 +303,44 @@ prepare_config()
 build_mode()
 {
 	local source=$1 arch=$2 cross=$3 mode=$4 out=$5 label=$6
+	local build_log="$OUT_DIR/$label-build.log"
+	local verification_log="$OUT_DIR/$label-clock-skew-verification.log"
+	local target
 
 	if [ "$mode" = e3-all-off ]; then
-		make -C "$source" O="$out" ARCH="$arch" CROSS_COMPILE="$cross" -j"$(nproc)" kernel/sched/ > "$OUT_DIR/$label-build.log" 2>&1
+		target=kernel/sched/
+		make -C "$source" O="$out" ARCH="$arch" CROSS_COMPILE="$cross" \
+			W=1 -j"$(nproc)" "$target" > "$build_log" 2>&1
 		test ! -e "$out/kernel/sched/exec_lease.o" || die "$label all-off emitted exec_lease.o"
 	else
-		make -C "$source" O="$out" ARCH="$arch" CROSS_COMPILE="$cross" -j"$(nproc)" kernel/sched/exec_lease.o kernel/sched/exec_lease_layout_probe.o > "$OUT_DIR/$label-build.log" 2>&1
+		target='kernel/sched/exec_lease.o kernel/sched/exec_lease_layout_probe.o'
+		# shellcheck disable=SC2086
+		make -C "$source" O="$out" ARCH="$arch" CROSS_COMPILE="$cross" \
+			W=1 -j"$(nproc)" $target > "$build_log" 2>&1
 		test -s "$out/kernel/sched/exec_lease.o" || die "$label exec_lease.o missing"
 		test -s "$out/kernel/sched/exec_lease_layout_probe.o" || die "$label expanded probe object missing"
+	fi
+	! grep -Eq ':[0-9]+(:[0-9]+)?: (fatal )?(warning|error):' "$build_log" || die "$label compiler diagnostic"
+	: > "$verification_log"
+	if grep -Eiq 'Clock skew detected|modification time .* in the future' "$build_log"; then
+		clock_skew_retries=$((clock_skew_retries + 1))
+		progress "verifying $label after shared-filesystem clock skew"
+		if [ "$mode" = e3-all-off ]; then
+			make -C "$source" O="$out" ARCH="$arch" CROSS_COMPILE="$cross" \
+				W=1 -j"$(nproc)" "$target" > "$verification_log" 2>&1
+		else
+			# shellcheck disable=SC2086
+			make -C "$source" O="$out" ARCH="$arch" CROSS_COMPILE="$cross" \
+				W=1 -j"$(nproc)" $target > "$verification_log" 2>&1
+		fi
+		! grep -Eiq 'Clock skew detected|modification time .* in the future' "$verification_log" || die "$label persistent clock skew"
+		! grep -Eq ':[0-9]+(:[0-9]+)?: (fatal )?(warning|error):' "$verification_log" || die "$label verification compiler diagnostic"
+		if [ "$mode" = e3-all-off ]; then
+			test ! -e "$out/kernel/sched/exec_lease.o" || die "$label verification all-off emitted exec_lease.o"
+		else
+			test -s "$out/kernel/sched/exec_lease.o" || die "$label verification exec_lease.o missing"
+			test -s "$out/kernel/sched/exec_lease_layout_probe.o" || die "$label verification expanded probe object missing"
+		fi
 	fi
 }
 
@@ -413,8 +444,9 @@ jq -n --arg run_id "$RUN_ID" --arg candidate "$E3_COMMIT" --arg parent "$E2_COMM
 	--arg runner "$INPUT_DIR/runner.sh" --arg runner_sha "$runner_sha" --arg hardening_lib "$INPUT_DIR/immutable-evidence-inputs.sh" --arg hardening_lib_sha "$HARDENING_LIB_SHA" --arg source_manifest "$source_manifest" --arg source_manifest_sha "$source_manifest_sha" \
 	--arg arm_result "$OUT_DIR/arm64/result.json" --arg arm_sha "$arm_sha" --arg x86_result "$OUT_DIR/x86_64/result.json" --arg x86_sha "$x86_sha" \
 	--slurpfile arm64 "$OUT_DIR/arm64/result.json" --slurpfile x86_64 "$OUT_DIR/x86_64/result.json" \
-	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-concurrency-source-gate-result-v1",run_id:$run_id,status:"passed_source_gate_awaiting_six_boot_diagnostic_matrix",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,plan:$plan,plan_sha256:$plan_sha,n133_sealed_results_sha256:[$plan_r13_sha,$plan_r14_sha],runner:$runner,runner_sha256:$runner_sha,hardening_helper:$hardening_lib,hardening_helper_sha256:$hardening_lib_sha,immutable_input_snapshots_verified:true,isolated_git_object_worktrees:true,source_manifest:$source_manifest,source_manifest_sha256:$source_manifest_sha,exact_direct_e2_child:true,exact_two_file_boundary:true,insertions:2758,deletions:0,e2_private_layout_and_58_probes_preserved:true,existing_expanded_51_values_preserved:true,config_default_off:true,same_translation_unit:true,suite_name:"sched_exec_lease_r4_concurrency",deterministic_case_families:36,allocation_fault_sites:6,hard_timeout_seconds:15,stress_iterations:2048,real_hard_irq_to_unbound_work_bridge:true,independent_plain_oracle_and_receipts:true,strict_checkpatch:{errors:0,warnings:0,checks:0},architectures:["arm64","x86_64"],fresh_modes_per_architecture:["exact_e2_parent","e3_all_r4_options_off","e3_r4_layout_on_test_off","e3_r4_kunit_test_on"],disabled_e3_symbols_relocations_strings_initcalls:0,results:{arm64:$arm64[0],x86_64:$x86_64[0]},arm64_result:$arm_result,arm64_result_sha256:$arm_sha,x86_64_result:$x86_result,x86_64_result_sha256:$x86_sha,diagnostic_matrix_may_start:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,primary_linux_changed:false,patch_queue_changed:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
-jq -e '.status == "passed_source_gate_awaiting_six_boot_diagnostic_matrix" and .candidate_commit == "f9c737c93ecff48c6f512048b05b1b49f4a54ca5" and .immutable_input_snapshots_verified == true and .isolated_git_object_worktrees == true and .insertions == 2758 and .deletions == 0 and .deterministic_case_families == 36 and .allocation_fault_sites == 6 and .disabled_e3_symbols_relocations_strings_initcalls == 0 and .diagnostic_matrix_may_start == true and .r4_e3_source_accepted == false and .production_protection == false' "$OUT_DIR/result.json.pending" >/dev/null
+	--argjson clock_skew_retries "$clock_skew_retries" \
+	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-concurrency-source-gate-result-v1",run_id:$run_id,status:"passed_source_gate_awaiting_six_boot_diagnostic_matrix",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,plan:$plan,plan_sha256:$plan_sha,n133_sealed_results_sha256:[$plan_r13_sha,$plan_r14_sha],runner:$runner,runner_sha256:$runner_sha,hardening_helper:$hardening_lib,hardening_helper_sha256:$hardening_lib_sha,immutable_input_snapshots_verified:true,isolated_git_object_worktrees:true,source_manifest:$source_manifest,source_manifest_sha256:$source_manifest_sha,exact_direct_e2_child:true,exact_two_file_boundary:true,insertions:2758,deletions:0,e2_private_layout_and_58_probes_preserved:true,existing_expanded_51_values_preserved:true,config_default_off:true,same_translation_unit:true,suite_name:"sched_exec_lease_r4_concurrency",deterministic_case_families:36,allocation_fault_sites:6,hard_timeout_seconds:15,stress_iterations:2048,real_hard_irq_to_unbound_work_bridge:true,independent_plain_oracle_and_receipts:true,strict_checkpatch:{errors:0,warnings:0,checks:0},w1_compiler_diagnostics:0,clock_skew_retries:$clock_skew_retries,final_clock_skew_warnings:0,architectures:["arm64","x86_64"],fresh_modes_per_architecture:["exact_e2_parent","e3_all_r4_options_off","e3_r4_layout_on_test_off","e3_r4_kunit_test_on"],disabled_e3_symbols_relocations_strings_initcalls:0,results:{arm64:$arm64[0],x86_64:$x86_64[0]},arm64_result:$arm_result,arm64_result_sha256:$arm_sha,x86_64_result:$x86_result,x86_64_result_sha256:$x86_sha,diagnostic_matrix_may_start:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,primary_linux_changed:false,patch_queue_changed:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
+jq -e '.status == "passed_source_gate_awaiting_six_boot_diagnostic_matrix" and .candidate_commit == "f9c737c93ecff48c6f512048b05b1b49f4a54ca5" and .immutable_input_snapshots_verified == true and .isolated_git_object_worktrees == true and .insertions == 2758 and .deletions == 0 and .deterministic_case_families == 36 and .allocation_fault_sites == 6 and .w1_compiler_diagnostics == 0 and (.clock_skew_retries | type) == "number" and .final_clock_skew_warnings == 0 and .disabled_e3_symbols_relocations_strings_initcalls == 0 and .diagnostic_matrix_may_start == true and .r4_e3_source_accepted == false and .production_protection == false' "$OUT_DIR/result.json.pending" >/dev/null
 mv "$OUT_DIR/result.json.pending" "$OUT_DIR/result.json"
 sha256sum "$OUT_DIR/result.json" > "$OUT_DIR/result.sha256"
 progress '100% passed; exact R4-E3 source and dual-architecture disabled/build gate complete'

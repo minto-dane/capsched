@@ -450,8 +450,9 @@ Current SchedExecLease L0 readiness:
     authorized.
 - `0048-sched-exec-lease-p5a-r4-e3-concurrency-prototype.md`
   - Status: exact direct-R4-E2-child, two-file, default-off synthetic KUnit
-    candidate is committed and its non-build preflight passes; the canonical
-    dual-architecture source gate remains pending.
+    candidate is committed and its non-build preflight passes. Source-gate r1
+    is invalid because independent closure found two x86_64 incomplete-build
+    clock-skew warnings omitted by the old runner; corrected W=1 r2 is pending.
   - Candidate commit/tree:
     `f9c737c93ecff48c6f512048b05b1b49f4a54ca5` /
     `274f7b5d6969dc68e158819191fe598f9587e0ad`.

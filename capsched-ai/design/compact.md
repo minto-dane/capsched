@@ -4699,3 +4699,22 @@ P5A-R3 E4 source and exact-source regression gate:
   58 private and 51 expanded values and proving zero disabled E3 artifacts.
   Until then, diagnostic boots and every correctness/runtime/production claim
   remain blocked.
+
+- P5A-R4 N-134 source-gate attempt 1 warning correction:
+
+  Run `20260717T-p5a-r4-e3-source-gate-r1` produced provisional result SHA-256
+  `fb2bc59d01cda4110a2022fc5e810d0b0b445bfb80498f25558476e74667369a`
+  after all semantic, object, value-preservation, and disabled-artifact checks.
+  Independent closure found 2.1--2.8ms future mtimes and GNU make incomplete-
+  build clock-skew warnings in x86_64 layout-off and test-on logs. Because the
+  old runner did not reject build-log warnings, validation/0244 invalidates r1
+  and authorizes nothing.
+
+  Corrected validation/0245 r2 builds every mode with W=1, rejects compiler
+  diagnostics, and turns any initial shared-filesystem skew into a mandatory
+  same-target verification build with zero final future-mtime/skew warnings.
+  Corrected-runner preflight `20260717T-p5a-r4-e3-source-preflight-r7` passed
+  the complete non-build boundary and removed its temporary worktrees/output.
+  Source identity and claim boundaries are unchanged. N-134 and all diagnostic,
+  correctness, runtime, promotion, protection, and deployment claims remain
+  pending or false until fresh r2 passes.

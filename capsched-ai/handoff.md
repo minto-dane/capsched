@@ -6231,3 +6231,38 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     six-boot diagnostic matrix. N-134, R4-E3 correctness, live behavior,
     primary/patch promotion, protection, latency, performance, deployment,
     multi-node, multi-cluster, and datacenter claims remain pending or false.
+
+- N-134 source-gate attempt 1 is invalid; corrected r2 only is allowed:
+
+  Attempt 1:
+    `p5a-r4-e3-source-gate` completed run
+    `20260717T-p5a-r4-e3-source-gate-r1` in 9,902 seconds and emitted
+    provisional result SHA-256
+    `fb2bc59d01cda4110a2022fc5e810d0b0b445bfb80498f25558476e74667369a`.
+    All exact source, 36-case/six-fault, arm64/x86_64 four-mode, 58/51 value,
+    disabled-artifact, and enabled-suite checks completed.
+
+  Independent closure:
+    x86_64 layout-on/test-off and test-on build logs contain 2.1--2.8ms
+    future-mtime notices and GNU make `Clock skew detected. Your build may be
+    incomplete.` warnings. No C compiler diagnostic exists, but the old runner
+    did not scan build logs. Validation/0244 therefore classifies r1 as a
+    harness false pass and immutable invalid evidence. It authorizes no boot.
+
+  Correction:
+    validation/0245 and corrected runner SHA-256
+    `61d0a4968b21bf595b710947e11369ca7dfe9316fec91767bedd21f760055cde`
+    require W=1 and reject compiler diagnostics. Initial clock skew triggers an
+    immediate same-target verification build; final future-mtime and clock-
+    skew warnings must be zero. Fresh r2 is
+    `20260717T-p5a-r4-e3-source-gate-r2`, monitored as
+    `p5a-r4-e3-source-gate-r2` every 30 seconds.
+    Corrected-runner preflight
+    `20260717T-p5a-r4-e3-source-preflight-r7` passed the complete non-build
+    boundary, intentionally emitted no result, and removed all scratch.
+
+  Next:
+    Launch corrected r2 only. The six-boot matrix, N-134 completion, R4-E3
+    correctness, R4-E4, runtime, primary/patch promotion, protection,
+    deployment, multi-node, multi-cluster, and datacenter claims remain
+    blocked.
