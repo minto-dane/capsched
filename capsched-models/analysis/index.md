@@ -176,6 +176,8 @@ Updated: 2026-07-16
 | 0168 | R3-E3 fixes an exact same-TU two-file KUnit prototype with B_max/fault/race/oracle matrices and four arm64/x86_64 diagnostic boots | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
 | 0169 | R3-E4 fixes a default-off same-TU rejection experiment with real rq locking, paired controls, 32 one-projection, 5 hotplug, and 5 targeted-fanout cells, immutable limits, and virtual-evidence non-claims | SchedExecLease P5A-R3 E4 Bucket Measurement Plan |
 | 0170 | Exact direct-E3-child two-file E4 draft implements the 42-cell measurement suite, shared transition helpers, strict style, dual-arch compile smoke, and keeps measurement blocked on independent gates | SchedExecLease P5A-R3 E4 Bucket Measurement Source Draft |
+| 0171 | Complete arm64 E4 evidence rejects 19/42 cells and 26 fixed gates while preserving clean QEMU/KUnit/warning/artifact and deterministic postprocess evidence | SchedExecLease P5A-R3 E4 Arm64 Bucket Measurement Rejection |
+| 0172 | R4 selects an O(1) generation fence with coalesced notifier/pull recovery, conditional 2*A/B_max logical bounds, and separate current stop requests | SchedExecLease P5A-R4 Generation-Fenced Coalesced Pull Recovery |
 
 ## Planned Analysis Notes
 
@@ -311,3 +313,4 @@ Updated: 2026-07-16
 | `sched-exec-lease-p5a-r3-e3-bucket-concurrency-evidence-plan-v1.json` | P5A-R3 E3 pre-source plan | Exact E2 child/two-file same-TU KUnit boundary, B_max and allocation faults, deterministic publication/work/migration/hotplug/retirement races, independent oracle, sanitizer matrix, and non-claims |
 | `sched-exec-lease-p5a-r3-e4-bucket-measurement-plan-v1.json` | P5A-R3 E4 pre-source plan | Exact E3 child/two-file same-TU boundary, real rq-lock one-projection and bounded hotplug timing, targeted fanout availability, paired controls, immutable 42-cell/10,000-pair gates, architecture split, and non-claims |
 | `sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement-rejection-v1.json` | P5A-R3 E4 arm64 rejection | Exact complete 42-cell result, post-QEMU parser recovery provenance, 19 rejected cells, 26 breach accounting, R3/x86/E5 stop, and asynchronous-successor gate boundary |
+| `sched-exec-lease-p5a-r4-generation-fenced-coalesced-pull-recovery-v1.json` | P5A-R4 successor architecture | Exact R3 trigger, O(1) publication/picker fence, one notifier/owner, newest-generation coalescing, stable-window logical bounds, current-stop separation, source anchors, faults, and non-claims |

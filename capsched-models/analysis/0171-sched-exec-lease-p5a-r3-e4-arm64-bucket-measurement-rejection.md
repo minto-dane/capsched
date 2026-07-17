@@ -69,21 +69,24 @@ made them terminal rejection criteria.
 
 ## Design conclusion
 
-R3 combined two ideas that must now be separated:
+R3 combined two ideas whose evidence must remain separately classified:
 
 1. generation mismatch makes a projection untrusted; and
-2. publication waits for targeted fanout settlement to restore availability.
+2. the E4 availability gate requires targeted fanout to reach last settlement
+   inside fixed limits.
 
-The first remains a viable correctness primitive. The second failed the
-availability gate and must not remain a publication-authority condition.
-Simply raising limits, weakening maximum checks, chunking the same synchronous
-wait, or rerunning another architecture would discard the immutable contract.
+The first remains a viable correctness primitive and already made fanout
+availability-only, not authority. The second failed its fixed global
+availability acceptance condition. A successor must not reintroduce
+synchronous all-target settlement as that condition. Simply raising limits,
+weakening maximum checks, chunking the same synchronous wait, or rerunning
+another architecture would discard the immutable contract.
 
 A successor design gate may evaluate an asynchronous settlement architecture
 only if it fixes all of the following before source drafting:
 
-- publication is O(1), release-publishes a non-wrapping generation, and never
-  trusts a mismatched projection;
+- the authority-publication critical section is O(1), release-publishes a
+  non-wrapping generation, and never trusts a mismatched projection;
 - notification/fanout is an availability accelerator rather than authority;
 - every affected rq has a bounded, coalescing recovery path with a precise
   liveness deadline or deterministic work bound;

@@ -5914,11 +5914,11 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     explicit rather than silently treated as present.
 
   Boundary/next:
-    R3, x86_64 continuation, E4 acceptance, and E5 are stopped. N-130 is the
-    next scheduler work: a separate successor design gate may retain an O(1)
-    untrusted generation fence but must remove synchronous targeted-fanout
-    completion from publication authority and prove bounded asynchronous
-    recovery before any source. Primary/patch changes, live behavior, runtime
+    R3, x86_64 continuation, E4 acceptance, and E5 are stopped. R3 already
+    treated fanout as availability-only: the generation mismatch was the trust
+    fence. N-130 must replace the failed global last-settlement availability
+    condition with bounded coalescing recovery before any source. Primary/patch
+    changes, live behavior, runtime
     denial, monitor/cross-path coverage, protection, bare-metal latency,
     performance/cost, deployment, and datacenter claims remain false.
 
@@ -5931,3 +5931,62 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     boot/object artifacts were retained. Apple Container machine
     `domainlease-dev` is stopped with no job running and starts on the next
     `container machine run`.
+
+- N-130 P5A-R4 generation-fenced coalesced pull recovery is complete as an
+  architecture/formal gate only:
+
+  Trigger correction:
+    analysis/0172 and validation/0236 preserve the exact R3 result SHA-256
+    `edba124b804beeaa7a2d723027fa3a6345f2d546fb0ab861428c6a4727b5cb7b`.
+    R3 already used generation mismatch as the picker trust fence. Its fanout
+    experiment was availability-only; what failed was the fixed global
+    publication-to-last-settlement availability condition. No R3 threshold or
+    evidence has been relaxed or reclassified.
+
+  Selected R4 shape:
+    authority publication release-publishes frozen state and a non-wrapping
+    generation in an O(1) critical section, without an rq scan/lock, per-rq ref
+    loop, allocation, wait, flush, or settlement. It queues at most one
+    preallocated bucket notifier. An O(1) picker accepts only Fresh plus exact
+    acquire-read generation/state/key and final task-local agreement. Mismatch
+    fails closed and records at most one preallocated pull kick; the exact
+    post-rq-lock dispatch seam remains an R4-E1 source-map obligation.
+
+    Each rq has one coalescing recovery owner and at most one preallocated dirty
+    node per admitted projection. Repeated publications update only the newest
+    desired generation; queue depth is bounded by distinct admitted projections
+    (`B_max`), not publication count. One recovery quantum takes one rq lock,
+    at most one bucket membership lock in rq->membership order, updates one
+    projection, scans no inner leaf, and rechecks generation/state before Fresh.
+
+  Liveness/current boundary:
+    R4 makes no impossible liveness promise during infinite publication. After
+    a final publication, stable membership, and weakly fair notifier/rq owners,
+    all active/current members are notified within at most `2*A` logical quanta
+    and each rq settles its stable dirty set within at most `B_max` recovery
+    quanta. These are logical work bounds, not wall-clock evidence.
+
+    Current execution is separate from picker trust. The notifier may request
+    `resched_curr()` under the owning rq lock, but that proves neither
+    instantaneous revoke nor a monitor completion receipt. Production
+    protection still requires the separately modeled monitor interrupt/timer
+    and receipt.
+
+  Canonical validation:
+    run `20260716T-p5a-r4-generation-fenced-coalesced-pull-recovery-r1` passed
+    exact R3 binding, primary Linux commit/tree
+    `5e1ca3037e34823d1ba0cdd1dc04161fac170280` /
+    `54f685aad94f28f0027cbba18cf5e29aadce234a`, 16/16 source anchors, 6/6
+    future absences, safe TLC 16 generated/15 distinct/depth 15 with a partial
+    old-generation pass and notifier restart, two temporal liveness properties,
+    and 47/47 expected unsafe counterexamples. Result
+    SHA-256 is
+    `388e4f41651cf42518aa273e32721aa62ca91d3dd286e88d2060b8dd7fc699b4`.
+
+  Next:
+    N-131 is the exact R4-E1 no-source evidence plan for private storage and
+    admission bounds, post-rq-lock kick dispatch, notifier cursor/restart,
+    one-owner coalescing, one-projection rq-lock recovery, current stop-request
+    observation, and hotplug/lifetime diagnostics. R4 source, primary/patch
+    changes, behavior, runtime denial, cross-path/monitor coverage, protection,
+    latency, performance/cost, deployment, and datacenter claims remain false.

@@ -140,6 +140,7 @@ Updated: 2026-07-15
 | 0132 | Checked with 12/11/depth-11 safe pass and 36 expected unsafe counterexamples | P5A-R3 E1 Source/Locking/Lifetime Evidence Plan Model |
 | 0133 | Checked with 17/16/depth-16 safe pass and 51 expected unsafe counterexamples | P5A-R3 E3 Bucket Concurrency Evidence Plan Model |
 | 0134 | Checked with 8/7/depth-7 safe pass and 40 expected unsafe counterexamples | P5A-R3 E4 Bucket Measurement Plan Model |
+| 0135 | Checked with 16/15/depth-15 safe pass, notifier restart inside the 2*A bound, two stable-window liveness properties, and 47 expected unsafe counterexamples | P5A-R4 Generation-Fenced Coalesced Pull Recovery Model |
 
 ## Planned
 

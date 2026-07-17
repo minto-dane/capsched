@@ -4525,13 +4525,41 @@ P5A-R3 E4 source and exact-source regression gate:
   Two recovery runs over unchanged raw evidence reproduced the same result
   hash. R3, x86_64, E4 acceptance, and E5 are stopped.
 
-  Next is N-130: separately gate a successor that retains an O(1) untrusted
-  generation mismatch but removes synchronous fanout completion from
-  publication authority and proves bounded asynchronous recovery. No source,
-  live behavior, primary/patch promotion, production protection, bare-metal
+  Next is N-130: separately gate a successor that retains the O(1) untrusted
+  generation mismatch and replaces the failed global last-settlement
+  availability condition with bounded coalescing recovery. R3 fanout was
+  already availability-only, not trust authority. No source, live behavior,
+  primary/patch promotion, production protection, bare-metal
   latency, performance/cost, deployment, or datacenter claim is approved.
 
   Clean E2/E3/E4 worktrees were removed after branch/remote verification;
   commits remain reproducible from the parent repo. Sparsebundle compaction
   reduced 16GB to 9.5GB and restored macOS free space from 3.1GB to 18GB.
   Canonical evidence remains; `domainlease-dev` is stopped until next use.
+
+- P5A-R4 N-130 architecture gate is complete:
+
+  Analysis/0172, formal/0135, and validation/0236 select Generation-Fenced
+  Coalesced Pull Recovery. This also corrects the R3 shorthand: generation
+  mismatch was already the trust fence and fanout was availability-only; the
+  rejected condition was global publication-to-last-settlement availability.
+
+  R4 has an O(1) release-published authority critical section, an O(1)
+  fail-closed picker fence, one coalescing bucket notifier, one coalescing owner
+  per rq, newest-generation dirty nodes bounded by `B_max`, and one projection
+  per rq-lock quantum. Current reschedule requests are separate from projection
+  repair and are not monitor receipts.
+
+  Liveness is conditional and honest: after final publication, stable
+  membership, and weak fairness, notifier work is at most `2*A` logical quanta
+  and stable per-rq recovery is at most `B_max` quanta. Infinite publication may
+  remain fail-closed; no wall-clock bound follows.
+
+  Canonical run `20260716T-p5a-r4-generation-fenced-coalesced-pull-recovery-r1`
+  passed 16 anchors, 6 absences, safe TLC 16/15/depth 15 with notifier restart
+  and two liveness properties, and 47 unsafe counterexamples. Result SHA-256 is
+  `388e4f41651cf425`.
+
+  Next is N-131 R4-E1 no-source evidence planning. No R4 source, behavior,
+  protection, latency, performance/cost, deployment, or datacenter claim is
+  approved.

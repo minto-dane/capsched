@@ -428,9 +428,10 @@ Current SchedExecLease L0 readiness:
     `61541cb0c8aedef941e534c73effdea1f6b3d938`.
   - JSON: `sched-exec-lease-p5a-r3-e4-bucket-measurement-v1.json`.
   - Rule: the default-off same-TU experiment completed all 42 cells at 10,000
-    measured pairs each. R3 and synchronous targeted-fanout settlement as a
-    publication-authority condition are rejected. A successor design gate may
-    be drafted, but source, E5, live behavior, production, latency,
+    measured pairs each. R3's fixed global availability gate for targeted
+    fanout last-settlement is rejected; generation mismatch already remained
+    the trust fence. A successor design gate may be drafted, but source, E5,
+    live behavior, production, latency,
     performance, protection, cost, and deployment claims remain false.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of

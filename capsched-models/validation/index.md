@@ -241,6 +241,7 @@ Updated: 2026-07-16
 | 0233 | Internal-ext4 r2 passed four exact-E4-source E3 boots at 20/20 with measurement off, verified eight lossless artifacts, and pruned all successful scratch; controlled E4 measurement may start | SchedExecLease P5A-R3 E4 Exact-Source E3 Regression |
 | 0234 | Arm64 launch freezes all 42 cells, independently recomputes gates, separates valid rejection from harness failure, uses 64-vCPU QEMU, and retains verified lossless binaries on bounded internal-ext4 scratch | SchedExecLease P5A-R3 E4 Arm64 Measurement Launch |
 | 0235 | Complete arm64 evidence rejected 19/42 cells with 26 fixed-gate breaches, zero warnings, clean QEMU/KUnit/artifact integrity, and deterministic postprocess recovery; x86_64 and E5 stopped | SchedExecLease P5A-R3 E4 Arm64 Bucket Measurement Rejection |
+| 0236 | R4 successor gate passed exact R3 binding, 16 anchors, 6 absences, safe TLC 16/15/depth 15 with notifier restart, two liveness properties, and 47 expected counterexamples; R4-E1 planning only is allowed | SchedExecLease P5A-R4 Generation-Fenced Coalesced Pull Recovery |
 
 ## Principles
 
