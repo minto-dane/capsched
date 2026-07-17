@@ -4731,3 +4731,17 @@ P5A-R3 E4 source and exact-source regression gate:
   SHA-256 `59c42baf...eb8d80b`. N-134 is complete and only the exact N-135
   six-boot matrix is authorized. Source/correctness, runtime, promotion,
   protection, deployment, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 N-135 six-boot launch readiness:
+
+  Validation/0247 freezes runner SHA-256 `cff384cb...793a809` against the exact
+  candidate, plan, corrected source gate, and both closures. Config-smoke r2
+  resolved all six fixed arm64/x86_64 standard, hotplug/fault, generic-KASAN,
+  and KCSAN configs with zero builds/boots/skew retries; result SHA-256 is
+  `3e49336b...23e467` and config-manifest SHA-256 is
+  `09b500cc...16a673`. Canonical run `20260717T-p5a-r4-e3-six-boot-r1`, job
+  `p5a-r4-e3-six-boot`, uses one fresh internal-ext4 build per boot, complete
+  retained diagnostic records, sequential scratch retirement, no matrix
+  reduction, and 30-second monitoring. Launch readiness is not a matrix pass.
+  All six boots and a separate artifact closure remain required before any
+  R4-E3 source/correctness decision; runtime and production claims stay false.

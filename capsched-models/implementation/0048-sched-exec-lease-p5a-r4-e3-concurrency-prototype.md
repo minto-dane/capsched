@@ -95,6 +95,21 @@ their normalized SHA-256 is
 `4471b71c85762ce75b609f84649335f300029b223524795bab7f86bb4f51fd8d`.
 N-134 is complete and only the exact six-boot matrix is authorized.
 
+## N-135 Launch Readiness
+
+Validation/0247 freezes runner SHA-256
+`cff384cb01a82a446b811ec90d988ddd062f08946633d78511441599f793a809`.
+It binds the exact source-gate and closure inputs, uses one fresh internal-ext4
+build per boot, records complete diagnostic evidence, rejects all specified
+warnings, and retires each successful build only after sealing its evidence.
+Configuration-smoke r2 resolved the exact arm64/x86_64 standard,
+hotplug/fault, arm64 generic KASAN, and x86_64 KCSAN configs with no build or
+boot. Its result SHA-256 is
+`3e49336b8de70a27eddf3f9b64579d836e60614e633e34faf2fee759ca23e467`.
+The canonical matrix run is fixed as
+`20260717T-p5a-r4-e3-six-boot-r1` under 30-second monitoring. Launch readiness
+is not a matrix pass.
+
 ## Non-Claims
 
 The committed source and preflight do not accept R4-E3 source correctness,

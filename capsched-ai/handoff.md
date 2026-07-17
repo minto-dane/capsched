@@ -6290,3 +6290,28 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     architecture hotplug/fault, arm64 generic KASAN, and x86_64 KCSAN boots.
     R4-E3 source/correctness acceptance and every runtime, promotion,
     protection, deployment, multi-cluster, and datacenter claim remain false.
+
+- N-135 six-boot diagnostic matrix is launch-ready but not passed:
+
+  Frozen runner and smoke:
+    validation/0247 locks the runner at SHA-256
+    `cff384cb01a82a446b811ec90d988ddd062f08946633d78511441599f793a809`.
+    Fresh config-smoke r2 resolved the exact arm64/x86_64 standard and
+    hotplug/fault, arm64 generic KASAN, and x86_64 KCSAN configs. It recorded
+    zero builds, zero boots, zero skew retries, result SHA-256
+    `3e49336b8de70a27eddf3f9b64579d836e60614e633e34faf2fee759ca23e467`,
+    and six-config manifest SHA-256
+    `09b500cc0e7ed793673b1e1ec5478dca9679197b544295cbda49331f4163a673`.
+
+  Launch boundary:
+    canonical run `20260717T-p5a-r4-e3-six-boot-r1`, job
+    `p5a-r4-e3-six-boot`, uses one fresh VM-internal ext4 build per boot,
+    seals complete config/compiler/build/QEMU/console/KTAP/receipt/seed/fault
+    evidence, retires build scratch sequentially, and exposes a 30-second
+    monitor. The matrix cannot reduce after failure.
+
+  Next:
+    Complete all six boots at 36/36 cases and receipts each with zero failure,
+    skip, timeout, or warning, then run a separate read-only artifact closure.
+    Until that closure, R4-E3 source/correctness and every runtime, promotion,
+    protection, deployment, multi-cluster, and datacenter claim remain false.

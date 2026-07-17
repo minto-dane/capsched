@@ -252,6 +252,7 @@ Updated: 2026-07-17
 | 0244 | Attempt 1 completed all semantic/object gates but independent audit found two x86_64 incomplete-build clock-skew warnings omitted by the runner; provisional result is invalid and authorizes nothing | SchedExecLease P5A-R4 E3 Source Gate Attempt 1 Warning Audit |
 | 0245 | Corrected r2 freezes W=1 diagnostic rejection and same-target zero-skew verification; r2 passed all eight modes at SHA-256 `7c24c355...e55cf27` and delegates final authority to validation/0246 | SchedExecLease P5A-R4 E3 Corrected Source Gate r2 Launch |
 | 0246 | Independently snapshots and revalidates all 105 corrected source-gate artifacts, exact Git/source identities, warning integrity, tables, cleanup, and negative claims before N-134 may authorize six boots | SchedExecLease P5A-R4 E3 Source Gate Closure |
+| 0247 | Exact six-configuration smoke passed with zero builds/boots; a hash-locked internal-ext4 arm64/x86_64 standard/fault/KASAN/KCSAN matrix is launch-ready under 30-second monitoring and cannot reduce after failure | SchedExecLease P5A-R4 E3 Six-Boot Diagnostic Matrix Launch |
 
 ## Principles
 

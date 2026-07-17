@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1",
   "date": "2026-07-17",
-  "status": "candidate_committed_n134_source_gate_closed_six_boot_matrix_authorized",
+  "status": "candidate_committed_n134_closed_n135_six_boot_matrix_launch_ready",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r4-e3-concurrency-prototype",
     "branch": "codex/p5a-r4-e3-concurrency-prototype",
@@ -90,6 +90,32 @@
     ],
     "n134_complete": true,
     "diagnostic_matrix_may_start": true
+  },
+  "diagnostic_matrix": {
+    "validation": "capsched-models/validation/0247-sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix-launch.md",
+    "runner": "capsched-models/validation/run-sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix.sh",
+    "runner_sha256": "cff384cb01a82a446b811ec90d988ddd062f08946633d78511441599f793a809",
+    "config_smoke_run_id": "20260717T-p5a-r4-e3-six-boot-config-smoke-r2",
+    "config_smoke_status": "passed_six_config_smoke_without_build_or_boot",
+    "config_smoke_result_sha256": "3e49336b8de70a27eddf3f9b64579d836e60614e633e34faf2fee759ca23e467",
+    "config_manifest_sha256": "09b500cc0e7ed793673b1e1ec5478dca9679197b544295cbda49331f4163a673",
+    "matrix_run_id": "20260717T-p5a-r4-e3-six-boot-r1",
+    "job_name": "p5a-r4-e3-six-boot",
+    "qemu_boots": [
+      "arm64_standard_debug",
+      "x86_64_standard_debug",
+      "arm64_hotplug_fault_injection",
+      "x86_64_hotplug_fault_injection",
+      "arm64_generic_kasan",
+      "x86_64_kcsan"
+    ],
+    "fresh_internal_ext4_build_per_boot": true,
+    "sequential_build_retirement": true,
+    "matrix_reduction_allowed": false,
+    "builds_started_by_config_smoke": 0,
+    "boots_started_by_config_smoke": 0,
+    "matrix_passed": false,
+    "independent_matrix_closure_pending": true
   },
   "safety_flags": {
     "r4_e3_source_accepted": false,
