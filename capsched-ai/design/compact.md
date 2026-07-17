@@ -4677,3 +4677,25 @@ P5A-R3 E4 source and exact-source regression gate:
   gate. E3 correctness, E4, live behavior, primary/patch promotion, protection,
   latency, performance, deployment, multi-node/multi-cluster, and datacenter
   claims remain false.
+
+- P5A-R4 N-134 E3 source and source-gate launch boundary:
+
+  Disposable commit `f9c737c93ecff48c6f512048b05b1b49f4a54ca5`, tree
+  `274f7b5d6969dc68e158819191fe598f9587e0ad`, is one direct child of R4-E2
+  and adds 2,758 lines in exactly `init/Kconfig` and
+  `kernel/sched/exec_lease.c`; diff SHA-256 is
+  `c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781`.
+  Default-off `CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST` contains the exact 36
+  deterministic cases, six allocation faults, real hard-IRQ dispatch-only
+  bridge, unbound work, independent plain oracle/receipts, 15-second waits,
+  and 2,048 stress iterations. It has only synthetic scheduler inputs and no
+  live hook or ABI. Strict source and commit checkpatch are `0/0/0`.
+
+  Non-build preflight `20260717T-p5a-r4-e3-source-preflight-r6` passed from
+  immutable input snapshots and isolated Git-object E2/E3 worktrees, then
+  erased its scratch. Canonical detached source gate
+  `20260717T-p5a-r4-e3-source-gate-r1` must still pass fresh arm64/x86_64
+  E2-parent, all-off, layout-on/test-off, and test-on builds while preserving
+  58 private and 51 expanded values and proving zero disabled E3 artifacts.
+  Until then, diagnostic boots and every correctness/runtime/production claim
+  remain blocked.

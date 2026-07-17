@@ -2793,7 +2793,8 @@
       "status": "pending",
       "blocked_by": [
         "N-133"
-      ]
+      ],
+      "partial_progress": "Exact disposable direct-E2-child candidate f9c737c93ecff48c6f512048b05b1b49f4a54ca5/tree 274f7b5d6969dc68e158819191fe598f9587e0ad is committed and pushed. It adds 2758 lines in exactly init/Kconfig and kernel/sched/exec_lease.c under default-off CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST. The exact 36 cases, six faults, hard-IRQ dispatch-only bridge, unbound work, independent plain oracle/receipts, 15-second waits, and 2048 stress iterations are present. Strict source and commit checkpatch are 0/0/0. Preflight 20260717T-p5a-r4-e3-source-preflight-r6 passed every non-build identity, immutable-input, isolated-Git-worktree, byte-preservation, case/fault, protocol, and forbidden-surface check and removed its scratch. Validation/0243 freezes canonical detached run 20260717T-p5a-r4-e3-source-gate-r1; N-134 remains pending until its fresh arm64/x86_64 four-mode result passes, and no diagnostic boot or correctness/runtime/production claim is yet authorized."
     }
   ],
   "canonical_files": {

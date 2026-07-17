@@ -6194,3 +6194,40 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     primary/patch promotion, runtime denial, monitor enforcement, latency,
     performance/cost, production protection, deployment, multi-node,
     multi-cluster, and datacenter claims remain false.
+
+- N-134 P5A-R4 E3 source candidate and monitored source gate are prepared:
+
+  Exact source:
+    disposable branch `codex/p5a-r4-e3-concurrency-prototype` commit
+    `f9c737c93ecff48c6f512048b05b1b49f4a54ca5`, tree
+    `274f7b5d6969dc68e158819191fe598f9587e0ad`, is the one-commit direct child
+    of R4-E2 `a429fc30252ac6af94c51d96cd4ac24e72d9f83b`. It adds 2,758 lines and
+    deletes none in exactly `init/Kconfig` and `kernel/sched/exec_lease.c`.
+    Diff SHA-256 is
+    `c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781`.
+
+  Contract:
+    default-off `CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST` registers only
+    `sched_exec_lease_r4_concurrency` in the same translation unit. The source
+    has the exact 36 cases, six pre-runnable faults, 15-second waits, 2,048
+    stress iterations, real hard-IRQ dispatch-only irq-work to an unbound
+    high-priority reclaim-capable workqueue, and independent plain oracle plus
+    machine-readable receipts. Inputs remain synthetic; no live hook, ABI,
+    CPUHP registration, or production object exists. Strict source and commit
+    checkpatch are `0/0/0`.
+
+  Preflight and launch:
+    `20260717T-p5a-r4-e3-source-preflight-r6` passed the N-133 seals,
+    repository identity, byte-preservation, case/fault/config, dispatch,
+    publisher, offline-drain, and forbidden-surface checks from immutable input
+    snapshots and isolated Git-object E2/E3 worktrees, then removed all
+    preflight scratch. Validation/0243 and the external job wrappers freeze
+    canonical run `20260717T-p5a-r4-e3-source-gate-r1`, monitored as
+    `p5a-r4-e3-source-gate` every 30 seconds. Its fresh arm64/x86_64 four-mode
+    build must still pass before any diagnostic boot.
+
+  Next:
+    On a valid source-gate result, record closure and launch only the fixed
+    six-boot diagnostic matrix. N-134, R4-E3 correctness, live behavior,
+    primary/patch promotion, protection, latency, performance, deployment,
+    multi-node, multi-cluster, and datacenter claims remain pending or false.
