@@ -8,10 +8,12 @@ CAPSCHED_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
 WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
 LINUX_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/linux"
 PATCH_QUEUE_DIR="$WORKSPACE_DIR/linux-patches"
-SOURCE_RUN_ID=20260717T-p5a-r4-e3-source-gate-r2
+SOURCE_RUN_ID=20260717T-p5a-r4-e3-source-gate-r3
 SOURCE_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-source-gate/$SOURCE_RUN_ID"
 SOURCE_RESULT="$SOURCE_DIR/result.json"
 INVALID_R1_RESULT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-source-gate/20260717T-p5a-r4-e3-source-gate-r1/result.json"
+SIX_BOOT_REJECTION_SOURCE="$CAPSCHED_DIR/capsched-models/validation/sched-exec-lease-p5a-r4-e3-six-boot-attempt-1-rejection-v1.json"
+SIX_BOOT_R1_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix/20260717T-p5a-r4-e3-six-boot-r1"
 RUNNER_SOURCE=${BASH_SOURCE[0]}
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
 OUT_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure"
@@ -20,22 +22,25 @@ INPUT_DIR="$OUT_DIR/inputs"
 EVIDENCE_DIR="$INPUT_DIR/source-gate-evidence"
 PROGRESS_FILE=${PROGRESS_FILE:-}
 
-SOURCE_RESULT_SHA=7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27
+SOURCE_RESULT_SHA=f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24
 INVALID_R1_RESULT_SHA=fb2bc59d01cda4110a2022fc5e810d0b0b445bfb80498f25558476e74667369a
-SOURCE_RUNNER_SHA=61d0a4968b21bf595b710947e11369ca7dfe9316fec91767bedd21f760055cde
+SOURCE_RUNNER_SHA=bbbd4090d37c6836a89b47fa8709e1aa21b4998ba3e067dd30dd6f4c83df4c27
 PLAN_SHA=f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677
 N133_R13_SHA=79a9c62edc8dfa58645028c9ab43af9554f7672bbae267f8b5c7ab0c9157c912
 N133_R14_SHA=2be94265244a7cde6ff5f4d353133fa6315b692b65ad762b743ac0a89d309537
 HARDENING_LIB_SHA=4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6
-SOURCE_MANIFEST_SHA=376f56af0659f6456a28085210441e0941cf2482c498a0dd537b78745c27708e
-ARM_RESULT_SHA=39f67681971e03cd0e7fb6740f717aec45c39200923daab226402e98c1c3efe2
-X86_RESULT_SHA=56217fc651947f80ca0241ff8ab0493d6498e90876cde3ec37f159220c0dbaff
+SOURCE_MANIFEST_SHA=48399905755a630e3988420837812d7a0111339c871b7e2988586e7055b708aa
+ARM_RESULT_SHA=49fffaab3f5c6134cd9c74686084731059ec1f22f81af1288364da07b5facf32
+X86_RESULT_SHA=1a0b381bcd01dde3d6050f056297956c1587ac1306610ff2e6e5966c5225124e
+SIX_BOOT_REJECTION_SHA=c67648292f091d79e752c174f4360deee6b0a22ae696d7cbf76d5fd13cc22871
+SIX_BOOT_CONSOLE_SHA=3e7179423702f445a83b41af975e6ae32b37a60bbbd02941a831f3bce2bb2e78
+SIX_BOOT_KTAP_SHA=4cec066170889e95f8bc90f28e3976cfcc972787ca6fefa8e1642a4d57075c90
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 E2_COMMIT=a429fc30252ac6af94c51d96cd4ac24e72d9f83b
-E3_COMMIT=f9c737c93ecff48c6f512048b05b1b49f4a54ca5
-E3_TREE=274f7b5d6969dc68e158819191fe598f9587e0ad
-E3_DIFF_SHA=c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781
+E3_COMMIT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
+E3_TREE=58c6510c6f517004e37107786d006bb8333b79b8
+E3_DIFF_SHA=096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08
 EXPECTED_ARTIFACTS=105
 
 die()
@@ -77,6 +82,10 @@ done
 [ ! -L "$SOURCE_DIR" ] || die 'source-gate evidence root is a symlink'
 [ -f "$SOURCE_RESULT" ] || die 'canonical corrected source-gate result missing'
 [ ! -L "$SOURCE_RESULT" ] || die 'source-gate result is a symlink'
+[ -f "$SIX_BOOT_REJECTION_SOURCE" ] || die 'six-boot rejection record missing'
+[ ! -L "$SIX_BOOT_REJECTION_SOURCE" ] || die 'six-boot rejection record is a symlink'
+[ -f "$SIX_BOOT_R1_DIR/arm64-standard-debug-console.log" ] || die 'six-boot rejection console missing'
+[ -f "$SIX_BOOT_R1_DIR/arm64-standard-debug-ktap.log" ] || die 'six-boot rejection KTAP missing'
 if [ -e "$OUT_DIR" ] || [ -L "$OUT_DIR" ]; then
 	die "run output already exists: $OUT_DIR"
 fi
@@ -89,6 +98,8 @@ chmod 0700 "$OUT_DIR" "$INPUT_DIR"
 runner_initial_sha=$(sha256sum "$RUNNER_SOURCE" | awk '{print $1}')
 cp -- "$RUNNER_SOURCE" "$INPUT_DIR/closure-runner.sh"
 chmod 0444 "$INPUT_DIR/closure-runner.sh"
+cp -- "$SIX_BOOT_REJECTION_SOURCE" "$INPUT_DIR/six-boot-attempt-1-rejection.json"
+chmod 0444 "$INPUT_DIR/six-boot-attempt-1-rejection.json"
 
 progress '5% snapshotting every canonical source-gate artifact'
 tree_manifest "$SOURCE_DIR" > "$OUT_DIR/source-artifacts-before.sha256"
@@ -109,6 +120,22 @@ progress '15% validating result, immutable inputs, and negative attempt history'
 [ "$(sha256sum "$EVIDENCE_DIR/inputs/n133-r14-result.json" | awk '{print $1}')" = "$N133_R14_SHA" ] || die 'N-133 r14 snapshot changed'
 [ "$(sha256sum "$EVIDENCE_DIR/inputs/immutable-evidence-inputs.sh" | awk '{print $1}')" = "$HARDENING_LIB_SHA" ] || die 'hardening helper snapshot changed'
 [ "$(sha256sum "$INVALID_R1_RESULT" | awk '{print $1}')" = "$INVALID_R1_RESULT_SHA" ] || die 'invalid r1 result history changed'
+[ "$(sha256sum "$INPUT_DIR/six-boot-attempt-1-rejection.json" | awk '{print $1}')" = "$SIX_BOOT_REJECTION_SHA" ] || die 'six-boot rejection snapshot changed'
+[ "$(sha256sum "$SIX_BOOT_R1_DIR/arm64-standard-debug-console.log" | awk '{print $1}')" = "$SIX_BOOT_CONSOLE_SHA" ] || die 'six-boot rejection console changed'
+[ "$(sha256sum "$SIX_BOOT_R1_DIR/arm64-standard-debug-ktap.log" | awk '{print $1}')" = "$SIX_BOOT_KTAP_SHA" ] || die 'six-boot rejection KTAP changed'
+jq -e '
+	.status == "rejected_after_arm64_standard_debug_34_of_36" and
+	.rejected_candidate.commit == "f9c737c93ecff48c6f512048b05b1b49f4a54ca5" and
+	.arm64_standard_debug.suite_pass == 34 and
+	.arm64_standard_debug.suite_fail == 2 and
+	.arm64_standard_debug.suite_skip == 0 and
+	.arm64_standard_debug.console_sha256 == "3e7179423702f445a83b41af975e6ae32b37a60bbbd02941a831f3bce2bb2e78" and
+	.arm64_standard_debug.ktap_sha256 == "4cec066170889e95f8bc90f28e3976cfcc972787ca6fefa8e1642a4d57075c90" and
+	.correction.corrected_commit == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
+	.correction.fresh_source_gate_required == true and
+	.correction.prior_source_gate_reusable == false and
+	.correction.six_boot_matrix_may_restart == false
+' "$INPUT_DIR/six-boot-attempt-1-rejection.json" >/dev/null
 grep -Eiq 'Clock skew detected|modification time .* in the future' \
 	"$(dirname "$INVALID_R1_RESULT")/x86_64-e3-layout-on-test-off-build.log" || die 'r1 negative warning evidence missing'
 grep -Eiq 'Clock skew detected|modification time .* in the future' \
@@ -116,16 +143,16 @@ grep -Eiq 'Clock skew detected|modification time .* in the future' \
 
 jq -e '
 	.status == "passed_source_gate_awaiting_six_boot_diagnostic_matrix" and
-	.candidate_commit == "f9c737c93ecff48c6f512048b05b1b49f4a54ca5" and
+	.candidate_commit == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
 	.candidate_parent == "a429fc30252ac6af94c51d96cd4ac24e72d9f83b" and
-	.candidate_tree == "274f7b5d6969dc68e158819191fe598f9587e0ad" and
-	.candidate_diff_sha256 == "c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781" and
+	.candidate_tree == "58c6510c6f517004e37107786d006bb8333b79b8" and
+	.candidate_diff_sha256 == "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08" and
 	.primary_commit == "5e1ca3037e34823d1ba0cdd1dc04161fac170280" and
 	.patch_queue_commit == "16bb080da472ffabbbafd2698073eca633fb0602" and
 	.immutable_input_snapshots_verified == true and
 	.isolated_git_object_worktrees == true and
 	.exact_direct_e2_child == true and .exact_two_file_boundary == true and
-	.insertions == 2758 and .deletions == 0 and
+	.insertions == 2821 and .deletions == 0 and
 	.e2_private_layout_and_58_probes_preserved == true and
 	.existing_expanded_51_values_preserved == true and
 	.config_default_off == true and .same_translation_unit == true and
@@ -133,7 +160,7 @@ jq -e '
 	.deterministic_case_families == 36 and .allocation_fault_sites == 6 and
 	.hard_timeout_seconds == 15 and .stress_iterations == 2048 and
 	.strict_checkpatch == {errors:0,warnings:0,checks:0} and
-	.w1_compiler_diagnostics == 0 and .clock_skew_retries == 0 and
+	.w1_compiler_diagnostics == 0 and .clock_skew_retries == 2 and
 	.final_clock_skew_warnings == 0 and
 	.architectures == ["arm64","x86_64"] and
 	.disabled_e3_symbols_relocations_strings_initcalls == 0 and
@@ -151,12 +178,35 @@ jq -e '
 progress '35% auditing all build logs, configs, diffs, and value tables'
 [ "$(find "$EVIDENCE_DIR" -maxdepth 1 -name '*-build.log' -type f | wc -l | tr -d ' ')" = 8 ] || die 'build-log count changed'
 [ "$(find "$EVIDENCE_DIR" -maxdepth 1 -name '*-clock-skew-verification.log' -type f | wc -l | tr -d ' ')" = 8 ] || die 'verification-log count changed'
-[ -z "$(find "$EVIDENCE_DIR" -maxdepth 1 -name '*-clock-skew-verification.log' -type f -size +0c -print)" ] || die 'unexpected verification-build output with zero retries'
+[ -s "$EVIDENCE_DIR/x86_64-e3-layout-on-test-off-clock-skew-verification.log" ] || die 'layout-off retry log is empty'
+[ -s "$EVIDENCE_DIR/x86_64-e3-test-on-clock-skew-verification.log" ] || die 'test-on retry log is empty'
+[ "$(find "$EVIDENCE_DIR" -maxdepth 1 -name '*-clock-skew-verification.log' -type f -size +0c | wc -l | tr -d ' ')" = 2 ] || die 'verification retry count changed'
 if grep -Eihn 'Clock skew detected|modification time .* in the future|:[0-9]+(:[0-9]+)?: (fatal )?(warning|error):' \
-	"$EVIDENCE_DIR"/*-build.log > "$OUT_DIR/build-warning-scan.txt"; then
-	die 'corrected source-gate build warning found'
+	"$EVIDENCE_DIR"/*-clock-skew-verification.log > "$OUT_DIR/final-build-warning-scan.txt"; then
+	die 'verification build contains a diagnostic or final clock skew'
 fi
-: > "$OUT_DIR/build-warning-scan.txt"
+: > "$OUT_DIR/final-build-warning-scan.txt"
+if grep -Eihn ':[0-9]+(:[0-9]+)?: (fatal )?(warning|error):' \
+	"$EVIDENCE_DIR"/*-build.log > "$OUT_DIR/compiler-diagnostic-scan.txt"; then
+	die 'initial build contains a compiler diagnostic'
+fi
+: > "$OUT_DIR/compiler-diagnostic-scan.txt"
+grep -Eihn 'Clock skew detected|modification time .* in the future' \
+	"$EVIDENCE_DIR"/*-build.log > "$OUT_DIR/initial-clock-skew-scan.txt" || die 'expected initial clock-skew evidence missing'
+[ "$(wc -l < "$OUT_DIR/initial-clock-skew-scan.txt" | tr -d ' ')" = 8 ] || die 'initial clock-skew warning count changed'
+[ "$(grep -Eih 'Clock skew detected|modification time .* in the future' "$EVIDENCE_DIR/x86_64-e3-layout-on-test-off-build.log" | wc -l | tr -d ' ')" = 4 ] || die 'layout-off initial clock-skew evidence changed'
+[ "$(grep -Eih 'Clock skew detected|modification time .* in the future' "$EVIDENCE_DIR/x86_64-e3-test-on-build.log" | wc -l | tr -d ' ')" = 4 ] || die 'test-on initial clock-skew evidence changed'
+for build_log in "$EVIDENCE_DIR"/*-build.log; do
+	case "$build_log" in
+		*/x86_64-e3-layout-on-test-off-build.log|*/x86_64-e3-test-on-build.log) ;;
+		*) ! grep -Eiq 'Clock skew detected|modification time .* in the future' "$build_log" || die "unexpected initial clock skew: $build_log" ;;
+	esac
+done
+if grep -Eihn '(^|[[:space:]])(warning|error|fatal):' "$EVIDENCE_DIR"/*-build.log |
+	grep -Eiv 'Clock skew detected|modification time .* in the future' > "$OUT_DIR/unexpected-build-warning-scan.txt"; then
+	die 'initial build contains an unexpected warning or error'
+fi
+: > "$OUT_DIR/unexpected-build-warning-scan.txt"
 [ -z "$(find "$EVIDENCE_DIR" -name '*.diff' ! -name 'e3-source.diff' -type f -size +0c -print)" ] || die 'unexpected nonempty comparison diff'
 [ ! -s "$EVIDENCE_DIR/forbidden-runtime-surfaces.txt" ] || die 'forbidden runtime surface recorded'
 grep -q '^total: 0 errors, 0 warnings, 0 checks,' "$EVIDENCE_DIR/checkpatch.log" || die 'strict checkpatch totals changed'
@@ -185,7 +235,7 @@ git -C "$LINUX_DIR" diff --binary "$E2_COMMIT..$E3_COMMIT" > "$OUT_DIR/recompute
 [ "$(sha256sum "$OUT_DIR/recomputed-e3-source.diff" | awk '{print $1}')" = "$E3_DIFF_SHA" ] || die 'candidate diff changed'
 cmp "$OUT_DIR/recomputed-e3-source.diff" "$EVIDENCE_DIR/e3-source.diff" || die 'retained candidate diff mismatch'
 [ "$(git -C "$LINUX_DIR" diff --name-only "$E2_COMMIT..$E3_COMMIT" | sort | tr '\n' ' ')" = 'init/Kconfig kernel/sched/exec_lease.c ' ] || die 'candidate escaped two-file boundary'
-[ "$(git -C "$LINUX_DIR" diff --numstat "$E2_COMMIT..$E3_COMMIT" | awk '{a += $1; d += $2} END {print a+0, d+0}')" = '2758 0' ] || die 'candidate additive size changed'
+[ "$(git -C "$LINUX_DIR" diff --numstat "$E2_COMMIT..$E3_COMMIT" | awk '{a += $1; d += $2} END {print a+0, d+0}')" = '2821 0' ] || die 'candidate additive size changed'
 [ "$(wc -l < "$EVIDENCE_DIR/source-file-hashes.tsv" | tr -d ' ')" = 13 ] || die 'source manifest row count changed'
 while IFS=$'\t' read -r label file_path expected working; do
 	[ "$label" = tree ] && continue
@@ -217,6 +267,9 @@ jq -n \
 	--arg source_run_id "$SOURCE_RUN_ID" \
 	--arg source_result_sha "$SOURCE_RESULT_SHA" \
 	--arg invalid_r1_sha "$INVALID_R1_RESULT_SHA" \
+	--arg six_boot_rejection_sha "$SIX_BOOT_REJECTION_SHA" \
+	--arg six_boot_console_sha "$SIX_BOOT_CONSOLE_SHA" \
+	--arg six_boot_ktap_sha "$SIX_BOOT_KTAP_SHA" \
 	--arg closure_runner "$INPUT_DIR/closure-runner.sh" \
 	--arg closure_runner_sha "$runner_initial_sha" \
 	--arg artifact_manifest "$OUT_DIR/snapshot-artifacts.sha256" \
@@ -226,11 +279,11 @@ jq -n \
 	--arg tree "$E3_TREE" \
 	--arg diff_sha "$E3_DIFF_SHA" \
 	--argjson artifact_count "$EXPECTED_ARTIFACTS" \
-	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-source-gate-closure-result-v1",run_id:$run_id,status:"passed_r4_e3_source_gate_closure_authorizing_six_boot_diagnostic_matrix",source_gate_run_id:$source_run_id,source_gate_result_sha256:$source_result_sha,invalid_attempt_1_result_sha256:$invalid_r1_sha,closure_runner:$closure_runner,closure_runner_sha256:$closure_runner_sha,artifact_snapshot_manifest:$artifact_manifest,artifact_snapshot_manifest_sha256:$artifact_manifest_sha,artifact_count:$artifact_count,all_artifacts_snapshotted_read_only:true,source_artifact_race_check_passed:true,candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,exact_direct_e2_child:true,exact_two_file_boundary:true,insertions:2758,deletions:0,build_logs_audited:8,w1_compiler_diagnostics:0,clock_skew_retries:0,final_clock_skew_warnings:0,architectures:["arm64","x86_64"],fresh_modes_per_architecture:4,r4_private_values_preserved:58,existing_expanded_values_preserved:51,disabled_e3_symbols_relocations_strings_initcalls:0,deterministic_case_families:36,allocation_fault_sites:6,strict_checkpatch:{errors:0,warnings:0,checks:0},primary_linux_changed:false,patch_queue_changed:false,n134_complete:true,six_boot_diagnostic_matrix_may_start:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,monitor_delivery_or_enforcement:false,cross_class_coverage:false,bounded_wall_clock_latency_claim:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
-jq -e '.status == "passed_r4_e3_source_gate_closure_authorizing_six_boot_diagnostic_matrix" and .artifact_count == 105 and .n134_complete == true and .six_boot_diagnostic_matrix_may_start == true and .r4_e3_source_accepted == false and .production_protection == false and .datacenter_ready == false' "$OUT_DIR/result.json.pending" >/dev/null
+	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-source-gate-closure-result-v1",run_id:$run_id,status:"passed_corrected_r4_e3_source_gate_closure_authorizing_full_six_boot_retry",source_gate_run_id:$source_run_id,source_gate_result_sha256:$source_result_sha,invalid_attempt_1_result_sha256:$invalid_r1_sha,six_boot_attempt_1_rejection_sha256:$six_boot_rejection_sha,six_boot_attempt_1_console_sha256:$six_boot_console_sha,six_boot_attempt_1_ktap_sha256:$six_boot_ktap_sha,closure_runner:$closure_runner,closure_runner_sha256:$closure_runner_sha,artifact_snapshot_manifest:$artifact_manifest,artifact_snapshot_manifest_sha256:$artifact_manifest_sha,artifact_count:$artifact_count,all_artifacts_snapshotted_read_only:true,source_artifact_race_check_passed:true,candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,exact_direct_e2_child:true,exact_two_file_boundary:true,insertions:2821,deletions:0,build_logs_audited:8,w1_compiler_diagnostics:0,clock_skew_retries:2,clock_skew_retry_modes:["x86_64_e3_layout_on_test_off","x86_64_e3_test_on"],initial_clock_skew_warning_lines:8,final_clock_skew_warnings:0,architectures:["arm64","x86_64"],fresh_modes_per_architecture:4,r4_private_values_preserved:58,existing_expanded_values_preserved:51,disabled_e3_symbols_relocations_strings_initcalls:0,deterministic_case_families:36,allocation_fault_sites:6,strict_checkpatch:{errors:0,warnings:0,checks:0},prior_six_boot_attempt_rejected:true,prior_six_boot_matrix_passed:false,primary_linux_changed:false,patch_queue_changed:false,n134_complete:true,six_boot_diagnostic_matrix_may_start:true,full_six_boot_retry_required:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,monitor_delivery_or_enforcement:false,cross_class_coverage:false,bounded_wall_clock_latency_claim:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
+jq -e '.status == "passed_corrected_r4_e3_source_gate_closure_authorizing_full_six_boot_retry" and .artifact_count == 105 and .clock_skew_retries == 2 and .final_clock_skew_warnings == 0 and .prior_six_boot_attempt_rejected == true and .prior_six_boot_matrix_passed == false and .n134_complete == true and .six_boot_diagnostic_matrix_may_start == true and .full_six_boot_retry_required == true and .r4_e3_source_accepted == false and .production_protection == false and .datacenter_ready == false' "$OUT_DIR/result.json.pending" >/dev/null
 mv "$OUT_DIR/result.json.pending" "$OUT_DIR/result.json"
 sha256sum "$OUT_DIR/result.json" > "$OUT_DIR/result.sha256"
 chmod -R a-w "$INPUT_DIR"
-progress '100% N-134 source-gate closure passed; exact six-boot matrix may start'
+progress '100% corrected N-134 closure passed; full six-boot retry may start'
 printf 'result=%s\n' "$OUT_DIR/result.json"
 printf 'sha256=%s\n' "$(awk '{print $1}' "$OUT_DIR/result.sha256")"

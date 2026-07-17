@@ -13,9 +13,9 @@ WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
 LINUX_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/linux"
 PATCH_QUEUE_DIR="$WORKSPACE_DIR/linux-patches"
 PLAN_SOURCE="$CAPSCHED_DIR/capsched-models/analysis/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan-v1.json"
-SOURCE_GATE_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-source-gate/20260717T-p5a-r4-e3-source-gate-r2/result.json"
-CLOSURE_R1_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure/20260717T-p5a-r4-e3-source-gate-closure-r1/result.json"
-CLOSURE_R2_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure/20260717T-p5a-r4-e3-source-gate-closure-r2/result.json"
+SOURCE_GATE_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-source-gate/20260717T-p5a-r4-e3-source-gate-r3/result.json"
+CLOSURE_R3_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure/20260717T-p5a-r4-e3-source-gate-closure-r3/result.json"
+CLOSURE_R4_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure/20260717T-p5a-r4-e3-source-gate-closure-r4/result.json"
 HARDENING_LIB_SOURCE="$SCRIPT_DIR/lib/immutable-evidence-inputs.sh"
 RUNNER_SOURCE=${BASH_SOURCE[0]}
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
@@ -32,16 +32,17 @@ QEMU_TIMEOUT_FAULT=${QEMU_TIMEOUT_FAULT:-1800}
 QEMU_TIMEOUT_SANITIZER=${QEMU_TIMEOUT_SANITIZER:-3600}
 
 PLAN_SHA=f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677
-CLOSURE_R1_SHA=4daf672d70cdead4bdd7d00f40381d99b4b6f1e9807fced16f9d68ee9578df91
-CLOSURE_R2_SHA=4d2dae97f059ab73ad233e4232ce26fc27e5667cf99de5540719d62965c4af10
-SOURCE_GATE_SHA=7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27
+CLOSURE_R3_SHA=f6763fbb940c42d67390cae46c20e148f86020a3c2af4431e12562c198fcf613
+CLOSURE_R4_SHA=92e9918d0c04147a9b78c66744081cf165564458204a18c43501d82617318e6e
+SOURCE_GATE_SHA=f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24
+SIX_BOOT_ATTEMPT_1_REJECTION_SHA=c67648292f091d79e752c174f4360deee6b0a22ae696d7cbf76d5fd13cc22871
 HARDENING_LIB_SHA=4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 E2_COMMIT=a429fc30252ac6af94c51d96cd4ac24e72d9f83b
-E3_COMMIT=f9c737c93ecff48c6f512048b05b1b49f4a54ca5
-E3_TREE=274f7b5d6969dc68e158819191fe598f9587e0ad
-E3_DIFF_SHA=c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781
+E3_COMMIT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
+E3_TREE=58c6510c6f517004e37107786d006bb8333b79b8
+E3_DIFF_SHA=096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08
 SUITE=sched_exec_lease_r4_concurrency
 REQUIRED_CASES=36
 REQUIRED_RECEIPTS=36
@@ -181,24 +182,25 @@ runner_initial_sha=$(capsched_sha256_file "$RUNNER_SOURCE")
 capsched_snapshot_verified_file "$RUNNER_SOURCE" "$runner_initial_sha" "$INPUT_DIR/runner.sh" || die 'could not snapshot runner'
 capsched_snapshot_verified_file "$PLAN_SOURCE" "$PLAN_SHA" "$INPUT_DIR/plan.json" || die 'could not snapshot plan'
 capsched_snapshot_verified_file "$SOURCE_GATE_SOURCE" "$SOURCE_GATE_SHA" "$INPUT_DIR/source-gate-result.json" || die 'could not snapshot source gate'
-capsched_snapshot_verified_file "$CLOSURE_R1_SOURCE" "$CLOSURE_R1_SHA" "$INPUT_DIR/source-gate-closure-r1.json" || die 'could not snapshot closure r1'
-capsched_snapshot_verified_file "$CLOSURE_R2_SOURCE" "$CLOSURE_R2_SHA" "$INPUT_DIR/source-gate-closure-r2.json" || die 'could not snapshot closure r2'
+capsched_snapshot_verified_file "$CLOSURE_R3_SOURCE" "$CLOSURE_R3_SHA" "$INPUT_DIR/source-gate-closure-r3.json" || die 'could not snapshot closure r3'
+capsched_snapshot_verified_file "$CLOSURE_R4_SOURCE" "$CLOSURE_R4_SHA" "$INPUT_DIR/source-gate-closure-r4.json" || die 'could not snapshot closure r4'
 PLAN="$INPUT_DIR/plan.json"
 SOURCE_GATE="$INPUT_DIR/source-gate-result.json"
-CLOSURE_R1="$INPUT_DIR/source-gate-closure-r1.json"
-CLOSURE_R2="$INPUT_DIR/source-gate-closure-r2.json"
+CLOSURE_R3="$INPUT_DIR/source-gate-closure-r3.json"
+CLOSURE_R4="$INPUT_DIR/source-gate-closure-r4.json"
 
 progress '2% locking N-134 closure, exact matrix, and repository identities'
 jq -e '
   .status == "passed_source_gate_awaiting_six_boot_diagnostic_matrix" and
-  .candidate_commit == "f9c737c93ecff48c6f512048b05b1b49f4a54ca5" and
+  .candidate_commit == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
   .candidate_parent == "a429fc30252ac6af94c51d96cd4ac24e72d9f83b" and
-  .candidate_tree == "274f7b5d6969dc68e158819191fe598f9587e0ad" and
-  .candidate_diff_sha256 == "c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781" and
+  .candidate_tree == "58c6510c6f517004e37107786d006bb8333b79b8" and
+  .candidate_diff_sha256 == "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08" and
   .strict_checkpatch == {errors:0,warnings:0,checks:0} and
   .architectures == ["arm64","x86_64"] and
   .fresh_modes_per_architecture == ["exact_e2_parent","e3_all_r4_options_off","e3_r4_layout_on_test_off","e3_r4_kunit_test_on"] and
   .w1_compiler_diagnostics == 0 and
+  .clock_skew_retries == 2 and
   .final_clock_skew_warnings == 0 and
   .disabled_e3_symbols_relocations_strings_initcalls == 0 and
   .e2_private_layout_and_58_probes_preserved == true and
@@ -211,16 +213,21 @@ jq -e '
   .multi_cluster_ready == false and
   .datacenter_ready == false
 ' "$SOURCE_GATE" >/dev/null
-for closure in "$CLOSURE_R1" "$CLOSURE_R2"; do
+for closure in "$CLOSURE_R3" "$CLOSURE_R4"; do
 	jq -e '
-	  .status == "passed_r4_e3_source_gate_closure_authorizing_six_boot_diagnostic_matrix" and
-	  .source_gate_result_sha256 == "7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27" and
-	  .candidate_commit == "f9c737c93ecff48c6f512048b05b1b49f4a54ca5" and
+	  .status == "passed_corrected_r4_e3_source_gate_closure_authorizing_full_six_boot_retry" and
+	  .source_gate_result_sha256 == "f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24" and
+	  .six_boot_attempt_1_rejection_sha256 == "c67648292f091d79e752c174f4360deee6b0a22ae696d7cbf76d5fd13cc22871" and
+	  .candidate_commit == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
 	  .candidate_parent == "a429fc30252ac6af94c51d96cd4ac24e72d9f83b" and
-	  .candidate_tree == "274f7b5d6969dc68e158819191fe598f9587e0ad" and
+	  .candidate_tree == "58c6510c6f517004e37107786d006bb8333b79b8" and
 	  .artifact_count == 105 and
+	  .clock_skew_retries == 2 and .final_clock_skew_warnings == 0 and
+	  .prior_six_boot_attempt_rejected == true and
+	  .prior_six_boot_matrix_passed == false and
 	  .n134_complete == true and
 	  .six_boot_diagnostic_matrix_may_start == true and
+	  .full_six_boot_retry_required == true and
 	  .r4_e3_source_accepted == false and
 	  .r4_e3_concurrency_correctness_accepted == false and
 	  .production_protection == false and
@@ -229,7 +236,7 @@ for closure in "$CLOSURE_R1" "$CLOSURE_R2"; do
 	  .datacenter_ready == false
 	' "$closure" >/dev/null
 done
-[ "$(jq -r '.artifact_snapshot_manifest_sha256' "$CLOSURE_R1")" = "$(jq -r '.artifact_snapshot_manifest_sha256' "$CLOSURE_R2")" ] || die 'closure artifact manifests disagree'
+[ "$(jq -r '.artifact_snapshot_manifest_sha256' "$CLOSURE_R3")" = "$(jq -r '.artifact_snapshot_manifest_sha256' "$CLOSURE_R4")" ] || die 'closure artifact manifests disagree'
 jq -e '
   .status == "r4_e3_concurrency_diagnostic_pre_source_plan" and
   .source_boundary.future_parent == "a429fc30252ac6af94c51d96cd4ac24e72d9f83b" and
@@ -650,8 +657,8 @@ if [ "${CONFIG_SMOKE_ONLY:-0}" = 1 ]; then
 	retire_build "$current_build"
 	capsched_verify_file_sha256 "$RUNNER_SOURCE" "$runner_initial_sha" || die 'runner changed during config smoke'
 	capsched_verify_file_sha256 "$SOURCE_GATE" "$SOURCE_GATE_SHA" || die 'source gate snapshot changed during config smoke'
-	jq -n --arg run_id "$RUN_ID" --arg runner_sha "$runner_initial_sha" --argjson retries "$clock_skew_retries" \
-		'{schema_version:1,status:"passed_six_config_smoke_without_build_or_boot",run_id:$run_id,runner_sha256:$runner_sha,configs:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],clock_skew_retries:$retries,builds_started:0,boots_started:0,matrix_passed:false,r4_e3_source_accepted:false,production_protection:false,datacenter_ready:false}' > "$OUT_DIR/config-smoke-result.json"
+	jq -n --arg run_id "$RUN_ID" --arg runner_sha "$runner_initial_sha" --arg candidate "$E3_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" --arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" --argjson retries "$clock_skew_retries" \
+		'{schema_version:1,status:"passed_corrected_six_config_smoke_without_build_or_boot",run_id:$run_id,runner_sha256:$runner_sha,candidate_commit:$candidate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_rejected:true,full_six_boot_retry_required:true,configs:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],clock_skew_retries:$retries,builds_started:0,boots_started:0,matrix_passed:false,r4_e3_source_accepted:false,production_protection:false,datacenter_ready:false}' > "$OUT_DIR/config-smoke-result.json"
 	progress '100% all six diagnostic configs resolved; no build or boot started'
 	exit 0
 fi
@@ -668,8 +675,8 @@ capsched_verify_file_sha256 "$RUNNER_SOURCE" "$runner_initial_sha" || die 'runne
 capsched_verify_file_sha256 "$INPUT_DIR/runner.sh" "$runner_initial_sha" || die 'runner snapshot changed'
 capsched_verify_file_sha256 "$PLAN" "$PLAN_SHA" || die 'plan snapshot changed'
 capsched_verify_file_sha256 "$SOURCE_GATE" "$SOURCE_GATE_SHA" || die 'source gate snapshot changed'
-capsched_verify_file_sha256 "$CLOSURE_R1" "$CLOSURE_R1_SHA" || die 'closure r1 snapshot changed'
-capsched_verify_file_sha256 "$CLOSURE_R2" "$CLOSURE_R2_SHA" || die 'closure r2 snapshot changed'
+capsched_verify_file_sha256 "$CLOSURE_R3" "$CLOSURE_R3_SHA" || die 'closure r3 snapshot changed'
+capsched_verify_file_sha256 "$CLOSURE_R4" "$CLOSURE_R4_SHA" || die 'closure r4 snapshot changed'
 [ -z "$(git -C "$E3_DIR" status --porcelain --untracked-files=no)" ] || die 'source worktree changed during matrix'
 [ -z "$(find "$BUILD_ROOT" -mindepth 1 -maxdepth 1 -print -quit)" ] || die 'fresh build output was not retired'
 
@@ -686,12 +693,12 @@ jq -e 'length == 6 and all(.status == "passed") and all(.cases_passed == 36) and
 jq -n \
 	--arg run_id "$RUN_ID" --arg candidate "$E3_COMMIT" --arg parent "$E2_COMMIT" --arg tree "$E3_TREE" --arg diff_sha "$E3_DIFF_SHA" \
 	--arg primary "$PRIMARY_COMMIT" --arg patch_queue "$PATCH_QUEUE_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" \
-	--arg closure_r1_sha "$CLOSURE_R1_SHA" --arg closure_r2_sha "$CLOSURE_R2_SHA" \
+	--arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" \
 	--arg runner "$INPUT_DIR/runner.sh" --arg runner_sha "$runner_initial_sha" --arg plan "$PLAN" --arg plan_sha "$PLAN_SHA" \
 	--arg source_gate "$SOURCE_GATE" \
 	--arg boot_results "$boot_results_json" --arg boot_results_sha "$(sha256sum "$boot_results_json" | awk '{print $1}')" \
 	--slurpfile results "$boot_results_json" --argjson clock_skew_retries "$clock_skew_retries" \
-	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix-result-v1",run_id:$run_id,status:"passed_six_boot_diagnostic_matrix_awaiting_independent_closure",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,source_gate_result:$source_gate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r1_sha,$closure_r2_sha],runner:$runner,runner_sha256:$runner_sha,plan:$plan,plan_sha256:$plan_sha,architectures:["arm64","x86_64"],qemu_boots:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],suite:"sched_exec_lease_r4_concurrency",required_cases_per_boot:36,passed_cases_per_boot:36,total_passed_cases:216,receipts_per_boot:36,total_receipts:216,stress_families:["bridge","notifier","migration","hotplug","retirement"],stress_iterations_per_family_per_boot:2048,allocation_fault_sites:6,case_failures:0,case_skips:0,case_timeouts:0,warning_reports:0,build_clock_skew_retries:$clock_skew_retries,final_build_clock_skew_warnings:0,matrix_reduction:false,fresh_build_output_per_boot:true,sequential_build_retirement:true,compiler_config_image_object_qemu_ktap_console_seed_fault_receipts_recorded:true,boot_results:$boot_results,boot_results_sha256:$boot_results_sha,results:$results[0],six_boot_matrix_passed:true,independent_matrix_closure_pending:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,primary_linux_changed:false,patch_queue_changed:false,real_scheduler_attachment:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,monitor_delivery_or_enforcement:false,cross_class_coverage:false,bounded_wall_clock_latency_claim:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
+	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix-result-v1",run_id:$run_id,status:"passed_six_boot_diagnostic_matrix_awaiting_independent_closure",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,source_gate_result:$source_gate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_rejected:true,full_six_boot_retry_completed:true,runner:$runner,runner_sha256:$runner_sha,plan:$plan,plan_sha256:$plan_sha,architectures:["arm64","x86_64"],qemu_boots:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],suite:"sched_exec_lease_r4_concurrency",required_cases_per_boot:36,passed_cases_per_boot:36,total_passed_cases:216,receipts_per_boot:36,total_receipts:216,stress_families:["bridge","notifier","migration","hotplug","retirement"],stress_iterations_per_family_per_boot:2048,allocation_fault_sites:6,case_failures:0,case_skips:0,case_timeouts:0,warning_reports:0,build_clock_skew_retries:$clock_skew_retries,final_build_clock_skew_warnings:0,matrix_reduction:false,fresh_build_output_per_boot:true,sequential_build_retirement:true,compiler_config_image_object_qemu_ktap_console_seed_fault_receipts_recorded:true,boot_results:$boot_results,boot_results_sha256:$boot_results_sha,results:$results[0],six_boot_matrix_passed:true,independent_matrix_closure_pending:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,primary_linux_changed:false,patch_queue_changed:false,real_scheduler_attachment:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,monitor_delivery_or_enforcement:false,cross_class_coverage:false,bounded_wall_clock_latency_claim:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
 jq -e '.status == "passed_six_boot_diagnostic_matrix_awaiting_independent_closure" and .qemu_boots == ["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"] and .total_passed_cases == 216 and .total_receipts == 216 and .case_failures == 0 and .case_skips == 0 and .case_timeouts == 0 and .warning_reports == 0 and .six_boot_matrix_passed == true and .independent_matrix_closure_pending == true and .r4_e3_source_accepted == false and .production_protection == false and .datacenter_ready == false' "$OUT_DIR/result.json.pending" >/dev/null
 mv "$OUT_DIR/result.json.pending" "$OUT_DIR/result.json"
 sha256sum "$OUT_DIR/result.json" > "$OUT_DIR/result.sha256"

@@ -3,9 +3,9 @@
 Date: 2026-07-17
 
 Status: six-boot attempt 1 rejected the prior candidate at 34/36 in the first
-arm64 boot. A corrected direct-E2-child candidate is committed and awaits a
-fresh N-134 source gate. The prior closures authorize no further boot. No
-R4-E3 source/correctness or runtime claim is accepted yet.
+arm64 boot. The corrected direct-E2-child candidate passed a fresh N-134
+source gate and two independent closures. Only a complete, unreduced six-boot
+retry is authorized. No R4-E3 source/correctness or runtime claim is accepted.
 
 ## Disposable Source Identity
 
@@ -121,8 +121,41 @@ explicit IRQ/recovery/dirty/notifier quiescence and protocol-error exhaustion.
 Retire snapshots pending notifier and running/requeued recovery cancellation
 state under their respective locks before releasing the forced-schedule gate.
 The correction remains inside the default-off synthetic KUnit harness and
-passes strict checkpatch 0/0/0. It must repeat the dual-architecture source
-gate and independent closure before a new, unreduced six-boot run is allowed.
+passes strict checkpatch 0/0/0.
+
+## Corrected Source Gate and Closure
+
+Source-gate r3 passed all eight fresh arm64/x86_64 modes at result SHA-256
+`f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24`.
+It preserved the 58/51 value tables, emitted zero disabled E3 artifacts, and
+reported zero W=1 diagnostics. Two x86_64 initial builds detected sub-3ms
+future mtimes; exact same-target verification builds were clean, so the
+result retains two retries and zero final clock-skew warnings.
+
+Validation/0249 independently copied and audited all 105 artifacts twice.
+Closure r3/r4 SHA-256 values are
+`f6763fbb940c42d67390cae46c20e148f86020a3c2af4431e12562c198fcf613`
+and `92e9918d0c04147a9b78c66744081cf165564458204a18c43501d82617318e6e`.
+Their normalized SHA-256 is
+`01ca034cf59238314882bce35eeffb617b093ca9d4e99b2bbefe48096f3c04a6`,
+and both bind the prior rejection rather than treating it as a partial pass.
+N-134 is complete for corrected candidate `da9ce915...`; all six boots must
+now be resolved and rerun from fresh output.
+
+## Corrected Retry Readiness
+
+Validation/0250 freezes corrected six-boot runner SHA-256
+`184d8a0f898466474f1dc11fae7b4fa6f90b33decce78549f76173201e4d2964`.
+Configuration-smoke r3 resolved all six exact configs, started zero builds and
+zero boots, and passed at result SHA-256
+`95ab9341035cea1f389b528126f5a63f10f8528f9f3fc15f09b34a490fdbcb37`.
+Its config manifest remains
+`09b500cc0e7ed793673b1e1ec5478dca9679197b544295cbda49331f4163a673`.
+
+The full retry is not launched yet. Temporary source-gate checkouts expanded
+the sparsebundle to 19 GiB and left only 1.9 GiB host free, below the runner's
+12 GiB gate. Lossless APFS compaction must finish and restore the threshold
+before the complete matrix may start.
 
 ## Non-Claims
 
