@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1",
   "date": "2026-07-17",
-  "status": "corrected_candidate_n134_closed_attempt_2_rejected_receipt_runner_corrected_smoke_pending",
+  "status": "corrected_candidate_n134_closed_attempt_2_rejected_receipt_hardened_r3_launch_ready",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r4-e3-concurrency-prototype",
     "branch": "codex/p5a-r4-e3-concurrency-prototype",
@@ -105,15 +105,16 @@
     "diagnostic_matrix_may_start": true
   },
   "diagnostic_matrix": {
-    "validation": "capsched-models/validation/0250-sched-exec-lease-p5a-r4-e3-corrected-six-boot-retry-readiness.md",
+    "validation": "capsched-models/validation/0252-sched-exec-lease-p5a-r4-e3-receipt-hardened-retry-readiness.md",
     "runner": "capsched-models/validation/run-sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix.sh",
-    "runner_sha256": "184d8a0f898466474f1dc11fae7b4fa6f90b33decce78549f76173201e4d2964",
-    "config_smoke_run_id": "20260717T-p5a-r4-e3-six-boot-config-smoke-r3",
+    "runner_sha256": "0fd64ef6aa75330b18a87934fde4ad32978ff077ef9189891bb6ae45920ddb06",
+    "config_smoke_run_id": "20260717T-p5a-r4-e3-six-boot-config-smoke-r4",
     "config_smoke_status": "passed_corrected_six_config_smoke_without_build_or_boot",
-    "config_smoke_result_sha256": "95ab9341035cea1f389b528126f5a63f10f8528f9f3fc15f09b34a490fdbcb37",
-    "config_manifest_sha256": "09b500cc0e7ed793673b1e1ec5478dca9679197b544295cbda49331f4163a673",
-    "matrix_run_id": "20260717T-p5a-r4-e3-six-boot-r2",
-    "job_name": "p5a-r4-e3-six-boot-r2",
+    "config_smoke_result_sha256": "b31a089f0fe04c0c604be0be1a5b34f83f143263a2a09b916c0fbe647d11571d",
+    "config_manifest_sha256": "bbe1eadbdbf0ac5cd1f9403bc34dc89a96a15e6ede00d6d4a25f9b018599f210",
+    "receipt_ledger_jsonl_selftest_passed": true,
+    "matrix_run_id": "20260717T-p5a-r4-e3-six-boot-r3",
+    "job_name": "p5a-r4-e3-six-boot-r3",
     "qemu_boots": [
       "arm64_standard_debug",
       "x86_64_standard_debug",
@@ -137,7 +138,7 @@
       "console_sha256": "3e7179423702f445a83b41af975e6ae32b37a60bbbd02941a831f3bce2bb2e78",
       "ktap_sha256": "4cec066170889e95f8bc90f28e3976cfcc972787ca6fefa8e1642a4d57075c90"
     },
-    "retry_launch_status": "blocked_pending_post_commit_corrected_runner_config_smoke",
+    "retry_launch_status": "launch_ready_exact_receipt_hardened_preflight_required",
     "host_free_kib_required": 12582912,
     "host_free_kib_observed_at_preflight": 53436640,
     "storage_launch_gate_satisfied": true,
@@ -204,15 +205,15 @@
     "fresh_independent_closure_pending": false,
     "fresh_independent_closure_passed_twice": true,
     "prior_config_smoke_result_sha256": "95ab9341035cea1f389b528126f5a63f10f8528f9f3fc15f09b34a490fdbcb37",
-    "config_smoke_pending": true,
-    "config_smoke_passed": false,
-    "config_smoke_result_sha256": null,
+    "config_smoke_pending": false,
+    "config_smoke_passed": true,
+    "config_smoke_result_sha256": "b31a089f0fe04c0c604be0be1a5b34f83f143263a2a09b916c0fbe647d11571d",
     "receipt_ledger_serializer_corrected": true,
     "receipt_ledger_jsonl_selftest_added": true,
     "storage_compaction_pending": false,
     "storage_launch_gate_satisfied": true,
     "exact_launch_preflight_passed": true,
-    "six_boot_restart_authorized": false
+    "six_boot_restart_authorized": true
   },
   "safety_flags": {
     "r4_e3_source_accepted": false,

@@ -187,6 +187,16 @@ pre-commit regression smoke passed the self-test and all six configurations
 with zero builds/boots. A fresh post-commit configuration smoke remains
 required before a complete r3 retry may launch.
 
+Validation/0252 records post-commit smoke
+`20260717T-p5a-r4-e3-six-boot-config-smoke-r4`. It passed at result SHA-256
+`b31a089f0fe04c0c604be0be1a5b34f83f143263a2a09b916c0fbe647d11571d`;
+the six-config manifest SHA-256 is
+`bbe1eadbdbf0ac5cd1f9403bc34dc89a96a15e6ede00d6d4a25f9b018599f210`.
+The serializer self-test passed, all six configs are byte-identical to r3,
+and no build, boot, object, image, console, KTAP, or boot result was produced.
+Run `20260717T-p5a-r4-e3-six-boot-r3` is now authorized under the repeated
+identity, cleanliness, VM, scratch, and host-storage gates.
+
 ## Non-Claims
 
 The committed source correction and evidence-runner correction do not accept R4-E3 source correctness,
