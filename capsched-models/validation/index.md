@@ -247,6 +247,7 @@ Updated: 2026-07-17
 | 0239 | Frozen R4-E2 source was launched as a detached Apple Container arm64/x86_64 four-mode build with process/result probes and 30-second progress monitoring; no layout pass is claimed yet | SchedExecLease P5A-R4 E2 Dual-Architecture Layout Launch |
 | 0240 | Independent object/config/source/hash closure confirmed 51 unchanged values, 58 enabled-only private symbols, zero disabled artifacts or ordinary growth, and 49,664 bytes/rq on arm64/x86_64; R4-E3 planning only is allowed | SchedExecLease P5A-R4 E2 Evidence Closure |
 | 0241 | Reproduced exact R4-E2/patch/source closure with 48 anchors, 10 absences, safe TLC 30/29/depth 29, four liveness properties, and 76/76 unsafe counterexamples; only the exact disposable two-file R4-E3 source draft is allowed | SchedExecLease P5A-R4 E3 Concurrency and Diagnostic Evidence Plan |
+| 0242 | Fixed dot-segment/output-reuse, count-only plan-substitution, and hash-reopen defects; focused controls and independent immutable r13/r14 runs pass with normalized SHA-256 `bea904bf...e9a7f26`; N-133 remains plan-only | SchedExecLease P5A-R4 E3 Evidence Generator Hardening |
 
 ## Principles
 

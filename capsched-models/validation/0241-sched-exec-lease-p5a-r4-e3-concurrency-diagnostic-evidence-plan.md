@@ -2,10 +2,11 @@
 
 Date: 2026-07-17
 
-Status: passed plan-only gate. The exact disposable, default-off R4-E3
-two-file synthetic KUnit source draft may be created. R4-E3 source,
+Status: plan semantics passed, but the r5/r6 evidence-generator seal is
+superseded by validation/0242. The exact disposable, default-off R4-E3
+two-file synthetic KUnit source draft remains authorized. R4-E3 source,
 concurrency correctness, scheduler behavior, and production use remain
-unaccepted.
+unaccepted. Do not cite r5/r6 as sealed generator evidence.
 
 ## Scope
 
@@ -51,7 +52,14 @@ overwritten, the locale is fixed, and the runner pathname and SHA-256 are
 recorded in every result. Final canonical/reproduction evidence therefore uses
 r5/r6 below; r3/r4 remain pre-seal confirmation, not the cited final result.
 
-## Canonical and Reproduction Runs
+## Historical Pre-Hardening Runs (Superseded)
+
+The r5/r6 results below preserve the evidence available when this record was
+written. A later exhaustive diff review reproduced three generator-robustness
+defects: dot-segment RUN_ID/output-root reuse, count-only plan substitution,
+and hash-then-reopen input races. Validation/0242 fixes all three and replaces
+r5/r6 with canonical r9/r10. The plan/model semantics recorded here remain
+valid; only the generator-seal claim is superseded.
 
 Canonical:
 

@@ -7,14 +7,21 @@ WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
 RUNNER="$SCRIPT_DIR/$(basename "${BASH_SOURCE[0]}")"
 LINUX_DIR=${DOMAINLEASE_LINUX_DIR:-"$WORKSPACE_DIR/linux"}
 PATCH_DIR="$WORKSPACE_DIR/linux-patches"
-CONFIG="$CAPSCHED_DIR/capsched-models/analysis/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan-v1.json"
-MODEL_DIR="$CAPSCHED_DIR/capsched-models/formal/0137-p5a-r4-e3-concurrency-diagnostic-evidence-plan-model"
+CONFIG_SOURCE=${CAPSCHED_PLAN_CONFIG:-"$CAPSCHED_DIR/capsched-models/analysis/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan-v1.json"}
+MODEL_SOURCE_DIR="$CAPSCHED_DIR/capsched-models/formal/0137-p5a-r4-e3-concurrency-diagnostic-evidence-plan-model"
 MODEL=P5AR4E3ConcurrencyDiagnosticEvidencePlan.tla
 SAFE_CFG=P5AR4E3ConcurrencyDiagnosticEvidencePlanSafe.cfg
-TLA_JAR=${TLA_JAR:-"$WORKSPACE_DIR/build/tools/tla/tla2tools.jar"}
+TLA_JAR_SOURCE=${TLA_JAR:-"$WORKSPACE_DIR/build/tools/tla/tla2tools.jar"}
+HARDENING_LIB="$SCRIPT_DIR/lib/immutable-evidence-inputs.sh"
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
-OUT_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan/$RUN_ID"
+RUN_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan"
+OUT_DIR="$RUN_ROOT/$RUN_ID"
 PROGRESS_FILE=${PROGRESS_FILE:-}
+EXPECTED_CONFIG_SHA256=f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677
+EXPECTED_MODEL_SHA256=35b29a710a5ca87b90bb3e40da694544ed270aac5dd621de99147c6bb5ebe111
+EXPECTED_SAFE_CFG_SHA256=253db7b57514f21d2054d4e3520602defd7d8c1291e456e94d7515ca0c17267a
+EXPECTED_TLA_JAR_SHA256=936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88
+EXPECTED_HARDENING_LIB_SHA256=4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6
 export LC_ALL=C
 
 die()
@@ -42,20 +49,65 @@ resolve_basis_path()
 	esac
 }
 
-case "$RUN_ID" in
-	''|*[!A-Za-z0-9._-]*)
-		die "invalid RUN_ID: $RUN_ID"
-		;;
-esac
-
-for command_name in awk diff git grep java jq sed sha256sum sort tail tr wc; do
+for command_name in awk chmod cp diff git grep java jq mkdir mv sed sha256sum sort tail tr wc; do
 	command -v "$command_name" >/dev/null 2>&1 \
 		|| die "missing command: $command_name"
 done
 
-[ -f "$TLA_JAR" ] || die "missing TLA jar: $TLA_JAR"
-[ ! -e "$OUT_DIR/result.json" ] || die "result already exists: $OUT_DIR/result.json"
-mkdir -p "$OUT_DIR/generated-unsafe-configs"
+case "$RUN_ID" in
+	''|.|..|[!A-Za-z0-9]*|*[!A-Za-z0-9._-]*)
+		die "invalid RUN_ID: $RUN_ID"
+		;;
+esac
+if [ ! -f "$TLA_JAR_SOURCE" ] || [ -L "$TLA_JAR_SOURCE" ]; then
+	die "missing or symlinked TLA jar: $TLA_JAR_SOURCE"
+fi
+if [ -L "$RUN_ROOT" ]; then
+	die "run output root is symlinked: $RUN_ROOT"
+fi
+mkdir -p -- "$RUN_ROOT"
+if [ ! -d "$RUN_ROOT" ] || [ -L "$RUN_ROOT" ]; then
+	die "invalid run output root: $RUN_ROOT"
+fi
+mkdir -- "$OUT_DIR" 2>/dev/null \
+	|| die "run output directory is not fresh: $OUT_DIR"
+
+INPUT_DIR="$OUT_DIR/input-snapshots"
+MODEL_DIR="$INPUT_DIR/model"
+mkdir -- "$INPUT_DIR" "$MODEL_DIR" "$OUT_DIR/generated-unsafe-configs"
+runner_sha_at_start=$(sha256sum "$RUNNER" | awk '{print $1}')
+
+HARDENING_LIB_SNAPSHOT="$INPUT_DIR/immutable-evidence-inputs.sh"
+if [ ! -f "$HARDENING_LIB" ] || [ -L "$HARDENING_LIB" ]; then
+	die "missing or symlinked hardening helper: $HARDENING_LIB"
+fi
+cp -- "$HARDENING_LIB" "$HARDENING_LIB_SNAPSHOT.partial"
+helper_sha=$(sha256sum "$HARDENING_LIB_SNAPSHOT.partial" | awk '{print $1}')
+[ "$helper_sha" = "$EXPECTED_HARDENING_LIB_SHA256" ] \
+	|| die "hardening helper snapshot failed exact hash binding: $helper_sha"
+chmod 0444 -- "$HARDENING_LIB_SNAPSHOT.partial"
+mv -- "$HARDENING_LIB_SNAPSHOT.partial" "$HARDENING_LIB_SNAPSHOT"
+# shellcheck source=lib/immutable-evidence-inputs.sh
+# The path is dynamic and the exact copied bytes were hash-pinned above.
+# shellcheck disable=SC1091
+. "$HARDENING_LIB_SNAPSHOT"
+
+capsched_validate_run_id "$RUN_ID" || die "invalid RUN_ID after helper load: $RUN_ID"
+capsched_snapshot_verified_file "$CONFIG_SOURCE" "$EXPECTED_CONFIG_SHA256" \
+	"$INPUT_DIR/plan.json" \
+	|| die 'plan config snapshot failed exact hash binding'
+capsched_snapshot_verified_file "$MODEL_SOURCE_DIR/$MODEL" "$EXPECTED_MODEL_SHA256" \
+	"$MODEL_DIR/$MODEL" \
+	|| die 'TLA+ model snapshot failed exact hash binding'
+capsched_snapshot_verified_file "$MODEL_SOURCE_DIR/$SAFE_CFG" "$EXPECTED_SAFE_CFG_SHA256" \
+	"$MODEL_DIR/$SAFE_CFG" \
+	|| die 'safe TLC config snapshot failed exact hash binding'
+capsched_snapshot_verified_file "$TLA_JAR_SOURCE" "$EXPECTED_TLA_JAR_SHA256" \
+	"$INPUT_DIR/tla2tools.jar" \
+	|| die 'TLA jar snapshot failed exact hash binding'
+
+CONFIG="$INPUT_DIR/plan.json"
+TLA_JAR="$INPUT_DIR/tla2tools.jar"
 progress '5% validating N-133 contract and frozen R4-E2 evidence'
 jq empty "$CONFIG"
 
@@ -200,6 +252,8 @@ jq -e '
   .retirement.generation_zero_valid == false and
   .retirement.generation_wrap_reuse == false and
   (.required_case_families | length) == 36 and
+  (.required_case_families | unique | length) == 36 and
+  (.required_case_families | all(test("^[A-Za-z0-9][A-Za-z0-9_]*$"))) and
   .race_control.completion_atomic_checkpoint_or_barrier_forced == true and
   .race_control.timing_sleep_as_proof == false and
   .race_control.hard_timeout_seconds == 15 and
@@ -224,7 +278,11 @@ jq -e '
   (.source_anchors | length) == 48 and
   (.future_absence_checks | length) == 10 and
   (.formal.liveness_properties | length) == 4 and
+  (.formal.liveness_properties | unique | length) == 4 and
+  (.formal.liveness_properties | all(test("^[A-Za-z][A-Za-z0-9_]*$"))) and
   (.formal.unsafe_faults | length) == 76 and
+  (.formal.unsafe_faults | unique | length) == 76 and
+  (.formal.unsafe_faults | all(test("^[A-Za-z][A-Za-z0-9_]*$"))) and
   .formal.unsafe_expected_counterexamples == 76 and
   .authorization_after_pass.r4_e3_disposable_worktree_may_be_created == true and
   .authorization_after_pass.r4_e3_exact_two_file_source_draft_may_be_created == true and
@@ -270,13 +328,17 @@ for key in e2_contract e2_result_metadata e2_dual_arch_result e2_closure_result 
 	relative=$(jq -r ".source_basis.$key" "$CONFIG")
 	expected=$(jq -r ".source_basis.${key}_sha256" "$CONFIG")
 	resolved=$(resolve_basis_path "$relative")
-	actual=$(sha256sum "$resolved" | awk '{print $1}')
-	[ "$actual" = "$expected" ] || die "$key hash moved: $actual"
+	snapshot="$INPUT_DIR/$key.json"
+	capsched_snapshot_verified_file "$resolved" "$expected" "$snapshot" \
+		|| die "$key snapshot failed exact hash binding"
 done
 
-e2_dual=$(resolve_basis_path "$(jq -r '.source_basis.e2_dual_arch_result' "$CONFIG")")
-e2_closure=$(resolve_basis_path "$(jq -r '.source_basis.e2_closure_result' "$CONFIG")")
-e2_post=$(resolve_basis_path "$(jq -r '.source_basis.e2_post_retirement_result' "$CONFIG")")
+e2_dual="$INPUT_DIR/e2_dual_arch_result.json"
+e2_closure="$INPUT_DIR/e2_closure_result.json"
+e2_post="$INPUT_DIR/e2_post_retirement_result.json"
+e2_dual_source=$(resolve_basis_path "$(jq -r '.source_basis.e2_dual_arch_result' "$CONFIG")")
+e2_closure_source=$(resolve_basis_path "$(jq -r '.source_basis.e2_closure_result' "$CONFIG")")
+e2_post_source=$(resolve_basis_path "$(jq -r '.source_basis.e2_post_retirement_result' "$CONFIG")")
 jq -e '
   .status == "passed" and
   .primary_linux_commit == "5e1ca3037e34823d1ba0cdd1dc04161fac170280" and
@@ -330,7 +392,9 @@ series_working=$(git -C "$PATCH_DIR" hash-object "$series")
 [ "$series_head" = "$(jq -r '.source_basis.patch_queue_series_blob' "$CONFIG")" ] \
 	|| die 'patch queue series blob moved'
 [ "$series_working" = "$series_head" ] || die 'patch queue series working content moved'
-[ "$(tail -n 1 "$PATCH_DIR/$series")" = "$(jq -r '.source_basis.patch_queue_tail' "$CONFIG")" ] \
+git -C "$PATCH_DIR" show "HEAD:$series" > "$INPUT_DIR/patch-series"
+chmod 0444 -- "$INPUT_DIR/patch-series"
+[ "$(tail -n 1 "$INPUT_DIR/patch-series")" = "$(jq -r '.source_basis.patch_queue_tail' "$CONFIG")" ] \
 	|| die 'patch queue tail moved'
 
 progress '20% hashing source basis and checking 48 Linux anchors'
@@ -453,27 +517,56 @@ done < <(jq -r '.formal.unsafe_faults[]' "$CONFIG")
 [ "$unsafe_expected" = "$fault_count" ] \
 	|| die "unsafe counterexample mismatch: expected=$fault_count actual=$unsafe_expected"
 
+capsched_verify_file_sha256 "$CONFIG" "$EXPECTED_CONFIG_SHA256" \
+	|| die 'plan config snapshot changed during validation'
+capsched_verify_file_sha256 "$MODEL_DIR/$MODEL" "$EXPECTED_MODEL_SHA256" \
+	|| die 'TLA+ model snapshot changed during validation'
+capsched_verify_file_sha256 "$MODEL_DIR/$SAFE_CFG" "$EXPECTED_SAFE_CFG_SHA256" \
+	|| die 'safe TLC config snapshot changed during validation'
+capsched_verify_file_sha256 "$TLA_JAR" "$EXPECTED_TLA_JAR_SHA256" \
+	|| die 'TLA jar snapshot changed during validation'
+capsched_verify_file_sha256 "$HARDENING_LIB_SNAPSHOT" "$EXPECTED_HARDENING_LIB_SHA256" \
+	|| die 'hardening helper snapshot changed during validation'
+for key in e2_contract e2_result_metadata e2_dual_arch_result e2_closure_result e2_post_retirement_result; do
+	expected=$(jq -r ".source_basis.${key}_sha256" "$CONFIG")
+	snapshot="$INPUT_DIR/$key.json"
+	capsched_verify_file_sha256 "$snapshot" "$expected" \
+		|| die "$key snapshot changed during validation"
+done
+
 config_sha=$(sha256sum "$CONFIG" | awk '{print $1}')
 model_sha=$(sha256sum "$MODEL_DIR/$MODEL" | awk '{print $1}')
 safe_cfg_sha=$(sha256sum "$MODEL_DIR/$SAFE_CFG" | awk '{print $1}')
 runner_sha=$(sha256sum "$RUNNER" | awk '{print $1}')
 tla_jar_sha=$(sha256sum "$TLA_JAR" | awk '{print $1}')
+helper_sha_at_end=$(sha256sum "$HARDENING_LIB_SNAPSHOT" | awk '{print $1}')
+helper_source_sha_at_end=$(sha256sum "$HARDENING_LIB" | awk '{print $1}')
+[ "$runner_sha" = "$runner_sha_at_start" ] \
+	|| die 'runner changed during validation'
+[ "$helper_sha_at_end" = "$EXPECTED_HARDENING_LIB_SHA256" ] \
+	|| die 'hardening helper changed during validation'
+[ "$helper_source_sha_at_end" = "$EXPECTED_HARDENING_LIB_SHA256" ] \
+	|| die 'hardening helper source changed during validation'
 case_count=$(jq '.required_case_families | length' "$CONFIG")
 fault_site_count=$(jq '.capacity_and_allocation.allocation_fault_sites | length' "$CONFIG")
 qemu_boot_count=$(jq '.build_and_boot_matrix.qemu_boots | length' "$CONFIG")
 
+RESULT_TMP="$OUT_DIR/result.json.pending"
 jq -n \
 	--arg run_id "$RUN_ID" \
-	--arg config "$CONFIG" --arg config_sha "$config_sha" \
-	--arg model "$MODEL_DIR/$MODEL" --arg model_sha "$model_sha" \
-	--arg safe_config "$MODEL_DIR/$SAFE_CFG" --arg safe_config_sha "$safe_cfg_sha" \
+	--arg config "$CONFIG_SOURCE" --arg config_sha "$config_sha" \
+	--arg model "$MODEL_SOURCE_DIR/$MODEL" --arg model_sha "$model_sha" \
+	--arg safe_config "$MODEL_SOURCE_DIR/$SAFE_CFG" --arg safe_config_sha "$safe_cfg_sha" \
 	--arg runner "$RUNNER" --arg runner_sha "$runner_sha" \
-	--arg tla_jar "$TLA_JAR" --arg tla_jar_sha "$tla_jar_sha" \
+	--arg hardening_lib "$HARDENING_LIB" --arg hardening_lib_sha "$helper_sha_at_end" \
+	--arg tla_jar "$TLA_JAR_SOURCE" --arg tla_jar_sha "$tla_jar_sha" \
 	--arg primary "$primary" --arg primary_tree "$primary_tree_expected" \
 	--arg candidate "$candidate" --arg candidate_parent "$candidate_parent_expected" \
 	--arg candidate_tree "$candidate_tree_expected" --arg candidate_diff "$candidate_diff_actual" \
 	--arg patch_commit "$patch_commit" --arg series_blob "$series_working" \
-	--arg e2_dual "$e2_dual" --arg e2_closure "$e2_closure" --arg e2_post "$e2_post" \
+	--arg e2_dual "$e2_dual_source" \
+	--arg e2_closure "$e2_closure_source" \
+	--arg e2_post "$e2_post_source" \
 	--arg source_manifest "$source_manifest" --arg source_manifest_sha "$source_manifest_sha" \
 	--argjson source_manifest_count "$source_manifest_count" \
 	--argjson anchor_count "$anchor_count" --argjson anchor_failures "$anchor_failures" \
@@ -494,8 +587,14 @@ jq -n \
 	  safe_config_sha256:$safe_config_sha,
 	  runner:$runner,
 	  runner_sha256:$runner_sha,
+	  hardening_helper:$hardening_lib,
+	  hardening_helper_sha256:$hardening_lib_sha,
 	  tla_jar:$tla_jar,
 	  tla_jar_sha256:$tla_jar_sha,
+	  exact_plan_sha256_bound_before_use:true,
+	  hardening_helper_snapshotted_before_source:true,
+	  immutable_input_snapshots_verified:true,
+	  result_published_atomically:true,
 	  primary_linux_commit:$primary,
 	  primary_linux_tree:$primary_tree,
 	  e2_candidate_commit:$candidate,
@@ -556,8 +655,9 @@ jq -n \
 	  multi_node_ready:false,
 	  multi_cluster_ready:false,
 	  datacenter_ready:false
-	}' > "$OUT_DIR/result.json"
+	}' > "$RESULT_TMP"
 
-jq empty "$OUT_DIR/result.json"
+jq empty "$RESULT_TMP"
+mv -- "$RESULT_TMP" "$OUT_DIR/result.json"
 progress '100% passed; N-133 R4-E3 concurrency and diagnostic plan complete'
 cat "$OUT_DIR/result.json"

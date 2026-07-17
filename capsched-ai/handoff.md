@@ -6163,16 +6163,28 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     r1 exposed a runner path-class bug. r2 produced 75/76 unsafe
     counterexamples and correctly rejected its own missing
     `NewestDesiredLost` invariant. Corrected r3/r4 first established semantic
-    reproduction. Commit review then restricted `RUN_ID`, refused result
-    overwrite, fixed locale, and bound the runner hash. Sealed canonical r5
-    passed 48/48 anchors, 10/10 absences, safe TLC 30 generated/29
-    distinct/depth 29, four liveness properties, and 76/76 unsafe
-    counterexamples. Result SHA-256 is
-    `113fe8ddd65da0961d11c2251cef76c5016c7ad0a9fe90e0a690b34d46dc22a0`.
-    Independent sealed r6 reproduced every stable field; normalized SHA-256
-    is `9e232bc1292e652a4c15fdf3dbd5220779fb1fafb157fd9528f961800260c1a6`.
+    reproduction. Historical r5/r6 added a first generator seal, but an
+    exhaustive 14-file diff review reproduced `..`/output reuse, count-only
+    plan substitution, and hash-then-reopen evidence races. Validation/0242
+    supersedes that seal. The fixed runner requires an alphanumeric-leading
+    token and atomically fresh output, snapshots and exact-hash verifies the
+    helper before sourcing, exact-hash binds plan/model/TLC before use, keeps
+    private 0444 input snapshots, rehashes after use, requires unique
+    safe-token plan arrays, and atomically publishes the result. Focused
+    malicious and legitimate controls pass.
+
+    Final canonical r13 and independent r14 pass 48/48 anchors, 10/10
+    absences, safe TLC 30 generated/29 distinct/depth 29, four liveness
+    properties, and 76/76 unsafe counterexamples. Result SHA-256 values are
+    `79a9c62edc8dfa58645028c9ab43af9554f7672bbae267f8b5c7ab0c9157c912`
+    and
+    `2be94265244a7cde6ff5f4d353133fa6315b692b65ad762b743ac0a89d309537`.
+    Their normalized SHA-256 is
+    `bea904bf500ab43f768364f72d45f73ea843434ad5d3a0f9f86b22583e9a7f26`.
     Both bind runner SHA-256
-    `2bc0e914d154a91a4085e87631258939246f8f3a2467c7d337725785d6842b42`.
+    `450114f0ca6004869630a827369b454fe2f0c0b86459c4e1212fd50d25b7ea9b`
+    and helper SHA-256
+    `4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6`.
 
   Next:
     N-134 may create only the exact disposable two-file source draft and must

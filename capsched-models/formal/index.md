@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-07-15
+Updated: 2026-07-17
 
 ## Current Formal Records
 

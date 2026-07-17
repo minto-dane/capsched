@@ -4649,16 +4649,28 @@ P5A-R3 E4 source and exact-source regression gate:
   KCSAN boots with 2,048 stress iterations and zero reduction or warning.
 
   After r1 path correction and an r2 self-detected missing desired-generation
-  invariant, r3/r4 established semantic reproduction. Commit review then
-  restricted `RUN_ID`, refused result overwrite, fixed locale, and bound the
-  runner hash. Sealed canonical r5 passed 48 anchors, 10 absences, safe TLC
-  30/29/depth-29, four liveness properties, and 76/76 unsafe counterexamples.
-  Result SHA-256 is
-  `113fe8ddd65da0961d11c2251cef76c5016c7ad0a9fe90e0a690b34d46dc22a0`.
-  Independent sealed r6 reproduced all stable fields with normalized SHA-256
-  `9e232bc1292e652a4c15fdf3dbd5220779fb1fafb157fd9528f961800260c1a6`;
+  invariant, r3/r4 established semantic reproduction. Historical r5/r6 then
+  added a first generator seal, but exhaustive diff review reproduced three
+  merge-blocking robustness defects: `..`/output reuse, count-only plan
+  substitution, and hash-then-reopen evidence races. Validation/0242
+  supersedes that seal. The fixed runner atomically creates a fresh output,
+  snapshots and exact-hash verifies its helper before sourcing, exact-hash
+  binds the plan/model/tool before use, uses only private read-only input
+  snapshots, rehashes after use, and atomically publishes the validated
+  result. Focused malicious and legitimate controls pass.
+
+  Final canonical r13 and independent r14 pass 48 anchors, 10 absences, safe
+  TLC 30/29/depth-29, four liveness properties, and 76/76 unsafe
+  counterexamples. Result SHA-256 values are
+  `79a9c62edc8dfa58645028c9ab43af9554f7672bbae267f8b5c7ab0c9157c912`
+  and
+  `2be94265244a7cde6ff5f4d353133fa6315b692b65ad762b743ac0a89d309537`.
+  Every stable field is identical at normalized SHA-256
+  `bea904bf500ab43f768364f72d45f73ea843434ad5d3a0f9f86b22583e9a7f26`;
   both bind runner SHA-256
-  `2bc0e914d154a91a4085e87631258939246f8f3a2467c7d337725785d6842b42`.
+  `450114f0ca6004869630a827369b454fe2f0c0b86459c4e1212fd50d25b7ea9b`
+  and helper SHA-256
+  `4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6`.
 
   Next is N-134: exact disposable source plus a separate identity, replay,
   style, disabled-artifact, dual-architecture build, and test-matrix source
