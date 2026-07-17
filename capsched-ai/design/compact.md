@@ -4563,3 +4563,31 @@ P5A-R3 E4 source and exact-source regression gate:
   Next is N-131 R4-E1 no-source evidence planning. No R4 source, behavior,
   protection, latency, performance/cost, deployment, or datacenter claim is
   approved.
+
+- P5A-R4 N-131 E1 pre-source gate is complete:
+
+  Analysis/0173, formal/0136, and validation/0237 reject balance callbacks as a
+  post-rq-lock seam and select the source-proven MM-CID pattern: durable state
+  under rq lock/IRQs disabled -> one hard irq-work -> unconditional unbound
+  ordinary work -> one-projection rq-lock recovery.
+
+  `B_max=64`; the realistic candidate envelope is 62016 bytes/rq under 65536,
+  with zero ordinary sched_entity/cfs_rq/rq/task growth. One cursor notifier
+  visits one active projection per invocation, restarts on generation or
+  membership change through a publisher-clear handshake, and preserves the
+  stable `2*A` logical bound. One rq owner coalesces latest desired generations.
+
+  Current reschedule is a separate request plus later scheduler observation,
+  not a monitor receipt. Offline first disarms under the fair rq callback, then
+  sleepably syncs irq-work, cancels work, settles references, and waits for RCU.
+
+  Canonical run `20260716T-p5a-r4-e1-dispatch-lifetime-plan-r1` passed 35
+  anchors, 8 absences, safe TLC 21/20/depth 20, three liveness properties, and
+  60 unsafe counterexamples, including the verified CPUHP reverse teardown
+  order. Result SHA-256 is
+  `2710cea3ed5a8b2838b80b734a94878ed978c40e3e20daa0529ad359c6aa7bca`.
+
+  Next is N-132: the exact disposable, default-off, two-file R4-E2 layout
+  candidate and arm64/x86_64 layout closure. No runtime callback or behavior,
+  primary/patch change, protection, latency, performance/cost, deployment, or
+  datacenter claim is approved.

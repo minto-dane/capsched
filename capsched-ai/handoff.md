@@ -5990,3 +5990,68 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     observation, and hotplug/lifetime diagnostics. R4 source, primary/patch
     changes, behavior, runtime denial, cross-path/monitor coverage, protection,
     latency, performance/cost, deployment, and datacenter claims remain false.
+
+- N-131 P5A-R4 E1 dispatch/lifetime evidence planning is complete:
+
+  Source-map correction:
+    `queue_balance_callback()` is not a post-rq-lock callback. Both its queueing
+    helper and `do_balance_callbacks()` require the rq lock, while
+    `__balance_callbacks()` only unpins lockdep state. R4 therefore rejects it
+    as the ordinary-work dispatch seam.
+
+    Current Linux MM CID supplies the selected precedent: a path which may nest
+    in rq lock records durable state and calls one preallocated hard
+    `irq_work`; its dispatch-only callback unconditionally schedules one
+    ordinary work item because scheduling work under the nested lock may wake a
+    task. R4 fixes the same two-stage bridge with rq lock plus IRQs disabled,
+    one irq-work and one recovery work per rq, and a dedicated
+    `WQ_UNBOUND | WQ_HIGHPRI | WQ_MEM_RECLAIM` workqueue.
+
+  Storage and ownership:
+    `B_max=64`, one outer/inner feature layer, maximum outer rb height 12, one
+    dirty node per projection, one owner/irq bridge per rq, and one notifier per
+    active bucket. Total admitted projections are bounded by
+    `64 * nr_cpu_ids`; sparse projection storage and a variable active-rq mask
+    remain mandatory. The exact R4-E2 measurement envelopes are key <=64,
+    bucket/notifier <=384, projection/dirty <=960, rq-state/bridge <=576 bytes,
+    or 62016 bytes/rq below a 65536-byte hard bound. Ordinary
+    sched_entity/cfs_rq/rq/task_struct deltas must be zero.
+
+  Notifier/recovery/current:
+    one notifier visits at most one projection through `cpumask_next()` per
+    invocation. Generation and membership sequence changes restart through a
+    publisher-clear handshake; a late insert self-handshakes and kicks. After
+    stable publication/membership, visits remain at most `2*A` logical quanta.
+    The rq owner coalesces latest generation in a bounded dirty list and repairs
+    one projection per rq-lock quantum with final acquire-generation recheck.
+    Current `resched_curr()` remains a separate request that needs later
+    scheduler observation and is never a monitor receipt.
+
+  Hotplug/lifetime:
+    fair offline under rq lock first clears accepting and disarms new ownership;
+    a sleepable `CPUHP_AP_ONLINE_DYN` teardown then performs
+    `irq_work_sync()`, `cancel_work_sync()`, residual reference settlement, and
+    RCU drain outside scheduler locks. Nonzero residuals remain Blocked and
+    referenced. Generation saturation blocks and generations never wrap.
+
+  Canonical validation:
+    analysis/0173, formal/0136, and validation/0237 bind exact R4 result SHA-256
+    `388e4f41651cf42518aa273e32721aa62ca91d3dd286e88d2060b8dd7fc699b4`,
+    primary Linux `5e1ca3037e34`/tree `54f685aad94f`, and patch queue
+    `16bb080da472`. Run
+    `20260716T-p5a-r4-e1-dispatch-lifetime-plan-r1` passed 42/42 anchors, 8/8
+    absences, safe TLC 21 generated/20 distinct/depth 20, three liveness
+    properties, verified CPUHP disarm/drain/workqueue-offline order, and 60/60
+    unsafe counterexamples. Result SHA-256 is
+    `2710cea3ed5a8b2838b80b734a94878ed978c40e3e20daa0529ad359c6aa7bca`.
+
+  Next:
+    N-132 may create only a disposable direct-primary R4-E2 candidate changing
+    `init/Kconfig` and `kernel/sched/exec_lease.c` under default-off
+    `CONFIG_SCHED_EXEC_LEASE_R4_LAYOUT_PROBE`. It must build arm64 and x86_64,
+    preserve all 51 expanded probes, prove config-off symbol/relocation absence,
+    measure the full private envelope, and add no constructor, callback,
+    workqueue, CPUHP registration, callsite, header, export, ABI, or behavior.
+    E3/E4/behavior, primary/patch changes, runtime denial, monitor protection,
+    wall-clock latency, performance/cost, deployment, and datacenter claims
+    remain false.
