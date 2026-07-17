@@ -433,6 +433,18 @@ Current SchedExecLease L0 readiness:
     the trust fence. A successor design gate may be drafted, but source, E5,
     live behavior, production, latency,
     performance, protection, cost, and deployment claims remain false.
+- `0047-sched-exec-lease-p5a-r4-e2-private-layout-candidate.md`
+  - Status: exact direct-primary, two-file, default-off R4 candidate is
+    committed and validation/0238 passed its source gate; dual-architecture
+    layout evidence remains in progress.
+  - Candidate commit/tree:
+    `a429fc30252ac6af94c51d96cd4ac24e72d9f83b` /
+    `fffd419bbc05bab87ad304c1e4a3213439d62bab`.
+  - JSON: `sched-exec-lease-p5a-r4-e2-private-layout-candidate-v1.json`.
+  - Rule: 58 private symbols measure the bucket notifier, projection dirty
+    node, and one per-rq irq/work owner. Arm64/x86_64 must preserve 51 existing
+    values, emit no disabled R4 artifacts, keep ordinary growth zero, and pass
+    the 65,536-byte bound before any E3 planning.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
