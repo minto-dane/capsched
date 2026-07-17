@@ -246,6 +246,7 @@ Updated: 2026-07-17
 | 0238 | Exact direct-primary/two-file R4-E2 source passed forward/reverse replay, checkpatch 0/0/0, 22 layout anchors, exact notifier/dirty/irq/work cardinalities, zero runtime surfaces, and a unique 58-symbol manifest | SchedExecLease P5A-R4 E2 Source Gate |
 | 0239 | Frozen R4-E2 source was launched as a detached Apple Container arm64/x86_64 four-mode build with process/result probes and 30-second progress monitoring; no layout pass is claimed yet | SchedExecLease P5A-R4 E2 Dual-Architecture Layout Launch |
 | 0240 | Independent object/config/source/hash closure confirmed 51 unchanged values, 58 enabled-only private symbols, zero disabled artifacts or ordinary growth, and 49,664 bytes/rq on arm64/x86_64; R4-E3 planning only is allowed | SchedExecLease P5A-R4 E2 Evidence Closure |
+| 0241 | Reproduced exact R4-E2/patch/source closure with 48 anchors, 10 absences, safe TLC 30/29/depth 29, four liveness properties, and 76/76 unsafe counterexamples; only the exact disposable two-file R4-E3 source draft is allowed | SchedExecLease P5A-R4 E3 Concurrency and Diagnostic Evidence Plan |
 
 ## Principles
 

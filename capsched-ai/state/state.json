@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-p5a-r4-e3-concurrency-plan-next",
+    "current_phase": "sched-exec-lease-l0-p5a-r4-e3-source-gate-next",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -286,7 +286,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Validation/0233 closes the exact-E4-source E3 prerequisite: candidate f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1/tree 61541cb0c8aedef941e534c73effdea1f6b3d938 passed arm64/x86_64 standard debug, arm64 generic KASAN, and x86_64 KCSAN at 20/20 with E4 measurement disabled. Result SHA-256 3d02a2b6c52a856e6bde5417665bfc41e1fa547c774f9274f1f85d53167b5707 binds source-gate SHA-256 8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c. Internal ext4 build output, eight verified lossless boot artifacts, and per-boot pruning close the shared-storage failure from validation/0232. The next authorized work is the controlled immutable 42-cell E4 virtual measurement, starting with arm64 and continuing to x86_64 only if required by the classification. E4 acceptance, E5, live scheduler behavior, primary/patch promotion, runtime denial, protection, bare-metal latency, performance, cost, deployment, and datacenter claims remain false.",
+    "current_focus": "Validation/0241 completes N-133 as a plan-only gate. Analysis/0174 fixes an exact direct-R4-E2-child, default-off, same-translation-unit synthetic KUnit prototype with real irq-work/unbound-work/raw-lock/refcount/XArray/cpumask/RCU mechanics, an independent plain-record oracle and per-case receipts, 36 forced case families, six pre-runnable allocation fault sites, and six arm64/x86_64 diagnostic boots. After r1/r2 corrections and r3/r4 semantic reproduction, commit review sealed the evidence generator against invalid RUN_ID values and result overwrite and bound its hash. Sealed canonical run 20260717T-p5a-r4-e3-concurrency-plan-r5 passed 48 source anchors, 10 future absences, safe TLC 30/29/depth 29 with four liveness properties, and 76/76 unsafe counterexamples; result SHA-256 113fe8ddd65da0961d11c2251cef76c5016c7ad0a9fe90e0a690b34d46dc22a0. Independent r6 reproduced every stable field with normalized SHA-256 9e232bc1292e652a4c15fdf3dbd5220779fb1fafb157fd9528f961800260c1a6; both bind runner SHA-256 2bc0e914d154a91a4085e87631258939246f8f3a2467c7d337725785d6842b42. Only the disposable two-file R4-E3 source draft and separate source gate are authorized. Source correctness, diagnostics, R4-E4, live behavior, primary/patch promotion, runtime denial, protection, latency, performance, deployment, multi-node, multi-cluster, and datacenter claims remain false.",
     "p5a_r2_e2_layout_plan_analysis": "capsched/capsched-models/analysis/0159-sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-plan.md",
     "p5a_r2_e2_layout_plan_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-plan-v1.json",
     "p5a_r2_e2_layout_plan_formal": "capsched/capsched-models/formal/0126-p5a-r2-e2-disposable-layout-candidate-plan-model/README.md",
@@ -1021,7 +1021,14 @@
     "p5a_r4_e1_dispatch_lifetime_formal": "capsched/capsched-models/formal/0136-p5a-r4-e1-dispatch-lifetime-evidence-plan-model/README.md",
     "p5a_r4_e1_dispatch_lifetime_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e1-dispatch-lifetime-evidence-plan.sh",
     "p5a_r4_e1_dispatch_lifetime_validation": "capsched/capsched-models/validation/0237-sched-exec-lease-p5a-r4-e1-dispatch-lifetime-evidence-plan.md",
-    "p5a_r4_e1_dispatch_lifetime_result": "build/source-check/sched-exec-lease-p5a-r4-e1-dispatch-lifetime-evidence-plan/20260716T-p5a-r4-e1-dispatch-lifetime-plan-r1/result.json"
+    "p5a_r4_e1_dispatch_lifetime_result": "build/source-check/sched-exec-lease-p5a-r4-e1-dispatch-lifetime-evidence-plan/20260716T-p5a-r4-e1-dispatch-lifetime-plan-r1/result.json",
+    "p5a_r4_e3_concurrency_plan_analysis": "capsched/capsched-models/analysis/0174-sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan.md",
+    "p5a_r4_e3_concurrency_plan_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan-v1.json",
+    "p5a_r4_e3_concurrency_plan_formal": "capsched/capsched-models/formal/0137-p5a-r4-e3-concurrency-diagnostic-evidence-plan-model/README.md",
+    "p5a_r4_e3_concurrency_plan_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan.sh",
+    "p5a_r4_e3_concurrency_plan_validation": "capsched/capsched-models/validation/0241-sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan.md",
+    "p5a_r4_e3_concurrency_plan_result": "build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan/20260717T-p5a-r4-e3-concurrency-plan-r5/result.json",
+    "p5a_r4_e3_concurrency_plan_reproduction": "build/source-check/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan/20260717T-p5a-r4-e3-concurrency-plan-r6/result.json"
   },
   "architecture_intent": {
     "prototype_track": "Linux-only DomainLease-Linux L0 for performance, integration, and semantic exploration. It must not claim hypervisor-grade isolation.",
@@ -1203,6 +1210,10 @@
     {
       "id": "DEVICE-010",
       "text": "Devlink/rate/scheduler/VF/SF/representor lifecycle authority is QueueControl authority, and representor transmit requires RepresentorForward authority plus a live lower QueueLease; neither may be authorized by RunCap or plain netdev reachability."
+    },
+    {
+      "id": "EXEC-007",
+      "text": "SchedExecLease repair is never authority: a generation mismatch remains fail-closed until one bounded recovery quantum completes a final acquire-generation/state/contribution recheck, and a current stop request requires a later distinct scheduler observation rather than treating need-resched as a monitor or completion receipt."
     }
   ],
   "design_boundaries": [
@@ -2767,9 +2778,19 @@
     {
       "id": "N-133",
       "text": "Draft and validate the exact R4-E3 pre-source concurrency evidence plan for the irq-work to unbound-work bridge, notifier cursor/restart and late admission, one-projection recovery, current-stop observation, migration, hotplug/lifetime drain, allocation faults, and the required dual-architecture diagnostic matrix.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-132"
+      ],
+      "completed_on": "2026-07-17",
+      "partial_progress": "Analysis/0174, formal/0137, and validation/0241 complete the exact R4-E3 pre-source gate. The future direct child of a429fc30252ac6af94c51d96cd4ac24e72d9f83b may change only init/Kconfig and kernel/sched/exec_lease.c under default-off CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST and suite sched_exec_lease_r4_concurrency. The contract uses the exact E2-private types only in a synthetic control plane with real irq-work, unbound work, raw locks, refs, cpumask/XArray, and RCU; it fixes an independent oracle and case receipts, 36 forced families, six allocation faults, 2048-iteration stress families, and six arm64/x86_64 debug/fault/KASAN/KCSAN boots. r1 exposed path-class resolution and r2 exposed a missing NewestDesiredLost invariant; neither was misclassified as an engineering failure. r3/r4 established semantic reproduction, then commit review restricted RUN_ID, refused result overwrite, fixed locale, and bound the runner hash. Sealed canonical r5 passed 48 anchors, 10 absences, safe TLC 30/29/depth 29, four liveness properties, and 76/76 unsafe counterexamples with result SHA-256 113fe8ddd65da0961d11c2251cef76c5016c7ad0a9fe90e0a690b34d46dc22a0. Independent sealed r6 reproduced all stable fields with normalized SHA-256 9e232bc1292e652a4c15fdf3dbd5220779fb1fafb157fd9528f961800260c1a6; both bind runner SHA-256 2bc0e914d154a91a4085e87631258939246f8f3a2467c7d337725785d6842b42. Only exact disposable source drafting and a separate source gate are allowed; source correctness and all runtime/production claims remain blocked."
+    },
+    {
+      "id": "N-134",
+      "text": "Create the exact disposable direct-R4-E2-child two-file R4-E3 synthetic KUnit source authorized by validation/0241, then pass an independent identity, replay, disabled-artifact, style, dual-architecture build, and test-matrix source gate before any diagnostic boot launch.",
+      "status": "pending",
+      "blocked_by": [
+        "N-133"
       ]
     }
   ],

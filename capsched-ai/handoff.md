@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-15
+Updated: 2026-07-17
 
 Read this first when resuming the project.
 
@@ -6126,3 +6126,59 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     any E3 source. Runtime behavior, primary/patch changes, monitor protection,
     bounded latency, performance/cost, deployment, and datacenter claims remain
     false.
+
+- N-133 P5A-R4 E3 concurrency and diagnostic plan is complete:
+
+  Exact boundary:
+    analysis/0174 and validation/0241 bind the future source to the direct
+    child of R4-E2 candidate
+    `a429fc30252ac6af94c51d96cd4ac24e72d9f83b`, tree
+    `fffd419bbc05bab87ad304c1e4a3213439d62bab`. Only `init/Kconfig` and
+    `kernel/sched/exec_lease.c` may change. The new option is default-off
+    `CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST`, depends on the R4 layout probe and
+    built-in KUnit, and registers only exact suite
+    `sched_exec_lease_r4_concurrency` in the same translation unit. Primary
+    Linux and patch queue remain frozen.
+
+  Protocol and oracle:
+    the prototype may instantiate the E2-private objects with real hard
+    irq-work, unbound `WQ_UNBOUND|WQ_HIGHPRI|WQ_MEM_RECLAIM` work, raw locks,
+    refs, cpumask/XArray, and RCU, but only behind synthetic rq/current/
+    contribution inputs. A separately represented plain-record oracle checks
+    every forced transition and cleanup. Machine-readable case receipts bind
+    forced schedule, fault, checkpoints, reference equation, and cleanup.
+
+  Fixed future matrix:
+    36 deterministic case families cover capacity 0/1/63/64/rejected-65, six
+    pre-runnable allocation failures and retry, every irq/work pending/running
+    state, false queue returns, final-empty insertion, self-requeue, one-
+    projection quanta, notifier generation/membership restart and late
+    admission, separate current observation, remove-neutral-add migration,
+    offline/cancel, retirement/RCU, saturation, and reference cleanup. Six
+    fresh boots require arm64/x86_64 standard debug, both-architecture hotplug
+    plus allocation-fault stress, arm64 KASAN, and x86_64 KCSAN, with 2,048
+    stress iterations and zero fail/skip/timeout/warning.
+
+  Model correction and reproducibility:
+    r1 exposed a runner path-class bug. r2 produced 75/76 unsafe
+    counterexamples and correctly rejected its own missing
+    `NewestDesiredLost` invariant. Corrected r3/r4 first established semantic
+    reproduction. Commit review then restricted `RUN_ID`, refused result
+    overwrite, fixed locale, and bound the runner hash. Sealed canonical r5
+    passed 48/48 anchors, 10/10 absences, safe TLC 30 generated/29
+    distinct/depth 29, four liveness properties, and 76/76 unsafe
+    counterexamples. Result SHA-256 is
+    `113fe8ddd65da0961d11c2251cef76c5016c7ad0a9fe90e0a690b34d46dc22a0`.
+    Independent sealed r6 reproduced every stable field; normalized SHA-256
+    is `9e232bc1292e652a4c15fdf3dbd5220779fb1fafb157fd9528f961800260c1a6`.
+    Both bind runner SHA-256
+    `2bc0e914d154a91a4085e87631258939246f8f3a2467c7d337725785d6842b42`.
+
+  Next:
+    N-134 may create only the exact disposable two-file source draft and must
+    pass an independent identity/replay/style/disabled-artifact/dual-
+    architecture build and test-matrix source gate before any diagnostic boot
+    launch. R4-E3 source correctness, R4-E4, live scheduler behavior,
+    primary/patch promotion, runtime denial, monitor enforcement, latency,
+    performance/cost, production protection, deployment, multi-node,
+    multi-cluster, and datacenter claims remain false.

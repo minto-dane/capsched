@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-15
+Updated: 2026-07-17
 
 ## Project
 
@@ -4581,7 +4581,7 @@ P5A-R3 E4 source and exact-source regression gate:
   not a monitor receipt. Offline first disarms under the fair rq callback, then
   sleepably syncs irq-work, cancels work, settles references, and waits for RCU.
 
-  Canonical run `20260716T-p5a-r4-e1-dispatch-lifetime-plan-r1` passed 35
+  Canonical run `20260716T-p5a-r4-e1-dispatch-lifetime-plan-r1` passed 42
   anchors, 8 absences, safe TLC 21/20/depth 20, three liveness properties, and
   60 unsafe counterexamples, including the verified CPUHP reverse teardown
   order. Result SHA-256 is
@@ -4630,3 +4630,38 @@ P5A-R3 E4 source and exact-source regression gate:
 
   Next is N-133: an exact R4-E3 pre-source concurrency/diagnostic plan. No E3
   source or runtime/protection/performance/deployment claim is approved.
+
+- P5A-R4 N-133 E3 pre-source plan is complete:
+
+  Analysis/0174, formal/0137, and validation/0241 bind an exact direct-E2-child
+  two-file synthetic KUnit draft under default-off
+  `CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST`. The suite may use the actual private
+  R4 layouts with real irq-work, unbound work, raw locks, refs, cpumask/XArray,
+  and RCU, but it has only synthetic scheduler inputs and no live hook or
+  production registry.
+
+  An independent plain-record oracle and case receipts cover 36 deterministic
+  families, six pre-runnable allocation failures, every irq/work ownership
+  state, notifier generation/membership restart and late admission, bounded
+  one-projection recovery, separate current observation, remove-neutral-add
+  migration, offline/cancel, retirement/RCU, and saturation. The future
+  diagnostic matrix is six fresh arm64/x86_64 debug, hotplug/fault, KASAN, and
+  KCSAN boots with 2,048 stress iterations and zero reduction or warning.
+
+  After r1 path correction and an r2 self-detected missing desired-generation
+  invariant, r3/r4 established semantic reproduction. Commit review then
+  restricted `RUN_ID`, refused result overwrite, fixed locale, and bound the
+  runner hash. Sealed canonical r5 passed 48 anchors, 10 absences, safe TLC
+  30/29/depth-29, four liveness properties, and 76/76 unsafe counterexamples.
+  Result SHA-256 is
+  `113fe8ddd65da0961d11c2251cef76c5016c7ad0a9fe90e0a690b34d46dc22a0`.
+  Independent sealed r6 reproduced all stable fields with normalized SHA-256
+  `9e232bc1292e652a4c15fdf3dbd5220779fb1fafb157fd9528f961800260c1a6`;
+  both bind runner SHA-256
+  `2bc0e914d154a91a4085e87631258939246f8f3a2467c7d337725785d6842b42`.
+
+  Next is N-134: exact disposable source plus a separate identity, replay,
+  style, disabled-artifact, dual-architecture build, and test-matrix source
+  gate. E3 correctness, E4, live behavior, primary/patch promotion, protection,
+  latency, performance, deployment, multi-node/multi-cluster, and datacenter
+  claims remain false.
