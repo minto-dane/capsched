@@ -2,10 +2,10 @@
 
 Date: 2026-07-17
 
-Status: exact disposable source candidate committed. Source-gate attempt 1
-completed its semantic and object checks but is invalidated by independently
-detected shared-filesystem clock-skew warnings. A corrected W=1 r2 rerun is
-required. No R4-E3 correctness or runtime claim is accepted.
+Status: exact disposable source candidate committed and N-134 source gate
+closed. Attempt 1 remains invalid; corrected W=1 r2 plus two independent
+closure runs authorize only the fixed six-boot diagnostic matrix. No R4-E3
+source/correctness or runtime claim is accepted yet.
 
 ## Disposable Source Identity
 
@@ -67,7 +67,7 @@ object identity. Inputs were verified read-only snapshots and the source came
 from isolated Git-object E2/E3 worktrees. Preflight intentionally produced no
 build result and removed its temporary worktrees and scratch.
 
-## Pending Gate
+## Closed Source Gate
 
 Source-gate attempt 1 `20260717T-p5a-r4-e3-source-gate-r1` completed all eight
 fresh objects and emitted result SHA-256
@@ -83,8 +83,17 @@ rejection. A clock-skewed initial output triggers an immediate same-target
 verification build; the verification must contain zero compiler diagnostics,
 future-mtime notices, or clock-skew warnings. Corrected-runner preflight
 `20260717T-p5a-r4-e3-source-preflight-r7` passed the full non-build boundary
-and intentionally created no source-gate result. Only a valid r2 result can
-authorize diagnostic boots.
+and intentionally created no source-gate result. Canonical r2 passed with zero
+diagnostics/retries/skew at result SHA-256
+`7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27`.
+
+Validation/0246 copied and independently audited all 105 artifacts twice.
+Closure r1/r2 result SHA-256 values are
+`4daf672d70cdead4bdd7d00f40381d99b4b6f1e9807fced16f9d68ee9578df91`
+and `4d2dae97f059ab73ad233e4232ce26fc27e5667cf99de5540719d62965c4af10`;
+their normalized SHA-256 is
+`4471b71c85762ce75b609f84649335f300029b223524795bab7f86bb4f51fd8d`.
+N-134 is complete and only the exact six-boot matrix is authorized.
 
 ## Non-Claims
 

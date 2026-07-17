@@ -250,7 +250,8 @@ Updated: 2026-07-17
 | 0242 | Fixed dot-segment/output-reuse, count-only plan-substitution, and hash-reopen defects; focused controls and independent immutable r13/r14 runs pass with normalized SHA-256 `bea904bf...e9a7f26`; N-133 remains plan-only | SchedExecLease P5A-R4 E3 Evidence Generator Hardening |
 | 0243 | Exact direct-E2-child two-file R4-E3 source and 0/0/0 preflight are frozen; detached arm64/x86_64 four-mode source gate is launch-ready with 30-second monitoring, but no pass or correctness claim exists yet | SchedExecLease P5A-R4 E3 Concurrency Source Gate Launch |
 | 0244 | Attempt 1 completed all semantic/object gates but independent audit found two x86_64 incomplete-build clock-skew warnings omitted by the runner; provisional result is invalid and authorizes nothing | SchedExecLease P5A-R4 E3 Source Gate Attempt 1 Warning Audit |
-| 0245 | Corrected r2 freezes W=1 diagnostic rejection and same-target zero-skew verification while preserving every source identity and claim boundary; no r2 pass exists yet | SchedExecLease P5A-R4 E3 Corrected Source Gate r2 Launch |
+| 0245 | Corrected r2 freezes W=1 diagnostic rejection and same-target zero-skew verification; r2 passed all eight modes at SHA-256 `7c24c355...e55cf27` and delegates final authority to validation/0246 | SchedExecLease P5A-R4 E3 Corrected Source Gate r2 Launch |
+| 0246 | Independently snapshots and revalidates all 105 corrected source-gate artifacts, exact Git/source identities, warning integrity, tables, cleanup, and negative claims before N-134 may authorize six boots | SchedExecLease P5A-R4 E3 Source Gate Closure |
 
 ## Principles
 

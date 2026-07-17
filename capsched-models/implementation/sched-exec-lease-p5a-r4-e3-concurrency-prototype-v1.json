@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1",
   "date": "2026-07-17",
-  "status": "candidate_committed_source_gate_attempt_1_invalid_rerun_pending",
+  "status": "candidate_committed_n134_source_gate_closed_six_boot_matrix_authorized",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r4-e3-concurrency-prototype",
     "branch": "codex/p5a-r4-e3-concurrency-prototype",
@@ -67,11 +67,17 @@
     "invalid_attempt_1_result_sha256": "fb2bc59d01cda4110a2022fc5e810d0b0b445bfb80498f25558476e74667369a",
     "invalid_attempt_1_reason": "x86_64 layout-off and test-on logs contain future-mtime and clock-skew incomplete-build warnings not rejected by the old runner",
     "corrected_run_id": "20260717T-p5a-r4-e3-source-gate-r2",
-    "corrected_status": "pending",
+    "corrected_status": "passed_and_independently_closed",
+    "corrected_result_sha256": "7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27",
     "corrected_runner_preflight_run_id": "20260717T-p5a-r4-e3-source-preflight-r7",
     "corrected_runner_preflight_status": "passed_without_build_matrix",
     "corrected_w1_compiler_diagnostics_required": 0,
     "corrected_final_clock_skew_warnings_required": 0,
+    "corrected_clock_skew_retries_observed": 0,
+    "closure_r1_result_sha256": "4daf672d70cdead4bdd7d00f40381d99b4b6f1e9807fced16f9d68ee9578df91",
+    "closure_r2_result_sha256": "4d2dae97f059ab73ad233e4232ce26fc27e5667cf99de5540719d62965c4af10",
+    "closure_normalized_sha256": "4471b71c85762ce75b609f84649335f300029b223524795bab7f86bb4f51fd8d",
+    "closure_artifact_manifest_sha256": "59c42bafeb7be79310aa01095b9c98b8a20280d0fef9da5f88fccfc2feb8d80b",
     "architectures": [
       "arm64",
       "x86_64"
@@ -82,7 +88,8 @@
       "e3_r4_layout_on_test_off",
       "e3_r4_kunit_test_on"
     ],
-    "diagnostic_matrix_may_start": false
+    "n134_complete": true,
+    "diagnostic_matrix_may_start": true
   },
   "safety_flags": {
     "r4_e3_source_accepted": false,

@@ -286,7 +286,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "N-134 remains open after independent closure invalidated source-gate attempt 1. The exact candidate f9c737c93ecff48c6f512048b05b1b49f4a54ca5 passed source semantics, object, 58/51 preservation, and disabled-artifact checks, but x86_64 layout-off and test-on logs contain 2.1-2.8ms future mtimes and GNU make incomplete-build clock-skew warnings. The old runner did not scan build warnings, so provisional result fb2bc59d01cda4110a2022fc5e810d0b0b445bfb80498f25558476e74667369a is immutable invalid evidence. Validation/0244 records the harness false pass. Validation/0245 freezes corrected r2: W=1 compiler diagnostics are fatal; initial skew triggers an immediate same-target verification build; final compiler and clock-skew warnings must be zero. Corrected-runner preflight 20260717T-p5a-r4-e3-source-preflight-r7 passed the complete non-build boundary and cleaned its scratch. Only a fresh valid r2 may complete N-134 or authorize the fixed six-boot diagnostic matrix. Source correctness, R4-E4, live behavior, primary/patch promotion, runtime denial, protection, latency, performance, deployment, multi-node, multi-cluster, and datacenter claims remain false.",
+    "current_focus": "N-134 is complete. Corrected source-gate r2 20260717T-p5a-r4-e3-source-gate-r2 passed all eight arm64/x86_64 modes with zero W=1 diagnostics, zero clock-skew retries, zero final skew warnings, 58/51 preservation, and zero disabled artifacts at result SHA-256 7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27. Validation/0246 independently snapshotted and audited all 105 artifacts twice; closure result SHA-256 values are 4daf672d70cdead4bdd7d00f40381d99b4b6f1e9807fced16f9d68ee9578df91 and 4d2dae97f059ab73ad233e4232ce26fc27e5667cf99de5540719d62965c4af10 with normalized SHA-256 4471b71c85762ce75b609f84649335f300029b223524795bab7f86bb4f51fd8d. Attempt 1 remains immutable invalid evidence. N-135 may launch only the exact six-boot diagnostic matrix. R4-E3 source/correctness acceptance, R4-E4, live behavior, primary/patch promotion, runtime denial, protection, latency, performance, deployment, multi-node, multi-cluster, and datacenter claims remain false.",
     "p5a_r2_e2_layout_plan_analysis": "capsched/capsched-models/analysis/0159-sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-plan.md",
     "p5a_r2_e2_layout_plan_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-plan-v1.json",
     "p5a_r2_e2_layout_plan_formal": "capsched/capsched-models/formal/0126-p5a-r2-e2-disposable-layout-candidate-plan-model/README.md",
@@ -2790,11 +2790,21 @@
     {
       "id": "N-134",
       "text": "Create the exact disposable direct-R4-E2-child two-file R4-E3 synthetic KUnit source authorized by validation/0241, then pass an independent identity, replay, disabled-artifact, style, dual-architecture build, and test-matrix source gate before any diagnostic boot launch.",
-      "status": "pending",
+      "status": "completed",
       "blocked_by": [
         "N-133"
       ],
-      "partial_progress": "Exact disposable direct-E2-child candidate f9c737c93ecff48c6f512048b05b1b49f4a54ca5/tree 274f7b5d6969dc68e158819191fe598f9587e0ad adds 2758 lines in exactly init/Kconfig and kernel/sched/exec_lease.c under default-off CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST. The exact 36 cases, six faults, dispatch bridge, oracle/receipts, 15-second waits, and 2048 stress iterations are present; strict source and commit checkpatch are 0/0/0. Original source preflight r6 passed. Source-gate attempt 1 completed semantic/object/58-private/51-expanded/disabled-artifact checks and emitted provisional result fb2bc59d01cda4110a2022fc5e810d0b0b445bfb80498f25558476e74667369a, but independent closure found x86_64 layout-off and test-on future-mtime plus Clock skew detected incomplete-build warnings. Validation/0244 invalidates r1 because the old runner omitted build-log warning gates. Corrected validation/0245 r2 requires W=1 diagnostics zero and immediate same-target verification with final skew zero; corrected-runner preflight r7 passed its full non-build boundary and cleaned all scratch. N-134 remains pending; no diagnostic boot or correctness/runtime/production claim is authorized until r2 passes."
+      "completed_on": "2026-07-17",
+      "partial_progress": "Exact disposable direct-E2-child candidate f9c737c93ecff48c6f512048b05b1b49f4a54ca5/tree 274f7b5d6969dc68e158819191fe598f9587e0ad adds 2758 lines in exactly init/Kconfig and kernel/sched/exec_lease.c under default-off CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST. Corrected source-gate r2 passed all eight arm64/x86_64 modes with zero W=1 diagnostics, zero clock-skew retries/final warnings, strict checkpatch 0/0/0, exact 36 cases/six faults, 58/51 preservation, and zero disabled artifacts; result SHA-256 is 7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27. Validation/0246 independently copied and audited all 105 artifacts twice. Closure r1/r2 SHA-256 values are 4daf672d70cdead4bdd7d00f40381d99b4b6f1e9807fced16f9d68ee9578df91 and 4d2dae97f059ab73ad233e4232ce26fc27e5667cf99de5540719d62965c4af10; normalized SHA-256 is 4471b71c85762ce75b609f84649335f300029b223524795bab7f86bb4f51fd8d. Attempt 1 remains immutable invalid evidence. N-134 authorizes only the exact six-boot matrix; source/correctness/runtime/production claims remain false."
+    },
+    {
+      "id": "N-135",
+      "text": "Run and independently close the exact R4-E3 six-boot diagnostic matrix: arm64/x86_64 standard debug, arm64/x86_64 hotplug plus allocation-fault diagnostics, arm64 generic KASAN, and x86_64 KCSAN, with all 36 cases and receipts, five 2048-iteration stress families, complete artifacts, and zero failure, skip, timeout, or warning.",
+      "status": "pending",
+      "blocked_by": [
+        "N-134"
+      ],
+      "partial_progress": "Validation/0246 authorizes only the exact fixed six-boot matrix. Runner, configuration smoke, monitored launch, and complete diagnostic artifacts remain pending. No R4-E3 source/correctness or runtime/production claim is accepted."
     }
   ],
   "canonical_files": {

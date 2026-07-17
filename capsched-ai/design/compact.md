@@ -4718,3 +4718,16 @@ P5A-R3 E4 source and exact-source regression gate:
   Source identity and claim boundaries are unchanged. N-134 and all diagnostic,
   correctness, runtime, promotion, protection, and deployment claims remain
   pending or false until fresh r2 passes.
+
+- P5A-R4 N-134 corrected source-gate closure:
+
+  Corrected run `20260717T-p5a-r4-e3-source-gate-r2` passed all eight fresh
+  modes with zero W=1 diagnostics, clock-skew retries, or final skew warnings;
+  result SHA-256 is
+  `7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27`.
+  Validation/0246 independently snapshotted all 105 artifacts twice. Closure
+  r1/r2 hashes are `4daf672d...9578df91` and `4d2dae97...5c4af10`, with
+  normalized SHA-256 `4471b71c...4f51fd8d` and shared artifact-manifest
+  SHA-256 `59c42baf...eb8d80b`. N-134 is complete and only the exact N-135
+  six-boot matrix is authorized. Source/correctness, runtime, promotion,
+  protection, deployment, multi-cluster, and datacenter claims remain false.

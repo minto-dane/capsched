@@ -6266,3 +6266,27 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     correctness, R4-E4, runtime, primary/patch promotion, protection,
     deployment, multi-node, multi-cluster, and datacenter claims remain
     blocked.
+
+- N-134 corrected source-gate closure is complete; only N-135 six boots are authorized:
+
+  Corrected result:
+    run `20260717T-p5a-r4-e3-source-gate-r2` passed eight fresh arm64/x86_64
+    modes with zero W=1 diagnostics, zero clock-skew retries, zero final skew
+    warnings, 58/51 preservation, and zero disabled artifacts. Result SHA-256
+    is `7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27`.
+
+  Independent closure:
+    validation/0246 snapshotted and audited all 105 artifacts twice. Closure
+    r1/r2 SHA-256 values are
+    `4daf672d70cdead4bdd7d00f40381d99b4b6f1e9807fced16f9d68ee9578df91`
+    and `4d2dae97f059ab73ad233e4232ce26fc27e5667cf99de5540719d62965c4af10`;
+    normalized SHA-256 is
+    `4471b71c85762ce75b609f84649335f300029b223524795bab7f86bb4f51fd8d`.
+    The shared 105-file manifest SHA-256 is
+    `59c42bafeb7be79310aa01095b9c98b8a20280d0fef9da5f88fccfc2feb8d80b`.
+
+  Next:
+    N-135 may prepare and launch only arm64/x86_64 standard debug, both-
+    architecture hotplug/fault, arm64 generic KASAN, and x86_64 KCSAN boots.
+    R4-E3 source/correctness acceptance and every runtime, promotion,
+    protection, deployment, multi-cluster, and datacenter claim remain false.

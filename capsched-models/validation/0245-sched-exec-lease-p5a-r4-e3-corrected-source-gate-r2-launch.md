@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: corrected runner preflight passed; no r2 result exists yet.
+Status: corrected r2 passed and was independently closed by validation/0246.
 
 ## Frozen Boundary
 
@@ -41,6 +41,12 @@ monitor:  ./tools/long-job.sh watch p5a-r4-e3-source-gate-r2 30
 The run uses fresh output, immutable plan/r13/r14/runner/helper snapshots,
 isolated E2/E3 Git-object worktrees, atomic result publication, and cleanup of
 temporary source/build trees on every exit.
+
+Run r2 passed all eight modes with zero W=1 compiler diagnostics, zero clock-
+skew retries, and zero final skew warnings. Its result SHA-256 is
+`7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27`.
+Validation/0246 independently snapshots and closes the result; this record is
+not itself the closure authority.
 
 ## Decision Boundary
 
