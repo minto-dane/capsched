@@ -2,20 +2,20 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1",
   "date": "2026-07-17",
-  "status": "candidate_committed_n134_closed_n135_six_boot_matrix_launch_ready",
+  "status": "six_boot_attempt_1_rejected_corrected_candidate_awaits_source_gate",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r4-e3-concurrency-prototype",
     "branch": "codex/p5a-r4-e3-concurrency-prototype",
     "parent_commit": "a429fc30252ac6af94c51d96cd4ac24e72d9f83b",
-    "candidate_commit": "f9c737c93ecff48c6f512048b05b1b49f4a54ca5",
-    "candidate_tree": "274f7b5d6969dc68e158819191fe598f9587e0ad",
-    "diff_sha256": "c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781",
+    "candidate_commit": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "candidate_tree": "58c6510c6f517004e37107786d006bb8333b79b8",
+    "diff_sha256": "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08",
     "direct_e2_child": true,
     "allowed_files": [
       "init/Kconfig",
       "kernel/sched/exec_lease.c"
     ],
-    "insertions": 2758,
+    "insertions": 2821,
     "deletions": 0,
     "strict_source_checkpatch": {
       "errors": 0,
@@ -59,6 +59,7 @@
     "stress_iterations": 2048
   },
   "source_gate": {
+    "validated_candidate_commit": "f9c737c93ecff48c6f512048b05b1b49f4a54ca5",
     "preflight_run_id": "20260717T-p5a-r4-e3-source-preflight-r6",
     "preflight_status": "passed_without_build_matrix",
     "immutable_input_snapshots_verified": true,
@@ -88,8 +89,10 @@
       "e3_r4_layout_on_test_off",
       "e3_r4_kunit_test_on"
     ],
-    "n134_complete": true,
-    "diagnostic_matrix_may_start": true
+    "n134_complete_for_validated_candidate": true,
+    "n134_complete": false,
+    "superseded_for_corrected_candidate": true,
+    "diagnostic_matrix_may_start": false
   },
   "diagnostic_matrix": {
     "validation": "capsched-models/validation/0247-sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix-launch.md",
@@ -114,8 +117,28 @@
     "matrix_reduction_allowed": false,
     "builds_started_by_config_smoke": 0,
     "boots_started_by_config_smoke": 0,
+    "matrix_status": "failed_arm64_standard_debug_34_of_36",
+    "arm64_standard_debug_pass": 34,
+    "arm64_standard_debug_fail": 2,
+    "arm64_standard_debug_skip": 0,
+    "remaining_configurations_started": 0,
+    "console_sha256": "3e7179423702f445a83b41af975e6ae32b37a60bbbd02941a831f3bce2bb2e78",
+    "ktap_sha256": "4cec066170889e95f8bc90f28e3976cfcc972787ca6fefa8e1642a4d57075c90",
     "matrix_passed": false,
-    "independent_matrix_closure_pending": true
+    "independent_matrix_closure_pending": false
+  },
+  "correction": {
+    "validation": "capsched-models/validation/0248-sched-exec-lease-p5a-r4-e3-six-boot-attempt-1-rejection.md",
+    "machine_record": "capsched-models/validation/sched-exec-lease-p5a-r4-e3-six-boot-attempt-1-rejection-v1.json",
+    "scope": "default_off_same_translation_unit_kunit_harness_only",
+    "fixed_point_drain_round_bound": 136,
+    "drain_requires_full_quiescence": true,
+    "drain_exhaustion_is_protocol_error": true,
+    "cancellation_state_snapshotted_before_test_gate_release": true,
+    "corrected_candidate_commit": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "fresh_source_gate_pending": true,
+    "fresh_independent_closure_pending": true,
+    "six_boot_restart_authorized": false
   },
   "safety_flags": {
     "r4_e3_source_accepted": false,

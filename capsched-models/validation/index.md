@@ -253,6 +253,7 @@ Updated: 2026-07-17
 | 0245 | Corrected r2 freezes W=1 diagnostic rejection and same-target zero-skew verification; r2 passed all eight modes at SHA-256 `7c24c355...e55cf27` and delegates final authority to validation/0246 | SchedExecLease P5A-R4 E3 Corrected Source Gate r2 Launch |
 | 0246 | Independently snapshots and revalidates all 105 corrected source-gate artifacts, exact Git/source identities, warning integrity, tables, cleanup, and negative claims before N-134 may authorize six boots | SchedExecLease P5A-R4 E3 Source Gate Closure |
 | 0247 | Exact six-configuration smoke passed with zero builds/boots; a hash-locked internal-ext4 arm64/x86_64 standard/fault/KASAN/KCSAN matrix is launch-ready under 30-second monitoring and cannot reduce after failure | SchedExecLease P5A-R4 E3 Six-Boot Diagnostic Matrix Launch |
+| 0248 | Attempt 1 built and booted arm64 cleanly but rejected the suite at 34/36; two deterministic KUnit-harness defects are fixed in a new direct-E2 child that must repeat source gate and closure before all six boots | SchedExecLease P5A-R4 E3 Six-Boot Attempt 1 Rejection |
 
 ## Principles
 

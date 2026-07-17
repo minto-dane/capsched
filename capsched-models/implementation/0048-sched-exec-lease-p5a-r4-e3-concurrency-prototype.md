@@ -2,10 +2,10 @@
 
 Date: 2026-07-17
 
-Status: exact disposable source candidate committed and N-134 source gate
-closed. Attempt 1 remains invalid; corrected W=1 r2 plus two independent
-closure runs authorize only the fixed six-boot diagnostic matrix. No R4-E3
-source/correctness or runtime claim is accepted yet.
+Status: six-boot attempt 1 rejected the prior candidate at 34/36 in the first
+arm64 boot. A corrected direct-E2-child candidate is committed and awaits a
+fresh N-134 source gate. The prior closures authorize no further boot. No
+R4-E3 source/correctness or runtime claim is accepted yet.
 
 ## Disposable Source Identity
 
@@ -13,9 +13,9 @@ source/correctness or runtime claim is accepted yet.
 worktree: build/DomainLeaseLinux.volume/worktrees/p5a-r4-e3-concurrency-prototype
 branch:   codex/p5a-r4-e3-concurrency-prototype
 parent:   a429fc30252ac6af94c51d96cd4ac24e72d9f83b
-commit:   f9c737c93ecff48c6f512048b05b1b49f4a54ca5
-tree:     274f7b5d6969dc68e158819191fe598f9587e0ad
-diff sha: c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781
+commit:   da9ce9159b3450c28c8faf8dceac671fb7bfeba2
+tree:     58c6510c6f517004e37107786d006bb8333b79b8
+diff sha: 096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08
 ```
 
 After the clean candidate, local branch, fork branch, commit, tree, and diff
@@ -24,7 +24,7 @@ reclaim space. The canonical Git objects remain in the primary repository and
 on the fork; the gate recreates isolated E2/E3 checkouts from those objects.
 
 The candidate is one direct child of the closed R4-E2 layout commit. It adds
-2,758 lines and deletes none in exactly:
+2,821 lines and deletes none in exactly:
 
 ```text
 init/Kconfig
@@ -67,7 +67,7 @@ object identity. Inputs were verified read-only snapshots and the source came
 from isolated Git-object E2/E3 worktrees. Preflight intentionally produced no
 build result and removed its temporary worktrees and scratch.
 
-## Closed Source Gate
+## Prior Candidate Source Gate
 
 Source-gate attempt 1 `20260717T-p5a-r4-e3-source-gate-r1` completed all eight
 fresh objects and emitted result SHA-256
@@ -93,9 +93,10 @@ Closure r1/r2 result SHA-256 values are
 and `4d2dae97f059ab73ad233e4232ce26fc27e5667cf99de5540719d62965c4af10`;
 their normalized SHA-256 is
 `4471b71c85762ce75b609f84649335f300029b223524795bab7f86bb4f51fd8d`.
-N-134 is complete and only the exact six-boot matrix is authorized.
+That N-134 closure remains valid only for rejected candidate
+`f9c737c93ecff48c6f512048b05b1b49f4a54ca5`.
 
-## N-135 Launch Readiness
+## N-135 Attempt 1 Rejection
 
 Validation/0247 freezes runner SHA-256
 `cff384cb01a82a446b811ec90d988ddd062f08946633d78511441599f793a809`.
@@ -106,13 +107,26 @@ Configuration-smoke r2 resolved the exact arm64/x86_64 standard,
 hotplug/fault, arm64 generic KASAN, and x86_64 KCSAN configs with no build or
 boot. Its result SHA-256 is
 `3e49336b8de70a27eddf3f9b64579d836e60614e633e34faf2fee759ca23e467`.
-The canonical matrix run is fixed as
-`20260717T-p5a-r4-e3-six-boot-r1` under 30-second monitoring. Launch readiness
-is not a matrix pass.
+Run `20260717T-p5a-r4-e3-six-boot-r1` built and booted the arm64 standard-debug
+configuration, then failed closed at `pass:34 fail:2 skip:0 total:36`. The
+dirty-node case exposed the fixed two-round drain against a one-node-per-work
+recovery protocol with 64 dirty nodes. The cancellation case exposed a
+running-state counter that observed only notifier execution after releasing
+the forced recovery schedule. Validation/0248 freezes the complete negative
+evidence and its hashes. The remaining five boots did not start, and the
+successful build scratch was removed.
+
+The corrected candidate uses a 136-round bounded fixed-point drain with
+explicit IRQ/recovery/dirty/notifier quiescence and protocol-error exhaustion.
+Retire snapshots pending notifier and running/requeued recovery cancellation
+state under their respective locks before releasing the forced-schedule gate.
+The correction remains inside the default-off synthetic KUnit harness and
+passes strict checkpatch 0/0/0. It must repeat the dual-architecture source
+gate and independent closure before a new, unreduced six-boot run is allowed.
 
 ## Non-Claims
 
-The committed source and preflight do not accept R4-E3 source correctness,
+The committed correction does not accept R4-E3 source correctness,
 concurrency correctness, runtime behavior, denial correctness, the six-boot
 diagnostic matrix, primary/patch promotion, bounded latency, performance,
 monitor enforcement, production protection, deployment, multi-node,
