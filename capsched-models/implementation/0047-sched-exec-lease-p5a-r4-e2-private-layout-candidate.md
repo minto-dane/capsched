@@ -3,8 +3,9 @@
 Date: 2026-07-17
 
 Status: exact disposable source candidate committed and source-gated. The
-dual-architecture layout build is the remaining E2 evidence. This candidate is
-build-only and is not accepted for runtime or production use.
+durable dual-architecture layout build is running as recorded by
+validation/0239. This candidate is build-only and is not accepted for runtime
+or production use.
 
 ## Disposable Source Identity
 

@@ -6055,3 +6055,36 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     E3/E4/behavior, primary/patch changes, runtime denial, monitor protection,
     wall-clock latency, performance/cost, deployment, and datacenter claims
     remain false.
+
+- N-132 P5A-R4 E2 source gate passed and dual-architecture evidence is running:
+
+  Source identity:
+    disposable branch `codex/p5a-r4-e2-layout` is the direct child
+    `a429fc30252ac6af94c51d96cd4ac24e72d9f83b` of primary
+    `5e1ca3037e34823d1ba0cdd1dc04161fac170280`, with tree
+    `fffd419bbc05bab87ad304c1e4a3213439d62bab`. Exactly `init/Kconfig` and
+    `kernel/sched/exec_lease.c` changed by 254 insertions. The rejected R3
+    source is not its parent.
+
+  Source gate:
+    validation/0238 run `20260717T-p5a-r4-e2-source-gate-r1` passed
+    forward/reverse replay, checkpatch 0/0/0, 22 anchors, exact one notifier,
+    projection dirty node, rq dirty head, irq-work and recovery-work counts,
+    zero dense CPU storage or runtime/function/surface additions, and a unique
+    58-symbol manifest. Result SHA-256 is
+    `9e79d3e58151960b397a715116eb545de4c1ecc1988e619b88139022f6395a82`.
+
+  Running evidence:
+    validation/0239 records detached job `p5a-r4-e2-dual-arch-build`, run
+    `20260717T-p5a-r4-e2-dual-arch-r1`. It builds fresh primary, R4-off,
+    R4-on, and normal modes independently for arm64 and x86_64. Initial probe
+    observed a running VM/wrapper, growing sparse-volume output, and 10% arm64
+    baseline preparation. Monitor with
+    `./tools/long-job.sh watch p5a-r4-e2-dual-arch-build 30` from the workspace.
+
+  Boundary:
+    N-132 remains pending until the final result preserves 51 existing values,
+    emits exactly 58 enabled-only R4 symbols, has zero disabled artifacts and
+    ordinary growth, and passes the private envelope. E3 source, runtime,
+    protection, latency, performance/cost, deployment, and datacenter claims
+    remain false.

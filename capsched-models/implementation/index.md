@@ -435,8 +435,8 @@ Current SchedExecLease L0 readiness:
     performance, protection, cost, and deployment claims remain false.
 - `0047-sched-exec-lease-p5a-r4-e2-private-layout-candidate.md`
   - Status: exact direct-primary, two-file, default-off R4 candidate is
-    committed and validation/0238 passed its source gate; dual-architecture
-    layout evidence remains in progress.
+    committed, validation/0238 passed its source gate, and validation/0239
+    records the durable monitored dual-architecture launch.
   - Candidate commit/tree:
     `a429fc30252ac6af94c51d96cd4ac24e72d9f83b` /
     `fffd419bbc05bab87ad304c1e4a3213439d62bab`.

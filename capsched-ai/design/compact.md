@@ -4591,3 +4591,21 @@ P5A-R3 E4 source and exact-source regression gate:
   candidate and arm64/x86_64 layout closure. No runtime callback or behavior,
   primary/patch change, protection, latency, performance/cost, deployment, or
   datacenter claim is approved.
+
+- P5A-R4 N-132 E2 source gate passed; layout build is running:
+
+  Direct-primary candidate `a429fc30252a`/tree `fffd419bbc05` changes only
+  `init/Kconfig` and `kernel/sched/exec_lease.c`. It adds a default-off private
+  key, bucket/notifier, projection/dirty-node, and per-rq irq/work owner plus a
+  58-symbol object-local layout table, with no constructor or runtime callsite.
+
+  Source-gate run `20260717T-p5a-r4-e2-source-gate-r1` passed two-file/direct
+  identity, forward/reverse replay, checkpatch 0/0/0, 22 anchors, exact owner
+  cardinalities, zero forbidden additions, and the 58-symbol manifest. Result
+  SHA-256 is `9e79d3e58151960b397a715116eb545de4c1ecc1988e619b88139022f6395a82`.
+
+  Detached run `20260717T-p5a-r4-e2-dual-arch-r1` is monitored as
+  `p5a-r4-e2-dual-arch-build` and reached arm64 baseline preparation. N-132
+  remains pending until both architectures preserve the 51 existing values,
+  prove disabled R4 absence and zero ordinary growth, and pass the private
+  envelope. No E3/runtime/protection/performance/deployment claim is approved.

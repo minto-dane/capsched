@@ -244,6 +244,7 @@ Updated: 2026-07-16
 | 0236 | R4 successor gate passed exact R3 binding, 16 anchors, 6 absences, safe TLC 16/15/depth 15 with notifier restart, two liveness properties, and 47 expected counterexamples; R4-E1 planning only is allowed | SchedExecLease P5A-R4 Generation-Fenced Coalesced Pull Recovery |
 | 0237 | R4-E1 passed exact R4 binding, 42 anchors plus CPUHP order, 8 absences, safe TLC 21/20/depth 20 with irq bridge/notifier restart/offline drain, three liveness properties, and 60 expected counterexamples; exact two-file R4-E2 layout drafting only is allowed | SchedExecLease P5A-R4 E1 Dispatch and Lifetime Evidence Plan |
 | 0238 | Exact direct-primary/two-file R4-E2 source passed forward/reverse replay, checkpatch 0/0/0, 22 layout anchors, exact notifier/dirty/irq/work cardinalities, zero runtime surfaces, and a unique 58-symbol manifest | SchedExecLease P5A-R4 E2 Source Gate |
+| 0239 | Frozen R4-E2 source was launched as a detached Apple Container arm64/x86_64 four-mode build with process/result probes and 30-second progress monitoring; no layout pass is claimed yet | SchedExecLease P5A-R4 E2 Dual-Architecture Layout Launch |
 
 ## Principles
 

@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-07-16",
+  "updated": "2026-07-17",
   "project": {
     "name": "DomainLease-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-p5a-r4-e2-layout-next",
+    "current_phase": "sched-exec-lease-l0-p5a-r4-e2-layout-build-running",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -2760,7 +2760,8 @@
       "status": "pending",
       "blocked_by": [
         "N-131"
-      ]
+      ],
+      "partial_progress": "Disposable direct-primary candidate a429fc30252ac6af94c51d96cd4ac24e72d9f83b/tree fffd419bbc05bab87ad304c1e4a3213439d62bab adds 254 lines in exactly init/Kconfig and kernel/sched/exec_lease.c under default-off CONFIG_SCHED_EXEC_LEASE_R4_LAYOUT_PROBE. Source-gate run 20260717T-p5a-r4-e2-source-gate-r1 passed forward/reverse replay, strict checkpatch 0/0/0, 22 anchors, exact notifier/dirty/irq/work cardinalities, zero runtime/function/surface additions, and a unique 58-symbol manifest; result SHA-256 9e79d3e58151960b397a715116eb545de4c1ecc1988e619b88139022f6395a82. Detached job p5a-r4-e2-dual-arch-build launched run 20260717T-p5a-r4-e2-dual-arch-r1 in Apple Container with 30-second monitoring and reached arm64 baseline preparation. N-132 remains pending until the final arm64/x86_64 result passes."
     }
   ],
   "canonical_files": {
