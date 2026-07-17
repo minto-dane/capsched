@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r3-e2-private-layout-candidate-v1",
+  "date": "2026-07-15",
+  "status": "disposable_source_committed_awaiting_dual_arch_e2",
+  "source": {
+    "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r3-e2-layout",
+    "branch": "codex/p5a-r3-e2-layout",
+    "parent_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "candidate_commit": "63313b329e1d44901acfce30698613c38615c8d5",
+    "candidate_tree": "8d51c596d3d73a6c6dc507b84fdcd4ac8aa7f8eb",
+    "diff_sha256": "fe8b75cb31bb5612d2f32f95b9988c4e7796ae5b919ecd8f5dacc2e0c12ffe09",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "insertions": 209,
+    "deletions": 0,
+    "strict_checkpatch_errors": 0,
+    "strict_checkpatch_warnings": 0,
+    "strict_checkpatch_checks": 0
+  },
+  "primary_boundary": {
+    "linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "linux_tree": "54f685aad94f28f0027cbba18cf5e29aadce234a",
+    "patch_queue_tail": "0014-sched-exec_lease-Expand-build-only-layout-probe.patch",
+    "primary_linux_change_approved": false,
+    "patch_queue_change_approved": false
+  },
+  "candidate_config": {
+    "name": "SCHED_EXEC_LEASE_BUCKET_LAYOUT_PROBE",
+    "default_enabled": false,
+    "direct_dependencies": [
+      "SCHED_EXEC_LEASE_LAYOUT_PROBE",
+      "SMP",
+      "FAIR_GROUP_SCHED"
+    ],
+    "transitive_dependencies": [
+      "SCHED_EXEC_LEASE",
+      "DEBUG_KERNEL"
+    ],
+    "selected_normally": false,
+    "build_only": true
+  },
+  "private_layout": {
+    "b_max_per_rq": 64,
+    "bucket_key_u64_words": 8,
+    "bucket_key_max_bytes": 64,
+    "bucket_control_max_bytes": 256,
+    "projection_max_bytes": 896,
+    "private_rq_state_max_bytes": 448,
+    "worst_active_private_bytes_limit_per_rq": 65536,
+    "private_object_max_alignment": 64,
+    "projection_embeds_inner_cfs_rq": true,
+    "projection_embeds_one_outer_sched_entity": true,
+    "private_rq_state_embeds_outer_cfs_rq": true,
+    "active_rq_index_is_cpumask_var": true,
+    "projection_map_is_sparse_xarray": true,
+    "dense_nr_cpu_ids_storage": false
+  },
+  "probe": {
+    "existing_expanded_symbols": 51,
+    "added_private_symbols": 43,
+    "expected_added_symbol_names": [
+      "sched_exec_bl_b_max_value",
+      "sched_exec_bl_bucket_active_rqs_offset_plus_one",
+      "sched_exec_bl_bucket_alignment_value",
+      "sched_exec_bl_bucket_flags_offset_plus_one",
+      "sched_exec_bl_bucket_generation_offset_plus_one",
+      "sched_exec_bl_bucket_key_offset_plus_one",
+      "sched_exec_bl_bucket_membership_lock_offset_plus_one",
+      "sched_exec_bl_bucket_projections_offset_plus_one",
+      "sched_exec_bl_bucket_rcu_offset_plus_one",
+      "sched_exec_bl_bucket_refs_offset_plus_one",
+      "sched_exec_bl_bucket_size",
+      "sched_exec_bl_bucket_state_offset_plus_one",
+      "sched_exec_bl_key_alignment_value",
+      "sched_exec_bl_key_budget_root_id_offset_plus_one",
+      "sched_exec_bl_key_domain_epoch_offset_plus_one",
+      "sched_exec_bl_key_domain_id_offset_plus_one",
+      "sched_exec_bl_key_grant_generation_class_offset_plus_one",
+      "sched_exec_bl_key_memory_view_generation_offset_plus_one",
+      "sched_exec_bl_key_placement_class_offset_plus_one",
+      "sched_exec_bl_key_sched_context_id_offset_plus_one",
+      "sched_exec_bl_key_selector_generation_offset_plus_one",
+      "sched_exec_bl_key_size",
+      "sched_exec_bl_projection_alignment_value",
+      "sched_exec_bl_projection_bucket_offset_plus_one",
+      "sched_exec_bl_projection_contributions_offset_plus_one",
+      "sched_exec_bl_projection_cpu_offset_plus_one",
+      "sched_exec_bl_projection_desired_generation_offset_plus_one",
+      "sched_exec_bl_projection_inner_cfs_rq_offset_plus_one",
+      "sched_exec_bl_projection_observed_generation_offset_plus_one",
+      "sched_exec_bl_projection_outer_entity_offset_plus_one",
+      "sched_exec_bl_projection_refs_offset_plus_one",
+      "sched_exec_bl_projection_size",
+      "sched_exec_bl_projection_state_offset_plus_one",
+      "sched_exec_bl_projection_work_offset_plus_one",
+      "sched_exec_bl_projection_work_owned_offset_plus_one",
+      "sched_exec_bl_rq_state_accepting_offset_plus_one",
+      "sched_exec_bl_rq_state_active_projections_offset_plus_one",
+      "sched_exec_bl_rq_state_alignment_value",
+      "sched_exec_bl_rq_state_initialized_offset_plus_one",
+      "sched_exec_bl_rq_state_outer_cfs_rq_offset_plus_one",
+      "sched_exec_bl_rq_state_selector_generation_offset_plus_one",
+      "sched_exec_bl_rq_state_size",
+      "sched_exec_bl_worst_private_bytes_per_rq_value"
+    ],
+    "all_new_symbols_absent_when_disabled": true,
+    "all_new_relocations_absent_when_disabled": true,
+    "existing_expanded_values_must_be_unchanged": true
+  },
+  "architecture_matrix": {
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "fresh_architecture_local_baseline": true,
+    "candidate_probe_disabled": true,
+    "candidate_probe_enabled": true,
+    "normal_layout_probe_disabled": true,
+    "cross_architecture_byte_identity_claim": false
+  },
+  "ordinary_layout_delta_required": {
+    "sched_entity": 0,
+    "cfs_rq": 0,
+    "rq": 0,
+    "task_struct": 0
+  },
+  "safety_flags": {
+    "layout_candidate_accepted": false,
+    "e3_rebuild_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "monitor_enforcement": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

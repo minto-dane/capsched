@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-04
+Updated: 2026-07-17
 
 ## Current Validation Records
 
@@ -205,6 +205,47 @@ Updated: 2026-07-04
 | 0197 | Patch replay, checkpatch-with-exception, normal-build absence, probe-on build, and symbol extraction passed for no-behavior 0013 | SchedExecLease P5A-R2 0013 Layout Probe |
 | 0198 | Probe symbols converted into a 14-entry structured layout table; all measured fields fit within containing structures | SchedExecLease P5A-R2 0013 Layout Table |
 | 0199 | Source/build-graph disabled-overhead boundary passed: 0013 does not enter normal off/on scheduler objects | SchedExecLease P5A-R2 0013 Disabled-Overhead Boundary |
+| 0200 | Source/representation/formal gate passed; literal U64_MAX sentinel rejected and validity-plus-wrap-min required | SchedExecLease P5A-R2 Vruntime Sentinel Gate |
+| 0201 | Source/locking/formal gate passed with 32 anchors and 24 expected counterexamples; shared invalidation fanout remains unresolved and blocks a behavior patch | SchedExecLease P5A-R2 Summary Update Closure |
+| 0202 | Conservative shared-invalidation architecture passed with 15 anchors and 24 expected counterexamples; global generation/all-rq rebuild selected, targeted fanout and performance approval remain false | SchedExecLease P5A-R2 Versioned Global Invalidation Fence |
+| 0203 | Implementation-evidence plan passed with 24 anchors and 32 expected counterexamples; layout growth envelopes and 25us/50us rq-lock rejection limits fixed | SchedExecLease P5A-R2 Global-Fence Layout/Rebuild Evidence Plan |
+| 0204 | Existing arm64 0013 probe object converted into a 14-entry structured table; exact commit/tree, 24 symbols, hashes, and containing-structure bounds verified | SchedExecLease P5A-R2 arm64 0013 Layout Table |
+| 0205 | 0014 one-file expanded-probe plan passed 25 anchors, safe TLC, and 20 expected counterexamples; corrected 51-symbol target fixed | SchedExecLease P5A-R2 Expanded Layout Probe Patch Plan |
+| 0206 | Source/checkpatch/replay and arm64 off/on/probe builds passed; 24 existing plus 27 added symbols and the 23-field table verified | SchedExecLease P5A-R2 0014 Expanded Layout Probe |
+| 0207 | Disposable-worktree, four-field, 59-symbol arm64 E2 plan passed 20 anchors, safe TLC, and 30 expected counterexamples | SchedExecLease P5A-R2 E2 Disposable Layout Candidate Plan |
+| 0208 | arm64 off/on/candidate builds passed; 51 E1 values preserved, 8 symbols added, 27 fields measured, all four structure deltas zero | SchedExecLease P5A-R2 E2 arm64 Layout Candidate |
+| 0209 | x86_64 same-toolchain cross-build plan passed 18 anchors, safe TLC, and 24 modeled rejection cases | SchedExecLease P5A-R2 E2 x86_64 Layout Evidence Plan |
+| 0210 | Fresh x86_64 E1/off/on/candidate cross-build passed; 51 values preserved, 8 added, 27 fields, all four structure deltas zero | SchedExecLease P5A-R2 E2 x86_64 Layout Candidate |
+| 0211 | Exact arm64/x86_64 evidence closure passed; candidate frozen for E3 planning only with 24 modeled rejection cases | SchedExecLease P5A-R2 E2 Layout Evidence Closure |
+| 0212 | E3 two-file source plan passed 26 anchors, 6 absence checks, safe TLC, and 24 expected counterexamples; source correctness remained pending | SchedExecLease P5A-R2 E3 Rebuild Prototype Evidence Plan |
+| 0213 | Exact E3 source/build matrix and arm64 QEMU KUnit passed 12/12 with zero failures/skips; E4 planning only is allowed | SchedExecLease P5A-R2 E3 Rebuild Prototype |
+| 0214 | E4 two-file measurement plan passed 24 anchors, 4 absence checks, safe TLC, and 28 expected counterexamples; measurement remains separately gated | SchedExecLease P5A-R2 E4 Lock-Hold Measurement Plan |
+| 0215 | Historical first-source identity/isolation/interval/style and arm64 fair.o gate passed, then attempt 1 exposed a pre-measurement harness defect; this gate is superseded by 0217 | SchedExecLease P5A-R2 E4 Lock-Hold Source Gate |
+| 0216 | Arm64 attempt 1 built and booted but failed before all measurement rows because it asserted the runtime-scaled base slice against the normalized baseline; no threshold evidence exists | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Attempt 1 |
+| 0217 | Corrected direct-E3 identity, normalized/runtime base-slice semantics, unchanged matrix/interval/thresholds, strict style, and arm64 fair.o rebuild passed; corrected arm64 relaunch only is authorized | SchedExecLease P5A-R2 E4 Corrected Source Gate |
+| 0218 | Complete arm64 r4 evidence breached 36 fixed gates in 20/35 cells with clean KTAP/warning integrity; full O(n) rq-locked rebuild rejected and x86_64 stopped | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Rejection |
+| 0219 | Exact E4 rejection, 20 source anchors, 6 absence checks, safe TLC, and 34 fault counterexamples select bucket-local targeted projection; R3-E1 plan only is allowed | SchedExecLease P5A-R3 Bucket-Local Targeted Projection |
+| 0220 | R3-E1 passed 38 anchors, 8 absence checks, safe TLC 12/11/depth 11, and 36 fault counterexamples; exact default-off two-file R3-E2 layout draft only is allowed | SchedExecLease P5A-R3 E1 Source/Locking/Lifetime Evidence Plan |
+| 0221 | Exact direct-child/two-file source gate passed checkpatch 0/0/0, 13/13 layout anchors, zero runtime/surface additions, and a unique 43-symbol manifest | SchedExecLease P5A-R3 E2 Source Gate |
+| 0222 | Fresh arm64/x86_64 four-mode builds preserved 51 existing values, added 43 private-on symbols, kept disabled artifacts absent, and passed the private envelope | SchedExecLease P5A-R3 E2 Dual-Architecture Layout |
+| 0223 | Independent ELF/config/source/identity closure passed with zero ordinary structure growth and 53,696 bytes/rq; E3 planning only is allowed | SchedExecLease P5A-R3 E2 Evidence Closure |
+| 0224 | Exact R3-E3 pre-source gate passed 58 anchors, 10 absences, safe TLC 17/16/depth 16, and 51 fault counterexamples; only the two-file disposable draft is allowed | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
+| 0225 | Corrected direct-E2-child source gate passed checkpatch 0/0/0, XArray-under-lock rejection, and fresh arm64/x86_64 four-mode builds with frozen E2 values and zero disabled E3 artifacts | SchedExecLease P5A-R3 E3 Bucket Concurrency Source Gate |
+| 0226 | Corrected r2 passed all four independent arm64/x86_64 standard-debug, arm64 KASAN, and x86_64 KCSAN boots at 20/20 cases with zero failures, skips, timeouts, or warnings; E4 planning only is authorized | SchedExecLease P5A-R3 E3 Diagnostic Matrix |
+| 0227 | arm64 standard-debug attempt 1 built and booted but failed 19/20 with XArray lock-context, stack-work ODEBUG, and queued-next owner/refcount defects; corrected rerun only is authorized | SchedExecLease P5A-R3 E3 arm64 Standard-Debug Attempt 1 |
+| 0228 | R3-E4 plan passed 30 anchors, 6 absences, frozen E3 20-case count, safe TLC 8/7/depth 7, and 40 fault counterexamples; only the exact two-file disposable measurement draft is allowed | SchedExecLease P5A-R3 E4 Bucket Measurement Plan |
+| 0229 | Corrected r2 passed exact identity, checkpatch 0/0/0, fresh arm64/x86_64 E3-parent/E4-off/E4-on W=1 builds, 43 frozen values, and zero disabled E4 artifacts | SchedExecLease P5A-R3 E4 Bucket Measurement Source Gate |
+| 0230 | Source-gate attempt 1 completed all six objects but a 7ms shared-filesystem clock skew was misclassified as a compiler warning; no result exists and a zero-skew verification rerun only is allowed | SchedExecLease P5A-R3 E4 Source Gate Attempt 1 |
+| 0231 | Source-gate r2 result `8529ceac...b14b2e7c` is fixed; exact-E4-source E3 regression requires four fresh arm64/x86_64 standard/KASAN/KCSAN boots at 20/20 with E4 measurement disabled | SchedExecLease P5A-R3 E4 Source Gate and E3 Regression Launch |
+| 0232 | Attempt 1 failed before boot on two independently corrupted shared-APFS objects; exact corrupt bytes and rebuild proof are preserved, and only a fresh internal-ext4 four-boot rerun is authorized | SchedExecLease P5A-R3 E4 Exact-Source E3 Regression Attempt 1 |
+| 0233 | Internal-ext4 r2 passed four exact-E4-source E3 boots at 20/20 with measurement off, verified eight lossless artifacts, and pruned all successful scratch; controlled E4 measurement may start | SchedExecLease P5A-R3 E4 Exact-Source E3 Regression |
+| 0234 | Arm64 launch freezes all 42 cells, independently recomputes gates, separates valid rejection from harness failure, uses 64-vCPU QEMU, and retains verified lossless binaries on bounded internal-ext4 scratch | SchedExecLease P5A-R3 E4 Arm64 Measurement Launch |
+| 0235 | Complete arm64 evidence rejected 19/42 cells with 26 fixed-gate breaches, zero warnings, clean QEMU/KUnit/artifact integrity, and deterministic postprocess recovery; x86_64 and E5 stopped | SchedExecLease P5A-R3 E4 Arm64 Bucket Measurement Rejection |
+| 0236 | R4 successor gate passed exact R3 binding, 16 anchors, 6 absences, safe TLC 16/15/depth 15 with notifier restart, two liveness properties, and 47 expected counterexamples; R4-E1 planning only is allowed | SchedExecLease P5A-R4 Generation-Fenced Coalesced Pull Recovery |
+| 0237 | R4-E1 passed exact R4 binding, 42 anchors plus CPUHP order, 8 absences, safe TLC 21/20/depth 20 with irq bridge/notifier restart/offline drain, three liveness properties, and 60 expected counterexamples; exact two-file R4-E2 layout drafting only is allowed | SchedExecLease P5A-R4 E1 Dispatch and Lifetime Evidence Plan |
+| 0238 | Exact direct-primary/two-file R4-E2 source passed forward/reverse replay, checkpatch 0/0/0, 22 layout anchors, exact notifier/dirty/irq/work cardinalities, zero runtime surfaces, and a unique 58-symbol manifest | SchedExecLease P5A-R4 E2 Source Gate |
+| 0239 | Frozen R4-E2 source was launched as a detached Apple Container arm64/x86_64 four-mode build with process/result probes and 30-second progress monitoring; no layout pass is claimed yet | SchedExecLease P5A-R4 E2 Dual-Architecture Layout Launch |
+| 0240 | Independent object/config/source/hash closure confirmed 51 unchanged values, 58 enabled-only private symbols, zero disabled artifacts or ordinary growth, and 49,664 bytes/rq on arm64/x86_64; R4-E3 planning only is allowed | SchedExecLease P5A-R4 E2 Evidence Closure |
 
 ## Principles
 

@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-04
+Updated: 2026-07-15
 
 ## Project
 
@@ -4168,3 +4168,465 @@ P5A-R2 0013 disabled-overhead boundary:
     this is source/build-graph evidence, not a performance benchmark and not
     an object byte-identity claim. Performance/cost/protection claims remain
     false.
+
+P5A-R2 vruntime sentinel gate:
+  Analysis/0154, formal/0121, and validation/0200 reject literal `U64_MAX` as
+  an EEVDF vruntime infinity. Linux compares vruntime with a signed wrapping
+  delta, and the gate mechanically observes
+  `(s64)(U64_MAX - 100) = -101`.
+
+  Future summary contract:
+    use explicit validity plus a wrap-aware numeric minimum as an inseparable
+    pair. Invalid means the numeric member is ignored; valid means at least one
+    Fresh/pickable descendant witnesses the minimum. The picker guards
+    validity before `vruntime_eligible()`. `curr` is checked separately from
+    the rb-tree aggregate. Group entities project a child tree-or-curr witness,
+    and ancestor updates cover the full invalidation closure under rq locking.
+
+  Gate result:
+    16 source anchors with 0 failures; safe TLC 7 generated states, 6 distinct
+    states, depth 6; 18 expected counterexamples. No Linux patch, hot field,
+    runtime behavior, protection, performance, cost, deployment, or datacenter
+    claim is approved.
+
+  Next:
+    map every summary update and invalidation source before proposing a
+    selector patch.
+
+P5A-R2 summary update closure:
+  Analysis/0155, formal/0122, and validation/0201 map ten invalidation event
+  families to the current Linux source and rq-lock boundary.
+
+  Core update rule:
+    recompute the changed node or separate-current witness under `rq->lock`,
+    project the child combined witness through its parent group entity, and
+    continue to the root before unlock. Migration removes old-rq validity
+    before unlock and publishes destination validity only after locked
+    activation. Final task-local Fresh validation remains mandatory.
+
+  Gate result:
+    32 source anchors with 0 failures; 4 expected absence checks with 0
+    failures; safe TLC 71 generated states, 61 distinct states, depth 7; 24
+    expected counterexamples.
+
+  Blocker:
+    task-local closure is mapped, but shared domain/grant epoch, budget,
+    monitor-revoke, and outer-selector changes have no runtime authority
+    publication, runnable index, per-rq receipt generation, or fanout protocol.
+    A hot-field/picker patch is not reviewable until a versioned shared
+    invalidation contract closes this gap.
+
+P5A-R2 versioned global invalidation fence:
+  Analysis/0156, formal/0123, and validation/0202 select a conservative L0
+  answer to the shared invalidation gap.
+
+  Publication and trust:
+    write frozen shared state, release-publish a non-reused global projection
+    generation, and queue work for every online rq. The picker acquire-loads
+    the generation and trusts a summary only when its state is Fresh and its
+    built generation matches. A mismatch blocks trust before fanout arrives.
+
+  Rebuild:
+    under the owning rq lock, revalidate every leaf, rebuild rb aggregates,
+    separate current, and group projections, then recheck generation. A raced
+    or partial rebuild remains Stale/Blocked. Final task revalidation remains
+    mandatory; picker scan, repair, policy, and monitor calls are forbidden.
+
+  Boundary:
+    this global baseline avoids an unproven domain index but creates explicit
+    false negatives and potentially O(n) rq-lock hold time. It is not yet a
+    production performance design and does not implement the outer Candidate C
+    selector.
+
+P5A-R2 global-fence layout/rebuild evidence plan:
+  Analysis/0157, formal/0124, and validation/0203 passed an evidence-plan gate
+  with 24 source anchors, 6 future-absence checks, safe TLC 6/5/depth 5, and
+  32 expected counterexamples.
+
+  Candidate rejection envelope:
+    per architecture, `sched_entity` growth <= 8 bytes, `cfs_rq` growth = 0,
+    `rq` growth <= 32 bytes, and `task_struct` growth = 0, with specified hot
+    offsets unchanged. Full rq-locked rebuild is rejected above 25000 ns p99
+    or 50000 ns raw maximum additional irq-disabled lock hold, at one base
+    slice, or on any locking/RCU/lockup warning.
+
+  Boundary:
+    this is a plan, not a layout candidate, rebuild prototype, correctness
+    proof, performance result, or protection claim.
+
+P5A-R2 arm64 0013 layout table:
+  Validation/0204 mechanically structured the existing arm64 probe evidence:
+  24 symbols became 14 entries, all within containing structures, at exact
+  Linux commit/tree `077c948be394`/`7ef04bf73d26`.
+
+  Baseline:
+    `sched_entity` 320, `cfs_rq` 384, `rq` 3520, `task_struct` 4160, and
+    `task_struct.sched_exec` 1232/40. This is architecture-local; it does not
+    claim x86_64 byte identity.
+
+  Next:
+    expanded default-off build-only probe patch plan. Behavior and hot-field
+    approval remain false.
+
+P5A-R2 expanded E1 probe:
+  Analysis/0158/formal/0125/validation/0205 passed the 0014 patch-plan gate:
+  one probe file, 24 existing plus 27 new symbols, per-architecture cacheline
+  derivation, no candidate fields, and no behavior. Evidence was 25 anchors,
+  zero absence failures, safe TLC 5/4/depth 4, and 20 counterexamples.
+
+  Implementation/0040 records local commit `5e1ca3037e348`, replay commit
+  `6537a57d3d4b`, and common tree `54f685aad94f`. Strict checkpatch is clean.
+  Validation/0206 passed fresh arm64 off/on/probe targets, normal-build probe
+  absence, preservation of all 24 existing symbols, 27 additions, exactly 51
+  total symbols, and a 23-field cacheline table. The first run completed all
+  builds and exposed the corrected 49-to-51 ledger error.
+
+  Boundary:
+    E1 is complete. A disposable E2 layout-only candidate requires a separate
+    gate. Hot fields, selector/rebuild behavior, runtime correctness,
+    protection, performance, and cost remain unapproved.
+
+P5A-R2 E2 disposable arm64 candidate:
+  Analysis/0159/formal/0126/validation/0207 passed a disposable-worktree-only
+  gate with 20 anchors, 6 absence checks, safe TLC 5/4/depth 4, and 30 expected
+  counterexamples. Primary Linux stays at E1 and the patch queue at 0014.
+
+  Candidate commit `162d16640634` adds a default-off probe-dependent valid
+  byte/u64 minimum to sched_entity alignment gaps and byte state/u64 generation
+  to the rq tail gap. It changes four files and no runtime callsite. Initial
+  append placements caused forbidden 64-byte growth and were discarded.
+
+  Corrected run `20260713T-p5a-r2-e2-layout` passed the authoritative arm64
+  off/on/candidate build and 51+8=59 symbol, 27-field, structure/offset
+  comparison. All four structure deltas are zero and protected offsets remain
+  fixed.
+
+  The first attempt exited before compilation on a harness false negative:
+  Kconfig validly omitted the dependency-hidden disabled candidate, but the
+  harness required a not-set comment. The corrected runner rejects only `=y`;
+  the exact disposable candidate and frozen primary boundaries are unchanged.
+
+  Boundary:
+    arm64 E2 layout evidence passed. x86_64 E2 is separate and next; accepted
+    hot fields, E3, behavior, denial correctness, protection, performance, and
+    cost are false.
+
+P5A-R2 E2 x86_64 plan:
+  Analysis/0160/formal/0127/validation/0209 passed 18 anchors, 4 absence
+  checks, safe TLC 5/4/depth 4, and 24 expected counterexamples. The next
+  evidence is a fresh same-toolchain x86_64 E1 plus candidate off/on/probe
+  cross-build. It must preserve all 51 E1 values, add 8 symbols, emit 27
+  fields, and satisfy x86_64-local size/field gates. No runtime inference,
+  source acceptance, E3, protection, performance, or cost claim exists.
+
+  External job `p5a-r2-e2-x86_64-build` owns validation/0210's fresh E1 and
+  candidate off/on/probe cross-build. Passing evidence remains pending its
+  exact result.json.
+
+  Attempt one installed the cross compiler but stopped before compilation
+  because x86_64 defconfig disables the lease's `EXPERT` dependency. The
+  corrected common mode setup enables `EXPERT`; no source identity changed.
+
+  Corrected validation/0210 passed: x86_64 GCC 13.3.0 reproduced E1 sizes
+  320/384/3392/3328, preserved 51 values, added 8 for 59 total, emitted 27
+  fields, and measured zero growth. rq offsets 3380/3384 are correctly
+  architecture-local versus arm64 3508/3512. Both E2 architecture builds pass;
+  acceptance and E3 remain separately gated.
+
+P5A-R2 E2 closure:
+  Analysis/0161/formal/0128/validation/0211 passed exact dual-architecture
+  evidence closure with safe TLC 5/4/depth 4 and 24 expected counterexamples.
+  Candidate `162d16640634` is frozen only for drafting an E3 plan. No E3
+  worktree/source, production hot field, primary promotion, runtime,
+  protection, performance, or cost claim is approved.
+
+P5A-R2 E3 rebuild prototype:
+  Analysis/0162/formal/0129/validation/0212 gated a direct two-file E2 child.
+  Implementation/0042 commit `d1d5e78da848` implements the default-off
+  same-TU prototype and independent oracle. Validation/0213 passed the fresh
+  four-mode arm64 build matrix and QEMU KUnit: 12/12 cases, zero failures,
+  zero skips. Result SHA-256 is `fd4ea3fdf283d3d6251c7ac3a685a9d602a1b3dc50ba53779348ac3886d236cc`.
+
+  Core rule:
+    this accepts only synthetic-fixture rebuild correctness. E4 may be planned,
+    but production fields, live integration, bounded lock hold, behavior,
+    protection, performance, and cost remain unapproved.
+
+P5A-R2 E4 measurement plan:
+  Analysis/0163/formal/0130/validation/0214 passed 24 anchors, 4 absence
+  checks, safe TLC 6/5/depth 5, and 28 expected counterexamples. The fixed
+  gate is 35 cells, 10,000 paired samples per cell, real irq-disabled rq-lock
+  timing, 25 us additional p99, 50 us additional max, and 700 us base slice.
+  Threshold failure is retained as negative evidence. Only an exact E3-child
+  two-file source draft is authorized; measurement and performance approval
+  remain false.
+
+P5A-R2 E4 corrected source gate:
+  Validation/0216 preserves arm64 attempt 1 as `harness_failed`: its Image
+  built and booted, but the first source asserted a runtime-scaled base slice
+  against the normalized 700,000ns basis and emitted zero measurement rows.
+  This is neither a pass nor threshold-rejection evidence.
+
+  Analysis/0164 corrects only the precondition and metadata. Amended direct
+  E3 child `f6ad4e454778`, tree `265e63576274`, full diff SHA-256
+  `3f52a2b2724b`, records normalized and runtime-scaled base slices separately
+  while preserving the measured interval, 35-cell/10,000-pair matrix and
+  25us/50us limits. Validation/0217 passed exact correction, strict checkpatch
+  0/0/0 and arm64 object gates; result SHA-256 is
+  `956007be42687193c9d3eeb29e5e0be80dcaeba16d22436c71e06a017a870adc`.
+
+  Analysis/0165 and validation/0218 close E4 with canonical arm64 run
+  `20260714T-p5a-r2-e4-arm64-r4`, result SHA-256
+  `21cad0c9d6923e3e6a42749c315aca150126424ca14dd717c868e80eeba9bccc`.
+  QEMU/KUnit/integrity/warning gates passed and all 35 rows completed. Twenty
+  cells produced 36 fixed-threshold breaches: 12 p99, 20 max, and four
+  normalized-base-slice breaches. Worst q=4096/depth=64 additional p99/max is
+  520,992/2,440,048ns. This is valid `rejected_full_locked_rebuild` evidence,
+  not a harness failure. r2/r3 partial infrastructure attempts are not merged.
+
+  Full O(n) rq-locked rebuild is rejected; x86_64 is not launched and the
+  disposable line is not promoted. A successor requires a separate bounded
+  rq-lock-work design/gate. Production, latency, performance, cost,
+  protection, deployment, and datacenter claims remain blocked.
+
+P5A-R3 bucket-local successor gate:
+  Analysis/0166/formal/0131/validation/0219 replace the rejected all-leaf
+  rebuild direction with an indexed bucket-local Candidate C projection.
+  Run `20260715T-p5a-r3-bucket-local-plan-r2` passed 20 anchors, 6 absence
+  checks, safe TLC 16/14/depth 10, and 34 expected fault counterexamples;
+  result SHA-256 is
+  `250f35d8756378d7cf17a032a2a6734818e6291f317f335b4af01b15d1dc55ba`.
+
+  Each authority-equivalent bucket has a non-wrapping generation/state,
+  preallocated per-CPU projections, per-rq runnable/current counts, and an
+  active-rq index. Publication snapshots that index under the membership lock
+  on every generation. The insertion handshake proves: before snapshot means
+  targeted work; after snapshot means new-generation observation. Lock order
+  is rq -> one bucket lock; publisher holds no rq lock. One work interval
+  updates one bucket projection and never scans leaves or all buckets.
+  Migration is remove-neutral-add; picker trust requires current generation,
+  eligibility/key match, and final task recheck; lifetime uses explicit task,
+  projection, work refs, and RCU.
+
+  The initial model omitted a new snapshot on republish; TLC exposed the
+  missed late-joining rq and the accepted model corrected it. Only R3-E1
+  source/locking/lifetime/finite-B_max evidence-plan drafting is allowed.
+  Linux source, hot fields, behavior, bounded latency, monitor protection,
+  performance/cost, deployment, and datacenter claims remain blocked.
+
+P5A-R3 E1 source/locking/lifetime gate:
+  Analysis/0167/formal/0132/validation/0220 passed 38 anchors, 8 absences,
+  safe TLC 12/11/depth 11, and 36 expected counterexamples. Canonical result
+  SHA-256 is `bc6f5bca4fb3c6d94bc8cdf129d399dfebf9b723bc18d8bd4f9727bd44d6b692`
+  and is byte-reproducible for the same RUN_ID.
+
+  The first implementation bound is B_max=64, one outer layer, rb height
+  <=12, sparse projections, <=64KiB private active state/rq, and zero growth
+  of ordinary scheduler/task structures. Lock order is rq -> one bucket lock;
+  publisher holds no rq lock; one unbound coalesced work owner updates one
+  projection. Fair rq online/offline callbacks own hotplug settlement. Teardown
+  stops queueing, drains work outside locks, releases refs, then waits for RCU.
+
+  Only a disposable default-off layout/probe direct child changing
+  init/Kconfig and kernel/sched/exec_lease.c is now allowed. E3/E4 source,
+  behavior, primary/patch-queue promotion, denial/protection/performance/cost,
+  deployment, and datacenter claims remain false.
+
+P5A-R3 E2 private layout gate:
+  Implementation/0044 and validation/0221-0223 freeze exact direct-primary
+  child `63313b329e1d`, tree `8d51c596d3d7`, changing only init/Kconfig and
+  kernel/sched/exec_lease.c. The option is default-off and build-only.
+
+  Fresh arm64 and x86_64 four-mode builds each preserve 51 existing values,
+  add 43 private-on symbols, leave zero disabled symbols/relocations/strings,
+  and measure zero sched_entity/cfs_rq/rq/task_struct growth. Private
+  key/bucket/projection/rq-state is 64/128/832/448 bytes; B_max=64 totals
+  53,696 bytes/rq <=65,536. Build result SHA-256 is `48a4a0f35889` and
+  independent closure SHA-256 is `d9b63a3efd0f`.
+
+  E2 is complete. E3 plan drafting is allowed; E3 worktree/source is not.
+  Runtime behavior/denial, primary promotion, production layout/protection,
+  performance/cost, deployment, and datacenter claims remain false.
+
+P5A-R3 E3 concurrency-plan gate:
+  Analysis/0168, formal/0133, and validation/0224 authorize only an exact
+  direct-E2-child, two-file, default-off same-TU KUnit draft in init/Kconfig
+  and kernel/sched/exec_lease.c. The suite is `sched_exec_lease_bucket`.
+
+  The plan fixes B_max 0/1/63/64/rejected-65, six pre-runnable allocation
+  faults, 20 deterministic publication/work/migration/hotplug/retirement case
+  families, an independent reference/state oracle, five-second race timeouts,
+  1,024 diagnostic stress iterations, and four arm64/x86_64 KUnit/KASAN/KCSAN/
+  lockdep/work-debug/RCU QEMU boots.
+
+  Run `20260715T-p5a-r3-e3-plan` passed 25 source hashes, 58 anchors, 10
+  absences, safe TLC 17/16/depth 16, and 51 expected unsafe counterexamples;
+  result SHA-256 is `438496a960e5`. E3 source correctness, E4, primary/patch
+  promotion, runtime behavior/denial, monitor/cross-path coverage, latency,
+  performance/cost, protection, deployment, and datacenter claims remain false.
+
+P5A-R3 E3 diagnostic closure:
+  Corrected direct-E2-child commit `be9339363a99`, tree `a92d096ef477`, passed
+  validation/0225 source gating and validation/0226 run
+  `20260716T-p5a-r3-e3-diagnostic-matrix-r2`. Arm64/x86_64 standard debug,
+  arm64 generic KASAN, and x86_64 KCSAN each passed 20/20 exact-suite cases
+  with zero failure, skip, timeout, warning, or lockup. Result SHA-256 is
+  `3ec1cd9b54b3`. Attempt 1 remains immutable negative evidence in 0227.
+
+  This proves only the isolated same-TU synthetic protocol. Real scheduler
+  attachment, runtime behavior/denial, and production remain false.
+
+P5A-R3 E4 bucket-measurement plan gate:
+  Analysis/0169, formal/0134, and validation/0228 authorize only an exact
+  direct-E3-child default-off two-file source draft. The plan fixes real rq
+  locking with paired controls; 32 one-projection, 5 bounded hotplug, and 5
+  targeted-fanout cells; 10,000 samples per cell; and immutable 5/25/50us,
+  25/50us, 10/100ms, and 700us rejection gates.
+
+  Run `20260716T-p5a-r3-e4-bucket-measurement-plan` passed 30 anchors, 6
+  absences, the frozen E3 20-case count, safe TLC 8/7/depth 7, and 40 expected
+  unsafe counterexamples; result SHA-256 is `107cf025ccb3`. E4 measurement is
+  blocked on a separate source gate. E4 acceptance, E5, primary/patch changes,
+  live behavior, cross-path/monitor coverage, production protection,
+  bare-metal latency, performance/cost, deployment, and datacenter claims are
+  false.
+
+P5A-R3 E4 source and exact-source regression gate:
+  Analysis/0170 and implementation/0046 bind exact direct-E3-child commit
+  `f20c62a2ad5a`, tree `61541cb0c8ad`, and diff SHA-256 `ec369f6b40b4`
+  to exactly init/Kconfig and kernel/sched/exec_lease.c. The default-off same-TU
+  suite emits 32 one-projection, 5 hotplug, and 5 fanout rows with immutable
+  10,000-pair counts and rejection limits.
+
+  Validation/0229 corrected run `20260716T-p5a-r3-e4-source-gate-r2` passed
+  strict checkpatch, arm64/x86_64 E3-parent/E4-off/E4-on W=1 objects, 43 frozen
+  E2 values, and disabled E4 artifact absence; result SHA-256 is
+  `8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c`.
+
+  Validation/0232 preserves attempt 1 as infrastructure failure: two unrelated
+  shared-APFS/virtiofs objects lost bytes under critical host capacity before
+  QEMU. Validation/0233 corrected run
+  `20260716T-p5a-r3-e4-e3-regression-r2` used internal ext4 storage and passed
+  arm64/x86_64 standard, arm64 KASAN, and x86_64 KCSAN at 20/20 with E4
+  measurement off. Result SHA-256 is `3d02a2b6c52a`. Eight exact boot/object
+  archives passed independent archive/restored hashes and all four scratch
+  builds were pruned.
+
+  Validation/0235 closes arm64 run
+  `20260716T-p5a-r3-e4-arm64-measurement-r1` as valid negative evidence.
+  QEMU exited zero, KUnit passed 3/3, all 42 cells and summaries completed,
+  warnings were zero, and artifacts/restored hashes passed. Result SHA-256 is
+  `edba124b804beeaa`; 19/42 cells produced 26 fixed-gate breaches
+  (one-projection 12, hotplug 3, fanout 4). Fanout passed only at one active rq
+  and reached 494,241,840ns p99 / 1,660,608,240ns maximum at 64 active rqs.
+
+  The job's post-QEMU AWK string-comparison defect was fixed with explicit
+  numeric coercion, preserved diagnostics, and a postprocess-only verifier.
+  Two recovery runs over unchanged raw evidence reproduced the same result
+  hash. R3, x86_64, E4 acceptance, and E5 are stopped.
+
+  Next is N-130: separately gate a successor that retains the O(1) untrusted
+  generation mismatch and replaces the failed global last-settlement
+  availability condition with bounded coalescing recovery. R3 fanout was
+  already availability-only, not trust authority. No source, live behavior,
+  primary/patch promotion, production protection, bare-metal
+  latency, performance/cost, deployment, or datacenter claim is approved.
+
+  Clean E2/E3/E4 worktrees were removed after branch/remote verification;
+  commits remain reproducible from the parent repo. Sparsebundle compaction
+  reduced 16GB to 9.5GB and restored macOS free space from 3.1GB to 18GB.
+  Canonical evidence remains; `domainlease-dev` is stopped until next use.
+
+- P5A-R4 N-130 architecture gate is complete:
+
+  Analysis/0172, formal/0135, and validation/0236 select Generation-Fenced
+  Coalesced Pull Recovery. This also corrects the R3 shorthand: generation
+  mismatch was already the trust fence and fanout was availability-only; the
+  rejected condition was global publication-to-last-settlement availability.
+
+  R4 has an O(1) release-published authority critical section, an O(1)
+  fail-closed picker fence, one coalescing bucket notifier, one coalescing owner
+  per rq, newest-generation dirty nodes bounded by `B_max`, and one projection
+  per rq-lock quantum. Current reschedule requests are separate from projection
+  repair and are not monitor receipts.
+
+  Liveness is conditional and honest: after final publication, stable
+  membership, and weak fairness, notifier work is at most `2*A` logical quanta
+  and stable per-rq recovery is at most `B_max` quanta. Infinite publication may
+  remain fail-closed; no wall-clock bound follows.
+
+  Canonical run `20260716T-p5a-r4-generation-fenced-coalesced-pull-recovery-r1`
+  passed 16 anchors, 6 absences, safe TLC 16/15/depth 15 with notifier restart
+  and two liveness properties, and 47 unsafe counterexamples. Result SHA-256 is
+  `388e4f41651cf425`.
+
+  Next is N-131 R4-E1 no-source evidence planning. No R4 source, behavior,
+  protection, latency, performance/cost, deployment, or datacenter claim is
+  approved.
+
+- P5A-R4 N-131 E1 pre-source gate is complete:
+
+  Analysis/0173, formal/0136, and validation/0237 reject balance callbacks as a
+  post-rq-lock seam and select the source-proven MM-CID pattern: durable state
+  under rq lock/IRQs disabled -> one hard irq-work -> unconditional unbound
+  ordinary work -> one-projection rq-lock recovery.
+
+  `B_max=64`; the realistic candidate envelope is 62016 bytes/rq under 65536,
+  with zero ordinary sched_entity/cfs_rq/rq/task growth. One cursor notifier
+  visits one active projection per invocation, restarts on generation or
+  membership change through a publisher-clear handshake, and preserves the
+  stable `2*A` logical bound. One rq owner coalesces latest desired generations.
+
+  Current reschedule is a separate request plus later scheduler observation,
+  not a monitor receipt. Offline first disarms under the fair rq callback, then
+  sleepably syncs irq-work, cancels work, settles references, and waits for RCU.
+
+  Canonical run `20260716T-p5a-r4-e1-dispatch-lifetime-plan-r1` passed 35
+  anchors, 8 absences, safe TLC 21/20/depth 20, three liveness properties, and
+  60 unsafe counterexamples, including the verified CPUHP reverse teardown
+  order. Result SHA-256 is
+  `2710cea3ed5a8b2838b80b734a94878ed978c40e3e20daa0529ad359c6aa7bca`.
+
+  Next is N-132: the exact disposable, default-off, two-file R4-E2 layout
+  candidate and arm64/x86_64 layout closure. No runtime callback or behavior,
+  primary/patch change, protection, latency, performance/cost, deployment, or
+  datacenter claim is approved.
+
+- P5A-R4 N-132 E2 source gate passed; layout build is running:
+
+  Direct-primary candidate `a429fc30252a`/tree `fffd419bbc05` changes only
+  `init/Kconfig` and `kernel/sched/exec_lease.c`. It adds a default-off private
+  key, bucket/notifier, projection/dirty-node, and per-rq irq/work owner plus a
+  58-symbol object-local layout table, with no constructor or runtime callsite.
+
+  Source-gate run `20260717T-p5a-r4-e2-source-gate-r1` passed two-file/direct
+  identity, forward/reverse replay, checkpatch 0/0/0, 22 anchors, exact owner
+  cardinalities, zero forbidden additions, and the 58-symbol manifest. Result
+  SHA-256 is `9e79d3e58151960b397a715116eb545de4c1ecc1988e619b88139022f6395a82`.
+
+  Detached run `20260717T-p5a-r4-e2-dual-arch-r1` is monitored as
+  `p5a-r4-e2-dual-arch-build` and reached arm64 baseline preparation. N-132
+  remains pending until both architectures preserve the 51 existing values,
+  prove disabled R4 absence and zero ordinary growth, and pass the private
+  envelope. No E3/runtime/protection/performance/deployment claim is approved.
+
+- P5A-R4 N-132 E2 is complete:
+
+  Monitored arm64/x86_64 run `20260717T-p5a-r4-e2-dual-arch-r1` preserved 51
+  existing values, emitted 58 enabled-only R4 symbols, produced zero disabled
+  artifacts and zero ordinary growth, and measured `64/200/768/512` bytes for
+  key/bucket+notifier/projection+dirty/rq-state+bridge. `B_max=64` uses 49,664
+  bytes/rq below 62,016 planned and 65,536 hard limits. Build result SHA-256 is
+  `6346c3570008942fae533395ff4eb1165c3d42c6572d134c945e20fb57cbad1e`.
+
+  Independent closure result SHA-256 is
+  `fed621ee76effc554df806f40f6289d375dafe3f127427a9be73d6ff2ddcc048`.
+  It re-extracted objects and rechecked all configs, hashes, offsets, absence,
+  and arithmetic. The disposable checkout was retired and sparsebundle
+  compaction reclaimed 1,803,584 KiB without removing canonical object
+  evidence. A post-retirement rerun passed from retained Git objects with
+  identical stable fields; result SHA-256 is
+  `27f5a7acc52cc3852ca049a6abc07a72bce2c4e99e7a1a2e02167548a7b3d0f6`.
+
+  Next is N-133: an exact R4-E3 pre-source concurrency/diagnostic plan. No E3
+  source or runtime/protection/performance/deployment claim is approved.

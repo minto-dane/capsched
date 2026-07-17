@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-vruntime-sentinel-gate-v1",
+  "date": "2026-07-13",
+  "status": "source_representation_gate_no_linux_patch_approved",
+  "source_basis": {
+    "linux_commit": "077c948be39432971e7273b16b728172251129aa",
+    "linux_tree": "7ef04bf73d26b2813b10016b7eb342a618a66570",
+    "prior_source_sketch": "analysis/0151-sched-exec-lease-p5a-r2-minimal-source-sketch.md",
+    "prior_layout_validation": "validation/0198-sched-exec-lease-p5a-r2-0013-layout-table.md",
+    "prior_disabled_overhead_validation": "validation/0199-sched-exec-lease-p5a-r2-0013-disabled-overhead.md"
+  },
+  "counterexample": {
+    "candidate_sentinel": "U64_MAX",
+    "real_vruntime": 100,
+    "signed_delta_expression": "(s64)(U64_MAX - 100)",
+    "signed_delta_result": -101,
+    "u64max_is_global_vruntime_infinity": false,
+    "literal_sentinel_rejected": true
+  },
+  "representation_contract": {
+    "explicit_validity_required": true,
+    "numeric_value_ignored_when_invalid": true,
+    "numeric_value_required_when_valid": true,
+    "wrap_aware_minimum_required": true,
+    "validity_and_minimum_are_inseparable": true,
+    "boolean_only_summary_rejected": true,
+    "untagged_numeric_sentinel_rejected": true,
+    "field_names_provisional": true,
+    "field_placement_approved": false
+  },
+  "picker_contract": {
+    "validity_checked_before_vruntime_eligible": true,
+    "final_entity_fresh_check_required": true,
+    "summary_is_pruning_proof_not_authority": true,
+    "current_entity_checked_separately": true,
+    "post_filter_fallback_rejected": true,
+    "unbounded_scan_rejected": true,
+    "monitor_call_in_picker": false,
+    "policy_lookup_in_picker": false
+  },
+  "group_contract": {
+    "child_tree_valid_witness": true,
+    "child_current_valid_witness": true,
+    "group_entity_projects_child_aggregate": true,
+    "ancestor_augmentation_propagation_required": true,
+    "runqueue_lock_ownership_required": true,
+    "enqueue_dequeue_only_refresh_rejected": true
+  },
+  "source_anchors": [
+    {"id":"vruntime_cmp_definition","path":"linux/kernel/sched/fair.c","pattern":"#define vruntime_cmp(A, CMP_STR, B)"},
+    {"id":"vruntime_cmp_signed_greater","path":"linux/kernel/sched/fair.c","pattern":"__res = ((s64)((A)-(B)) > 0);"},
+    {"id":"vruntime_eligible_definition","path":"linux/kernel/sched/fair.c","pattern":"static int vruntime_eligible(struct cfs_rq *cfs_rq, u64 vruntime)"},
+    {"id":"vruntime_eligible_key","path":"linux/kernel/sched/fair.c","pattern":"key = vruntime_op(vruntime, \"-\", cfs_rq->zero_vruntime);"},
+    {"id":"min_vruntime_update","path":"linux/kernel/sched/fair.c","pattern":"static inline bool min_vruntime_update(struct sched_entity *se, bool exit)"},
+    {"id":"augmentation_callbacks","path":"linux/kernel/sched/fair.c","pattern":"RB_DECLARE_CALLBACKS(static, min_vruntime_cb"},
+    {"id":"augmentation_insert","path":"linux/kernel/sched/fair.c","pattern":"rb_add_augmented_cached(&se->run_node"},
+    {"id":"augmentation_erase","path":"linux/kernel/sched/fair.c","pattern":"rb_erase_augmented_cached(&se->run_node"},
+    {"id":"augmentation_propagate","path":"linux/kernel/sched/fair.c","pattern":"min_vruntime_cb_propagate(&se->run_node, NULL);"},
+    {"id":"current_outside_tree","path":"linux/kernel/sched/fair.c","pattern":"'current' is not kept within the tree."},
+    {"id":"group_child_pointer","path":"linux/include/linux/sched.h","pattern":"struct cfs_rq\t\t\t*my_q;"},
+    {"id":"cfs_rq_tree","path":"linux/kernel/sched/sched.h","pattern":"struct rb_root_cached\ttasks_timeline;"},
+    {"id":"cfs_rq_current","path":"linux/kernel/sched/sched.h","pattern":"struct sched_entity\t*curr;"},
+    {"id":"prior_literal_sentinel","path":"capsched/capsched-models/analysis/0151-sched-exec-lease-p5a-r2-minimal-source-sketch.md","pattern":"SCHED_EXEC_PICKABLE_NONE = U64_MAX"},
+    {"id":"layout_baseline","path":"capsched/capsched-models/validation/0198-sched-exec-lease-p5a-r2-0013-layout-table.md","pattern":"sched_entity size: 320"},
+    {"id":"disabled_overhead_boundary","path":"capsched/capsched-models/validation/0199-sched-exec-lease-p5a-r2-0013-disabled-overhead.md","pattern":"new hot scheduler runtime fields"}
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0121-p5a-r2-vruntime-sentinel-gate-model",
+    "model": "P5AR2VruntimeSentinelGate.tla",
+    "safe_cfg": "P5AR2VruntimeSentinelGateSafe.cfg",
+    "unsafe_cfg_count": 18,
+    "unsafe_expected_counterexamples": 18
+  },
+  "safety_flags": {
+    "linux_patch_approved": false,
+    "new_hot_field_approved": false,
+    "runtime_behavior_approved": false,
+    "accept_0009_0012": false,
+    "runtime_denial_correctness": false,
+    "complete_cfs_deny_and_repick": false,
+    "runtime_coverage": false,
+    "public_abi": false,
+    "trace_abi": false,
+    "monitor_call_in_picker": false,
+    "policy_lookup_in_picker": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_efficiency": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  },
+  "next": {
+    "name": "P5A-R2 summary update-closure source map",
+    "linux_behavior_patch_allowed_after_this_gate": false
+  }
+}

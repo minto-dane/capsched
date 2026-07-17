@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-04
+Updated: 2026-07-16
 
 ## Current Analysis Notes
 
@@ -159,6 +159,25 @@ Updated: 2026-07-04
 | 0151 | P5A-R2 minimal source sketch defined; EEVDF fresh-summary placement sketched without Linux patch approval | SchedExecLease P5A-R2 Minimal Source Sketch |
 | 0152 | P5A-R2 layout/overhead evidence plan defined; hot-field and cost claims gated before any behavior patch | SchedExecLease P5A-R2 Layout and Overhead Evidence Plan |
 | 0153 | P5A-R2 no-behavior layout probe patch plan defined; 0013 reserved for build-only probe infrastructure | SchedExecLease P5A-R2 Layout Probe Patch Plan |
+| 0154 | Literal U64_MAX vruntime sentinel rejected; explicit validity plus wrap-aware minimum required | SchedExecLease P5A-R2 Vruntime Sentinel Gate |
+| 0155 | Source/locking update closure mapped; shared epoch, budget, monitor, and selector fanout remains an implementation blocker | SchedExecLease P5A-R2 Summary Update-Closure Map |
+| 0156 | Conservative versioned global invalidation fence selected; generation mismatch blocks picker trust before all-rq rebuild fanout | SchedExecLease P5A-R2 Versioned Global Invalidation Fence |
+| 0157 | Global-fence layout/rebuild evidence plan fixes hot-structure growth envelopes and 25us/50us rq-lock rejection limits | SchedExecLease P5A-R2 Global-Fence Layout/Rebuild Evidence Plan |
+| 0158 | Patch 0014 reserved for a one-file, 51-symbol expanded default-off probe; candidate fields and behavior remain forbidden | SchedExecLease P5A-R2 Expanded Layout Probe Patch Plan |
+| 0159 | E2 constrained to a disposable four-field, default-off arm64 layout candidate; primary Linux and patch queue remain frozen | SchedExecLease P5A-R2 E2 Disposable Layout Candidate Plan |
+| 0160 | x86_64 E2 constrained to fresh same-toolchain E1/candidate cross-builds with architecture-local envelopes and no runtime inference | SchedExecLease P5A-R2 E2 x86_64 Layout Evidence Plan |
+| 0161 | Cross-architecture E2 evidence closure separates exact disposable E3 planning input from production layout or source approval | SchedExecLease P5A-R2 E2 Layout Evidence Closure |
+| 0162 | E3 constrained to an exact disposable two-file real-traversal KUnit prototype with independent-oracle and controlled-build gates | SchedExecLease P5A-R2 E3 Rebuild Prototype Evidence Plan |
+| 0163 | E4 fixes a paired-control 35-cell lock-hold rejection experiment with immutable 25us/50us limits and two-architecture staging | SchedExecLease P5A-R2 E4 Lock-Hold Measurement Plan |
+| 0164 | Attempt-1 base-slice assertion corrected to distinguish the fixed normalized threshold basis from the separately recorded runtime-scaled value | SchedExecLease P5A-R2 E4 Normalized Base-Slice Correction |
+| 0165 | Valid arm64 evidence breaches 36 fixed gates across 20/35 cells and rejects the full O(n) rq-locked rebuild without launching x86_64 | SchedExecLease P5A-R2 E4 Arm64 Lock-Hold Rejection |
+| 0166 | Bucket-local Candidate C projection selected: indexed active-rq fanout, snapshot/insertion handshake, and one-bucket rq-lock work replace all-leaf rebuild | SchedExecLease P5A-R3 Bucket-Local Targeted Projection |
+| 0167 | R3-E1 fixes B_max=64, sparse private projections, zero ordinary hot-structure growth, unbound-work/hotplug/drain lifetime, exact two-file E2 scope, and later rejection thresholds | SchedExecLease P5A-R3 E1 Source/Locking/Lifetime Evidence Plan |
+| 0168 | R3-E3 fixes an exact same-TU two-file KUnit prototype with B_max/fault/race/oracle matrices and four arm64/x86_64 diagnostic boots | SchedExecLease P5A-R3 E3 Bucket Concurrency Evidence Plan |
+| 0169 | R3-E4 fixes a default-off same-TU rejection experiment with real rq locking, paired controls, 32 one-projection, 5 hotplug, and 5 targeted-fanout cells, immutable limits, and virtual-evidence non-claims | SchedExecLease P5A-R3 E4 Bucket Measurement Plan |
+| 0170 | Exact direct-E3-child two-file E4 draft implements the 42-cell measurement suite, shared transition helpers, strict style, dual-arch compile smoke, and keeps measurement blocked on independent gates | SchedExecLease P5A-R3 E4 Bucket Measurement Source Draft |
+| 0171 | Complete arm64 E4 evidence rejects 19/42 cells and 26 fixed gates while preserving clean QEMU/KUnit/warning/artifact and deterministic postprocess evidence | SchedExecLease P5A-R3 E4 Arm64 Bucket Measurement Rejection |
+| 0172 | R4 selects an O(1) generation fence with coalesced notifier/pull recovery, conditional 2*A/B_max logical bounds, and separate current stop requests | SchedExecLease P5A-R4 Generation-Fenced Coalesced Pull Recovery |
 
 ## Planned Analysis Notes
 
@@ -278,3 +297,21 @@ Updated: 2026-07-04
 | `sched-exec-lease-p5a-r2-minimal-source-sketch-v1.json` | P5A-R2 minimal source sketch | Machine-readable minimal EEVDF fresh-summary sketch, source anchors, hot-layout evidence requirements, unsafe families, and non-claim flags |
 | `sched-exec-lease-p5a-r2-layout-overhead-evidence-plan-v1.json` | P5A-R2 layout/overhead evidence plan | Machine-readable evidence contract for layout probes, disabled overhead, object/function deltas, negative stale-summary tests, and non-claim flags |
 | `sched-exec-lease-p5a-r2-layout-probe-patch-plan-v1.json` | P5A-R2 layout probe patch plan | Machine-readable no-behavior 0013 probe-patch contract, source anchors, absence checks, measurement requirements, and non-claim flags |
+| `sched-exec-lease-p5a-r2-vruntime-sentinel-gate-v1.json` | P5A-R2 vruntime representation gate | Machine-readable literal-sentinel counterexample, validity-plus-wrap-min contract, group/current boundaries, source anchors, and non-claim flags |
+| `sched-exec-lease-p5a-r2-summary-update-closure-map-v1.json` | P5A-R2 update-closure gate | Machine-readable rb/current/group/lifecycle/budget/placement/throttle/shared-event closure map, rq-lock ownership, unresolved shared invalidation mechanisms, source anchors, and non-claim flags |
+| `sched-exec-lease-p5a-r2-versioned-global-invalidation-fence-v1.json` | P5A-R2 shared invalidation architecture | Machine-readable global generation publication, picker fence, all-rq rebuild, mutation integration, targeted-fanout prerequisites, outer-selector boundary, and non-claim flags |
+| `sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan-v1.json` | P5A-R2 implementation evidence plan | Machine-readable architecture baselines, candidate layout envelopes, rebuild oracle/race requirements, live lock-hold matrix and rejection limits, build/disassembly gates, and non-claim flags |
+| `sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan-v1.json` | P5A-R2 expanded probe patch plan | Machine-readable 0014 one-file scope, exact 51-symbol contract, cacheline derivation, candidate-field absence boundary, validation requirements, and non-claim flags |
+| `sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-plan-v1.json` | P5A-R2 E2 disposable layout plan | Machine-readable disposable-worktree boundary, four provisional fields, 59-symbol conditional probe contract, arm64 growth/offset gates, build matrix, and non-claim flags |
+| `sched-exec-lease-p5a-r2-e2-x86_64-layout-evidence-plan-v1.json` | P5A-R2 E2 x86_64 evidence plan | Exact E1/candidate identities, arm64 prerequisite, x86_64 cross-toolchain matrix, 51+8 symbol comparison, architecture-local growth gates, and non-claim flags |
+| `sched-exec-lease-p5a-r2-e2-layout-evidence-closure-v1.json` | P5A-R2 E2 evidence closure | Exact hashed arm64/x86_64 results, immutable four-field candidate, architecture-local offsets, E3-plan-only freeze, and production/source non-claims |
+| `sched-exec-lease-p5a-r2-e3-rebuild-prototype-evidence-plan-v1.json` | P5A-R2 E3 rebuild evidence plan | Exact E2 parent, disposable two-file source boundary, real traversal and independent-oracle obligations, controlled build/QEMU matrix, and production non-claims |
+| `sched-exec-lease-p5a-r2-e4-lock-hold-measurement-plan-v1.json` | P5A-R2 E4 lock-hold plan | Exact E3 boundary, real irq/rq lock timing interval, paired controls, immutable 35-cell/10,000-sample matrix, fixed rejection limits, architecture split, and non-claims |
+| `sched-exec-lease-p5a-r2-e4-arm64-lock-hold-rejection-v1.json` | P5A-R2 E4 arm64 rejection | Exact source/result hashes, complete 35-cell evidence, breach accounting, full-locked-rebuild rejection, x86_64 stop, and successor-gate boundary |
+| `sched-exec-lease-p5a-r3-bucket-local-targeted-projection-v1.json` | P5A-R3 bucket-local successor | E4 rejection trigger, authority-equivalent bucket key, active-rq index and handshake, one-bucket work/lifetime bounds, staged source boundary, and non-claims |
+| `sched-exec-lease-p5a-r3-e1-source-locking-lifetime-evidence-plan-v1.json` | P5A-R3 E1 pre-source plan | Finite B_max/depth/memory envelopes, exact two-file E2 layout scope, rq/membership/work ownership, hotplug and RCU drain, E3 race cases, E4 rejection limits, and non-claims |
+| `sched-exec-lease-p5a-r3-e3-bucket-concurrency-evidence-plan-v1.json` | P5A-R3 E3 pre-source plan | Exact E2 child/two-file same-TU KUnit boundary, B_max and allocation faults, deterministic publication/work/migration/hotplug/retirement races, independent oracle, sanitizer matrix, and non-claims |
+| `sched-exec-lease-p5a-r3-e4-bucket-measurement-plan-v1.json` | P5A-R3 E4 pre-source plan | Exact E3 child/two-file same-TU boundary, real rq-lock one-projection and bounded hotplug timing, targeted fanout availability, paired controls, immutable 42-cell/10,000-pair gates, architecture split, and non-claims |
+| `sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement-rejection-v1.json` | P5A-R3 E4 arm64 rejection | Exact complete 42-cell result, post-QEMU parser recovery provenance, 19 rejected cells, 26 breach accounting, R3/x86/E5 stop, and asynchronous-successor gate boundary |
+| `sched-exec-lease-p5a-r4-generation-fenced-coalesced-pull-recovery-v1.json` | P5A-R4 successor architecture | Exact R3 trigger, O(1) publication/picker fence, one notifier/owner, newest-generation coalescing, stable-window logical bounds, current-stop separation, source anchors, faults, and non-claims |
+| `sched-exec-lease-p5a-r4-e1-dispatch-lifetime-evidence-plan-v1.json` | P5A-R4 E1 pre-source plan | Finite R4 storage/admission, rejected balance callback, irq-work-to-unbound-work bridge, notifier cursor/restart, one-rq owner, hotplug/RCU drain, E3/E4 gates, and non-claims |

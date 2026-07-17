@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-e3-disposable-rebuild-kunit-prototype-v1",
+  "date": "2026-07-14",
+  "status": "disposable_source_and_synthetic_rebuild_correctness_passed_unaccepted_for_production",
+  "source": {
+    "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r2-e3-rebuild-prototype",
+    "branch": "codex/p5a-r2-e3-rebuild-prototype",
+    "parent_commit": "162d16640634637a6f7604b90bf2275bea47ec63",
+    "candidate_commit": "d1d5e78da8484c91eae70f22399c6901da680ea0",
+    "candidate_tree": "aa6a5a3848415643f3b67434964b056e30421bb2",
+    "diff_sha256": "a5351bbdd7a6617382bdea5ca9a7546e3defd97bd4a08c9c6ccf53390a88b4ed",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/fair.c"
+    ],
+    "insertions": 947,
+    "deletions": 0,
+    "strict_checkpatch_errors": 0,
+    "strict_checkpatch_warnings": 0,
+    "strict_checkpatch_checks": 0
+  },
+  "frozen_boundary": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "patch_queue_tail": "0014-sched-exec_lease-Expand-build-only-layout-probe.patch",
+    "field_files_unchanged": true,
+    "probe_unchanged": true,
+    "makefile_unchanged": true,
+    "primary_linux_change_approved": false,
+    "patch_queue_change_approved": false
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_REBUILD_KUNIT_TEST",
+    "type": "bool",
+    "default_enabled": false,
+    "depends_on": "SCHED_EXEC_LEASE_LAYOUT_CANDIDATE && KUNIT=y",
+    "same_translation_unit": "kernel/sched/fair.c",
+    "suite_name": "sched_exec_lease_rebuild",
+    "selected_by_ordinary_lease": false,
+    "selected_by_kunit_all_tests": false
+  },
+  "prototype": {
+    "two_pass_clear_then_rebuild": true,
+    "rq_lock_assertion": true,
+    "rb_postorder": true,
+    "cfs_rq_bottom_up": true,
+    "recursive_group_walk": false,
+    "current_separate": true,
+    "tagged_wrap_aware_minimum": true,
+    "numeric_sentinel": false,
+    "generation_acquire_before_and_after": true,
+    "generation_saturation_blocked": true,
+    "partial_or_raced_fresh": false,
+    "topology_mutation": false,
+    "allocation_in_locked_helper": false,
+    "sleep_in_locked_helper": false,
+    "monitor_or_policy_call": false
+  },
+  "oracle": {
+    "independent_fixture_arrays": true,
+    "direct_signed_delta_comparison": true,
+    "shares_combine_helper": false,
+    "shares_postorder_helper": false,
+    "calls_min_vruntime": false,
+    "flat_per_node_check": true,
+    "exact_leaf_visit_check": true,
+    "exhaustive_leaf_limit": 6,
+    "exhaustive_wrap_bases": 3
+  },
+  "kunit": {
+    "test_case_count": 12,
+    "required_case_family_count": 14,
+    "test_cases": [
+      "sched_exec_rebuild_empty_singleton_test",
+      "sched_exec_rebuild_exhaustive_flat_test",
+      "sched_exec_rebuild_tree_curr_test",
+      "sched_exec_rebuild_groups_bottom_up_test",
+      "sched_exec_rebuild_invalid_child_test",
+      "sched_exec_rebuild_enqueue_dequeue_test",
+      "sched_exec_rebuild_current_transitions_test",
+      "sched_exec_rebuild_cgroup_move_test",
+      "sched_exec_rebuild_migration_test",
+      "sched_exec_rebuild_publication_before_test",
+      "sched_exec_rebuild_publication_race_test",
+      "sched_exec_rebuild_saturation_test"
+    ],
+    "arm64_qemu_passed": true,
+    "passed_cases": 12,
+    "failed_cases": 0,
+    "skipped_required_cases": 0
+  },
+  "targeted_compile": {
+    "architecture": "arm64",
+    "object": "build/DomainLeaseLinux.volume/builds/arm64-current/e3-rebuild-syntax/kernel/sched/fair.o",
+    "passed": true,
+    "controlled_evidence_complete": true
+  },
+  "controlled_validation": {
+    "validation": "validation/0213-sched-exec-lease-p5a-r2-e3-rebuild-prototype.md",
+    "run_id": "20260714T-p5a-r2-e3-rebuild",
+    "result": "build/source-check/sched-exec-lease-p5a-r2-e3-rebuild-prototype/20260714T-p5a-r2-e3-rebuild/result.json",
+    "result_sha256": "fd4ea3fdf283d3d6251c7ac3a685a9d602a1b3dc50ba53779348ac3886d236cc",
+    "image_sha256": "5b729a86b06669b72d6ffec79d073d47a00e390ee504f8bfdc4a8cbc77fa544c",
+    "raw_serial_sha256": "bee1013c3c9db1dea424f60669245b6a5eb34214cfeb6ef9975a300cdd2bb7a8",
+    "normalized_ktap_sha256": "f1ec72888ab6a4cc5c30fd192355bc33a0082f4375811c57b0710c60db1a3d05",
+    "qemu_cpu_model": "cortex-a57",
+    "qemu_network_disabled": true,
+    "build_matrix_complete": true,
+    "e3_source_accepted_for_disposable_correctness_evidence": true,
+    "e3_rebuild_correctness_accepted_for_synthetic_fixtures": true,
+    "e4_plan_may_be_drafted": true
+  },
+  "safety_flags": {
+    "e3_source_accepted": true,
+    "e3_rebuild_correctness_accepted": true,
+    "production_layout_accepted": false,
+    "hot_field_approved": false,
+    "real_picker_fence_approved": false,
+    "real_publisher_approved": false,
+    "real_fanout_approved": false,
+    "incremental_update_closure_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "production_protection": false,
+    "e4_plan_may_be_drafted": true,
+    "e4_measurement_approved": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

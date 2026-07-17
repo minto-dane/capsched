@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r3-e4-bucket-measurement-v1",
+  "date": "2026-07-16",
+  "status": "rejected_r3_bucket_measurement",
+  "source": {
+    "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r3-e4-bucket-measurement",
+    "worktree_retained": false,
+    "worktree_removal_reason": "terminal rejection; clean disposable checkout removed after commit and remote branch verification",
+    "branch": "codex/p5a-r3-e4-bucket-measurement",
+    "remote_tracking_branch": "fork/codex/p5a-r3-e4-bucket-measurement",
+    "commit_available_in_parent_repository": true,
+    "parent_commit": "be9339363a99fb31a5b7d03f3d70430d64a45593",
+    "candidate_commit": "f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1",
+    "candidate_tree": "61541cb0c8aedef941e534c73effdea1f6b3d938",
+    "diff_sha256": "ec369f6b40b427f1297b9ef5061d91bebb2e26c25d9f145a54b995b4b4a73205",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "insertions": 1006,
+    "deletions": 10,
+    "strict_checkpatch": {
+      "errors": 0,
+      "warnings": 0,
+      "checks": 0
+    }
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_BUCKET_MEASURE_KUNIT_TEST",
+    "default_enabled": false,
+    "depends_on": [
+      "SCHED_EXEC_LEASE_BUCKET_KUNIT_TEST",
+      "KUNIT=y"
+    ],
+    "same_translation_unit": "kernel/sched/exec_lease.c",
+    "suite_name": "sched_exec_lease_bucket_measure",
+    "case_count": 3
+  },
+  "matrix": {
+    "one_projection_cells": 32,
+    "hotplug_cells": 5,
+    "fanout_cells": 5,
+    "total_cells": 42,
+    "warmup_pairs_per_cell": 256,
+    "measured_pairs_per_cell": 10000,
+    "normalized_base_slice_ns": 700000,
+    "one_projection_limits_ns": {
+      "additional_p99": 5000,
+      "additional_p999": 25000,
+      "additional_max": 50000
+    },
+    "hotplug_limits_ns": {
+      "additional_p99": 25000,
+      "additional_max": 50000
+    },
+    "fanout_limits_ns": {
+      "absolute_p99": 10000000,
+      "absolute_max": 100000000
+    }
+  },
+  "source_gate": {
+    "run_id": "20260716T-p5a-r3-e4-source-gate-r2",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e4-bucket-measurement-source-gate/20260716T-p5a-r3-e4-source-gate-r2/result.json",
+    "result_sha256": "8529ceac4f5018be0878507e6fce7c7d8a9dda1f9f586e551f09c64bd14b2e7c",
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "w1_compiler_warnings": 0,
+    "frozen_e2_values": 43,
+    "disabled_e4_artifacts": 0
+  },
+  "exact_source_e3_regression": {
+    "run_id": "20260716T-p5a-r3-e4-e3-regression-r2",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e4-e3-regression-diagnostic/20260716T-p5a-r3-e4-e3-regression-r2/result.json",
+    "result_sha256": "3d02a2b6c52a856e6bde5417665bfc41e1fa547c774f9274f1f85d53167b5707",
+    "qemu_boots": [
+      "arm64_standard_debug",
+      "x86_64_standard_debug",
+      "arm64_generic_kasan",
+      "x86_64_kcsan"
+    ],
+    "required_cases_per_boot": 20,
+    "passed_cases_per_boot": 20,
+    "failed_cases": 0,
+    "skipped_cases": 0,
+    "qemu_timeouts": 0,
+    "warning_reports": 0,
+    "internal_ext4_build_storage": true,
+    "shared_host_build_output": false,
+    "lossless_boot_artifacts": 8,
+    "lossless_restore_hashes_verified": true,
+    "successful_build_outputs_pruned": 4
+  },
+  "arm64_measurement_launch": {
+    "runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement.sh",
+    "validation": "capsched/capsched-models/validation/0234-sched-exec-lease-p5a-r3-e4-arm64-measurement-launch.md",
+    "job_name": "p5a-r3-e4-arm64-measurement-r1",
+    "run_id": "20260716T-p5a-r3-e4-arm64-measurement-r1",
+    "guest_vcpus": 64,
+    "qemu_timeout_seconds": 7200,
+    "internal_ext4_build_storage_required": true,
+    "independent_gate_recomputation": true,
+    "valid_rejection_separate_from_harness_failure": true,
+    "lossless_image_and_object_retention": true,
+    "build_output_pruned_after_qemu": true,
+    "config_smoke_passed": true
+  },
+  "arm64_final_measurement": {
+    "validation": "capsched/capsched-models/validation/0235-sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement-rejection.md",
+    "analysis": "capsched/capsched-models/analysis/0171-sched-exec-lease-p5a-r3-e4-arm64-bucket-measurement-rejection.md",
+    "run_id": "20260716T-p5a-r3-e4-arm64-measurement-r1",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e4-bucket-measurement/20260716T-p5a-r3-e4-arm64-measurement-r1/result.json",
+    "result_sha256": "edba124b804beeaa7a2d723027fa3a6345f2d546fb0ab861428c6a4727b5cb7b",
+    "status": "rejected_r3_bucket_measurement",
+    "architecture": "arm64",
+    "architecture_measurement_valid": true,
+    "measurement_rows": 42,
+    "required_rows": 42,
+    "qemu_exit_code": 0,
+    "kunit_cases_passed": 3,
+    "failed_cases": 0,
+    "skipped_required_cases": 0,
+    "warning_count": 0,
+    "rejected_cells": 19,
+    "threshold_breach_count": 26,
+    "one_projection_rejected_cells": 12,
+    "hotplug_rejected_cells": 3,
+    "fanout_rejected_cells": 4,
+    "postprocess_recovery": true,
+    "build_reused": true,
+    "qemu_evidence_reused": true,
+    "raw_inputs_modified": false,
+    "deterministic_postprocess_replays": 2,
+    "postprocess_without_disposable_worktree_verified": true,
+    "frequency_governor_available": false,
+    "lossless_restore_hashes_reverified": true,
+    "build_output_pruned": true
+  },
+  "terminal_decision": {
+    "e4_measurement_complete": true,
+    "threshold_failure_is_valid_negative_evidence": true,
+    "r3_bucket_local_targeted_projection_rejected": true,
+    "r3_bucket_local_targeted_projection_approved": false,
+    "arm64_measurement_may_be_relaunched": false,
+    "x86_64_measurement_may_start": false,
+    "successor_design_requires_separate_gate": true,
+    "synchronous_fanout_completion_may_be_publication_authority": false
+  },
+  "authorization": {
+    "e4_measurement_may_start": false,
+    "e4_measurement_complete": true,
+    "e4_measurement_accepted": false,
+    "x86_64_measurement_may_start": false,
+    "e5_plan_may_start": false,
+    "e5_source_may_start": false,
+    "successor_design_gate_may_be_drafted": true,
+    "successor_source_may_start": false,
+    "primary_linux_may_change": false,
+    "patch_queue_may_change": false,
+    "real_scheduler_attachment": false,
+    "runtime_behavior_approved": false,
+    "production_protection": false,
+    "bare_metal_latency_claim": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

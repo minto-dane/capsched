@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r3-e2-private-layout-candidate-result-v1",
+  "date": "2026-07-15",
+  "status": "dual_arch_e2_passed_for_e3_planning_only",
+  "input_contract": {
+    "path": "capsched-models/implementation/sched-exec-lease-p5a-r3-e2-private-layout-candidate-v1.json",
+    "sha256": "3ea7b3142e74007858d453e35481f7908ed9e4369430be60611bbbf21c5826bf"
+  },
+  "source": {
+    "parent_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "candidate_commit": "63313b329e1d44901acfce30698613c38615c8d5",
+    "candidate_tree": "8d51c596d3d73a6c6dc507b84fdcd4ac8aa7f8eb",
+    "diff_sha256": "fe8b75cb31bb5612d2f32f95b9988c4e7796ae5b919ecd8f5dacc2e0c12ffe09",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "exact_direct_child": true,
+    "source_file_hash_manifest_sha256": "a8bfc9d63b74809b125c8262d60c22e12ad6ebfe30ce976c2a6b69b2ef77b41a",
+    "source_file_hash_count": 28
+  },
+  "dual_arch_build": {
+    "run_id": "20260715T-p5a-r3-e2-dual-arch",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e2-dual-arch-layout/20260715T-p5a-r3-e2-dual-arch/result.json",
+    "result_sha256": "48a4a0f358896f0e552173f5e308970ef14dc83a58beef62caaed03e360e7038",
+    "arm64_result_sha256": "61d689f23321af2542ce2a960e4de01e826129df4c4e7416a608bbaeb67aff84",
+    "x86_64_result_sha256": "cb6e2ce1411e58be450909d2dfd6733b04765c275eebde6d278f2505bbe3087e",
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "fresh_architecture_local_baselines": true,
+    "cross_architecture_byte_identity_required": false,
+    "existing_probe_values_preserved_per_architecture": 51,
+    "private_probe_symbols_per_architecture": 43,
+    "disabled_private_symbols": 0,
+    "disabled_private_relocations": 0,
+    "disabled_private_strings": 0,
+    "ordinary_layout_delta": {
+      "sched_entity": 0,
+      "cfs_rq": 0,
+      "rq": 0,
+      "task_struct": 0
+    },
+    "measured_private_layout": {
+      "key_bytes": 64,
+      "bucket_bytes": 128,
+      "projection_bytes": 832,
+      "rq_state_bytes": 448,
+      "b_max": 64,
+      "worst_active_bytes_per_rq": 53696,
+      "limit_bytes_per_rq": 65536
+    }
+  },
+  "evidence_closure": {
+    "run_id": "20260715T-p5a-r3-e2-closure",
+    "status": "passed_for_e3_planning_only",
+    "result": "build/source-check/sched-exec-lease-p5a-r3-e2-evidence-closure/20260715T-p5a-r3-e2-closure/result.json",
+    "result_sha256": "d9b63a3efd0fd6b60223190418b3baacc3c0ac2d275fd99aa594d1fe6c18efba",
+    "architecture_summary_sha256": "5fbf2a266b5aa14567d4a3dcc6ee4fa0320b71d64a9c1cd85842fdb32877c64e",
+    "dual_arch_e2_complete": true,
+    "e3_plan_may_start": true,
+    "e3_source_may_start": false,
+    "separate_e3_plan_required": true
+  },
+  "safety_flags": {
+    "production_layout_accepted": false,
+    "e3_source_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "monitor_enforcement": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-07-04
+Updated: 2026-07-15
 
 ## Current Formal Records
 
@@ -126,6 +126,22 @@ Updated: 2026-07-04
 | 0118 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Minimal Source Sketch Model |
 | 0119 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Layout and Overhead Evidence Plan Model |
 | 0120 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Layout Probe Patch Plan Model |
+| 0121 | Checked with safe pass and expected unsafe counterexamples | P5A-R2 Vruntime Sentinel Gate Model |
+| 0122 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 Summary Update-Closure Model |
+| 0123 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 Versioned Global Invalidation Fence Model |
+| 0124 | Checked with safe pass and 32 expected unsafe counterexamples | P5A-R2 Global-Fence Layout/Rebuild Evidence Plan Model |
+| 0125 | Checked with safe pass and 20 expected unsafe counterexamples | P5A-R2 Expanded Layout Probe Patch Plan Model |
+| 0126 | Checked with safe pass and 30 expected unsafe counterexamples | P5A-R2 E2 Disposable Layout Candidate Plan Model |
+| 0127 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 E2 x86_64 Layout Evidence Plan Model |
+| 0128 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 E2 Layout Evidence Closure Model |
+| 0129 | Checked with safe pass and 24 expected unsafe counterexamples | P5A-R2 E3 Rebuild Prototype Evidence Plan Model |
+| 0130 | Checked with safe pass and 28 expected unsafe counterexamples | P5A-R2 E4 Lock-Hold Measurement Plan Model |
+| 0131 | Checked with 16/14/depth-10 safe pass and 34 expected unsafe counterexamples | P5A-R3 Bucket-Local Targeted Projection Model |
+| 0132 | Checked with 12/11/depth-11 safe pass and 36 expected unsafe counterexamples | P5A-R3 E1 Source/Locking/Lifetime Evidence Plan Model |
+| 0133 | Checked with 17/16/depth-16 safe pass and 51 expected unsafe counterexamples | P5A-R3 E3 Bucket Concurrency Evidence Plan Model |
+| 0134 | Checked with 8/7/depth-7 safe pass and 40 expected unsafe counterexamples | P5A-R3 E4 Bucket Measurement Plan Model |
+| 0135 | Checked with 16/15/depth-15 safe pass, notifier restart inside the 2*A bound, two stable-window liveness properties, and 47 expected unsafe counterexamples | P5A-R4 Generation-Fenced Coalesced Pull Recovery Model |
+| 0136 | Checked with 21/20/depth-20 safe pass, irq-to-work dispatch, notifier restart, ordered offline drain, three liveness properties, and 60 expected unsafe counterexamples | P5A-R4 E1 Dispatch and Lifetime Evidence Plan Model |
 
 ## Planned
 

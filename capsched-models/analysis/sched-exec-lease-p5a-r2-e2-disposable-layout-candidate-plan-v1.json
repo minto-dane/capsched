@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-plan-v1",
+  "date": "2026-07-13",
+  "status": "e2_arm64_disposable_layout_candidate_plan_no_linux_change",
+  "source_basis": {
+    "linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "linux_tree": "54f685aad94f28f0027cbba18cf5e29aadce234a",
+    "e1_validation": "capsched-models/validation/0206-sched-exec-lease-p5a-r2-0014-expanded-layout-probe-monitored.md",
+    "e1_result": "build/source-check/sched-exec-lease-p5a-r2-0014-expanded-layout-probe/20260713T-p5a-r2-0014-expanded-probe/result.json",
+    "e1_probe_symbols": 51,
+    "e1_cacheline_fields": 23
+  },
+  "workspace_contract": {
+    "disposable_git_worktree_required": true,
+    "primary_linux_branch_may_change": false,
+    "primary_patch_queue_may_change": false,
+    "allowed_paths": [
+      "init/Kconfig",
+      "include/linux/sched.h",
+      "kernel/sched/sched.h",
+      "kernel/sched/exec_lease_layout_probe.c"
+    ],
+    "makefile_change_allowed": false,
+    "runtime_translation_unit_change_allowed": false
+  },
+  "candidate_config": {
+    "name": "SCHED_EXEC_LEASE_LAYOUT_CANDIDATE",
+    "default_enabled": false,
+    "depends_on_layout_probe": true,
+    "selected_by_normal_sched_exec_lease": false,
+    "public_or_runtime_abi": false
+  },
+  "candidate_fields": [
+    {"structure":"sched_entity","name":"sched_exec_summary_valid","type":"unsigned char","placement":"existing_explicit_flag_hole"},
+    {"structure":"sched_entity","name":"sched_exec_min_fresh_vruntime","type":"u64","placement":"alignment_gap_before_sched_avg"},
+    {"structure":"rq","name":"sched_exec_summary_state","type":"unsigned char","placement":"tail_after_nr_iowait"},
+    {"structure":"rq","name":"sched_exec_built_generation","type":"u64","placement":"aligned_after_summary_state_in_tail_gap"}
+  ],
+  "forbidden_candidate_fields": {
+    "cfs_rq": true,
+    "task_struct": true,
+    "rq_callback_or_list_carrier": true,
+    "spare_unrelated_flag_bit": true
+  },
+  "conditional_probe": {
+    "existing_symbols_must_remain": 51,
+    "added_field_count": 4,
+    "added_symbol_count": 8,
+    "expected_total_symbols": 59,
+    "expected_cacheline_table_fields": 27,
+    "symbols_object_local": true,
+    "runtime_reporting": false
+  },
+  "arm64_baseline": {
+    "sched_entity_size": 320,
+    "cfs_rq_size": 384,
+    "rq_size": 3520,
+    "task_struct_size": 4160,
+    "protected_offsets": {
+      "sched_entity.run_node": 16,
+      "sched_entity.min_vruntime": 48,
+      "rq.nr_running": 0,
+      "rq.curr": 24,
+      "rq.cfs": 128,
+      "rq.clock_task": 2752,
+      "task_struct.sched_exec": 1232
+    }
+  },
+  "arm64_envelope": {
+    "sched_entity_delta_min": 0,
+    "sched_entity_delta_max": 8,
+    "cfs_rq_delta_required": 0,
+    "rq_delta_min": 0,
+    "rq_delta_max": 32,
+    "task_struct_delta_required": 0,
+    "candidate_fields_within_structures_required": true,
+    "cross_architecture_identity_claim": false,
+    "x86_64_e2_evidence_complete": false
+  },
+  "build_matrix": {
+    "normal_config_off": true,
+    "normal_config_on_candidate_disabled": true,
+    "explicit_probe_and_candidate": true,
+    "normal_probe_object_absent": true,
+    "normal_candidate_symbols_absent": true
+  },
+  "source_anchors": [
+    {"id":"e1_commit","path":"linux","git_commit":"5e1ca3037e34823d1ba0cdd1dc04161fac170280"},
+    {"id":"e1_result_passed","path":"build/source-check/sched-exec-lease-p5a-r2-0014-expanded-layout-probe/20260713T-p5a-r2-0014-expanded-probe/result.json","pattern":"\"status\": \"passed\""},
+    {"id":"e1_symbol_count","path":"build/source-check/sched-exec-lease-p5a-r2-0014-expanded-layout-probe/20260713T-p5a-r2-0014-expanded-probe/result.json","pattern":"\"probe_symbol_count\": 51"},
+    {"id":"layout_probe_config","path":"linux/init/Kconfig","pattern":"config SCHED_EXEC_LEASE_LAYOUT_PROBE"},
+    {"id":"layout_probe_default_off","path":"linux/init/Kconfig","pattern":"default n"},
+    {"id":"probe_makefile","path":"linux/kernel/sched/Makefile","pattern":"obj-$(CONFIG_SCHED_EXEC_LEASE_LAYOUT_PROBE) += exec_lease_layout_probe.o"},
+    {"id":"sched_entity","path":"linux/include/linux/sched.h","pattern":"struct sched_entity {"},
+    {"id":"flag_hole","path":"linux/include/linux/sched.h","pattern":"/* hole */"},
+    {"id":"sched_entity_avg","path":"linux/include/linux/sched.h","pattern":"struct sched_avg\t\tavg;"},
+    {"id":"rq","path":"linux/kernel/sched/sched.h","pattern":"struct rq {"},
+    {"id":"rq_hot_comment","path":"linux/kernel/sched/sched.h","pattern":"extremely hot loop in update_sg_lb_stats()"},
+    {"id":"rq_cfs","path":"linux/kernel/sched/sched.h","pattern":"struct cfs_rq\t\tcfs;"},
+    {"id":"rq_clock_task","path":"linux/kernel/sched/sched.h","pattern":"u64\t\t\tclock_task ____cacheline_aligned;"},
+    {"id":"rq_nr_iowait","path":"linux/kernel/sched/sched.h","pattern":"atomic_t\t\tnr_iowait;"},
+    {"id":"probe_summary_reserved","path":"capsched/capsched-models/analysis/0158-sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan.md","pattern":"sched_exec_lp_sched_entity_summary_min"},
+    {"id":"probe_rq_reserved","path":"capsched/capsched-models/analysis/0158-sched-exec-lease-p5a-r2-expanded-layout-probe-patch-plan.md","pattern":"sched_exec_lp_rq_built_generation"},
+    {"id":"plan_e2","path":"capsched/capsched-models/analysis/0157-sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan.md","pattern":"### E2: Disposable Layout-Only Candidate"},
+    {"id":"envelope_sched_entity","path":"capsched/capsched-models/analysis/0157-sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan.md","pattern":"sizeof(sched_entity) delta: 0..8 bytes"},
+    {"id":"envelope_rq","path":"capsched/capsched-models/analysis/0157-sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan.md","pattern":"sizeof(rq) delta: 0..32 bytes"},
+    {"id":"no_e3_before_e2","path":"capsched/capsched-models/analysis/0157-sched-exec-lease-p5a-r2-global-fence-layout-rebuild-evidence-plan.md","pattern":"Only after E1/E2 pass"}
+  ],
+  "absence_checks": [
+    {"id":"candidate_config_absent","path":"linux","pattern":"SCHED_EXEC_LEASE_LAYOUT_CANDIDATE"},
+    {"id":"summary_valid_absent","path":"linux","pattern":"sched_exec_summary_valid"},
+    {"id":"summary_min_absent","path":"linux","pattern":"sched_exec_min_fresh_vruntime"},
+    {"id":"built_generation_absent","path":"linux","pattern":"sched_exec_built_generation"},
+    {"id":"summary_state_absent","path":"linux","pattern":"sched_exec_summary_state"},
+    {"id":"rebuild_callback_absent","path":"linux","pattern":"sched_exec_rebuild_callback"}
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0126-p5a-r2-e2-disposable-layout-candidate-plan-model",
+    "model": "P5AR2E2DisposableLayoutCandidatePlan.tla",
+    "safe_cfg": "P5AR2E2DisposableLayoutCandidatePlanSafe.cfg",
+    "unsafe_cfg_count": 30,
+    "unsafe_expected_counterexamples": 30
+  },
+  "safety_flags": {
+    "primary_linux_changed": false,
+    "patch_queue_changed": false,
+    "layout_candidate_accepted": false,
+    "hot_field_approved": false,
+    "e3_rebuild_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "monitor_enforcement": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

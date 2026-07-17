@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-07-05
+Updated: 2026-07-17
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -342,6 +342,112 @@ Current SchedExecLease L0 readiness:
     and symbol extraction. Runtime behavior, future min-pickable fields,
     runtime denial correctness, runtime coverage, protection, cost, deployment,
     and datacenter claims remain unapproved.
+- `0040-sched-exec-lease-p5a-r2-0014-expanded-layout-probe.md`
+  - Status: one-file no-behavior source, deterministic patch replay, and arm64
+    three-mode targeted build passed in validation/0206.
+  - Linux local/replay commits:
+    `5e1ca3037e34823d1ba0cdd1dc04161fac170280` /
+    `6537a57d3d4bcf61d92b0081275081d69c5ff2fd`, with matching tree
+    `54f685aad94f28f0027cbba18cf5e29aadce234a`.
+  - JSON: `sched-exec-lease-p5a-r2-0014-expanded-layout-probe-v1.json`.
+  - Rule: 0014 changes only the build-only probe, preserves the 24 existing
+    symbols, and adds 27 measurements for a 51-symbol total. It adds no
+    candidate field, runtime callsite, ABI, behavior, or protection claim.
+- `0041-sched-exec-lease-p5a-r2-e2-disposable-layout-candidate.md`
+  - Status: disposable four-file candidate committed on
+    `codex/p5a-r2-e2-layout`; arm64 validation/0208 and x86_64
+    validation/0210 passed with zero growth in all four measured structures.
+    Candidate acceptance remains separate.
+  - Candidate commit/tree:
+    `162d16640634637a6f7604b90bf2275bea47ec63` /
+    `a435a65f1b1ae5e4c10d09e5753fc0871f1381d1`.
+  - JSON: `sched-exec-lease-p5a-r2-e2-disposable-layout-candidate-v1.json`.
+  - Rule: the candidate is default-off measurement material in a separate
+    worktree. It does not change the primary Linux branch or patch queue and
+    adds no runtime callsite, accepted hot field, ABI, behavior, or protection
+    claim.
+- `0042-sched-exec-lease-p5a-r2-e3-disposable-rebuild-kunit-prototype.md`
+  - Status: exact disposable two-file source, controlled arm64 build matrix,
+    and filtered QEMU KUnit validation/0213 passed with 12/12 cases, zero
+    failures, and zero skips.
+  - Candidate commit/tree:
+    `d1d5e78da8484c91eae70f22399c6901da680ea0` /
+    `aa6a5a3848415643f3b67434964b056e30421bb2`.
+  - JSON: `sched-exec-lease-p5a-r2-e3-disposable-rebuild-kunit-prototype-v1.json`.
+  - Rule: correctness is accepted only for the isolated synthetic fixture
+    contract. E4 planning may begin; production fields, live integration,
+    bounded lock hold, runtime behavior, and protection remain unapproved.
+- `0043-sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement.md`
+  - Status: validation/0218 records complete valid arm64 negative evidence:
+    36 fixed-gate breaches across 20/35 cells reject the full O(n) rq-locked
+    rebuild. x86_64 is not launched and no performance result is accepted.
+  - Candidate commit/tree:
+    `f6ad4e454778c52bcdaaecf684c148a3a8dae857` /
+    `265e6357627490e51084979382ef34b2cfcc0cb8`.
+  - JSON: `sched-exec-lease-p5a-r2-e4-disposable-lock-hold-measurement-v1.json`.
+  - Rule: the immutable 35-cell, 10,000-pair experiment measured the exact E3
+    rebuild under real IRQ disable and rq locking on synthetic fixtures. Its
+    threshold breaches are retained as valid design-rejection evidence.
+    Production, protection, latency,
+    performance, cost, deployment, and datacenter claims remain unapproved.
+- `0044-sched-exec-lease-p5a-r3-e2-private-layout-candidate.md`
+  - Status: exact two-file disposable candidate and fresh arm64/x86_64
+    four-mode layout evidence passed; validation/0223 closes it for E3
+    planning only.
+  - Candidate commit/tree:
+    `63313b329e1d44901acfce30698613c38615c8d5` /
+    `8d51c596d3d73a6c6dc507b84fdcd4ac8aa7f8eb`.
+  - Input/result JSON:
+    `sched-exec-lease-p5a-r3-e2-private-layout-candidate-v1.json` /
+    `sched-exec-lease-p5a-r3-e2-private-layout-candidate-result-v1.json`.
+  - Rule: all 51 existing values remain unchanged, ordinary structure growth
+    is zero, disabled private symbols/relocations/strings are absent, and the
+    measured 53,696-byte/rq private state passes the 65,536-byte bound. A
+    separate E3 plan may be drafted; E3 source and every runtime or production
+    claim remain unapproved.
+- `0045-sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype.md`
+  - Status: corrected direct-E2-child, two-file disposable candidate passed
+    validation/0225 source gating and validation/0226's complete four-boot
+    diagnostic matrix. Attempt 1 remains immutable negative evidence.
+  - Candidate commit/tree:
+    `be9339363a99fb31a5b7d03f3d70430d64a45593` /
+    `a92d096ef4779f20c5e652de3c21b8f85b2476c7`.
+  - JSON: `sched-exec-lease-p5a-r3-e3-bucket-concurrency-prototype-v1.json`.
+  - Rule: default-off, same-TU synthetic KUnit covers 20 deterministic
+    concurrency families, six allocation faults, B_max=64, independent plain
+    oracle, and RCU retirement drain without a real scheduler attachment.
+    The matrix closes only synthetic-protocol E3 evidence and authorizes R3-E4
+    planning. Real-scheduler, runtime, and production claims remain false.
+- `0046-sched-exec-lease-p5a-r3-e4-bucket-measurement.md`
+  - Status: validation/0235 records complete valid arm64 negative evidence:
+    19/42 cells and 26 fixed-gate conditions reject R3. Clean QEMU/KUnit,
+    warning, summary, artifact, and deterministic postprocess-recovery evidence
+    separate the result from a harness failure. x86_64 and E5 are stopped.
+  - Candidate commit/tree:
+    `f20c62a2ad5aec4347dc7c8c4d81e3f7fa1f3da1` /
+    `61541cb0c8aedef941e534c73effdea1f6b3d938`.
+  - JSON: `sched-exec-lease-p5a-r3-e4-bucket-measurement-v1.json`.
+  - Rule: the default-off same-TU experiment completed all 42 cells at 10,000
+    measured pairs each. R3's fixed global availability gate for targeted
+    fanout last-settlement is rejected; generation mismatch already remained
+    the trust fence. A successor design gate may be drafted, but source, E5,
+    live behavior, production, latency,
+    performance, protection, cost, and deployment claims remain false.
+- `0047-sched-exec-lease-p5a-r4-e2-private-layout-candidate.md`
+  - Status: exact direct-primary, two-file, default-off R4 candidate is
+    committed; validation/0238 passed its source gate, validation/0239 records
+    its monitored launch, and validation/0240 independently closes E2.
+  - Candidate commit/tree:
+    `a429fc30252ac6af94c51d96cd4ac24e72d9f83b` /
+    `fffd419bbc05bab87ad304c1e4a3213439d62bab`.
+  - Input/result JSON:
+    `sched-exec-lease-p5a-r4-e2-private-layout-candidate-v1.json` /
+    `sched-exec-lease-p5a-r4-e2-private-layout-candidate-result-v1.json`.
+  - Rule: 58 private symbols measure the bucket notifier, projection dirty
+    node, and one per-rq irq/work owner. Arm64/x86_64 must preserve 51 existing
+    values, emit no disabled R4 artifacts, keep ordinary growth zero, and
+    measure 49,664 bytes/rq below the 65,536-byte bound. E3 planning only is
+    authorized.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
