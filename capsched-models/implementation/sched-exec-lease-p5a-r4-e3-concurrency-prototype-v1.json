@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1",
   "date": "2026-07-17",
-  "status": "corrected_candidate_n134_closed_config_smoke_passed_storage_compaction_required",
+  "status": "corrected_candidate_n134_closed_config_smoke_passed_six_boot_r2_launch_ready",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r4-e3-concurrency-prototype",
     "branch": "codex/p5a-r4-e3-concurrency-prototype",
@@ -137,9 +137,30 @@
       "console_sha256": "3e7179423702f445a83b41af975e6ae32b37a60bbbd02941a831f3bce2bb2e78",
       "ktap_sha256": "4cec066170889e95f8bc90f28e3976cfcc972787ca6fefa8e1642a4d57075c90"
     },
-    "retry_launch_status": "blocked_pending_lossless_sparsebundle_compaction",
+    "retry_launch_status": "launch_ready_exact_preflight_passed",
     "host_free_kib_required": 12582912,
-    "storage_launch_gate_satisfied": false,
+    "host_free_kib_observed_at_preflight": 53436640,
+    "storage_launch_gate_satisfied": true,
+    "lossless_sparsebundle_compaction": {
+      "job_name": "compact-r4-e3-r5",
+      "status": "complete",
+      "image_size_before_gib": 19,
+      "image_size_after_gib": 13,
+      "unused_bands_reclaimed_gb": 6.2,
+      "retained_archives_verified": 3,
+      "apfs_verified": true,
+      "project_evidence_deleted": false,
+      "project_evidence_recompressed": false
+    },
+    "unrelated_git_temporary_cleanup": {
+      "repository": "vrchat-on-mac",
+      "tmp_pack_files": 7,
+      "open_processes": 0,
+      "git_locks": 0,
+      "git_count_objects_garbage_before_gib": 53.4,
+      "git_count_objects_garbage_after_bytes": 0
+    },
+    "exact_launch_preflight_passed": true,
     "matrix_passed": false,
     "independent_matrix_closure_pending": false
   },
@@ -159,7 +180,9 @@
     "config_smoke_pending": false,
     "config_smoke_passed": true,
     "config_smoke_result_sha256": "95ab9341035cea1f389b528126f5a63f10f8528f9f3fc15f09b34a490fdbcb37",
-    "storage_compaction_pending": true,
+    "storage_compaction_pending": false,
+    "storage_launch_gate_satisfied": true,
+    "exact_launch_preflight_passed": true,
     "six_boot_restart_authorized": true
   },
   "safety_flags": {

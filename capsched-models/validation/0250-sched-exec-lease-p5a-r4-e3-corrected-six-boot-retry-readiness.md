@@ -3,8 +3,10 @@
 Date: 2026-07-17
 
 Status: the exact corrected six-boot runner and all six configurations pass a
-no-build/no-boot smoke. Launch is intentionally blocked until lossless
-sparsebundle compaction restores the 12 GiB host-free storage gate.
+no-build/no-boot smoke. Lossless sparsebundle compaction, unrelated orphaned
+Git-temporary cleanup, APFS verification, VM restart, and the exact launch
+preflight restored and proved the 12 GiB host-free storage gate. Run r2 is
+launch-ready; no build or boot is credited by this readiness record.
 
 ## Locked Inputs
 
@@ -44,20 +46,33 @@ removed its internal build root plus disposable worktree.
 
 ## Storage Gate
 
-Source-gate checkouts expanded the lossless APFS sparsebundle to 19 GiB while
-only 5.8 GiB remains live inside it. Host free space fell to 1.9 GiB. The
-runner requires at least 12 GiB host free and therefore cannot launch. The
-existing compaction workflow verifies retained archives and Git objects,
-stops the idle Apple Container machine, verifies APFS, detaches without
-force, compacts unused bands, remounts, re-verifies, and restarts the machine.
+Source-gate checkouts had expanded the lossless APFS sparsebundle to 19 GiB
+while only 5.8 GiB remained live inside it. Job `compact-r4-e3-r5` verified
+all three retained archives, APFS, and Git objects; stopped the idle Apple
+Container machine; detached without force; reclaimed 6.2 GB of unused bands;
+and remounted a 13 GiB sparsebundle. Host free space increased from 1.9 GiB
+to 9.2 GiB without deleting or recompressing project evidence.
 
-No evidence is deleted or recompressed. A full retry may start only after the
-compaction result and storage thresholds are read back successfully.
+A separate `vrchat-on-mac` repository was concurrently consuming the host
+with seven interrupted `tmp_pack_*` files. No process held them, no Git lock
+existed, and `git count-objects -vH` classified all seven as 53.40 GiB of
+garbage. Deleting only those named Git temporaries changed its garbage count
+from seven to zero and recovered host free space to 54 GiB. This did not
+modify Linux-cap source, archives, or evidence. The case-sensitive volume
+then passed another read-only APFS verification, the VM restarted cleanly,
+and the exact r2 preflight passed with 53,436,640 KiB host free, above the
+12,582,912 KiB requirement. The VM-internal ext4 scratch gate also passed.
+
+Run `20260717T-p5a-r4-e3-six-boot-r2`, job
+`p5a-r4-e3-six-boot-r2`, may now start. Its launcher still repeats all exact
+input, repository-cleanliness, VM, absence, and storage gates immediately
+before detached execution.
 
 ## Claim Boundary
 
-Configuration smoke is not a build or boot pass. The prior arm64 success is
-not credited toward the retry. All six fresh boots and an independent matrix
-closure remain required. Source correctness, concurrency correctness,
-runtime behavior, production protection, deployment, multi-node,
-multi-cluster, and datacenter readiness remain false.
+Configuration smoke, storage recovery, and launch preflight are not build or
+boot passes. The prior arm64 success is not credited toward the retry. All six
+fresh boots and an independent matrix closure remain required. Source
+correctness, concurrency correctness, runtime behavior, production
+protection, deployment, multi-node, multi-cluster, and datacenter readiness
+remain false.

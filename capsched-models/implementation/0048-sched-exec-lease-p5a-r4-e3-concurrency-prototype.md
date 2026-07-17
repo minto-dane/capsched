@@ -152,10 +152,20 @@ zero boots, and passed at result SHA-256
 Its config manifest remains
 `09b500cc0e7ed793673b1e1ec5478dca9679197b544295cbda49331f4163a673`.
 
-The full retry is not launched yet. Temporary source-gate checkouts expanded
-the sparsebundle to 19 GiB and left only 1.9 GiB host free, below the runner's
-12 GiB gate. Lossless APFS compaction must finish and restore the threshold
-before the complete matrix may start.
+The full retry is launch-ready but is not credited as started or passed by
+this record. Lossless job `compact-r4-e3-r5` verified the three retained
+archives, APFS, and Git objects, reclaimed 6.2 GB of unused sparsebundle bands,
+and reduced the image from 19 GiB to 13 GiB. Seven process-free, lock-free
+`tmp_pack_*` files in the unrelated `vrchat-on-mac` repository were separately
+confirmed by `git count-objects -vH` as 53.40 GiB of garbage and removed; its
+garbage count is now zero. No Linux-cap source, archive, or evidence was
+deleted or recompressed.
+
+After another APFS verification and VM restart, exact r2 preflight passed with
+53,436,640 KiB host free against the 12,582,912 KiB requirement and sufficient
+VM-internal ext4 scratch. The detached launcher repeats every identity,
+cleanliness, absence, VM, and storage gate before starting job
+`p5a-r4-e3-six-boot-r2`.
 
 ## Non-Claims
 
