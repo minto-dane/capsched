@@ -1,11 +1,12 @@
 # Implementation 0048: SchedExecLease P5A-R4 E3 Concurrency Prototype
 
-Date: 2026-07-17
+Date: 2026-07-18
 
-Status: six-boot attempt 1 rejected the prior candidate at 34/36 in the first
-arm64 boot. The corrected direct-E2-child candidate passed a fresh N-134
-source gate and two independent closures. Only a complete, unreduced six-boot
-retry is authorized. No R4-E3 source/correctness or runtime claim is accepted.
+Status: the corrected direct-E2-child candidate passed the fresh N-134 source
+gate and the complete r4 six-build/six-boot virtual diagnostic matrix. Two
+independent read-only closures reproduce the same normalized result, completing
+N-135 virtual synthetic protocol evidence. No R4-E3 source/correctness,
+bare-metal, runtime, or production claim is accepted.
 
 ## Disposable Source Identity
 
@@ -239,10 +240,48 @@ the VM running, 30,272,456 KiB host free, and 526,349,356 KiB available on the
 VM-internal ext4 path. The detached launcher still repeats every gate at
 launch.
 
+## N-135 r4 Matrix and Independent Closure
+
+Fresh run `20260718T-p5a-r4-e3-six-boot-r4` completed all six sequential
+builds and QEMU boots with exit zero. Result SHA-256 is
+`4717052e2f546cf5faa13bfd24d90e43626e9b66f4f6d24ad07b2ed5bc7fbedd`;
+its exact six-child `boot-results.json` SHA-256 is
+`56cd095c1107607a0526703d63ae5e8e956715a6b0d81b9828c4162d1cb1407f`.
+Every boot passed the exact 36-case suite and emitted 36 unique, well-typed
+receipts: 216 cases and 216 receipts total, with zero failure, skip, timeout,
+compiler diagnostic, final clock-skew warning, kernel-warning report, or
+nonzero QEMU exit. The runner retired each fresh internal-ext4 build after
+sealing its config/object/image hashes and sizes, retained ELF-header audit,
+QEMU/console/KTAP/receipt/seed/fault evidence, and removed its disposable
+worktree and run-owned scratch.
+
+Validation/0255 freezes all 133 retained files (4,156,928 bytes) at manifest
+SHA-256
+`c0869ceb96c8387c7e5df4642b8f42d1414420999a8d178efd62f1443e9a44f0`.
+Closure runner SHA-256
+`4ab3bd481d6c5ceea77d11ef73fe7c8e67b1875a56962520ce236ee6eb786aa8`
+copies the complete tree read-only, checks pre/copy/post manifests, then
+independently revalidates every child hash and semantic contract. Closure r1
+and r2 result SHA-256 values are
+`6d9a54ed85d742d77aeef98f53deab2634ead63d41ef1c551ca6720b4a098f89`
+and `86fd0cf06ddbcfd7fd88210eec196cec1650d31ca929791bf9e3bc7e7cfb26ea`;
+after removing only `run_id`, both results have normalized SHA-256
+`239bafaa191598443a2d004bd68edd949c3030849d79a5ad756a670980607e8f`.
+The regression test accepts the exact fixture and rejects both a one-line
+console mutation and a symlink injection.
+
+N-135 is complete only for the default-off, virtual, synthetic protocol
+evidence named by the plan. The plan still sets R4-E3 source acceptance and
+concurrency-correctness acceptance false, and explicitly forbids drafting an
+R4-E4 plan, creating R4-E4/behavior source, changing primary Linux, or changing
+the patch queue. A new separately reviewed authorization gate is required
+before any of those actions.
+
 ## Non-Claims
 
-The committed source correction and all evidence-runner corrections do not
-accept R4-E3 source correctness, concurrency correctness, runtime behavior,
-denial correctness, the six-boot diagnostic matrix, primary/patch promotion,
-bounded latency, performance, monitor enforcement, production protection,
-deployment, multi-node, multi-cluster, or datacenter readiness.
+The six-boot virtual diagnostic matrix and its independent artifact closure are
+accepted as N-135 synthetic evidence only. They do not accept R4-E3 source
+correctness, concurrency correctness, bare-metal behavior, runtime behavior,
+denial correctness, primary/patch promotion, bounded latency, performance,
+monitor enforcement, production protection, deployment, multi-node,
+multi-cluster, or datacenter readiness.

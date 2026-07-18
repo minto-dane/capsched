@@ -450,20 +450,20 @@ Current SchedExecLease L0 readiness:
     authorized.
 - `0048-sched-exec-lease-p5a-r4-e3-concurrency-prototype.md`
   - Status: exact direct-R4-E2-child, two-file, default-off synthetic KUnit
-    candidate is committed. Source-gate r1 remains invalid; corrected W=1 r2
-    and two independent 105-artifact closures pass. N-134 is complete; exact
-    six-config smoke passed and the fixed monitored matrix is launch-ready.
+    candidate is committed. Corrected N-134 source gate/closures and the full
+    r4 six-build/six-boot matrix pass. Two independent read-only closures
+    reproduce all 133 retained artifacts and complete N-135 virtual evidence.
   - Candidate commit/tree:
-    `f9c737c93ecff48c6f512048b05b1b49f4a54ca5` /
-    `274f7b5d6969dc68e158819191fe598f9587e0ad`.
+    `da9ce9159b3450c28c8faf8dceac671fb7bfeba2` /
+    `58c6510c6f517004e37107786d006bb8333b79b8`.
   - JSON: `sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1.json`.
   - Rule: exact 36-case/six-fault synthetic protocol, independent plain oracle,
     hard-IRQ dispatch bridge, 15-second waits, and 2,048 stress iterations must
     pass fresh arm64/x86_64 E2/off/layout-on/E3-on builds with 58 private and 51
     expanded values preserved and zero disabled artifacts before six diagnostic
-    boots. Validation/0247 locks the internal-ext4 runner and monitoring
-    contract. Source correctness and every runtime or production claim remain
-    unapproved.
+    boots. Validation/0255 closes only the default-off virtual evidence;
+    source correctness, R4-E4 planning, and every bare-metal, runtime, or
+    production claim remain unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
