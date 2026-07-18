@@ -141,7 +141,7 @@
       "console_sha256": "3e7179423702f445a83b41af975e6ae32b37a60bbbd02941a831f3bce2bb2e78",
       "ktap_sha256": "4cec066170889e95f8bc90f28e3976cfcc972787ca6fefa8e1642a4d57075c90"
     },
-    "retry_launch_status": "warning_classifier_hardened_post_commit_smoke_passed_exact_preflight_required",
+    "retry_launch_status": "warning_classifier_hardened_exact_preflight_passed_launch_ready",
     "host_free_kib_required": 12582912,
     "host_free_kib_observed_at_preflight": 53436640,
     "storage_launch_gate_satisfied": true,
@@ -164,7 +164,12 @@
       "git_count_objects_garbage_before_gib": 53.4,
       "git_count_objects_garbage_after_bytes": 0
     },
-    "exact_launch_preflight_passed": false,
+    "exact_launch_preflight_passed": true,
+    "r4_preflight_date": "2026-07-18",
+    "r4_host_free_kib_observed_at_preflight": 30272456,
+    "r4_vm_internal_free_kib_observed_at_preflight": 526349356,
+    "r4_vm_status_at_preflight": "running",
+    "r4_vm_disk_size_bytes": 22746169344,
     "attempt_2": {
       "validation": "capsched-models/validation/0251-sched-exec-lease-p5a-r4-e3-six-boot-attempt-2-rejection.md",
       "machine_record": "capsched-models/validation/sched-exec-lease-p5a-r4-e3-six-boot-attempt-2-rejection-v1.json",
@@ -244,7 +249,7 @@
     "attempt_3_rejection_bound": true,
     "storage_compaction_pending": false,
     "storage_launch_gate_satisfied": true,
-    "exact_launch_preflight_passed": false,
+    "exact_launch_preflight_passed": true,
     "six_boot_restart_authorized": true
   },
   "safety_flags": {

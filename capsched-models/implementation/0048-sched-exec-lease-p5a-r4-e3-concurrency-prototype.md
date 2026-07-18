@@ -234,6 +234,11 @@ Only complete fresh run `20260718T-p5a-r4-e3-six-boot-r4`, job
 `p5a-r4-e3-six-boot-r4`, is authorized after the repeated repository, VM,
 scratch, and host-storage preflight.
 
+That exact preflight passed on 2026-07-18 with all four repositories clean,
+the VM running, 30,272,456 KiB host free, and 526,349,356 KiB available on the
+VM-internal ext4 path. The detached launcher still repeats every gate at
+launch.
+
 ## Non-Claims
 
 The committed source correction and all evidence-runner corrections do not

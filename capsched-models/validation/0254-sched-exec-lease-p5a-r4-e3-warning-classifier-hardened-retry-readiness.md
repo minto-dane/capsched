@@ -62,6 +62,14 @@ repositories, a running VM, absent run-owned paths, at least 6 GiB
 VM-internal ext4 scratch, and at least 12 GiB host free immediately before
 detached launch. It must expose the existing 30-second monitor.
 
+The exact preflight passed on 2026-07-18 after both repositories were pushed:
+the root, capsched, primary Linux, and patch-queue worktrees were clean; the VM
+was running with a 22,746,169,344-byte disk; host free space was 30,272,456 KiB
+against the 12,582,912 KiB minimum; and VM-internal ext4 reported 526,349,356
+KiB available against the 6,291,456 KiB minimum. The launcher repeats these
+checks immediately before detaching, so this observation cannot bypass a
+later repository or storage change.
+
 ## Claim Boundary
 
 Classifier and serializer self-tests plus config smoke do not accept R4-E3
