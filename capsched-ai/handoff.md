@@ -6315,3 +6315,34 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     skip, timeout, or warning, then run a separate read-only artifact closure.
     Until that closure, R4-E3 source/correctness and every runtime, promotion,
     protection, deployment, multi-cluster, and datacenter claim remain false.
+
+- N-135 attempt 3 is rejected; warning-classifier-hardened r4 is smoke-ready:
+
+  Attempt 3 evidence:
+    run `20260717T-p5a-r4-e3-six-boot-r3` completed all six fresh builds and
+    QEMU-zero boots. Five results sealed at 36/36 cases and receipts with zero
+    failure, skip, timeout, or warning. Final x86_64 KCSAN also produced 36/36
+    and 36 typed receipts, but runner SHA-256 `0fd64ef6...ddb06` failed before
+    sealing because case-insensitive bare `KCSAN:` matching selected exactly
+    three normal lowercase lifecycle lines. The console contains no real KCSAN
+    header, unknown-origin, value-change, or report-footer signature.
+    Validation/0253 machine record SHA-256 is `06c9f228...d815b`. All attempt-3
+    credit is rejected and a fresh six-boot retry remains mandatory.
+
+  Hardened runner and smoke:
+    runner SHA-256 `3c85c01a...e19b1` privately snapshots classifier SHA-256
+    `8adcff74...c23a`. Only exact enabled, strict-mode, and passed-self-test
+    lifecycle forms are allowed; every other KCSAN tag and every prior generic
+    diagnostic fails closed. Pre-build fixtures prove benign acceptance,
+    complete real-report detection, generic warning rejection, and unknown
+    lowercase KCSAN rejection. Post-commit config smoke
+    `20260718T-p5a-r4-e3-six-boot-config-smoke-r5` passed both serializer and
+    classifier self-tests plus all six byte-identical configs with zero builds
+    and boots. Result SHA-256 is `af847090...109eb`.
+
+  Next:
+    after exact clean-repository, VM, internal-ext4 scratch, and host-free-space
+    preflight, launch only run `20260718T-p5a-r4-e3-six-boot-r4`, job
+    `p5a-r4-e3-six-boot-r4`, under the 30-second monitor. Do not reuse any of
+    attempts 1--3. Independent artifact closure remains required before any
+    R4-E3 acceptance; runtime and production claims remain false.

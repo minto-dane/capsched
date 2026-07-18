@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-17
+Updated: 2026-07-18
 
 ## Current Validation Records
 
@@ -259,6 +259,7 @@ Updated: 2026-07-17
 | 0251 | Attempt 2 built and booted arm64 with QEMU 0 and 36/36 KUnit cases, but rejects all credit because a JSONL `--slurpfile` traversal failed before sealing; corrected replay proves the exact three fault receipts and requires a pre-build serializer self-test plus a fresh full retry | SchedExecLease P5A-R4 E3 Six-Boot Attempt 2 Rejection |
 | 0252 | Receipt-hardened runner binds both rejections and validates the exact three-object JSONL ledger before any build; post-commit smoke passes six byte-identical configs with zero builds/boots and authorizes only a complete fresh r3 retry | SchedExecLease P5A-R4 E3 Receipt-Hardened Retry Readiness |
 | 0253 | Attempt 3 completed all six fresh builds and boots with five sealed 36/36 results and a final KCSAN 36/36/QEMU-0 boot, but rejects all credit because case-insensitive matching misclassified three normal KCSAN lifecycle notices | SchedExecLease P5A-R4 E3 Six-Boot Attempt 3 Rejection |
+| 0254 | Warning-classifier hardening binds attempt 3, allows only exact benign KCSAN lifecycle forms, fail-closes real/unknown diagnostics, and passes post-commit six-config smoke with zero builds/boots before a full fresh r4 retry | SchedExecLease P5A-R4 E3 Warning-Classifier-Hardened Retry Readiness |
 
 ## Principles
 

@@ -197,10 +197,47 @@ and no build, boot, object, image, console, KTAP, or boot result was produced.
 Run `20260717T-p5a-r4-e3-six-boot-r3` is now authorized under the repeated
 identity, cleanliness, VM, scratch, and host-storage gates.
 
+## N-135 Attempt 3 Warning-Classifier Rejection
+
+Run `20260717T-p5a-r4-e3-six-boot-r3` completed all six fresh builds and
+boots. Five boot results were sealed at 36/36 cases, 36 receipts, and zero
+failure, skip, timeout, or warning. The final x86_64 KCSAN boot also exited
+QEMU zero and produced 36/36, 36 unique well-typed receipts, and the exact
+three fault receipts, but the runner failed before sealing it.
+
+Validation/0253 and machine record SHA-256
+`06c9f228d66a7440b6c4404e131eeef2ba31ecf94a03fa8356fa81d5ba8d815b`
+prove that case-insensitive matching of a bare `KCSAN:` alternative rejected
+only `kcsan: enabled early`, `kcsan: strict mode configured`, and
+`kcsan: selftest: 3/3 tests passed`. The retained console has no actual KCSAN
+report header, unknown-origin line, value-change line, or report footer. This
+is an evidence-runner false positive, but the incomplete matrix receives no
+partial credit and all six configurations must be repeated.
+
+## Warning-Classifier-Hardened Retry
+
+Runner SHA-256
+`3c85c01a7b3edfd0887d7f19ca68b7ce9940859f59289b861c1c32e8b09e19b1`
+snapshots classifier SHA-256
+`8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a`.
+Only the three exact normal KCSAN lifecycle forms are allowed; every other
+KCSAN-tagged line and all prior generic kernel diagnostics fail closed. A
+pre-build self-test proves benign lifecycle acceptance, complete real-report
+detection, generic-warning rejection, and unknown-lowercase-KCSAN rejection.
+The receipt-ledger serializer self-test remains mandatory.
+
+Validation/0254 records post-commit config smoke
+`20260718T-p5a-r4-e3-six-boot-config-smoke-r5`. It passed at result SHA-256
+`af847090d61710f6d8c77c61242911ae10a6a5240073ce710014a391919109eb`;
+all six configs are byte-identical to prior smoke and no build or boot started.
+Only complete fresh run `20260718T-p5a-r4-e3-six-boot-r4`, job
+`p5a-r4-e3-six-boot-r4`, is authorized after the repeated repository, VM,
+scratch, and host-storage preflight.
+
 ## Non-Claims
 
-The committed source correction and evidence-runner correction do not accept R4-E3 source correctness,
-concurrency correctness, runtime behavior, denial correctness, the six-boot
-diagnostic matrix, primary/patch promotion, bounded latency, performance,
-monitor enforcement, production protection, deployment, multi-node,
-multi-cluster, or datacenter readiness.
+The committed source correction and all evidence-runner corrections do not
+accept R4-E3 source correctness, concurrency correctness, runtime behavior,
+denial correctness, the six-boot diagnostic matrix, primary/patch promotion,
+bounded latency, performance, monitor enforcement, production protection,
+deployment, multi-node, multi-cluster, or datacenter readiness.

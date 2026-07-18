@@ -4745,3 +4745,22 @@ P5A-R3 E4 source and exact-source regression gate:
   reduction, and 30-second monitoring. Launch readiness is not a matrix pass.
   All six boots and a separate artifact closure remain required before any
   R4-E3 source/correctness decision; runtime and production claims stay false.
+
+- P5A-R4 N-135 attempt-3 rejection and r4 readiness:
+
+  Attempt 3 completed six fresh builds and QEMU-zero boots; five boot results
+  sealed 36/36 and final x86_64 KCSAN also passed 36/36 with 36 receipts. It is
+  nevertheless fully rejected because case-insensitive bare `KCSAN:` matching
+  treated three normal lifecycle lines as warnings before the final seal.
+  Validation/0253 locks zero actual KCSAN report signatures and machine record
+  SHA-256 `06c9f228...d815b`; no partial result carries forward.
+
+  Corrected runner/classifier SHA-256 values are `3c85c01a...e19b1` and
+  `8adcff74...c23a`. Only three exact normal lifecycle forms are allowed and
+  every unknown KCSAN tag remains fail-closed. Pre-build fixtures detect a
+  complete real KCSAN report and generic/unknown diagnostics while accepting
+  the three benign forms. Post-commit config smoke r5 passed both self-tests
+  and all six byte-identical configs with zero builds/boots at result SHA-256
+  `af847090...109eb`. Only a complete fresh r4 plus independent closure can
+  complete N-135; source/correctness, runtime, promotion, protection,
+  deployment, multi-cluster, and datacenter claims remain false.

@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-07-17",
+  "updated": "2026-07-18",
   "project": {
     "name": "DomainLease-Linux",
     "workspace": "/media/nia/scsiusb/dev/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-p5a-r4-e3-source-gate-next",
+    "current_phase": "sched-exec-lease-l0-p5a-r4-e3-six-boot-r4-ready",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/media/nia/scsiusb/dev/linux-cap/capsched",
@@ -2804,7 +2804,7 @@
       "blocked_by": [
         "N-134"
       ],
-      "partial_progress": "Validation/0247 freezes the exact six-boot runner at SHA-256 cff384cb01a82a446b811ec90d988ddd062f08946633d78511441599f793a809. Fresh config-smoke r2 resolved all six arm64/x86_64 standard, hotplug/fault, generic-KASAN, and KCSAN configs with zero builds/boots/skew retries; result SHA-256 is 3e49336b8de70a27eddf3f9b64579d836e60614e633e34faf2fee759ca23e467 and config-manifest SHA-256 is 09b500cc0e7ed793673b1e1ec5478dca9679197b544295cbda49331f4163a673. The canonical detached run is fixed as 20260717T-p5a-r4-e3-six-boot-r1, job p5a-r4-e3-six-boot, with internal-ext4 fresh sequential builds and 30-second monitoring. Matrix pass and independent artifact closure remain pending. No R4-E3 source/correctness or runtime/production claim is accepted."
+      "partial_progress": "Attempt 3 run 20260717T-p5a-r4-e3-six-boot-r3 completed all six fresh builds and QEMU-0 boots. Five results sealed at 36/36 cases and receipts with zero failures, skips, timeouts, or warnings; the final x86_64 KCSAN boot also passed 36/36 with 36 typed receipts, but runner 0fd64ef6aa75330b18a87934fde4ad32978ff077ef9189891bb6ae45920ddb06 rejected three normal lowercase KCSAN lifecycle notices through a case-insensitive bare KCSAN: pattern. Validation/0253 and machine record SHA-256 06c9f228d66a7440b6c4404e131eeef2ba31ecf94a03fa8356fa81d5ba8d815b prove zero actual KCSAN report signatures and give the incomplete matrix no credit. Corrected runner 3c85c01a7b3edfd0887d7f19ca68b7ce9940859f59289b861c1c32e8b09e19b1 snapshots classifier 8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a, allows only three exact lifecycle forms, fail-closes every other KCSAN tag and all prior diagnostics, and self-tests benign, real-race, generic-warning, and unknown-KCSAN fixtures before builds. Post-commit config smoke 20260718T-p5a-r4-e3-six-boot-config-smoke-r5 passed both self-tests and all six byte-identical configs with zero builds/boots; result SHA-256 af847090d61710f6d8c77c61242911ae10a6a5240073ce710014a391919109eb. Only complete fresh r4 plus independent closure can complete N-135; no source/correctness/runtime/production claim is accepted."
     }
   ],
   "canonical_files": {
