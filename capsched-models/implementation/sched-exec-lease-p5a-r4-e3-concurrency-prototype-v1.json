@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1",
   "date": "2026-07-18",
-  "status": "n135_virtual_six_boot_evidence_closed_without_source_or_runtime_acceptance",
+  "status": "r4_e3_scoped_virtual_synthetic_source_and_correctness_accepted_r4_e4_plan_draft_authorized",
   "source": {
     "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r4-e3-concurrency-prototype",
     "branch": "codex/p5a-r4-e3-concurrency-prototype",
@@ -260,6 +260,23 @@
     "r4_e3_concurrency_correctness_accepted": false,
     "r4_e4_plan_may_be_drafted": false
   },
+  "post_n135_authorization_gate": {
+    "analysis": "capsched-models/analysis/0175-sched-exec-lease-p5a-r4-post-n135-authorization-gate.md",
+    "machine_gate": "capsched-models/analysis/sched-exec-lease-p5a-r4-post-n135-authorization-gate-v1.json",
+    "validation": "capsched-models/validation/0256-sched-exec-lease-p5a-r4-post-n135-authorization-gate.md",
+    "status": "passed_twice_with_normalized_identity",
+    "exact_disposable_source_accepted": true,
+    "source_acceptance_scope": "exact_disposable_default_off_virtual_synthetic_candidate_only",
+    "synthetic_concurrency_correctness_accepted": true,
+    "concurrency_correctness_scope": "modeled_and_six_boot_tested_virtual_synthetic_protocol_only",
+    "r4_e4_plan_may_be_drafted": true,
+    "r4_e4_plan_draft_scope": "source_free_measurement_plan_only",
+    "r4_e4_plan_accepted": false,
+    "r4_e4_source_may_be_created": false,
+    "primary_linux_may_change": false,
+    "patch_queue_may_change": false,
+    "runtime_or_production_claim": false
+  },
   "correction": {
     "validation": "capsched-models/validation/0248-sched-exec-lease-p5a-r4-e3-six-boot-attempt-1-rejection.md",
     "machine_record": "capsched-models/validation/sched-exec-lease-p5a-r4-e3-six-boot-attempt-1-rejection-v1.json",
@@ -290,9 +307,9 @@
     "independent_six_boot_closure_passed_twice": true
   },
   "safety_flags": {
-    "r4_e3_source_accepted": false,
-    "r4_e3_concurrency_correctness_accepted": false,
-    "r4_e4_plan_may_be_drafted": false,
+    "r4_e3_source_accepted": true,
+    "r4_e3_concurrency_correctness_accepted": true,
+    "r4_e4_plan_may_be_drafted": true,
     "r4_e4_source_may_be_created": false,
     "r4_behavior_source_may_be_created": false,
     "runtime_scheduler_hook_approved": false,

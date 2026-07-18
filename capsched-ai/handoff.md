@@ -6346,3 +6346,31 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     `p5a-r4-e3-six-boot-r4`, under the 30-second monitor. Do not reuse any of
     attempts 1--3. Independent artifact closure remains required before any
     R4-E3 acceptance; runtime and production claims remain false.
+
+- N-135 completed and post-N-135 authorization passed:
+
+  Canonical run `20260718T-p5a-r4-e3-six-boot-r4` passed all six fresh
+  arm64/x86_64 standard, hotplug/fault, arm64 KASAN, and x86_64 KCSAN builds
+  and boots. It records 216/216 cases, 216/216 typed receipts, and zero
+  failure, skip, timeout, compiler diagnostic, final clock-skew warning,
+  kernel-warning report, QEMU failure, or network device. Matrix result
+  SHA-256 is `4717052e...7fbedd`. Two independent read-only closures reproduce
+  all 133 retained artifacts at result SHA-256 values `6d9a54ed...98f89` and
+  `86fd0cf0...b26ea`; normalized SHA-256 is `239bafaa...607e8f`.
+
+  Analysis/0175, formal/0138, and validation/0256 implement the separately
+  required authorization review. The gate adds the exact 14-field claim
+  ledger, refreshes upstream to `1229e2e57a5...`, observes zero changes in the
+  two touched paths, verifies candidate merge-tree `00025acf3c08...`, passes
+  safe TLC at 5/4/depth 4, and produces all 15 expected unsafe
+  counterexamples. Final serial r7/r8 results are `160efd76...e09d37` and
+  `d736b698...60f905`, normalized to `541d7267...d1fb4f`. Regression accepts the
+  exact config and rejects evidence-hash mutation, premature R4-E4 source, and
+  symlink substitution.
+
+  The exact `da9ce915...` source identity and concurrency semantics are
+  accepted only for the disposable default-off virtual synthetic boundary.
+  Drafting a source-free R4-E4 measurement plan is authorized. R4-E4 plan
+  acceptance/source, behavior source, primary Linux, patch queue, real
+  scheduler/runtime, N-136, bare-metal, monitor, production, deployment,
+  multi-node, multi-cluster, and datacenter boundaries remain false.

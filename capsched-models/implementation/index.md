@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-07-17
+Updated: 2026-07-18
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -453,6 +453,9 @@ Current SchedExecLease L0 readiness:
     candidate is committed. Corrected N-134 source gate/closures and the full
     r4 six-build/six-boot matrix pass. Two independent read-only closures
     reproduce all 133 retained artifacts and complete N-135 virtual evidence.
+    Analysis/0175 and validation/0256 then accept the exact source and
+    concurrency semantics only for this disposable virtual synthetic scope and
+    authorize drafting a source-free R4-E4 measurement plan.
   - Candidate commit/tree:
     `da9ce9159b3450c28c8faf8dceac671fb7bfeba2` /
     `58c6510c6f517004e37107786d006bb8333b79b8`.
@@ -461,9 +464,9 @@ Current SchedExecLease L0 readiness:
     hard-IRQ dispatch bridge, 15-second waits, and 2,048 stress iterations must
     pass fresh arm64/x86_64 E2/off/layout-on/E3-on builds with 58 private and 51
     expanded values preserved and zero disabled artifacts before six diagnostic
-    boots. Validation/0255 closes only the default-off virtual evidence;
-    source correctness, R4-E4 planning, and every bare-metal, runtime, or
-    production claim remain unapproved.
+    boots. R4-E4 plan acceptance/source, primary/patch changes, live scheduler
+    behavior, and every bare-metal, runtime, or production claim remain
+    unapproved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

@@ -5,8 +5,10 @@ Date: 2026-07-18
 Status: the corrected direct-E2-child candidate passed the fresh N-134 source
 gate and the complete r4 six-build/six-boot virtual diagnostic matrix. Two
 independent read-only closures reproduce the same normalized result, completing
-N-135 virtual synthetic protocol evidence. No R4-E3 source/correctness,
-bare-metal, runtime, or production claim is accepted.
+N-135. The separate post-N-135 gate now accepts the exact default-off source
+and concurrency semantics only for that disposable virtual synthetic boundary,
+and authorizes drafting an R4-E4 measurement plan. Bare-metal, live runtime,
+primary Linux, patch-queue, and production claims remain false.
 
 ## Disposable Source Identity
 
@@ -277,11 +279,34 @@ R4-E4 plan, creating R4-E4/behavior source, changing primary Linux, or changing
 the patch queue. A new separately reviewed authorization gate is required
 before any of those actions.
 
+## Post-N-135 Authorization
+
+Analysis/0175 and validation/0256 perform that separate review. They hash-lock
+the N-135 matrix and both closures, add the mandatory claim-ledger row, refresh
+Torvalds upstream to `1229e2e57a5...`, prove zero upstream changes in the two
+touched paths, and verify a clean candidate merge-tree. The authorization
+model passes its safe trace and rejects 15 missing-evidence or overclaim paths.
+
+The resulting acceptance is deliberately narrow:
+
+```text
+exact R4-E3 source identity: accepted for disposable default-off virtual
+  synthetic evidence only
+R4-E3 concurrency semantics: accepted for the modeled/tested synthetic
+  protocol under the exact six virtual boots only
+R4-E4 measurement plan draft: authorized, source-free only
+```
+
+R4-E4 plan acceptance/source, behavior source, primary Linux, patch queue,
+real scheduler hooks, runtime denial/coverage, N-136, bare-metal, monitor,
+production, deployment, multi-node, multi-cluster, and datacenter boundaries
+remain false.
+
 ## Non-Claims
 
-The six-boot virtual diagnostic matrix and its independent artifact closure are
-accepted as N-135 synthetic evidence only. They do not accept R4-E3 source
-correctness, concurrency correctness, bare-metal behavior, runtime behavior,
-denial correctness, primary/patch promotion, bounded latency, performance,
-monitor enforcement, production protection, deployment, multi-node,
-multi-cluster, or datacenter readiness.
+The post-N-135 gate accepts source identity and concurrency correctness only
+inside the exact disposable default-off virtual synthetic boundary. It does
+not accept bare-metal behavior, live runtime behavior, denial correctness,
+primary/patch promotion, bounded latency, performance, monitor enforcement,
+production protection, deployment, multi-node, multi-cluster, or datacenter
+readiness.

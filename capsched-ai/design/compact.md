@@ -4764,3 +4764,19 @@ P5A-R3 E4 source and exact-source regression gate:
   `af847090...109eb`. Only a complete fresh r4 plus independent closure can
   complete N-135; source/correctness, runtime, promotion, protection,
   deployment, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 N-135 closure and scoped authorization:
+
+  Fresh r4 completed all six builds/boots with 216/216 cases and receipts and
+  zero diagnostics. Matrix SHA-256 is `4717052e...7fbedd`; two 133-artifact
+  closures are `6d9a54ed...98f89` and `86fd0cf0...b26ea`, normalized to
+  `239bafaa...607e8f`. Analysis/0175 plus formal/0138 and validation/0256 add
+  the missing claim ledger and refreshed touched-path drift evidence. Two
+  final serial gate results normalize to `541d7267...d1fb4f`; safe TLC is
+  5/4/depth-4 and all 15 overclaim/missing-evidence cases counterexample.
+
+  Accepted scope is only exact disposable default-off virtual synthetic R4-E3
+  source identity and concurrency semantics. Source-free R4-E4 measurement
+  plan drafting is now allowed. R4-E4 source, primary/patch changes, live
+  runtime, N-136, bare-metal, monitor, production, deployment, multi-cluster,
+  and datacenter claims remain false.

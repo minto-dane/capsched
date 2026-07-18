@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-17
+Updated: 2026-07-18
 
 ## Current Analysis Notes
 
@@ -180,6 +180,7 @@ Updated: 2026-07-17
 | 0172 | R4 selects an O(1) generation fence with coalesced notifier/pull recovery, conditional 2*A/B_max logical bounds, and separate current stop requests | SchedExecLease P5A-R4 Generation-Fenced Coalesced Pull Recovery |
 | 0173 | R4-E1 fixes finite storage, the rq-locked irq-work to unbound-work bridge, cursor restart/late admission, one-projection recovery, current observation, and sleepable hotplug/RCU drain before layout source | SchedExecLease P5A-R4 E1 Dispatch and Lifetime Evidence Plan |
 | 0174 | R4-E3 fixes the exact direct-E2-child same-TU synthetic KUnit boundary, independent receipts/oracle, 36 forced concurrency cases, six fault sites, and six dual-architecture diagnostic boots | SchedExecLease P5A-R4 E3 Concurrency and Diagnostic Evidence Plan |
+| 0175 | Post-N-135 gate adds the exact claim-ledger row and fresh touched-path drift proof, accepts only the disposable virtual synthetic R4-E3 boundary, and authorizes source-free R4-E4 plan drafting | SchedExecLease P5A-R4 Post-N135 Authorization Gate |
 
 ## Planned Analysis Notes
 
@@ -318,3 +319,4 @@ Updated: 2026-07-17
 | `sched-exec-lease-p5a-r4-generation-fenced-coalesced-pull-recovery-v1.json` | P5A-R4 successor architecture | Exact R3 trigger, O(1) publication/picker fence, one notifier/owner, newest-generation coalescing, stable-window logical bounds, current-stop separation, source anchors, faults, and non-claims |
 | `sched-exec-lease-p5a-r4-e1-dispatch-lifetime-evidence-plan-v1.json` | P5A-R4 E1 pre-source plan | Finite R4 storage/admission, rejected balance callback, irq-work-to-unbound-work bridge, notifier cursor/restart, one-rq owner, hotplug/RCU drain, E3/E4 gates, and non-claims |
 | `sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan-v1.json` | P5A-R4 E3 pre-source plan | Exact E2 identity, two-file same-TU KUnit boundary, real irq/work/lock/RCU synthetic protocol, independent receipts/oracle, 36 forced cases, six allocation faults, six dual-architecture diagnostic boots, 76 formal faults, and non-claims |
+| `sched-exec-lease-p5a-r4-post-n135-authorization-gate-v1.json` | P5A-R4 post-evidence authorization gate | Exact N-135 hashes, 14-field claim ledger, current upstream touched-path freshness, scope-qualified R4-E3 synthetic acceptance, R4-E4 plan-draft-only authorization, and runtime/production non-claims |

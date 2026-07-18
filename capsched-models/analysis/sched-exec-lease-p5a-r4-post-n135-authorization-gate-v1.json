@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r4-post-n135-authorization-gate-v1",
+  "date": "2026-07-18",
+  "status": "scoped_r4_e3_synthetic_acceptance_and_r4_e4_plan_draft_authorization",
+  "evidence": {
+    "governing_plan": "capsched-models/analysis/sched-exec-lease-p5a-r4-e3-concurrency-diagnostic-evidence-plan-v1.json",
+    "governing_plan_sha256": "f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677",
+    "implementation_record": "capsched-models/implementation/sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1.json",
+    "implementation_record_sha256": "fe4add9b420870c21dca423c15f7505f1cfdc9c9360fac75605882856a782b86",
+    "claim_ledger_gate": "capsched-models/analysis/implementation-claim-ledger-gate-v1.json",
+    "claim_ledger_gate_sha256": "d957db92654459c9298d252bdae0a92ef7de5b85918c24bcf4cc083c324e5adb",
+    "n135_validation": "capsched-models/validation/0255-sched-exec-lease-p5a-r4-e3-six-boot-evidence-closure.md",
+    "n135_validation_sha256": "9c5794f123269beb71483298ed78711425868b5d9deec969ba637e7deba6390a",
+    "matrix_result": "build/source-check/sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix/20260718T-p5a-r4-e3-six-boot-r4/result.json",
+    "matrix_result_sha256": "4717052e2f546cf5faa13bfd24d90e43626e9b66f4f6d24ad07b2ed5bc7fbedd",
+    "closure_r1": "build/source-check/sched-exec-lease-p5a-r4-e3-six-boot-evidence-closure/20260718T-p5a-r4-e3-six-boot-closure-r1/result.json",
+    "closure_r1_sha256": "6d9a54ed85d742d77aeef98f53deab2634ead63d41ef1c551ca6720b4a098f89",
+    "closure_r2": "build/source-check/sched-exec-lease-p5a-r4-e3-six-boot-evidence-closure/20260718T-p5a-r4-e3-six-boot-closure-r2/result.json",
+    "closure_r2_sha256": "86fd0cf06ddbcfd7fd88210eec196cec1650d31ca929791bf9e3bc7e7cfb26ea",
+    "closure_normalized_sha256": "239bafaa191598443a2d004bd68edd949c3030849d79a5ad756a670980607e8f",
+    "n135_complete": true,
+    "virtual_synthetic_protocol_evidence_complete": true
+  },
+  "source_identity": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "patch_queue_commit": "16bb080da472ffabbbafd2698073eca633fb0602",
+    "candidate_parent": "a429fc30252ac6af94c51d96cd4ac24e72d9f83b",
+    "candidate_commit": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "candidate_tree": "58c6510c6f517004e37107786d006bb8333b79b8",
+    "candidate_diff_sha256": "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "direct_e2_child": true,
+    "default_off": true,
+    "same_translation_unit": true,
+    "disposable_branch_only": true
+  },
+  "implementation_scope_reopen": {
+    "review_scope_explicitly_reopened": true,
+    "scope": "exact_existing_disposable_default_off_virtual_synthetic_candidate_only",
+    "new_source_creation_authorized": false,
+    "primary_linux_integration_authorized": false,
+    "patch_queue_integration_authorized": false
+  },
+  "upstream_drift_freshness": {
+    "remote": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+    "remote_ref": "refs/heads/master",
+    "previous_observed_commit": "a13c140cc289c0b7b3770bce5b3ad42ab35074aa",
+    "current_observed_commit": "1229e2e57a5c2980ccd457b9b53ea0eed5a22ab3",
+    "current_observed_commit_date": "2026-07-17T21:41:54-07:00",
+    "current_observed_subject": "Merge tag 'v7.2-rc3-smb3-server-fixes' of git://git.samba.org/ksmbd",
+    "previous_is_ancestor": true,
+    "advanced_commit_count": 495,
+    "candidate_merge_base": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "candidate_merge_tree": "00025acf3c082bec136467cc51c5254eb7c52089",
+    "merge_tree_clean": true,
+    "touched_paths": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "touched_paths_changed_since_previous_observation": [],
+    "touched_paths_changed_since_candidate_merge_base": [],
+    "private_exec_lease_absent_upstream": true,
+    "touched_path_source_shape_fresh": true,
+    "global_upstream_freshness_claim": false
+  },
+  "claim_ledger_row": {
+    "proposal_id": "sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1",
+    "slice_id": "P5A-R4-E3",
+    "linux_base_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "linux_work_commit_or_expected_parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "patch_scope": {
+      "candidate_parent": "a429fc30252ac6af94c51d96cd4ac24e72d9f83b",
+      "candidate_tree": "58c6510c6f517004e37107786d006bb8333b79b8",
+      "candidate_diff_sha256": "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08",
+      "allowed_files": [
+        "init/Kconfig",
+        "kernel/sched/exec_lease.c"
+      ],
+      "primary_or_patch_queue_change": false
+    },
+    "behavior_mode": "default_off_same_translation_unit_virtual_synthetic_kunit_only",
+    "evidence_classes_present": [
+      "model_checked",
+      "linux_no_behavior_build",
+      "patch_queue_replay",
+      "source_drift_fresh",
+      "virtual_synthetic_protocol_diagnostics"
+    ],
+    "supported_claims": [
+      "exact_candidate_source_identity_accepted_for_disposable_virtual_synthetic_evidence",
+      "default_off_synthetic_protocol_concurrency_correct_for_the_recorded_six_virtual_boots",
+      "separate_r4_e4_measurement_plan_may_be_drafted"
+    ],
+    "forbidden_claims": [
+      "primary_linux_or_patch_queue_acceptance",
+      "real_scheduler_attachment_or_runtime_behavior",
+      "runtime_denial_or_runtime_coverage",
+      "bare_metal_correctness_or_bounded_latency",
+      "monitor_delivery_or_enforcement",
+      "performance_or_cost",
+      "production_protection_or_deployment",
+      "multi_node_multi_cluster_or_datacenter_readiness"
+    ],
+    "open_gaps": [
+      "separate_r4_e4_measurement_plan_and_plan_gate",
+      "r4_e4_source_gate_and_architecture_measurements",
+      "bare_metal_measurement",
+      "real_scheduler_attachment_and_cross_path_evidence",
+      "n136_runtime_charge_subject_and_runtime_coverage",
+      "monitor_validation_and_production_assurance"
+    ],
+    "required_validation_before_review": [
+      "validation/0241",
+      "validation/0249",
+      "validation/0255"
+    ],
+    "required_validation_before_acceptance": [
+      "validation/0255",
+      "validation/0256"
+    ],
+    "upstream_drift_freshness": {
+      "upstream_commit": "1229e2e57a5c2980ccd457b9b53ea0eed5a22ab3",
+      "touched_paths_fresh": true,
+      "candidate_merge_tree_clean": true,
+      "global_freshness_claim": false
+    },
+    "safety_flags": {
+      "primary_linux_change_approved": false,
+      "patch_queue_change_approved": false,
+      "runtime_behavior_approved": false,
+      "runtime_denial_approved": false,
+      "runtime_coverage": false,
+      "monitor_verified": false,
+      "production_protection": false,
+      "hypervisor_grade": false,
+      "cost_efficiency": false,
+      "public_abi": false,
+      "monitor_abi": false,
+      "deployment_ready": false,
+      "multi_node_ready": false,
+      "multi_cluster_ready": false,
+      "datacenter_ready": false
+    }
+  },
+  "local_evidence_class_rule": {
+    "evidence_class": "virtual_synthetic_protocol_diagnostics",
+    "may_support": [
+      "exact_default_off_synthetic_protocol_correctness_under_recorded_matrix"
+    ],
+    "must_not_support": [
+      "real_scheduler_runtime_correctness",
+      "runtime_coverage",
+      "bare_metal_correctness",
+      "monitor_verification",
+      "production_protection",
+      "deployment_readiness"
+    ]
+  },
+  "authorization_after_gate_pass": {
+    "r4_e3_source_accepted": true,
+    "r4_e3_source_acceptance_scope": "exact_disposable_default_off_virtual_synthetic_candidate_only",
+    "r4_e3_concurrency_correctness_accepted": true,
+    "r4_e3_concurrency_correctness_scope": "modeled_and_six_boot_tested_virtual_synthetic_protocol_only",
+    "r4_e4_plan_may_be_drafted": true,
+    "r4_e4_plan_draft_scope": "source_free_measurement_plan_only",
+    "r4_e4_plan_accepted": false,
+    "r4_e4_source_may_be_created": false,
+    "r4_behavior_source_may_be_created": false,
+    "primary_linux_may_change": false,
+    "patch_queue_may_change": false
+  },
+  "separate_runtime_budget_boundary": {
+    "runtime_charge_subject": "capsched-models/analysis/runtime-charge-subject-v1.json",
+    "runtime_charge_subject_sha256": "d1dff5ebb6721575bf0c26c60d913eb5a9a5d95c179fba71969e3b7cb2d11065",
+    "runtime_charge_validation": "capsched-models/validation/0107-runtime-charge-subject-tlc.md",
+    "runtime_charge_validation_sha256": "be3e6159da5cccdd5996bb5d434f81e492aae37963d4af8f193d541e58de1f38",
+    "n136_satisfied_by_r4_e3_evidence": false,
+    "runtime_budget_hook_approved": false,
+    "runtime_coverage": false
+  },
+  "formal": {
+    "model": "formal/0138-p5a-r4-post-n135-authorization-gate-model/P5AR4PostN135AuthorizationGate.tla",
+    "safe_cfg": "P5AR4PostN135AuthorizationGateSafe.cfg",
+    "model_manifest_sha256": "96ce0df751c04180ac7b10ea71b07de808e8f0fc140e99a6d08c12ec95618129",
+    "unsafe_cfg_count": 15,
+    "safe_passed": true,
+    "unsafe_expected_counterexamples": 15
+  },
+  "safety_flags": {
+    "r4_e4_source_approved": false,
+    "r4_behavior_source_approved": false,
+    "primary_linux_change_approved": false,
+    "patch_queue_change_approved": false,
+    "real_scheduler_attachment": false,
+    "runtime_scheduler_hook_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "monitor_delivery_or_enforcement": false,
+    "cross_class_coverage": false,
+    "bare_metal_validated": false,
+    "bounded_wall_clock_latency_claim": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}
