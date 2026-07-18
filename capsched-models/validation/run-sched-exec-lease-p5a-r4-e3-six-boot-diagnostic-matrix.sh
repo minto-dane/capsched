@@ -17,7 +17,9 @@ SOURCE_GATE_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3
 CLOSURE_R3_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure/20260717T-p5a-r4-e3-source-gate-closure-r3/result.json"
 CLOSURE_R4_SOURCE="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-source-gate-closure/20260717T-p5a-r4-e3-source-gate-closure-r4/result.json"
 SIX_BOOT_ATTEMPT_2_REJECTION_SOURCE="$SCRIPT_DIR/sched-exec-lease-p5a-r4-e3-six-boot-attempt-2-rejection-v1.json"
+SIX_BOOT_ATTEMPT_3_REJECTION_SOURCE="$SCRIPT_DIR/sched-exec-lease-p5a-r4-e3-six-boot-attempt-3-rejection-v1.json"
 HARDENING_LIB_SOURCE="$SCRIPT_DIR/lib/immutable-evidence-inputs.sh"
+WARNING_CLASSIFIER_SOURCE="$SCRIPT_DIR/lib/kernel-warning-classifier.sh"
 RUNNER_SOURCE=${BASH_SOURCE[0]}
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
 OUT_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix"
@@ -38,7 +40,9 @@ CLOSURE_R4_SHA=92e9918d0c04147a9b78c66744081cf165564458204a18c43501d82617318e6e
 SOURCE_GATE_SHA=f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24
 SIX_BOOT_ATTEMPT_1_REJECTION_SHA=c67648292f091d79e752c174f4360deee6b0a22ae696d7cbf76d5fd13cc22871
 SIX_BOOT_ATTEMPT_2_REJECTION_SHA=eb02c397ce25e522eab88f346913b4284649f83201805cdd14b1afbc1a9d0564
+SIX_BOOT_ATTEMPT_3_REJECTION_SHA=06c9f228d66a7440b6c4404e131eeef2ba31ecf94a03fa8356fa81d5ba8d815b
 HARDENING_LIB_SHA=4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6
+WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 E2_COMMIT=a429fc30252ac6af94c51d96cd4ac24e72d9f83b
@@ -51,6 +55,7 @@ REQUIRED_RECEIPTS=36
 STRESS_ITERATIONS=2048
 clock_skew_retries=0
 receipt_ledger_selftest_passed=0
+warning_classifier_selftest_passed=0
 current_build=
 active_child_pid=
 
@@ -181,6 +186,10 @@ chmod 0444 "$INPUT_DIR/immutable-evidence-inputs.sh"
 # shellcheck disable=SC1091
 source "$INPUT_DIR/immutable-evidence-inputs.sh"
 capsched_verify_file_sha256 "$INPUT_DIR/immutable-evidence-inputs.sh" "$HARDENING_LIB_SHA" || die 'hardening helper snapshot mismatch'
+capsched_snapshot_verified_file "$WARNING_CLASSIFIER_SOURCE" "$WARNING_CLASSIFIER_SHA" "$INPUT_DIR/kernel-warning-classifier.sh" || die 'could not snapshot warning classifier'
+# shellcheck disable=SC1091
+source "$INPUT_DIR/kernel-warning-classifier.sh"
+capsched_verify_file_sha256 "$INPUT_DIR/kernel-warning-classifier.sh" "$WARNING_CLASSIFIER_SHA" || die 'warning classifier snapshot mismatch'
 runner_initial_sha=$(capsched_sha256_file "$RUNNER_SOURCE")
 capsched_snapshot_verified_file "$RUNNER_SOURCE" "$runner_initial_sha" "$INPUT_DIR/runner.sh" || die 'could not snapshot runner'
 capsched_snapshot_verified_file "$PLAN_SOURCE" "$PLAN_SHA" "$INPUT_DIR/plan.json" || die 'could not snapshot plan'
@@ -188,11 +197,13 @@ capsched_snapshot_verified_file "$SOURCE_GATE_SOURCE" "$SOURCE_GATE_SHA" "$INPUT
 capsched_snapshot_verified_file "$CLOSURE_R3_SOURCE" "$CLOSURE_R3_SHA" "$INPUT_DIR/source-gate-closure-r3.json" || die 'could not snapshot closure r3'
 capsched_snapshot_verified_file "$CLOSURE_R4_SOURCE" "$CLOSURE_R4_SHA" "$INPUT_DIR/source-gate-closure-r4.json" || die 'could not snapshot closure r4'
 capsched_snapshot_verified_file "$SIX_BOOT_ATTEMPT_2_REJECTION_SOURCE" "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" "$INPUT_DIR/six-boot-attempt-2-rejection.json" || die 'could not snapshot attempt-2 rejection'
+capsched_snapshot_verified_file "$SIX_BOOT_ATTEMPT_3_REJECTION_SOURCE" "$SIX_BOOT_ATTEMPT_3_REJECTION_SHA" "$INPUT_DIR/six-boot-attempt-3-rejection.json" || die 'could not snapshot attempt-3 rejection'
 PLAN="$INPUT_DIR/plan.json"
 SOURCE_GATE="$INPUT_DIR/source-gate-result.json"
 CLOSURE_R3="$INPUT_DIR/source-gate-closure-r3.json"
 CLOSURE_R4="$INPUT_DIR/source-gate-closure-r4.json"
 SIX_BOOT_ATTEMPT_2_REJECTION="$INPUT_DIR/six-boot-attempt-2-rejection.json"
+SIX_BOOT_ATTEMPT_3_REJECTION="$INPUT_DIR/six-boot-attempt-3-rejection.json"
 
 progress '2% locking N-134 closure, exact matrix, and repository identities'
 jq -e '
@@ -217,6 +228,43 @@ jq -e '
   .safety_flags.production_protection == false and
   .safety_flags.datacenter_ready == false
 ' "$SIX_BOOT_ATTEMPT_2_REJECTION" >/dev/null
+jq -e '
+  .status == "rejected_before_matrix_seal_due_to_case_insensitive_kcsan_lifecycle_false_positive" and
+  .run.run_id == "20260717T-p5a-r4-e3-six-boot-r3" and
+  .run.runner_sha256 == "0fd64ef6aa75330b18a87934fde4ad32978ff077ef9189891bb6ae45920ddb06" and
+  .run.runner_exit_code == 1 and
+  .locked_inputs.candidate_commit == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
+  .sealed_boot_results.count == 5 and
+  .sealed_boot_results.all_required_cases_passed_per_boot == 36 and
+  .sealed_boot_results.total_failures == 0 and
+  .sealed_boot_results.total_skips == 0 and
+  .sealed_boot_results.total_timeouts == 0 and
+  .sealed_boot_results.total_warning_reports == 0 and
+  .x86_64_kcsan_unsealed_boot.qemu_exit_code == 0 and
+  .x86_64_kcsan_unsealed_boot.required_cases_passed == 36 and
+  .x86_64_kcsan_unsealed_boot.case_failures == 0 and
+  .x86_64_kcsan_unsealed_boot.case_skips == 0 and
+  .x86_64_kcsan_unsealed_boot.receipts == 36 and
+  .x86_64_kcsan_unsealed_boot.unique_receipt_cases == 36 and
+  .x86_64_kcsan_unsealed_boot.malformed_receipts == 0 and
+  .x86_64_kcsan_unsealed_boot.boot_result_sealed == false and
+  .failure.matched_line_count == 3 and
+  .failure.actual_kcsan_report_headers == 0 and
+  .failure.actual_unknown_origin_reports == 0 and
+  .failure.actual_value_change_reports == 0 and
+  .failure.actual_kcsan_report_footers == 0 and
+  .failure.classification == "evidence_runner_false_positive_not_a_detected_kernel_data_race" and
+  .matrix_accounting.builds_started == 6 and
+  .matrix_accounting.boots_started == 6 and
+  .matrix_accounting.boot_results_sealed == 5 and
+  .matrix_accounting.x86_64_kcsan_credited == false and
+  .matrix_accounting.sealed_boot_results_credited_to_future_retry == false and
+  .matrix_accounting.matrix_passed == false and
+  .matrix_accounting.full_fresh_retry_required == true and
+  .safety_flags.r4_e3_source_accepted == false and
+  .safety_flags.production_protection == false and
+  .safety_flags.datacenter_ready == false
+' "$SIX_BOOT_ATTEMPT_3_REJECTION" >/dev/null
 jq -e '
   .status == "passed_source_gate_awaiting_six_boot_diagnostic_matrix" and
   .candidate_commit == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
@@ -542,10 +590,44 @@ receipt_ledger_selftest()
 	receipt_ledger_selftest_passed=1
 }
 
+warning_classifier_selftest()
+{
+	local root="$OUT_DIR/kernel-warning-classifier-selftest"
+	local benign="$root/benign.log" race="$root/race.log" fail_closed="$root/fail-closed.log"
+	local benign_report="$root/benign.report" race_report="$root/race.report"
+	local fail_closed_report="$root/fail-closed.report"
+
+	mkdir "$root"
+	printf '%s\n' \
+		'[    3.106630] kcsan: enabled early' \
+		'[    3.107595] kcsan: strict mode configured' \
+		'[    3.835736] kcsan: selftest: 3/3 tests passed' \
+		> "$benign"
+	capsched_collect_kernel_warning_reports "$benign" "$benign_report" || die 'warning-classifier benign fixture failed'
+	[ ! -s "$benign_report" ] || die 'warning-classifier rejected normal KCSAN lifecycle lines'
+
+	printf '%s\n' \
+		'BUG: KCSAN: data-race in test_kernel_read / test_kernel_write' \
+		'race at unknown origin, with read to 0x1 of 8 bytes by task 1 on cpu 0:' \
+		'value changed: 0x0000000000000001 -> 0x0000000000000002' \
+		'Reported by Kernel Concurrency Sanitizer on:' \
+		> "$race"
+	capsched_collect_kernel_warning_reports "$race" "$race_report" || die 'warning-classifier KCSAN report fixture failed'
+	[ "$(wc -l < "$race_report" | tr -d ' ')" = 4 ] || die 'warning-classifier missed a KCSAN report signature'
+	grep -Fq 'BUG: KCSAN: data-race' "$race_report" || die 'warning-classifier missed KCSAN report header'
+	grep -Fq 'Reported by Kernel Concurrency Sanitizer on:' "$race_report" || die 'warning-classifier missed KCSAN report footer'
+
+	printf '%s\n' 'WARNING: suspicious state' 'kcsan: report lost' > "$fail_closed"
+	capsched_collect_kernel_warning_reports "$fail_closed" "$fail_closed_report" || die 'warning-classifier fail-closed fixture failed'
+	[ "$(wc -l < "$fail_closed_report" | tr -d ' ')" = 2 ] || die 'warning-classifier did not reject generic and unknown KCSAN diagnostics'
+
+	rm -rf -- "$root"
+	warning_classifier_selftest_passed=1
+}
+
 normalize_and_validate()
 {
 	local label=$1 profile=$2 serial=$3 ktap=$4 receipts=$5 line case_count
-	local warning_regex='BUG:|WARNING:|Oops:|Kernel panic|KASAN:|BUG: KCSAN:|KCSAN:|possible recursive locking detected|possible circular locking dependency|inconsistent lock state|Invalid wait context|refcount_t:|ODEBUG:|rcu_preempt detected stalls|INFO: rcu|soft lockup|hard LOCKUP|hung_task|workqueue lockup|irq_work.*(stuck|failed|WARNING)|CPU hotplug.*(failed|stuck|rollback)|kmemleak:|unreferenced object'
 
 	tr -d '\r' < "$serial" | sed -E 's/^\[[^]]+\][[:space:]]*//' > "$ktap"
 	grep -Fq '# Subtest: sched_exec_lease_r4_concurrency' "$ktap" || die "$label suite did not start"
@@ -572,10 +654,8 @@ normalize_and_validate()
 	jq -s 'map(.case) | sort' "$receipts" > "$OUT_DIR/$label-receipt-cases.json"
 	cmp "$OUT_DIR/expected-receipt-cases.json" "$OUT_DIR/$label-receipt-cases.json" || die "$label receipt case set changed"
 	write_seed_and_fault_ledgers "$label" "$profile" "$receipts"
-	if grep -Eihn "$warning_regex" "$serial" > "$OUT_DIR/$label-warning-reports.txt"; then
-		die "$label diagnostic warning report"
-	fi
-	: > "$OUT_DIR/$label-warning-reports.txt"
+	capsched_collect_kernel_warning_reports "$serial" "$OUT_DIR/$label-warning-reports.txt" || die "$label warning classifier failed"
+	[ ! -s "$OUT_DIR/$label-warning-reports.txt" ] || die "$label diagnostic warning report"
 }
 
 run_qemu()
@@ -696,6 +776,8 @@ run_boot()
 
 progress '3% validating receipt-ledger JSONL serializer before any build'
 receipt_ledger_selftest
+progress '4% validating fail-closed KCSAN and kernel-warning classification before any build'
+warning_classifier_selftest
 
 if [ "${CONFIG_SMOKE_ONLY:-0}" = 1 ]; then
 	progress '5% config-smoke arm64 standard debug'
@@ -723,10 +805,12 @@ if [ "${CONFIG_SMOKE_ONLY:-0}" = 1 ]; then
 	configure_boot x86_64 x86_64-linux-gnu- kcsan "$current_build" x86_64-kcsan
 	retire_build "$current_build"
 	capsched_verify_file_sha256 "$RUNNER_SOURCE" "$runner_initial_sha" || die 'runner changed during config smoke'
+	capsched_verify_file_sha256 "$INPUT_DIR/kernel-warning-classifier.sh" "$WARNING_CLASSIFIER_SHA" || die 'warning classifier changed during config smoke'
 	capsched_verify_file_sha256 "$SOURCE_GATE" "$SOURCE_GATE_SHA" || die 'source gate snapshot changed during config smoke'
 	capsched_verify_file_sha256 "$SIX_BOOT_ATTEMPT_2_REJECTION" "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" || die 'attempt-2 rejection snapshot changed during config smoke'
-	jq -n --arg run_id "$RUN_ID" --arg runner_sha "$runner_initial_sha" --arg candidate "$E3_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" --arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" --arg rejection_2_sha "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" --argjson retries "$clock_skew_retries" --argjson ledger_selftest "$receipt_ledger_selftest_passed" \
-		'{schema_version:1,status:"passed_corrected_six_config_smoke_without_build_or_boot",run_id:$run_id,runner_sha256:$runner_sha,candidate_commit:$candidate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_2_rejection_sha256:$rejection_2_sha,prior_six_boot_attempt_rejected:true,prior_six_boot_attempt_2_rejected:true,receipt_ledger_jsonl_selftest_passed:($ledger_selftest == 1),full_six_boot_retry_required:true,configs:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],clock_skew_retries:$retries,builds_started:0,boots_started:0,matrix_passed:false,r4_e3_source_accepted:false,production_protection:false,datacenter_ready:false}' > "$OUT_DIR/config-smoke-result.json"
+	capsched_verify_file_sha256 "$SIX_BOOT_ATTEMPT_3_REJECTION" "$SIX_BOOT_ATTEMPT_3_REJECTION_SHA" || die 'attempt-3 rejection snapshot changed during config smoke'
+	jq -n --arg run_id "$RUN_ID" --arg runner_sha "$runner_initial_sha" --arg classifier_sha "$WARNING_CLASSIFIER_SHA" --arg candidate "$E3_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" --arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" --arg rejection_2_sha "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" --arg rejection_3_sha "$SIX_BOOT_ATTEMPT_3_REJECTION_SHA" --argjson retries "$clock_skew_retries" --argjson ledger_selftest "$receipt_ledger_selftest_passed" --argjson classifier_selftest "$warning_classifier_selftest_passed" \
+		'{schema_version:1,status:"passed_warning_classifier_hardened_six_config_smoke_without_build_or_boot",run_id:$run_id,runner_sha256:$runner_sha,kernel_warning_classifier_sha256:$classifier_sha,candidate_commit:$candidate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_2_rejection_sha256:$rejection_2_sha,prior_six_boot_attempt_3_rejection_sha256:$rejection_3_sha,prior_six_boot_attempt_rejected:true,prior_six_boot_attempt_2_rejected:true,prior_six_boot_attempt_3_rejected:true,receipt_ledger_jsonl_selftest_passed:($ledger_selftest == 1),kernel_warning_classifier_selftest_passed:($classifier_selftest == 1),unknown_kcsan_messages_fail_closed:true,full_six_boot_retry_required:true,configs:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],clock_skew_retries:$retries,builds_started:0,boots_started:0,matrix_passed:false,r4_e3_source_accepted:false,production_protection:false,datacenter_ready:false}' > "$OUT_DIR/config-smoke-result.json"
 	progress '100% all six diagnostic configs resolved; no build or boot started'
 	exit 0
 fi
@@ -741,11 +825,13 @@ run_boot x86_64-kcsan x86_64 x86_64-linux-gnu- kcsan bzImage "$QEMU_TIMEOUT_SANI
 progress '97% sealing complete six-boot matrix result and negative claims'
 capsched_verify_file_sha256 "$RUNNER_SOURCE" "$runner_initial_sha" || die 'runner changed during matrix'
 capsched_verify_file_sha256 "$INPUT_DIR/runner.sh" "$runner_initial_sha" || die 'runner snapshot changed'
+capsched_verify_file_sha256 "$INPUT_DIR/kernel-warning-classifier.sh" "$WARNING_CLASSIFIER_SHA" || die 'warning classifier snapshot changed'
 capsched_verify_file_sha256 "$PLAN" "$PLAN_SHA" || die 'plan snapshot changed'
 capsched_verify_file_sha256 "$SOURCE_GATE" "$SOURCE_GATE_SHA" || die 'source gate snapshot changed'
 capsched_verify_file_sha256 "$CLOSURE_R3" "$CLOSURE_R3_SHA" || die 'closure r3 snapshot changed'
 capsched_verify_file_sha256 "$CLOSURE_R4" "$CLOSURE_R4_SHA" || die 'closure r4 snapshot changed'
 capsched_verify_file_sha256 "$SIX_BOOT_ATTEMPT_2_REJECTION" "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" || die 'attempt-2 rejection snapshot changed'
+capsched_verify_file_sha256 "$SIX_BOOT_ATTEMPT_3_REJECTION" "$SIX_BOOT_ATTEMPT_3_REJECTION_SHA" || die 'attempt-3 rejection snapshot changed'
 [ -z "$(git -C "$E3_DIR" status --porcelain --untracked-files=no)" ] || die 'source worktree changed during matrix'
 [ -z "$(find "$BUILD_ROOT" -mindepth 1 -maxdepth 1 -print -quit)" ] || die 'fresh build output was not retired'
 
@@ -762,13 +848,13 @@ jq -e 'length == 6 and all(.status == "passed") and all(.cases_passed == 36) and
 jq -n \
 	--arg run_id "$RUN_ID" --arg candidate "$E3_COMMIT" --arg parent "$E2_COMMIT" --arg tree "$E3_TREE" --arg diff_sha "$E3_DIFF_SHA" \
 	--arg primary "$PRIMARY_COMMIT" --arg patch_queue "$PATCH_QUEUE_COMMIT" --arg source_gate_sha "$SOURCE_GATE_SHA" \
-	--arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" --arg rejection_2_sha "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" \
-	--arg runner "$INPUT_DIR/runner.sh" --arg runner_sha "$runner_initial_sha" --arg plan "$PLAN" --arg plan_sha "$PLAN_SHA" \
+	--arg closure_r3_sha "$CLOSURE_R3_SHA" --arg closure_r4_sha "$CLOSURE_R4_SHA" --arg rejection_sha "$SIX_BOOT_ATTEMPT_1_REJECTION_SHA" --arg rejection_2_sha "$SIX_BOOT_ATTEMPT_2_REJECTION_SHA" --arg rejection_3_sha "$SIX_BOOT_ATTEMPT_3_REJECTION_SHA" \
+	--arg runner "$INPUT_DIR/runner.sh" --arg runner_sha "$runner_initial_sha" --arg classifier_sha "$WARNING_CLASSIFIER_SHA" --arg plan "$PLAN" --arg plan_sha "$PLAN_SHA" \
 	--arg source_gate "$SOURCE_GATE" \
 	--arg boot_results "$boot_results_json" --arg boot_results_sha "$(sha256sum "$boot_results_json" | awk '{print $1}')" \
-	--slurpfile results "$boot_results_json" --argjson clock_skew_retries "$clock_skew_retries" --argjson ledger_selftest "$receipt_ledger_selftest_passed" \
-	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix-result-v1",run_id:$run_id,status:"passed_six_boot_diagnostic_matrix_awaiting_independent_closure",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,source_gate_result:$source_gate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_2_rejection_sha256:$rejection_2_sha,prior_six_boot_attempt_rejected:true,prior_six_boot_attempt_2_rejected:true,receipt_ledger_jsonl_selftest_passed:($ledger_selftest == 1),full_six_boot_retry_completed:true,runner:$runner,runner_sha256:$runner_sha,plan:$plan,plan_sha256:$plan_sha,architectures:["arm64","x86_64"],qemu_boots:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],suite:"sched_exec_lease_r4_concurrency",required_cases_per_boot:36,passed_cases_per_boot:36,total_passed_cases:216,receipts_per_boot:36,total_receipts:216,stress_families:["bridge","notifier","migration","hotplug","retirement"],stress_iterations_per_family_per_boot:2048,allocation_fault_sites:6,case_failures:0,case_skips:0,case_timeouts:0,warning_reports:0,build_clock_skew_retries:$clock_skew_retries,final_build_clock_skew_warnings:0,matrix_reduction:false,fresh_build_output_per_boot:true,sequential_build_retirement:true,compiler_config_image_object_qemu_ktap_console_seed_fault_receipts_recorded:true,boot_results:$boot_results,boot_results_sha256:$boot_results_sha,results:$results[0],six_boot_matrix_passed:true,independent_matrix_closure_pending:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,primary_linux_changed:false,patch_queue_changed:false,real_scheduler_attachment:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,monitor_delivery_or_enforcement:false,cross_class_coverage:false,bounded_wall_clock_latency_claim:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
-jq -e '.status == "passed_six_boot_diagnostic_matrix_awaiting_independent_closure" and .prior_six_boot_attempt_2_rejected == true and .receipt_ledger_jsonl_selftest_passed == true and .qemu_boots == ["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"] and .total_passed_cases == 216 and .total_receipts == 216 and .case_failures == 0 and .case_skips == 0 and .case_timeouts == 0 and .warning_reports == 0 and .six_boot_matrix_passed == true and .independent_matrix_closure_pending == true and .r4_e3_source_accepted == false and .production_protection == false and .datacenter_ready == false' "$OUT_DIR/result.json.pending" >/dev/null
+	--slurpfile results "$boot_results_json" --argjson clock_skew_retries "$clock_skew_retries" --argjson ledger_selftest "$receipt_ledger_selftest_passed" --argjson classifier_selftest "$warning_classifier_selftest_passed" \
+	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e3-six-boot-diagnostic-matrix-result-v1",run_id:$run_id,status:"passed_six_boot_diagnostic_matrix_awaiting_independent_closure",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,source_gate_result:$source_gate,source_gate_result_sha256:$source_gate_sha,source_gate_closure_result_sha256:[$closure_r3_sha,$closure_r4_sha],prior_six_boot_attempt_rejection_sha256:$rejection_sha,prior_six_boot_attempt_2_rejection_sha256:$rejection_2_sha,prior_six_boot_attempt_3_rejection_sha256:$rejection_3_sha,prior_six_boot_attempt_rejected:true,prior_six_boot_attempt_2_rejected:true,prior_six_boot_attempt_3_rejected:true,receipt_ledger_jsonl_selftest_passed:($ledger_selftest == 1),kernel_warning_classifier_sha256:$classifier_sha,kernel_warning_classifier_selftest_passed:($classifier_selftest == 1),unknown_kcsan_messages_fail_closed:true,full_six_boot_retry_completed:true,runner:$runner,runner_sha256:$runner_sha,plan:$plan,plan_sha256:$plan_sha,architectures:["arm64","x86_64"],qemu_boots:["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"],suite:"sched_exec_lease_r4_concurrency",required_cases_per_boot:36,passed_cases_per_boot:36,total_passed_cases:216,receipts_per_boot:36,total_receipts:216,stress_families:["bridge","notifier","migration","hotplug","retirement"],stress_iterations_per_family_per_boot:2048,allocation_fault_sites:6,case_failures:0,case_skips:0,case_timeouts:0,warning_reports:0,build_clock_skew_retries:$clock_skew_retries,final_build_clock_skew_warnings:0,matrix_reduction:false,fresh_build_output_per_boot:true,sequential_build_retirement:true,compiler_config_image_object_qemu_ktap_console_seed_fault_receipts_recorded:true,boot_results:$boot_results,boot_results_sha256:$boot_results_sha,results:$results[0],six_boot_matrix_passed:true,independent_matrix_closure_pending:true,r4_e3_source_accepted:false,r4_e3_concurrency_correctness_accepted:false,primary_linux_changed:false,patch_queue_changed:false,real_scheduler_attachment:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,runtime_denial_correctness:false,monitor_delivery_or_enforcement:false,cross_class_coverage:false,bounded_wall_clock_latency_claim:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' > "$OUT_DIR/result.json.pending"
+	jq -e '.status == "passed_six_boot_diagnostic_matrix_awaiting_independent_closure" and .prior_six_boot_attempt_2_rejected == true and .prior_six_boot_attempt_3_rejected == true and .receipt_ledger_jsonl_selftest_passed == true and .kernel_warning_classifier_selftest_passed == true and .unknown_kcsan_messages_fail_closed == true and .qemu_boots == ["arm64_standard_debug","x86_64_standard_debug","arm64_hotplug_fault_injection","x86_64_hotplug_fault_injection","arm64_generic_kasan","x86_64_kcsan"] and .total_passed_cases == 216 and .total_receipts == 216 and .case_failures == 0 and .case_skips == 0 and .case_timeouts == 0 and .warning_reports == 0 and .six_boot_matrix_passed == true and .independent_matrix_closure_pending == true and .r4_e3_source_accepted == false and .production_protection == false and .datacenter_ready == false' "$OUT_DIR/result.json.pending" >/dev/null
 mv "$OUT_DIR/result.json.pending" "$OUT_DIR/result.json"
 sha256sum "$OUT_DIR/result.json" > "$OUT_DIR/result.sha256"
 progress '100% exact six-boot diagnostic matrix passed; independent closure still required'

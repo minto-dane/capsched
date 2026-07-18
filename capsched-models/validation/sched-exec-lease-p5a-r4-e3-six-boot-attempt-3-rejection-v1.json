@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r4-e3-six-boot-attempt-3-rejection-v1",
+  "date": "2026-07-17",
+  "status": "rejected_before_matrix_seal_due_to_case_insensitive_kcsan_lifecycle_false_positive",
+  "run": {
+    "run_id": "20260717T-p5a-r4-e3-six-boot-r3",
+    "job_name": "p5a-r4-e3-six-boot-r3",
+    "started_at": "2026-07-17T17:50:08Z",
+    "runner_finished_at": "2026-07-17T20:42:37Z",
+    "monitor_finished_at": "2026-07-17T20:42:42Z",
+    "runner_exit_code": 1,
+    "runner_sha256": "0fd64ef6aa75330b18a87934fde4ad32978ff077ef9189891bb6ae45920ddb06",
+    "job_log_sha256": "e48aaaf8fc04bc8354622781550da178612626e7da6eaef24127688479ec3af6"
+  },
+  "locked_inputs": {
+    "candidate_commit": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "candidate_parent": "a429fc30252ac6af94c51d96cd4ac24e72d9f83b",
+    "candidate_tree": "58c6510c6f517004e37107786d006bb8333b79b8",
+    "candidate_diff_sha256": "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08",
+    "plan_sha256": "f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677",
+    "source_gate_result_sha256": "f76ea8d4aef69a89cf93be4f20dfb3ce6bfa9f25ede61cfa9b92048d775f9b24",
+    "source_gate_closure_result_sha256": [
+      "f6763fbb940c42d67390cae46c20e148f86020a3c2af4431e12562c198fcf613",
+      "92e9918d0c04147a9b78c66744081cf165564458204a18c43501d82617318e6e"
+    ]
+  },
+  "sealed_boot_results": {
+    "arm64_standard_debug_sha256": "d24518d1d6af236a77a677f0297412e7811c0390219acb35a92f51291ea22f52",
+    "x86_64_standard_debug_sha256": "3a277aa6e2e70b8a5a83dace1dbac20a4badd813ff32411e495d0c215e0bcc33",
+    "arm64_hotplug_fault_injection_sha256": "a048a4cd9a546f376bc97a65d90c8f2689702473ae7910bffabf3724ef5ff54d",
+    "x86_64_hotplug_fault_injection_sha256": "3304a991bdf716251d6ace4d27d3764c23538b480b301c7fc7954abaea31ed70",
+    "arm64_generic_kasan_sha256": "3b0061ed9e555d1472134f03b3c031c1c11b4dc28148973a895c2bd109852105",
+    "count": 5,
+    "all_required_cases_passed_per_boot": 36,
+    "all_receipts_per_boot": 36,
+    "total_failures": 0,
+    "total_skips": 0,
+    "total_timeouts": 0,
+    "total_warning_reports": 0
+  },
+  "x86_64_kcsan_unsealed_boot": {
+    "config_sha256": "bd30cce0ea2a96e19d3fc6a8c38ae99426b5e8e5d2bf7face9d0a8ab8b4d18a5",
+    "build_log_sha256": "7c5b8a76773934ff2e0b8420d5061ce678646171b69de80533f5c1d5e97f52c6",
+    "qemu_command_sha256": "64ed621958e5ba4be7aaa9115cb3a0f3b14a50d547071be3248da833cd2198ab",
+    "console_sha256": "5c0e47de80467927f29cfab00d01b1c1153658fa1ef29a71d37fd4f36607c7eb",
+    "ktap_sha256": "5856e30a343fa676a9072f17bf4653e4868d98077440f4becce4e5f61591f517",
+    "receipts_sha256": "fe906eaa1bfccd7fc195a77c535e571ac5a55d694a7a2f793c9c3b671bdf378b",
+    "receipt_cases_sha256": "abd9c82708e46a29c767b79654f501253d4903164128b7fb41ac8c67753cfa01",
+    "seed_set_sha256": "d5bde0be2740725144ea08b24482460c4835758d36158242105c14c269eabd2c",
+    "fault_ledger_sha256": "df0905e2c122c7181e4cec3e378d84cefdaf1bcf289cfff1616fd808cd7fc853",
+    "warning_report_sha256": "6a9694823fdecb5b66a57981bfea72909e78727fa853a4dbb8332517e7c2b333",
+    "qemu_exit_code": 0,
+    "required_cases_passed": 36,
+    "case_failures": 0,
+    "case_skips": 0,
+    "receipts": 36,
+    "unique_receipt_cases": 36,
+    "malformed_receipts": 0,
+    "matching_fault_receipts": 3,
+    "compiler_diagnostics": 0,
+    "clock_skew_warnings": 0,
+    "boot_result_sealed": false
+  },
+  "failure": {
+    "stage": "x86_64_kcsan_warning_classification_before_boot_result_seal",
+    "warning_expression": "grep -Eihn with a bare KCSAN: alternative",
+    "root_cause": "case-insensitive matching classified normal lowercase KCSAN lifecycle notices as diagnostic reports",
+    "matched_line_count": 3,
+    "matched_lines": [
+      "kcsan: enabled early",
+      "kcsan: strict mode configured",
+      "kcsan: selftest: 3/3 tests passed"
+    ],
+    "actual_kcsan_report_headers": 0,
+    "actual_unknown_origin_reports": 0,
+    "actual_value_change_reports": 0,
+    "actual_kcsan_report_footers": 0,
+    "classification": "evidence_runner_false_positive_not_a_detected_kernel_data_race"
+  },
+  "kcsan_report_format_basis": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "report_source": "kernel/kcsan/report.c",
+    "report_source_sha256": "0a041b9052fded9f00088defab353197a29cef8b63360e1510d9fb2739c6b839",
+    "documentation": "Documentation/dev-tools/kcsan.rst",
+    "documentation_sha256": "6fdf591448f323bad4e62e109d3469f7d16fe4bb41f83f18beefc11d602ed913",
+    "required_fail_closed_signatures": [
+      "BUG: KCSAN: data-race",
+      "BUG: KCSAN: assert: race",
+      "race at unknown origin",
+      "value changed: 0x... -> 0x...",
+      "Reported by Kernel Concurrency Sanitizer on:"
+    ]
+  },
+  "matrix_accounting": {
+    "builds_started": 6,
+    "boots_started": 6,
+    "boot_results_sealed": 5,
+    "x86_64_kcsan_credited": false,
+    "sealed_boot_results_credited_to_future_retry": false,
+    "matrix_passed": false,
+    "full_fresh_retry_required": true
+  },
+  "cleanup": {
+    "run_owned_internal_build_root_removed": true,
+    "run_owned_disposable_worktree_removed": true,
+    "source_modified": false,
+    "patch_queue_modified": false
+  },
+  "safety_flags": {
+    "r4_e3_source_accepted": false,
+    "r4_e3_concurrency_correctness_accepted": false,
+    "runtime_behavior_approved": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

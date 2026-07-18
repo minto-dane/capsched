@@ -258,6 +258,7 @@ Updated: 2026-07-17
 | 0250 | Corrected runner locks source gate, dual closures, and the prior rejection; all six configs resolve with zero builds/boots; lossless compaction plus proven orphan-Git-temporary cleanup restores 53,436,640 KiB host free and the exact r2 preflight passes | SchedExecLease P5A-R4 E3 Corrected Six-Boot Retry Readiness |
 | 0251 | Attempt 2 built and booted arm64 with QEMU 0 and 36/36 KUnit cases, but rejects all credit because a JSONL `--slurpfile` traversal failed before sealing; corrected replay proves the exact three fault receipts and requires a pre-build serializer self-test plus a fresh full retry | SchedExecLease P5A-R4 E3 Six-Boot Attempt 2 Rejection |
 | 0252 | Receipt-hardened runner binds both rejections and validates the exact three-object JSONL ledger before any build; post-commit smoke passes six byte-identical configs with zero builds/boots and authorizes only a complete fresh r3 retry | SchedExecLease P5A-R4 E3 Receipt-Hardened Retry Readiness |
+| 0253 | Attempt 3 completed all six fresh builds and boots with five sealed 36/36 results and a final KCSAN 36/36/QEMU-0 boot, but rejects all credit because case-insensitive matching misclassified three normal KCSAN lifecycle notices | SchedExecLease P5A-R4 E3 Six-Boot Attempt 3 Rejection |
 
 ## Principles
 
