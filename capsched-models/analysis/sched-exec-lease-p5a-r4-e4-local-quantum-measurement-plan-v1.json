@@ -1,0 +1,641 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r4-e4-local-quantum-measurement-plan-v1",
+  "date": "2026-07-18",
+  "status": "r4_e4_source_free_local_quantum_measurement_pre_source_plan",
+  "prerequisite": {
+    "post_n135_gate": "capsched-models/analysis/sched-exec-lease-p5a-r4-post-n135-authorization-gate-v1.json",
+    "post_n135_gate_sha256": "99d055aa02429c510f564fd02bb8f864f42a0603fc7e0a73e09fc13fc9532203",
+    "post_n135_validation": "capsched-models/validation/0256-sched-exec-lease-p5a-r4-post-n135-authorization-gate.md",
+    "authorization_r7": "build/source-check/sched-exec-lease-p5a-r4-post-n135-authorization-gate/20260718T-p5a-r4-post-n135-authorization-r7/result.json",
+    "authorization_r7_sha256": "160efd76ed083df880747685a861a1b920e5fa9a265a4946749f87da44e09d37",
+    "authorization_r8": "build/source-check/sched-exec-lease-p5a-r4-post-n135-authorization-gate/20260718T-p5a-r4-post-n135-authorization-r8/result.json",
+    "authorization_r8_sha256": "d736b698cc056bea41d671c61b5c5a9a98024327642ff79c19f6dfb42f60f905",
+    "authorization_normalized_sha256": "541d72676f97741c40ed3a50b4f524c63a9530fc9984bfc88ed6675415d1fb4f",
+    "n135_complete": true,
+    "exact_disposable_r4_e3_source_accepted": true,
+    "synthetic_concurrency_correctness_accepted": true,
+    "r4_e4_plan_drafting_authorized": true,
+    "r4_e4_plan_already_accepted": false,
+    "r4_e4_source_already_authorized": false
+  },
+  "source": {
+    "primary_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "patch_queue_commit": "16bb080da472ffabbbafd2698073eca633fb0602",
+    "patch_queue_series_blob": "298567f8e0bd18168222da4e64da32750b9ea818",
+    "candidate_parent": "a429fc30252ac6af94c51d96cd4ac24e72d9f83b",
+    "candidate_commit": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "candidate_tree": "58c6510c6f517004e37107786d006bb8333b79b8",
+    "candidate_diff_sha256": "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08",
+    "future_branch": "codex/p5a-r4-e4-local-quantum-measurement",
+    "future_worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r4-e4-local-quantum-measurement",
+    "direct_child_required": true,
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "frozen_files": [
+      "include/linux/sched.h",
+      "include/linux/sched_exec_lease.h",
+      "kernel/sched/Makefile",
+      "kernel/sched/sched.h",
+      "kernel/sched/fair.c",
+      "kernel/sched/core.c"
+    ],
+    "e2_layout_values_preserved": 58,
+    "e3_case_families_preserved": 36,
+    "e3_fault_sites_preserved": 6,
+    "e3_stress_iterations_preserved": 2048,
+    "e3_oracle_and_receipts_preserved": true,
+    "measurement_only_brackets_allowed": true,
+    "timing_only_substitute_allowed": false,
+    "shared_helper_if_extracted_required": true,
+    "primary_change_allowed": false,
+    "patch_queue_change_allowed": false
+  },
+  "upstream_drift_freshness": {
+    "remote": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+    "remote_ref": "refs/heads/master",
+    "previous_observed_commit": "1229e2e57a5c2980ccd457b9b53ea0eed5a22ab3",
+    "current_observed_commit": "f2ec6312bf711369561bdcb22f8a63c0b118c479",
+    "current_observed_commit_date": "2026-07-18T12:36:19-07:00",
+    "current_observed_subject": "Merge tag 'scsi-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi",
+    "previous_is_ancestor": true,
+    "advanced_commit_count": 22,
+    "candidate_merge_base": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "candidate_merge_tree": "6c5fff5aaf6bc4ba8f7452546370b6026cef9133",
+    "merge_tree_clean": true,
+    "touched_paths": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "touched_paths_changed_since_previous_observation": [],
+    "touched_paths_changed_since_candidate_merge_base": [],
+    "private_exec_lease_absent_upstream": true,
+    "touched_path_source_shape_fresh": true,
+    "global_upstream_freshness_claim": false
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST",
+    "type": "bool",
+    "default_enabled": false,
+    "direct_dependencies": [
+      "SCHED_EXEC_LEASE_R4_KUNIT_TEST",
+      "KUNIT=y"
+    ],
+    "same_translation_unit": "kernel/sched/exec_lease.c",
+    "suite_name": "sched_exec_lease_r4_measure",
+    "selected_by_ordinary_lease": false,
+    "selected_by_layout_probe": false,
+    "selected_by_e3_test": false,
+    "selected_by_kunit_all_tests": false,
+    "makefile_or_header_change_allowed": false,
+    "disabled_symbols_relocations_strings_initcalls_rows_required": 0
+  },
+  "fixture": {
+    "real_e3_private_bucket_projection_rq_state": true,
+    "real_raw_spinlocks": true,
+    "real_hard_irq_work": true,
+    "real_unbound_highpri_reclaim_workqueue": true,
+    "real_xarray_cpumask_rcu_refcount_list": true,
+    "synthetic_scheduler_inputs": true,
+    "registered_with_live_scheduler": false,
+    "task_cgroup_or_live_rq_attachment": false,
+    "live_picker_hotplug_migration_call": false,
+    "policy_monitor_admission_or_denial_decision": false,
+    "ordinary_scheduler_state_modified": false,
+    "all_storage_preallocated": true,
+    "untimed_oracle_and_operation_count_per_cell": true,
+    "quiescent_reset_after_every_pair": true
+  },
+  "common_measurement": {
+    "clock": "local_clock",
+    "local_irq_state_recorded": true,
+    "exact_operation_locks_required": true,
+    "paired_empty_control": true,
+    "same_lock_and_timestamp_shell_in_control": true,
+    "alternating_pair_order": true,
+    "additional_formula": "max(treatment_ns-control_ns,0)",
+    "negative_difference_wrap_allowed": false,
+    "minimum_warmup_pairs_per_cell": 256,
+    "measured_pairs_per_cell": 10000,
+    "statistics": [
+      "minimum",
+      "p50",
+      "p95",
+      "p99",
+      "p999",
+      "maximum"
+    ],
+    "nearest_rank_documented": true,
+    "sort_and_report_outside_measured_context": true,
+    "allocation_free_sort_print_trace_assert_sleep_reschedule_topology_policy_monitor_inside_local_interval": false,
+    "clock_regression_allowed": false,
+    "observed_vcpu_migration_allowed": false,
+    "raw_rows_required": true,
+    "result_row_per_cell_required": true
+  },
+  "local_gate": {
+    "additional_p99_limit_ns": 5000,
+    "additional_p999_limit_ns": 25000,
+    "additional_max_limit_ns": 50000,
+    "normalized_base_slice_ns": 700000,
+    "sample_may_reach_base_slice": false,
+    "base_slice_is_budget_or_deadline": false
+  },
+  "publication": {
+    "active_rq_bits": [
+      0,
+      1,
+      2
+    ],
+    "rq_bucket_occupancy": [
+      1,
+      8,
+      32,
+      64
+    ],
+    "synthetic_inner_load": [
+      0,
+      1,
+      64,
+      4096
+    ],
+    "prior_burst_length": [
+      1,
+      64,
+      4096
+    ],
+    "notifier_owner": [
+      "clear",
+      "owned_restart"
+    ],
+    "cell_count": 288,
+    "membership_lock_critical_section_only": true,
+    "workqueue_queueing_outside_interval": true,
+    "generation_transitions_per_treatment": 1,
+    "active_rq_xarray_leaf_bucket_history_iteration_allowed": false,
+    "work_count_independent_of_all_axes": true
+  },
+  "picker_kick": {
+    "rq_bucket_occupancy": [
+      1,
+      8,
+      32,
+      64
+    ],
+    "synthetic_inner_load": [
+      0,
+      1,
+      64,
+      4096
+    ],
+    "desired_generation_burst": [
+      1,
+      64,
+      4096
+    ],
+    "owner_state": [
+      "idle",
+      "dirty_irq_pending",
+      "work_running"
+    ],
+    "cell_count": 144,
+    "rq_lock_held_irqs_disabled": true,
+    "latest_wins_update": true,
+    "unique_dirty_insert_max": 1,
+    "recovery_owner_max": 1,
+    "real_hard_irq_work_queue": true,
+    "other_projection_or_leaf_visit_allowed": false,
+    "cleanup_outside_interval": true
+  },
+  "irq_dispatch": {
+    "queue_work_outcome": [
+      "queued",
+      "false_pending",
+      "false_running"
+    ],
+    "unrelated_workqueue_depth": [
+      0,
+      1,
+      64
+    ],
+    "cell_count": 9,
+    "real_hard_irq_context": true,
+    "dispatch_only": true,
+    "scheduler_or_membership_lock_allowed": false,
+    "allocation_repair_wait_allowed": false,
+    "false_requires_same_owner_pending_or_running": true
+  },
+  "recovery": {
+    "dirty_depth": [
+      1,
+      8,
+      32,
+      64
+    ],
+    "rq_bucket_occupancy": [
+      1,
+      8,
+      32,
+      64
+    ],
+    "contribution_class": [
+      "queued",
+      "delayed",
+      "current"
+    ],
+    "outcome": [
+      "settle",
+      "republished_race",
+      "blocked"
+    ],
+    "cell_count": 144,
+    "projection_visits_per_quantum_max": 1,
+    "membership_locks_per_quantum_max": 1,
+    "lock_order": "rq_then_one_membership",
+    "current_requests_per_quantum_max": 1,
+    "remaining_dirty_or_bucket_leaf_hierarchy_rq_scan_allowed": false,
+    "logical_counts_separate_from_elapsed_time": true
+  },
+  "notifier": {
+    "active_synthetic_rqs": [
+      1,
+      2
+    ],
+    "cursor_quantum": [
+      "first",
+      "last",
+      "end_of_pass"
+    ],
+    "membership_outcome": [
+      "stable",
+      "changed_restart"
+    ],
+    "contribution_class": [
+      "queued",
+      "current"
+    ],
+    "kick_owner": [
+      "idle",
+      "coalesced"
+    ],
+    "cell_count": 48,
+    "cpumask_next_per_projection_quantum_max": 1,
+    "projection_visits_per_quantum_max": 1,
+    "rq_locks_per_quantum_max": 1,
+    "membership_lock_released_before_rq_lock": true,
+    "end_of_pass_bookkeeping_o1": true,
+    "final_settlement_visit_bound": "2*A",
+    "final_settlement_bound_is_logical_not_wall_clock": true
+  },
+  "current_stop": {
+    "request_source": [
+      "recovery",
+      "notifier"
+    ],
+    "observation_outcome": [
+      "current_changed",
+      "same_current_revalidated"
+    ],
+    "owner_state": [
+      "idle",
+      "coalesced"
+    ],
+    "publication_burst": [
+      1,
+      64,
+      4096
+    ],
+    "cell_count": 24,
+    "request_issue_uses_local_gate": true,
+    "later_distinct_observation_required": true,
+    "request_observation_sequences_strictly_ordered": true,
+    "request_to_observation_p99_limit_ns": 10000000,
+    "request_to_observation_max_limit_ns": 100000000,
+    "availability_calibration_only": true,
+    "real_stop_revocation_or_monitor_receipt_claim": false
+  },
+  "offline": {
+    "rq_bucket_occupancy": [
+      0,
+      1,
+      8,
+      32,
+      64
+    ],
+    "callback_state": [
+      "idle",
+      "irq_pending",
+      "work_pending",
+      "work_running",
+      "self_requeue"
+    ],
+    "cell_count": 25,
+    "clears_accepting_first": true,
+    "bounded_projection_visits_max": 64,
+    "all_contribution_classes_accounted": [
+      "queued",
+      "delayed",
+      "current"
+    ],
+    "residual_retained_blocked": true,
+    "sleepable_sync_cancel_outside_scheduler_locks": true,
+    "locked_additional_p99_limit_ns": 25000,
+    "locked_additional_p999_limit_ns": 40000,
+    "locked_additional_max_limit_ns": 50000,
+    "locked_sample_may_reach_base_slice": false,
+    "sleepable_drain_p99_limit_ns": 10000000,
+    "sleepable_drain_max_limit_ns": 100000000,
+    "terminal_empty_and_zero_ownership_required": true,
+    "live_cpuhp_or_bare_metal_bound_claim": false
+  },
+  "matrix": {
+    "publication_cells": 288,
+    "picker_kick_cells": 144,
+    "irq_dispatch_cells": 9,
+    "recovery_cells": 144,
+    "notifier_cells": 48,
+    "current_stop_cells": 24,
+    "offline_cells": 25,
+    "total_cells": 682,
+    "measured_pairs_per_cell": 10000,
+    "total_measured_pairs": 6820000,
+    "all_cells_required": true,
+    "range_reduction_after_failure_allowed": false
+  },
+  "logical_bounds": {
+    "bucket_projections_per_rq_max": 64,
+    "dirty_nodes_per_rq_max": 64,
+    "recovery_owners_per_rq_max": 1,
+    "dispatch_irq_work_per_rq": 1,
+    "notifier_owners_per_active_bucket_max": 1,
+    "recovery_projection_visits_per_invocation_max": 1,
+    "notifier_projection_visits_per_invocation_max": 1,
+    "final_notifier_visits_max": "2*A",
+    "publication_to_last_settlement_wall_clock_gate_present": false,
+    "all_rq_fanout_benchmark_present": false
+  },
+  "diagnostics": {
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "arm64_runs_first": true,
+    "x86_64_runs_only_after_arm64_pass": true,
+    "same_source_identity_required": true,
+    "disabled_and_enabled_builds_per_architecture": true,
+    "e3_six_profile_regression_after_helper_change_required": true,
+    "timing_options": [
+      "KUNIT",
+      "PROVE_LOCKING",
+      "DEBUG_OBJECTS_WORK",
+      "PROVE_RCU",
+      "DEBUG_IRQFLAGS",
+      "HOTPLUG_CPU"
+    ],
+    "sanitizers_are_separate_diagnostics_not_timing": true,
+    "record_environment_compiler_config_object_image_qemu_console_ktap_raw_rows": true,
+    "warning_reports_allowed": 0,
+    "warning_classes": [
+      "compiler_diagnostic",
+      "clock_skew",
+      "lockdep",
+      "irqsoff",
+      "rcu_stall",
+      "workqueue",
+      "irq_work",
+      "refcount",
+      "kasan",
+      "kcsan",
+      "warning_bug_oops_panic",
+      "hung_task_stall",
+      "soft_hard_lockup",
+      "cpuhp"
+    ],
+    "virtual_result_supports_bare_metal_claim": false
+  },
+  "classification": {
+    "valid_results": [
+      "passed_r4_e4_architecture_measurement",
+      "rejected_r4_local_quantum_measurement"
+    ],
+    "invalid_result": "harness_failed",
+    "threshold_failure_is_valid_negative_evidence": true,
+    "missing_reduced_malformed_mutated_evidence_is_harness_failure": true,
+    "complete_rejection_stops_second_architecture": true,
+    "two_architecture_same_source_and_independent_closure_required_for_virtual_e4_compatibility": true,
+    "post_e4_review_required": true,
+    "r4_behavior_source_authorized": false
+  },
+  "separate_n136_boundary": {
+    "runtime_charge_subject": "capsched-models/analysis/runtime-charge-subject-v1.json",
+    "runtime_charge_subject_sha256": "d1dff5ebb6721575bf0c26c60d913eb5a9a5d95c179fba71969e3b7cb2d11065",
+    "runtime_charge_validation": "capsched-models/validation/0107-runtime-charge-subject-tlc.md",
+    "runtime_charge_validation_sha256": "be3e6159da5cccdd5996bb5d434f81e492aae37963d4af8f193d541e58de1f38",
+    "runtime_budget_hook_allowed": false,
+    "current_or_donor_authority_inferred": false,
+    "n136_satisfied_by_measurement_plan": false,
+    "runtime_coverage": false
+  },
+  "claim_ledger_row": {
+    "proposal_id": "sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1",
+    "slice_id": "P5A-R4-E4",
+    "linux_base_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "linux_work_commit_or_expected_parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "patch_scope": {
+      "future_direct_parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+      "allowed_files": [
+        "init/Kconfig",
+        "kernel/sched/exec_lease.c"
+      ],
+      "default_off_same_translation_unit": true,
+      "primary_or_patch_queue_change": false
+    },
+    "behavior_mode": "default_off_same_translation_unit_virtual_synthetic_measurement_only",
+    "evidence_classes_present": [
+      "model_checked",
+      "linux_no_behavior_build",
+      "patch_queue_replay",
+      "source_drift_fresh",
+      "virtual_synthetic_protocol_diagnostics"
+    ],
+    "supported_claims": [
+      "exact_disposable_r4_e4_measurement_source_may_be_drafted_after_plan_gate"
+    ],
+    "forbidden_claims": [
+      "measurement_launch_or_e4_acceptance_from_plan",
+      "real_scheduler_attachment_or_runtime_behavior",
+      "runtime_denial_coverage_or_n136_completion",
+      "bare_metal_correctness_or_bounded_latency",
+      "monitor_delivery_or_enforcement",
+      "performance_or_cost",
+      "production_protection_or_deployment",
+      "multi_node_multi_cluster_or_datacenter_readiness"
+    ],
+    "open_gaps": [
+      "exact_r4_e4_source_and_source_gate",
+      "e3_six_profile_regression_after_measurement_instrumentation",
+      "arm64_then_x86_64_measurement_and_artifact_closure",
+      "post_e4_authorization_review",
+      "real_scheduler_attachment_and_cross_path_evidence",
+      "n136_runtime_charge_subject_and_runtime_coverage",
+      "monitor_validation_bare_metal_and_production_assurance"
+    ],
+    "required_validation_before_review": [
+      "validation/0255",
+      "validation/0256",
+      "validation/0257"
+    ],
+    "required_validation_before_acceptance": [
+      "future_r4_e4_source_gate",
+      "future_e3_regression_closure",
+      "future_r4_e4_measurement_closure",
+      "future_post_e4_authorization_gate"
+    ],
+    "upstream_drift_freshness": {
+      "upstream_commit": "f2ec6312bf711369561bdcb22f8a63c0b118c479",
+      "touched_paths_fresh": true,
+      "candidate_merge_tree_clean": true,
+      "global_freshness_claim": false
+    },
+    "safety_flags": {
+      "primary_linux_change_approved": false,
+      "patch_queue_change_approved": false,
+      "runtime_behavior_approved": false,
+      "runtime_denial_approved": false,
+      "runtime_coverage": false,
+      "n136_complete": false,
+      "monitor_verified": false,
+      "production_protection": false,
+      "hypervisor_grade": false,
+      "cost_efficiency": false,
+      "public_abi": false,
+      "monitor_abi": false,
+      "deployment_ready": false,
+      "multi_node_ready": false,
+      "multi_cluster_ready": false,
+      "datacenter_ready": false
+    }
+  },
+  "source_anchors": [
+    {"id":"e3-config","path":"init/Kconfig","pattern":"config SCHED_EXEC_LEASE_R4_KUNIT_TEST"},
+    {"id":"e3-config-default-off","path":"init/Kconfig","pattern":"depends on SCHED_EXEC_LEASE_R4_LAYOUT_PROBE && KUNIT=y"},
+    {"id":"bmax","path":"kernel/sched/exec_lease.c","pattern":"#define SCHED_EXEC_R4_B_MAX"},
+    {"id":"test-max-rqs","path":"kernel/sched/exec_lease.c","pattern":"#define SCHED_EXEC_R4_TEST_MAX_RQS"},
+    {"id":"test-max-buckets","path":"kernel/sched/exec_lease.c","pattern":"#define SCHED_EXEC_R4_TEST_MAX_BUCKETS"},
+    {"id":"stress-iterations","path":"kernel/sched/exec_lease.c","pattern":"SCHED_EXEC_R4_TEST_STRESS_ITERATIONS\t2048"},
+    {"id":"bucket-type","path":"kernel/sched/exec_lease.c","pattern":"struct sched_exec_r4_bucket {"},
+    {"id":"projection-type","path":"kernel/sched/exec_lease.c","pattern":"struct sched_exec_r4_projection {"},
+    {"id":"rq-state-type","path":"kernel/sched/exec_lease.c","pattern":"struct sched_exec_r4_rq_state {"},
+    {"id":"hard-irq-init","path":"kernel/sched/exec_lease.c","pattern":"IRQ_WORK_INIT_HARD(sched_exec_r4_dispatch_irq)"},
+    {"id":"unbound-workqueue","path":"kernel/sched/exec_lease.c","pattern":"WQ_UNBOUND | WQ_HIGHPRI | WQ_MEM_RECLAIM"},
+    {"id":"dirty-helper","path":"kernel/sched/exec_lease.c","pattern":"sched_exec_r4_test_dirty_locked"},
+    {"id":"kick-helper","path":"kernel/sched/exec_lease.c","pattern":"sched_exec_r4_test_kick_locked"},
+    {"id":"real-irq-queue","path":"kernel/sched/exec_lease.c","pattern":"irq_work_queue(&rq->layout.dispatch_irq_work)"},
+    {"id":"irq-callback","path":"kernel/sched/exec_lease.c","pattern":"static void sched_exec_r4_dispatch_irq"},
+    {"id":"queue-work","path":"kernel/sched/exec_lease.c","pattern":"queue_work(environment->workqueue,"},
+    {"id":"recovery-worker","path":"kernel/sched/exec_lease.c","pattern":"static void sched_exec_r4_recovery_worker"},
+    {"id":"recovery-first-dirty","path":"kernel/sched/exec_lease.c","pattern":"list_first_entry(&rq->layout.dirty_head,"},
+    {"id":"publish-helper","path":"kernel/sched/exec_lease.c","pattern":"static int sched_exec_r4_test_publish"},
+    {"id":"release-publish","path":"kernel/sched/exec_lease.c","pattern":"smp_store_release(&bucket->layout.generation,"},
+    {"id":"notifier-worker","path":"kernel/sched/exec_lease.c","pattern":"static void sched_exec_r4_notifier_worker"},
+    {"id":"notifier-cursor","path":"kernel/sched/exec_lease.c","pattern":"cpu = cpumask_next(bucket->layout.next_cpu_cursor,"},
+    {"id":"offline-helper","path":"kernel/sched/exec_lease.c","pattern":"static int sched_exec_r4_test_rq_offline"},
+    {"id":"offline-irq-sync","path":"kernel/sched/exec_lease.c","pattern":"irq_work_sync(&rq->layout.dispatch_irq_work);"},
+    {"id":"offline-work-cancel","path":"kernel/sched/exec_lease.c","pattern":"cancel_work_sync(&rq->layout.recovery_work);"},
+    {"id":"observe-current","path":"kernel/sched/exec_lease.c","pattern":"sched_exec_r4_test_observe_current"},
+    {"id":"request-sequence","path":"kernel/sched/exec_lease.c","pattern":"rq->request_sequence++;"},
+    {"id":"retirement","path":"kernel/sched/exec_lease.c","pattern":"static int sched_exec_r4_test_retire"},
+    {"id":"independent-oracle","path":"kernel/sched/exec_lease.c","pattern":"struct sched_exec_r4_test_oracle {"},
+    {"id":"typed-receipt","path":"kernel/sched/exec_lease.c","pattern":"struct sched_exec_r4_case_receipt {"},
+    {"id":"suite-name","path":"kernel/sched/exec_lease.c","pattern":".name = \"sched_exec_lease_r4_concurrency\""}
+  ],
+  "future_absence_checks": [
+    {"id":"no-e4-config","path":"init/Kconfig","pattern":"SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST"},
+    {"id":"no-e4-suite","path":"kernel/sched/exec_lease.c","pattern":"sched_exec_lease_r4_measure"},
+    {"id":"no-e4-row","path":"kernel/sched/exec_lease.c","pattern":"R4_E4_RESULT"},
+    {"id":"no-global-settlement-row","path":"kernel/sched/exec_lease.c","pattern":"R4_E4_GLOBAL_SETTLEMENT"},
+    {"id":"no-e4-export","path":"kernel/sched/exec_lease.c","pattern":"EXPORT_SYMBOL(sched_exec_r4_measure"},
+    {"id":"no-e4-tracepoint","path":"kernel/sched/exec_lease.c","pattern":"TRACE_EVENT(sched_exec_r4_measure"}
+  ],
+  "formal": {
+    "model": "formal/0139-p5a-r4-e4-local-quantum-measurement-plan-model/P5AR4E4LocalQuantumMeasurementPlan.tla",
+    "safe_cfg": "P5AR4E4LocalQuantumMeasurementPlanSafe.cfg",
+    "unsafe_faults": [
+      "PostGateMissing",
+      "CandidateIdentityMoved",
+      "ClaimLedgerMissing",
+      "SourceScopeExpanded",
+      "NotDefaultOff",
+      "SeparateObject",
+      "E3ProtocolChanged",
+      "LiveSchedulerAttached",
+      "N136Conflated",
+      "RealContextsMissing",
+      "UnpairedControl",
+      "PairOrderBiased",
+      "DifferenceWrapped",
+      "SamplesReduced",
+      "StatisticsMissing",
+      "PublicationMatrixReduced",
+      "PickerMatrixReduced",
+      "IrqMatrixReduced",
+      "RecoveryMatrixReduced",
+      "NotifierMatrixReduced",
+      "CurrentMatrixReduced",
+      "OfflineMatrixReduced",
+      "LocalThresholdRelaxed",
+      "LockDrainThresholdRelaxed",
+      "AsyncThresholdRelaxed",
+      "BaseSliceBudgetClaim",
+      "GlobalSettlementThresholdRestored",
+      "LogicalCountsMissing",
+      "WarningIgnored",
+      "RejectionHidden",
+      "MalformedAccepted",
+      "RangeReducedAfterFailure",
+      "SourceStartBeforePlan",
+      "MeasurementStartBeforeSourceGate",
+      "SingleArchitectureAccepted",
+      "SourceDriftBetweenArch",
+      "BareMetalClaimFromVirtual",
+      "RuntimeClaim",
+      "PrimaryOrPatchQueueMutation",
+      "ProductionMultiClusterDatacenterClaim",
+      "BehaviorSourcePremature",
+      "PerformanceOrCostClaim",
+      "MonitorClaim"
+    ],
+    "unsafe_expected_counterexamples": 43
+  },
+  "authorization_after_plan_pass": {
+    "r4_e4_plan_accepted": true,
+    "e4_disposable_worktree_may_be_created": true,
+    "e4_exact_two_file_source_draft_may_be_created": true,
+    "e4_measurement_may_start_before_source_gate": false,
+    "e4_measurement_accepted": false,
+    "r4_behavior_source_may_be_created": false,
+    "primary_linux_may_change": false,
+    "patch_queue_may_change": false
+  },
+  "safety_flags": {
+    "real_scheduler_attachment": false,
+    "runtime_scheduler_hook_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "n136_complete": false,
+    "monitor_delivery_or_enforcement": false,
+    "cross_class_coverage": false,
+    "bare_metal_validated": false,
+    "bounded_wall_clock_latency_claim": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

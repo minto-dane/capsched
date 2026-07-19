@@ -262,6 +262,7 @@ Updated: 2026-07-18
 | 0254 | Warning-classifier hardening binds attempt 3, allows only exact benign KCSAN lifecycle forms, fail-closes real/unknown diagnostics, and passes post-commit six-config smoke with zero builds/boots before a full fresh r4 retry | SchedExecLease P5A-R4 E3 Warning-Classifier-Hardened Retry Readiness |
 | 0255 | Fresh r4 passes all six builds/boots, 216/216 cases and receipts with zero diagnostics; two read-only 133-artifact closures reproduce one normalized result and complete only N-135 virtual synthetic evidence | SchedExecLease P5A-R4 E3 Six-Boot Evidence Closure |
 | 0256 | Two serial hash-locked runs reproduce one normalized scoped decision; 14-field claim ledger, fresh touched-path drift, clean merge-tree, safe TLC, 15 counterexamples, and tamper controls authorize only R4-E4 plan drafting | SchedExecLease P5A-R4 Post-N135 Authorization Gate |
+| 0257 | Two serial immutable-input runs reproduce one normalized plan result; 31 anchors, 6 absences, 14-field claim ledger, refreshed touched paths, safe TLC 5/4/depth 4, 43 counterexamples, and focused tamper controls authorize only the exact disposable R4-E4 two-file source draft | SchedExecLease P5A-R4 E4 Local-Quantum Measurement Plan |
 
 ## Principles
 

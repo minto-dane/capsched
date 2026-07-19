@@ -6374,3 +6374,34 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   acceptance/source, behavior source, primary Linux, patch queue, real
   scheduler/runtime, N-136, bare-metal, monitor, production, deployment,
   multi-node, multi-cluster, and datacenter boundaries remain false.
+
+- P5A-R4 E4 local-quantum measurement plan gate passed:
+
+  Analysis/0176, formal/0139, and validation/0257 bind a future direct child
+  of `da9ce915...` to exactly `init/Kconfig` and
+  `kernel/sched/exec_lease.c`, under default-off
+  `CONFIG_SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST`. The plan SHA-256 values are
+  `2475726a...d347` for Markdown and `63ba7b17...1667` for JSON; the formal
+  manifest is `43d2252e...f4f`.
+
+  The fixed arm64-first matrix contains 682 cells and 6,820,000 paired
+  treatment/control samples across authority publication, picker/kick,
+  irq-work dispatch, one-projection recovery, notifier, current-stop, and
+  offline/drain quanta. It uses local percentile/max rejection gates and a
+  separate asynchronous-availability calibration. The 700,000ns base slice
+  remains only a rejection marker; no global settlement or all-rq fanout gate
+  is restored.
+
+  Final serial r2/r3 result SHA-256 values are `2cbfb567...91918b` and
+  `8f74506c...dfbe21`; removing only `run_id` yields byte-identical normalized
+  SHA-256 `c6efaab0...3a662`. Both pass 31 anchors, six future absences, all 36
+  preserved E3 cases, safe TLC 5/4/depth 4, and 43/43 unsafe counterexamples.
+  Focused regression also rejects threshold relaxation, cell reduction,
+  measurement-before-source-gate, restored global settlement, and symlink
+  substitution.
+
+  Next: draft only the exact disposable two-file source, then pass a separate
+  source plus R4-E3 regression gate before any measurement launch. No E4
+  source exists yet. Primary Linux, patch queue, live runtime, N-136 runtime
+  charge, protection, performance/cost, bare-metal, monitor, production,
+  deployment, multi-node, multi-cluster, and datacenter claims remain false.

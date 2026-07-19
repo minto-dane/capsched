@@ -4780,3 +4780,23 @@ P5A-R3 E4 source and exact-source regression gate:
   plan drafting is now allowed. R4-E4 source, primary/patch changes, live
   runtime, N-136, bare-metal, monitor, production, deployment, multi-cluster,
   and datacenter claims remain false.
+
+- P5A-R4 E4 local-quantum measurement plan:
+
+  Analysis/0176, formal/0139, and validation/0257 pass a source-free gate for
+  a future direct-`da9ce915...` child changing only `init/Kconfig` and
+  `kernel/sched/exec_lease.c` under a default-off measurement KUnit config.
+  The arm64-first contract fixes 682 cells and 6,820,000 paired samples over
+  seven local bounded quanta, with saturating treatment-control deltas, exact
+  warmup/sample counts, percentile/max fields, local rq-lock gates, and a
+  separate async-availability calibration. The 700,000ns base slice is a
+  rejection marker, never a budget; global last-settlement and all-rq fanout
+  performance gates remain rejected.
+
+  Serial r2/r3 results `2cbfb567...91918b` and `8f74506c...dfbe21` normalize
+  to `c6efaab0...3a662`; both pass 31 anchors, six absences, 36 preserved E3
+  cases, safe TLC 5/4/depth 4, and 43/43 unsafe faults. Only the exact
+  disposable source draft is unlocked. A separate source/E3-regression gate
+  must pass before measurement. No E4 source, primary/patch change, live
+  runtime, N-136 runtime-charge, production, deployment, multi-cluster, or
+  datacenter evidence exists.
