@@ -4807,9 +4807,10 @@ P5A-R3 E4 source and exact-source regression gate:
   `7d7f1480...a05b7` changes only `init/Kconfig` and
   `kernel/sched/exec_lease.c`. Its default-off same-TU virtual synthetic suite
   implements exactly seven families and 682 cells. Strict style, short
-  arm64/x86_64 W=1 objects, and source-only smoke r4 plus complete run-owned
-  worktree cleanup pass; implementation/0049 and validation/0258 bind the
-  candidate and complete gate runners. Six fresh
+  arm64/x86_64 W=1 objects, and source-only smoke r5 plus complete run-owned
+  worktree cleanup and monotonic combined progress mapping pass;
+  implementation/0049 and validation/0258 bind the candidate and complete gate
+  runners. Six fresh
   source objects, six E3 profiles, 216/216 cases and receipts, zero diagnostics,
   and then an independent read-only closure remain required before timing.
   Source acceptance and all live/runtime/production/datacenter claims remain

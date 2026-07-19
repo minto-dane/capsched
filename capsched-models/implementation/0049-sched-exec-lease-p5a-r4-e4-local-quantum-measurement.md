@@ -61,7 +61,7 @@ strict checkpatch:                      0 errors, 0 warnings, 0 checks
 arm64 E4-enabled W=1 object:            passed
 x86_64 E4-enabled W=1 object:           passed
 arm64 E4-disabled W=1 object:           passed
-source-only independent gate smoke r4: passed, cleanup verified
+source-only independent gate smoke r5: passed, monotonic progress and cleanup verified
 ```
 
 The short checks are implementation feedback, not source acceptance. The

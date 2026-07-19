@@ -22,6 +22,8 @@ BUILD_ROOT="/var/tmp/linux-cap-builds/p5a-r4-e4-source-gate/$RUN_ID"
 E3_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/worktrees/p5a-r4-e4-source-gate-e3-$RUN_ID"
 E4_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/worktrees/p5a-r4-e4-source-gate-e4-$RUN_ID"
 PROGRESS_FILE=${PROGRESS_FILE:-}
+PROGRESS_BASE=${PROGRESS_BASE:-0}
+PROGRESS_SPAN=${PROGRESS_SPAN:-100}
 JOBS=${JOBS:-2}
 
 PLAN_SHA=63ba7b17c3d08ea1ee0cdd4b420cc3a08b21932e9f6c2fb3f31754147e5b1667
@@ -46,9 +48,25 @@ die()
 
 progress()
 {
-	printf '[progress] %s\n' "$*"
+	local message=$*
+	local percent detail mapped
+
+	printf '[progress] %s\n' "$message"
 	if [ -n "$PROGRESS_FILE" ]; then
-		printf '%s\n' "$*" > "$PROGRESS_FILE"
+		case "$message" in
+			[0-9]*%*)
+				percent=${message%%\%*}
+				detail=${message#*%}
+				case "$percent" in
+					*[!0-9]*) printf '%s\n' "$message" > "$PROGRESS_FILE" ;;
+					*)
+						mapped=$((PROGRESS_BASE + percent * PROGRESS_SPAN / 100))
+						printf '%s%%%s\n' "$mapped" "$detail" > "$PROGRESS_FILE"
+						;;
+				esac
+				;;
+			*) printf '%s\n' "$message" > "$PROGRESS_FILE" ;;
+		esac
 	fi
 }
 
@@ -99,6 +117,14 @@ case "$JOBS" in
 	''|*[!0-9]*) die 'JOBS must be a positive integer' ;;
 esac
 [ "$JOBS" -gt 0 ] || die 'JOBS must be greater than zero'
+for value in "$PROGRESS_BASE" "$PROGRESS_SPAN"; do
+	case "$value" in
+		''|*[!0-9]*) die 'progress mapping must use non-negative integers' ;;
+	esac
+done
+[ "$PROGRESS_BASE" -le 100 ] || die 'PROGRESS_BASE exceeds 100'
+[ "$PROGRESS_SPAN" -le 100 ] || die 'PROGRESS_SPAN exceeds 100'
+[ "$((PROGRESS_BASE + PROGRESS_SPAN))" -le 100 ] || die 'progress mapping exceeds 100'
 case "$BUILD_ROOT" in
 	/var/tmp/linux-cap-builds/p5a-r4-e4-source-gate/"$RUN_ID") ;;
 	*) die "unsafe build root: $BUILD_ROOT" ;;

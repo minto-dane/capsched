@@ -58,7 +58,8 @@ mkdir -p "$OUT_DIR"
 chmod 0700 "$OUT_DIR"
 
 progress '2% starting exact source and six-object dual-architecture gate'
-RUN_ID="$SOURCE_RUN_ID" JOBS="$JOBS" PROGRESS_FILE="$PROGRESS_FILE" "$SOURCE_GATE"
+RUN_ID="$SOURCE_RUN_ID" JOBS="$JOBS" PROGRESS_FILE="$PROGRESS_FILE" \
+	PROGRESS_BASE=2 PROGRESS_SPAN=20 "$SOURCE_GATE"
 if [ ! -f "$SOURCE_RESULT" ] || [ -L "$SOURCE_RESULT" ]; then
 	die 'source-gate result missing'
 fi
@@ -75,6 +76,7 @@ SOURCE_RESULT_SHA=$(sha256sum "$SOURCE_RESULT" | awk '{print $1}')
 progress '22% source gate passed; resolving all six E3 regression configs without build or boot'
 E4_SOURCE_GATE_RESULT="$SOURCE_RESULT" CONFIG_SMOKE_ONLY=1 \
 	RUN_ID="$CONFIG_RUN_ID" JOBS="$JOBS" PROGRESS_FILE="$PROGRESS_FILE" \
+	PROGRESS_BASE=22 PROGRESS_SPAN=8 \
 	"$E3_REGRESSION"
 if [ ! -f "$CONFIG_RESULT" ] || [ -L "$CONFIG_RESULT" ]; then
 	die 'config-smoke result missing'
@@ -90,7 +92,8 @@ CONFIG_RESULT_SHA=$(sha256sum "$CONFIG_RESULT" | awk '{print $1}')
 
 progress '30% configs passed; starting complete fresh six-profile E3 build/boot regression'
 E4_SOURCE_GATE_RESULT="$SOURCE_RESULT" RUN_ID="$REGRESSION_RUN_ID" \
-	JOBS="$JOBS" PROGRESS_FILE="$PROGRESS_FILE" "$E3_REGRESSION"
+	JOBS="$JOBS" PROGRESS_FILE="$PROGRESS_FILE" \
+	PROGRESS_BASE=30 PROGRESS_SPAN=69 "$E3_REGRESSION"
 if [ ! -f "$REGRESSION_RESULT" ] || [ -L "$REGRESSION_RESULT" ]; then
 	die 'six-profile regression result missing'
 fi

@@ -6414,9 +6414,9 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   `codex/p5a-r4-e4-local-quantum-measurement` with Draft PR
   `minto-dane/linux#4`. The default-off same-TU suite implements the exact
   seven-family, 682-cell virtual synthetic contract. Strict checkpatch 0/0/0,
-  short arm64/x86_64 W=1 objects, and source-only gate smoke r4 pass. The r4
+  short arm64/x86_64 W=1 objects, and source-only gate smoke r5 pass. The r5
   smoke also verifies complete run-owned worktree cleanup on the Apple
-  Container shared-directory boundary.
+  Container shared-directory boundary and monotonic combined progress mapping.
 
   Implementation/0049 and validation/0258 freeze the source identity and the
   separate fail-closed runners. The next operation is the combined six-object

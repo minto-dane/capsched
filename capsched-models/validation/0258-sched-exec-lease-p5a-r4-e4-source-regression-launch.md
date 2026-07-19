@@ -51,9 +51,10 @@ capsched-models/validation/
 ```
 
 `bash -n`, ShellCheck, JSON parsing, strict source style, and source-only run
-`20260718T-p5a-r4-e4-source-smoke-r4` pass. The r4 smoke also verifies complete
+`20260719T-p5a-r4-e4-source-smoke-r5` pass. The r5 smoke verifies both complete
 run-owned worktree retirement across the Apple Container shared-directory
-boundary. The smoke created no build or boot result and grants no acceptance.
+boundary and the combined runner's monotonic 2--22/22--30/30--99/100 percent
+mapping. The smoke created no build or boot result and grants no acceptance.
 
 After the combined run passes, an independent read-only artifact closure is
 still required before timing. This launch record establishes no E4 source
