@@ -6405,3 +6405,23 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   source exists yet. Primary Linux, patch queue, live runtime, N-136 runtime
   charge, protection, performance/cost, bare-metal, monitor, production,
   deployment, multi-node, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 E4 exact source and regression launch readiness:
+
+  Linux candidate `1dac9953b1b5c326a27285b1f2a6e4fac9960a1d`, tree
+  `7d7f1480...a05b7`, is the exact direct `da9ce915...` child and changes only
+  `init/Kconfig` and `kernel/sched/exec_lease.c`. It is pushed on
+  `codex/p5a-r4-e4-local-quantum-measurement` with Draft PR
+  `minto-dane/linux#4`. The default-off same-TU suite implements the exact
+  seven-family, 682-cell virtual synthetic contract. Strict checkpatch 0/0/0,
+  short arm64/x86_64 W=1 objects, and source-only gate smoke r4 pass. The r4
+  smoke also verifies complete run-owned worktree cleanup on the Apple
+  Container shared-directory boundary.
+
+  Implementation/0049 and validation/0258 freeze the source identity and the
+  separate fail-closed runners. The next operation is the combined six-object
+  source gate followed by six fresh E3 diagnostic profiles, requiring 216/216
+  cases and typed receipts with zero warning or reduction. Even a combined
+  pass still requires an independent read-only closure before timing. No live
+  scheduler, runtime, bare-metal, performance, production, deployment,
+  multi-cluster, or datacenter claim follows.

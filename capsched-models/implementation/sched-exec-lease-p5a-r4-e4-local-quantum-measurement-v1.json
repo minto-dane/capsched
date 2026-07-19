@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1",
+  "date": "2026-07-18",
+  "status": "source_committed_gate_launch_pending",
+  "source": {
+    "branch": "codex/p5a-r4-e4-local-quantum-measurement",
+    "parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "commit": "1dac9953b1b5c326a27285b1f2a6e4fac9960a1d",
+    "tree": "7d7f14800c9696b131ef7363cd8fb4cdd33a05b7",
+    "diff_sha256": "f8aa2ea40ef4041d3c1fcf6d9503f814aecf2e16b384688af6d196fc70009393",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "added_lines": 1663,
+    "deleted_lines": 82,
+    "draft_pr": "https://github.com/minto-dane/linux/pull/4"
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST",
+    "default_enabled": false,
+    "depends_on": [
+      "SCHED_EXEC_LEASE_R4_KUNIT_TEST",
+      "KUNIT=y"
+    ],
+    "suite": "sched_exec_lease_r4_measure",
+    "same_translation_unit": "kernel/sched/exec_lease.c"
+  },
+  "matrix": {
+    "publication": 288,
+    "picker_kick": 144,
+    "irq_dispatch": 9,
+    "recovery": 144,
+    "notifier": 48,
+    "current_stop": 24,
+    "offline": 25,
+    "total_cells": 682,
+    "warmup_pairs_per_cell": 256,
+    "measured_pairs_per_cell": 10000,
+    "total_measured_pairs": 6820000
+  },
+  "short_checks": {
+    "strict_checkpatch": {
+      "errors": 0,
+      "warnings": 0,
+      "checks": 0
+    },
+    "arm64_e4_on_w1_object": "passed",
+    "x86_64_e4_on_w1_object": "passed",
+    "arm64_e4_off_w1_object": "passed",
+    "source_only_gate_smoke": "passed"
+  },
+  "remaining_gates": {
+    "fresh_source_objects": 6,
+    "e3_profiles": 6,
+    "e3_cases": 216,
+    "e3_receipts": 216,
+    "independent_closure_required": true,
+    "timing_may_start": false
+  },
+  "claims": {
+    "source_accepted": false,
+    "measurement_accepted": false,
+    "real_scheduler_attachment": false,
+    "runtime_behavior_approved": false,
+    "n136_complete": false,
+    "bare_metal_validated": false,
+    "performance_claim": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

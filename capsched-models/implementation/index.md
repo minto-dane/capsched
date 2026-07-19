@@ -467,6 +467,22 @@ Current SchedExecLease L0 readiness:
     boots. R4-E4 plan acceptance/source, primary/patch changes, live scheduler
     behavior, and every bare-metal, runtime, or production claim remain
     unapproved.
+- `0049-sched-exec-lease-p5a-r4-e4-local-quantum-measurement.md`
+  - Status: exact direct-R4-E3-child, two-file, default-off measurement source
+    is committed and pushed. Strict style plus short arm64/x86_64 W=1 object
+    checks pass; the canonical source/object and six-profile E3 regression is
+    launch-ready but has not passed.
+  - Candidate commit/tree:
+    `1dac9953b1b5c326a27285b1f2a6e4fac9960a1d` /
+    `7d7f14800c9696b131ef7363cd8fb4cdd33a05b7`.
+  - JSON: `sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1.json`.
+  - Rule: exactly 682 virtual synthetic local-quantum cells use 256 warmup and
+    10,000 alternating treatment/control pairs under default-off
+    `CONFIG_SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST`. Six fresh source objects,
+    all six preserved E3 profiles, 216/216 cases and receipts, and an
+    independent closure must pass before timing. No live scheduler,
+    bare-metal, performance, production, deployment, multi-cluster, or
+    datacenter claim is approved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
