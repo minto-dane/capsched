@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1",
   "date": "2026-07-19",
-  "status": "corrected_source_full_retry_launch_ready",
+  "status": "corrected_source_attempt_3_launch_ready",
   "source": {
     "branch": "codex/p5a-r4-e4-local-quantum-measurement",
     "parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
@@ -64,7 +64,21 @@
     },
     "arm64_e4_on_w1_object": "passed",
     "x86_64_e4_on_w1_object": "passed",
-    "source_only_gate_smoke": "passed"
+    "source_only_gate_smoke": "passed",
+    "shared_hard_irq_scope_smoke": "passed"
+  },
+  "validator_scope_correction": {
+    "rejected_job": "p5a-r4-e4-source-e3-regression-r2",
+    "rejected_run": "20260719T-p5a-r4-e4-source-e3-regression-r2",
+    "builds_started": 0,
+    "boots_started": 0,
+    "result_emitted": false,
+    "cause": "hard-IRQ observations were searched in the E4-only extract instead of their shared dispatch helper",
+    "corrected_source_runner_sha256": "8458c7ec6ea8ea8c38d2cee0e358fdfb6eff4e3bf6ec7c53ecf9cbe8241561c5",
+    "source_only_run": "20260719T-p5a-r4-e4-source-gate-r3-hard-irq-scope",
+    "source_only_manifest_sha256": "c88e76ce9cf65d661ecc50b03ad9906a631bac29f179d033309f1e5974aafb3c",
+    "fresh_retry_job": "p5a-r4-e4-source-e3-regression-r3",
+    "fresh_retry_run": "20260719T-p5a-r4-e4-source-e3-regression-r3"
   },
   "remaining_gates": {
     "fresh_source_objects": 6,

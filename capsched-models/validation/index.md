@@ -266,6 +266,7 @@ Updated: 2026-07-18
 | 0258 | Exact direct-R4-E3-child source is committed; strict style and short dual-architecture objects plus source-only smoke pass, while the hash-locked six-object and six-profile/216-case E3 regression remains launch-ready and timing stays blocked | SchedExecLease P5A-R4 E4 Source and Regression Launch |
 | 0259 | Attempt 1 completed six source objects and 216/216 preserved E3 cases/receipts, but its gate and closures omitted required CPU-migration plus IRQ/preemption observability; all source/timing credit is rejected and only a corrected full retry is allowed | SchedExecLease P5A-R4 E4 Source-Gate Attempt 1 Observability Rejection |
 | 0260 | Corrected direct-child source and fail-closed observability gate pass strict style, source-only cleanup, and exact arm64/x86_64 E4-on objects; a complete fresh six-object/six-profile retry is launch-ready under 30-second monitoring, with timing still blocked | SchedExecLease P5A-R4 E4 Corrected Source and Regression Retry Launch |
+| 0261 | Attempt 2 failed before build because the gate searched an E4-only extract for valid observations in a shared helper; corrected exact-region checks and source-only cleanup pass, and only fresh attempt 3 is allowed | SchedExecLease P5A-R4 E4 Source-Gate Attempt 2 Scope Rejection |
 
 ## Principles
 

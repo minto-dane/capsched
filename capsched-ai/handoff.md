@@ -6451,3 +6451,21 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   Do not start timing or reuse attempt-1 source/closure credit. All live,
   runtime, bare-metal, performance, monitor, production, deployment,
   multi-node, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 E4 attempt-2 gate-scope rejection and fresh-attempt boundary:
+
+  Detached run `20260719T-p5a-r4-e4-source-e3-regression-r2` failed at the
+  28% source-contract boundary before any object build, config smoke, or boot.
+  The Linux candidate already contained the required CPU, IRQ-disabled, and
+  preemption-depth observations in shared helper
+  `sched_exec_r4_dispatch_irq()`. The gate incorrectly searched only the later
+  E4-only extract. Validation/0261 rejects the run and all partial credit.
+
+  Corrected source runner SHA-256 `8458c7ec...41561c5` preserves the exact
+  shared helper as `hard-irq-dispatch.c` and requires each observation exactly
+  once there. VM ShellCheck and source-only run
+  `20260719T-p5a-r4-e4-source-gate-r3-hard-irq-scope` pass all identity,
+  boundary, style, 682-cell, observability, and cleanup checks without a build.
+  Only fresh job `p5a-r4-e4-source-e3-regression-r3` may run the complete
+  matrix. Independent double closure remains mandatory before timing; all
+  live/runtime/production/datacenter claims remain false.

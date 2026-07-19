@@ -256,6 +256,12 @@ awk '
   emit { print }
   emit && /^#endif \/\* CONFIG_SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST \*\/$/ { exit }
 ' "$SOURCE" > "$OUT_DIR/e4-block.c"
+# The hard-IRQ timing observations live in the shared E3/E4 dispatch helper,
+# before the E4-only block.  Preserve that exact region as independent evidence
+# instead of accidentally limiting these checks to e4-block.c.
+sed -n '/^static void sched_exec_r4_dispatch_irq(/,/^sched_exec_r4_test_request_current_locked(/p' \
+	"$SOURCE" > "$OUT_DIR/hard-irq-dispatch.c"
+[ -s "$OUT_DIR/hard-irq-dispatch.c" ] || die 'hard-IRQ dispatch evidence missing'
 sed -n '/^static struct kunit_case sched_exec_r4_measure_test_cases\[\]/,/^};/p' \
 	"$SOURCE" > "$OUT_DIR/e4-cases.c"
 printf '%s\n' \
@@ -310,11 +316,14 @@ grep -q $'^\tmigrate_enable();$' "$OUT_DIR/e4-block.c" ||
 	"$OUT_DIR/e4-block.c")" = 7 ] || die 'per-family CPU migration observations incomplete'
 grep -q 'if (smp_processor_id() != cell->measurement_cpu)' "$OUT_DIR/e4-block.c" ||
 	die 'end-of-cell CPU migration observation missing'
-grep -q 'rq->measure_irq_cpu = raw_smp_processor_id();' "$OUT_DIR/e4-block.c" ||
+[ "$(grep -c 'rq->measure_irq_cpu = raw_smp_processor_id();' \
+	"$OUT_DIR/hard-irq-dispatch.c")" = 1 ] ||
 	die 'hard-IRQ CPU observation missing'
-grep -q 'rq->measure_irq_irqs_disabled = irqs_disabled();' "$OUT_DIR/e4-block.c" ||
+[ "$(grep -c 'rq->measure_irq_irqs_disabled = irqs_disabled();' \
+	"$OUT_DIR/hard-irq-dispatch.c")" = 1 ] ||
 	die 'hard-IRQ interrupt-state observation missing'
-grep -q 'rq->measure_irq_preempt_depth = preempt_count();' "$OUT_DIR/e4-block.c" ||
+[ "$(grep -c 'rq->measure_irq_preempt_depth = preempt_count();' \
+	"$OUT_DIR/hard-irq-dispatch.c")" = 1 ] ||
 	die 'hard-IRQ preemption-state observation missing'
 [ "$(grep -c 'sample.irqs_disabled =' "$OUT_DIR/e4-block.c")" = 7 ] ||
 	die 'per-family interrupt-state observations incomplete'

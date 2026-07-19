@@ -4834,3 +4834,14 @@ P5A-R3 E4 source and exact-source regression gate:
   and new independent closure remain required before timing; no live/runtime,
   protection, performance, deployment, multi-cluster, or datacenter claim is
   accepted.
+
+- P5A-R4 E4 attempt-2 validator-scope boundary:
+
+  Combined retry r2 is rejected before build because its source gate searched
+  the E4-only block for three valid hard-IRQ observations implemented in the
+  earlier shared dispatch helper. Corrected runner `8458c7ec...41561c5`
+  preserves that helper as an independent artifact and requires the CPU,
+  IRQ-disabled, and preemption-depth assignments exactly once. Source-only
+  run `20260719T-p5a-r4-e4-source-gate-r3-hard-irq-scope` passes and cleans all
+  worktrees. Only a fresh complete r3 matrix plus reproduced read-only closure
+  can unlock timing; no source/runtime/production claim is accepted.

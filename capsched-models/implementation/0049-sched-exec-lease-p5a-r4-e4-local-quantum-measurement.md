@@ -6,8 +6,11 @@ Status: corrected exact disposable source is committed and pushed as a direct
 R4-E3 child. Strict style, source-only contract, and short arm64/x86_64 W=1
 object checks pass. Attempt 1 completed the build/regression matrix but is
 rejected by validation/0259 because its source gate omitted plan-required
-CPU-migration and IRQ/preemption observability. A complete corrected retry and
-independent closure remain required; timing is blocked.
+CPU-migration and IRQ/preemption observability. Attempt 2 then failed before
+build because its corrected gate searched the E4-only extract for observations
+located in a shared helper. Validation/0261 corrects that validator scope and
+authorizes only a fresh attempt 3. A complete corrected retry and independent
+closure remain required; timing is blocked.
 
 ## Source Identity
 
@@ -72,6 +75,7 @@ strict checkpatch:                      0 errors, 0 warnings, 0 checks
 arm64 exact-corrected E4-enabled W=1 object: passed
 x86_64 exact-corrected E4-enabled W=1 object: passed
 source-only corrected contract smoke:      passed, complete cleanup verified
+source-only shared-hard-IRQ scope smoke:    passed, complete cleanup verified
 ```
 
 The short checks are implementation feedback, not source acceptance. Attempt
@@ -80,6 +84,13 @@ cases and receipts, but receives no source or timing credit because the gate
 was incomplete. The corrected canonical runner must reproduce the entire
 matrix at commit `9e4cb44f...`, then receive a new independent read-only
 closure before timing.
+
+Attempt 2 started no object build or boot and emitted no result. The gate now
+preserves `sched_exec_r4_dispatch_irq()` as a separate evidence artifact and
+requires each hard-IRQ CPU/IRQ/preemption assignment exactly once in that
+shared-helper region. Source-only run
+`20260719T-p5a-r4-e4-source-gate-r3-hard-irq-scope` passes this corrected
+boundary and retires its worktrees. Only fresh combined attempt 3 may proceed.
 
 ## Claim Boundary
 
