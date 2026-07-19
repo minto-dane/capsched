@@ -2,15 +2,13 @@
 
 Date: 2026-07-19
 
-Status: corrected exact disposable source is committed and pushed as a direct
-R4-E3 child. Strict style, source-only contract, and short arm64/x86_64 W=1
-object checks pass. Attempt 1 completed the build/regression matrix but is
-rejected by validation/0259 because its source gate omitted plan-required
-CPU-migration and IRQ/preemption observability. Attempt 2 then failed before
-build because its corrected gate searched the E4-only extract for observations
-located in a shared helper. Validation/0261 corrects that validator scope and
-authorizes only a fresh attempt 3. A complete corrected retry and independent
-closure remain required; timing is blocked.
+Status: the exact disposable source is accepted only for the virtual synthetic
+R4-E4 timing boundary. Corrected attempt 3 passed six fresh source objects and
+six preserved E3 diagnostic profiles at 216/216 cases and receipts. Two
+independent read-only closures reproduced one normalized decision. The arm64
+timing runner, exact 682-row parser, parser tamper suite, config-only smoke, and
+failure-cleanup control pass. Arm64 timing is launch-ready; no timing result or
+broader runtime claim is accepted yet.
 
 ## Source Identity
 
@@ -90,11 +88,54 @@ preserves `sched_exec_r4_dispatch_irq()` as a separate evidence artifact and
 requires each hard-IRQ CPU/IRQ/preemption assignment exactly once in that
 shared-helper region. Source-only run
 `20260719T-p5a-r4-e4-source-gate-r3-hard-irq-scope` passes this corrected
-boundary and retires its worktrees. Only fresh combined attempt 3 may proceed.
+boundary and retires its worktrees.
+
+## Corrected Source and Regression Closure
+
+Canonical combined run
+`20260719T-p5a-r4-e4-source-e3-regression-r3` passed all six fresh
+arm64/x86_64 source-object modes, all six standard/fault/KASAN/KCSAN E3
+profiles, 216/216 cases, and 216/216 typed receipts with zero compiler, final
+clock-skew, kernel-warning, case, timeout, QEMU, or network-device failure. Its
+combined result SHA-256 is
+`9896e12b2882ac88c7b4d57f53c59f7d245b5d3b78717df7d39097af64de8b72`.
+
+Independent closures r1 and r2 snapshot all 267 retained artifacts read-only,
+recompute exact object/profile/case/receipt and observability contracts, and
+produce result SHA-256 values
+`c1d9afa02f516e893e0dd0f910b7d1a60a56f2c1389b9426878545ef6a691325`
+and
+`9c19029ca7c18d44ec873374c9e85327a7a81d94221b1e10538f19cd16e8633e`.
+After removing only `run_id`, both decisions are byte-identical at SHA-256
+`ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f`.
+This accepts only the exact virtual synthetic source and authorizes arm64
+timing; it does not accept a measurement result.
+
+## Arm64 Timing Harness
+
+The timing runner creates the exact candidate worktree and build output only
+on VM-internal ext4, builds one arm64 Image, losslessly preserves and
+restore-verifies the Image and `exec_lease.o`, boots network-disabled QEMU TCG,
+and pins both guest-vCPU threads one-to-one to the Apple Container VM's two
+allowed host CPUs. Any result row before complete pinning, guest migration,
+IRQ/preemption-state drift, malformed/missing/duplicate cell, KUnit failure,
+compiler/skew/kernel diagnostic, missing artifact, or cleanup failure is a
+harness failure. A valid fixed-threshold breach remains complete negative
+architecture evidence and stops x86_64.
+
+The independent parser requires exactly 682 unique cells, 6,820,000 recorded
+pairs, seven exact summaries, monotonic statistics, source-reported gates equal
+to independently recomputed gates, zero migration/state/harness errors, and
+hard-IRQ context proof. Its synthetic suite accepts a complete clean matrix and
+a valid threshold rejection, while rejecting missing rows, migration, gate
+mismatch, unknown fields, and summary mismatch. Final config smoke r5 resolves the
+exact two-vCPU diagnostic configuration with zero builds and boots and retires
+all scratch. A forced insufficient-space control fails after worktree creation
+and proves both worktree and build-root retirement.
 
 ## Claim Boundary
 
-This source measures only virtual synthetic protocol quanta. It does not prove
+This source and runner measure only virtual synthetic protocol quanta. They do not prove
 live scheduler correctness, CPU hotplug integration, real stop/revocation,
 monitor delivery, bare-metal latency, performance, cost, N-136 runtime charge,
 production protection, deployment, multi-node, multi-cluster, or datacenter

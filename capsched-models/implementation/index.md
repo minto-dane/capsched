@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-07-18
+Updated: 2026-07-19
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -469,11 +469,11 @@ Current SchedExecLease L0 readiness:
     unapproved.
 - `0049-sched-exec-lease-p5a-r4-e4-local-quantum-measurement.md`
   - Status: corrected direct-R4-E3-child, two-file, default-off measurement
-    source is committed and pushed. Strict style, corrected source-only
-    contract, and exact arm64/x86_64 W=1 object checks pass. Validation/0259
-    rejects the prior full regression because its gate omitted required
-    CPU-migration and IRQ/preemption evidence; a complete corrected retry is
-    required.
+    source is accepted only for exact virtual synthetic timing. Attempt 3
+    passes six fresh source objects and six profiles at 216/216 cases and
+    receipts. Two read-only 267-artifact closures reproduce one normalized
+    decision. The exact 682-cell arm64 timing runner/parser/config smoke and
+    failure cleanup controls pass; detached arm64 launch is ready.
   - Candidate commit/tree:
     `9e4cb44fd1a1f998fcc288df87dad60505e8bf18` /
     `e6feb28a29fc8c37bc46af0fbf37de30f3401a4f`.
@@ -482,9 +482,10 @@ Current SchedExecLease L0 readiness:
     10,000 alternating treatment/control pairs under default-off
     `CONFIG_SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST`. Six fresh source objects,
     all six preserved E3 profiles, 216/216 cases and receipts, and an
-    independent closure must pass before timing. No live scheduler,
-    bare-metal, performance, production, deployment, multi-cluster, or
-    datacenter claim is approved.
+    independent source closure must pass before timing; that boundary is now
+    satisfied. Arm64 timing and a later independent timing-evidence closure
+    remain pending. No live scheduler, bare-metal, performance, production,
+    deployment, multi-cluster, or datacenter claim is approved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,

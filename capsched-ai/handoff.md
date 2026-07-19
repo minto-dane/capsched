@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-17
+Updated: 2026-07-19
 
 Read this first when resuming the project.
 
@@ -25,8 +25,8 @@ counterexample IDs, and old TLA module/file names remain stable.
 
 ## Current State
 
-The workspace is `/media/nia/scsiusb/dev/linux-cap`.
-The project-control Git repository is `/media/nia/scsiusb/dev/linux-cap/capsched`.
+The workspace is `/Users/niania/Documents/linux-cap`.
+The project-control Git repository is `/Users/niania/Documents/linux-cap/capsched`.
 
 Private GitHub publication is now a superproject:
 
@@ -6469,3 +6469,45 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   Only fresh job `p5a-r4-e4-source-e3-regression-r3` may run the complete
   matrix. Independent double closure remains mandatory before timing; all
   live/runtime/production/datacenter claims remain false.
+
+- P5A-R4 E4 corrected source closure is complete; arm64 timing is launch-ready:
+
+  Corrected combined evidence:
+    attempt 3 run `20260719T-p5a-r4-e4-source-e3-regression-r3` passes six
+    fresh arm64/x86_64 objects, all six preserved E3 profiles, 216/216 cases,
+    and 216/216 typed receipts with zero compiler, final-skew, kernel, case,
+    timeout, QEMU, or network failure. Combined result SHA-256 is
+    `9896e12b...de8b72`.
+
+  Independent closure:
+    validation/0262 records two read-only closures over all 267 retained
+    artifacts. r1/r2 result SHA-256 values are `c1d9afa0...a691325` and
+    `9c19029c...e8633e`; after deleting only `run_id`, both are byte-identical
+    at `ff91f251...f528f`. Focused tamper controls reject result, symlink,
+    hard-IRQ observation, config, receipt, and artifact mutations. The exact
+    virtual synthetic source is accepted only to start arm64 timing.
+
+  Timing harness:
+    hash-locked runner `76ccdfd8...8aea55d`, parser
+    `dd0372d3...bc2cd1`, and warning classifier `8adcff74...dc23a` require
+    all 682 unique cells and 6,820,000 pairs. Two QEMU TCG vCPU threads are
+    singleton-pinned to the Apple Container VM's two allowed CPUs before any
+    row. Valid fixed-threshold rejection is complete negative evidence;
+    missing/reduced/malformed data, migration, state drift, diagnostics,
+    unpinned rows, or cleanup failure is a harness failure. Raw and derived
+    evidence receive independent manifests; Image and object archives are
+    losslessly restore-verified; build/worktree scratch is retired.
+
+  Short checks and next operation:
+    VM ShellCheck and the parser suite pass. The suite accepts exact clean and
+    valid-negative 682-row fixtures and rejects row loss, migration, gate,
+    unknown-key, and summary mutations. Final config smoke r5 starts zero builds and
+    boots and retires all scratch. A forced insufficient-space failure after
+    worktree creation also retires both owned paths. Launch only job
+    `p5a-r4-e4-arm64-timing-r1`, run
+    `20260719T-p5a-r4-e4-arm64-timing-r1`, monitored with
+    `./tools/long-job.sh watch p5a-r4-e4-arm64-timing-r1 30`. A clean arm64
+    pass may authorize same-source x86_64; a valid rejection stops it; any
+    result still requires independent timing-evidence closure. All live,
+    runtime, N-136, bare-metal, performance, monitor, production, deployment,
+    multi-node, multi-cluster, and datacenter claims remain false.

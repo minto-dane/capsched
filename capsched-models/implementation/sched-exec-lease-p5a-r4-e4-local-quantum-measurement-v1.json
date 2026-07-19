@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1",
   "date": "2026-07-19",
-  "status": "corrected_source_attempt_3_launch_ready",
+  "status": "exact_virtual_synthetic_source_accepted_arm64_timing_launch_ready",
   "source": {
     "branch": "codex/p5a-r4-e4-local-quantum-measurement",
     "parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
@@ -80,16 +80,49 @@
     "fresh_retry_job": "p5a-r4-e4-source-e3-regression-r3",
     "fresh_retry_run": "20260719T-p5a-r4-e4-source-e3-regression-r3"
   },
-  "remaining_gates": {
+  "corrected_attempt_3": {
+    "combined_run": "20260719T-p5a-r4-e4-source-e3-regression-r3",
+    "combined_result_sha256": "9896e12b2882ac88c7b4d57f53c59f7d245b5d3b78717df7d39097af64de8b72",
     "fresh_source_objects": 6,
     "e3_profiles": 6,
     "e3_cases": 216,
     "e3_receipts": 216,
-    "independent_closure_required": true,
-    "timing_may_start": false
+    "compiler_diagnostics": 0,
+    "clock_skew_warnings": 0,
+    "kernel_warning_reports": 0,
+    "closure_r1_sha256": "c1d9afa02f516e893e0dd0f910b7d1a60a56f2c1389b9426878545ef6a691325",
+    "closure_r2_sha256": "9c19029ca7c18d44ec873374c9e85327a7a81d94221b1e10538f19cd16e8633e",
+    "closure_normalized_sha256": "ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f",
+    "retained_artifacts_audited": 267,
+    "independent_double_closure_passed": true
+  },
+  "arm64_timing_harness": {
+    "runner": "capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement.sh",
+    "parser": "capsched-models/validation/parse-sched-exec-lease-p5a-r4-e4-measurement-evidence.sh",
+    "parser_test": "capsched-models/validation/test-sched-exec-lease-p5a-r4-e4-measurement-parser.sh",
+    "guest_vcpus": 2,
+    "vcpu_threads_singleton_pinned": true,
+    "rows_before_complete_pinning_allowed": 0,
+    "raw_and_derived_manifests_required": true,
+    "lossless_image_and_object_restore_required": true,
+    "valid_threshold_rejection_is_harness_failure": false,
+    "config_smoke_run": "20260719T-p5a-r4-e4-arm64-timing-config-smoke-r5",
+    "config_smoke_builds": 0,
+    "config_smoke_boots": 0,
+    "forced_failure_cleanup_passed": true
+  },
+  "remaining_gates": {
+    "fresh_source_objects": 0,
+    "e3_profiles": 0,
+    "e3_cases": 0,
+    "e3_receipts": 0,
+    "independent_source_closure_required": false,
+    "arm64_timing_may_start": true,
+    "arm64_timing_result_pending": true,
+    "independent_timing_closure_required_after_completion": true
   },
   "claims": {
-    "source_accepted": false,
+    "exact_virtual_synthetic_source_accepted": true,
     "measurement_accepted": false,
     "real_scheduler_attachment": false,
     "runtime_behavior_approved": false,

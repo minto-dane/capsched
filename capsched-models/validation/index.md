@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-18
+Updated: 2026-07-19
 
 ## Current Validation Records
 
@@ -267,6 +267,7 @@ Updated: 2026-07-18
 | 0259 | Attempt 1 completed six source objects and 216/216 preserved E3 cases/receipts, but its gate and closures omitted required CPU-migration plus IRQ/preemption observability; all source/timing credit is rejected and only a corrected full retry is allowed | SchedExecLease P5A-R4 E4 Source-Gate Attempt 1 Observability Rejection |
 | 0260 | Corrected direct-child source and fail-closed observability gate pass strict style, source-only cleanup, and exact arm64/x86_64 E4-on objects; a complete fresh six-object/six-profile retry is launch-ready under 30-second monitoring, with timing still blocked | SchedExecLease P5A-R4 E4 Corrected Source and Regression Retry Launch |
 | 0261 | Attempt 2 failed before build because the gate searched an E4-only extract for valid observations in a shared helper; corrected exact-region checks and source-only cleanup pass, and only fresh attempt 3 is allowed | SchedExecLease P5A-R4 E4 Source-Gate Attempt 2 Scope Rejection |
+| 0262 | Corrected attempt 3 passes six objects and six profiles at 216/216 cases/receipts; two read-only 267-artifact closures reproduce one decision, and the fail-closed 682-cell arm64 timing harness is detached-launch-ready | SchedExecLease P5A-R4 E4 Source Closure and Arm64 Timing Launch |
 
 ## Principles
 

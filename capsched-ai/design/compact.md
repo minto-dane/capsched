@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-17
+Updated: 2026-07-19
 
 ## Project
 
@@ -4845,3 +4845,28 @@ P5A-R3 E4 source and exact-source regression gate:
   run `20260719T-p5a-r4-e4-source-gate-r3-hard-irq-scope` passes and cleans all
   worktrees. Only a fresh complete r3 matrix plus reproduced read-only closure
   can unlock timing; no source/runtime/production claim is accepted.
+
+- P5A-R4 E4 source closure and arm64 timing-launch boundary:
+
+  Corrected combined attempt 3 passes six fresh objects and all six preserved
+  E3 profiles at 216/216 cases and receipts with zero diagnostics. Two
+  independent read-only closures audit 267 artifacts and reproduce normalized
+  SHA-256 `ff91f251...f528f`. The exact `9e4cb44f...5e8bf18` source is accepted
+  only for disposable virtual synthetic timing; no measurement result exists.
+
+  Validation/0262 freezes arm64 runner `76ccdfd8...8aea55d`, exact parser
+  `dd0372d3...bc2cd1`, and classifier `8adcff74...dc23a`. The runner requires
+  all 682 cells/6,820,000 pairs, pins both QEMU TCG vCPU threads to distinct
+  VM-allowed CPUs before any row, records guest migration plus IRQ/preemption
+  state, independently recomputes local/async gates, rejects diagnostics and
+  malformed evidence, losslessly verifies Image/object archives, seals raw and
+  derived manifests, and retires VM-internal scratch. Parser clean,
+  valid-negative, and tamper fixtures, final config smoke r5, and forced-failure
+  cleanup pass.
+
+  Only detached arm64 job `p5a-r4-e4-arm64-timing-r1` may start under a
+  30-second monitor. Valid arm64 threshold rejection stops x86_64; clean arm64
+  permits only same-source x86_64; harness failure permits only a corrected
+  fresh arm64 retry. Independent timing closure remains mandatory. Live
+  scheduler, N-136, bare-metal, performance, monitor, production, deployment,
+  multi-node, multi-cluster, and datacenter claims remain false.
