@@ -4815,3 +4815,22 @@ P5A-R3 E4 source and exact-source regression gate:
   and then an independent read-only closure remain required before timing.
   Source acceptance and all live/runtime/production/datacenter claims remain
   false.
+
+- P5A-R4 E4 corrected observability boundary:
+
+  Attempt-1 candidate `1dac9953...9960a1d` completed six objects and six E3
+  boots at 216/216 cases/receipts, but validation/0259 rejects source/timing
+  credit because the source gate and its two closures omitted analysis/0176's
+  vCPU-migration and IRQ/preemption observation requirement. Reproducibility
+  of an incomplete gate is not acceptance.
+
+  Corrected direct child `9e4cb44f...5e8bf18` / tree
+  `e6feb28a...01a4f` keeps the exact two-file/default-off/seven-family/682-cell
+  boundary. A complete cell holds the measurement task on one guest CPU,
+  compares every local and hard-IRQ sample with that CPU, records IRQ-disabled
+  and preemption-depth state, emits all observations, and fail-closes any CPU
+  or state drift. Strict style, corrected source-only checks, and exact
+  arm64/x86_64 E4-on W=1 objects pass. A complete fresh combined regression
+  and new independent closure remain required before timing; no live/runtime,
+  protection, performance, deployment, multi-cluster, or datacenter claim is
+  accepted.

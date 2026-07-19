@@ -264,6 +264,8 @@ Updated: 2026-07-18
 | 0256 | Two serial hash-locked runs reproduce one normalized scoped decision; 14-field claim ledger, fresh touched-path drift, clean merge-tree, safe TLC, 15 counterexamples, and tamper controls authorize only R4-E4 plan drafting | SchedExecLease P5A-R4 Post-N135 Authorization Gate |
 | 0257 | Two serial immutable-input runs reproduce one normalized plan result; 31 anchors, 6 absences, 14-field claim ledger, refreshed touched paths, safe TLC 5/4/depth 4, 43 counterexamples, and focused tamper controls authorize only the exact disposable R4-E4 two-file source draft | SchedExecLease P5A-R4 E4 Local-Quantum Measurement Plan |
 | 0258 | Exact direct-R4-E3-child source is committed; strict style and short dual-architecture objects plus source-only smoke pass, while the hash-locked six-object and six-profile/216-case E3 regression remains launch-ready and timing stays blocked | SchedExecLease P5A-R4 E4 Source and Regression Launch |
+| 0259 | Attempt 1 completed six source objects and 216/216 preserved E3 cases/receipts, but its gate and closures omitted required CPU-migration plus IRQ/preemption observability; all source/timing credit is rejected and only a corrected full retry is allowed | SchedExecLease P5A-R4 E4 Source-Gate Attempt 1 Observability Rejection |
+| 0260 | Corrected direct-child source and fail-closed observability gate pass strict style, source-only cleanup, and exact arm64/x86_64 E4-on objects; a complete fresh six-object/six-profile retry is launch-ready under 30-second monitoring, with timing still blocked | SchedExecLease P5A-R4 E4 Corrected Source and Regression Retry Launch |
 
 ## Principles
 

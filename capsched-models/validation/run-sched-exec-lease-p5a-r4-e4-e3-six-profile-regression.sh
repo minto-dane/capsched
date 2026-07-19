@@ -48,9 +48,9 @@ WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e4104
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 CANDIDATE_PARENT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-CANDIDATE_COMMIT=1dac9953b1b5c326a27285b1f2a6e4fac9960a1d
-CANDIDATE_TREE=7d7f14800c9696b131ef7363cd8fb4cdd33a05b7
-CANDIDATE_DIFF_SHA=f8aa2ea40ef4041d3c1fcf6d9503f814aecf2e16b384688af6d196fc70009393
+CANDIDATE_COMMIT=9e4cb44fd1a1f998fcc288df87dad60505e8bf18
+CANDIDATE_TREE=e6feb28a29fc8c37bc46af0fbf37de30f3401a4f
+CANDIDATE_DIFF_SHA=bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2
 SUITE=sched_exec_lease_r4_concurrency
 REQUIRED_CASES=36
 REQUIRED_RECEIPTS=36
@@ -316,10 +316,10 @@ jq -e '
 ' "$SIX_BOOT_ATTEMPT_3_REJECTION" >/dev/null
 jq -e '
   .status == "passed_source_and_object_gate_awaiting_six_profile_e3_regression" and
-  .candidate_commit == "1dac9953b1b5c326a27285b1f2a6e4fac9960a1d" and
+  .candidate_commit == "9e4cb44fd1a1f998fcc288df87dad60505e8bf18" and
   .candidate_parent == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
-  .candidate_tree == "7d7f14800c9696b131ef7363cd8fb4cdd33a05b7" and
-  .candidate_diff_sha256 == "f8aa2ea40ef4041d3c1fcf6d9503f814aecf2e16b384688af6d196fc70009393" and
+  .candidate_tree == "e6feb28a29fc8c37bc46af0fbf37de30f3401a4f" and
+  .candidate_diff_sha256 == "bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2" and
   .strict_checkpatch == {errors:0,warnings:0,checks:0} and
   .architectures == ["arm64","x86_64"] and
   .fresh_modes_per_architecture == ["exact_e3_parent","e4_measure_off","e4_measure_on"] and
@@ -329,6 +329,9 @@ jq -e '
   .disabled_e4_artifacts == 0 and
   .e3_cases_byte_preserved == 36 and
   .e4_measurement_cells == 682 and
+  .measurement_task_migration_disabled == true and
+  .vcpu_migration_observation_enforced == true and
+  .irq_preempt_state_recorded == true and
   .six_profile_e3_regression_required == true and
   .timing_measurement_may_start == false and
   .r4_e4_source_accepted == false and

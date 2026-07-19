@@ -468,13 +468,15 @@ Current SchedExecLease L0 readiness:
     behavior, and every bare-metal, runtime, or production claim remain
     unapproved.
 - `0049-sched-exec-lease-p5a-r4-e4-local-quantum-measurement.md`
-  - Status: exact direct-R4-E3-child, two-file, default-off measurement source
-    is committed and pushed. Strict style plus short arm64/x86_64 W=1 object
-    checks pass; the canonical source/object and six-profile E3 regression is
-    launch-ready but has not passed.
+  - Status: corrected direct-R4-E3-child, two-file, default-off measurement
+    source is committed and pushed. Strict style, corrected source-only
+    contract, and exact arm64/x86_64 W=1 object checks pass. Validation/0259
+    rejects the prior full regression because its gate omitted required
+    CPU-migration and IRQ/preemption evidence; a complete corrected retry is
+    required.
   - Candidate commit/tree:
-    `1dac9953b1b5c326a27285b1f2a6e4fac9960a1d` /
-    `7d7f14800c9696b131ef7363cd8fb4cdd33a05b7`.
+    `9e4cb44fd1a1f998fcc288df87dad60505e8bf18` /
+    `e6feb28a29fc8c37bc46af0fbf37de30f3401a4f`.
   - JSON: `sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1.json`.
   - Rule: exactly 682 virtual synthetic local-quantum cells use 256 warmup and
     10,000 alternating treatment/control pairs under default-off

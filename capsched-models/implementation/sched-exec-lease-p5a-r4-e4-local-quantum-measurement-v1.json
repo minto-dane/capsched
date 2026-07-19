@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1",
-  "date": "2026-07-18",
-  "status": "source_committed_gate_launch_pending",
+  "date": "2026-07-19",
+  "status": "corrected_source_full_retry_launch_ready",
   "source": {
     "branch": "codex/p5a-r4-e4-local-quantum-measurement",
     "parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
-    "commit": "1dac9953b1b5c326a27285b1f2a6e4fac9960a1d",
-    "tree": "7d7f14800c9696b131ef7363cd8fb4cdd33a05b7",
-    "diff_sha256": "f8aa2ea40ef4041d3c1fcf6d9503f814aecf2e16b384688af6d196fc70009393",
+    "commit": "9e4cb44fd1a1f998fcc288df87dad60505e8bf18",
+    "tree": "e6feb28a29fc8c37bc46af0fbf37de30f3401a4f",
+    "diff_sha256": "bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2",
     "allowed_files": [
       "init/Kconfig",
       "kernel/sched/exec_lease.c"
     ],
-    "added_lines": 1663,
+    "added_lines": 1743,
     "deleted_lines": 82,
     "draft_pr": "https://github.com/minto-dane/linux/pull/4"
   },
@@ -40,6 +40,22 @@
     "measured_pairs_per_cell": 10000,
     "total_measured_pairs": 6820000
   },
+  "measurement_observability": {
+    "measurement_task_migration_disabled_per_cell": true,
+    "all_family_samples_record_cpu": true,
+    "observed_cpu_migration_is_harness_error": true,
+    "irq_disabled_state_recorded": true,
+    "preemption_depth_recorded": true,
+    "result_rows_emit_observations": true
+  },
+  "superseded_attempt": {
+    "candidate_commit": "1dac9953b1b5c326a27285b1f2a6e4fac9960a1d",
+    "combined_result_sha256": "857688c8f689425664686207a56089b5d3d41c9d1d7286952d3abdc9ac00e555",
+    "e3_cases_passed": 216,
+    "e3_receipts": 216,
+    "source_and_timing_credit": false,
+    "rejection": "validation/0259: missing CPU-migration and IRQ/preemption observability"
+  },
   "short_checks": {
     "strict_checkpatch": {
       "errors": 0,
@@ -48,7 +64,6 @@
     },
     "arm64_e4_on_w1_object": "passed",
     "x86_64_e4_on_w1_object": "passed",
-    "arm64_e4_off_w1_object": "passed",
     "source_only_gate_smoke": "passed"
   },
   "remaining_gates": {

@@ -1,22 +1,24 @@
 # Implementation 0049: SchedExecLease P5A-R4 E4 Local-Quantum Measurement
 
-Date: 2026-07-18
+Date: 2026-07-19
 
-Status: exact disposable source is committed and pushed as a direct R4-E3
-child. Strict style and short arm64/x86_64 W=1 object checks pass. The separate
-source/object plus six-profile R4-E3 regression is prepared but not yet passed;
-timing remains blocked.
+Status: corrected exact disposable source is committed and pushed as a direct
+R4-E3 child. Strict style, source-only contract, and short arm64/x86_64 W=1
+object checks pass. Attempt 1 completed the build/regression matrix but is
+rejected by validation/0259 because its source gate omitted plan-required
+CPU-migration and IRQ/preemption observability. A complete corrected retry and
+independent closure remain required; timing is blocked.
 
 ## Source Identity
 
 ```text
 branch:    codex/p5a-r4-e4-local-quantum-measurement
 parent:    da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-commit:    1dac9953b1b5c326a27285b1f2a6e4fac9960a1d
-tree:      7d7f14800c9696b131ef7363cd8fb4cdd33a05b7
-diff sha:  f8aa2ea40ef4041d3c1fcf6d9503f814aecf2e16b384688af6d196fc70009393
+commit:    9e4cb44fd1a1f998fcc288df87dad60505e8bf18
+tree:      e6feb28a29fc8c37bc46af0fbf37de30f3401a4f
+diff sha:  bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2
 files:     init/Kconfig, kernel/sched/exec_lease.c
-line diff: +1663 -82
+line diff: +1743 -82
 ```
 
 Linux Draft PR: `minto-dane/linux#4`, based on the exact R4-E3 branch.
@@ -47,6 +49,15 @@ p99.9, and maximum use nearest rank. The source retains the fixed local,
 offline-lock, asynchronous-availability, and 700,000ns rejection markers.
 There is no all-rq fanout or last-settlement wall-clock gate.
 
+Each complete cell executes under `migrate_disable()`, records its guest CPU,
+and compares every control/treatment sample against that CPU. The hard-IRQ
+callback records its own CPU, IRQ-disabled state, and preemption depth; the
+other six families record the same state at their timing boundary. Every
+result row emits the selected CPU, migration count, control/treatment IRQ and
+preemption state, and state-error count. Any CPU change or state drift is a
+harness error. The later timing runner must additionally record its QEMU/vCPU
+placement command and environment.
+
 The E3 worker paths and measurement paths share extracted dispatch,
 publication, one-projection recovery, notifier, current-request, and offline
 helpers. The 36 E3 case/oracle/receipt bodies remain byte-identical. Measurement
@@ -58,16 +69,17 @@ block.
 ```text
 git diff --check:                       passed
 strict checkpatch:                      0 errors, 0 warnings, 0 checks
-arm64 E4-enabled W=1 object:            passed
-x86_64 E4-enabled W=1 object:           passed
-arm64 E4-disabled W=1 object:           passed
-source-only independent gate smoke r5: passed, monotonic progress and cleanup verified
+arm64 exact-corrected E4-enabled W=1 object: passed
+x86_64 exact-corrected E4-enabled W=1 object: passed
+source-only corrected contract smoke:      passed, complete cleanup verified
 ```
 
-The short checks are implementation feedback, not source acceptance. The
-canonical combined runner must still produce six fresh source objects and six
-fresh diagnostic builds/boots at 216/216 E3 cases and receipts with zero
-diagnostic, then receive an independent read-only closure before timing.
+The short checks are implementation feedback, not source acceptance. Attempt
+1 produced six fresh objects and six clean diagnostic boots at 216/216 E3
+cases and receipts, but receives no source or timing credit because the gate
+was incomplete. The corrected canonical runner must reproduce the entire
+matrix at commit `9e4cb44f...`, then receive a new independent read-only
+closure before timing.
 
 ## Claim Boundary
 

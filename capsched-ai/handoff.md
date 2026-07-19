@@ -6425,3 +6425,29 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   pass still requires an independent read-only closure before timing. No live
   scheduler, runtime, bare-metal, performance, production, deployment,
   multi-cluster, or datacenter claim follows.
+
+- P5A-R4 E4 attempt-1 rejection and corrected-source boundary:
+
+  Combined run `20260719T-p5a-r4-e4-source-e3-regression-r1` completed six
+  source objects and all six preserved E3 profiles at 216/216 cases and typed
+  receipts with zero diagnostics. Independent plan-to-source review then found
+  that candidate `1dac9953...9960a1d`, its gate, and both closure attempts did
+  not record or fail-close vCPU migration and IRQ/preemption state as required
+  by analysis/0176. Validation/0259 rejects all source and timing credit; the
+  old results remain predecessor E3 regression evidence only.
+
+  Corrected exact direct-child `9e4cb44fd1a1f998fcc288df87dad60505e8bf18`,
+  tree `e6feb28a...01a4f`, diff SHA-256 `bb115b37...d4cd2`, is pushed to the
+  existing Draft PR. Each cell now executes under `migrate_disable()`, all
+  seven families compare their sampled CPU with the selected guest CPU, hard
+  IRQ plus all local boundaries record IRQ/preemption state, result rows emit
+  these observations, and migration/state drift increments harness errors.
+  The corrected source gate fail-closes on the exact anchors. Strict
+  checkpatch 0/0/0, corrected source-only smoke, and exact arm64/x86_64 E4-on
+  W=1 objects pass.
+
+  Next: run the complete corrected six-object and six-profile/216-case matrix
+  from scratch, then write and reproduce a newly hash-bound read-only closure.
+  Do not start timing or reuse attempt-1 source/closure credit. All live,
+  runtime, bare-metal, performance, monitor, production, deployment,
+  multi-node, multi-cluster, and datacenter claims remain false.
