@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-19
+Updated: 2026-07-20
 
 Read this first when resuming the project.
 
@@ -6568,3 +6568,22 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     result, x86_64 authorization, live/runtime, N-136, bare-metal,
     performance, production, deployment, multi-cluster, or datacenter claim
     exists.
+
+- P5A-R4 E4 arm64 timing r2 is running:
+
+  Exact preflight rechecked pushed root/capsched/Linux identities, both
+  replacement closures, parser and focused negative tests, config smoke r6,
+  forced-failure cleanup, a clean workspace, no competing build/QEMU process,
+  VM-internal ext4 paths, and free-space floors. Job
+  `p5a-r4-e4-arm64-timing-r2`, run
+  `20260720T-p5a-r4-e4-arm64-timing-r2`, detached at
+  `2026-07-20T06:12:10Z`. Status, the exact result probe, and the first
+  30-second watch display observed the full arm64 Image build running; stopping
+  the watch did not stop the job.
+
+  Monitor with
+  `./tools/long-job.sh watch p5a-r4-e4-arm64-timing-r2 30`. Completion must be
+  classified by `tools/probe-p5a-r4-e4-arm64-timing-r2.sh`, then independently
+  closed before any measurement acceptance. No result or x86_64 authorization
+  exists yet; all live/runtime/bare-metal/production/datacenter claims remain
+  false.

@@ -134,6 +134,16 @@ runner/parser/test/classifier/closure hashes, clean tracked repositories,
 absence of competing build/QEMU processes and all r2-owned paths, running VM,
 internal-ext4 storage, and free-space floors immediately before detach.
 
+The exact preflight passed and the authorized run was detached at
+`2026-07-20T06:12:10Z`. Immediate independent status and probe readback found
+the job running in the full arm64 Image build stage on VM-internal ext4. The
+30-second monitor rendered a live progress update and was then interrupted
+without stopping the detached runner. The operational launcher, VM wrapper,
+and fail-closed result probe are retained as
+`tools/start-p5a-r4-e4-arm64-timing-r2.sh`,
+`tools/run-p5a-r4-e4-arm64-timing-r2-in-machine.sh`, and
+`tools/probe-p5a-r4-e4-arm64-timing-r2.sh` in the superproject.
+
 A clean arm64 result may authorize only same-source x86_64 timing. A complete
 arm64 threshold or diagnostic rejection stops x86_64. A harness failure
 authorizes only root-cause analysis and another newly closed arm64 candidate.

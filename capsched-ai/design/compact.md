@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-19
+Updated: 2026-07-20
 
 ## Project
 
@@ -4903,3 +4903,16 @@ P5A-R3 E4 source and exact-source regression gate:
   objects with zero diagnostics. Validation/0263 reopens source acceptance:
   fresh six-object/six-profile/216-case evidence and two independent closures
   are mandatory before timing r2. All broader claims remain false.
+
+- P5A-R4 E4 arm64 timing r2 operational state:
+
+  The exact validation/0264 preflight passed. Detached job
+  `p5a-r4-e4-arm64-timing-r2`, run
+  `20260720T-p5a-r4-e4-arm64-timing-r2`, started at
+  `2026-07-20T06:12:10Z` and independent status/probe plus the first 30-second
+  watch display observed its full arm64 Image build running on VM-internal
+  ext4. The watch was stopped without stopping the runner. The next valid
+  transition is exact complete-result triage followed by independent
+  timing-evidence closure. No timing result, x86_64 authorization, live
+  runtime, bare-metal, production, deployment, multi-cluster, or datacenter
+  claim exists.
