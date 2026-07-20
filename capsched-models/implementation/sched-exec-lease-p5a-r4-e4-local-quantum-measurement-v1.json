@@ -2,18 +2,18 @@
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1",
   "date": "2026-07-19",
-  "status": "exact_virtual_synthetic_source_accepted_arm64_timing_launch_ready",
+  "status": "arm64_timing_r1_build_rejected_stack_fix_source_regression_pending",
   "source": {
     "branch": "codex/p5a-r4-e4-local-quantum-measurement",
     "parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
-    "commit": "9e4cb44fd1a1f998fcc288df87dad60505e8bf18",
-    "tree": "e6feb28a29fc8c37bc46af0fbf37de30f3401a4f",
-    "diff_sha256": "bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2",
+    "commit": "5857720dedc49f89d2367442f8fdb1a806ffa1cc",
+    "tree": "ee6e329106327a302bf63c78f2ed4fe3ddea7865",
+    "diff_sha256": "d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93",
     "allowed_files": [
       "init/Kconfig",
       "kernel/sched/exec_lease.c"
     ],
-    "added_lines": 1743,
+    "added_lines": 1744,
     "deleted_lines": 82,
     "draft_pr": "https://github.com/minto-dane/linux/pull/4"
   },
@@ -62,8 +62,8 @@
       "warnings": 0,
       "checks": 0
     },
-    "arm64_e4_on_w1_object": "passed",
-    "x86_64_e4_on_w1_object": "passed",
+    "arm64_e4_on_w1_object": "passed_after_stack_fix_zero_diagnostics",
+    "x86_64_e4_on_w1_object": "passed_after_stack_fix_zero_diagnostics",
     "source_only_gate_smoke": "passed",
     "shared_hard_irq_scope_smoke": "passed"
   },
@@ -80,7 +80,7 @@
     "fresh_retry_job": "p5a-r4-e4-source-e3-regression-r3",
     "fresh_retry_run": "20260719T-p5a-r4-e4-source-e3-regression-r3"
   },
-  "corrected_attempt_3": {
+  "pre_fix_corrected_attempt_3": {
     "combined_run": "20260719T-p5a-r4-e4-source-e3-regression-r3",
     "combined_result_sha256": "9896e12b2882ac88c7b4d57f53c59f7d245b5d3b78717df7d39097af64de8b72",
     "fresh_source_objects": 6,
@@ -95,6 +95,21 @@
     "closure_normalized_sha256": "ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f",
     "retained_artifacts_audited": 267,
     "independent_double_closure_passed": true
+  },
+  "arm64_timing_attempt_1": {
+    "run": "20260719T-p5a-r4-e4-arm64-timing-r1",
+    "status": "harness_failed",
+    "failure_stage": "build",
+    "failure_reason": "arm64 frame size 2064 exceeds 2048 bytes",
+    "result_sha256": "cd39ae390f30f53823ee7898125d82d0f37a3cc670d235e09d52d0f418e51baf",
+    "compiler_diagnostics_sha256": "3d09028da7c49bf583a45f664a039a22ea246ed6aa65735df7d9bbdab8241227",
+    "boots_started": 0,
+    "measurement_rows": 0,
+    "build_scratch_retired": true,
+    "worktree_retired": true,
+    "replacement_commit": "5857720dedc49f89d2367442f8fdb1a806ffa1cc",
+    "stack_fix_only": true,
+    "fresh_source_and_e3_closure_required": true
   },
   "arm64_timing_harness": {
     "runner": "capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement.sh",
@@ -112,17 +127,17 @@
     "forced_failure_cleanup_passed": true
   },
   "remaining_gates": {
-    "fresh_source_objects": 0,
-    "e3_profiles": 0,
-    "e3_cases": 0,
-    "e3_receipts": 0,
-    "independent_source_closure_required": false,
-    "arm64_timing_may_start": true,
-    "arm64_timing_result_pending": true,
+    "fresh_source_objects": 6,
+    "e3_profiles": 6,
+    "e3_cases": 216,
+    "e3_receipts": 216,
+    "independent_source_closure_required": true,
+    "arm64_timing_may_start": false,
+    "arm64_timing_result_pending": false,
     "independent_timing_closure_required_after_completion": true
   },
   "claims": {
-    "exact_virtual_synthetic_source_accepted": true,
+    "exact_virtual_synthetic_source_accepted": false,
     "measurement_accepted": false,
     "real_scheduler_attachment": false,
     "runtime_behavior_approved": false,

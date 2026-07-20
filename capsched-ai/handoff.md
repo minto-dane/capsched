@@ -6511,3 +6511,28 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     result still requires independent timing-evidence closure. All live,
     runtime, N-136, bare-metal, performance, monitor, production, deployment,
     multi-node, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 E4 arm64 timing r1 is rejected; fresh replacement-source closure is next:
+
+  Attempt 1:
+    detached job `p5a-r4-e4-arm64-timing-r1`, run
+    `20260719T-p5a-r4-e4-arm64-timing-r1`, reached about 10,300 build steps and
+    then correctly sealed `harness_failed` before QEMU boot. GCC selected one
+    real warning: notifier measurement case frame size 2,064 bytes exceeds the
+    2,048-byte arm64 boundary. Result SHA-256 is
+    `cd39ae39...e51baf`; build and worktree scratch are retired.
+
+  Repair:
+    only the 192-byte-axes measurement cell moves to KUnit-managed memory.
+    Thresholds, parser, pair order, fixtures, synchronization, and 682 cells
+    are unchanged. The fix is squashed into exact direct-R4-E3 child
+    `5857720dedc49f89d2367442f8fdb1a806ffa1cc`, tree
+    `ee6e3291...7865`, diff SHA-256 `d3f56505...12a93`. Strict checkpatch and
+    exact arm64/x86_64 E4-on W=1 objects pass with zero diagnostics.
+
+  Next:
+    launch only fresh combined run
+    `20260719T-p5a-r4-e4-source-e3-regression-r4`. A complete six-object,
+    six-profile, 216/216 case/receipt pass must receive two independent
+    read-only closures before timing r2. Pre-fix closure does not transfer.
+    All live/runtime/bare-metal/production/datacenter claims remain false.

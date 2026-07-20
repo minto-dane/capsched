@@ -288,7 +288,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Corrected R4-E4 attempt 3 and two independent read-only closures accept candidate 9e4cb44fd1a1f998fcc288df87dad60505e8bf18 only for exact virtual synthetic timing. The next operation is detached arm64-first execution of all 682 cells and 6,820,000 pairs through the hash-locked runner/parser, with two QEMU TCG vCPUs singleton-pinned before any row. Valid threshold rejection stops x86_64; malformed or reduced evidence is a harness failure; any clean result still requires an independent timing-evidence closure. Linux primary/patch promotion, live runtime, N-136 runtime charge, bare-metal, monitor, production, deployment, multi-node, multi-cluster, and datacenter claims remain false.",
+    "current_focus": "Arm64 R4-E4 timing r1 correctly failed closed before boot on a real 2,064-byte frame warning. Replacement direct-child candidate 5857720dedc49f89d2367442f8fdb1a806ffa1cc moves only the notifier measurement cell to KUnit-managed memory and passes exact arm64/x86_64 W=1 object smokes with zero diagnostics. Pre-fix attempt-3 closure does not transfer: the next operation is fresh combined six-object and six-profile/216-case regression, followed by two independent read-only closures. Arm64 timing r2 remains forbidden until that decision. Linux primary/patch promotion, live runtime, N-136 runtime charge, bare-metal, monitor, production, deployment, multi-node, multi-cluster, and datacenter claims remain false.",
     "p5a_r4_post_n135_authorization_analysis": "capsched/capsched-models/analysis/0175-sched-exec-lease-p5a-r4-post-n135-authorization-gate.md",
     "p5a_r4_post_n135_authorization_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r4-post-n135-authorization-gate-v1.json",
     "p5a_r4_post_n135_authorization_formal": "capsched/capsched-models/formal/0138-p5a-r4-post-n135-authorization-gate-model/README.md",
@@ -308,6 +308,7 @@
     "p5a_r4_e4_corrected_retry_launch": "capsched/capsched-models/validation/0260-sched-exec-lease-p5a-r4-e4-corrected-source-regression-retry-launch.md",
     "p5a_r4_e4_attempt_2_scope_rejection": "capsched/capsched-models/validation/0261-sched-exec-lease-p5a-r4-e4-source-gate-attempt-2-scope-rejection.md",
     "p5a_r4_e4_source_e3_closure_validation": "capsched/capsched-models/validation/0262-sched-exec-lease-p5a-r4-e4-source-closure-and-arm64-timing-launch.md",
+    "p5a_r4_e4_arm64_timing_r1_rejection": "capsched/capsched-models/validation/0263-sched-exec-lease-p5a-r4-e4-arm64-timing-r1-build-rejection.md",
     "p5a_r4_e4_source_e3_closure_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure.sh",
     "p5a_r4_e4_source_e3_closure_test": "capsched/capsched-models/validation/test-sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure.sh",
     "p5a_r4_e4_arm64_timing_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement.sh",
@@ -2840,13 +2841,12 @@
     {
       "id": "P5A-R4-E4-S1",
       "text": "Create the exact disposable direct-da9ce915 two-file default-off R4-E4 local-quantum measurement source, then pass a separate identity, replay, style, disabled-artifact, dual-architecture build, and preserved 36-case R4-E3 regression gate before launching any measurement.",
-      "status": "completed",
+      "status": "in_progress",
       "blocked_by": [
         "N-135"
       ],
-      "completed_on": "2026-07-19",
-      "completion_evidence": "Corrected attempt 3 run 20260719T-p5a-r4-e4-source-e3-regression-r3 passes six fresh arm64/x86_64 objects, all six E3 diagnostic profiles, 216/216 cases, and 216/216 receipts with zero compiler, skew, kernel, case, timeout, QEMU, or network failure; combined result SHA-256 is 9896e12b2882ac88c7b4d57f53c59f7d245b5d3b78717df7d39097af64de8b72. Independent read-only 267-artifact closures have result SHA-256 c1d9afa02f516e893e0dd0f910b7d1a60a56f2c1389b9426878545ef6a691325 and 9c19029ca7c18d44ec873374c9e85327a7a81d94221b1e10538f19cd16e8633e and normalized SHA-256 ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f. Validation/0262 authorizes only arm64 virtual synthetic timing.",
-      "partial_progress": "Attempt 1 remains rejected by validation/0259 for missing CPU-migration and IRQ/preemption observability. Attempt 2 remains rejected by validation/0261 for the gate's E4-only hard-IRQ helper scope error. Corrected candidate 9e4cb44fd1a1f998fcc288df87dad60505e8bf18 and runner 8458c7ec6ea8ea8c38d2cee0e358fdfb6eff4e3bf6ec7c53ecf9cbe8241561c5 repair both boundaries. This action is complete only for disposable virtual synthetic source acceptance and remains separate from N-136 runtime-charge evidence."
+      "previous_completion_evidence": "Pre-fix corrected attempt 3 run 20260719T-p5a-r4-e4-source-e3-regression-r3 passed six objects, six E3 profiles, 216/216 cases and receipts, then two 267-artifact closures normalized to ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f. That acceptance applied only to superseded commit 9e4cb44fd1a1f998fcc288df87dad60505e8bf18 and authorized timing attempt 1.",
+      "partial_progress": "Validation/0263 records timing r1's real arm64 2,064-byte frame diagnostic and correct fail-closed build rejection before boot. Replacement candidate 5857720dedc49f89d2367442f8fdb1a806ffa1cc remains an exact direct child of da9ce9159b3450c28c8faf8dceac671fb7bfeba2, changes only the notifier measurement cell allocation, and passes strict checkpatch plus exact arm64/x86_64 E4-on W=1 object smokes with zero diagnostics. Fresh six-object/six-profile evidence and independent double closure are pending; source acceptance is false."
     },
     {
       "id": "P5A-R4-E4-M1",
@@ -2855,7 +2855,7 @@
       "blocked_by": [
         "P5A-R4-E4-S1"
       ],
-      "partial_progress": "Validation/0262 freezes the fail-closed arm64 runner, exact 682-cell parser, parser tamper suite, two-vCPU singleton pinning before row emission, lossless Image/object evidence, raw and derived manifests, final config-smoke r5, and forced-failure cleanup. Canonical detached job p5a-r4-e4-arm64-timing-r1/run 20260719T-p5a-r4-e4-arm64-timing-r1 is launch-ready under 30-second monitoring. No timing result or measurement acceptance exists yet."
+      "partial_progress": "Validation/0263 rejects canonical timing r1 at build stage before boot or rows because arm64 reports a 2,064-byte notifier-test stack frame against the 2,048-byte W=1 boundary. The diagnostic gate was not relaxed. Replacement candidate 5857720dedc49f89d2367442f8fdb1a806ffa1cc passes focused arm64/x86_64 W=1 objects, but arm64 timing r2 remains forbidden until fresh source/E3 regression and independent double closure pass. No timing result or measurement acceptance exists."
     }
   ],
   "canonical_files": {

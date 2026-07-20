@@ -33,9 +33,9 @@ PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 PATCH_QUEUE_SERIES_BLOB=298567f8e0bd18168222da4e64da32750b9ea818
 E3_COMMIT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
 E3_TREE=58c6510c6f517004e37107786d006bb8333b79b8
-E4_COMMIT=9e4cb44fd1a1f998fcc288df87dad60505e8bf18
-E4_TREE=e6feb28a29fc8c37bc46af0fbf37de30f3401a4f
-E4_DIFF_SHA=bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2
+E4_COMMIT=5857720dedc49f89d2367442f8fdb1a806ffa1cc
+E4_TREE=ee6e329106327a302bf63c78f2ed4fe3ddea7865
+E4_DIFF_SHA=d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93
 REQUIRED_E3_CASES=36
 REQUIRED_E4_CELLS=682
 clock_skew_retries=0
@@ -206,7 +206,7 @@ printf '%s\n' init/Kconfig kernel/sched/exec_lease.c > "$OUT_DIR/expected-files.
 diff -u "$OUT_DIR/expected-files.txt" "$OUT_DIR/changed-files.txt" \
 	> "$OUT_DIR/changed-files.diff" || die 'source escaped two-file boundary'
 [ "$(git -C "$E4_DIR" diff --numstat "$E3_COMMIT..$E4_COMMIT" |
-	awk '{a += $1; d += $2} END {print a+0, d+0}')" = '1743 82' ] ||
+	awk '{a += $1; d += $2} END {print a+0, d+0}')" = '1744 82' ] ||
 	die 'source line totals changed'
 git -C "$E4_DIR" diff --binary "$E3_COMMIT..$E4_COMMIT" > "$OUT_DIR/e4-source.diff"
 [ "$(sha256sum "$OUT_DIR/e4-source.diff" | awk '{print $1}')" = "$E4_DIFF_SHA" ] ||

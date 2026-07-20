@@ -2,24 +2,23 @@
 
 Date: 2026-07-19
 
-Status: the exact disposable source is accepted only for the virtual synthetic
-R4-E4 timing boundary. Corrected attempt 3 passed six fresh source objects and
-six preserved E3 diagnostic profiles at 216/216 cases and receipts. Two
-independent read-only closures reproduced one normalized decision. The arm64
-timing runner, exact 682-row parser, parser tamper suite, config-only smoke, and
-failure-cleanup control pass. Arm64 timing is launch-ready; no timing result or
-broader runtime claim is accepted yet.
+Status: arm64 timing attempt 1 correctly failed closed on a real
+`-Wframe-larger-than` diagnostic before boot. The notifier measurement cell is
+now KUnit-allocated in a squashed direct-R4-E3-child candidate. Exact arm64 and
+x86_64 E4-on W=1 object smokes pass with zero diagnostics, but the new source
+identity is not accepted yet. A fresh six-object/six-profile regression and
+new independent double closure are mandatory before another timing launch.
 
 ## Source Identity
 
 ```text
 branch:    codex/p5a-r4-e4-local-quantum-measurement
 parent:    da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-commit:    9e4cb44fd1a1f998fcc288df87dad60505e8bf18
-tree:      e6feb28a29fc8c37bc46af0fbf37de30f3401a4f
-diff sha:  bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2
+commit:    5857720dedc49f89d2367442f8fdb1a806ffa1cc
+tree:      ee6e329106327a302bf63c78f2ed4fe3ddea7865
+diff sha:  d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93
 files:     init/Kconfig, kernel/sched/exec_lease.c
-line diff: +1743 -82
+line diff: +1744 -82
 ```
 
 Linux Draft PR: `minto-dane/linux#4`, based on the exact R4-E3 branch.
@@ -70,8 +69,8 @@ block.
 ```text
 git diff --check:                       passed
 strict checkpatch:                      0 errors, 0 warnings, 0 checks
-arm64 exact-corrected E4-enabled W=1 object: passed
-x86_64 exact-corrected E4-enabled W=1 object: passed
+arm64 fixed E4-enabled W=1 object:       passed, zero diagnostics
+x86_64 fixed E4-enabled W=1 object:      passed, zero diagnostics
 source-only corrected contract smoke:      passed, complete cleanup verified
 source-only shared-hard-IRQ scope smoke:    passed, complete cleanup verified
 ```
@@ -79,9 +78,9 @@ source-only shared-hard-IRQ scope smoke:    passed, complete cleanup verified
 The short checks are implementation feedback, not source acceptance. Attempt
 1 produced six fresh objects and six clean diagnostic boots at 216/216 E3
 cases and receipts, but receives no source or timing credit because the gate
-was incomplete. The corrected canonical runner must reproduce the entire
-matrix at commit `9e4cb44f...`, then receive a new independent read-only
-closure before timing.
+was incomplete. The predecessor canonical runner reproduced the entire matrix
+at commit `9e4cb44f...` and received an independent read-only closure before
+attempt 1. That closure does not transfer to replacement `5857720d...`.
 
 Attempt 2 started no object build or boot and emitted no result. The gate now
 preserves `sched_exec_r4_dispatch_irq()` as a separate evidence artifact and
@@ -90,7 +89,7 @@ shared-helper region. Source-only run
 `20260719T-p5a-r4-e4-source-gate-r3-hard-irq-scope` passes this corrected
 boundary and retires its worktrees.
 
-## Corrected Source and Regression Closure
+## Pre-fix Source and Regression Closure
 
 Canonical combined run
 `20260719T-p5a-r4-e4-source-e3-regression-r3` passed all six fresh
@@ -108,8 +107,25 @@ and
 `9c19029ca7c18d44ec873374c9e85327a7a81d94221b1e10538f19cd16e8633e`.
 After removing only `run_id`, both decisions are byte-identical at SHA-256
 `ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f`.
-This accepts only the exact virtual synthetic source and authorizes arm64
-timing; it does not accept a measurement result.
+This accepted only predecessor commit `9e4cb44f...` and authorized attempt 1;
+it does not accept replacement commit `5857720d...` or a measurement result.
+
+## Arm64 Timing Attempt 1 Rejection and Repair
+
+Detached run `20260719T-p5a-r4-e4-arm64-timing-r1` completed approximately
+10,300 compiler/link steps, then the build diagnostic gate rejected
+`kernel/sched/exec_lease.c:4373`: the notifier KUnit case used a 2,064-byte
+stack frame, exceeding the 2,048-byte arm64 warning boundary. No QEMU boot or
+measurement row started. The result is `harness_failed` at stage `build`, and
+both run-owned build scratch and worktree were retired.
+
+The repair moves only the 192-byte-axes measurement cell to KUnit-managed
+memory; fixture lifetime, arrays, synchronization, sample order, thresholds,
+and all 682 cells are unchanged. Strict checkpatch remains 0/0/0. Exact arm64
+r1-config and x86_64 E4-on W=1 object builds emit zero diagnostics and retire
+their scratch. The correction was squashed into a single exact direct child of
+R4-E3, so the original source-plan topology remains intact. Fresh full source
+and E3 evidence is nevertheless required.
 
 ## Arm64 Timing Harness
 
@@ -135,7 +151,8 @@ and proves both worktree and build-root retirement.
 
 ## Claim Boundary
 
-This source and runner measure only virtual synthetic protocol quanta. They do not prove
+This unaccepted replacement source and runner measure only virtual synthetic
+protocol quanta. They do not prove
 live scheduler correctness, CPU hotplug integration, real stop/revocation,
 monitor delivery, bare-metal latency, performance, cost, N-136 runtime charge,
 production protection, deployment, multi-node, multi-cluster, or datacenter

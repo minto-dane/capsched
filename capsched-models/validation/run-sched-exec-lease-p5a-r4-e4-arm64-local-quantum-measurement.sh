@@ -15,9 +15,9 @@ CLOSURE_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-sourc
 CLOSURE_R1="$CLOSURE_ROOT/20260719T-p5a-r4-e4-source-e3-corrected-closure-r1"
 CLOSURE_R2="$CLOSURE_ROOT/20260719T-p5a-r4-e4-source-e3-corrected-closure-r2"
 CANDIDATE_PARENT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-CANDIDATE_COMMIT=9e4cb44fd1a1f998fcc288df87dad60505e8bf18
-CANDIDATE_TREE=e6feb28a29fc8c37bc46af0fbf37de30f3401a4f
-CANDIDATE_DIFF_SHA=bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2
+CANDIDATE_COMMIT=5857720dedc49f89d2367442f8fdb1a806ffa1cc
+CANDIDATE_TREE=ee6e329106327a302bf63c78f2ed4fe3ddea7865
+CANDIDATE_DIFF_SHA=d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 PLAN_SHA=63ba7b17c3d08ea1ee0cdd4b420cc3a08b21932e9f6c2fb3f31754147e5b1667
@@ -142,7 +142,7 @@ write_failure_result()
   status:"harness_failed",
   architecture:"arm64",
   failure:{stage:$stage,reason:$reason},
-  source_commit:"9e4cb44fd1a1f998fcc288df87dad60505e8bf18",
+  source_commit:"5857720dedc49f89d2367442f8fdb1a806ffa1cc",
   architecture_measurement_valid:false,
   run_owned_build_scratch_retired:$build_retired,
   run_owned_worktree_retired:$worktree_retired,
@@ -224,10 +224,10 @@ for closure in "$CLOSURE_R1" "$CLOSURE_R2"; do
 	  .status == "passed_independent_r4_e4_source_e3_evidence_closure" and
 	  .source_run_id == "20260719T-p5a-r4-e4-source-e3-regression-r3" and
 	  .combined_result_sha256 == "9896e12b2882ac88c7b4d57f53c59f7d245b5d3b78717df7d39097af64de8b72" and
-	  .candidate_commit == "9e4cb44fd1a1f998fcc288df87dad60505e8bf18" and
+	  .candidate_commit == "5857720dedc49f89d2367442f8fdb1a806ffa1cc" and
 	  .candidate_parent == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
-	  .candidate_tree == "e6feb28a29fc8c37bc46af0fbf37de30f3401a4f" and
-	  .candidate_diff_sha256 == "bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2" and
+	  .candidate_tree == "ee6e329106327a302bf63c78f2ed4fe3ddea7865" and
+	  .candidate_diff_sha256 == "d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93" and
 	  .artifact_counts.total == 267 and .artifact_bytes.total == 10876145 and
 	  .fresh_source_objects_audited == 6 and .e3_profiles_audited == 6 and
 	  .total_e3_cases == 216 and .total_e3_receipts == 216 and
@@ -607,7 +607,7 @@ jq -n \
   run_id:$run_id,
   status:$status,
   architecture:"arm64",
-  source:{parent:"da9ce9159b3450c28c8faf8dceac671fb7bfeba2",commit:"9e4cb44fd1a1f998fcc288df87dad60505e8bf18",tree:"e6feb28a29fc8c37bc46af0fbf37de30f3401a4f",diff_sha256:"bb115b371cd18551b93c09ae9b3d0cf458e70c9964927ff08d1bd3f586dd4cd2"},
+  source:{parent:"da9ce9159b3450c28c8faf8dceac671fb7bfeba2",commit:"5857720dedc49f89d2367442f8fdb1a806ffa1cc",tree:"ee6e329106327a302bf63c78f2ed4fe3ddea7865",diff_sha256:"d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93"},
   prerequisites:{combined_run:"20260719T-p5a-r4-e4-source-e3-regression-r3",closure_r1_sha256:"c1d9afa02f516e893e0dd0f910b7d1a60a56f2c1389b9426878545ef6a691325",closure_r2_sha256:"9c19029ca7c18d44ec873374c9e85327a7a81d94221b1e10538f19cd16e8633e",closure_normalized_sha256:"ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f",independent_double_closure_passed:true},
   runner:{sha256:$runner_sha,parser_sha256:$parser_sha,warning_classifier_sha256:"8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a"},
   matrix:{publication:288,picker_kick:144,irq_dispatch:9,recovery:144,notifier:48,current_stop:24,offline:25,total_cells:682,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,total_measured_pairs:6820000,result_rows:682},

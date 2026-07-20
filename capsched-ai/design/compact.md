@@ -4870,3 +4870,17 @@ P5A-R3 E4 source and exact-source regression gate:
   fresh arm64 retry. Independent timing closure remains mandatory. Live
   scheduler, N-136, bare-metal, performance, monitor, production, deployment,
   multi-node, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 E4 arm64 timing r1 rejection and replacement-source boundary:
+
+  Timing r1 failed closed at build stage before boot or result rows because GCC
+  reported a 2,064-byte notifier-test frame against the 2,048-byte boundary.
+  The runner retired both VM-internal scratch paths and preserved immutable
+  result/build/diagnostic evidence. No threshold or classifier was relaxed.
+
+  The notifier measurement cell alone is now KUnit-allocated. Replacement
+  source `5857720d...a1cc`, tree `ee6e3291...7865`, remains one exact direct
+  child of R4-E3 and passes strict checkpatch plus arm64/x86_64 E4-on W=1
+  objects with zero diagnostics. Validation/0263 reopens source acceptance:
+  fresh six-object/six-profile/216-case evidence and two independent closures
+  are mandatory before timing r2. All broader claims remain false.
