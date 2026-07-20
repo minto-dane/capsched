@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-19
+Updated: 2026-07-20
 
 ## Current Validation Records
 
@@ -269,6 +269,7 @@ Updated: 2026-07-19
 | 0261 | Attempt 2 failed before build because the gate searched an E4-only extract for valid observations in a shared helper; corrected exact-region checks and source-only cleanup pass, and only fresh attempt 3 is allowed | SchedExecLease P5A-R4 E4 Source-Gate Attempt 2 Scope Rejection |
 | 0262 | Corrected attempt 3 passes six objects and six profiles at 216/216 cases/receipts; two read-only 267-artifact closures reproduce one decision, and the fail-closed 682-cell arm64 timing harness is detached-launch-ready | SchedExecLease P5A-R4 E4 Source Closure and Arm64 Timing Launch |
 | 0263 | Arm64 timing r1 correctly fails closed before boot on a real 2,064-byte frame warning; the KUnit-managed-cell repair passes exact arm64/x86_64 W=1 objects, while fresh combined regression and double closure remain mandatory | SchedExecLease P5A-R4 E4 Arm64 Timing R1 Build Rejection |
+| 0264 | Stack-fixed replacement source passes six fresh objects, six profiles, 216/216 cases and receipts, and two read-only 267-artifact closures with one normalized decision; strict arm64 timing r2 is launch-ready | SchedExecLease P5A-R4 E4 Replacement Source Closure and Arm64 Timing R2 Readiness |
 
 ## Principles
 

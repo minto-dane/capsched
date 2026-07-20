@@ -4871,6 +4871,25 @@ P5A-R3 E4 source and exact-source regression gate:
   scheduler, N-136, bare-metal, performance, monitor, production, deployment,
   multi-node, multi-cluster, and datacenter claims remain false.
 
+- P5A-R4 E4 replacement-source closure and timing-r2 boundary:
+
+  Stack-fixed source `5857720d...a1cc` passes fresh combined r4: six source
+  objects, six E3 profiles, 216/216 cases and receipts, and zero diagnostics.
+  Combined result is `2b90c47e...af5d7ea`. Two independent closures audit
+  267 artifacts/10,880,574 bytes and normalize to one decision
+  `767d2f9a...a43d21`; all copied inputs are read-only and six focused
+  mutations fail closed. Validation/0264 therefore accepts only this exact
+  disposable virtual-synthetic source for arm64 timing.
+
+  Timing runner `a3ee78f5...ddf392` rebinds the replacement closures without
+  relaxing r1's build-warning boundary. VM ShellCheck, exact and negative
+  parser fixtures, and config smoke r6 pass with zero builds/boots and full
+  cleanup. Only detached `p5a-r4-e4-arm64-timing-r2` may start under a
+  30-second monitor. A clean result can authorize only same-source x86_64; a
+  valid rejection stops it; harness failure permits only fresh root-cause
+  work. Independent timing closure and every live/runtime/production claim
+  remain pending or false.
+
 - P5A-R4 E4 arm64 timing r1 rejection and replacement-source boundary:
 
   Timing r1 failed closed at build stage before boot or result rows because GCC

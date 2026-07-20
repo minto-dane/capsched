@@ -6536,3 +6536,35 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     six-profile, 216/216 case/receipt pass must receive two independent
     read-only closures before timing r2. Pre-fix closure does not transfer.
     All live/runtime/bare-metal/production/datacenter claims remain false.
+
+- P5A-R4 E4 stack-fixed replacement source is closed; arm64 timing r2 is launch-ready:
+
+  Fresh replacement evidence:
+    detached run `20260719T-p5a-r4-e4-source-e3-regression-r4` exited zero
+    after six exact source objects and all six preserved E3 profiles. It sealed
+    216/216 cases and receipts with zero compiler, final-skew, kernel-warning,
+    case, timeout, or QEMU failure. Combined result SHA-256 is
+    `2b90c47e...af5d7ea`; source, regression, and combined runners are
+    `7914d20a...82093`, `7557c46b...68b23d`, and
+    `69ad5a50...071b00`.
+
+  Independent replacement closure:
+    validation/0264 fixes 267 retained artifacts totaling 10,880,574 bytes.
+    Closure runner `271fd7a0...995fba` produces r1/r2 result SHA-256 values
+    `5e3ff71d...040f3f` and `bac2aca6...04f720`; deleting only `run_id`
+    yields byte-identical `767d2f9a...a43d21`. All 536 copied inputs are
+    read-only. Exact-fixture validation passes, while combined-result,
+    symlink, hard-IRQ observation, E4-config, receipt, and artifact-removal
+    mutations fail closed.
+
+  Timing r2 boundary:
+    runner `a3ee78f5...ddf392`, parser `dd0372d3...bc2cd1`, parser tests
+    `b057af2a...06db0`, and classifier `8adcff74...dc23a` pass host syntax,
+    VM ShellCheck, exact/valid-negative/tamper parser fixtures, and final
+    config smoke r6 with zero builds/boots and both scratch roots retired.
+    Launch only job `p5a-r4-e4-arm64-timing-r2`, run
+    `20260720T-p5a-r4-e4-arm64-timing-r2`, under
+    `./tools/long-job.sh watch p5a-r4-e4-arm64-timing-r2 30`. No timing
+    result, x86_64 authorization, live/runtime, N-136, bare-metal,
+    performance, production, deployment, multi-cluster, or datacenter claim
+    exists.

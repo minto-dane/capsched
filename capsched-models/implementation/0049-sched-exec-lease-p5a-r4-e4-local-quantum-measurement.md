@@ -1,13 +1,13 @@
 # Implementation 0049: SchedExecLease P5A-R4 E4 Local-Quantum Measurement
 
-Date: 2026-07-19
+Date: 2026-07-20
 
 Status: arm64 timing attempt 1 correctly failed closed on a real
-`-Wframe-larger-than` diagnostic before boot. The notifier measurement cell is
-now KUnit-allocated in a squashed direct-R4-E3-child candidate. Exact arm64 and
-x86_64 E4-on W=1 object smokes pass with zero diagnostics, but the new source
-identity is not accepted yet. A fresh six-object/six-profile regression and
-new independent double closure are mandatory before another timing launch.
+`-Wframe-larger-than` diagnostic before boot. The KUnit-managed-cell repair is
+now accepted for disposable virtual-synthetic timing after a fresh six-object,
+six-profile, 216-case/receipt regression and two independent read-only
+closures. Exact arm64 timing r2 is launch-ready; no timing result or broader
+runtime/production claim is accepted.
 
 ## Source Identity
 
@@ -108,7 +108,9 @@ and
 After removing only `run_id`, both decisions are byte-identical at SHA-256
 `ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f`.
 This accepted only predecessor commit `9e4cb44f...` and authorized attempt 1;
-it does not accept replacement commit `5857720d...` or a measurement result.
+it does not transfer to replacement commit `5857720d...` or accept a
+measurement result. The separate replacement closure below is authoritative
+for timing r2.
 
 ## Arm64 Timing Attempt 1 Rejection and Repair
 
@@ -125,7 +127,28 @@ and all 682 cells are unchanged. Strict checkpatch remains 0/0/0. Exact arm64
 r1-config and x86_64 E4-on W=1 object builds emit zero diagnostics and retire
 their scratch. The correction was squashed into a single exact direct child of
 R4-E3, so the original source-plan topology remains intact. Fresh full source
-and E3 evidence is nevertheless required.
+and E3 evidence was nevertheless required and has now passed.
+
+## Replacement Source and Regression Closure
+
+Fresh detached run `20260719T-p5a-r4-e4-source-e3-regression-r4` exited zero
+after six exact source objects and all six standard/fault/KASAN/KCSAN E3
+profiles. It sealed 216/216 cases and 216/216 typed receipts with zero compiler
+diagnostic, final clock-skew warning, kernel warning, case failure, skip,
+timeout, or nonzero QEMU exit. Combined result SHA-256 is
+`2b90c47e69c4c190029bc0fb2b25e66db68f87ec16f0a4d4034f4741caf5d7ea`.
+
+The replacement closure fixes 267 regular artifacts totaling 10,880,574
+bytes. Independent closure runs
+`20260720T-p5a-r4-e4-source-e3-final-closure-r1` and
+`20260720T-p5a-r4-e4-source-e3-final-closure-r2` produce result SHA-256 values
+`5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f`
+and
+`bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720`.
+Deleting only `run_id` yields byte-identical SHA-256
+`767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21`.
+All 536 copied inputs are read-only; result, symlink, hard-IRQ observation,
+config, receipt, and artifact-removal mutations fail closed.
 
 ## Arm64 Timing Harness
 
@@ -144,15 +167,16 @@ pairs, seven exact summaries, monotonic statistics, source-reported gates equal
 to independently recomputed gates, zero migration/state/harness errors, and
 hard-IRQ context proof. Its synthetic suite accepts a complete clean matrix and
 a valid threshold rejection, while rejecting missing rows, migration, gate
-mismatch, unknown fields, and summary mismatch. Final config smoke r5 resolves the
-exact two-vCPU diagnostic configuration with zero builds and boots and retires
-all scratch. A forced insufficient-space control fails after worktree creation
+mismatch, unknown fields, and summary mismatch. Final replacement config smoke
+r6 resolves the exact two-vCPU diagnostic configuration with zero builds and
+boots and retires all scratch. A forced insufficient-space control fails after
+worktree creation
 and proves both worktree and build-root retirement.
 
 ## Claim Boundary
 
-This unaccepted replacement source and runner measure only virtual synthetic
-protocol quanta. They do not prove
+This accepted-for-timing replacement source and runner measure only virtual
+synthetic protocol quanta. They do not prove
 live scheduler correctness, CPU hotplug integration, real stop/revocation,
 monitor delivery, bare-metal latency, performance, cost, N-136 runtime charge,
 production protection, deployment, multi-node, multi-cluster, or datacenter

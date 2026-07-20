@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1",
-  "date": "2026-07-19",
-  "status": "arm64_timing_r1_build_rejected_stack_fix_source_regression_pending",
+  "date": "2026-07-20",
+  "status": "stack_fixed_source_closed_arm64_timing_r2_launch_ready",
   "source": {
     "branch": "codex/p5a-r4-e4-local-quantum-measurement",
     "parent": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
@@ -111,6 +111,28 @@
     "stack_fix_only": true,
     "fresh_source_and_e3_closure_required": true
   },
+  "replacement_source_closure": {
+    "combined_run": "20260719T-p5a-r4-e4-source-e3-regression-r4",
+    "combined_result_sha256": "2b90c47e69c4c190029bc0fb2b25e66db68f87ec16f0a4d4034f4741caf5d7ea",
+    "source_result_sha256": "00789ead0416102b1eba78b570337ccf49ad0c01beee9a1b8811fb857aa09a1e",
+    "config_result_sha256": "452b32f0487d8faf647cd3e7e552fde7bfd757946ed0a5f7dc4f0e4bee6826d3",
+    "regression_result_sha256": "9333640ccde66c32ca0fabdcbd43abdf84684c0ba70b8e45e826a5c6b555f944",
+    "fresh_source_objects": 6,
+    "e3_profiles": 6,
+    "e3_cases": 216,
+    "e3_receipts": 216,
+    "compiler_diagnostics": 0,
+    "clock_skew_warnings": 0,
+    "kernel_warning_reports": 0,
+    "retained_artifacts_audited": 267,
+    "retained_artifact_bytes": 10880574,
+    "closure_runner_sha256": "271fd7a0d7ab5c62f630e52a3b20c584e9233769760d6b25b586af8182995fba",
+    "closure_r1_sha256": "5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f",
+    "closure_r2_sha256": "bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720",
+    "closure_normalized_sha256": "767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21",
+    "independent_double_closure_passed": true,
+    "closure_negative_tests_passed": true
+  },
   "arm64_timing_harness": {
     "runner": "capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement.sh",
     "parser": "capsched-models/validation/parse-sched-exec-lease-p5a-r4-e4-measurement-evidence.sh",
@@ -121,7 +143,8 @@
     "raw_and_derived_manifests_required": true,
     "lossless_image_and_object_restore_required": true,
     "valid_threshold_rejection_is_harness_failure": false,
-    "config_smoke_run": "20260719T-p5a-r4-e4-arm64-timing-config-smoke-r5",
+    "runner_sha256": "a3ee78f5ae1bc32a89bfb0b765a9e87da3888536c0bdb658b2f88acf71ddf392",
+    "config_smoke_run": "20260720T-p5a-r4-e4-arm64-timing-config-smoke-r6",
     "config_smoke_builds": 0,
     "config_smoke_boots": 0,
     "forced_failure_cleanup_passed": true
@@ -131,13 +154,13 @@
     "e3_profiles": 6,
     "e3_cases": 216,
     "e3_receipts": 216,
-    "independent_source_closure_required": true,
-    "arm64_timing_may_start": false,
-    "arm64_timing_result_pending": false,
+    "independent_source_closure_required": false,
+    "arm64_timing_may_start": true,
+    "arm64_timing_result_pending": true,
     "independent_timing_closure_required_after_completion": true
   },
   "claims": {
-    "exact_virtual_synthetic_source_accepted": false,
+    "exact_virtual_synthetic_source_accepted": true,
     "measurement_accepted": false,
     "real_scheduler_attachment": false,
     "runtime_behavior_approved": false,

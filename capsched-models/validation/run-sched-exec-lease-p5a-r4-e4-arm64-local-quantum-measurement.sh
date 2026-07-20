@@ -12,8 +12,8 @@ PLAN="$CAPSCHED_DIR/capsched-models/analysis/sched-exec-lease-p5a-r4-e4-local-qu
 PARSER="$SCRIPT_DIR/parse-sched-exec-lease-p5a-r4-e4-measurement-evidence.sh"
 WARNING_CLASSIFIER="$SCRIPT_DIR/lib/kernel-warning-classifier.sh"
 CLOSURE_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure"
-CLOSURE_R1="$CLOSURE_ROOT/20260719T-p5a-r4-e4-source-e3-corrected-closure-r1"
-CLOSURE_R2="$CLOSURE_ROOT/20260719T-p5a-r4-e4-source-e3-corrected-closure-r2"
+CLOSURE_R1="$CLOSURE_ROOT/20260720T-p5a-r4-e4-source-e3-final-closure-r1"
+CLOSURE_R2="$CLOSURE_ROOT/20260720T-p5a-r4-e4-source-e3-final-closure-r2"
 CANDIDATE_PARENT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
 CANDIDATE_COMMIT=5857720dedc49f89d2367442f8fdb1a806ffa1cc
 CANDIDATE_TREE=ee6e329106327a302bf63c78f2ed4fe3ddea7865
@@ -22,9 +22,9 @@ PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 PLAN_SHA=63ba7b17c3d08ea1ee0cdd4b420cc3a08b21932e9f6c2fb3f31754147e5b1667
 WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a
-CLOSURE_R1_SHA=c1d9afa02f516e893e0dd0f910b7d1a60a56f2c1389b9426878545ef6a691325
-CLOSURE_R2_SHA=9c19029ca7c18d44ec873374c9e85327a7a81d94221b1e10538f19cd16e8633e
-CLOSURE_NORMALIZED_SHA=ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f
+CLOSURE_R1_SHA=5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f
+CLOSURE_R2_SHA=bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720
+CLOSURE_NORMALIZED_SHA=767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
 BUILD_ROOT=${BUILD_ROOT:-"/var/tmp/linux-cap-builds/p5a-r4-e4-arm64-measurement/$RUN_ID"}
 BUILD_OUT="$BUILD_ROOT/build"
@@ -222,13 +222,13 @@ for closure in "$CLOSURE_R1" "$CLOSURE_R2"; do
 	jq -e '
 	  .schema_version == 2 and
 	  .status == "passed_independent_r4_e4_source_e3_evidence_closure" and
-	  .source_run_id == "20260719T-p5a-r4-e4-source-e3-regression-r3" and
-	  .combined_result_sha256 == "9896e12b2882ac88c7b4d57f53c59f7d245b5d3b78717df7d39097af64de8b72" and
+	  .source_run_id == "20260719T-p5a-r4-e4-source-e3-regression-r4" and
+	  .combined_result_sha256 == "2b90c47e69c4c190029bc0fb2b25e66db68f87ec16f0a4d4034f4741caf5d7ea" and
 	  .candidate_commit == "5857720dedc49f89d2367442f8fdb1a806ffa1cc" and
 	  .candidate_parent == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
 	  .candidate_tree == "ee6e329106327a302bf63c78f2ed4fe3ddea7865" and
 	  .candidate_diff_sha256 == "d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93" and
-	  .artifact_counts.total == 267 and .artifact_bytes.total == 10876145 and
+	  .artifact_counts.total == 267 and .artifact_bytes.total == 10880574 and
 	  .fresh_source_objects_audited == 6 and .e3_profiles_audited == 6 and
 	  .total_e3_cases == 216 and .total_e3_receipts == 216 and
 	  .measurement_task_migration_disabled == true and
@@ -608,7 +608,7 @@ jq -n \
   status:$status,
   architecture:"arm64",
   source:{parent:"da9ce9159b3450c28c8faf8dceac671fb7bfeba2",commit:"5857720dedc49f89d2367442f8fdb1a806ffa1cc",tree:"ee6e329106327a302bf63c78f2ed4fe3ddea7865",diff_sha256:"d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93"},
-  prerequisites:{combined_run:"20260719T-p5a-r4-e4-source-e3-regression-r3",closure_r1_sha256:"c1d9afa02f516e893e0dd0f910b7d1a60a56f2c1389b9426878545ef6a691325",closure_r2_sha256:"9c19029ca7c18d44ec873374c9e85327a7a81d94221b1e10538f19cd16e8633e",closure_normalized_sha256:"ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f",independent_double_closure_passed:true},
+  prerequisites:{combined_run:"20260719T-p5a-r4-e4-source-e3-regression-r4",closure_r1_sha256:"5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f",closure_r2_sha256:"bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720",closure_normalized_sha256:"767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21",independent_double_closure_passed:true},
   runner:{sha256:$runner_sha,parser_sha256:$parser_sha,warning_classifier_sha256:"8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a"},
   matrix:{publication:288,picker_kick:144,irq_dispatch:9,recovery:144,notifier:48,current_stop:24,offline:25,total_cells:682,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,total_measured_pairs:6820000,result_rows:682},
   gates_ns:{ordinary_local:{additional_p99:5000,additional_p999:25000,additional_max:50000},offline_local:{additional_p99:25000,additional_p999:40000,additional_max:50000},asynchronous_availability:{p99:10000000,max:100000000},normalized_base_slice:700000},

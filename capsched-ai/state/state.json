@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-07-19",
+  "updated": "2026-07-20",
   "project": {
     "name": "DomainLease-Linux",
     "workspace": "/Users/niania/Documents/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-p5a-r4-e4-arm64-local-quantum-timing-launch-ready",
+    "current_phase": "sched-exec-lease-l0-p5a-r4-e4-stack-fixed-source-closed-arm64-timing-r2-launch-ready",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/Users/niania/Documents/linux-cap/capsched",
@@ -288,7 +288,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Arm64 R4-E4 timing r1 correctly failed closed before boot on a real 2,064-byte frame warning. Replacement direct-child candidate 5857720dedc49f89d2367442f8fdb1a806ffa1cc moves only the notifier measurement cell to KUnit-managed memory and passes exact arm64/x86_64 W=1 object smokes with zero diagnostics. Pre-fix attempt-3 closure does not transfer: the next operation is fresh combined six-object and six-profile/216-case regression, followed by two independent read-only closures. Arm64 timing r2 remains forbidden until that decision. Linux primary/patch promotion, live runtime, N-136 runtime charge, bare-metal, monitor, production, deployment, multi-node, multi-cluster, and datacenter claims remain false.",
+    "current_focus": "Validation/0264 accepts exact stack-fixed direct-child candidate 5857720dedc49f89d2367442f8fdb1a806ffa1cc only for disposable virtual-synthetic arm64 timing. Fresh replacement combined r4 passed six source objects, six E3 profiles, and 216/216 cases and receipts with zero diagnostics; two independent read-only 267-artifact closures normalize to 767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21. Timing runner a3ee78f5ae1bc32a89bfb0b765a9e87da3888536c0bdb658b2f88acf71ddf392 and config smoke r6 pass. The next operation is detached arm64 timing r2 under 30-second monitoring. No timing result, Linux primary/patch promotion, live runtime, N-136 runtime charge, bare-metal, monitor, production, deployment, multi-node, multi-cluster, or datacenter claim exists.",
     "p5a_r4_post_n135_authorization_analysis": "capsched/capsched-models/analysis/0175-sched-exec-lease-p5a-r4-post-n135-authorization-gate.md",
     "p5a_r4_post_n135_authorization_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r4-post-n135-authorization-gate-v1.json",
     "p5a_r4_post_n135_authorization_formal": "capsched/capsched-models/formal/0138-p5a-r4-post-n135-authorization-gate-model/README.md",
@@ -309,6 +309,7 @@
     "p5a_r4_e4_attempt_2_scope_rejection": "capsched/capsched-models/validation/0261-sched-exec-lease-p5a-r4-e4-source-gate-attempt-2-scope-rejection.md",
     "p5a_r4_e4_source_e3_closure_validation": "capsched/capsched-models/validation/0262-sched-exec-lease-p5a-r4-e4-source-closure-and-arm64-timing-launch.md",
     "p5a_r4_e4_arm64_timing_r1_rejection": "capsched/capsched-models/validation/0263-sched-exec-lease-p5a-r4-e4-arm64-timing-r1-build-rejection.md",
+    "p5a_r4_e4_replacement_source_closure_timing_r2_readiness": "capsched/capsched-models/validation/0264-sched-exec-lease-p5a-r4-e4-replacement-source-closure-and-arm64-timing-r2-readiness.md",
     "p5a_r4_e4_source_e3_closure_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure.sh",
     "p5a_r4_e4_source_e3_closure_test": "capsched/capsched-models/validation/test-sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure.sh",
     "p5a_r4_e4_arm64_timing_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement.sh",
@@ -2841,12 +2842,13 @@
     {
       "id": "P5A-R4-E4-S1",
       "text": "Create the exact disposable direct-da9ce915 two-file default-off R4-E4 local-quantum measurement source, then pass a separate identity, replay, style, disabled-artifact, dual-architecture build, and preserved 36-case R4-E3 regression gate before launching any measurement.",
-      "status": "in_progress",
+      "status": "completed",
       "blocked_by": [
         "N-135"
       ],
       "previous_completion_evidence": "Pre-fix corrected attempt 3 run 20260719T-p5a-r4-e4-source-e3-regression-r3 passed six objects, six E3 profiles, 216/216 cases and receipts, then two 267-artifact closures normalized to ff91f2517b460b4d60322ea1670aab94058a8db4246bf2e2b63b7454250f528f. That acceptance applied only to superseded commit 9e4cb44fd1a1f998fcc288df87dad60505e8bf18 and authorized timing attempt 1.",
-      "partial_progress": "Validation/0263 records timing r1's real arm64 2,064-byte frame diagnostic and correct fail-closed build rejection before boot. Replacement candidate 5857720dedc49f89d2367442f8fdb1a806ffa1cc remains an exact direct child of da9ce9159b3450c28c8faf8dceac671fb7bfeba2, changes only the notifier measurement cell allocation, and passes strict checkpatch plus exact arm64/x86_64 E4-on W=1 object smokes with zero diagnostics. Fresh six-object/six-profile evidence and independent double closure are pending; source acceptance is false."
+      "completed_on": "2026-07-20",
+      "completion_evidence": "Validation/0264 closes the exact stack-fixed direct child 5857720dedc49f89d2367442f8fdb1a806ffa1cc. Fresh replacement run 20260719T-p5a-r4-e4-source-e3-regression-r4 passed six source objects, all six E3 profiles, 216/216 cases and receipts, and zero compiler, final-skew, kernel-warning, case, timeout, or QEMU failure at combined SHA-256 2b90c47e69c4c190029bc0fb2b25e66db68f87ec16f0a4d4034f4741caf5d7ea. Two independent read-only closures audit 267 artifacts totaling 10,880,574 bytes and produce result SHA-256 5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f and bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720, normalized to 767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21. Focused closure tamper controls and timing config smoke r6 pass. This accepts only exact disposable virtual-synthetic source for arm64 timing r2; measurement/runtime/production claims remain false."
     },
     {
       "id": "P5A-R4-E4-M1",
@@ -2855,7 +2857,7 @@
       "blocked_by": [
         "P5A-R4-E4-S1"
       ],
-      "partial_progress": "Validation/0263 rejects canonical timing r1 at build stage before boot or rows because arm64 reports a 2,064-byte notifier-test stack frame against the 2,048-byte W=1 boundary. The diagnostic gate was not relaxed. Replacement candidate 5857720dedc49f89d2367442f8fdb1a806ffa1cc passes focused arm64/x86_64 W=1 objects, but arm64 timing r2 remains forbidden until fresh source/E3 regression and independent double closure pass. No timing result or measurement acceptance exists."
+      "partial_progress": "Validation/0264 proves the stack-fixed replacement source with fresh six-object/six-profile evidence and two byte-identical normalized read-only closures. Timing runner a3ee78f5ae1bc32a89bfb0b765a9e87da3888536c0bdb658b2f88acf71ddf392 rebinds those closures, passes VM ShellCheck, all exact/valid-negative/tamper parser fixtures, and config smoke r6 with zero builds/boots and complete scratch retirement. Only detached job p5a-r4-e4-arm64-timing-r2/run 20260720T-p5a-r4-e4-arm64-timing-r2 may start. No timing result or measurement acceptance exists yet."
     }
   ],
   "canonical_files": {
