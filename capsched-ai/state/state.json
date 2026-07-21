@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "workspace": "/Users/niania/Documents/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-p5a-r4-e4-arm64-timing-r2-qmp-failure-closed-r3-running",
+    "current_phase": "sched-exec-lease-l0-p5a-r4-e4-arm64-timing-r3-host-storage-failure-closed-r4-launch-ready",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/Users/niania/Documents/linux-cap/capsched",
@@ -288,7 +288,7 @@
     "scheduler_admission_failure_model": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/README.md",
     "scheduler_admission_failure_tla": "capsched/capsched-models/formal/0013-scheduler-admission-failure-model/SchedulerAdmissionFailure.tla",
     "scheduler_admission_failure_validation": "capsched/capsched-models/validation/0025-scheduler-admission-failure-tlc.md",
-    "current_focus": "Validation/0265 seals arm64 timing r2 as harness_failed/qemu_boot and independently reproduces the failure decision twice. The corrected hash-bound paused-QMP runner passes focused negative, real-QEMU, config-smoke, and cleanup controls. Standalone and detach-time clean/pushed preflight passed; job p5a-r4-e4-arm64-timing-r3/run 20260721T-p5a-r4-e4-arm64-timing-r3 detached at 2026-07-21T08:07:59Z and independent status/probe plus the first 30-second watch display observed its VM-internal Image build running. Interrupting the watch left the runner active. The next transition is exact result triage and independent read-only timing-evidence closure. No timing result, x86_64 authorization, Linux primary/patch promotion, live runtime, N-136 runtime charge, bare-metal, production, deployment, multi-node, multi-cluster, or datacenter claim exists.",
+    "current_focus": "Validation/0266 seals arm64 timing r3 as a shared-host ENOSPC harness failure after exact paused-QMP placement but before its 682-cell matrix completed. Two independent read-only closures normalize to one decision and give all 399 partial serial rows zero credit. Storage-hardened runner 2fe52b6e9bfbc57ccca43c6e45fc3c18b15e196967822c34743b202480385e69 maintains a 64 MiB seal reserve, checks an 8 GiB host floor at every progress update, and passes config smoke r8 plus forced-capacity control r2. After host cleanup, only fresh arm64 timing r4 may launch behind pre-trim, 32 GiB shared-host, and 16 GiB VM-internal gates. No timing result, x86_64 authorization, Linux primary/patch promotion, live runtime, N-136 runtime charge, bare-metal, production, deployment, multi-node, multi-cluster, or datacenter claim exists.",
     "p5a_r4_post_n135_authorization_analysis": "capsched/capsched-models/analysis/0175-sched-exec-lease-p5a-r4-post-n135-authorization-gate.md",
     "p5a_r4_post_n135_authorization_json": "capsched/capsched-models/analysis/sched-exec-lease-p5a-r4-post-n135-authorization-gate-v1.json",
     "p5a_r4_post_n135_authorization_formal": "capsched/capsched-models/formal/0138-p5a-r4-post-n135-authorization-gate-model/README.md",
@@ -310,6 +310,8 @@
     "p5a_r4_e4_source_e3_closure_validation": "capsched/capsched-models/validation/0262-sched-exec-lease-p5a-r4-e4-source-closure-and-arm64-timing-launch.md",
     "p5a_r4_e4_arm64_timing_r1_rejection": "capsched/capsched-models/validation/0263-sched-exec-lease-p5a-r4-e4-arm64-timing-r1-build-rejection.md",
     "p5a_r4_e4_replacement_source_closure_timing_r2_readiness": "capsched/capsched-models/validation/0264-sched-exec-lease-p5a-r4-e4-replacement-source-closure-and-arm64-timing-r2-readiness.md",
+    "p5a_r4_e4_arm64_timing_r3_storage_rejection": "capsched/capsched-models/validation/0266-sched-exec-lease-p5a-r4-e4-arm64-timing-r3-storage-rejection-and-r4-readiness.md",
+    "p5a_r4_e4_arm64_timing_r3_storage_failure_closure": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-timing-r3-storage-failure-closure.sh",
     "p5a_r4_e4_source_e3_closure_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure.sh",
     "p5a_r4_e4_source_e3_closure_test": "capsched/capsched-models/validation/test-sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure.sh",
     "p5a_r4_e4_arm64_timing_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement.sh",
@@ -2857,7 +2859,7 @@
       "blocked_by": [
         "P5A-R4-E4-S1"
       ],
-      "partial_progress": "Validation/0265 seals job p5a-r4-e4-arm64-timing-r2/run 20260720T-p5a-r4-e4-arm64-timing-r2 as harness_failed/qemu_boot at result SHA-256 171df609d8f8dc272a20f585cea3b419a0ae487c6a0feda1367e880afec12a22. One guest row appeared before any vCPU pin because default QEMU task names were truncated and the name-based scan found no TIDs. Two independent read-only failure closures normalize to 9c079b47fae1b7ae45baa6cd7517a9b02af2d6b3f4a9780f180366932e3178ef. Corrected runner 8b7ae0d18636f5027fd741527b0b5d1b8b5c5323fb62272c3a47cb5d17942fb2 starts QEMU paused and uses exact QMP mapping plus /proc singleton-affinity revalidation before resume; 15 negative fixtures, real-QEMU integration, config-smoke r7, and cleanup control r3 pass. Standalone and detach-time preflight passed. Job p5a-r4-e4-arm64-timing-r3/run 20260721T-p5a-r4-e4-arm64-timing-r3 detached at 2026-07-21T08:07:59Z and remained running after the first 30-second watch was interrupted. No measurement acceptance or x86_64 authorization exists yet."
+      "partial_progress": "Validation/0266 seals job p5a-r4-e4-arm64-timing-r3/run 20260721T-p5a-r4-e4-arm64-timing-r3 as harness_failed/qemu_boot at result SHA-256 a35076dc95800d34c39bf3cc38f6e6a7c429aac69a8c1bb88278b48f4669a689. Exact paused-QMP placement succeeded, but shared-host ENOSPC stopped progress after 397 durable and 399 serial rows; the incomplete 682-cell matrix receives no credit and x86_64 remains blocked. Two independent read-only closures produce e7d2bb95d9f5899fdbf50a4962d8f2175d879218ccc85135766ef8b9c430700c and b1f44a63b233182f401f9cc65b5e1176c2874b4915d22d89104e0de556d72b03, normalized to da37226ef0bc0bb6587ce1b234cbdacb09ad133e27986473bc2e7bca5182a624. Storage-hardened runner 2fe52b6e9bfbc57ccca43c6e45fc3c18b15e196967822c34743b202480385e69 adds an 8 GiB per-progress host floor and 64 MiB failure-seal reserve; config smoke r8 and forced-capacity control r2 pass with complete cleanup. Only fresh arm64 timing r4 may launch after pre-trim and 32 GiB host/16 GiB VM gates. No measurement acceptance or x86_64 authorization exists yet."
     }
   ],
   "canonical_files": {
@@ -2879,9 +2881,11 @@
     "active_analysis_plan": "capsched/capsched-models/plans/0001-upstream-analysis-plan.md",
     "event_log": "capsched/capsched-ai/state/events.jsonl",
     "p5a_r4_e4_arm64_timing_r2_qmp_rejection": "capsched/capsched-models/validation/0265-sched-exec-lease-p5a-r4-e4-arm64-timing-r2-qmp-rejection-and-r3-readiness.md",
+    "p5a_r4_e4_arm64_timing_r3_storage_rejection": "capsched/capsched-models/validation/0266-sched-exec-lease-p5a-r4-e4-arm64-timing-r3-storage-rejection-and-r4-readiness.md",
     "p5a_r4_e4_arm64_timing_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement.sh",
     "p5a_r4_e4_qmp_vcpu_control": "capsched/capsched-models/validation/qmp-sched-exec-lease-vcpu-control.py",
     "p5a_r4_e4_qmp_vcpu_control_test": "capsched/capsched-models/validation/test-sched-exec-lease-p5a-r4-e4-qmp-vcpu-control.sh",
-    "p5a_r4_e4_arm64_timing_failure_closure": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-timing-failure-closure.sh"
+    "p5a_r4_e4_arm64_timing_failure_closure": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-timing-failure-closure.sh",
+    "p5a_r4_e4_arm64_timing_r3_storage_failure_closure": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-timing-r3-storage-failure-closure.sh"
   }
 }

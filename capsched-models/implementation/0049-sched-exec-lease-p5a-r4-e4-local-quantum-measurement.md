@@ -2,15 +2,14 @@
 
 Date: 2026-07-21
 
-Status: arm64 timing attempt 2 is sealed as `harness_failed/qemu_boot`, not a
-timing result. The guest emitted one row before the old name-based vCPU-thread
-discovery could pin either thread. Two independent read-only failure closures
-reproduce that decision. The corrected runner starts QEMU paused, obtains exact
-vCPU index/TID mappings through QMP, pins and revalidates singleton affinity,
-then resumes. Focused real-QEMU, negative-fixture, config, and cleanup tests
-pass. Exact clean/pushed preflight then passed twice, and arm64 timing r3 is
-running under detached 30-second monitoring. No timing result or broader
-runtime/production claim is accepted.
+Status: arm64 timing attempt 3 is sealed as a shared-host ENOSPC harness
+failure, not a timing result. Paused-QMP placement succeeded, but the matrix
+stopped after 399 of 682 serial rows when a progress write exhausted shared
+storage. Two independent read-only closures give every partial row zero credit.
+The runner now maintains a 64 MiB failure-seal reserve and checks an 8 GiB host
+floor at every progress update. Config smoke and a forced-capacity negative
+control pass. Only fresh arm64 timing r4 is authorized; x86_64 and every broader
+runtime/production claim remain blocked.
 
 ## Source Identity
 
@@ -212,6 +211,44 @@ replacement config smoke r7 resolves the exact two-vCPU diagnostic
 configuration with zero builds and boots, snapshots the corrected runner and
 helper, and retires all scratch. A forced insufficient-space control fails
 after worktree creation and proves both worktree and build-root retirement.
+
+## Arm64 Timing Attempt 3 Host-Storage Rejection
+
+Detached run `20260721T-p5a-r4-e4-arm64-timing-r3` completed the Image build
+and established the corrected paused-QMP contract exactly: indexes 0 and 1
+mapped to distinct active-QEMU TIDs, both TIDs were singleton-pinned to host
+CPUs 0 and 1, mapping plus `/proc` ownership and affinity were revalidated,
+zero rows existed before resume, and QMP reported `running` afterwards.
+
+The run nevertheless sealed `harness_failed/qemu_boot` at result SHA-256
+`a35076dc95800d34c39bf3cc38f6e6a7c429aac69a8c1bb88278b48f4669a689`.
+The job log contains exactly one `No space left on device`, at the shared-host
+progress write. Its last durable counter is 397/682; the serial log contains
+399 result rows and one summary. The incomplete matrix receives no threshold,
+architecture, performance, or x86_64 credit. Both scratch roots are retired,
+Image/object archives restore exactly, and wrapper trim reclaimed
+340,478,111,744 bytes from `/dev/vdb`.
+
+Validation/0266 closes the failure twice over 38 timing artifacts and five job
+records. Closure r1/r2 results are
+`e7d2bb95d9f5899fdbf50a4962d8f2175d879218ccc85135766ef8b9c430700c`
+and
+`b1f44a63b233182f401f9cc65b5e1176c2874b4915d22d89104e0de556d72b03`;
+deleting only `run_id` yields byte-identical SHA-256
+`da37226ef0bc0bb6587ce1b234cbdacb09ad133e27986473bc2e7bca5182a624`.
+All copied inputs are read-only. An exact copied fixture passes, while job-log
+mutation and pin-record symlink substitution fail closed.
+
+Storage-hardened runner
+`2fe52b6e9bfbc57ccca43c6e45fc3c18b15e196967822c34743b202480385e69`
+creates an fsync'd 64 MiB seal reserve, checks an 8 GiB shared-host floor at
+every progress boundary, preserves exact capacity/write failure reasons, and
+releases the reserve before failure or successful result sealing. Config smoke
+r8 starts no build or boot and retires all scratch. Forced-capacity control r2
+fails before build, seals exact result
+`457fb3a7a5f00c0ea40b53af78d09d9f95021678b7003fbd02ef061ca2043c4c`,
+releases the reserve, and leaves no scratch. R4 preflight additionally requires
+VM trim, at least 32 GiB shared-host free, and at least 16 GiB VM-internal free.
 
 ## Claim Boundary
 

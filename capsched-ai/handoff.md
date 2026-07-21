@@ -6645,3 +6645,35 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     still requires independent timing-evidence closure. Only a clean arm64
     result can authorize same-source x86_64. No live/runtime/N-136/bare-metal/
     performance/production/deployment/multi-cluster/datacenter claim exists.
+
+- P5A-R4 E4 arm64 timing r3 is rejected on shared-host storage; r4 is launch-ready:
+
+  Exact r3 boundary:
+    job `p5a-r4-e4-arm64-timing-r3`, run
+    `20260721T-p5a-r4-e4-arm64-timing-r3`, finished at
+    `2026-07-21T11:48:09Z` as `harness_failed/qemu_boot`. Result SHA-256 is
+    `a35076dc...66e9a689`. Paused-QMP mapping, distinct singleton affinity,
+    pre-resume revalidation, zero pre-resume rows, and running-after-resume all
+    passed. The shared progress write then reached ENOSPC before matrix
+    completion: last durable progress is 397/682 and serial contains 399 rows.
+    Every partial value has zero timing/threshold credit and x86_64 is blocked.
+
+  Independent closure and recovery:
+    validation/0266 snapshots 38 timing artifacts plus five job records
+    read-only. r1/r2 results are `e7d2bb95...430700c` and
+    `b1f44a63...6d72b03`; removing only `run_id` yields byte-identical
+    `da37226e...182a624`. Exact fixture passes; changed job log and symlinked
+    pinning fail closed. Build/worktree scratch is absent, Image/object archives
+    restore exactly, and successful VM trim reclaimed 317.1 GiB.
+
+  R4 boundary:
+    runner `2fe52b6e...385e69` adds an 8 GiB shared-host check at every
+    progress update and a 64 MiB failure-seal reserve. Config smoke r8 and
+    host-capacity-negative r2 pass with complete cleanup. Launch only job
+    `p5a-r4-e4-arm64-timing-r4`, run
+    `20260721T-p5a-r4-e4-arm64-timing-r4`, after VM trim, exact clean/pushed
+    preflight, at least 32 GiB shared-host free, and 16 GiB VM-internal free.
+    Monitor with `./tools/long-job.sh watch p5a-r4-e4-arm64-timing-r4 30`.
+    Independent complete-result closure remains mandatory. No timing, x86_64,
+    runtime, bare-metal, performance, production, deployment, multi-cluster,
+    or datacenter claim exists.

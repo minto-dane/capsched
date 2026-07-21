@@ -4947,3 +4947,22 @@ P5A-R3 E4 source and exact-source regression gate:
   authorizes only clean arm64 timing r3 under a 30-second monitor; independent
   result closure and all broader runtime/production claims remain pending or
   false.
+
+- P5A-R4 E4 arm64 timing r3 storage rejection and r4 boundary:
+
+  Run `20260721T-p5a-r4-e4-arm64-timing-r3` established exact paused-QMP
+  placement but sealed `harness_failed/qemu_boot` at
+  `a35076dc...66e9a689` when its shared-host progress write returned ENOSPC.
+  Last durable progress was 397/682 and serial retained 399 rows; the incomplete
+  matrix has no threshold, architecture, or x86_64 credit. Two independent
+  read-only closures over 38 timing artifacts and five job records produce
+  `e7d2bb95...430700c` and `b1f44a63...6d72b03`, normalized to
+  `da37226e...182a624`. VM trim reclaimed 317.1 GiB and both scratch roots are
+  absent.
+
+  Runner `2fe52b6e...385e69` now keeps a 64 MiB result-seal reserve and checks
+  an 8 GiB shared-host floor at every progress boundary. Config smoke r8 and
+  forced-capacity r2 pass. Validation/0266 authorizes only fresh arm64 timing
+  r4 after pre-trim plus 32 GiB shared-host and 16 GiB VM-internal launch
+  floors. Independent complete-result closure and every live/runtime/production
+  claim remain pending or false.

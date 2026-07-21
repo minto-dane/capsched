@@ -40,6 +40,8 @@ HOST_ENV_FILE=${HOST_ENV_FILE:-}
 JOBS=${JOBS:-2}
 QEMU_TIMEOUT=${QEMU_TIMEOUT:-86400}
 BUILD_STORAGE_MIN_KIB=${BUILD_STORAGE_MIN_KIB:-16777216}
+HOST_STORAGE_MIN_KIB=${HOST_STORAGE_MIN_KIB:-8388608}
+SEAL_RESERVE_MIB=${SEAL_RESERVE_MIB:-64}
 GUEST_VCPUS=2
 IMAGE="$BUILD_OUT/arch/arm64/boot/Image"
 OBJECT="$BUILD_OUT/kernel/sched/exec_lease.o"
@@ -50,6 +52,7 @@ SUMMARIES="$RAW_DIR/r4-e4-summary-rows.txt"
 QMP_SOCKET="$BUILD_ROOT/qmp.sock"
 QMP_MAPPING="$RAW_DIR/qmp-vcpus.txt"
 QMP_AFFINITY="$RAW_DIR/qmp-vcpu-affinity.txt"
+SEAL_RESERVE="$OUT_DIR/.failure-seal-reserve"
 FAILURE_REASON=
 CURRENT_STAGE=initialization
 ACTIVE_PID=
@@ -64,8 +67,26 @@ file_sha()
 
 progress()
 {
+	local host_available_kib
+	host_available_kib=$(df -Pk "$WORKSPACE_DIR" | awk 'NR==2 {print $4}')
+	case "$host_available_kib" in
+		''|*[!0-9]*)
+			FAILURE_REASON='could not read host shared-storage availability'
+			printf 'error: %s\n' "$FAILURE_REASON" >&2
+			return 1
+			;;
+	esac
+	if [ "$host_available_kib" -lt "$HOST_STORAGE_MIN_KIB" ]; then
+		FAILURE_REASON="host shared storage below ${HOST_STORAGE_MIN_KIB}KiB at progress update (${host_available_kib}KiB available)"
+		printf 'error: %s\n' "$FAILURE_REASON" >&2
+		return 1
+	fi
 	mkdir -p "$(dirname "$PROGRESS_FILE")"
-	printf '%s\n' "$*" > "$PROGRESS_FILE"
+	if ! printf '%s\n' "$*" > "$PROGRESS_FILE"; then
+		FAILURE_REASON='host progress record write failed after capacity check'
+		printf 'error: %s\n' "$FAILURE_REASON" >&2
+		return 1
+	fi
 	printf '[progress] %s\n' "$*"
 }
 
@@ -88,6 +109,13 @@ safe_remove_tree()
 		find "$path" -depth -delete
 	fi
 	[ ! -e "$path" ] && [ ! -L "$path" ]
+}
+
+release_seal_reserve()
+{
+	if [ -f "$SEAL_RESERVE" ] && [ ! -L "$SEAL_RESERVE" ]; then
+		find "$SEAL_RESERVE" -maxdepth 0 -type f -delete
+	fi
 }
 
 terminate_active()
@@ -132,6 +160,7 @@ write_failure_result()
 {
 	local reason=${FAILURE_REASON:-"runner exited unexpectedly with code $1"}
 	local build_retired_json=false worktree_retired_json=false
+	release_seal_reserve
 	[ -d "$OUT_DIR" ] || return 0
 	[ ! -e "$OUT_DIR/result.json" ] || return 0
 	command -v jq >/dev/null 2>&1 || return 0
@@ -192,15 +221,18 @@ case "$WORKTREE" in
 	/var/tmp/linux-cap-worktrees/p5a-r4-e4-arm64-measurement/*) ;;
 	*) die "unsafe worktree: $WORKTREE" ;;
 esac
-case "$JOBS:$QEMU_TIMEOUT:$BUILD_STORAGE_MIN_KIB" in
-	*[!0-9:]*|0:*|*:0:*|*:*:0) die 'numeric runner limits must be positive integers' ;;
-esac
+for numeric_limit in "$JOBS" "$QEMU_TIMEOUT" "$BUILD_STORAGE_MIN_KIB" \
+	"$HOST_STORAGE_MIN_KIB" "$SEAL_RESERVE_MIB"; do
+	case "$numeric_limit" in
+		''|*[!0-9]*|0) die 'numeric runner limits must be positive integers' ;;
+	esac
+done
 case "${CONFIG_SMOKE_ONLY:-0}" in
 	0|1) ;;
 	*) die 'CONFIG_SMOKE_ONLY must be 0 or 1' ;;
 esac
 
-for command in awk cat chmod cmp cp cut date df find gcc git grep jq lscpu make \
+for command in awk cat chmod cmp cp cut date dd df find gcc git grep jq lscpu make \
 	mkdir mkfifo nm qemu-system-aarch64 readelf sed sha256sum sleep sort stat \
 	strings tail taskset tr uname wc xargs zstd setsid python3; do
 	command -v "$command" >/dev/null 2>&1 || die "missing command: $command"
@@ -214,6 +246,14 @@ done
 if [ -e "$OUT_DIR" ] || [ -L "$OUT_DIR" ]; then
 	die "run output already exists: $OUT_DIR"
 fi
+mkdir -p "$OUT_DIR"
+if ! dd if=/dev/urandom of="$SEAL_RESERVE" bs=1048576 count="$SEAL_RESERVE_MIB" \
+	conv=fsync status=none; then
+	die 'failed to create failure-seal reserve on host shared storage'
+fi
+[ "$(stat -c %s "$SEAL_RESERVE")" = "$((SEAL_RESERVE_MIB * 1048576))" ] \
+	|| die 'failure-seal reserve size changed'
+chmod 0400 "$SEAL_RESERVE"
 
 CURRENT_STAGE=prerequisite_closure
 progress '2% verifying exact source, plan, and independent double closure'
@@ -320,6 +360,9 @@ build_storage_available_kib=$(df -Pk "$BUILD_ROOT" | awk 'NR==2 {print $4}')
 {
 	printf 'build_root=%s\nfilesystem=%s\navailable_kib_at_start=%s\nshared_host_build_output=false\n' \
 		"$BUILD_ROOT" "$build_storage_type" "$build_storage_available_kib"
+	printf 'host_storage_min_kib=%s\nhost_available_kib_at_start=%s\nfailure_seal_reserve_mib=%s\n' \
+		"$HOST_STORAGE_MIN_KIB" "$(df -Pk "$WORKSPACE_DIR" | awk 'NR==2 {print $4}')" \
+		"$SEAL_RESERVE_MIB"
 	df -Pk "$BUILD_ROOT" "$OUT_DIR"
 } > "$RAW_DIR/build-storage.txt"
 uname -a > "$RAW_DIR/container-uname.txt"
@@ -371,6 +414,7 @@ grep -E '^CONFIG_(MITIGATION|ARM64_PTR_AUTH|ARM64_BTI|RANDOMIZE_BASE|STACKPROTEC
 if [ "${CONFIG_SMOKE_ONLY:-0}" = 1 ]; then
 	retire_owned_paths
 	[ "$BUILD_RETIRED:$WORKTREE_RETIRED" = 1:1 ] || die 'config-smoke cleanup failed'
+	release_seal_reserve
 	progress '100% exact arm64 timing config smoke passed; builds=0 boots=0 scratch retired'
 	exit 0
 fi
@@ -591,6 +635,7 @@ CURRENT_STAGE=sealing
 [ "$(file_sha "$QMP_CONTROL")" = "$qmp_control_initial_sha" ] || die 'QMP vCPU control changed during execution'
 retire_owned_paths
 [ "$BUILD_RETIRED:$WORKTREE_RETIRED" = 1:1 ] || die 'run-owned scratch retirement failed'
+release_seal_reserve
 printf 'build_output_retired=true\nworktree_retired=true\n' >> "$ARTIFACT_DIR/manifest.txt"
 
 config_sha=$(file_sha "$RAW_DIR/arm64.config")
