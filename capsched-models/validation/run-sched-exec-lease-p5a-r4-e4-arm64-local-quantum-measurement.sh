@@ -11,6 +11,7 @@ PATCH_QUEUE_DIR="$WORKSPACE_DIR/linux-patches"
 PLAN="$CAPSCHED_DIR/capsched-models/analysis/sched-exec-lease-p5a-r4-e4-local-quantum-measurement-plan-v1.json"
 PARSER="$SCRIPT_DIR/parse-sched-exec-lease-p5a-r4-e4-measurement-evidence.sh"
 WARNING_CLASSIFIER="$SCRIPT_DIR/lib/kernel-warning-classifier.sh"
+QMP_CONTROL="$SCRIPT_DIR/qmp-sched-exec-lease-vcpu-control.py"
 CLOSURE_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure"
 CLOSURE_R1="$CLOSURE_ROOT/20260720T-p5a-r4-e4-source-e3-final-closure-r1"
 CLOSURE_R2="$CLOSURE_ROOT/20260720T-p5a-r4-e4-source-e3-final-closure-r2"
@@ -22,6 +23,7 @@ PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 PLAN_SHA=63ba7b17c3d08ea1ee0cdd4b420cc3a08b21932e9f6c2fb3f31754147e5b1667
 WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a
+QMP_CONTROL_SHA=e59bc8ad5adb50ddf66652b28a424afd1efbd28a9501e786771d5fb1f8da147e
 CLOSURE_R1_SHA=5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f
 CLOSURE_R2_SHA=bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720
 CLOSURE_NORMALIZED_SHA=767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21
@@ -45,6 +47,9 @@ SERIAL="$RAW_DIR/qemu-serial.log"
 KTAP="$RAW_DIR/qemu-ktap.log"
 ROWS="$RAW_DIR/r4-e4-result-rows.txt"
 SUMMARIES="$RAW_DIR/r4-e4-summary-rows.txt"
+QMP_SOCKET="$BUILD_ROOT/qmp.sock"
+QMP_MAPPING="$RAW_DIR/qmp-vcpus.txt"
+QMP_AFFINITY="$RAW_DIR/qmp-vcpu-affinity.txt"
 FAILURE_REASON=
 CURRENT_STAGE=initialization
 ACTIVE_PID=
@@ -197,10 +202,10 @@ esac
 
 for command in awk cat chmod cmp cp cut date df find gcc git grep jq lscpu make \
 	mkdir mkfifo nm qemu-system-aarch64 readelf sed sha256sum sleep sort stat \
-	strings tail taskset tr uname wc xargs zstd setsid; do
+	strings tail taskset tr uname wc xargs zstd setsid python3; do
 	command -v "$command" >/dev/null 2>&1 || die "missing command: $command"
 done
-for input in "$PLAN" "$PARSER" "$WARNING_CLASSIFIER" \
+for input in "$PLAN" "$PARSER" "$WARNING_CLASSIFIER" "$QMP_CONTROL" \
 	"$CLOSURE_R1/result.json" "$CLOSURE_R2/result.json" \
 	"$CLOSURE_R1/result.normalized.json" "$CLOSURE_R2/result.normalized.json"; do
 	[ -f "$input" ] || die "required input missing: $input"
@@ -214,6 +219,7 @@ CURRENT_STAGE=prerequisite_closure
 progress '2% verifying exact source, plan, and independent double closure'
 [ "$(file_sha "$PLAN")" = "$PLAN_SHA" ] || die 'measurement plan hash changed'
 [ "$(file_sha "$WARNING_CLASSIFIER")" = "$WARNING_CLASSIFIER_SHA" ] || die 'warning classifier hash changed'
+[ "$(file_sha "$QMP_CONTROL")" = "$QMP_CONTROL_SHA" ] || die 'QMP vCPU control hash changed'
 [ "$(file_sha "$CLOSURE_R1/result.json")" = "$CLOSURE_R1_SHA" ] || die 'closure r1 result hash changed'
 [ "$(file_sha "$CLOSURE_R2/result.json")" = "$CLOSURE_R2_SHA" ] || die 'closure r2 result hash changed'
 for closure in "$CLOSURE_R1" "$CLOSURE_R2"; do
@@ -285,14 +291,18 @@ fi
 mkdir -p "$RAW_DIR" "$ARTIFACT_DIR" "$(dirname "$BUILD_ROOT")" "$(dirname "$WORKTREE")"
 runner_initial_sha=$(file_sha "${BASH_SOURCE[0]}")
 parser_initial_sha=$(file_sha "$PARSER")
+qmp_control_initial_sha=$(file_sha "$QMP_CONTROL")
 cp -- "${BASH_SOURCE[0]}" "$RAW_DIR/measurement-runner.sh"
 cp -- "$PARSER" "$RAW_DIR/measurement-parser.sh"
 cp -- "$WARNING_CLASSIFIER" "$RAW_DIR/kernel-warning-classifier.sh"
+cp -- "$QMP_CONTROL" "$RAW_DIR/qmp-vcpu-control.py"
 cp -- "$PLAN" "$RAW_DIR/measurement-plan.json"
 cp -- "$CLOSURE_R1/result.json" "$RAW_DIR/closure-r1-result.json"
 cp -- "$CLOSURE_R2/result.json" "$RAW_DIR/closure-r2-result.json"
 cp -- "$CLOSURE_R1/result.normalized.json" "$RAW_DIR/closure-normalized.json"
 cp -- "$HOST_ENV_FILE" "$RAW_DIR/outer-host-environment.txt"
+python3 "$QMP_CONTROL" self-test > "$RAW_DIR/qmp-vcpu-control-self-test.txt" \
+	|| die 'QMP vCPU control self-test failed'
 
 CURRENT_STAGE=worktree
 progress '4% creating exact disposable candidate worktree on VM-internal ext4'
@@ -428,7 +438,7 @@ object_archive_sha=$(file_sha "$object_archive")
 
 append='console=ttyAMA0 earlycon=pl011,0x09000000 kunit.enable=1 kunit.autorun=1 kunit.filter_glob=sched_exec_lease_r4_measure kunit_shutdown=poweroff ftrace=irqsoff panic=1 oops=panic rcupdate.rcu_cpu_stall_suppress=0'
 {
-	printf 'taskset -c %s qemu-system-aarch64 -machine virt,gic-version=3 -cpu cortex-a57 -accel tcg,thread=multi -smp %s,maxcpus=%s -m 4096 -nic none -nographic -no-reboot -kernel [verified Image] -append [recorded next line]\n' "$host_allowed_list" "$GUEST_VCPUS" "$GUEST_VCPUS"
+	printf 'taskset -c %s qemu-system-aarch64 -S -name guest=%s,debug-threads=on -qmp unix:[run-owned qmp.sock],server=on,wait=off -machine virt,gic-version=3 -cpu cortex-a57 -accel tcg,thread=multi -smp %s,maxcpus=%s -m 4096 -nic none -nographic -no-reboot -kernel [verified Image] -append [recorded next line]\n' "$host_allowed_list" "$RUN_ID" "$GUEST_VCPUS" "$GUEST_VCPUS"
 	printf '%s\n' "$append"
 } > "$RAW_DIR/qemu-command.txt"
 
@@ -443,12 +453,15 @@ expand_cpulist()
 	}'
 }
 mapfile -t host_cpus < <(expand_cpulist "$host_allowed_list")
-[ "${#host_cpus[@]}" -gt 0 ] || die 'could not expand container CPU allowance'
+[ "${#host_cpus[@]}" -ge "$GUEST_VCPUS" ] \
+	|| die 'container CPU allowance cannot give each QEMU vCPU a distinct host CPU'
 
 CURRENT_STAGE=qemu_boot
 progress '80% booting pinned 2-vCPU arm64 QEMU; waiting for 682 immutable rows'
 set +e
 setsid taskset -c "$host_allowed_list" qemu-system-aarch64 \
+	-S -name "guest=$RUN_ID,debug-threads=on" \
+	-qmp "unix:$QMP_SOCKET,server=on,wait=off" \
 	-machine virt,gic-version=3 -cpu cortex-a57 -accel tcg,thread=multi \
 	-smp "$GUEST_VCPUS",maxcpus="$GUEST_VCPUS" -m 4096 -nic none -nographic -no-reboot \
 	-kernel "$IMAGE" -append "$append" > "$SERIAL" 2>&1 &
@@ -456,38 +469,57 @@ ACTIVE_PID=$!
 set -e
 qemu_pid=$ACTIVE_PID
 printf 'qemu_pid=%s\nparent_allowed_cpus=%s\n' "$qemu_pid" "$host_allowed_list" > "$RAW_DIR/vcpu-pinning.txt"
+if ! python3 "$QMP_CONTROL" query --socket "$QMP_SOCKET" \
+	--expected-vcpus "$GUEST_VCPUS" --timeout 300 > "$QMP_MAPPING"; then
+	die 'failed to query exact paused QEMU vCPU mapping'
+fi
 declare -A pinned_vcpu
 pinned_vcpu=()
-pin_deadline=$((SECONDS + 300))
-while kill -0 "$qemu_pid" 2>/dev/null && [ "${#pinned_vcpu[@]}" -lt "$GUEST_VCPUS" ]; do
-	rows_before_pin=$(grep -c 'R4_E4_RESULT ' "$SERIAL" 2>/dev/null || true)
-	[ "$rows_before_pin" = 0 ] || die 'measurement emitted rows before all QEMU vCPU threads were pinned'
-	for task_dir in /proc/"$qemu_pid"/task/*; do
-		[ -r "$task_dir/comm" ] || continue
-		comm=$(cat "$task_dir/comm")
-		case "$comm" in
-			CPU\ */TCG)
-				vcpu=${comm#CPU }
-				vcpu=${vcpu%/TCG}
-				case "$vcpu" in ''|*[!0-9]*) continue ;; esac
-				[ "$vcpu" -lt "$GUEST_VCPUS" ] || continue
-				if [ -z "${pinned_vcpu[$vcpu]+set}" ]; then
-					tid=${task_dir##*/}
-					host_cpu=${host_cpus[$((vcpu % ${#host_cpus[@]}))]}
-					taskset -pc "$host_cpu" "$tid" >> "$RAW_DIR/vcpu-pinning.txt" 2>&1 || die "failed to pin QEMU vCPU $vcpu"
-					actual=$(awk '/^Cpus_allowed_list:/ {print $2}' "$task_dir/status")
-					[ "$actual" = "$host_cpu" ] || die "QEMU vCPU $vcpu affinity did not become singleton $host_cpu"
-					printf 'vcpu=%s tid=%s host_cpu=%s verified_allowed_list=%s\n' "$vcpu" "$tid" "$host_cpu" "$actual" >> "$RAW_DIR/vcpu-pinning.txt"
-					pinned_vcpu[$vcpu]=1
-				fi
-				;;
-		esac
-	done
-	[ "$SECONDS" -lt "$pin_deadline" ] || die 'timed out pinning all QEMU vCPU threads'
-	sleep 1
-done
-[ "${#pinned_vcpu[@]}" = "$GUEST_VCPUS" ] || die 'QEMU exited before all vCPU threads were pinned'
-printf 'rows_before_all_vcpus_pinned=0\npinned_vcpu_threads=%s\n' "$GUEST_VCPUS" >> "$RAW_DIR/vcpu-pinning.txt"
+: > "$QMP_AFFINITY"
+cat "$QMP_MAPPING" >> "$RAW_DIR/vcpu-pinning.txt"
+while IFS=' ' read -r vcpu_field tid_field extra; do
+	case "$vcpu_field" in
+		qmp_status=*)
+			[ -z "$tid_field$extra" ] || die 'malformed QMP status mapping line'
+			continue
+			;;
+		vcpu=*) ;;
+		*) die 'unknown QMP vCPU mapping line' ;;
+	esac
+	[ -z "$extra" ] || die 'QMP vCPU mapping has extra fields'
+	vcpu=${vcpu_field#vcpu=}
+	tid=${tid_field#tid=}
+	case "$vcpu" in ''|*[!0-9]*) die 'malformed QMP vCPU index' ;; esac
+	case "$tid" in ''|*[!0-9]*) die 'malformed QMP vCPU thread id' ;; esac
+	[ "$tid_field" = "tid=$tid" ] || die 'malformed QMP vCPU thread field'
+	[ "$vcpu" -lt "$GUEST_VCPUS" ] || die 'QMP vCPU index is outside the fixed topology'
+	[ -z "${pinned_vcpu[$vcpu]+set}" ] || die "duplicate QMP vCPU index $vcpu"
+	task_dir=/proc/"$qemu_pid"/task/"$tid"
+	[ -r "$task_dir/status" ] || die "QMP vCPU $vcpu thread is not owned by the active QEMU"
+	host_cpu=${host_cpus[$((vcpu % ${#host_cpus[@]}))]}
+	taskset -pc "$host_cpu" "$tid" >> "$RAW_DIR/vcpu-pinning.txt" 2>&1 \
+		|| die "failed to pin QEMU vCPU $vcpu"
+	actual=$(awk '/^Cpus_allowed_list:/ {print $2}' "$task_dir/status")
+	[ "$actual" = "$host_cpu" ] \
+		|| die "QEMU vCPU $vcpu affinity did not become singleton $host_cpu"
+	comm=$(cat "$task_dir/comm")
+	printf 'vcpu=%s tid=%s host_cpu=%s verified_allowed_list=%s comm=%s\n' \
+		"$vcpu" "$tid" "$host_cpu" "$actual" "$comm" >> "$RAW_DIR/vcpu-pinning.txt"
+	printf 'vcpu=%s tid=%s host_cpu=%s\n' "$vcpu" "$tid" "$host_cpu" >> "$QMP_AFFINITY"
+	pinned_vcpu[$vcpu]=1
+done < "$QMP_MAPPING"
+[ "${#pinned_vcpu[@]}" = "$GUEST_VCPUS" ] || die 'QMP mapping did not pin all vCPU threads'
+cat "$QMP_AFFINITY" >> "$RAW_DIR/vcpu-pinning.txt"
+rows_before_resume=$(awk '/R4_E4_RESULT / { count++ } END { print count + 0 }' "$SERIAL" 2>/dev/null || printf '0\n')
+[ "$rows_before_resume" = 0 ] || die 'measurement emitted rows while QEMU was paused before resume'
+if ! python3 "$QMP_CONTROL" resume --socket "$QMP_SOCKET" \
+	--expected-vcpus "$GUEST_VCPUS" --mapping "$QMP_MAPPING" \
+	--affinity "$QMP_AFFINITY" --qemu-pid "$qemu_pid" --timeout 30 \
+	>> "$RAW_DIR/vcpu-pinning.txt"; then
+	die 'QMP vCPU mapping changed or QEMU failed to resume'
+fi
+printf 'rows_before_all_vcpus_pinned=0\npinned_vcpu_threads=%s\nqmp_pause_before_affinity=true\nqmp_mapping_reverified_before_resume=true\n' \
+	"$GUEST_VCPUS" >> "$RAW_DIR/vcpu-pinning.txt"
 
 deadline=$((SECONDS + QEMU_TIMEOUT))
 last_rows=-1
@@ -556,6 +588,7 @@ CURRENT_STAGE=sealing
 [ "$(file_sha "${BASH_SOURCE[0]}")" = "$runner_initial_sha" ] || die 'measurement runner changed during execution'
 [ "$(file_sha "$PARSER")" = "$parser_initial_sha" ] || die 'measurement parser changed during execution'
 [ "$(file_sha "$WARNING_CLASSIFIER")" = "$WARNING_CLASSIFIER_SHA" ] || die 'warning classifier changed during execution'
+[ "$(file_sha "$QMP_CONTROL")" = "$qmp_control_initial_sha" ] || die 'QMP vCPU control changed during execution'
 retire_owned_paths
 [ "$BUILD_RETIRED:$WORKTREE_RETIRED" = 1:1 ] || die 'run-owned scratch retirement failed'
 printf 'build_output_retired=true\nworktree_retired=true\n' >> "$ARTIFACT_DIR/manifest.txt"
@@ -589,6 +622,7 @@ clocksource_detail=$(grep -Ei 'clocksource|arch_sys_counter' "$SERIAL" | tail -n
 jq -n \
 	--arg run_id "$RUN_ID" --arg status "$classification" \
 	--arg runner_sha "$runner_initial_sha" --arg parser_sha "$parser_initial_sha" \
+	--arg qmp_control_sha "$qmp_control_initial_sha" \
 	--arg compiler "$compiler" --arg qemu_version "$qemu_version" \
 	--arg container_uname "$container_uname" --arg clocksource_detail "$clocksource_detail" \
 	--arg host_allowed "$host_allowed_list" --arg host_env_sha "$host_env_sha" \
@@ -609,12 +643,12 @@ jq -n \
   architecture:"arm64",
   source:{parent:"da9ce9159b3450c28c8faf8dceac671fb7bfeba2",commit:"5857720dedc49f89d2367442f8fdb1a806ffa1cc",tree:"ee6e329106327a302bf63c78f2ed4fe3ddea7865",diff_sha256:"d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93"},
   prerequisites:{combined_run:"20260719T-p5a-r4-e4-source-e3-regression-r4",closure_r1_sha256:"5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f",closure_r2_sha256:"bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720",closure_normalized_sha256:"767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21",independent_double_closure_passed:true},
-  runner:{sha256:$runner_sha,parser_sha256:$parser_sha,warning_classifier_sha256:"8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a"},
+  runner:{sha256:$runner_sha,parser_sha256:$parser_sha,warning_classifier_sha256:"8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a",qmp_vcpu_control_sha256:$qmp_control_sha},
   matrix:{publication:288,picker_kick:144,irq_dispatch:9,recovery:144,notifier:48,current_stop:24,offline:25,total_cells:682,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,total_measured_pairs:6820000,result_rows:682},
   gates_ns:{ordinary_local:{additional_p99:5000,additional_p999:25000,additional_max:50000},offline_local:{additional_p99:25000,additional_p999:40000,additional_max:50000},asynchronous_availability:{p99:10000000,max:100000000},normalized_base_slice:700000},
   parser:{result_sha256:$parser_result_sha,rejected_cells:$rejected_cells,threshold_breaches:$threshold_breaches,malformed_or_missing_rows:0,duplicate_or_unexpected_cells:0,harness_observation_failures:0,summary_mismatches:0},
   diagnostics:{compiler_diagnostics:0,clock_skew_reports:$clock_skew_count,kernel_warning_reports:$warning_count,kunit_suite_passed:true,kunit_cases_passed:7,kunit_cases_failed:0,kunit_cases_skipped:0,qemu_exit_code:0},
-  placement:{guest_vcpus:2,host_container_allowed_cpus:$host_allowed,qemu_vcpu_threads_pinned:2,rows_before_all_vcpus_pinned:0,pinning_record_sha256:$pinning_sha,per_cell_guest_measurement_cpu_recorded:true,per_sample_guest_cpu_migration_rejected:true,irq_preempt_state_recorded:true},
+  placement:{guest_vcpus:2,host_container_allowed_cpus:$host_allowed,qemu_vcpu_threads_pinned:2,rows_before_all_vcpus_pinned:0,qmp_pause_before_affinity:true,qmp_mapping_reverified_before_resume:true,pinning_record_sha256:$pinning_sha,per_cell_guest_measurement_cpu_recorded:true,per_sample_guest_cpu_migration_rejected:true,irq_preempt_state_recorded:true},
   environment:{outer_host_record_sha256:$host_env_sha,outer_virtualization:"Apple Container machine domainlease-dev",container_uname:$container_uname,compiler:$compiler,qemu_version:$qemu_version,qemu_accelerator:"tcg,thread=multi",qemu_machine:"virt,gic-version=3",qemu_cpu:"cortex-a57",qemu_memory_mib:4096,qemu_network_disabled:true,sample_clock:"local_clock",clocksource_detail:$clocksource_detail,virtualized_result_supports_bare_metal_claim:false},
   artifacts:{raw_artifact_count:$raw_artifact_count,raw_manifest_sha256:$raw_manifest_sha,derived_artifact_count:$derived_artifact_count,derived_manifest_sha256:$derived_manifest_sha,config_sha256:$config_sha,image:{archive:"raw/boot-artifacts/arm64/Image.zst",source_sha256:$image_sha,archive_sha256:$image_archive_sha,restore_verified:true},exec_lease_object:{archive:"raw/boot-artifacts/arm64/exec_lease.o.zst",source_sha256:$object_sha,archive_sha256:$object_archive_sha,restore_verified:true},serial_sha256:$serial_sha,normalized_ktap_sha256:$ktap_sha,measurement_table_sha256:$table_sha,raw_inputs_read_only:true,derived_outputs_read_only:true,build_output_retired:true,worktree_retired:true},
   architecture_measurement_valid:true,

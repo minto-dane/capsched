@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-20
+Updated: 2026-07-21
 
 Read this first when resuming the project.
 
@@ -6587,3 +6587,44 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   closed before any measurement acceptance. No result or x86_64 authorization
   exists yet; all live/runtime/bare-metal/production/datacenter claims remain
   false.
+
+- P5A-R4 E4 arm64 timing r2 is rejected at the QMP placement boundary; r3 is launch-ready:
+
+  R2 exact result:
+    job `p5a-r4-e4-arm64-timing-r2`, run
+    `20260720T-p5a-r4-e4-arm64-timing-r2`, finished at
+    `2026-07-21T07:37:11Z` as `harness_failed/qemu_boot`. Result SHA-256 is
+    `171df609...12a22`. The full Image built and QEMU booted, but the guest
+    emitted one row at 5.264269 seconds before either vCPU was pinned. The pin
+    record contains no vCPU row, so this is not timing or threshold evidence.
+    x86_64 remains blocked. Image/object evidence is losslessly archived and
+    both scratch roots are retired.
+
+  Root cause and closure:
+    QEMU 8.2.2 truncated every default task `comm` to `qemu-system-aar`; the
+    old `CPU */TCG` name scan therefore found no vCPU TID. Validation/0265 and
+    closure runner `0610b768...16881d` copy 68 inputs read-only. Closure r1/r2
+    results are `749777db...a0b705` and `83ec59df...37e66`; removing only
+    `run_id` yields byte-identical `9c079b47...3178ef`. Result mutation and
+    pin-record symlink substitution fail closed.
+
+  Corrected exact protocol:
+    runner `8b7ae0d1...942fb2` starts two-vCPU QEMU with `-S` and a run-owned
+    QMP socket. Hash-bound helper `e59bc8ad...a147e` requires paused status,
+    maps exactly indexes 0/1 to distinct positive TIDs with
+    `query-cpus-fast`, and rejects malformed, missing, duplicate, or drifting
+    mappings. The runner proves active-QEMU ownership, pins each TID to a
+    distinct singleton host CPU, then the helper revalidates mapping, Tgid,
+    and `/proc` affinity immediately before `cont`. Zero rows are permitted
+    while paused. Focused test `06c5f057...50876` passes 15 negative fixtures
+    plus real-QEMU paused/mapping/pinning/tamper/resume integration. Config
+    smoke r7 and cleanup-negative r3 pass.
+
+  Next operation:
+    after exact clean/pushed preflight, launch only job
+    `p5a-r4-e4-arm64-timing-r3`, run
+    `20260721T-p5a-r4-e4-arm64-timing-r3`, and monitor with
+    `./tools/long-job.sh watch p5a-r4-e4-arm64-timing-r3 30`. A complete result
+    still requires independent timing-evidence closure. Only a clean arm64
+    result can authorize same-source x86_64. No live/runtime/N-136/bare-metal/
+    performance/production/deployment/multi-cluster/datacenter claim exists.

@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-20
+Updated: 2026-07-21
 
 ## Project
 
@@ -4916,3 +4916,23 @@ P5A-R3 E4 source and exact-source regression gate:
   timing-evidence closure. No timing result, x86_64 authorization, live
   runtime, bare-metal, production, deployment, multi-cluster, or datacenter
   claim exists.
+
+- P5A-R4 E4 arm64 timing r2 QMP rejection and r3 boundary:
+
+  Run `20260720T-p5a-r4-e4-arm64-timing-r2` sealed
+  `harness_failed/qemu_boot` at result `171df609...12a22`: the full Image built
+  and QEMU booted, but one guest row appeared before any vCPU was pinned.
+  Default QEMU 8.2.2 task names were truncated to `qemu-system-aar`, so the
+  old `CPU */TCG` scan found no TIDs. Two independent read-only 68-input
+  closures normalize to `9c079b47...3178ef`; no timing or x86_64 credit is
+  accepted.
+
+  Corrected runner `8b7ae0d1...942fb2` starts QEMU paused and uses hash-bound
+  QMP helper `e59bc8ad...a147e` to obtain exactly two distinct vCPU TIDs,
+  singleton-pin them to distinct allowed host CPUs, and revalidate the same
+  QMP mapping plus `/proc` Tgid/affinity immediately before `cont`. Zero rows
+  are allowed while paused. Fifteen negative fixtures, a real-QEMU integration
+  test, config smoke r7, and cleanup control r3 pass. Validation/0265
+  authorizes only clean arm64 timing r3 under a 30-second monitor; independent
+  result closure and all broader runtime/production claims remain pending or
+  false.

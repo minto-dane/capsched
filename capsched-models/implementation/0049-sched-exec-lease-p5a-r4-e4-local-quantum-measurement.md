@@ -1,12 +1,14 @@
 # Implementation 0049: SchedExecLease P5A-R4 E4 Local-Quantum Measurement
 
-Date: 2026-07-20
+Date: 2026-07-21
 
-Status: arm64 timing attempt 1 correctly failed closed on a real
-`-Wframe-larger-than` diagnostic before boot. The KUnit-managed-cell repair is
-now accepted for disposable virtual-synthetic timing after a fresh six-object,
-six-profile, 216-case/receipt regression and two independent read-only
-closures. Exact arm64 timing r2 is launch-ready; no timing result or broader
+Status: arm64 timing attempt 2 is sealed as `harness_failed/qemu_boot`, not a
+timing result. The guest emitted one row before the old name-based vCPU-thread
+discovery could pin either thread. Two independent read-only failure closures
+reproduce that decision. The corrected runner starts QEMU paused, obtains exact
+vCPU index/TID mappings through QMP, pins and revalidates singleton affinity,
+then resumes. Focused real-QEMU, negative-fixture, config, and cleanup tests
+pass. Only clean arm64 timing r3 is launch-ready; no timing result or broader
 runtime/production claim is accepted.
 
 ## Source Identity
@@ -150,28 +152,65 @@ Deleting only `run_id` yields byte-identical SHA-256
 All 536 copied inputs are read-only; result, symlink, hard-IRQ observation,
 config, receipt, and artifact-removal mutations fail closed.
 
+## Arm64 Timing Attempt 2 QMP Rejection and Harness Repair
+
+Detached run `20260720T-p5a-r4-e4-arm64-timing-r2` completed the full arm64
+Image build and booted QEMU, but sealed `harness_failed` at `qemu_boot`. The
+guest emitted exactly one result row at guest time 5.264269 seconds before the
+runner could prove complete vCPU placement. The pin record contains only the
+QEMU PID and parent CPU allowance; it contains no vCPU entry. No cell, gate,
+threshold, performance, or x86_64 credit is accepted. Build/worktree scratch
+was retired and the Image plus `exec_lease.o` remain losslessly archived.
+
+The root cause is exact: QEMU 8.2.2 truncated every default Linux task name to
+`qemu-system-aar`, while the runner searched for `CPU */TCG`. Diagnostic
+`debug-threads=on` restores readable names, but the corrected contract does not
+trust names. QEMU now starts with `-S` and a run-owned QMP socket. A hash-bound
+Python helper requires paused status, obtains exactly indexes 0 and 1 with
+distinct positive TIDs from `query-cpus-fast`, and rejects malformed,
+duplicate, missing, or drifting mappings. The shell proves the TIDs belong to
+the active QEMU, pins each to a distinct allowed host CPU, and reads back exact
+singleton affinity. Immediately before `cont`, the helper re-queries the same
+mapping and revalidates each `/proc` Tgid and affinity. Zero result rows are
+allowed before resume.
+
+Independent read-only closures
+`20260721T-p5a-r4-e4-arm64-timing-r2-failure-closure-r1` and
+`20260721T-p5a-r4-e4-arm64-timing-r2-failure-closure-r2` audit 68 copied inputs
+and produce result SHA-256 values
+`749777dbd6e9310538f76146650eca52d6c9d6c721645cb21c99cda196a0b705`
+and
+`83ec59df2275ab6d6b8c6a9fe2aed9ecb12156ae318b991a9fa1829d47b37e66`.
+After removing only `run_id`, both decisions are byte-identical at SHA-256
+`9c079b47fae1b7ae45baa6cd7517a9b02af2d6b3f4a9780f180366932e3178ef`.
+Result mutation and symlink substitution fail closed.
+
 ## Arm64 Timing Harness
 
 The timing runner creates the exact candidate worktree and build output only
 on VM-internal ext4, builds one arm64 Image, losslessly preserves and
-restore-verifies the Image and `exec_lease.o`, boots network-disabled QEMU TCG,
-and pins both guest-vCPU threads one-to-one to the Apple Container VM's two
-allowed host CPUs. Any result row before complete pinning, guest migration,
-IRQ/preemption-state drift, malformed/missing/duplicate cell, KUnit failure,
-compiler/skew/kernel diagnostic, missing artifact, or cleanup failure is a
-harness failure. A valid fixed-threshold breach remains complete negative
-architecture evidence and stops x86_64.
+restore-verifies the Image and `exec_lease.o`, and boots network-disabled QEMU
+TCG paused. QMP must return exactly two vCPU indexes and distinct Linux TIDs.
+Each TID is singleton-pinned one-to-one to the Apple Container VM's two
+distinct allowed host CPUs, and the same QMP mapping plus `/proc` affinity is
+reverified before QMP resume. Any result row before resume, mapping/affinity
+drift, guest migration, IRQ/preemption-state drift, malformed/missing/duplicate
+cell, KUnit failure, compiler/skew/kernel diagnostic, missing artifact, or
+cleanup failure is a harness failure. A valid fixed-threshold breach remains
+complete negative architecture evidence and stops x86_64.
 
 The independent parser requires exactly 682 unique cells, 6,820,000 recorded
 pairs, seven exact summaries, monotonic statistics, source-reported gates equal
 to independently recomputed gates, zero migration/state/harness errors, and
 hard-IRQ context proof. Its synthetic suite accepts a complete clean matrix and
 a valid threshold rejection, while rejecting missing rows, migration, gate
-mismatch, unknown fields, and summary mismatch. Final replacement config smoke
-r6 resolves the exact two-vCPU diagnostic configuration with zero builds and
-boots and retires all scratch. A forced insufficient-space control fails after
-worktree creation
-and proves both worktree and build-root retirement.
+mismatch, unknown fields, and summary mismatch. The QMP helper's 15 negative
+fixtures and a real stopped-QEMU integration test verify exact mapping,
+singleton affinity, tamper rejection, and paused-to-running transition. Final
+replacement config smoke r7 resolves the exact two-vCPU diagnostic
+configuration with zero builds and boots, snapshots the corrected runner and
+helper, and retires all scratch. A forced insufficient-space control fails
+after worktree creation and proves both worktree and build-root retirement.
 
 ## Claim Boundary
 
