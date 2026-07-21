@@ -8,7 +8,8 @@ discovery could pin either thread. Two independent read-only failure closures
 reproduce that decision. The corrected runner starts QEMU paused, obtains exact
 vCPU index/TID mappings through QMP, pins and revalidates singleton affinity,
 then resumes. Focused real-QEMU, negative-fixture, config, and cleanup tests
-pass. Only clean arm64 timing r3 is launch-ready; no timing result or broader
+pass. Exact clean/pushed preflight then passed twice, and arm64 timing r3 is
+running under detached 30-second monitoring. No timing result or broader
 runtime/production claim is accepted.
 
 ## Source Identity

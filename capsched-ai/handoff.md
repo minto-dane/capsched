@@ -6588,6 +6588,23 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   exists yet; all live/runtime/bare-metal/production/datacenter claims remain
   false.
 
+- P5A-R4 E4 arm64 timing r3 is running:
+
+  Standalone and detach-time preflight both passed the exact pushed-identity,
+  dual source-closure, dual r2-failure-closure, paused-QMP helper/test, parser,
+  config-smoke r7, cleanup control, two-CPU, internal-ext4, storage, clean-path,
+  and no-competing-process gates. Job `p5a-r4-e4-arm64-timing-r3`, run
+  `20260721T-p5a-r4-e4-arm64-timing-r3`, detached at
+  `2026-07-21T08:07:59Z`. Independent status/probe and the first 30-second
+  watch display observed the VM-internal Image build running with zero initial
+  measurement rows. Stopping the watch left the runner active.
+
+  Monitor with
+  `./tools/long-job.sh watch p5a-r4-e4-arm64-timing-r3 30`. Completion must be
+  classified by `tools/probe-p5a-r4-e4-arm64-timing-r3.sh` and independently
+  closed before measurement acceptance. No timing result or x86_64
+  authorization exists; every broader runtime/production claim remains false.
+
 - P5A-R4 E4 arm64 timing r2 is rejected at the QMP placement boundary; r3 is launch-ready:
 
   R2 exact result:

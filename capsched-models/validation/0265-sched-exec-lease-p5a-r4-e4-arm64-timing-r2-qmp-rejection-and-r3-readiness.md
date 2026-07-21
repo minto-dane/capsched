@@ -132,7 +132,7 @@ again retires both roots.
 
 ## Arm64 Timing R3 Boundary
 
-Only this future run is authorized after exact clean/pushed preflight:
+Only this exact run was authorized after exact clean/pushed preflight:
 
 ```text
 job:     p5a-r4-e4-arm64-timing-r3
@@ -150,6 +150,26 @@ A clean r3 result may authorize only same-source x86_64 timing. A complete
 fixed-threshold or diagnostic rejection stops x86_64. Any harness failure
 requires another root-cause closure. Every complete result still requires an
 independent read-only timing-evidence closure before measurement acceptance.
+
+## Arm64 Timing R3 Operational Launch
+
+The exact clean/pushed preflight passed twice: once independently with
+`--preflight-only` and once immediately before detach. It revalidated both
+source closures, both r2 failure closures, the runner/helper/test/parser hashes,
+config smoke r7, cleanup control r3, root/capsched/Linux/patch identities, the
+candidate's local/fork identity, two VM-allowed CPUs, internal ext4, storage
+floors, absent run-owned paths, and no competing timing/build/QEMU process.
+
+Job `p5a-r4-e4-arm64-timing-r3`, run
+`20260721T-p5a-r4-e4-arm64-timing-r3`, detached at
+`2026-07-21T08:07:59Z`. Independent status and result probe observed the
+VM-internal Image build running with zero measurement rows, and the first
+30-second watch display also observed continued build progress. Interrupting
+only the watch left the detached runner active.
+
+This is operational launch evidence, not a timing result. Completion must be
+classified by the exact r3 probe and then independently closed before any
+measurement acceptance or same-source x86_64 authorization.
 
 ## Claim Boundary
 

@@ -4917,6 +4917,17 @@ P5A-R3 E4 source and exact-source regression gate:
   runtime, bare-metal, production, deployment, multi-cluster, or datacenter
   claim exists.
 
+- P5A-R4 E4 arm64 timing r3 operational state:
+
+  Exact standalone and detach-time preflight passed. Job
+  `p5a-r4-e4-arm64-timing-r3`, run
+  `20260721T-p5a-r4-e4-arm64-timing-r3`, detached at
+  `2026-07-21T08:07:59Z`; status/probe and the first 30-second watch observed
+  its VM-internal Image build running, and interrupting the watch left the
+  runner active. Exact result triage and an independent read-only timing
+  closure are next. No timing, x86_64, runtime, bare-metal, or production claim
+  exists.
+
 - P5A-R4 E4 arm64 timing r2 QMP rejection and r3 boundary:
 
   Run `20260720T-p5a-r4-e4-arm64-timing-r2` sealed
