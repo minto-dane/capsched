@@ -48,9 +48,9 @@ WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e4104
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 CANDIDATE_PARENT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-CANDIDATE_COMMIT=5857720dedc49f89d2367442f8fdb1a806ffa1cc
-CANDIDATE_TREE=ee6e329106327a302bf63c78f2ed4fe3ddea7865
-CANDIDATE_DIFF_SHA=d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93
+CANDIDATE_COMMIT=82d91805f8e145d2403057f656e590e4bcae12f1
+CANDIDATE_TREE=44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f
+CANDIDATE_DIFF_SHA=a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9
 SUITE=sched_exec_lease_r4_concurrency
 REQUIRED_CASES=36
 REQUIRED_RECEIPTS=36
@@ -316,10 +316,10 @@ jq -e '
 ' "$SIX_BOOT_ATTEMPT_3_REJECTION" >/dev/null
 jq -e '
   .status == "passed_source_and_object_gate_awaiting_six_profile_e3_regression" and
-  .candidate_commit == "5857720dedc49f89d2367442f8fdb1a806ffa1cc" and
+  .candidate_commit == "82d91805f8e145d2403057f656e590e4bcae12f1" and
   .candidate_parent == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
-  .candidate_tree == "ee6e329106327a302bf63c78f2ed4fe3ddea7865" and
-  .candidate_diff_sha256 == "d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93" and
+  .candidate_tree == "44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f" and
+  .candidate_diff_sha256 == "a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9" and
   .strict_checkpatch == {errors:0,warnings:0,checks:0} and
   .architectures == ["arm64","x86_64"] and
   .fresh_modes_per_architecture == ["exact_e3_parent","e4_measure_off","e4_measure_on"] and

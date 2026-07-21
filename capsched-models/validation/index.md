@@ -272,6 +272,7 @@ Updated: 2026-07-21
 | 0264 | Stack-fixed replacement source passes six fresh objects, six profiles, 216/216 cases and receipts, and two read-only 267-artifact closures with one normalized decision; strict arm64 timing r2 is launch-ready | SchedExecLease P5A-R4 E4 Replacement Source Closure and Arm64 Timing R2 Readiness |
 | 0265 | Arm64 timing r2 is sealed as `harness_failed/qemu_boot`: the guest emitted one row before any vCPU TID was discoverable through truncated task names; two read-only failure closures reproduce one decision, an exact paused-QMP mapping/affinity protocol passes focused tests, and clean arm64 timing r3 is now running under detached 30-second monitoring | SchedExecLease P5A-R4 E4 Arm64 Timing R2 QMP Rejection and R3 Readiness |
 | 0266 | Arm64 timing r3 is sealed as a shared-host ENOSPC harness failure after exact QMP placement but before the 682-cell matrix completed; two read-only closures give 399 partial rows no credit, and reserve-backed per-progress capacity gates authorize only fresh arm64 timing r4 | SchedExecLease P5A-R4 E4 Arm64 Timing R3 Storage Rejection and R4 Readiness |
+| 0267 | Arm64 timing r4 is sealed after two synthetic fixture `-EINVAL` failures with 523/682 rows receiving no credit; two read-only closures agree, and a minimal coalesced-owner TOCTOU correction requires fresh six-object/six-profile regression and closure | SchedExecLease P5A-R4 E4 Arm64 Timing R4 KUnit Rejection and Source Retry |
 
 ## Principles
 

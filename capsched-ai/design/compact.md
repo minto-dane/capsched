@@ -4974,3 +4974,21 @@ P5A-R3 E4 source and exact-source regression gate:
   526,306,264 KiB VM-internal free. Status/probe plus a 30-second watch observed
   the Image build advance; stopping the watch did not stop the runner. This is
   operational evidence only, not a timing result.
+
+- P5A-R4 E4 timing r4 KUnit rejection and corrected-source boundary:
+
+  Run `20260721T-p5a-r4-e4-arm64-timing-r4` is
+  `harness_failed/evidence_validation` at `f5f06d93...2875e1fc`: exact QMP
+  placement and QEMU exit zero passed, but recovery/offline fixture setup
+  returned `-EINVAL`. KUnit is 5/2/0/7 and 523/682 rows receive no timing
+  credit. Two independent 48-input closures normalize to
+  `3e234533...e003a2`; content and symlink mutations fail closed.
+
+  Default-off synthetic helpers incorrectly treated a later pending/running
+  read after a false queue return as authoritative. Coalesced ownership can
+  complete between those events. Direct-child `82d91805...e12f1`, tree
+  `44d9a212...bd4f`, removes only three such diagnostic TOCTOU upgrades;
+  strict checkpatch, focused arm64/x86_64 W=1 objects, and source-only static
+  checks pass. S1 is reopened pending a fresh six-object/six-profile/216-case
+  combined regression and double closure. x86_64 timing and all broader claims
+  remain blocked.

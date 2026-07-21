@@ -65,7 +65,7 @@ if [ ! -f "$SOURCE_RESULT" ] || [ -L "$SOURCE_RESULT" ]; then
 fi
 jq -e '
   .status == "passed_source_and_object_gate_awaiting_six_profile_e3_regression" and
-  .candidate_commit == "5857720dedc49f89d2367442f8fdb1a806ffa1cc" and
+  .candidate_commit == "82d91805f8e145d2403057f656e590e4bcae12f1" and
   .fresh_objects == 6 and .w1_compiler_diagnostics == 0 and
   .disabled_e4_artifacts == 0 and .e3_cases_byte_preserved == 36 and
   .measurement_task_migration_disabled == true and
@@ -86,7 +86,7 @@ if [ ! -f "$CONFIG_RESULT" ] || [ -L "$CONFIG_RESULT" ]; then
 fi
 jq -e '
   .status == "passed_e4_candidate_six_profile_e3_config_smoke_without_build_or_boot" and
-  .candidate_commit == "5857720dedc49f89d2367442f8fdb1a806ffa1cc" and
+  .candidate_commit == "82d91805f8e145d2403057f656e590e4bcae12f1" and
   .builds_started == 0 and .boots_started == 0 and
   .e4_measurement_suite_enabled == false and
   .timing_measurement_may_start == false
@@ -102,7 +102,7 @@ if [ ! -f "$REGRESSION_RESULT" ] || [ -L "$REGRESSION_RESULT" ]; then
 fi
 jq -e '
   .status == "passed_six_profile_e3_regression_awaiting_independent_closure" and
-  .candidate_commit == "5857720dedc49f89d2367442f8fdb1a806ffa1cc" and
+  .candidate_commit == "82d91805f8e145d2403057f656e590e4bcae12f1" and
   .total_passed_cases == 216 and .total_receipts == 216 and
   .case_failures == 0 and .case_skips == 0 and .case_timeouts == 0 and
   .warning_reports == 0 and .six_profile_e3_regression_passed == true and
@@ -116,7 +116,7 @@ jq -n --arg run_id "$RUN_ID" \
 	--arg source_result "$SOURCE_RESULT" --arg source_sha "$SOURCE_RESULT_SHA" \
 	--arg config_result "$CONFIG_RESULT" --arg config_sha "$CONFIG_RESULT_SHA" \
 	--arg regression_result "$REGRESSION_RESULT" --arg regression_sha "$REGRESSION_RESULT_SHA" \
-	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e4-source-and-e3-regression-result-v1",run_id:$run_id,status:"passed_source_and_six_profile_e3_regression_awaiting_independent_closure",candidate_commit:"5857720dedc49f89d2367442f8fdb1a806ffa1cc",source_gate_result:$source_result,source_gate_result_sha256:$source_sha,config_smoke_result:$config_result,config_smoke_result_sha256:$config_sha,e3_regression_result:$regression_result,e3_regression_result_sha256:$regression_sha,fresh_source_objects:6,e3_profiles:6,e3_cases_passed:216,e3_receipts:216,vcpu_migration_observation_enforced:true,irq_preempt_state_recorded:true,independent_closure_required:true,timing_measurement_may_start:false,r4_e4_source_accepted:false,real_scheduler_attachment:false,runtime_behavior_approved:false,production_protection:false,deployment_ready:false,multi_cluster_ready:false,datacenter_ready:false}' \
+	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e4-source-and-e3-regression-result-v1",run_id:$run_id,status:"passed_source_and_six_profile_e3_regression_awaiting_independent_closure",candidate_commit:"82d91805f8e145d2403057f656e590e4bcae12f1",source_gate_result:$source_result,source_gate_result_sha256:$source_sha,config_smoke_result:$config_result,config_smoke_result_sha256:$config_sha,e3_regression_result:$regression_result,e3_regression_result_sha256:$regression_sha,fresh_source_objects:6,e3_profiles:6,e3_cases_passed:216,e3_receipts:216,vcpu_migration_observation_enforced:true,irq_preempt_state_recorded:true,independent_closure_required:true,timing_measurement_may_start:false,r4_e4_source_accepted:false,real_scheduler_attachment:false,runtime_behavior_approved:false,production_protection:false,deployment_ready:false,multi_cluster_ready:false,datacenter_ready:false}' \
 	> "$OUT_DIR/result.json.pending"
 jq -e '.status == "passed_source_and_six_profile_e3_regression_awaiting_independent_closure" and .fresh_source_objects == 6 and .e3_profiles == 6 and .e3_cases_passed == 216 and .e3_receipts == 216 and .vcpu_migration_observation_enforced == true and .irq_preempt_state_recorded == true and .independent_closure_required == true and .timing_measurement_may_start == false and .r4_e4_source_accepted == false and .production_protection == false and .datacenter_ready == false' \
 	"$OUT_DIR/result.json.pending" >/dev/null

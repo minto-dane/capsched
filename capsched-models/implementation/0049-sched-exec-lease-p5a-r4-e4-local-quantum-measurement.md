@@ -257,8 +257,50 @@ Both standalone and detach-time r4 preflight passed. Job
 53,959,464 KiB shared-host plus 526,306,264 KiB VM-internal free. Independent
 status/probe and a 30-second watch observed the VM-internal Image build advance
 from 550 to 850 steps with zero measurement rows; stopping the watch left the
-runner active and a later probe observed 1,050 steps. No result credit exists
-until exact completion triage and independent closure.
+runner active and a later probe observed 1,050 steps.
+
+## Arm64 Timing Attempt 4 KUnit Rejection and Coalesced-Owner Repair
+
+R4 finished with QEMU exit zero, empty compiler diagnostics, exact paused-QMP
+placement, and complete storage cleanup, but sealed
+`harness_failed/evidence_validation` at result SHA-256
+`f5f06d933700f74b96f13397fa3b84a7a7a2875e1fcbb19e33b37d825a0132d4`.
+Recovery fixture setup returned `-EINVAL` at line 4160 for 64 buckets. Offline
+setup emitted ten rows for occupancies 0 and 1, then returned `-EINVAL` at line
+4727 while advancing to occupancy 8. KUnit totals are 5 pass, 2 fail, 0 skip,
+7 total. The 523/682 rows and five/seven summaries receive no threshold,
+architecture, or x86_64 credit.
+
+Two race-checked read-only closures audit 40 timing files and eight job-control
+files. Their result SHA-256 values are
+`2a2da5fe97fe40474dd31581cac95852db881c0e08ebf4bc16fbbb2f87c7e01f`
+and
+`600e98938ade8a2195efeded93ec502dda49cd7708413a4364e851ea84c09a67`;
+deleting only `run_id` yields byte-identical
+`3e23453369db1c4dcb1f64b1e36357e49e37221c8a152956e581b78e49e003a2`.
+The exact fixture passes and four source/job/symlink mutations fail closed.
+
+The source cause is a synthetic diagnostic TOCTOU: false from
+`irq_work_queue()` or `queue_work()` already proves a live coalesced owner at
+the call's linearization point, but three helpers re-sampled pending/running
+state afterwards and upgraded an owner that completed during that gap to
+`protocol_errors`. The larger fixtures expose this diagnostic-only race even
+though their dirty work drains to idle.
+
+The minimal correction removes those post-return error upgrades only in the
+default-off synthetic irq-work kick, recovery dispatch, and notifier queue
+helpers. No matrix, threshold, timed sample, lock, refcount, production helper,
+or ordinary scheduler path changes. The corrected direct-child identity is
+commit `82d91805f8e145d2403057f656e590e4bcae12f1`, tree
+`44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f`, and two-file diff SHA-256
+`a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9`.
+Strict checkpatch, focused arm64/x86_64 E4-on W=1 objects, and the corrected
+source-only static gate pass.
+
+Because every previous combined regression and closure binds the superseded
+commit, fresh six-object/six-profile/216-case evidence and new independent
+double closure are mandatory. Timing and x86_64 remain blocked until that
+sequence completes.
 
 ## Claim Boundary
 

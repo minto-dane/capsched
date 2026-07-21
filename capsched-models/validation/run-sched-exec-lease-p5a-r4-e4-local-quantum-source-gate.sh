@@ -33,9 +33,9 @@ PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 PATCH_QUEUE_SERIES_BLOB=298567f8e0bd18168222da4e64da32750b9ea818
 E3_COMMIT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
 E3_TREE=58c6510c6f517004e37107786d006bb8333b79b8
-E4_COMMIT=5857720dedc49f89d2367442f8fdb1a806ffa1cc
-E4_TREE=ee6e329106327a302bf63c78f2ed4fe3ddea7865
-E4_DIFF_SHA=d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93
+E4_COMMIT=82d91805f8e145d2403057f656e590e4bcae12f1
+E4_TREE=44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f
+E4_DIFF_SHA=a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9
 REQUIRED_E3_CASES=36
 REQUIRED_E4_CELLS=682
 clock_skew_retries=0
@@ -206,7 +206,7 @@ printf '%s\n' init/Kconfig kernel/sched/exec_lease.c > "$OUT_DIR/expected-files.
 diff -u "$OUT_DIR/expected-files.txt" "$OUT_DIR/changed-files.txt" \
 	> "$OUT_DIR/changed-files.diff" || die 'source escaped two-file boundary'
 [ "$(git -C "$E4_DIR" diff --numstat "$E3_COMMIT..$E4_COMMIT" |
-	awk '{a += $1; d += $2} END {print a+0, d+0}')" = '1744 82' ] ||
+	awk '{a += $1; d += $2} END {print a+0, d+0}')" = '1749 91' ] ||
 	die 'source line totals changed'
 git -C "$E4_DIR" diff --binary "$E3_COMMIT..$E4_COMMIT" > "$OUT_DIR/e4-source.diff"
 [ "$(sha256sum "$OUT_DIR/e4-source.diff" | awk '{print $1}')" = "$E4_DIFF_SHA" ] ||
@@ -339,6 +339,19 @@ for helper in publish_locked recover_one_locked notifier_quantum \
 	[ "$(grep -c "sched_exec_r4_test_${helper}(" "$SOURCE")" -ge 2 ] ||
 		die "measurement does not reuse E3 helper: $helper"
 done
+for helper in kick_locked dispatch_one queue_notifier; do
+	sed -n "/^static .*sched_exec_r4_test_${helper}(/,/^}/p" "$SOURCE" \
+		> "$OUT_DIR/$helper.c"
+	[ -s "$OUT_DIR/$helper.c" ] || die "coalesced-owner helper missing: $helper"
+	! grep -q 'protocol_errors++' "$OUT_DIR/$helper.c" ||
+		die "post-return coalesced-owner diagnostic remains: $helper"
+done
+grep -Fq 'False itself proves a live coalesced irq-work owner.' "$OUT_DIR/kick_locked.c" ||
+	die 'irq-work false ownership proof missing'
+grep -Fq 'The coalesced owner completed before this diagnostic read.' \
+	"$OUT_DIR/dispatch_one.c" || die 'workqueue completion-race classification missing'
+grep -Fq 'False itself proves a live coalesced notifier owner.' \
+	"$OUT_DIR/queue_notifier.c" || die 'notifier false ownership proof missing'
 ! grep -Eq 'for_each_(online|possible|present)_cpu|cpu_online_mask|cpuhp_setup|task_group|cgroup_attach|EXPORT_SYMBOL|syscall|proc_create|debugfs_create' \
 	"$OUT_DIR/e4-block.c" || die 'E4 escaped synthetic non-attachment boundary'
 

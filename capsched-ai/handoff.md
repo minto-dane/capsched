@@ -6688,3 +6688,28 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     advance from 550 to 850 steps with zero rows. Stopping the watch left the
     runner active and a later probe observed 1,050 steps. This remains launch
     evidence only.
+
+- P5A-R4 E4 arm64 timing r4 is rejected at the synthetic KUnit boundary; the
+  coalesced-owner source correction awaits a fresh combined regression:
+
+  Run `20260721T-p5a-r4-e4-arm64-timing-r4` sealed
+  `harness_failed/evidence_validation` at result
+  `f5f06d93...2875e1fc`. QEMU exited zero and exact paused-QMP placement passed,
+  but recovery and offline fixture setup returned `-EINVAL`; KUnit is 5 pass,
+  2 fail, 0 skip and only 523/682 rows exist. All partial timing values receive
+  zero credit and x86_64 remains blocked. Two independent read-only closures
+  over 40 timing and eight job inputs produce `2a2da5fe...c7e01f` and
+  `600e9893...09a67`, normalized to `3e234533...e003a2`. Exact input passes;
+  mutated job/serial bytes and source/job symlink substitutions fail closed.
+
+  The failure came from default-off synthetic diagnostics that re-read
+  pending/running after a legitimate false `irq_work_queue()` or
+  `queue_work()` return. A coalesced owner may complete between those events,
+  so the later state is not proof of a protocol error. Corrected direct-child
+  candidate `82d91805...e12f1`, tree `44d9a212...bd4f`, removes only those
+  three TOCTOU upgrades while preserving false-return accounting. Strict
+  checkpatch, focused arm64/x86_64 W=1 objects, and a source-only static gate
+  pass. S1 is reopened: a fresh six-object, six-profile, 216-case combined
+  regression and two independent closures are mandatory before timing retry.
+  No timing, runtime, bare-metal, production, deployment, multi-cluster, or
+  datacenter claim is accepted.
