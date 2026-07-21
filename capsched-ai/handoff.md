@@ -6677,3 +6677,14 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
     Independent complete-result closure remains mandatory. No timing, x86_64,
     runtime, bare-metal, performance, production, deployment, multi-cluster,
     or datacenter claim exists.
+
+  Operational launch:
+    standalone and detach-time preflight passed, including VM trim and exact
+    pushed identity. Job `p5a-r4-e4-arm64-timing-r4`, run
+    `20260721T-p5a-r4-e4-arm64-timing-r4`, detached at
+    `2026-07-21T13:03:24Z`. Immediate wrapper trim reclaimed 975,572,992 bytes;
+    readback recorded 53,959,464 KiB host and 526,306,264 KiB VM free. Status,
+    exact probe, and the first 30-second watch observed the internal Image build
+    advance from 550 to 850 steps with zero rows. Stopping the watch left the
+    runner active and a later probe observed 1,050 steps. This remains launch
+    evidence only.

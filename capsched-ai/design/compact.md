@@ -4966,3 +4966,11 @@ P5A-R3 E4 source and exact-source regression gate:
   r4 after pre-trim plus 32 GiB shared-host and 16 GiB VM-internal launch
   floors. Independent complete-result closure and every live/runtime/production
   claim remain pending or false.
+
+  Standalone and detach-time preflight passed. Job
+  `p5a-r4-e4-arm64-timing-r4`, run
+  `20260721T-p5a-r4-e4-arm64-timing-r4`, detached at
+  `2026-07-21T13:03:24Z` after trim with 53,959,464 KiB shared-host and
+  526,306,264 KiB VM-internal free. Status/probe plus a 30-second watch observed
+  the Image build advance; stopping the watch did not stop the runner. This is
+  operational evidence only, not a timing result.

@@ -120,6 +120,28 @@ harness failure requires another root-cause closure. Every complete result
 still requires an independent read-only timing-evidence closure before
 measurement acceptance.
 
+## Arm64 Timing R4 Operational Launch
+
+Standalone and detach-time preflight both passed the exact pushed Git,
+source-closure, r2-failure-closure, r3-storage-closure, runner, QMP, parser,
+config-smoke, capacity-negative, process, CPU, storage, and scratch-path gates.
+Preflight trim completed successfully. The immediate detached wrapper trim
+reclaimed another 975,572,992 bytes, then recorded 53,959,464 KiB shared-host
+free and 526,306,264 KiB VM-internal free, above the 32 GiB and 16 GiB floors.
+
+Job `p5a-r4-e4-arm64-timing-r4`, run
+`20260721T-p5a-r4-e4-arm64-timing-r4`, detached at
+`2026-07-21T13:03:24Z`. Independent status and result probe observed the exact
+VM-internal Image build with zero measurement rows. The first 30-second watch
+advanced from 13%/550 compiler-link steps to 15%/850 steps. Interrupting only
+the watch left the detached runner active, and a subsequent probe observed
+17%/1,050 steps.
+
+This is launch evidence, not a timing result. Monitor with
+`./tools/long-job.sh watch p5a-r4-e4-arm64-timing-r4 30`; completion must be
+classified by the exact r4 probe and independently closed before any timing or
+x86_64 decision.
+
 ## Claim Boundary
 
 This record closes only an operational storage failure and hardens evidence

@@ -250,6 +250,16 @@ fails before build, seals exact result
 releases the reserve, and leaves no scratch. R4 preflight additionally requires
 VM trim, at least 32 GiB shared-host free, and at least 16 GiB VM-internal free.
 
+Both standalone and detach-time r4 preflight passed. Job
+`p5a-r4-e4-arm64-timing-r4`, run
+`20260721T-p5a-r4-e4-arm64-timing-r4`, detached at
+`2026-07-21T13:03:24Z` after immediate wrapper trim and capacity readback of
+53,959,464 KiB shared-host plus 526,306,264 KiB VM-internal free. Independent
+status/probe and a 30-second watch observed the VM-internal Image build advance
+from 550 to 850 steps with zero measurement rows; stopping the watch left the
+runner active and a later probe observed 1,050 steps. No result credit exists
+until exact completion triage and independent closure.
+
 ## Claim Boundary
 
 This accepted-for-timing replacement source and runner measure only virtual
