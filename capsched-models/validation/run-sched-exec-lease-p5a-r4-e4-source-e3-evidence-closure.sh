@@ -8,7 +8,7 @@ CAPSCHED_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
 WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
 LINUX_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/linux"
 PATCH_QUEUE_DIR="$WORKSPACE_DIR/linux-patches"
-SOURCE_RUN_ID=20260721T-p5a-r4-e4-coalesced-owner-source-e3-regression-r5
+SOURCE_RUN_ID=20260723T-p5a-r4-e4-owner-oracle-correction-source-e3-regression-r7
 CANONICAL_COMBINED_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-source-and-e3-regression/$SOURCE_RUN_ID"
 CANONICAL_SOURCE_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-local-quantum-source-gate/$SOURCE_RUN_ID-source"
 CANONICAL_CONFIG_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-e3-six-profile-regression/$SOURCE_RUN_ID-config-smoke"
@@ -45,38 +45,39 @@ SOURCE_EVIDENCE="$INPUT_DIR/source"
 CONFIG_EVIDENCE="$INPUT_DIR/config"
 REGRESSION_EVIDENCE="$INPUT_DIR/regression"
 
-# Fresh r5 producer roots, enumerated only after its detached wrapper exited 0.
+# Fresh r7 producer roots, enumerated only after its detached wrapper exited 0.
 EVIDENCE_SEAL_FINALIZED=1
-COMBINED_RESULT_SHA=6a77daf360696e012abd239d489cb55900c005946c053a7163297b12dc8b3777
-SOURCE_RESULT_SHA=24be737d935dbd4f7ecca7ccbf1dd2f6cea678c9dd3cc76146af5b2a32418989
-CONFIG_RESULT_SHA=6c0be87fa2390affc44c51b9e059e98228ead1055990cd1bfd4bda90090a267a
-REGRESSION_RESULT_SHA=fd55860285824aa4fe946f35cea30f50493b908be1e9ee2f85eaedf735369a00
-BOOT_RESULTS_SHA=1749d60e17bf59baa1906a684efea7868e5a339eadd5335de40972ce18059c7f
-COMBINED_MANIFEST_SHA=47b73ec0e95dd0520e9c610a321c2a8da39c6946ebdf9fec1339445e3b51cc43
-SOURCE_MANIFEST_SHA=b60775da8d511fc6463ebe8f4ae44e03b072ef5f3f9f26da3acd51a9a11ab941
-CONFIG_MANIFEST_SHA=7abbdecea1ca38a67396aef811f89f57ce94a2fa8e61d079142d1ee18f2ebb3f
-REGRESSION_MANIFEST_SHA=94b9d20788d770a8713b29a8a0f64e25bff31533485eb116a26553127879b54a
-SOURCE_INTERNAL_MANIFEST_SHA=1980773c25ef61e860dd93cf0f594c2f4cfb7a0c78cc01d202a488aa727f94d9
+COMBINED_RESULT_SHA=643eceae277f6f419a0d9ecaa82c183d073ca7c6c228dec5d3190661a6bd3714
+SOURCE_RESULT_SHA=ac6fb29e154375fd7c35c36d0f78fb96394ef4861166a6cccec2b0fe37fd2995
+CONFIG_RESULT_SHA=8b62af9fab6275a071898ac1c3de46c71b487b492b147cc03fce00d1fccaf26d
+REGRESSION_RESULT_SHA=ccfceaccd0bcd1107d9c94532b3c2b075c756780fca63c9e8d069f6b821b898a
+BOOT_RESULTS_SHA=d772f5c894918fc889cef7727a0d57d1da5b55dd72b6ecef1c256ed140022f1d
+COMBINED_MANIFEST_SHA=cee30cdf2cbd3fdb79460f4638435a1ca2101cc7ab8873cac39a51397a732375
+SOURCE_MANIFEST_SHA=2ec54a0858bfa4429b45e75cf42e7b6462137df2e2176340ed05faaca4baf545
+CONFIG_MANIFEST_SHA=a04768a51002266871caabef647dd6bbbe450384ddd236f587fa660011baceb4
+REGRESSION_MANIFEST_SHA=f629396b346b2793f0ff1288a677d5ff20d6173cd75f8ca4339fcdbd7e15cdf4
+SOURCE_INTERNAL_MANIFEST_SHA=13ed0d384fc829099d4e1f9dc50b27fc521c9051ee43a92e143ce83f6182a7b8
+E3_CASES_SHA=4c8e46fb3bb23bc5688f01f0e33eed4f381403a85ee42717105fefde8544a463
 COMBINED_COUNT=2
-SOURCE_COUNT=82
+SOURCE_COUNT=84
 CONFIG_COUNT=53
 REGRESSION_COUNT=133
-COMBINED_BYTES=2033
-SOURCE_BYTES=5070721
-CONFIG_BYTES=1665227
-REGRESSION_BYTES=4133405
-SOURCE_RUNNER_SHA=b5815d21564480f51570c62008a680bacbefbda4a29514633264b80ede4dbcff
-REGRESSION_RUNNER_SHA=16ae06b59823080cfcb127551dec6d59d0eb50509d4b312930728d18039a31a6
-COMBINED_RUNNER_SHA=b6a779044ad4547dba2849cd62e34f57a814fe74f05fd10875e8be8b39f1101c
+COMBINED_BYTES=2152
+SOURCE_BYTES=5091619
+CONFIG_BYTES=1668144
+REGRESSION_BYTES=4137118
+SOURCE_RUNNER_SHA=c29d8862589f9cd7a203002f06aa756131fe77dd1e97b08b8f322090fb122e3e
+REGRESSION_RUNNER_SHA=3b3383b88a2204d2d68dddf2ae26362d355e29ed6a2e1d896681780e79b1a5f9
+COMBINED_RUNNER_SHA=5b2a60b4539803df97a7ee77c88b60f38e6cb62cac2f20936795435ad9409078
 WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a
 HARDENING_LIB_SHA=4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6
 PLAN_SHA=f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 CANDIDATE_PARENT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-CANDIDATE_COMMIT=82d91805f8e145d2403057f656e590e4bcae12f1
-CANDIDATE_TREE=44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f
-CANDIDATE_DIFF_SHA=a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9
+CANDIDATE_COMMIT=4077ba840f713979c29af64f405dbde39f845d93
+CANDIDATE_TREE=6ce127d738618fd356ed3533ac32e5796fa72d55
+CANDIDATE_DIFF_SHA=a4886479f001ea3ef0dbc069ef44040f89df69cc9114421933a5592075bfe255
 SUITE=sched_exec_lease_r4_concurrency
 
 die()
@@ -215,6 +216,8 @@ jq -e --arg run_id "$SOURCE_RUN_ID" --arg candidate "$CANDIDATE_COMMIT" \
   .e3_regression_result_sha256 == $regression_sha and
   .fresh_source_objects == 6 and .e3_profiles == 6 and
   .e3_cases_passed == 216 and .e3_receipts == 216 and
+  .e3_handoff_race_strengthened == true and
+  .e4_offline_oracle_corrected == true and
   .vcpu_migration_observation_enforced == true and
   .irq_preempt_state_recorded == true and
   .independent_closure_required == true and .timing_measurement_may_start == false and
@@ -239,8 +242,10 @@ jq -e --arg run_id "$SOURCE_RUN_ID-source" --arg candidate "$CANDIDATE_COMMIT" \
   .fresh_modes_per_architecture == ["exact_e3_parent","e4_measure_off","e4_measure_on"] and
   .fresh_objects == 6 and .w1_compiler_diagnostics == 0 and
   .clock_skew_retries == 0 and .final_clock_skew_warnings == 0 and
-  .disabled_e4_artifacts == 0 and .e3_cases_byte_preserved == 36 and
-  .e4_measurement_cells == 682 and .artifact_count == 79 and
+  .disabled_e4_artifacts == 0 and .e3_case_manifest_preserved == 36 and
+  .e3_handoff_race_strengthened == true and
+  .e4_offline_oracle_corrected == true and
+  .e4_measurement_cells == 682 and .artifact_count == 81 and
   .measurement_task_migration_disabled == true and
   .vcpu_migration_observation_enforced == true and
   .irq_preempt_state_recorded == true and
@@ -248,7 +253,7 @@ jq -e --arg run_id "$SOURCE_RUN_ID-source" --arg candidate "$CANDIDATE_COMMIT" \
   .r4_e4_source_accepted == false and .production_protection == false and .datacenter_ready == false
 ' "$SOURCE_RESULT" >/dev/null
 verify_hash "$SOURCE_EVIDENCE/artifact-manifest.sha256" "$SOURCE_INTERNAL_MANIFEST_SHA" 'source internal artifact manifest'
-[ "$(wc -l < "$SOURCE_EVIDENCE/artifact-manifest.sha256" | tr -d ' ')" = 79 ] || die 'source internal manifest count changed'
+[ "$(wc -l < "$SOURCE_EVIDENCE/artifact-manifest.sha256" | tr -d ' ')" = 81 ] || die 'source internal manifest count changed'
 while read -r expected path; do
 	case "$path" in
 		"$CANONICAL_SOURCE_DIR"/*) relative=${path#"$CANONICAL_SOURCE_DIR"/} ;;
@@ -262,7 +267,8 @@ grep -Eq '^total: 0 errors, 0 warnings, 0 checks, [0-9]+ lines checked$' \
 	"$SOURCE_EVIDENCE/checkpatch.log" || die 'strict checkpatch summary changed'
 ! grep -Eq '^(ERROR|WARNING|CHECK):' "$SOURCE_EVIDENCE/checkpatch.log" || die 'strict checkpatch diagnostic found'
 verify_hash "$SOURCE_EVIDENCE/e4-source.diff" "$CANDIDATE_DIFF_SHA" 'retained E4 source diff'
-cmp "$SOURCE_EVIDENCE/e3-parent-cases.c" "$SOURCE_EVIDENCE/e4-e3-cases.c" || die 'E3 case region changed'
+verify_hash "$SOURCE_EVIDENCE/e4-e3-cases.c" "$E3_CASES_SHA" 'corrected E3 case region'
+[ "$(grep -c 'KUNIT_CASE(' "$SOURCE_EVIDENCE/e4-e3-cases.c")" = 36 ] || die 'E3 case count changed'
 [ ! -s "$SOURCE_EVIDENCE/e4-cases.diff" ] || die 'E4 planned/actual case diff is nonempty'
 cmp "$SOURCE_EVIDENCE/expected-e4-cases.txt" "$SOURCE_EVIDENCE/actual-e4-cases.txt" || die 'E4 case list changed'
 [ "$(wc -l < "$SOURCE_EVIDENCE/actual-e4-cases.txt" | tr -d ' ')" = 7 ] || die 'E4 family count changed'
@@ -285,6 +291,27 @@ grep -Fq 'The coalesced owner completed before this diagnostic read.' \
 	"$SOURCE_EVIDENCE/dispatch_one.c" || die 'workqueue completion-race classification changed'
 grep -Fq 'False itself proves a live coalesced notifier owner.' \
 	"$SOURCE_EVIDENCE/queue_notifier.c" || die 'notifier false ownership proof changed'
+
+# Timing r6 exposed a real future-owner gap and a distinct offline control
+# oracle defect.  Re-audit both independently of the producer result.
+recovery_worker="$SOURCE_EVIDENCE/e3-recovery-worker.c"
+self_requeue_case="$SOURCE_EVIDENCE/e3-self-requeue-case.c"
+[ -s "$recovery_worker" ] || die 'recovery worker evidence missing'
+[ -s "$self_requeue_case" ] || die 'self-requeue case evidence missing'
+grep -Fq 'sched_exec_r4_test_dispatch_one(rq);' "$recovery_worker" ||
+	die 'ordinary-work self-requeue handoff changed'
+! grep -Fq 'queue_more && !irq_work_queue' "$recovery_worker" ||
+	die 'loss-prone IRQ requeue handoff returned'
+for anchor in \
+	'irq_work_sync(&rq->layout.dispatch_irq_work);' \
+	'sched_exec_r4_test_drain(environment);' \
+	'KUNIT_EXPECT_GE(test, rq->recovery_invocations, 2U);' \
+	'irq-callback-complete-before-worker-self-requeue-offline'; do
+	grep -Fq "$anchor" "$self_requeue_case" ||
+		die "self-requeue race oracle changed: $anchor"
+done
+grep -Fq '(treatment ? visits != fixture->occupancy : visits != 0)' \
+	"$SOURCE_EVIDENCE/e4-block.c" || die 'offline control/treatment oracle changed'
 
 # Independently re-audit the plan-to-source observability contract.  The hard
 # IRQ observations are deliberately checked in their shared dispatch helper;
@@ -499,6 +526,10 @@ while IFS='|' read -r label arch profile child_sha memory; do
 	while IFS= read -r receipt; do
 		printf '%s\n' "$receipt" | jq -e '(.case | startswith("sched_exec_r4_test_")) and (.oracle_checkpoints > 0) and .terminal_reference_equation == "bucket+projection+contribution+dirty+notifier+callback+rcu" and .cleanup_outcome == "drained"' >/dev/null || die "$label malformed receipt"
 	done < "$receipts"
+	jq -e 'select(.case == "sched_exec_r4_test_offline_while_worker_self_requeues") |
+	  .forced_schedule == "irq-callback-complete-before-worker-self-requeue-offline" and
+	  .oracle_checkpoints == 7 and .cleanup_outcome == "drained"' \
+		"$receipts" >/dev/null || die "$label corrected handoff receipt changed"
 	jq -s 'map(.case) | sort' "$receipts" > "$OUT_DIR/$label-receipt-cases.json"
 	cmp "$REGRESSION_EVIDENCE/expected-receipt-cases.json" "$OUT_DIR/$label-receipt-cases.json" || die "$label receipt case set changed"
 	jq -e --arg label "$label" '.schema_version == 1 and .boot == $label and .randomized == false and .stress_iterations == 2048 and all(.stress_families[]; .iterations == 2048)' "$REGRESSION_EVIDENCE/$label-seed-set.json" >/dev/null || die "$label seed set changed"
@@ -508,12 +539,12 @@ while IFS='|' read -r label arch profile child_sha memory; do
 	[ ! -s "$REGRESSION_EVIDENCE/$label-warning-reports.txt" ] || die "$label retained warning report is nonempty"
 	index=$((index + 1))
 done <<'PROFILE_SPECS'
-arm64-standard-debug|arm64|standard|606c920035fe9895186a4c089c63d9221889fa570ef9631efe155f79c1fa4c19|2048
-x86_64-standard-debug|x86_64|standard|817a0e1a061e9ebd457d648d0229adc6136cee1df3851438dd519000eba7e658|2048
-arm64-hotplug-fault-injection|arm64|fault|0f471efd6a79e07fa91c5630eea684315f5ed8aa7241d5adf895f29137575104|2048
-x86_64-hotplug-fault-injection|x86_64|fault|e9e4e6e5a47d9dfd56f04985cfc42542a24ef343780ce7c9b3eb38eca538a4bd|2048
-arm64-generic-kasan|arm64|kasan|3e0e28cb37da7f8c4f00f12bdcdb38ce077d2bf4eb8964e50013a754cbbfdd52|4096
-x86_64-kcsan|x86_64|kcsan|9cfe7c2c64f6490859d9e284c37a0e969f5cee4652ae696c8bf6f2c568dca52b|4096
+arm64-standard-debug|arm64|standard|12f8b8b5b203dd2f2eedfd917f2851f82f96fab8723eca53f8de7f134ce9c7e7|2048
+x86_64-standard-debug|x86_64|standard|a74d7d3f78af7c4df0672b86553b6ca21183cd297e0dd6eedde3bab73c013a6d|2048
+arm64-hotplug-fault-injection|arm64|fault|51664fee2ef7365a3923f62fd3860b157b9fc51837ce6ec46e2aafe854be971d|2048
+x86_64-hotplug-fault-injection|x86_64|fault|14a6e6e1a633ad90e1fd89bf234e3c31a12929ac6de133d96b5bb27ed440b566|2048
+arm64-generic-kasan|arm64|kasan|4c725dbf19974f957a371af5655b8e9122652db064faa2823a1b134b8300aea8|4096
+x86_64-kcsan|x86_64|kcsan|8f57d35a66b14fba4ac0c268a7033c8a5ef0e1ce2d7381c76077988935a4d9e0|4096
 PROFILE_SPECS
 [ "$index" = 6 ] || die 'profile specification count changed'
 
@@ -522,8 +553,8 @@ progress '82% checking Git identities, retired scratch, and immutable originals'
 [ -z "$(git -C "$LINUX_DIR" status --porcelain --untracked-files=no)" ] || die 'primary Linux is dirty'
 [ "$(git -C "$LINUX_DIR" rev-parse "$CANDIDATE_COMMIT^")" = "$CANDIDATE_PARENT" ] || die 'candidate parent moved'
 [ "$(git -C "$LINUX_DIR" rev-parse "$CANDIDATE_COMMIT^{tree}")" = "$CANDIDATE_TREE" ] || die 'candidate tree moved'
-[ "$(git -C "$LINUX_DIR" rev-parse refs/heads/codex/p5a-r4-e4-local-quantum-measurement)" = "$CANDIDATE_COMMIT" ] || die 'local candidate ref moved'
-[ "$(git -C "$LINUX_DIR" rev-parse refs/remotes/fork/codex/p5a-r4-e4-local-quantum-measurement)" = "$CANDIDATE_COMMIT" ] || die 'fork candidate ref moved'
+[ "$(git -C "$LINUX_DIR" rev-parse refs/heads/codex/p5a-r4-e4-local-quantum-measurement-r7)" = "$CANDIDATE_COMMIT" ] || die 'local candidate ref moved'
+[ "$(git -C "$LINUX_DIR" rev-parse refs/remotes/fork/codex/p5a-r4-e4-local-quantum-measurement-r7)" = "$CANDIDATE_COMMIT" ] || die 'fork candidate ref moved'
 git -C "$LINUX_DIR" diff --binary "$CANDIDATE_PARENT..$CANDIDATE_COMMIT" > "$OUT_DIR/recomputed-e4-source.diff"
 [ "$(file_sha "$OUT_DIR/recomputed-e4-source.diff")" = "$CANDIDATE_DIFF_SHA" ] || die 'candidate diff changed'
 cmp "$OUT_DIR/recomputed-e4-source.diff" "$SOURCE_EVIDENCE/e4-source.diff" || die 'retained candidate diff differs from Git'
@@ -575,7 +606,7 @@ jq -n \
 	--argjson total_count "$total_artifacts" --argjson combined_bytes "$COMBINED_BYTES" \
 	--argjson source_bytes "$SOURCE_BYTES" --argjson config_bytes "$CONFIG_BYTES" \
 	--argjson regression_bytes "$REGRESSION_BYTES" --argjson total_bytes "$total_bytes" \
-	'{schema_version:2,id:"sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure-result-v2",run_id:$run_id,status:"passed_independent_r4_e4_source_e3_evidence_closure",source_run_id:$source_run_id,combined_result_sha256:$combined_result_sha,source_result_sha256:$source_result_sha,config_result_sha256:$config_result_sha,e3_regression_result_sha256:$regression_result_sha,artifact_manifests_sha256:{combined:$combined_manifest_sha,source:$source_manifest_sha,config:$config_manifest_sha,regression:$regression_manifest_sha},artifact_counts:{combined:$combined_count,source:$source_count,config:$config_count,regression:$regression_count,total:$total_count},artifact_bytes:{combined:$combined_bytes,source:$source_bytes,config:$config_bytes,regression:$regression_bytes,total:$total_bytes},runner_seals_sha256:{closure:$closure_runner_sha,source:$source_runner_sha,regression:$regression_runner_sha,combined:$combined_runner_sha},all_artifacts_snapshotted_read_only:true,artifact_race_checks_passed:4,candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,fresh_source_objects_audited:6,disabled_e4_artifacts:0,e3_profiles_audited:6,total_e3_cases:216,total_e3_receipts:216,measurement_task_migration_disabled:true,vcpu_migration_observation_enforced:true,irq_preempt_state_recorded:true,plan_to_source_observability_audited:true,compiler_diagnostics:0,clock_skew_warnings:0,kernel_warning_reports:0,case_failures:0,case_skips:0,case_timeouts:0,qemu_nonzero_exits:0,network_devices_enabled:0,run_owned_build_scratch_retired:true,run_owned_worktrees_retired:true,independent_artifact_closure_passed:true,exact_virtual_synthetic_r4_e4_source_accepted:true,r4_e4_virtual_synthetic_timing_may_start:true,measurement_result_accepted:false,real_scheduler_attachment:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,n136_complete:false,bare_metal_validated:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' \
+	'{schema_version:2,id:"sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure-result-v2",run_id:$run_id,status:"passed_independent_r4_e4_source_e3_evidence_closure",source_run_id:$source_run_id,combined_result_sha256:$combined_result_sha,source_result_sha256:$source_result_sha,config_result_sha256:$config_result_sha,e3_regression_result_sha256:$regression_result_sha,artifact_manifests_sha256:{combined:$combined_manifest_sha,source:$source_manifest_sha,config:$config_manifest_sha,regression:$regression_manifest_sha},artifact_counts:{combined:$combined_count,source:$source_count,config:$config_count,regression:$regression_count,total:$total_count},artifact_bytes:{combined:$combined_bytes,source:$source_bytes,config:$config_bytes,regression:$regression_bytes,total:$total_bytes},runner_seals_sha256:{closure:$closure_runner_sha,source:$source_runner_sha,regression:$regression_runner_sha,combined:$combined_runner_sha},all_artifacts_snapshotted_read_only:true,artifact_race_checks_passed:4,candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,fresh_source_objects_audited:6,disabled_e4_artifacts:0,e3_profiles_audited:6,total_e3_cases:216,total_e3_receipts:216,e3_handoff_race_strengthened:true,e4_offline_oracle_corrected:true,corrected_handoff_receipts_audited:6,measurement_task_migration_disabled:true,vcpu_migration_observation_enforced:true,irq_preempt_state_recorded:true,plan_to_source_observability_audited:true,compiler_diagnostics:0,clock_skew_warnings:0,kernel_warning_reports:0,case_failures:0,case_skips:0,case_timeouts:0,qemu_nonzero_exits:0,network_devices_enabled:0,run_owned_build_scratch_retired:true,run_owned_worktrees_retired:true,independent_artifact_closure_passed:true,exact_virtual_synthetic_r4_e4_source_accepted:true,r4_e4_virtual_synthetic_timing_may_start:true,measurement_result_accepted:false,real_scheduler_attachment:false,runtime_scheduler_hook_approved:false,runtime_behavior_approved:false,n136_complete:false,bare_metal_validated:false,performance_claim:false,cost_claim:false,production_protection:false,deployment_ready:false,multi_node_ready:false,multi_cluster_ready:false,datacenter_ready:false}' \
 	> "$OUT_DIR/result.json.pending"
 jq -e --argjson total_count "$total_artifacts" --argjson total_bytes "$total_bytes" '
   .schema_version == 2 and
@@ -584,6 +615,8 @@ jq -e --argjson total_count "$total_artifacts" --argjson total_bytes "$total_byt
   .artifact_counts.total == $total_count and .artifact_bytes.total == $total_bytes and
   .artifact_race_checks_passed == 4 and .fresh_source_objects_audited == 6 and
   .e3_profiles_audited == 6 and .total_e3_cases == 216 and .total_e3_receipts == 216 and
+  .e3_handoff_race_strengthened == true and .e4_offline_oracle_corrected == true and
+  .corrected_handoff_receipts_audited == 6 and
   .measurement_task_migration_disabled == true and
   .vcpu_migration_observation_enforced == true and
   .irq_preempt_state_recorded == true and .plan_to_source_observability_audited == true and

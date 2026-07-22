@@ -7,7 +7,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 CAPSCHED_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
 WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
 RUNNER="$SCRIPT_DIR/run-sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure.sh"
-SOURCE_RUN_ID=20260721T-p5a-r4-e4-coalesced-owner-source-e3-regression-r5
+SOURCE_RUN_ID=20260723T-p5a-r4-e4-owner-oracle-correction-source-e3-regression-r7
 COMBINED_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-source-and-e3-regression/$SOURCE_RUN_ID"
 SOURCE_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-local-quantum-source-gate/$SOURCE_RUN_ID-source"
 CONFIG_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-e3-six-profile-regression/$SOURCE_RUN_ID-config-smoke"
@@ -93,6 +93,16 @@ run_reject()
 				"$bundle/source/hard-irq-dispatch.c" > "$bundle/source/hard-irq-dispatch.c.tmp"
 			mv "$bundle/source/hard-irq-dispatch.c.tmp" "$bundle/source/hard-irq-dispatch.c"
 			;;
+		recovery-self-requeue)
+			sed 's/sched_exec_r4_test_dispatch_one(rq);/irq_work_queue(\&rq->layout.dispatch_irq_work);/' \
+				"$bundle/source/e3-recovery-worker.c" > "$bundle/source/e3-recovery-worker.c.tmp"
+			mv "$bundle/source/e3-recovery-worker.c.tmp" "$bundle/source/e3-recovery-worker.c"
+			;;
+		offline-oracle)
+			sed 's/(treatment ? visits != fixture->occupancy : visits != 0)/(visits != fixture->occupancy)/' \
+				"$bundle/source/e4-block.c" > "$bundle/source/e4-block.c.tmp"
+			mv "$bundle/source/e4-block.c.tmp" "$bundle/source/e4-block.c"
+			;;
 		config-enable-e4)
 			sed 's/# CONFIG_SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST is not set/CONFIG_SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST=y/' \
 				"$bundle/config/arm64-standard-debug.config" > "$bundle/config/arm64-standard-debug.config.tmp"
@@ -118,6 +128,8 @@ run_pass exact
 run_reject combined-result-tamper combined-result
 run_reject source-symlink source-symlink
 run_reject hard-irq-observation-tamper hard-irq-observation
+run_reject recovery-self-requeue-tamper recovery-self-requeue
+run_reject offline-oracle-tamper offline-oracle
 run_reject config-e4-enable config-enable-e4
 run_reject receipt-tamper receipt-tamper
 run_reject artifact-removal artifact-removal
