@@ -302,6 +302,38 @@ commit, fresh six-object/six-profile/216-case evidence and new independent
 double closure are mandatory. Timing and x86_64 remain blocked until that
 sequence completes.
 
+## Corrected Source Closure and Arm64 Timing R5 Readiness
+
+Fresh combined run
+`20260721T-p5a-r4-e4-coalesced-owner-source-e3-regression-r5` passes the six
+source objects and six preserved E3 profiles at 216/216 cases and receipts,
+with zero compiler, clock-skew, or kernel diagnostics. Its combined, source,
+configuration, regression, and boot-results SHA-256 values are respectively
+`6a77daf3...77b3777`, `24be737d...418989`, `6c0be87f...a267a`,
+`fd558602...69a00`, and `1749d60e...59c7f`.
+
+Updated closure runner `dddc11a3...5280f8` additionally audits all three
+coalesced-owner correction helpers. Two read-only closures cover exactly 270
+artifacts/10,871,386 bytes and produce `313651a8...2c57c` plus
+`10dd9320...d4a`, normalized after deleting only `run_id` to
+`75369701...b449`. Exact-fixture and six mutation controls pass. Validation/
+0268 therefore completes the reopened source prerequisite.
+
+Timing runner `cd2f2103...27db` binds the corrected candidate and closures
+without changing the 682-cell matrix, thresholds, paused-QMP placement,
+diagnostic rules, or capacity gates. Config smoke r9 starts zero builds/boots;
+forced-capacity r3 fails before build and seals `5000e8ef...bb39`; parser and
+QMP positive/negative controls pass. The build machine reads back six vCPUs,
+10,240 MiB, and `nproc=6`; only build concurrency follows `nproc`, while the
+measurement remains two pinned guest vCPUs. Sparsebundle compaction preserves
+all Git identities and leaves 52,127,908 KiB host plus 526,289,848 KiB
+VM-internal free.
+
+Only exact arm64 timing r5 is authorized. A clean complete result still needs
+independent timing closure before any exact same-source x86_64 work; a valid
+threshold rejection stops x86_64, and a harness failure authorizes only
+root-cause work.
+
 ## Claim Boundary
 
 This accepted-for-timing replacement source and runner measure only virtual

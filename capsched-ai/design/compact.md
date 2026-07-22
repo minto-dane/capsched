@@ -4992,3 +4992,11 @@ P5A-R3 E4 source and exact-source regression gate:
   checks pass. S1 is reopened pending a fresh six-object/six-profile/216-case
   combined regression and double closure. x86_64 timing and all broader claims
   remain blocked.
+
+- P5A-R4 E4 corrected source is closed for exact synthetic timing only:
+  combined r5 regression `6a77daf3...77b3777` passes 6/6 objects/profiles and
+  216/216 cases/receipts; 270-artifact closures `313651a8...2c57c` and
+  `10dd9320...d4a` normalize to `75369701...b449`. Runner
+  `cd2f2103...27db`, short controls, six-core build profile, and storage floors
+  authorize only arm64 timing r5. Measurement remains two pinned guest vCPUs;
+  performance and all live/production/datacenter claims remain false.

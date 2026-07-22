@@ -8,7 +8,7 @@ CAPSCHED_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
 WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
 LINUX_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/linux"
 PATCH_QUEUE_DIR="$WORKSPACE_DIR/linux-patches"
-SOURCE_RUN_ID=20260719T-p5a-r4-e4-source-e3-regression-r4
+SOURCE_RUN_ID=20260721T-p5a-r4-e4-coalesced-owner-source-e3-regression-r5
 CANONICAL_COMBINED_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-source-and-e3-regression/$SOURCE_RUN_ID"
 CANONICAL_SOURCE_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-local-quantum-source-gate/$SOURCE_RUN_ID-source"
 CANONICAL_CONFIG_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-e3-six-profile-regression/$SOURCE_RUN_ID-config-smoke"
@@ -45,29 +45,29 @@ SOURCE_EVIDENCE="$INPUT_DIR/source"
 CONFIG_EVIDENCE="$INPUT_DIR/config"
 REGRESSION_EVIDENCE="$INPUT_DIR/regression"
 
-# Fresh r4 producer roots, enumerated only after its detached wrapper exited 0.
+# Fresh r5 producer roots, enumerated only after its detached wrapper exited 0.
 EVIDENCE_SEAL_FINALIZED=1
-COMBINED_RESULT_SHA=2b90c47e69c4c190029bc0fb2b25e66db68f87ec16f0a4d4034f4741caf5d7ea
-SOURCE_RESULT_SHA=00789ead0416102b1eba78b570337ccf49ad0c01beee9a1b8811fb857aa09a1e
-CONFIG_RESULT_SHA=452b32f0487d8faf647cd3e7e552fde7bfd757946ed0a5f7dc4f0e4bee6826d3
-REGRESSION_RESULT_SHA=9333640ccde66c32ca0fabdcbd43abdf84684c0ba70b8e45e826a5c6b555f944
-BOOT_RESULTS_SHA=2dc157c325a4fa7042b3deab6b0db82eda2d371da1a66b7d3b453af2e567a857
-COMBINED_MANIFEST_SHA=04affeb785a4adf79321c4f514c236fcc26abc90c9445f374280b4a2b62211be
-SOURCE_MANIFEST_SHA=1a08a0a3a013f22fbc8399fefbc9f04416c72a9692e2aed183d95d206959254a
-CONFIG_MANIFEST_SHA=cce4cc258d5033c98570fa87b7b8861339f35bd9a3638bb21e692cf3760df3b6
-REGRESSION_MANIFEST_SHA=b8e5069468c63b76ce7224a407e80465761a29e68645220c970438e95d6dbdf1
-SOURCE_INTERNAL_MANIFEST_SHA=b69a2ea1ed45eef445d519bcf282aebd380fb36f9d9e420e66390c7e73a3482d
+COMBINED_RESULT_SHA=6a77daf360696e012abd239d489cb55900c005946c053a7163297b12dc8b3777
+SOURCE_RESULT_SHA=24be737d935dbd4f7ecca7ccbf1dd2f6cea678c9dd3cc76146af5b2a32418989
+CONFIG_RESULT_SHA=6c0be87fa2390affc44c51b9e059e98228ead1055990cd1bfd4bda90090a267a
+REGRESSION_RESULT_SHA=fd55860285824aa4fe946f35cea30f50493b908be1e9ee2f85eaedf735369a00
+BOOT_RESULTS_SHA=1749d60e17bf59baa1906a684efea7868e5a339eadd5335de40972ce18059c7f
+COMBINED_MANIFEST_SHA=47b73ec0e95dd0520e9c610a321c2a8da39c6946ebdf9fec1339445e3b51cc43
+SOURCE_MANIFEST_SHA=b60775da8d511fc6463ebe8f4ae44e03b072ef5f3f9f26da3acd51a9a11ab941
+CONFIG_MANIFEST_SHA=7abbdecea1ca38a67396aef811f89f57ce94a2fa8e61d079142d1ee18f2ebb3f
+REGRESSION_MANIFEST_SHA=94b9d20788d770a8713b29a8a0f64e25bff31533485eb116a26553127879b54a
+SOURCE_INTERNAL_MANIFEST_SHA=1980773c25ef61e860dd93cf0f594c2f4cfb7a0c78cc01d202a488aa727f94d9
 COMBINED_COUNT=2
-SOURCE_COUNT=79
+SOURCE_COUNT=82
 CONFIG_COUNT=53
 REGRESSION_COUNT=133
-COMBINED_BYTES=1953
-SOURCE_BYTES=5085392
-CONFIG_BYTES=1663741
-REGRESSION_BYTES=4129488
-SOURCE_RUNNER_SHA=7914d20aba6e37ba977409ed8c6b9c25601583613e8a304be78f824dc7982093
-REGRESSION_RUNNER_SHA=7557c46bab856074511c3dbe9fa6212f07fdf0d723dc0a77352896b29168b23d
-COMBINED_RUNNER_SHA=69ad5a507213c7f277b2dd42426b0ae698d61a7a926c4280b7dc145e08071b00
+COMBINED_BYTES=2033
+SOURCE_BYTES=5070721
+CONFIG_BYTES=1665227
+REGRESSION_BYTES=4133405
+SOURCE_RUNNER_SHA=b5815d21564480f51570c62008a680bacbefbda4a29514633264b80ede4dbcff
+REGRESSION_RUNNER_SHA=16ae06b59823080cfcb127551dec6d59d0eb50509d4b312930728d18039a31a6
+COMBINED_RUNNER_SHA=b6a779044ad4547dba2849cd62e34f57a814fe74f05fd10875e8be8b39f1101c
 WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a
 HARDENING_LIB_SHA=4548753bc2acaa7497aef9e9ff070d9952f9b5ee20631c6116590067eab9ccc6
 PLAN_SHA=f9c9103b4eae2177309dd8e0134601fe3cf1eb08061986265627dcd9d8fd6677
@@ -240,7 +240,7 @@ jq -e --arg run_id "$SOURCE_RUN_ID-source" --arg candidate "$CANDIDATE_COMMIT" \
   .fresh_objects == 6 and .w1_compiler_diagnostics == 0 and
   .clock_skew_retries == 0 and .final_clock_skew_warnings == 0 and
   .disabled_e4_artifacts == 0 and .e3_cases_byte_preserved == 36 and
-  .e4_measurement_cells == 682 and .artifact_count == 76 and
+  .e4_measurement_cells == 682 and .artifact_count == 79 and
   .measurement_task_migration_disabled == true and
   .vcpu_migration_observation_enforced == true and
   .irq_preempt_state_recorded == true and
@@ -248,7 +248,7 @@ jq -e --arg run_id "$SOURCE_RUN_ID-source" --arg candidate "$CANDIDATE_COMMIT" \
   .r4_e4_source_accepted == false and .production_protection == false and .datacenter_ready == false
 ' "$SOURCE_RESULT" >/dev/null
 verify_hash "$SOURCE_EVIDENCE/artifact-manifest.sha256" "$SOURCE_INTERNAL_MANIFEST_SHA" 'source internal artifact manifest'
-[ "$(wc -l < "$SOURCE_EVIDENCE/artifact-manifest.sha256" | tr -d ' ')" = 76 ] || die 'source internal manifest count changed'
+[ "$(wc -l < "$SOURCE_EVIDENCE/artifact-manifest.sha256" | tr -d ' ')" = 79 ] || die 'source internal manifest count changed'
 while read -r expected path; do
 	case "$path" in
 		"$CANONICAL_SOURCE_DIR"/*) relative=${path#"$CANONICAL_SOURCE_DIR"/} ;;
@@ -268,6 +268,23 @@ cmp "$SOURCE_EVIDENCE/expected-e4-cases.txt" "$SOURCE_EVIDENCE/actual-e4-cases.t
 [ "$(wc -l < "$SOURCE_EVIDENCE/actual-e4-cases.txt" | tr -d ' ')" = 7 ] || die 'E4 family count changed'
 grep -Fq 'config SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST' "$SOURCE_EVIDENCE/e4-kconfig.txt" || die 'E4 config missing'
 grep -Fq 'default n' "$SOURCE_EVIDENCE/e4-kconfig.txt" || die 'E4 config is not default-off'
+
+# Timing r4 exposed an invalid synthetic diagnostic after false queue returns.
+# Preserve the correction independently of the producer's source gate: false
+# proves coalesced ownership at the queue operation, while a later state read
+# may legitimately observe that owner after it has completed.
+for helper in kick_locked dispatch_one queue_notifier; do
+	file="$SOURCE_EVIDENCE/$helper.c"
+	[ -s "$file" ] || die "coalesced-owner helper evidence missing: $helper"
+	! grep -Fq 'protocol_errors++' "$file" ||
+		die "post-return coalesced-owner diagnostic returned: $helper"
+done
+grep -Fq 'False itself proves a live coalesced irq-work owner.' \
+	"$SOURCE_EVIDENCE/kick_locked.c" || die 'irq-work false ownership proof changed'
+grep -Fq 'The coalesced owner completed before this diagnostic read.' \
+	"$SOURCE_EVIDENCE/dispatch_one.c" || die 'workqueue completion-race classification changed'
+grep -Fq 'False itself proves a live coalesced notifier owner.' \
+	"$SOURCE_EVIDENCE/queue_notifier.c" || die 'notifier false ownership proof changed'
 
 # Independently re-audit the plan-to-source observability contract.  The hard
 # IRQ observations are deliberately checked in their shared dispatch helper;
@@ -491,12 +508,12 @@ while IFS='|' read -r label arch profile child_sha memory; do
 	[ ! -s "$REGRESSION_EVIDENCE/$label-warning-reports.txt" ] || die "$label retained warning report is nonempty"
 	index=$((index + 1))
 done <<'PROFILE_SPECS'
-arm64-standard-debug|arm64|standard|ee3a44c0894e0ced47ec67ad303e060ff6d235cf69ff9714981030041d69b56d|2048
-x86_64-standard-debug|x86_64|standard|44ae9d039a08170d59b9f74be3693dc83f4a27328b31eb15482b754b1fb6ae31|2048
-arm64-hotplug-fault-injection|arm64|fault|779b9d92905c945d6966360b93674ee8b00521c6ef34aa595c3e2abeb0bd8c85|2048
-x86_64-hotplug-fault-injection|x86_64|fault|f918e2b61c2cb4afc3cc9f29ec39db66357a1c8d2b1e73988de6d2c97ab0378e|2048
-arm64-generic-kasan|arm64|kasan|c193425f32116ef5a28a0c31e576f43d2086611edf772e1a737beb7834972e65|4096
-x86_64-kcsan|x86_64|kcsan|adace48e8a98ba5b6ef7e2abb13c5fe8eab84be1c78bcfd43080dd37d3ca82bd|4096
+arm64-standard-debug|arm64|standard|606c920035fe9895186a4c089c63d9221889fa570ef9631efe155f79c1fa4c19|2048
+x86_64-standard-debug|x86_64|standard|817a0e1a061e9ebd457d648d0229adc6136cee1df3851438dd519000eba7e658|2048
+arm64-hotplug-fault-injection|arm64|fault|0f471efd6a79e07fa91c5630eea684315f5ed8aa7241d5adf895f29137575104|2048
+x86_64-hotplug-fault-injection|x86_64|fault|e9e4e6e5a47d9dfd56f04985cfc42542a24ef343780ce7c9b3eb38eca538a4bd|2048
+arm64-generic-kasan|arm64|kasan|3e0e28cb37da7f8c4f00f12bdcdb38ce077d2bf4eb8964e50013a754cbbfdd52|4096
+x86_64-kcsan|x86_64|kcsan|9cfe7c2c64f6490859d9e284c37a0e969f5cee4652ae696c8bf6f2c568dca52b|4096
 PROFILE_SPECS
 [ "$index" = 6 ] || die 'profile specification count changed'
 

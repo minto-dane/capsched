@@ -13,20 +13,20 @@ PARSER="$SCRIPT_DIR/parse-sched-exec-lease-p5a-r4-e4-measurement-evidence.sh"
 WARNING_CLASSIFIER="$SCRIPT_DIR/lib/kernel-warning-classifier.sh"
 QMP_CONTROL="$SCRIPT_DIR/qmp-sched-exec-lease-vcpu-control.py"
 CLOSURE_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure"
-CLOSURE_R1="$CLOSURE_ROOT/20260720T-p5a-r4-e4-source-e3-final-closure-r1"
-CLOSURE_R2="$CLOSURE_ROOT/20260720T-p5a-r4-e4-source-e3-final-closure-r2"
+CLOSURE_R1="$CLOSURE_ROOT/20260722T-p5a-r4-e4-coalesced-owner-source-e3-closure-r1"
+CLOSURE_R2="$CLOSURE_ROOT/20260722T-p5a-r4-e4-coalesced-owner-source-e3-closure-r2"
 CANDIDATE_PARENT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-CANDIDATE_COMMIT=5857720dedc49f89d2367442f8fdb1a806ffa1cc
-CANDIDATE_TREE=ee6e329106327a302bf63c78f2ed4fe3ddea7865
-CANDIDATE_DIFF_SHA=d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93
+CANDIDATE_COMMIT=82d91805f8e145d2403057f656e590e4bcae12f1
+CANDIDATE_TREE=44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f
+CANDIDATE_DIFF_SHA=a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 PLAN_SHA=63ba7b17c3d08ea1ee0cdd4b420cc3a08b21932e9f6c2fb3f31754147e5b1667
 WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a
 QMP_CONTROL_SHA=e59bc8ad5adb50ddf66652b28a424afd1efbd28a9501e786771d5fb1f8da147e
-CLOSURE_R1_SHA=5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f
-CLOSURE_R2_SHA=bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720
-CLOSURE_NORMALIZED_SHA=767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21
+CLOSURE_R1_SHA=313651a8eaf26daf8d29eb7634c82222f44bdd2d1b6cee840702324bbad2c57c
+CLOSURE_R2_SHA=10dd9320e102d452d57e08002e1d930537e669f28add02ef8e851d3ec7577d4a
+CLOSURE_NORMALIZED_SHA=7536970108657a6cba06debc895ecc3f088818bc6aa19a4f1fdbfdbe50adb449
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
 BUILD_ROOT=${BUILD_ROOT:-"/var/tmp/linux-cap-builds/p5a-r4-e4-arm64-measurement/$RUN_ID"}
 BUILD_OUT="$BUILD_ROOT/build"
@@ -37,7 +37,7 @@ DERIVED_DIR="$OUT_DIR/derived"
 ARTIFACT_DIR="$RAW_DIR/boot-artifacts/arm64"
 PROGRESS_FILE=${PROGRESS_FILE:-"$OUT_DIR/progress"}
 HOST_ENV_FILE=${HOST_ENV_FILE:-}
-JOBS=${JOBS:-2}
+JOBS=${JOBS:-$(nproc)}
 QEMU_TIMEOUT=${QEMU_TIMEOUT:-86400}
 BUILD_STORAGE_MIN_KIB=${BUILD_STORAGE_MIN_KIB:-16777216}
 HOST_STORAGE_MIN_KIB=${HOST_STORAGE_MIN_KIB:-8388608}
@@ -176,7 +176,7 @@ write_failure_result()
   status:"harness_failed",
   architecture:"arm64",
   failure:{stage:$stage,reason:$reason},
-  source_commit:"5857720dedc49f89d2367442f8fdb1a806ffa1cc",
+  source_commit:"82d91805f8e145d2403057f656e590e4bcae12f1",
   architecture_measurement_valid:false,
   run_owned_build_scratch_retired:$build_retired,
   run_owned_worktree_retired:$worktree_retired,
@@ -268,13 +268,13 @@ for closure in "$CLOSURE_R1" "$CLOSURE_R2"; do
 	jq -e '
 	  .schema_version == 2 and
 	  .status == "passed_independent_r4_e4_source_e3_evidence_closure" and
-	  .source_run_id == "20260719T-p5a-r4-e4-source-e3-regression-r4" and
-	  .combined_result_sha256 == "2b90c47e69c4c190029bc0fb2b25e66db68f87ec16f0a4d4034f4741caf5d7ea" and
-	  .candidate_commit == "5857720dedc49f89d2367442f8fdb1a806ffa1cc" and
+	  .source_run_id == "20260721T-p5a-r4-e4-coalesced-owner-source-e3-regression-r5" and
+	  .combined_result_sha256 == "6a77daf360696e012abd239d489cb55900c005946c053a7163297b12dc8b3777" and
+	  .candidate_commit == "82d91805f8e145d2403057f656e590e4bcae12f1" and
 	  .candidate_parent == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
-	  .candidate_tree == "ee6e329106327a302bf63c78f2ed4fe3ddea7865" and
-	  .candidate_diff_sha256 == "d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93" and
-	  .artifact_counts.total == 267 and .artifact_bytes.total == 10880574 and
+	  .candidate_tree == "44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f" and
+	  .candidate_diff_sha256 == "a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9" and
+	  .artifact_counts.total == 270 and .artifact_bytes.total == 10871386 and
 	  .fresh_source_objects_audited == 6 and .e3_profiles_audited == 6 and
 	  .total_e3_cases == 216 and .total_e3_receipts == 216 and
 	  .measurement_task_migration_disabled == true and
@@ -686,8 +686,8 @@ jq -n \
   run_id:$run_id,
   status:$status,
   architecture:"arm64",
-  source:{parent:"da9ce9159b3450c28c8faf8dceac671fb7bfeba2",commit:"5857720dedc49f89d2367442f8fdb1a806ffa1cc",tree:"ee6e329106327a302bf63c78f2ed4fe3ddea7865",diff_sha256:"d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93"},
-  prerequisites:{combined_run:"20260719T-p5a-r4-e4-source-e3-regression-r4",closure_r1_sha256:"5e3ff71d2fea01b29e20b23a9bb8e1a8479d70cc847fa49aa3d33295c8040f3f",closure_r2_sha256:"bac2aca6649c40fdf21665a0f801be1f0751ef03c437d1b506f78ba77f04f720",closure_normalized_sha256:"767d2f9ab1bfb6e0c918c2ba0b51147ba79f236085e6985097b14e5a8da43d21",independent_double_closure_passed:true},
+  source:{parent:"da9ce9159b3450c28c8faf8dceac671fb7bfeba2",commit:"82d91805f8e145d2403057f656e590e4bcae12f1",tree:"44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f",diff_sha256:"a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9"},
+  prerequisites:{combined_run:"20260721T-p5a-r4-e4-coalesced-owner-source-e3-regression-r5",closure_r1_sha256:"313651a8eaf26daf8d29eb7634c82222f44bdd2d1b6cee840702324bbad2c57c",closure_r2_sha256:"10dd9320e102d452d57e08002e1d930537e669f28add02ef8e851d3ec7577d4a",closure_normalized_sha256:"7536970108657a6cba06debc895ecc3f088818bc6aa19a4f1fdbfdbe50adb449",independent_double_closure_passed:true},
   runner:{sha256:$runner_sha,parser_sha256:$parser_sha,warning_classifier_sha256:"8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a",qmp_vcpu_control_sha256:$qmp_control_sha},
   matrix:{publication:288,picker_kick:144,irq_dispatch:9,recovery:144,notifier:48,current_stop:24,offline:25,total_cells:682,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,total_measured_pairs:6820000,result_rows:682},
   gates_ns:{ordinary_local:{additional_p99:5000,additional_p999:25000,additional_max:50000},offline_local:{additional_p99:25000,additional_p999:40000,additional_max:50000},asynchronous_availability:{p99:10000000,max:100000000},normalized_base_slice:700000},

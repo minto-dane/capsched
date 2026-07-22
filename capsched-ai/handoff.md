@@ -6713,3 +6713,22 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   regression and two independent closures are mandatory before timing retry.
   No timing, runtime, bare-metal, production, deployment, multi-cluster, or
   datacenter claim is accepted.
+
+- P5A-R4 E4 corrected-source closure and arm64 timing r5 boundary:
+
+  Fresh run `20260721T-p5a-r4-e4-coalesced-owner-source-e3-regression-r5`
+  passes six objects, six profiles, 216/216 cases and receipts, and zero
+  diagnostics at `6a77daf3...77b3777`. Two independent read-only closures
+  audit 270 artifacts/10,871,386 bytes, produce `313651a8...2c57c` and
+  `10dd9320...d4a`, and normalize to `75369701...b449`; focused mutation
+  controls fail closed. Validation/0268 completes S1 only for the disposable
+  virtual synthetic source.
+
+  Timing runner `cd2f2103...27db`, config smoke r9, forced-capacity r3, parser
+  tests, and paused-QMP tests pass. Apple Container reads back six vCPUs,
+  10,240 MiB, and six build jobs; timing still uses exactly two pinned guest
+  vCPUs. Lossless sparsebundle compaction leaves 52,127,908 KiB host and
+  526,289,848 KiB VM-internal free. Only arm64 timing r5 is authorized.
+  x86_64 requires a clean complete arm64 result plus independent closure; a
+  threshold rejection or harness failure stops it. No performance, live
+  runtime, production, multi-cluster, or datacenter claim exists.
