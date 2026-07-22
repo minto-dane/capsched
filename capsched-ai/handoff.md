@@ -6748,3 +6748,29 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   identity, and six-vCPU/10-GiB VM are restored. Only a fresh complete arm64
   timing r6 bound to this exact result may start; r5 rows cannot be resumed or
   combined. x86_64 and every performance/live/production claim remain blocked.
+
+- P5A-R4 E4 arm64 timing r6 KUnit rejection and R7 source boundary:
+
+  R6 completed exact paused-QMP placement and QEMU exited zero, but the
+  measurement suite sealed `harness_failed/evidence_validation` at result
+  `28bd8b4c...5f0c53`. It emitted 538/682 rows and six summaries; KUnit is
+  5 pass, 2 fail, 0 skip. Two independent read-only closures over 40 timing
+  artifacts and 26 job records are `62fc4950...e303d` and
+  `6f1c2231...62795`, normalized to `1ed1c743...a3c3f`. Every partial value
+  receives zero timing or x86_64 credit.
+
+  Offline's 205,120 errors equal exactly 20 nonzero occupancy cells times
+  10,256 warmup/measurement pairs: controls correctly visit zero, but the old
+  oracle compared them with treatment occupancy. Recovery has a separate
+  schedule-dependent lost handoff: a running worker can see the IRQ work
+  coalesced while its IRQ callback sees ordinary work already running, leaving
+  dirty projections after both owners exit. Focused boot of only recovery from
+  the exact R6 Image passes setup, excluding an intrinsic B_max error.
+
+  Direct-child R7 `4077ba84...45d93`, tree `6ce127d7...72d55`, makes bounded
+  recovery quanta self-requeue ordinary work, strengthens the deterministic
+  handoff case, and requires zero control visits offline. Strict checkpatch,
+  two arm64 W=1 objects, and source-only exact checks pass. A fresh combined
+  six-object/six-profile/216-case regression and two read-only closures are
+  mandatory before timing. No live/runtime/performance/production/datacenter
+  claim is accepted.

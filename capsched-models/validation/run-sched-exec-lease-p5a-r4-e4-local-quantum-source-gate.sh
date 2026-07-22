@@ -33,9 +33,10 @@ PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 PATCH_QUEUE_SERIES_BLOB=298567f8e0bd18168222da4e64da32750b9ea818
 E3_COMMIT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
 E3_TREE=58c6510c6f517004e37107786d006bb8333b79b8
-E4_COMMIT=82d91805f8e145d2403057f656e590e4bcae12f1
-E4_TREE=44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f
-E4_DIFF_SHA=a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9
+E4_COMMIT=4077ba840f713979c29af64f405dbde39f845d93
+E4_TREE=6ce127d738618fd356ed3533ac32e5796fa72d55
+E4_DIFF_SHA=a4886479f001ea3ef0dbc069ef44040f89df69cc9114421933a5592075bfe255
+E4_E3_CASES_SHA=4c8e46fb3bb23bc5688f01f0e33eed4f381403a85ee42717105fefde8544a463
 REQUIRED_E3_CASES=36
 REQUIRED_E4_CELLS=682
 clock_skew_retries=0
@@ -188,9 +189,9 @@ jq -e '
 	die 'E3 tree moved'
 [ "$(git -C "$LINUX_DIR" rev-parse "$E4_COMMIT^{tree}")" = "$E4_TREE" ] ||
 	die 'E4 tree moved'
-[ "$(git -C "$LINUX_DIR" rev-parse refs/heads/codex/p5a-r4-e4-local-quantum-measurement)" = \
+[ "$(git -C "$LINUX_DIR" rev-parse refs/heads/codex/p5a-r4-e4-local-quantum-measurement-r7)" = \
 	"$E4_COMMIT" ] || die 'local E4 ref moved'
-[ "$(git -C "$LINUX_DIR" rev-parse refs/remotes/fork/codex/p5a-r4-e4-local-quantum-measurement)" = \
+[ "$(git -C "$LINUX_DIR" rev-parse refs/remotes/fork/codex/p5a-r4-e4-local-quantum-measurement-r7)" = \
 	"$E4_COMMIT" ] || die 'fork E4 ref moved'
 
 git -C "$LINUX_DIR" worktree add --detach "$E3_DIR" "$E3_COMMIT" \
@@ -206,7 +207,7 @@ printf '%s\n' init/Kconfig kernel/sched/exec_lease.c > "$OUT_DIR/expected-files.
 diff -u "$OUT_DIR/expected-files.txt" "$OUT_DIR/changed-files.txt" \
 	> "$OUT_DIR/changed-files.diff" || die 'source escaped two-file boundary'
 [ "$(git -C "$E4_DIR" diff --numstat "$E3_COMMIT..$E4_COMMIT" |
-	awk '{a += $1; d += $2} END {print a+0, d+0}')" = '1749 91' ] ||
+	awk '{a += $1; d += $2} END {print a+0, d+0}')" = '1768 97' ] ||
 	die 'source line totals changed'
 git -C "$E4_DIR" diff --binary "$E3_COMMIT..$E4_COMMIT" > "$OUT_DIR/e4-source.diff"
 [ "$(sha256sum "$OUT_DIR/e4-source.diff" | awk '{print $1}')" = "$E4_DIFF_SHA" ] ||
@@ -221,7 +222,7 @@ set -e
 grep -q '^total: 0 errors, 0 warnings, 0 checks,' "$OUT_DIR/checkpatch.log" ||
 	die 'strict checkpatch totals changed'
 
-progress '18% checking default-off configuration and byte-preserved E3 cases'
+progress '18% checking default-off configuration and sealed E3 race correction'
 SOURCE="$E4_DIR/kernel/sched/exec_lease.c"
 KCONFIG="$E4_DIR/init/Kconfig"
 awk '
@@ -238,10 +239,26 @@ sed -n '/^sched_exec_r4_test_bmax_0_1_63_64_and_65_reject(/,/^kunit_test_suites(
 	"$E3_DIR/kernel/sched/exec_lease.c" > "$OUT_DIR/e3-parent-cases.c"
 sed -n '/^sched_exec_r4_test_bmax_0_1_63_64_and_65_reject(/,/^kunit_test_suites(&sched_exec_r4_test_suite);$/p' \
 	"$SOURCE" > "$OUT_DIR/e4-e3-cases.c"
-cmp -s "$OUT_DIR/e3-parent-cases.c" "$OUT_DIR/e4-e3-cases.c" ||
-	die 'E3 cases, oracles, or receipts changed'
+[ "$(sha256sum "$OUT_DIR/e4-e3-cases.c" | awk '{print $1}')" = "$E4_E3_CASES_SHA" ] ||
+	die 'corrected E3 case block changed'
 [ "$(grep -c 'KUNIT_CASE(' "$OUT_DIR/e4-e3-cases.c")" = "$REQUIRED_E3_CASES" ] ||
 	die 'E3 case count changed'
+sed -n '/^static void sched_exec_r4_test_offline_while_worker_self_requeues(/,/^}/p' \
+	"$SOURCE" > "$OUT_DIR/e3-self-requeue-case.c"
+grep -q 'irq_work_sync(&rq->layout.dispatch_irq_work);' \
+	"$OUT_DIR/e3-self-requeue-case.c" || die 'deterministic IRQ coalescing close missing'
+grep -q 'sched_exec_r4_test_drain(environment);' \
+	"$OUT_DIR/e3-self-requeue-case.c" || die 'self-requeue progress drain missing'
+grep -q 'KUNIT_EXPECT_GE(test, rq->recovery_invocations, 2U);' \
+	"$OUT_DIR/e3-self-requeue-case.c" || die 'second recovery invocation oracle missing'
+grep -q 'irq-callback-complete-before-worker-self-requeue-offline' \
+	"$OUT_DIR/e3-self-requeue-case.c" || die 'corrected self-requeue receipt missing'
+sed -n '/^static void sched_exec_r4_recovery_worker(/,/^}/p' \
+	"$SOURCE" > "$OUT_DIR/e3-recovery-worker.c"
+grep -q 'sched_exec_r4_test_dispatch_one(rq);' "$OUT_DIR/e3-recovery-worker.c" ||
+	die 'ordinary-work self-requeue handoff missing'
+! grep -q 'queue_more && !irq_work_queue' "$OUT_DIR/e3-recovery-worker.c" ||
+	die 'loss-prone IRQ requeue handoff remains'
 grep -q '^#define SCHED_EXEC_R4_TEST_STRESS_ITERATIONS[[:space:]]*2048$' "$SOURCE" ||
 	die 'E3 stress iterations changed'
 grep -q '^#define SCHED_EXEC_R4_TEST_TIMEOUT[[:space:]]*(15 \* HZ)$' "$SOURCE" ||
@@ -352,6 +369,8 @@ grep -Fq 'The coalesced owner completed before this diagnostic read.' \
 	"$OUT_DIR/dispatch_one.c" || die 'workqueue completion-race classification missing'
 grep -Fq 'False itself proves a live coalesced notifier owner.' \
 	"$OUT_DIR/queue_notifier.c" || die 'notifier false ownership proof missing'
+grep -Fq '(treatment ? visits != fixture->occupancy : visits != 0)' \
+	"$OUT_DIR/e4-block.c" || die 'offline control/treatment visit oracle correction missing'
 ! grep -Eq 'for_each_(online|possible|present)_cpu|cpu_online_mask|cpuhp_setup|task_group|cgroup_attach|EXPORT_SYMBOL|syscall|proc_create|debugfs_create' \
 	"$OUT_DIR/e4-block.c" || die 'E4 escaped synthetic non-attachment boundary'
 
@@ -476,9 +495,9 @@ jq -n \
 	--arg primary "$PRIMARY_COMMIT" --arg patch_queue "$PATCH_QUEUE_COMMIT" \
 	--arg plan_sha "$PLAN_SHA" --arg plan_result_sha "$PLAN_RESULT_SHA" \
 	--argjson artifacts "$artifact_count" --argjson retries "$clock_skew_retries" \
-	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e4-local-quantum-source-gate-result-v1",run_id:$run_id,status:"passed_source_and_object_gate_awaiting_six_profile_e3_regression",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,plan_sha256:$plan_sha,plan_result_sha256:$plan_result_sha,allowed_files:["init/Kconfig","kernel/sched/exec_lease.c"],strict_checkpatch:{errors:0,warnings:0,checks:0},architectures:["arm64","x86_64"],fresh_modes_per_architecture:["exact_e3_parent","e4_measure_off","e4_measure_on"],fresh_objects:6,w1_compiler_diagnostics:0,clock_skew_retries:$retries,final_clock_skew_warnings:0,disabled_e4_artifacts:0,e3_cases_byte_preserved:36,e4_measurement_cells:682,measurement_task_migration_disabled:true,vcpu_migration_observation_enforced:true,irq_preempt_state_recorded:true,artifact_count:$artifacts,six_profile_e3_regression_required:true,timing_measurement_may_start:false,r4_e4_source_accepted:false,real_scheduler_attachment:false,runtime_behavior_approved:false,production_protection:false,deployment_ready:false,multi_cluster_ready:false,datacenter_ready:false}' \
+	'{schema_version:1,id:"sched-exec-lease-p5a-r4-e4-local-quantum-source-gate-result-v1",run_id:$run_id,status:"passed_source_and_object_gate_awaiting_six_profile_e3_regression",candidate_commit:$candidate,candidate_parent:$parent,candidate_tree:$tree,candidate_diff_sha256:$diff_sha,primary_commit:$primary,patch_queue_commit:$patch_queue,plan_sha256:$plan_sha,plan_result_sha256:$plan_result_sha,allowed_files:["init/Kconfig","kernel/sched/exec_lease.c"],strict_checkpatch:{errors:0,warnings:0,checks:0},architectures:["arm64","x86_64"],fresh_modes_per_architecture:["exact_e3_parent","e4_measure_off","e4_measure_on"],fresh_objects:6,w1_compiler_diagnostics:0,clock_skew_retries:$retries,final_clock_skew_warnings:0,disabled_e4_artifacts:0,e3_case_manifest_preserved:36,e3_handoff_race_strengthened:true,e4_offline_oracle_corrected:true,e4_measurement_cells:682,measurement_task_migration_disabled:true,vcpu_migration_observation_enforced:true,irq_preempt_state_recorded:true,artifact_count:$artifacts,six_profile_e3_regression_required:true,timing_measurement_may_start:false,r4_e4_source_accepted:false,real_scheduler_attachment:false,runtime_behavior_approved:false,production_protection:false,deployment_ready:false,multi_cluster_ready:false,datacenter_ready:false}' \
 	> "$OUT_DIR/result.json.pending"
-jq -e '.status == "passed_source_and_object_gate_awaiting_six_profile_e3_regression" and .fresh_objects == 6 and .w1_compiler_diagnostics == 0 and .disabled_e4_artifacts == 0 and .e3_cases_byte_preserved == 36 and .e4_measurement_cells == 682 and .measurement_task_migration_disabled == true and .vcpu_migration_observation_enforced == true and .irq_preempt_state_recorded == true and .six_profile_e3_regression_required == true and .timing_measurement_may_start == false and .production_protection == false and .datacenter_ready == false' \
+jq -e '.status == "passed_source_and_object_gate_awaiting_six_profile_e3_regression" and .fresh_objects == 6 and .w1_compiler_diagnostics == 0 and .disabled_e4_artifacts == 0 and .e3_case_manifest_preserved == 36 and .e3_handoff_race_strengthened == true and .e4_offline_oracle_corrected == true and .e4_measurement_cells == 682 and .measurement_task_migration_disabled == true and .vcpu_migration_observation_enforced == true and .irq_preempt_state_recorded == true and .six_profile_e3_regression_required == true and .timing_measurement_may_start == false and .production_protection == false and .datacenter_ready == false' \
 	"$OUT_DIR/result.json.pending" >/dev/null
 mv "$OUT_DIR/result.json.pending" "$OUT_DIR/result.json"
 sha256sum "$OUT_DIR/result.json" > "$OUT_DIR/result.sha256"

@@ -48,9 +48,9 @@ WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e4104
 PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
 PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
 CANDIDATE_PARENT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-CANDIDATE_COMMIT=82d91805f8e145d2403057f656e590e4bcae12f1
-CANDIDATE_TREE=44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f
-CANDIDATE_DIFF_SHA=a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9
+CANDIDATE_COMMIT=4077ba840f713979c29af64f405dbde39f845d93
+CANDIDATE_TREE=6ce127d738618fd356ed3533ac32e5796fa72d55
+CANDIDATE_DIFF_SHA=a4886479f001ea3ef0dbc069ef44040f89df69cc9114421933a5592075bfe255
 SUITE=sched_exec_lease_r4_concurrency
 REQUIRED_CASES=36
 REQUIRED_RECEIPTS=36
@@ -316,10 +316,10 @@ jq -e '
 ' "$SIX_BOOT_ATTEMPT_3_REJECTION" >/dev/null
 jq -e '
   .status == "passed_source_and_object_gate_awaiting_six_profile_e3_regression" and
-  .candidate_commit == "82d91805f8e145d2403057f656e590e4bcae12f1" and
+  .candidate_commit == "4077ba840f713979c29af64f405dbde39f845d93" and
   .candidate_parent == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
-  .candidate_tree == "44d9a2125eac6eac4c8c25f38fb6a5eae3a5bd4f" and
-  .candidate_diff_sha256 == "a7cb42fe5fc6f346ba8ea009097fa15433050e79e3255d64467d7b8ad636aeb9" and
+  .candidate_tree == "6ce127d738618fd356ed3533ac32e5796fa72d55" and
+  .candidate_diff_sha256 == "a4886479f001ea3ef0dbc069ef44040f89df69cc9114421933a5592075bfe255" and
   .strict_checkpatch == {errors:0,warnings:0,checks:0} and
   .architectures == ["arm64","x86_64"] and
   .fresh_modes_per_architecture == ["exact_e3_parent","e4_measure_off","e4_measure_on"] and
@@ -327,7 +327,9 @@ jq -e '
   .w1_compiler_diagnostics == 0 and
   .final_clock_skew_warnings == 0 and
   .disabled_e4_artifacts == 0 and
-  .e3_cases_byte_preserved == 36 and
+  .e3_case_manifest_preserved == 36 and
+  .e3_handoff_race_strengthened == true and
+  .e4_offline_oracle_corrected == true and
   .e4_measurement_cells == 682 and
   .measurement_task_migration_disabled == true and
   .vcpu_migration_observation_enforced == true and
@@ -396,8 +398,8 @@ jq -e '
 [ -z "$(git -C "$LINUX_DIR" status --porcelain --untracked-files=no)" ] || die 'primary Linux checkout is dirty'
 [ "$(git -C "$LINUX_DIR" rev-parse "$CANDIDATE_COMMIT^")" = "$CANDIDATE_PARENT" ] || die 'E4 candidate parent moved'
 [ "$(git -C "$LINUX_DIR" rev-parse "$CANDIDATE_COMMIT^{tree}")" = "$CANDIDATE_TREE" ] || die 'E4 candidate tree moved'
-[ "$(git -C "$LINUX_DIR" rev-parse refs/heads/codex/p5a-r4-e4-local-quantum-measurement)" = "$CANDIDATE_COMMIT" ] || die 'local E4 ref moved'
-[ "$(git -C "$LINUX_DIR" rev-parse refs/remotes/fork/codex/p5a-r4-e4-local-quantum-measurement)" = "$CANDIDATE_COMMIT" ] || die 'fork E4 ref moved'
+[ "$(git -C "$LINUX_DIR" rev-parse refs/heads/codex/p5a-r4-e4-local-quantum-measurement-r7)" = "$CANDIDATE_COMMIT" ] || die 'local E4 ref moved'
+[ "$(git -C "$LINUX_DIR" rev-parse refs/remotes/fork/codex/p5a-r4-e4-local-quantum-measurement-r7)" = "$CANDIDATE_COMMIT" ] || die 'fork E4 ref moved'
 [ "$(git -C "$PATCH_QUEUE_DIR" rev-parse HEAD)" = "$PATCH_QUEUE_COMMIT" ] || die 'patch queue moved'
 [ -z "$(git -C "$PATCH_QUEUE_DIR" status --porcelain)" ] || die 'patch queue is dirty'
 

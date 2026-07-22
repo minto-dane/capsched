@@ -5007,3 +5007,15 @@ P5A-R3 E4 source and exact-source regression gate:
   timestamp proof, scratch/reserve retirement, remounted sparsebundle, and
   restored six-core VM authorize only a fresh full r6. R5 rows cannot resume
   or combine; x86_64 and broader claims remain blocked.
+
+- Arm64 timing r6 is `harness_failed/evidence_validation` at result
+  `28bd8b4c...5f0c53`: exact QMP placement and QEMU-zero pass, but 538/682 rows
+  and KUnit 5/2/0 receive no credit. Two 66-input closures normalize to
+  `1ed1c743...a3c3f`. Offline's 205,120 errors are the exact false comparison
+  of zero-visit controls with treatment occupancy. Recovery has a distinct
+  IRQ-callback/worker lost-handoff race. Direct-child R7
+  `4077ba84...45d93` uses ordinary-work self-requeue for remaining bounded
+  quanta, strengthens the deterministic race case, and fixes the offline
+  oracle. Strict checkpatch, focused arm64 W=1 objects, and source-only gates
+  pass; fresh six-object/six-profile/216-case regression plus double closure
+  remain mandatory before timing. x86_64 and all broader claims are blocked.
