@@ -274,6 +274,7 @@ Updated: 2026-07-21
 | 0266 | Arm64 timing r3 is sealed as a shared-host ENOSPC harness failure after exact QMP placement but before the 682-cell matrix completed; two read-only closures give 399 partial rows no credit, and reserve-backed per-progress capacity gates authorize only fresh arm64 timing r4 | SchedExecLease P5A-R4 E4 Arm64 Timing R3 Storage Rejection and R4 Readiness |
 | 0267 | Arm64 timing r4 is sealed after two synthetic fixture `-EINVAL` failures with 523/682 rows receiving no credit; two read-only closures agree, and a minimal coalesced-owner TOCTOU correction requires fresh six-object/six-profile regression and closure | SchedExecLease P5A-R4 E4 Arm64 Timing R4 KUnit Rejection and Source Retry |
 | 0268 | Corrected source passes six fresh objects, six profiles, 216/216 cases and receipts, and two read-only 270-artifact closures; the rebound fail-closed harness, six-core build profile, short controls, and storage floors authorize only fresh arm64 timing r5 | SchedExecLease P5A-R4 E4 Corrected Source Closure and Arm64 Timing R5 Readiness |
+| 0269 | Host reboot interrupted arm64 timing r5 at 166/682 rows with zero summaries; restart timestamps, 55 read-only inputs, exact Image/object/config archives, complete scratch retirement, and recovered six-core environment authorize only a fresh full r6 | SchedExecLease P5A-R4 E4 Arm64 Timing R5 Host-Restart Rejection and R6 Readiness |
 
 ## Principles
 

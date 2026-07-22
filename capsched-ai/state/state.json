@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "workspace": "/Users/niania/Documents/linux-cap",
     "purpose": "Introduce a capability-disciplined execution and resource lease model into Linux scheduler foundations, eventually targeting monitor-backed domain isolation suitable for datacenter OS use. This project was called CapSched-Linux during the private modeling phase.",
-    "current_phase": "sched-exec-lease-l0-p5a-r4-e4-corrected-source-closed-arm64-timing-r5-ready",
+    "current_phase": "sched-exec-lease-l0-p5a-r4-e4-arm64-timing-r5-host-restart-closed-r6-ready",
     "project_control": {
       "git_status": "initialized",
       "repo_path": "/Users/niania/Documents/linux-cap/capsched",
@@ -2861,7 +2861,7 @@
       "blocked_by": [
         "P5A-R4-E4-S1"
       ],
-      "partial_progress": "Validation/0268 completes the corrected source prerequisite and rebinds timing runner cd2f210304fae4be4586bb9bcf750e959513ff59e96796ad2a6b64a8a1a727db. Config smoke r9, forced-capacity r3, parser controls, QMP controls, six-vCPU/10-GiB build-machine readback, and storage compaction/floors pass. Only exact arm64 timing r5 may start. x86_64 remains blocked until a complete clean arm64 result and independent timing closure; valid threshold rejection or harness failure stops continuation."
+      "partial_progress": "Validation/0269 seals arm64 timing r5 as harness_failed/host_restart at result d7fb9ec3343c18485a9bd03adbc1e7200c5c3404ec517464c3770b3924b268d3. Host reboot stopped QEMU at 166/682 rows and zero summaries; final serial/job mtime predates host boot by 27 seconds, and no partial row receives credit. Recovery preserves exact Image/object/config plus a 55-file read-only manifest ad49a9c157c8d0126c8eddfb6d9f127f09b5189622c297f343f15cfce3937b70, retires both VM scratch roots and reserve, remounts the exact sparsebundle, and restores six-vCPU/10-GiB operation. Only a fresh complete arm64 timing r6 may start; x86_64 remains blocked."
     }
   ],
   "canonical_files": {
@@ -2886,6 +2886,7 @@
     "p5a_r4_e4_arm64_timing_r3_storage_rejection": "capsched/capsched-models/validation/0266-sched-exec-lease-p5a-r4-e4-arm64-timing-r3-storage-rejection-and-r4-readiness.md",
     "p5a_r4_e4_arm64_timing_r4_kunit_rejection": "capsched/capsched-models/validation/0267-sched-exec-lease-p5a-r4-e4-arm64-timing-r4-kunit-rejection-and-source-retry.md",
     "p5a_r4_e4_corrected_source_closure_arm64_timing_r5_readiness": "capsched/capsched-models/validation/0268-sched-exec-lease-p5a-r4-e4-corrected-source-closure-and-arm64-timing-r5-readiness.md",
+    "p5a_r4_e4_arm64_timing_r5_host_restart_rejection": "capsched/capsched-models/validation/0269-sched-exec-lease-p5a-r4-e4-arm64-timing-r5-host-restart-rejection-and-r6-readiness.md",
     "p5a_r4_e4_arm64_timing_runner": "capsched/capsched-models/validation/run-sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement.sh",
     "p5a_r4_e4_qmp_vcpu_control": "capsched/capsched-models/validation/qmp-sched-exec-lease-vcpu-control.py",
     "p5a_r4_e4_qmp_vcpu_control_test": "capsched/capsched-models/validation/test-sched-exec-lease-p5a-r4-e4-qmp-vcpu-control.sh",

@@ -5000,3 +5000,10 @@ P5A-R3 E4 source and exact-source regression gate:
   `cd2f2103...27db`, short controls, six-core build profile, and storage floors
   authorize only arm64 timing r5. Measurement remains two pinned guest vCPUs;
   performance and all live/production/datacenter claims remain false.
+
+- Arm64 timing r5 is `harness_failed/host_restart` at result
+  `d7fb9ec3...268d3`: 166/682 rows and zero summaries receive no credit. A
+  55-file manifest `ad49a9c1...7b70`, exact Image/object/config archives,
+  timestamp proof, scratch/reserve retirement, remounted sparsebundle, and
+  restored six-core VM authorize only a fresh full r6. R5 rows cannot resume
+  or combine; x86_64 and broader claims remain blocked.

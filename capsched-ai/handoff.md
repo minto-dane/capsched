@@ -6732,3 +6732,19 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   x86_64 requires a clean complete arm64 result plus independent closure; a
   threshold rejection or harness failure stops it. No performance, live
   runtime, production, multi-cluster, or datacenter claim exists.
+
+- P5A-R4 E4 arm64 timing r5 host-restart rejection and r6 boundary:
+
+  Host reboot stopped r5 at 166/682 rows and zero summaries. Serial/job final
+  mtime epoch `1784710956` precedes host boot `1784710983` by 27 seconds.
+  Recovery tool `55ed64fb...916ed` seals `harness_failed/host_restart` result
+  `d7fb9ec3...268d3`; all partial rows receive zero credit. A 55-file read-only
+  manifest `ad49a9c1...7b70` binds the raw/job evidence and exact preserved
+  Image `21b6ed89...e6fe`, object `e8b81482...7818`, and config
+  `2cbf3e91...f07b`.
+
+  Run-owned 3.9-GiB build and 1.8-GiB worktree scratch, stale registration,
+  and 64-MiB reserve are retired. The case-sensitive sparsebundle, clean Linux
+  identity, and six-vCPU/10-GiB VM are restored. Only a fresh complete arm64
+  timing r6 bound to this exact result may start; r5 rows cannot be resumed or
+  combined. x86_64 and every performance/live/production claim remain blocked.

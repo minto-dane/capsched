@@ -334,6 +334,26 @@ independent timing closure before any exact same-source x86_64 work; a valid
 threshold rejection stops x86_64, and a harness failure authorizes only
 root-cause work.
 
+## Arm64 Timing R5 Host-Restart Rejection and R6 Readiness
+
+Host reboot interrupted r5 after 166/682 rows and before all seven summaries.
+Serial and job-log final mtime epoch `1784710956` precedes the new host boot
+epoch `1784710983` by 27 seconds. No partial row is accepted. Recovery tool
+`55ed64fb...916ed` seals `harness_failed/host_restart` result
+`d7fb9ec3...268d3` and a 55-file read-only manifest
+`ad49a9c1...7b70`.
+
+Before deleting run-owned VM scratch, recovery preserves exact Image
+`21b6ed89...e6fe`, object `e8b81482...7818`, and configuration
+`2cbf3e91...f07b`. The 3.9 GiB build root, 1.8 GiB worktree, stale worktree
+registration, and 64 MiB reserve are then retired. The existing sparsebundle,
+primary Linux identity, and six-vCPU/10-GiB machine are restored exactly.
+
+Validation/0269 authorizes only a new complete arm64 r6 bound to the r5
+interruption result. It may not resume or combine r5 rows. All normal source,
+closure, parser, QMP, capacity, identity, and cleanup preflights remain
+mandatory.
+
 ## Claim Boundary
 
 This accepted-for-timing replacement source and runner measure only virtual
