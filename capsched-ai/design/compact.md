@@ -5019,3 +5019,12 @@ P5A-R3 E4 source and exact-source regression gate:
   oracle. Strict checkpatch, focused arm64 W=1 objects, and source-only gates
   pass; fresh six-object/six-profile/216-case regression plus double closure
   remain mandatory before timing. x86_64 and all broader claims are blocked.
+
+- R7 source acceptance is restored for exact virtual-synthetic timing only.
+  Combined run `643eceae...d3714` passes six objects, six profiles, 216/216
+  cases and receipts, and zero diagnostics. Two independent 272-artifact
+  closures `0224be91...4a3a4` and `b2317a4d...2e99b` normalize to
+  `f8e184c1...d4ba2` and independently audit the corrected handoff/oracle plus
+  all six receipts. Timing runner `54e1ee16...8a50` also binds both R6 failure
+  closures; config smoke r10 and capacity-negative r4 pass. Only fresh arm64
+  timing r7 is authorized. x86_64 and every broader claim remain blocked.

@@ -6774,3 +6774,22 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   six-object/six-profile/216-case regression and two read-only closures are
   mandatory before timing. No live/runtime/performance/production/datacenter
   claim is accepted.
+
+- P5A-R4 E4 R7 source closure and arm64 timing r7 boundary:
+
+  Fresh combined run
+  `20260723T-p5a-r4-e4-owner-oracle-correction-source-e3-regression-r7`
+  exits zero after six source objects, six profiles, 216/216 cases and
+  receipts, six corrected handoff receipts, and zero diagnostics. Combined
+  result is `643eceae...d3714`. Two independent read-only closures audit 272
+  artifacts/10,899,033 bytes, produce `0224be91...4a3a4` and
+  `b2317a4d...2e99b`, and normalize to `f8e184c1...d4ba2`. Eight focused
+  source/evidence mutations fail closed.
+
+  Timing runner `54e1ee16...8a50` binds both R7 closures and both exact R6
+  KUnit-failure closures. Config smoke r10 resolves the unchanged exact config
+  with zero builds/boots and full cleanup. Forced-capacity r4 fails before
+  build and seals `3b210241...eec0c`. Only fresh arm64 timing r7 is authorized
+  under paused-QMP two-vCPU placement and fixed 682-cell/6,820,000-pair gates.
+  x86_64 still requires a clean arm64 result plus independent timing closure;
+  all live/runtime/performance/production/datacenter claims remain false.

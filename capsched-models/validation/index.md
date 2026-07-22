@@ -276,6 +276,7 @@ Updated: 2026-07-21
 | 0268 | Corrected source passes six fresh objects, six profiles, 216/216 cases and receipts, and two read-only 270-artifact closures; the rebound fail-closed harness, six-core build profile, short controls, and storage floors authorize only fresh arm64 timing r5 | SchedExecLease P5A-R4 E4 Corrected Source Closure and Arm64 Timing R5 Readiness |
 | 0269 | Host reboot interrupted arm64 timing r5 at 166/682 rows with zero summaries; restart timestamps, 55 read-only inputs, exact Image/object/config archives, complete scratch retirement, and recovered six-core environment authorize only a fresh full r6 | SchedExecLease P5A-R4 E4 Arm64 Timing R5 Host-Restart Rejection and R6 Readiness |
 | 0270 | Arm64 timing r6 reaches exact QMP placement and QEMU-zero but rejects all 538 partial rows after recovery lost-handoff and offline-oracle KUnit failures; two 66-input closures reproduce the rejection, and minimal direct-child R7 passes strict source-only checks before a mandatory fresh combined regression | SchedExecLease P5A-R4 E4 Arm64 Timing R6 KUnit Rejection and R7 Source-Regression Readiness |
+| 0271 | Corrected R7 passes six fresh objects, six profiles, 216/216 cases and receipts, and two read-only 272-artifact closures with one normalized decision; R6 remains independently closed and only fresh arm64 timing r7 is authorized | SchedExecLease P5A-R4 E4 R7 Source Closure and Arm64 Timing R7 Readiness |
 
 ## Principles
 
