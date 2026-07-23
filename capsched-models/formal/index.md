@@ -145,6 +145,7 @@ Updated: 2026-07-18
 | 0137 | Reproduced with 30/29/depth-29 safe pass, final-empty insertion/self-requeue, generation and membership restart, late admission, separate current observation, ordered drain, four liveness properties, and 76 expected unsafe counterexamples | P5A-R4 E3 Concurrency and Diagnostic Evidence Plan Model |
 | 0138 | Checked twice with 5/4/depth-4 safe pass and 15 expected missing-evidence or overclaim counterexamples | P5A-R4 Post-N135 Authorization Gate Model |
 | 0139 | Checked twice with 5/4/depth-4 safe pass and 43 expected prerequisite, measurement-contract, premature-authorization, or overclaim counterexamples | P5A-R4 E4 Local-Quantum Measurement Plan Model |
+| 0140 | Source-free generation-sealed immutable-view model with exact receipt/install safety, separate current stop, two stable-window liveness properties, and expected unsafe counterexamples | P5A-R5 Generation-Sealed Immutable Projection Model |
 
 ## Planned
 
