@@ -6854,3 +6854,25 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   whose mutable policy is not authority. No R6 source, Linux primary/patch
   promotion, runtime, protection, performance/cost, deployment, multi-node,
   multi-cluster, or datacenter claim exists.
+
+- P5A-R6 source-free successor architecture is selected:
+
+  Validation/0275 revalidates exact R5 rejection `6fee1f3f...b7fe0a5` and
+  compares flat task-tree augmentation, cgroup/task-group authority, and
+  Sealed Masked Domain Forest. Only the last is selected. It keeps authority
+  in one immutable sealed 64-bit allowed-slot mask and keeps EEVDF state
+  explicitly mutable in per-slot queues plus a fixed 64-leaf top selector.
+
+  A changed slot updates one leaf and at most six ancestors. An arbitrary
+  allowed mask cannot use one aggregate minimum in six operations, so the
+  exact query bound is honestly 127 fixed nodes, independent of `nr_running`;
+  no logarithmic or performance claim exists. Two-level domain/task fairness
+  is explicit and flat-CFS equivalence is false.
+
+  Canonical result `82f9c5dd...fe0bd6` passes 16 current Linux hierarchy
+  anchors, six future absences, safe TLC 5/5/depth 5, two liveness properties,
+  13 safety counterexamples, two liveness counterexamples, ShellCheck, and
+  focused mutation controls. Only source-free R6-E1
+  source/locking/layout/fairness planning is authorized. No layout, source,
+  runtime, protection, performance/cost, deployment, multi-node,
+  multi-cluster, or datacenter claim exists.

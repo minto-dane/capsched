@@ -147,7 +147,7 @@ Updated: 2026-07-18
 | 0139 | Checked twice with 5/4/depth-4 safe pass and 43 expected prerequisite, measurement-contract, premature-authorization, or overclaim counterexamples | P5A-R4 E4 Local-Quantum Measurement Plan Model |
 | 0140 | Checked with 16/16/depth-16 safe pass, exact receipt/install safety, separate current stop, two stable-window liveness properties, and 49 expected unsafe counterexamples | P5A-R5 Generation-Sealed Immutable Projection Model |
 | 0141 | Checked with 3/3/depth-3 safe fail-closed pass, expected stale-trust safety counterexample, and expected allowed-progress liveness counterexample | P5A-R5 E1 EEVDF Selector-Coherence Model |
-| 0142 | Planned safe pass with two liveness properties plus expected architecture-safety and progress counterexamples | P5A-R6 Sealed Masked Domain Forest Model |
+| 0142 | Checked with 5/5/depth-5 safe pass, two liveness properties, 13 architecture-safety counterexamples, and 2 progress counterexamples | P5A-R6 Sealed Masked Domain Forest Model |
 
 ## Planned
 

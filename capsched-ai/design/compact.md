@@ -5063,3 +5063,14 @@ P5A-R3 E4 source and exact-source regression gate:
   and permits only source-free successor comparison of dynamic
   authorization-aware EEVDF augmentation or an authority-aligned hierarchy.
   R6 source and all runtime/production/datacenter claims remain false.
+
+- R6 Sealed Masked Domain Forest is the selected source-free successor.
+  It separates a sealed immutable 64-bit allowed-slot mask from mutable
+  per-slot EEVDF queues and a fixed 64-leaf top scheduler. Slot mutation
+  updates at most six ancestors; arbitrary-mask selection has a truthful
+  127-node fixed worst case independent of `nr_running`, not a logarithmic
+  claim. Two-level domain/task fairness is explicit and flat-CFS equivalence
+  is false. Result `82f9c5dd...fe0bd6` passes 16 hierarchy anchors, six
+  absences, safe TLC 5/5/depth 5, two liveness properties, and 15 expected
+  counterexamples. Validation/0275 permits only source-free R6-E1 planning;
+  layout/source and all runtime/production/datacenter claims remain false.
