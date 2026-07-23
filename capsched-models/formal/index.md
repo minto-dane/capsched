@@ -146,6 +146,7 @@ Updated: 2026-07-18
 | 0138 | Checked twice with 5/4/depth-4 safe pass and 15 expected missing-evidence or overclaim counterexamples | P5A-R4 Post-N135 Authorization Gate Model |
 | 0139 | Checked twice with 5/4/depth-4 safe pass and 43 expected prerequisite, measurement-contract, premature-authorization, or overclaim counterexamples | P5A-R4 E4 Local-Quantum Measurement Plan Model |
 | 0140 | Checked with 16/16/depth-16 safe pass, exact receipt/install safety, separate current stop, two stable-window liveness properties, and 49 expected unsafe counterexamples | P5A-R5 Generation-Sealed Immutable Projection Model |
+| 0141 | Planned safe fail-closed pass plus expected stale-trust safety and allowed-progress liveness counterexamples | P5A-R5 E1 EEVDF Selector-Coherence Model |
 
 ## Planned
 
