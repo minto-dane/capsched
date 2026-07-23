@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-17
+Updated: 2026-07-24
 
 ## Project
 
@@ -4677,3 +4677,389 @@ P5A-R3 E4 source and exact-source regression gate:
   gate. E3 correctness, E4, live behavior, primary/patch promotion, protection,
   latency, performance, deployment, multi-node/multi-cluster, and datacenter
   claims remain false.
+
+- P5A-R4 N-134 E3 source and source-gate launch boundary:
+
+  Disposable commit `f9c737c93ecff48c6f512048b05b1b49f4a54ca5`, tree
+  `274f7b5d6969dc68e158819191fe598f9587e0ad`, is one direct child of R4-E2
+  and adds 2,758 lines in exactly `init/Kconfig` and
+  `kernel/sched/exec_lease.c`; diff SHA-256 is
+  `c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781`.
+  Default-off `CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST` contains the exact 36
+  deterministic cases, six allocation faults, real hard-IRQ dispatch-only
+  bridge, unbound work, independent plain oracle/receipts, 15-second waits,
+  and 2,048 stress iterations. It has only synthetic scheduler inputs and no
+  live hook or ABI. Strict source and commit checkpatch are `0/0/0`.
+
+  Non-build preflight `20260717T-p5a-r4-e3-source-preflight-r6` passed from
+  immutable input snapshots and isolated Git-object E2/E3 worktrees, then
+  erased its scratch. Canonical detached source gate
+  `20260717T-p5a-r4-e3-source-gate-r1` must still pass fresh arm64/x86_64
+  E2-parent, all-off, layout-on/test-off, and test-on builds while preserving
+  58 private and 51 expanded values and proving zero disabled E3 artifacts.
+  Until then, diagnostic boots and every correctness/runtime/production claim
+  remain blocked.
+
+- P5A-R4 N-134 source-gate attempt 1 warning correction:
+
+  Run `20260717T-p5a-r4-e3-source-gate-r1` produced provisional result SHA-256
+  `fb2bc59d01cda4110a2022fc5e810d0b0b445bfb80498f25558476e74667369a`
+  after all semantic, object, value-preservation, and disabled-artifact checks.
+  Independent closure found 2.1--2.8ms future mtimes and GNU make incomplete-
+  build clock-skew warnings in x86_64 layout-off and test-on logs. Because the
+  old runner did not reject build-log warnings, validation/0244 invalidates r1
+  and authorizes nothing.
+
+  Corrected validation/0245 r2 builds every mode with W=1, rejects compiler
+  diagnostics, and turns any initial shared-filesystem skew into a mandatory
+  same-target verification build with zero final future-mtime/skew warnings.
+  Corrected-runner preflight `20260717T-p5a-r4-e3-source-preflight-r7` passed
+  the complete non-build boundary and removed its temporary worktrees/output.
+  Source identity and claim boundaries are unchanged. N-134 and all diagnostic,
+  correctness, runtime, promotion, protection, and deployment claims remain
+  pending or false until fresh r2 passes.
+
+- P5A-R4 N-134 corrected source-gate closure:
+
+  Corrected run `20260717T-p5a-r4-e3-source-gate-r2` passed all eight fresh
+  modes with zero W=1 diagnostics, clock-skew retries, or final skew warnings;
+  result SHA-256 is
+  `7c24c35506345550353a3c9f9b4d986fbccdccfbdbb884a4497df6c89e55cf27`.
+  Validation/0246 independently snapshotted all 105 artifacts twice. Closure
+  r1/r2 hashes are `4daf672d...9578df91` and `4d2dae97...5c4af10`, with
+  normalized SHA-256 `4471b71c...4f51fd8d` and shared artifact-manifest
+  SHA-256 `59c42baf...eb8d80b`. N-134 is complete and only the exact N-135
+  six-boot matrix is authorized. Source/correctness, runtime, promotion,
+  protection, deployment, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 N-135 six-boot launch readiness:
+
+  Validation/0247 freezes runner SHA-256 `cff384cb...793a809` against the exact
+  candidate, plan, corrected source gate, and both closures. Config-smoke r2
+  resolved all six fixed arm64/x86_64 standard, hotplug/fault, generic-KASAN,
+  and KCSAN configs with zero builds/boots/skew retries; result SHA-256 is
+  `3e49336b...23e467` and config-manifest SHA-256 is
+  `09b500cc...16a673`. Canonical run `20260717T-p5a-r4-e3-six-boot-r1`, job
+  `p5a-r4-e3-six-boot`, uses one fresh internal-ext4 build per boot, complete
+  retained diagnostic records, sequential scratch retirement, no matrix
+  reduction, and 30-second monitoring. Launch readiness is not a matrix pass.
+  All six boots and a separate artifact closure remain required before any
+  R4-E3 source/correctness decision; runtime and production claims stay false.
+
+- P5A-R4 N-135 attempt-3 rejection and r4 readiness:
+
+  Attempt 3 completed six fresh builds and QEMU-zero boots; five boot results
+  sealed 36/36 and final x86_64 KCSAN also passed 36/36 with 36 receipts. It is
+  nevertheless fully rejected because case-insensitive bare `KCSAN:` matching
+  treated three normal lifecycle lines as warnings before the final seal.
+  Validation/0253 locks zero actual KCSAN report signatures and machine record
+  SHA-256 `06c9f228...d815b`; no partial result carries forward.
+
+  Corrected runner/classifier SHA-256 values are `3c85c01a...e19b1` and
+  `8adcff74...c23a`. Only three exact normal lifecycle forms are allowed and
+  every unknown KCSAN tag remains fail-closed. Pre-build fixtures detect a
+  complete real KCSAN report and generic/unknown diagnostics while accepting
+  the three benign forms. Post-commit config smoke r5 passed both self-tests
+  and all six byte-identical configs with zero builds/boots at result SHA-256
+  `af847090...109eb`. Only a complete fresh r4 plus independent closure can
+  complete N-135; source/correctness, runtime, promotion, protection,
+  deployment, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 N-135 closure and scoped authorization:
+
+  Fresh r4 completed all six builds/boots with 216/216 cases and receipts and
+  zero diagnostics. Matrix SHA-256 is `4717052e...7fbedd`; two 133-artifact
+  closures are `6d9a54ed...98f89` and `86fd0cf0...b26ea`, normalized to
+  `239bafaa...607e8f`. Analysis/0175 plus formal/0138 and validation/0256 add
+  the missing claim ledger and refreshed touched-path drift evidence. Two
+  final serial gate results normalize to `541d7267...d1fb4f`; safe TLC is
+  5/4/depth-4 and all 15 overclaim/missing-evidence cases counterexample.
+
+  Accepted scope is only exact disposable default-off virtual synthetic R4-E3
+  source identity and concurrency semantics. Source-free R4-E4 measurement
+  plan drafting is now allowed. R4-E4 source, primary/patch changes, live
+  runtime, N-136, bare-metal, monitor, production, deployment, multi-cluster,
+  and datacenter claims remain false.
+
+- P5A-R4 E4 local-quantum measurement plan:
+
+  Analysis/0176, formal/0139, and validation/0257 pass a source-free gate for
+  a future direct-`da9ce915...` child changing only `init/Kconfig` and
+  `kernel/sched/exec_lease.c` under a default-off measurement KUnit config.
+  The arm64-first contract fixes 682 cells and 6,820,000 paired samples over
+  seven local bounded quanta, with saturating treatment-control deltas, exact
+  warmup/sample counts, percentile/max fields, local rq-lock gates, and a
+  separate async-availability calibration. The 700,000ns base slice is a
+  rejection marker, never a budget; global last-settlement and all-rq fanout
+  performance gates remain rejected.
+
+  Serial r2/r3 results `2cbfb567...91918b` and `8f74506c...dfbe21` normalize
+  to `c6efaab0...3a662`; both pass 31 anchors, six absences, 36 preserved E3
+  cases, safe TLC 5/4/depth 4, and 43/43 unsafe faults. Only the exact
+  disposable source draft is unlocked. A separate source/E3-regression gate
+  must pass before measurement. No E4 source, primary/patch change, live
+  runtime, N-136 runtime-charge, production, deployment, multi-cluster, or
+  datacenter evidence exists.
+
+- P5A-R4 E4 source/regression launch-ready boundary:
+
+  Exact direct-R4-E3 child `1dac9953...9960a1d` / tree
+  `7d7f1480...a05b7` changes only `init/Kconfig` and
+  `kernel/sched/exec_lease.c`. Its default-off same-TU virtual synthetic suite
+  implements exactly seven families and 682 cells. Strict style, short
+  arm64/x86_64 W=1 objects, and source-only smoke r5 plus complete run-owned
+  worktree cleanup and monotonic combined progress mapping pass;
+  implementation/0049 and validation/0258 bind the candidate and complete gate
+  runners. Six fresh
+  source objects, six E3 profiles, 216/216 cases and receipts, zero diagnostics,
+  and then an independent read-only closure remain required before timing.
+  Source acceptance and all live/runtime/production/datacenter claims remain
+  false.
+
+- P5A-R4 E4 corrected observability boundary:
+
+  Attempt-1 candidate `1dac9953...9960a1d` completed six objects and six E3
+  boots at 216/216 cases/receipts, but validation/0259 rejects source/timing
+  credit because the source gate and its two closures omitted analysis/0176's
+  vCPU-migration and IRQ/preemption observation requirement. Reproducibility
+  of an incomplete gate is not acceptance.
+
+  Corrected direct child `9e4cb44f...5e8bf18` / tree
+  `e6feb28a...01a4f` keeps the exact two-file/default-off/seven-family/682-cell
+  boundary. A complete cell holds the measurement task on one guest CPU,
+  compares every local and hard-IRQ sample with that CPU, records IRQ-disabled
+  and preemption-depth state, emits all observations, and fail-closes any CPU
+  or state drift. Strict style, corrected source-only checks, and exact
+  arm64/x86_64 E4-on W=1 objects pass. A complete fresh combined regression
+  and new independent closure remain required before timing; no live/runtime,
+  protection, performance, deployment, multi-cluster, or datacenter claim is
+  accepted.
+
+- P5A-R4 E4 attempt-2 validator-scope boundary:
+
+  Combined retry r2 is rejected before build because its source gate searched
+  the E4-only block for three valid hard-IRQ observations implemented in the
+  earlier shared dispatch helper. Corrected runner `8458c7ec...41561c5`
+  preserves that helper as an independent artifact and requires the CPU,
+  IRQ-disabled, and preemption-depth assignments exactly once. Source-only
+  run `20260719T-p5a-r4-e4-source-gate-r3-hard-irq-scope` passes and cleans all
+  worktrees. Only a fresh complete r3 matrix plus reproduced read-only closure
+  can unlock timing; no source/runtime/production claim is accepted.
+
+- P5A-R4 E4 source closure and arm64 timing-launch boundary:
+
+  Corrected combined attempt 3 passes six fresh objects and all six preserved
+  E3 profiles at 216/216 cases and receipts with zero diagnostics. Two
+  independent read-only closures audit 267 artifacts and reproduce normalized
+  SHA-256 `ff91f251...f528f`. The exact `9e4cb44f...5e8bf18` source is accepted
+  only for disposable virtual synthetic timing; no measurement result exists.
+
+  Validation/0262 freezes arm64 runner `76ccdfd8...8aea55d`, exact parser
+  `dd0372d3...bc2cd1`, and classifier `8adcff74...dc23a`. The runner requires
+  all 682 cells/6,820,000 pairs, pins both QEMU TCG vCPU threads to distinct
+  VM-allowed CPUs before any row, records guest migration plus IRQ/preemption
+  state, independently recomputes local/async gates, rejects diagnostics and
+  malformed evidence, losslessly verifies Image/object archives, seals raw and
+  derived manifests, and retires VM-internal scratch. Parser clean,
+  valid-negative, and tamper fixtures, final config smoke r5, and forced-failure
+  cleanup pass.
+
+  Only detached arm64 job `p5a-r4-e4-arm64-timing-r1` may start under a
+  30-second monitor. Valid arm64 threshold rejection stops x86_64; clean arm64
+  permits only same-source x86_64; harness failure permits only a corrected
+  fresh arm64 retry. Independent timing closure remains mandatory. Live
+  scheduler, N-136, bare-metal, performance, monitor, production, deployment,
+  multi-node, multi-cluster, and datacenter claims remain false.
+
+- P5A-R4 E4 replacement-source closure and timing-r2 boundary:
+
+  Stack-fixed source `5857720d...a1cc` passes fresh combined r4: six source
+  objects, six E3 profiles, 216/216 cases and receipts, and zero diagnostics.
+  Combined result is `2b90c47e...af5d7ea`. Two independent closures audit
+  267 artifacts/10,880,574 bytes and normalize to one decision
+  `767d2f9a...a43d21`; all copied inputs are read-only and six focused
+  mutations fail closed. Validation/0264 therefore accepts only this exact
+  disposable virtual-synthetic source for arm64 timing.
+
+  Timing runner `a3ee78f5...ddf392` rebinds the replacement closures without
+  relaxing r1's build-warning boundary. VM ShellCheck, exact and negative
+  parser fixtures, and config smoke r6 pass with zero builds/boots and full
+  cleanup. Only detached `p5a-r4-e4-arm64-timing-r2` may start under a
+  30-second monitor. A clean result can authorize only same-source x86_64; a
+  valid rejection stops it; harness failure permits only fresh root-cause
+  work. Independent timing closure and every live/runtime/production claim
+  remain pending or false.
+
+- P5A-R4 E4 arm64 timing r1 rejection and replacement-source boundary:
+
+  Timing r1 failed closed at build stage before boot or result rows because GCC
+  reported a 2,064-byte notifier-test frame against the 2,048-byte boundary.
+  The runner retired both VM-internal scratch paths and preserved immutable
+  result/build/diagnostic evidence. No threshold or classifier was relaxed.
+
+  The notifier measurement cell alone is now KUnit-allocated. Replacement
+  source `5857720d...a1cc`, tree `ee6e3291...7865`, remains one exact direct
+  child of R4-E3 and passes strict checkpatch plus arm64/x86_64 E4-on W=1
+  objects with zero diagnostics. Validation/0263 reopens source acceptance:
+  fresh six-object/six-profile/216-case evidence and two independent closures
+  are mandatory before timing r2. All broader claims remain false.
+
+- P5A-R4 E4 arm64 timing r2 operational state:
+
+  The exact validation/0264 preflight passed. Detached job
+  `p5a-r4-e4-arm64-timing-r2`, run
+  `20260720T-p5a-r4-e4-arm64-timing-r2`, started at
+  `2026-07-20T06:12:10Z` and independent status/probe plus the first 30-second
+  watch display observed its full arm64 Image build running on VM-internal
+  ext4. The watch was stopped without stopping the runner. The next valid
+  transition is exact complete-result triage followed by independent
+  timing-evidence closure. No timing result, x86_64 authorization, live
+  runtime, bare-metal, production, deployment, multi-cluster, or datacenter
+  claim exists.
+
+- P5A-R4 E4 arm64 timing r3 operational state:
+
+  Exact standalone and detach-time preflight passed. Job
+  `p5a-r4-e4-arm64-timing-r3`, run
+  `20260721T-p5a-r4-e4-arm64-timing-r3`, detached at
+  `2026-07-21T08:07:59Z`; status/probe and the first 30-second watch observed
+  its VM-internal Image build running, and interrupting the watch left the
+  runner active. Exact result triage and an independent read-only timing
+  closure are next. No timing, x86_64, runtime, bare-metal, or production claim
+  exists.
+
+- P5A-R4 E4 arm64 timing r2 QMP rejection and r3 boundary:
+
+  Run `20260720T-p5a-r4-e4-arm64-timing-r2` sealed
+  `harness_failed/qemu_boot` at result `171df609...12a22`: the full Image built
+  and QEMU booted, but one guest row appeared before any vCPU was pinned.
+  Default QEMU 8.2.2 task names were truncated to `qemu-system-aar`, so the
+  old `CPU */TCG` scan found no TIDs. Two independent read-only 68-input
+  closures normalize to `9c079b47...3178ef`; no timing or x86_64 credit is
+  accepted.
+
+  Corrected runner `8b7ae0d1...942fb2` starts QEMU paused and uses hash-bound
+  QMP helper `e59bc8ad...a147e` to obtain exactly two distinct vCPU TIDs,
+  singleton-pin them to distinct allowed host CPUs, and revalidate the same
+  QMP mapping plus `/proc` Tgid/affinity immediately before `cont`. Zero rows
+  are allowed while paused. Fifteen negative fixtures, a real-QEMU integration
+  test, config smoke r7, and cleanup control r3 pass. Validation/0265
+  authorizes only clean arm64 timing r3 under a 30-second monitor; independent
+  result closure and all broader runtime/production claims remain pending or
+  false.
+
+- P5A-R4 E4 arm64 timing r3 storage rejection and r4 boundary:
+
+  Run `20260721T-p5a-r4-e4-arm64-timing-r3` established exact paused-QMP
+  placement but sealed `harness_failed/qemu_boot` at
+  `a35076dc...66e9a689` when its shared-host progress write returned ENOSPC.
+  Last durable progress was 397/682 and serial retained 399 rows; the incomplete
+  matrix has no threshold, architecture, or x86_64 credit. Two independent
+  read-only closures over 38 timing artifacts and five job records produce
+  `e7d2bb95...430700c` and `b1f44a63...6d72b03`, normalized to
+  `da37226e...182a624`. VM trim reclaimed 317.1 GiB and both scratch roots are
+  absent.
+
+  Runner `2fe52b6e...385e69` now keeps a 64 MiB result-seal reserve and checks
+  an 8 GiB shared-host floor at every progress boundary. Config smoke r8 and
+  forced-capacity r2 pass. Validation/0266 authorizes only fresh arm64 timing
+  r4 after pre-trim plus 32 GiB shared-host and 16 GiB VM-internal launch
+  floors. Independent complete-result closure and every live/runtime/production
+  claim remain pending or false.
+
+  Standalone and detach-time preflight passed. Job
+  `p5a-r4-e4-arm64-timing-r4`, run
+  `20260721T-p5a-r4-e4-arm64-timing-r4`, detached at
+  `2026-07-21T13:03:24Z` after trim with 53,959,464 KiB shared-host and
+  526,306,264 KiB VM-internal free. Status/probe plus a 30-second watch observed
+  the Image build advance; stopping the watch did not stop the runner. This is
+  operational evidence only, not a timing result.
+
+- P5A-R4 E4 timing r4 KUnit rejection and corrected-source boundary:
+
+  Run `20260721T-p5a-r4-e4-arm64-timing-r4` is
+  `harness_failed/evidence_validation` at `f5f06d93...2875e1fc`: exact QMP
+  placement and QEMU exit zero passed, but recovery/offline fixture setup
+  returned `-EINVAL`. KUnit is 5/2/0/7 and 523/682 rows receive no timing
+  credit. Two independent 48-input closures normalize to
+  `3e234533...e003a2`; content and symlink mutations fail closed.
+
+  Default-off synthetic helpers incorrectly treated a later pending/running
+  read after a false queue return as authoritative. Coalesced ownership can
+  complete between those events. Direct-child `82d91805...e12f1`, tree
+  `44d9a212...bd4f`, removes only three such diagnostic TOCTOU upgrades;
+  strict checkpatch, focused arm64/x86_64 W=1 objects, and source-only static
+  checks pass. S1 is reopened pending a fresh six-object/six-profile/216-case
+  combined regression and double closure. x86_64 timing and all broader claims
+  remain blocked.
+
+- P5A-R4 E4 corrected source is closed for exact synthetic timing only:
+  combined r5 regression `6a77daf3...77b3777` passes 6/6 objects/profiles and
+  216/216 cases/receipts; 270-artifact closures `313651a8...2c57c` and
+  `10dd9320...d4a` normalize to `75369701...b449`. Runner
+  `cd2f2103...27db`, short controls, six-core build profile, and storage floors
+  authorize only arm64 timing r5. Measurement remains two pinned guest vCPUs;
+  performance and all live/production/datacenter claims remain false.
+
+- Arm64 timing r5 is `harness_failed/host_restart` at result
+  `d7fb9ec3...268d3`: 166/682 rows and zero summaries receive no credit. A
+  55-file manifest `ad49a9c1...7b70`, exact Image/object/config archives,
+  timestamp proof, scratch/reserve retirement, remounted sparsebundle, and
+  restored six-core VM authorize only a fresh full r6. R5 rows cannot resume
+  or combine; x86_64 and broader claims remain blocked.
+
+- Arm64 timing r6 is `harness_failed/evidence_validation` at result
+  `28bd8b4c...5f0c53`: exact QMP placement and QEMU-zero pass, but 538/682 rows
+  and KUnit 5/2/0 receive no credit. Two 66-input closures normalize to
+  `1ed1c743...a3c3f`. Offline's 205,120 errors are the exact false comparison
+  of zero-visit controls with treatment occupancy. Recovery has a distinct
+  IRQ-callback/worker lost-handoff race. Direct-child R7
+  `4077ba84...45d93` uses ordinary-work self-requeue for remaining bounded
+  quanta, strengthens the deterministic race case, and fixes the offline
+  oracle. Strict checkpatch, focused arm64 W=1 objects, and source-only gates
+  pass; fresh six-object/six-profile/216-case regression plus double closure
+  remain mandatory before timing. x86_64 and all broader claims are blocked.
+
+- R7 source acceptance is restored for exact virtual-synthetic timing only.
+  Combined run `643eceae...d3714` passes six objects, six profiles, 216/216
+  cases and receipts, and zero diagnostics. Two independent 272-artifact
+  closures `0224be91...4a3a4` and `b2317a4d...2e99b` normalize to
+  `f8e184c1...d4ba2` and independently audit the corrected handoff/oracle plus
+  all six receipts. Timing runner `54e1ee16...8a50` also binds both R6 failure
+  closures; config smoke r10 and capacity-negative r4 pass. Only fresh arm64
+  timing r7 is authorized. x86_64 and every broader claim remain blocked.
+
+- Arm64 timing r7 completes as valid negative R4 evidence. Exact source
+  `4077ba84...45d93` produces 682/682 cells and 6,820,000/6,820,000 pairs,
+  KUnit 7/0/0, QEMU zero, exact paused-QMP placement, zero diagnostics, and
+  byte-exact parser regeneration, but fixed gates reject 362 cells with 692
+  breaches. Family rejection is publication 184/288, picker/kick 3/144, IRQ
+  dispatch 4/9, recovery 105/144, notifier 48/48, current stop 0/24, and
+  offline 18/25. Two independent 58-timing/27-job-file closures
+  `b5279add...297af` and `75e734bc...a2719` normalize to
+  `8ebacd3c...84b5`. Validation/0272 stops R4, x86_64, and E5; source-free
+  successor analysis is next and all runtime/production/datacenter claims
+  remain false.
+
+- R5 Generation-Sealed Immutable Projection is the selected source-free
+  successor. It moves variable projection compilation outside rq-lock phases,
+  requires an exact seven-field sealed receipt, installs one immutable RCU
+  pointer in constant work, and trusts only exact
+  generation/membership/selector/digest plus entity/task proof. Failures stay
+  Blocked; projection repair notifier is removed and current stop remains
+  separate. Canonical result `ceb59532...4bf9b` reproduces the R4
+  result/closures and distribution, passes 11 anchors, six absences, safe TLC
+  16/16/depth 16, two liveness properties, and 49 expected counterexamples.
+  Validation/0273 permits only a source-free E1 plan; no R5 layout/source or
+  runtime/production/datacenter claim is approved.
+
+- R5 fails its source-free E1 selector-coherence gate before layout/source.
+  EEVDF's current vruntime, weighted sums, deadline tree, current entity, and
+  subtree minimum-vruntime augmentation change while authority generation is
+  stable, so an immutable selector view becomes stale after ordinary
+  scheduler progress. Result `6fee1f3f...b7fe0a5` passes 18 exact source
+  anchors and safe fail-closed TLC 3/3/depth 3; stale trust violates Safety
+  and stale refusal violates AllowedProgress. Validation/0274 stops R5 repair
+  and permits only source-free successor comparison of dynamic
+  authorization-aware EEVDF augmentation or an authority-aligned hierarchy.
+  R6 source and all runtime/production/datacenter claims remain false.

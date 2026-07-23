@@ -1,0 +1,763 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export LC_ALL=C
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+CAPSCHED_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
+WORKSPACE_DIR=$(cd "$CAPSCHED_DIR/.." && pwd)
+LINUX_DIR="$WORKSPACE_DIR/build/DomainLeaseLinux.volume/linux"
+PATCH_QUEUE_DIR="$WORKSPACE_DIR/linux-patches"
+PLAN="$CAPSCHED_DIR/capsched-models/analysis/sched-exec-lease-p5a-r4-e4-local-quantum-measurement-plan-v1.json"
+PARSER="$SCRIPT_DIR/parse-sched-exec-lease-p5a-r4-e4-measurement-evidence.sh"
+WARNING_CLASSIFIER="$SCRIPT_DIR/lib/kernel-warning-classifier.sh"
+QMP_CONTROL="$SCRIPT_DIR/qmp-sched-exec-lease-vcpu-control.py"
+CLOSURE_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-source-e3-evidence-closure"
+CLOSURE_R1="$CLOSURE_ROOT/20260723T-p5a-r4-e4-owner-oracle-correction-source-e3-closure-r1"
+CLOSURE_R2="$CLOSURE_ROOT/20260723T-p5a-r4-e4-owner-oracle-correction-source-e3-closure-r2"
+R6_CLOSURE_ROOT="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-arm64-timing-r6-kunit-failure-closure"
+R6_CLOSURE_R1="$R6_CLOSURE_ROOT/20260723T-p5a-r4-e4-arm64-timing-r6-closure-r1"
+R6_CLOSURE_R2="$R6_CLOSURE_ROOT/20260723T-p5a-r4-e4-arm64-timing-r6-closure-r2"
+CANDIDATE_PARENT=da9ce9159b3450c28c8faf8dceac671fb7bfeba2
+CANDIDATE_COMMIT=4077ba840f713979c29af64f405dbde39f845d93
+CANDIDATE_TREE=6ce127d738618fd356ed3533ac32e5796fa72d55
+CANDIDATE_DIFF_SHA=a4886479f001ea3ef0dbc069ef44040f89df69cc9114421933a5592075bfe255
+PRIMARY_COMMIT=5e1ca3037e34823d1ba0cdd1dc04161fac170280
+PATCH_QUEUE_COMMIT=16bb080da472ffabbbafd2698073eca633fb0602
+PLAN_SHA=63ba7b17c3d08ea1ee0cdd4b420cc3a08b21932e9f6c2fb3f31754147e5b1667
+WARNING_CLASSIFIER_SHA=8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a
+QMP_CONTROL_SHA=e59bc8ad5adb50ddf66652b28a424afd1efbd28a9501e786771d5fb1f8da147e
+CLOSURE_R1_SHA=0224be91981b36a74ba0d3389c7e5a357a76bf7329bfb19de74c206d0bb4a3a4
+CLOSURE_R2_SHA=b2317a4d80a4b3cfbc5f1e7d140fe50d60b9f4b79d8fe18e214d49f04382e99b
+CLOSURE_NORMALIZED_SHA=f8e184c16c4fa5315532cb067d3b66dea3a21b277942d9728a2132384a3d4ba2
+R6_CLOSURE_R1_SHA=62fc4950c46a77d9c51a45d7c24fb0ad3b4cbb25b6288de5e4729bff36fe303d
+R6_CLOSURE_R2_SHA=6f1c2231ecaa9f069ed6b3759f74603a25be619de5d74215a4f79921f2162795
+R6_CLOSURE_NORMALIZED_SHA=1ed1c74331eb818ea355a6c8c3d7daa03362cc8d79c8e43a236d3b49757a3c3f
+RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}
+BUILD_ROOT=${BUILD_ROOT:-"/var/tmp/linux-cap-builds/p5a-r4-e4-arm64-measurement/$RUN_ID"}
+BUILD_OUT="$BUILD_ROOT/build"
+WORKTREE=${WORKTREE:-"/var/tmp/linux-cap-worktrees/p5a-r4-e4-arm64-measurement/$RUN_ID"}
+OUT_DIR="$WORKSPACE_DIR/build/source-check/sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement/$RUN_ID"
+RAW_DIR="$OUT_DIR/raw"
+DERIVED_DIR="$OUT_DIR/derived"
+ARTIFACT_DIR="$RAW_DIR/boot-artifacts/arm64"
+PROGRESS_FILE=${PROGRESS_FILE:-"$OUT_DIR/progress"}
+HOST_ENV_FILE=${HOST_ENV_FILE:-}
+JOBS=${JOBS:-$(nproc)}
+QEMU_TIMEOUT=${QEMU_TIMEOUT:-86400}
+BUILD_STORAGE_MIN_KIB=${BUILD_STORAGE_MIN_KIB:-16777216}
+HOST_STORAGE_MIN_KIB=${HOST_STORAGE_MIN_KIB:-8388608}
+SEAL_RESERVE_MIB=${SEAL_RESERVE_MIB:-64}
+GUEST_VCPUS=2
+IMAGE="$BUILD_OUT/arch/arm64/boot/Image"
+OBJECT="$BUILD_OUT/kernel/sched/exec_lease.o"
+SERIAL="$RAW_DIR/qemu-serial.log"
+KTAP="$RAW_DIR/qemu-ktap.log"
+ROWS="$RAW_DIR/r4-e4-result-rows.txt"
+SUMMARIES="$RAW_DIR/r4-e4-summary-rows.txt"
+QMP_SOCKET="$BUILD_ROOT/qmp.sock"
+QMP_MAPPING="$RAW_DIR/qmp-vcpus.txt"
+QMP_AFFINITY="$RAW_DIR/qmp-vcpu-affinity.txt"
+SEAL_RESERVE="$OUT_DIR/.failure-seal-reserve"
+FAILURE_REASON=
+CURRENT_STAGE=initialization
+ACTIVE_PID=
+WORKTREE_CREATED=0
+BUILD_RETIRED=0
+WORKTREE_RETIRED=0
+
+file_sha()
+{
+	sha256sum "$1" | awk '{print $1}'
+}
+
+progress()
+{
+	local host_available_kib
+	host_available_kib=$(df -Pk "$WORKSPACE_DIR" | awk 'NR==2 {print $4}')
+	case "$host_available_kib" in
+		''|*[!0-9]*)
+			FAILURE_REASON='could not read host shared-storage availability'
+			printf 'error: %s\n' "$FAILURE_REASON" >&2
+			return 1
+			;;
+	esac
+	if [ "$host_available_kib" -lt "$HOST_STORAGE_MIN_KIB" ]; then
+		FAILURE_REASON="host shared storage below ${HOST_STORAGE_MIN_KIB}KiB at progress update (${host_available_kib}KiB available)"
+		printf 'error: %s\n' "$FAILURE_REASON" >&2
+		return 1
+	fi
+	mkdir -p "$(dirname "$PROGRESS_FILE")"
+	if ! printf '%s\n' "$*" > "$PROGRESS_FILE"; then
+		FAILURE_REASON='host progress record write failed after capacity check'
+		printf 'error: %s\n' "$FAILURE_REASON" >&2
+		return 1
+	fi
+	printf '[progress] %s\n' "$*"
+}
+
+die()
+{
+	FAILURE_REASON=$*
+	printf 'error: %s\n' "$*" >&2
+	exit 1
+}
+
+safe_remove_tree()
+{
+	local path=$1 prefix=$2
+	case "$path" in
+		"$prefix"/*) ;;
+		*) return 1 ;;
+	esac
+	[ ! -L "$path" ] || return 1
+	if [ -d "$path" ]; then
+		find "$path" -depth -delete
+	fi
+	[ ! -e "$path" ] && [ ! -L "$path" ]
+}
+
+release_seal_reserve()
+{
+	if [ -f "$SEAL_RESERVE" ] && [ ! -L "$SEAL_RESERVE" ]; then
+		find "$SEAL_RESERVE" -maxdepth 0 -type f -delete
+	fi
+}
+
+terminate_active()
+{
+	local pid=${ACTIVE_PID:-} attempts=0
+	[ -n "$pid" ] || return 0
+	if kill -0 "$pid" 2>/dev/null; then
+		kill -TERM -- "-$pid" 2>/dev/null || kill -TERM "$pid" 2>/dev/null || true
+		while kill -0 "$pid" 2>/dev/null && [ "$attempts" -lt 30 ]; do
+			sleep 1
+			attempts=$((attempts + 1))
+		done
+		if kill -0 "$pid" 2>/dev/null; then
+			kill -KILL -- "-$pid" 2>/dev/null || kill -KILL "$pid" 2>/dev/null || true
+		fi
+	fi
+	wait "$pid" 2>/dev/null || true
+	ACTIVE_PID=
+}
+
+retire_owned_paths()
+{
+	terminate_active
+	if [ -e "$BUILD_ROOT" ] || [ -L "$BUILD_ROOT" ]; then
+		if safe_remove_tree "$BUILD_ROOT" /var/tmp/linux-cap-builds/p5a-r4-e4-arm64-measurement; then
+			BUILD_RETIRED=1
+		fi
+	else
+		BUILD_RETIRED=1
+	fi
+	if [ "$WORKTREE_CREATED" = 1 ]; then
+		if git -C "$LINUX_DIR" worktree remove --force "$WORKTREE" >/dev/null 2>&1; then
+			WORKTREE_CREATED=0
+			WORKTREE_RETIRED=1
+		fi
+	elif [ ! -e "$WORKTREE" ] && [ ! -L "$WORKTREE" ]; then
+		WORKTREE_RETIRED=1
+	fi
+}
+
+write_failure_result()
+{
+	local reason=${FAILURE_REASON:-"runner exited unexpectedly with code $1"}
+	local build_retired_json=false worktree_retired_json=false
+	release_seal_reserve
+	[ -d "$OUT_DIR" ] || return 0
+	[ ! -e "$OUT_DIR/result.json" ] || return 0
+	command -v jq >/dev/null 2>&1 || return 0
+	[ "$BUILD_RETIRED" = 0 ] || build_retired_json=true
+	[ "$WORKTREE_RETIRED" = 0 ] || worktree_retired_json=true
+	jq -n \
+		--arg run_id "$RUN_ID" --arg reason "$reason" --arg stage "$CURRENT_STAGE" \
+		--argjson build_retired "$build_retired_json" --argjson worktree_retired "$worktree_retired_json" '
+{
+  schema_version:1,
+  id:"sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement-result-v1",
+  run_id:$run_id,
+  status:"harness_failed",
+  architecture:"arm64",
+  failure:{stage:$stage,reason:$reason},
+  source_commit:"4077ba840f713979c29af64f405dbde39f845d93",
+  architecture_measurement_valid:false,
+  run_owned_build_scratch_retired:$build_retired,
+  run_owned_worktree_retired:$worktree_retired,
+  x86_64_measurement_may_start:false,
+  measurement_result_accepted:false,
+  real_scheduler_attachment:false,
+  runtime_behavior_approved:false,
+  production_protection:false,
+  deployment_ready:false,
+  multi_cluster_ready:false,
+  datacenter_ready:false
+}' > "$OUT_DIR/result.json"
+	file_sha "$OUT_DIR/result.json" > "$OUT_DIR/result.sha256"
+	printf 'failed (%s); inspect %s/result.json\n' "$reason" "$OUT_DIR" > "$PROGRESS_FILE"
+}
+
+finish()
+{
+	local rc=$?
+	trap - EXIT INT TERM
+	retire_owned_paths
+	if [ "$rc" -ne 0 ]; then
+		write_failure_result "$rc"
+	fi
+	exit "$rc"
+}
+trap finish EXIT
+trap 'FAILURE_REASON=interrupted; exit 130' INT TERM
+
+case "$RUN_ID" in
+	[A-Za-z0-9]*) ;;
+	*) die 'RUN_ID must begin with an alphanumeric character' ;;
+esac
+case "$RUN_ID" in
+	*[!A-Za-z0-9._-]*|.|..) die 'RUN_ID contains an unsafe component' ;;
+esac
+case "$BUILD_ROOT" in
+	/var/tmp/linux-cap-builds/p5a-r4-e4-arm64-measurement/*) ;;
+	*) die "unsafe build root: $BUILD_ROOT" ;;
+esac
+case "$WORKTREE" in
+	/var/tmp/linux-cap-worktrees/p5a-r4-e4-arm64-measurement/*) ;;
+	*) die "unsafe worktree: $WORKTREE" ;;
+esac
+for numeric_limit in "$JOBS" "$QEMU_TIMEOUT" "$BUILD_STORAGE_MIN_KIB" \
+	"$HOST_STORAGE_MIN_KIB" "$SEAL_RESERVE_MIB"; do
+	case "$numeric_limit" in
+		''|*[!0-9]*|0) die 'numeric runner limits must be positive integers' ;;
+	esac
+done
+case "${CONFIG_SMOKE_ONLY:-0}" in
+	0|1) ;;
+	*) die 'CONFIG_SMOKE_ONLY must be 0 or 1' ;;
+esac
+
+for command in awk cat chmod cmp cp cut date dd df find gcc git grep jq lscpu make \
+	mkdir mkfifo nm qemu-system-aarch64 readelf sed sha256sum sleep sort stat \
+	strings tail taskset tr uname wc xargs zstd setsid python3; do
+	command -v "$command" >/dev/null 2>&1 || die "missing command: $command"
+done
+for input in "$PLAN" "$PARSER" "$WARNING_CLASSIFIER" "$QMP_CONTROL" \
+	"$CLOSURE_R1/result.json" "$CLOSURE_R2/result.json" \
+	"$CLOSURE_R1/result.normalized.json" "$CLOSURE_R2/result.normalized.json" \
+	"$R6_CLOSURE_R1/result.json" "$R6_CLOSURE_R2/result.json" \
+	"$R6_CLOSURE_R1/result.normalized.json" "$R6_CLOSURE_R2/result.normalized.json"; do
+	[ -f "$input" ] || die "required input missing: $input"
+	[ ! -L "$input" ] || die "required input is a symlink: $input"
+done
+if [ -e "$OUT_DIR" ] || [ -L "$OUT_DIR" ]; then
+	die "run output already exists: $OUT_DIR"
+fi
+mkdir -p "$OUT_DIR"
+if ! dd if=/dev/urandom of="$SEAL_RESERVE" bs=1048576 count="$SEAL_RESERVE_MIB" \
+	conv=fsync status=none; then
+	die 'failed to create failure-seal reserve on host shared storage'
+fi
+[ "$(stat -c %s "$SEAL_RESERVE")" = "$((SEAL_RESERVE_MIB * 1048576))" ] \
+	|| die 'failure-seal reserve size changed'
+chmod 0400 "$SEAL_RESERVE"
+
+CURRENT_STAGE=prerequisite_closure
+progress '2% verifying exact source, plan, and independent double closure'
+[ "$(file_sha "$PLAN")" = "$PLAN_SHA" ] || die 'measurement plan hash changed'
+[ "$(file_sha "$WARNING_CLASSIFIER")" = "$WARNING_CLASSIFIER_SHA" ] || die 'warning classifier hash changed'
+[ "$(file_sha "$QMP_CONTROL")" = "$QMP_CONTROL_SHA" ] || die 'QMP vCPU control hash changed'
+[ "$(file_sha "$CLOSURE_R1/result.json")" = "$CLOSURE_R1_SHA" ] || die 'closure r1 result hash changed'
+[ "$(file_sha "$CLOSURE_R2/result.json")" = "$CLOSURE_R2_SHA" ] || die 'closure r2 result hash changed'
+for closure in "$CLOSURE_R1" "$CLOSURE_R2"; do
+	[ "$(file_sha "$closure/result.normalized.json")" = "$CLOSURE_NORMALIZED_SHA" ] \
+		|| die 'closure normalized decision changed'
+	jq -e '
+	  .schema_version == 2 and
+	  .status == "passed_independent_r4_e4_source_e3_evidence_closure" and
+	  .source_run_id == "20260723T-p5a-r4-e4-owner-oracle-correction-source-e3-regression-r7" and
+	  .combined_result_sha256 == "643eceae277f6f419a0d9ecaa82c183d073ca7c6c228dec5d3190661a6bd3714" and
+	  .candidate_commit == "4077ba840f713979c29af64f405dbde39f845d93" and
+	  .candidate_parent == "da9ce9159b3450c28c8faf8dceac671fb7bfeba2" and
+	  .candidate_tree == "6ce127d738618fd356ed3533ac32e5796fa72d55" and
+	  .candidate_diff_sha256 == "a4886479f001ea3ef0dbc069ef44040f89df69cc9114421933a5592075bfe255" and
+	  .artifact_counts.total == 272 and .artifact_bytes.total == 10899033 and
+	  .fresh_source_objects_audited == 6 and .e3_profiles_audited == 6 and
+	  .total_e3_cases == 216 and .total_e3_receipts == 216 and
+	  .e3_handoff_race_strengthened == true and
+	  .e4_offline_oracle_corrected == true and
+	  .corrected_handoff_receipts_audited == 6 and
+	  .measurement_task_migration_disabled == true and
+	  .vcpu_migration_observation_enforced == true and
+	  .irq_preempt_state_recorded == true and
+	  .plan_to_source_observability_audited == true and
+	  .compiler_diagnostics == 0 and .clock_skew_warnings == 0 and
+	  .kernel_warning_reports == 0 and .case_failures == 0 and
+	  .case_skips == 0 and .case_timeouts == 0 and .qemu_nonzero_exits == 0 and
+	  .all_artifacts_snapshotted_read_only == true and
+	  .independent_artifact_closure_passed == true and
+	  .exact_virtual_synthetic_r4_e4_source_accepted == true and
+	  .r4_e4_virtual_synthetic_timing_may_start == true and
+	  .measurement_result_accepted == false and .real_scheduler_attachment == false and
+	  .runtime_behavior_approved == false and .production_protection == false and
+	  .deployment_ready == false and .multi_cluster_ready == false and .datacenter_ready == false
+	' "$closure/result.json" >/dev/null || die 'closure semantic contract changed'
+	[ -z "$(find "$closure/inputs" -type f -perm -222 -print -quit)" ] \
+		|| die 'closure input snapshot became writable'
+done
+cmp "$CLOSURE_R1/result.normalized.json" "$CLOSURE_R2/result.normalized.json" >/dev/null \
+	|| die 'independent closures do not reproduce one decision'
+
+[ "$(file_sha "$R6_CLOSURE_R1/result.json")" = "$R6_CLOSURE_R1_SHA" ] || die 'r6 closure r1 result changed'
+[ "$(file_sha "$R6_CLOSURE_R2/result.json")" = "$R6_CLOSURE_R2_SHA" ] || die 'r6 closure r2 result changed'
+for closure in "$R6_CLOSURE_R1" "$R6_CLOSURE_R2"; do
+	[ "$(file_sha "$closure/result.normalized.json")" = "$R6_CLOSURE_NORMALIZED_SHA" ] ||
+		die 'r6 failure closure normalized decision changed'
+	jq -e '
+	  .status == "passed_independent_arm64_timing_r6_kunit_failure_closure" and
+	  .source_result_sha256 == "28bd8b4cc8561a1b01a4fdcbbd3d584427ce5c7cf4b8bef55085745fce5f0c53" and
+	  .failure.stage == "evidence_validation" and
+	  .failure.recovery.setup_return == -22 and
+	  .failure.offline.integrity_errors == 205120 and
+	  .guest.result_rows == 538 and .guest.summary_rows == 6 and
+	  .guest.suite_pass == 5 and .guest.suite_fail == 2 and .guest.suite_skip == 0 and
+	  .guest.partial_values_receive_threshold_credit == false and
+	  .architecture_measurement_valid == false and
+	  .corrected_source_and_fresh_full_regression_required == true and
+	  .x86_64_measurement_may_start == false and
+	  .production_protection == false and .datacenter_ready == false
+	' "$closure/result.json" >/dev/null || die 'r6 failure closure semantics changed'
+	[ -z "$(find "$closure/inputs" -type f -perm -222 -print -quit)" ] ||
+		die 'r6 failure closure input snapshot became writable'
+done
+cmp "$R6_CLOSURE_R1/result.normalized.json" "$R6_CLOSURE_R2/result.normalized.json" >/dev/null ||
+	die 'r6 failure closures do not reproduce one decision'
+jq -e '
+  .status == "r4_e4_source_free_local_quantum_measurement_pre_source_plan" and
+  .configuration.suite_name == "sched_exec_lease_r4_measure" and
+  .common_measurement.minimum_warmup_pairs_per_cell == 256 and
+  .common_measurement.measured_pairs_per_cell == 10000 and
+  .common_measurement.observed_vcpu_migration_allowed == false and
+  .matrix.total_cells == 682 and .matrix.total_measured_pairs == 6820000 and
+  .diagnostics.arm64_runs_first == true and
+  .diagnostics.x86_64_runs_only_after_arm64_pass == true and
+  .diagnostics.warning_reports_allowed == 0
+' "$PLAN" >/dev/null || die 'measurement plan semantic contract changed'
+
+CURRENT_STAGE=source_identity
+[ "$(git -C "$LINUX_DIR" rev-parse HEAD)" = "$PRIMARY_COMMIT" ] || die 'primary Linux moved'
+[ "$(git -C "$PATCH_QUEUE_DIR" rev-parse HEAD)" = "$PATCH_QUEUE_COMMIT" ] || die 'patch queue moved'
+[ "$(git -C "$LINUX_DIR" rev-parse "$CANDIDATE_COMMIT^")" = "$CANDIDATE_PARENT" ] || die 'candidate parent changed'
+[ "$(git -C "$LINUX_DIR" rev-parse "$CANDIDATE_COMMIT^{tree}")" = "$CANDIDATE_TREE" ] || die 'candidate tree changed'
+git -C "$LINUX_DIR" diff-tree --no-commit-id --name-only -r "$CANDIDATE_COMMIT" \
+	| cmp - <(printf 'init/Kconfig\nkernel/sched/exec_lease.c\n') >/dev/null \
+	|| die 'candidate file boundary changed'
+candidate_diff_sha=$(git -C "$LINUX_DIR" diff --binary "$CANDIDATE_PARENT" "$CANDIDATE_COMMIT" -- init/Kconfig kernel/sched/exec_lease.c | sha256sum | awk '{print $1}')
+[ "$candidate_diff_sha" = "$CANDIDATE_DIFF_SHA" ] || die 'candidate diff hash changed'
+
+for path in "$BUILD_ROOT" "$WORKTREE"; do
+	if [ -e "$path" ] || [ -L "$path" ]; then
+		die "run-owned path already exists: $path"
+	fi
+done
+if [ -z "$HOST_ENV_FILE" ] || [ ! -s "$HOST_ENV_FILE" ] || [ -L "$HOST_ENV_FILE" ]; then
+	die 'outer host environment record is unavailable'
+fi
+mkdir -p "$RAW_DIR" "$ARTIFACT_DIR" "$(dirname "$BUILD_ROOT")" "$(dirname "$WORKTREE")"
+runner_initial_sha=$(file_sha "${BASH_SOURCE[0]}")
+parser_initial_sha=$(file_sha "$PARSER")
+qmp_control_initial_sha=$(file_sha "$QMP_CONTROL")
+cp -- "${BASH_SOURCE[0]}" "$RAW_DIR/measurement-runner.sh"
+cp -- "$PARSER" "$RAW_DIR/measurement-parser.sh"
+cp -- "$WARNING_CLASSIFIER" "$RAW_DIR/kernel-warning-classifier.sh"
+cp -- "$QMP_CONTROL" "$RAW_DIR/qmp-vcpu-control.py"
+cp -- "$PLAN" "$RAW_DIR/measurement-plan.json"
+cp -- "$CLOSURE_R1/result.json" "$RAW_DIR/closure-r1-result.json"
+cp -- "$CLOSURE_R2/result.json" "$RAW_DIR/closure-r2-result.json"
+cp -- "$CLOSURE_R1/result.normalized.json" "$RAW_DIR/closure-normalized.json"
+cp -- "$R6_CLOSURE_R1/result.json" "$RAW_DIR/r6-failure-closure-r1-result.json"
+cp -- "$R6_CLOSURE_R2/result.json" "$RAW_DIR/r6-failure-closure-r2-result.json"
+cp -- "$R6_CLOSURE_R1/result.normalized.json" "$RAW_DIR/r6-failure-closure-normalized.json"
+cp -- "$HOST_ENV_FILE" "$RAW_DIR/outer-host-environment.txt"
+python3 "$QMP_CONTROL" self-test > "$RAW_DIR/qmp-vcpu-control-self-test.txt" \
+	|| die 'QMP vCPU control self-test failed'
+
+CURRENT_STAGE=worktree
+progress '4% creating exact disposable candidate worktree on VM-internal ext4'
+git -C "$LINUX_DIR" worktree add --detach "$WORKTREE" "$CANDIDATE_COMMIT" \
+	> "$RAW_DIR/worktree-add.log" 2>&1
+WORKTREE_CREATED=1
+[ "$(git -C "$WORKTREE" rev-parse HEAD)" = "$CANDIDATE_COMMIT" ] || die 'measurement worktree commit changed'
+[ -z "$(git -C "$WORKTREE" status --porcelain)" ] || die 'measurement worktree is dirty'
+mkdir -p "$BUILD_OUT"
+build_storage_type=$(stat -f -c %T "$BUILD_ROOT")
+[ "$build_storage_type" = ext2/ext3 ] || die "build root is not internal ext4: $build_storage_type"
+build_storage_available_kib=$(df -Pk "$BUILD_ROOT" | awk 'NR==2 {print $4}')
+[ "$build_storage_available_kib" -ge "$BUILD_STORAGE_MIN_KIB" ] \
+	|| die "internal build storage below ${BUILD_STORAGE_MIN_KIB}KiB"
+{
+	printf 'build_root=%s\nfilesystem=%s\navailable_kib_at_start=%s\nshared_host_build_output=false\n' \
+		"$BUILD_ROOT" "$build_storage_type" "$build_storage_available_kib"
+	printf 'host_storage_min_kib=%s\nhost_available_kib_at_start=%s\nfailure_seal_reserve_mib=%s\n' \
+		"$HOST_STORAGE_MIN_KIB" "$(df -Pk "$WORKSPACE_DIR" | awk 'NR==2 {print $4}')" \
+		"$SEAL_RESERVE_MIB"
+	df -Pk "$BUILD_ROOT" "$OUT_DIR"
+} > "$RAW_DIR/build-storage.txt"
+uname -a > "$RAW_DIR/container-uname.txt"
+lscpu > "$RAW_DIR/container-lscpu.txt"
+gcc --version > "$RAW_DIR/compiler.txt"
+qemu-system-aarch64 --version > "$RAW_DIR/qemu-version.txt"
+awk '/^Cpus_allowed_list:/ {print $2}' /proc/self/status > "$RAW_DIR/container-allowed-cpus.txt"
+host_allowed_list=$(cat "$RAW_DIR/container-allowed-cpus.txt")
+[ -n "$host_allowed_list" ] || die 'container allowed CPU list is empty'
+if [ -d /sys/devices/system/cpu/cpufreq ]; then
+	find /sys/devices/system/cpu/cpufreq -maxdepth 2 -type f \
+		\( -name scaling_governor -o -name scaling_cur_freq -o -name cpuinfo_cur_freq \) \
+		-print -exec sed -n '1p' {} \; > "$RAW_DIR/container-frequency-governor.txt" 2>/dev/null || true
+fi
+if [ ! -s "$RAW_DIR/container-frequency-governor.txt" ]; then
+	printf 'unavailable: no cpufreq files exposed by Apple Container machine\n' > "$RAW_DIR/container-frequency-governor.txt"
+fi
+
+CURRENT_STAGE=config
+progress '7% resolving exact arm64 timing config; no build has started'
+make -C "$WORKTREE" O="$BUILD_OUT" ARCH=arm64 defconfig > "$RAW_DIR/defconfig.log" 2>&1
+"$WORKTREE/scripts/config" --file "$BUILD_OUT/.config" \
+	-e EXPERT -e SMP -e CGROUPS -e CGROUP_SCHED -e FAIR_GROUP_SCHED \
+	-e SCHED_EXEC_LEASE -e DEBUG_KERNEL -e SCHED_EXEC_LEASE_LAYOUT_PROBE \
+	-e SCHED_EXEC_LEASE_R4_LAYOUT_PROBE -e SCHED_EXEC_LEASE_R4_KUNIT_TEST \
+	-e SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST -e KUNIT -d KUNIT_ALL_TESTS \
+	-e KUNIT_AUTORUN_ENABLED --set-str KUNIT_DEFAULT_FILTER_GLOB sched_exec_lease_r4_measure \
+	--set-val KUNIT_DEFAULT_TIMEOUT 86400 -e PROVE_LOCKING -e DEBUG_OBJECTS \
+	-e DEBUG_OBJECTS_WORK -e PROVE_RCU -e DEBUG_IRQFLAGS -e HOTPLUG_CPU \
+	-e FTRACE -e IRQSOFF_TRACER -e DEBUG_INFO_NONE -d KASAN -d KCSAN \
+	-d MODULES --set-val NR_CPUS "$GUEST_VCPUS"
+make -C "$WORKTREE" O="$BUILD_OUT" ARCH=arm64 olddefconfig > "$RAW_DIR/olddefconfig.log" 2>&1
+for required in \
+	CONFIG_SCHED_EXEC_LEASE=y CONFIG_SCHED_EXEC_LEASE_R4_LAYOUT_PROBE=y \
+	CONFIG_SCHED_EXEC_LEASE_R4_KUNIT_TEST=y CONFIG_SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST=y \
+	CONFIG_KUNIT=y CONFIG_KUNIT_AUTORUN_ENABLED=y \
+	'CONFIG_KUNIT_DEFAULT_FILTER_GLOB="sched_exec_lease_r4_measure"' \
+	CONFIG_PROVE_LOCKING=y CONFIG_DEBUG_OBJECTS_WORK=y CONFIG_PROVE_RCU=y \
+	CONFIG_DEBUG_IRQFLAGS=y CONFIG_HOTPLUG_CPU=y CONFIG_FTRACE=y CONFIG_IRQSOFF_TRACER=y; do
+	grep -Fxq "$required" "$BUILD_OUT/.config" || die "measurement config missing: $required"
+done
+grep -Fxq '# CONFIG_KUNIT_ALL_TESTS is not set' "$BUILD_OUT/.config" || die 'KUNIT_ALL_TESTS enabled'
+grep -Fxq '# CONFIG_KASAN is not set' "$BUILD_OUT/.config" || die 'KASAN belongs to separate diagnostics'
+grep -Fxq '# CONFIG_KCSAN is not set' "$BUILD_OUT/.config" || die 'KCSAN belongs to separate diagnostics'
+grep -Fxq "CONFIG_NR_CPUS=$GUEST_VCPUS" "$BUILD_OUT/.config" || die 'guest CPU count changed'
+cp -- "$BUILD_OUT/.config" "$RAW_DIR/arm64.config"
+grep -E '^CONFIG_(PROVE_LOCKING|LOCKDEP|DEBUG_IRQFLAGS|DEBUG_OBJECTS_WORK|PROVE_RCU|FTRACE|IRQSOFF_TRACER|RCU_STALL_COMMON|SOFTLOCKUP_DETECTOR|HARDLOCKUP_DETECTOR|HOTPLUG_CPU)=' "$BUILD_OUT/.config" > "$RAW_DIR/diagnostic-config.txt" || true
+grep -E '^CONFIG_(MITIGATION|ARM64_PTR_AUTH|ARM64_BTI|RANDOMIZE_BASE|STACKPROTECTOR|HARDENED_USERCOPY|FORTIFY_SOURCE)' "$BUILD_OUT/.config" > "$RAW_DIR/mitigation-config.txt" || true
+if [ "${CONFIG_SMOKE_ONLY:-0}" = 1 ]; then
+	retire_owned_paths
+	[ "$BUILD_RETIRED:$WORKTREE_RETIRED" = 1:1 ] || die 'config-smoke cleanup failed'
+	release_seal_reserve
+	progress '100% exact arm64 timing config smoke passed; builds=0 boots=0 scratch retired'
+	exit 0
+fi
+
+CURRENT_STAGE=build
+progress '10% building full arm64 timing Image on VM-internal ext4'
+fifo="$OUT_DIR/build.fifo"
+mkfifo "$fifo"
+set +e
+setsid make -C "$WORKTREE" O="$BUILD_OUT" ARCH=arm64 -j"$JOBS" Image > "$fifo" 2>&1 &
+ACTIVE_PID=$!
+set -e
+: > "$RAW_DIR/build.log"
+steps=0
+while IFS= read -r line; do
+	printf '%s\n' "$line" >> "$RAW_DIR/build.log"
+	case "$line" in
+		*'  CC  '*|*'  AS  '*|*'  LD  '*|*'  AR  '*|*'  HOSTCC  '*|*'  HOSTLD  '*)
+			steps=$((steps + 1))
+			if [ $((steps % 50)) -eq 0 ]; then
+				percent=$((10 + steps / 150))
+				[ "$percent" -le 76 ] || percent=76
+				progress "$percent% building arm64 timing Image ($steps compiler/link steps)"
+			fi
+			;;
+	esac
+done < "$fifo"
+set +e
+wait "$ACTIVE_PID"
+make_rc=$?
+set -e
+ACTIVE_PID=
+find "$fifo" -delete
+[ "$make_rc" = 0 ] || die "arm64 Image build failed: $make_rc"
+[ -s "$IMAGE" ] || die 'arm64 timing Image missing'
+[ -s "$OBJECT" ] || die 'arm64 exec_lease.o missing'
+grep -Ein '(^|[[:space:]])(warning|error):|Clock skew detected|clock skew' "$RAW_DIR/build.log" > "$RAW_DIR/compiler-diagnostics.txt" || true
+[ ! -s "$RAW_DIR/compiler-diagnostics.txt" ] || die 'compiler or build clock-skew diagnostic found'
+readelf -h "$OBJECT" > "$RAW_DIR/exec-lease-readelf.txt"
+nm -a "$OBJECT" > "$RAW_DIR/exec-lease-nm.txt"
+strings -a "$OBJECT" > "$RAW_DIR/exec-lease-strings.txt"
+grep -q 'sched_exec_r4_measure_test_suite' "$RAW_DIR/exec-lease-nm.txt" || die 'measurement suite symbol missing'
+grep -qx 'sched_exec_lease_r4_measure' "$RAW_DIR/exec-lease-strings.txt" || die 'measurement suite string missing'
+
+CURRENT_STAGE=artifact_preservation
+progress '77% losslessly preserving exact Image and object before QEMU'
+image_archive="$ARTIFACT_DIR/Image.zst"
+object_archive="$ARTIFACT_DIR/exec_lease.o.zst"
+zstd -T0 -9 -q -f "$IMAGE" -o "$image_archive"
+zstd -T0 -9 -q -f "$OBJECT" -o "$object_archive"
+zstd -q -t "$image_archive"
+zstd -q -t "$object_archive"
+image_sha=$(file_sha "$IMAGE")
+object_sha=$(file_sha "$OBJECT")
+image_archive_sha=$(file_sha "$image_archive")
+object_archive_sha=$(file_sha "$object_archive")
+[ "$(zstd -q -dc "$image_archive" | sha256sum | awk '{print $1}')" = "$image_sha" ] || die 'Image archive restore mismatch'
+[ "$(zstd -q -dc "$object_archive" | sha256sum | awk '{print $1}')" = "$object_sha" ] || die 'object archive restore mismatch'
+{
+	printf 'build_storage_filesystem=%s\n' "$build_storage_type"
+	printf 'image_source_sha256=%s\nimage_archive_sha256=%s\n' "$image_sha" "$image_archive_sha"
+	printf 'object_source_sha256=%s\nobject_archive_sha256=%s\n' "$object_sha" "$object_archive_sha"
+	printf 'compression=zstd-level-9-lossless\nrestore_verified=true\n'
+} > "$ARTIFACT_DIR/manifest.txt"
+
+append='console=ttyAMA0 earlycon=pl011,0x09000000 kunit.enable=1 kunit.autorun=1 kunit.filter_glob=sched_exec_lease_r4_measure kunit_shutdown=poweroff ftrace=irqsoff panic=1 oops=panic rcupdate.rcu_cpu_stall_suppress=0'
+{
+	printf 'taskset -c %s qemu-system-aarch64 -S -name guest=%s,debug-threads=on -qmp unix:[run-owned qmp.sock],server=on,wait=off -machine virt,gic-version=3 -cpu cortex-a57 -accel tcg,thread=multi -smp %s,maxcpus=%s -m 4096 -nic none -nographic -no-reboot -kernel [verified Image] -append [recorded next line]\n' "$host_allowed_list" "$RUN_ID" "$GUEST_VCPUS" "$GUEST_VCPUS"
+	printf '%s\n' "$append"
+} > "$RAW_DIR/qemu-command.txt"
+
+expand_cpulist()
+{
+	awk -v cpus="$1" 'BEGIN {
+	  n=split(cpus,part,",");
+	  for(i=1;i<=n;i++) {
+	    if(part[i] ~ /^[0-9]+$/) print part[i];
+	    else {split(part[i],range,"-"); for(cpu=range[1];cpu<=range[2];cpu++) print cpu}
+	  }
+	}'
+}
+mapfile -t host_cpus < <(expand_cpulist "$host_allowed_list")
+[ "${#host_cpus[@]}" -ge "$GUEST_VCPUS" ] \
+	|| die 'container CPU allowance cannot give each QEMU vCPU a distinct host CPU'
+
+CURRENT_STAGE=qemu_boot
+progress '80% booting pinned 2-vCPU arm64 QEMU; waiting for 682 immutable rows'
+set +e
+setsid taskset -c "$host_allowed_list" qemu-system-aarch64 \
+	-S -name "guest=$RUN_ID,debug-threads=on" \
+	-qmp "unix:$QMP_SOCKET,server=on,wait=off" \
+	-machine virt,gic-version=3 -cpu cortex-a57 -accel tcg,thread=multi \
+	-smp "$GUEST_VCPUS",maxcpus="$GUEST_VCPUS" -m 4096 -nic none -nographic -no-reboot \
+	-kernel "$IMAGE" -append "$append" > "$SERIAL" 2>&1 &
+ACTIVE_PID=$!
+set -e
+qemu_pid=$ACTIVE_PID
+printf 'qemu_pid=%s\nparent_allowed_cpus=%s\n' "$qemu_pid" "$host_allowed_list" > "$RAW_DIR/vcpu-pinning.txt"
+if ! python3 "$QMP_CONTROL" query --socket "$QMP_SOCKET" \
+	--expected-vcpus "$GUEST_VCPUS" --timeout 300 > "$QMP_MAPPING"; then
+	die 'failed to query exact paused QEMU vCPU mapping'
+fi
+declare -A pinned_vcpu
+pinned_vcpu=()
+: > "$QMP_AFFINITY"
+cat "$QMP_MAPPING" >> "$RAW_DIR/vcpu-pinning.txt"
+while IFS=' ' read -r vcpu_field tid_field extra; do
+	case "$vcpu_field" in
+		qmp_status=*)
+			[ -z "$tid_field$extra" ] || die 'malformed QMP status mapping line'
+			continue
+			;;
+		vcpu=*) ;;
+		*) die 'unknown QMP vCPU mapping line' ;;
+	esac
+	[ -z "$extra" ] || die 'QMP vCPU mapping has extra fields'
+	vcpu=${vcpu_field#vcpu=}
+	tid=${tid_field#tid=}
+	case "$vcpu" in ''|*[!0-9]*) die 'malformed QMP vCPU index' ;; esac
+	case "$tid" in ''|*[!0-9]*) die 'malformed QMP vCPU thread id' ;; esac
+	[ "$tid_field" = "tid=$tid" ] || die 'malformed QMP vCPU thread field'
+	[ "$vcpu" -lt "$GUEST_VCPUS" ] || die 'QMP vCPU index is outside the fixed topology'
+	[ -z "${pinned_vcpu[$vcpu]+set}" ] || die "duplicate QMP vCPU index $vcpu"
+	task_dir=/proc/"$qemu_pid"/task/"$tid"
+	[ -r "$task_dir/status" ] || die "QMP vCPU $vcpu thread is not owned by the active QEMU"
+	host_cpu=${host_cpus[$((vcpu % ${#host_cpus[@]}))]}
+	taskset -pc "$host_cpu" "$tid" >> "$RAW_DIR/vcpu-pinning.txt" 2>&1 \
+		|| die "failed to pin QEMU vCPU $vcpu"
+	actual=$(awk '/^Cpus_allowed_list:/ {print $2}' "$task_dir/status")
+	[ "$actual" = "$host_cpu" ] \
+		|| die "QEMU vCPU $vcpu affinity did not become singleton $host_cpu"
+	comm=$(cat "$task_dir/comm")
+	printf 'vcpu=%s tid=%s host_cpu=%s verified_allowed_list=%s comm=%s\n' \
+		"$vcpu" "$tid" "$host_cpu" "$actual" "$comm" >> "$RAW_DIR/vcpu-pinning.txt"
+	printf 'vcpu=%s tid=%s host_cpu=%s\n' "$vcpu" "$tid" "$host_cpu" >> "$QMP_AFFINITY"
+	pinned_vcpu[$vcpu]=1
+done < "$QMP_MAPPING"
+[ "${#pinned_vcpu[@]}" = "$GUEST_VCPUS" ] || die 'QMP mapping did not pin all vCPU threads'
+cat "$QMP_AFFINITY" >> "$RAW_DIR/vcpu-pinning.txt"
+rows_before_resume=$(awk '/R4_E4_RESULT / { count++ } END { print count + 0 }' "$SERIAL" 2>/dev/null || printf '0\n')
+[ "$rows_before_resume" = 0 ] || die 'measurement emitted rows while QEMU was paused before resume'
+if ! python3 "$QMP_CONTROL" resume --socket "$QMP_SOCKET" \
+	--expected-vcpus "$GUEST_VCPUS" --mapping "$QMP_MAPPING" \
+	--affinity "$QMP_AFFINITY" --qemu-pid "$qemu_pid" --timeout 30 \
+	>> "$RAW_DIR/vcpu-pinning.txt"; then
+	die 'QMP vCPU mapping changed or QEMU failed to resume'
+fi
+printf 'rows_before_all_vcpus_pinned=0\npinned_vcpu_threads=%s\nqmp_pause_before_affinity=true\nqmp_mapping_reverified_before_resume=true\n' \
+	"$GUEST_VCPUS" >> "$RAW_DIR/vcpu-pinning.txt"
+
+deadline=$((SECONDS + QEMU_TIMEOUT))
+last_rows=-1
+qemu_timed_out=0
+while kill -0 "$qemu_pid" 2>/dev/null; do
+	rows_now=$(grep -c 'R4_E4_RESULT ' "$SERIAL" 2>/dev/null || true)
+	if [ "$rows_now" != "$last_rows" ]; then
+		percent=$((80 + rows_now * 15 / 682))
+		[ "$percent" -le 95 ] || percent=95
+		progress "$percent% arm64 QEMU measurement rows $rows_now/682"
+		last_rows=$rows_now
+	fi
+	if [ "$SECONDS" -ge "$deadline" ]; then
+		qemu_timed_out=1
+		break
+	fi
+	sleep 10
+done
+if [ "$qemu_timed_out" = 1 ]; then
+	printf '124\n' > "$RAW_DIR/qemu-exit-code.txt"
+	terminate_active
+	die "QEMU measurement exceeded ${QEMU_TIMEOUT}s"
+fi
+set +e
+wait "$qemu_pid"
+qemu_rc=$?
+set -e
+ACTIVE_PID=
+printf '%s\n' "$qemu_rc" > "$RAW_DIR/qemu-exit-code.txt"
+[ "$qemu_rc" = 0 ] || die "QEMU measurement did not power off cleanly: $qemu_rc"
+
+CURRENT_STAGE=evidence_validation
+progress '96% validating KTAP, exact 682-cell matrix, diagnostics, and fixed gates'
+tr -d '\r' < "$SERIAL" | sed -E 's/^\[[^]]+\][[:space:]]*//' > "$KTAP"
+! grep -Fq 'Unknown kernel command line parameters' "$SERIAL" || die 'guest reported unknown kernel command-line parameters'
+grep -Fq "Starting tracer 'irqsoff'" "$SERIAL" || die 'irqsoff tracer did not start'
+grep -Fq '# Subtest: sched_exec_lease_r4_measure' "$KTAP" || die 'measurement KUnit suite did not start'
+grep -Eq '^ok [0-9]+( -)? sched_exec_lease_r4_measure([[:space:]]|$)' "$KTAP" || die 'measurement KUnit suite did not pass'
+! grep -Eq '^[[:space:]]*not ok [0-9]+' "$KTAP" || die 'KUnit reported failure'
+! grep -Fq '# SKIP' "$KTAP" || die 'KUnit reported a required skip'
+kunit_cases=$(grep -Ec '^[[:space:]]*ok [0-9]+( -)? sched_exec_r4_measure_(publication|picker|irq|recovery|notifier|current|offline)_case([[:space:]]|$)' "$KTAP" || true)
+[ "$kunit_cases" = 7 ] || die "measurement KUnit case count changed: $kunit_cases"
+grep -F 'R4_E4_RESULT ' "$KTAP" | sed 's/^.*R4_E4_RESULT /R4_E4_RESULT /' > "$ROWS"
+grep -F 'R4_E4_SUMMARY ' "$KTAP" | sed 's/^.*R4_E4_SUMMARY /R4_E4_SUMMARY /' > "$SUMMARIES"
+GUEST_VCPUS="$GUEST_VCPUS" "$PARSER" "$ROWS" "$SUMMARIES" "$DERIVED_DIR" > "$RAW_DIR/parser.log"
+jq -e '.status == "passed_exact_682_cell_parser" and .result_rows == 682 and .measured_pairs == 6820000 and .harness_observation_failures == 0 and .summary_mismatches == 0' "$DERIVED_DIR/result.json" >/dev/null || die 'measurement parser result contract failed'
+
+# The path and content hash are checked above before this dynamic source.
+# shellcheck disable=SC1090,SC1091
+. "$WARNING_CLASSIFIER"
+capsched_collect_kernel_warning_reports "$SERIAL" "$RAW_DIR/kernel-warning-reports.txt" || die 'kernel warning classifier failed'
+grep -Ein 'Clock skew detected|clock skew|timekeeping watchdog.*skew|clocksource.*unstable' "$SERIAL" > "$RAW_DIR/clock-skew-reports.txt" || true
+warning_count=$(wc -l < "$RAW_DIR/kernel-warning-reports.txt" | tr -d ' ')
+clock_skew_count=$(wc -l < "$RAW_DIR/clock-skew-reports.txt" | tr -d ' ')
+rejected_cells=$(jq -r '.rejected_cells' "$DERIVED_DIR/result.json")
+threshold_breaches=$(jq -r '.threshold_breaches' "$DERIVED_DIR/result.json")
+if [ "$warning_count" -gt 0 ] || [ "$clock_skew_count" -gt 0 ] || [ "$rejected_cells" -gt 0 ]; then
+	classification=rejected_r4_local_quantum_measurement
+	x86_may_start=false
+else
+	classification=passed_r4_local_quantum_measurement
+	x86_may_start=true
+fi
+
+CURRENT_STAGE=sealing
+[ "$(file_sha "${BASH_SOURCE[0]}")" = "$runner_initial_sha" ] || die 'measurement runner changed during execution'
+[ "$(file_sha "$PARSER")" = "$parser_initial_sha" ] || die 'measurement parser changed during execution'
+[ "$(file_sha "$WARNING_CLASSIFIER")" = "$WARNING_CLASSIFIER_SHA" ] || die 'warning classifier changed during execution'
+[ "$(file_sha "$QMP_CONTROL")" = "$qmp_control_initial_sha" ] || die 'QMP vCPU control changed during execution'
+retire_owned_paths
+[ "$BUILD_RETIRED:$WORKTREE_RETIRED" = 1:1 ] || die 'run-owned scratch retirement failed'
+release_seal_reserve
+printf 'build_output_retired=true\nworktree_retired=true\n' >> "$ARTIFACT_DIR/manifest.txt"
+
+config_sha=$(file_sha "$RAW_DIR/arm64.config")
+serial_sha=$(file_sha "$SERIAL")
+ktap_sha=$(file_sha "$KTAP")
+table_sha=$(file_sha "$DERIVED_DIR/measurements.tsv")
+pinning_sha=$(file_sha "$RAW_DIR/vcpu-pinning.txt")
+host_env_sha=$(file_sha "$RAW_DIR/outer-host-environment.txt")
+parser_result_sha=$(file_sha "$DERIVED_DIR/result.json")
+{
+	cd "$DERIVED_DIR"
+	find . -type f -print0 | sort -z | xargs -0 sha256sum
+} > "$OUT_DIR/derived-manifest.sha256"
+derived_manifest_sha=$(file_sha "$OUT_DIR/derived-manifest.sha256")
+derived_artifact_count=$(find "$DERIVED_DIR" -type f | wc -l | tr -d ' ')
+chmod -R a-w "$DERIVED_DIR"
+{
+	cd "$RAW_DIR"
+	find . -type f ! -name raw-manifest.sha256 -print0 | sort -z | xargs -0 sha256sum
+} > "$RAW_DIR/raw-manifest.sha256"
+raw_manifest_sha=$(file_sha "$RAW_DIR/raw-manifest.sha256")
+raw_artifact_count=$(find "$RAW_DIR" -type f | wc -l | tr -d ' ')
+chmod -R a-w "$RAW_DIR"
+
+container_uname=$(sed -n '1p' "$RAW_DIR/container-uname.txt")
+compiler=$(sed -n '1p' "$RAW_DIR/compiler.txt")
+qemu_version=$(sed -n '1p' "$RAW_DIR/qemu-version.txt")
+clocksource_detail=$(grep -Ei 'clocksource|arch_sys_counter' "$SERIAL" | tail -n 1 || true)
+jq -n \
+	--arg run_id "$RUN_ID" --arg status "$classification" \
+	--arg runner_sha "$runner_initial_sha" --arg parser_sha "$parser_initial_sha" \
+	--arg qmp_control_sha "$qmp_control_initial_sha" \
+	--arg compiler "$compiler" --arg qemu_version "$qemu_version" \
+	--arg container_uname "$container_uname" --arg clocksource_detail "$clocksource_detail" \
+	--arg host_allowed "$host_allowed_list" --arg host_env_sha "$host_env_sha" \
+	--arg config_sha "$config_sha" --arg image_sha "$image_sha" --arg image_archive_sha "$image_archive_sha" \
+	--arg object_sha "$object_sha" --arg object_archive_sha "$object_archive_sha" \
+	--arg serial_sha "$serial_sha" --arg ktap_sha "$ktap_sha" --arg table_sha "$table_sha" \
+	--arg pinning_sha "$pinning_sha" --arg parser_result_sha "$parser_result_sha" \
+	--arg raw_manifest_sha "$raw_manifest_sha" --arg derived_manifest_sha "$derived_manifest_sha" \
+	--argjson raw_artifact_count "$raw_artifact_count" --argjson warning_count "$warning_count" \
+	--argjson derived_artifact_count "$derived_artifact_count" \
+	--argjson clock_skew_count "$clock_skew_count" --argjson rejected_cells "$rejected_cells" \
+	--argjson threshold_breaches "$threshold_breaches" --argjson x86_may_start "$x86_may_start" '
+{
+  schema_version:1,
+  id:"sched-exec-lease-p5a-r4-e4-arm64-local-quantum-measurement-result-v1",
+  run_id:$run_id,
+  status:$status,
+  architecture:"arm64",
+  source:{parent:"da9ce9159b3450c28c8faf8dceac671fb7bfeba2",commit:"4077ba840f713979c29af64f405dbde39f845d93",tree:"6ce127d738618fd356ed3533ac32e5796fa72d55",diff_sha256:"a4886479f001ea3ef0dbc069ef44040f89df69cc9114421933a5592075bfe255"},
+  prerequisites:{combined_run:"20260723T-p5a-r4-e4-owner-oracle-correction-source-e3-regression-r7",closure_r1_sha256:"0224be91981b36a74ba0d3389c7e5a357a76bf7329bfb19de74c206d0bb4a3a4",closure_r2_sha256:"b2317a4d80a4b3cfbc5f1e7d140fe50d60b9f4b79d8fe18e214d49f04382e99b",closure_normalized_sha256:"f8e184c16c4fa5315532cb067d3b66dea3a21b277942d9728a2132384a3d4ba2",independent_double_closure_passed:true,r6_failure_closure_r1_sha256:"62fc4950c46a77d9c51a45d7c24fb0ad3b4cbb25b6288de5e4729bff36fe303d",r6_failure_closure_r2_sha256:"6f1c2231ecaa9f069ed6b3759f74603a25be619de5d74215a4f79921f2162795",r6_failure_closure_normalized_sha256:"1ed1c74331eb818ea355a6c8c3d7daa03362cc8d79c8e43a236d3b49757a3c3f",r6_failure_independently_closed:true},
+  runner:{sha256:$runner_sha,parser_sha256:$parser_sha,warning_classifier_sha256:"8adcff74f0395f5ec219343c0cb5b1f179efee2292ab853d4fc7e410467dc23a",qmp_vcpu_control_sha256:$qmp_control_sha},
+  matrix:{publication:288,picker_kick:144,irq_dispatch:9,recovery:144,notifier:48,current_stop:24,offline:25,total_cells:682,warmup_pairs_per_cell:256,measured_pairs_per_cell:10000,total_measured_pairs:6820000,result_rows:682},
+  gates_ns:{ordinary_local:{additional_p99:5000,additional_p999:25000,additional_max:50000},offline_local:{additional_p99:25000,additional_p999:40000,additional_max:50000},asynchronous_availability:{p99:10000000,max:100000000},normalized_base_slice:700000},
+  parser:{result_sha256:$parser_result_sha,rejected_cells:$rejected_cells,threshold_breaches:$threshold_breaches,malformed_or_missing_rows:0,duplicate_or_unexpected_cells:0,harness_observation_failures:0,summary_mismatches:0},
+  diagnostics:{compiler_diagnostics:0,clock_skew_reports:$clock_skew_count,kernel_warning_reports:$warning_count,kunit_suite_passed:true,kunit_cases_passed:7,kunit_cases_failed:0,kunit_cases_skipped:0,qemu_exit_code:0},
+  placement:{guest_vcpus:2,host_container_allowed_cpus:$host_allowed,qemu_vcpu_threads_pinned:2,rows_before_all_vcpus_pinned:0,qmp_pause_before_affinity:true,qmp_mapping_reverified_before_resume:true,pinning_record_sha256:$pinning_sha,per_cell_guest_measurement_cpu_recorded:true,per_sample_guest_cpu_migration_rejected:true,irq_preempt_state_recorded:true},
+  environment:{outer_host_record_sha256:$host_env_sha,outer_virtualization:"Apple Container machine domainlease-dev",container_uname:$container_uname,compiler:$compiler,qemu_version:$qemu_version,qemu_accelerator:"tcg,thread=multi",qemu_machine:"virt,gic-version=3",qemu_cpu:"cortex-a57",qemu_memory_mib:4096,qemu_network_disabled:true,sample_clock:"local_clock",clocksource_detail:$clocksource_detail,virtualized_result_supports_bare_metal_claim:false},
+  artifacts:{raw_artifact_count:$raw_artifact_count,raw_manifest_sha256:$raw_manifest_sha,derived_artifact_count:$derived_artifact_count,derived_manifest_sha256:$derived_manifest_sha,config_sha256:$config_sha,image:{archive:"raw/boot-artifacts/arm64/Image.zst",source_sha256:$image_sha,archive_sha256:$image_archive_sha,restore_verified:true},exec_lease_object:{archive:"raw/boot-artifacts/arm64/exec_lease.o.zst",source_sha256:$object_sha,archive_sha256:$object_archive_sha,restore_verified:true},serial_sha256:$serial_sha,normalized_ktap_sha256:$ktap_sha,measurement_table_sha256:$table_sha,raw_inputs_read_only:true,derived_outputs_read_only:true,build_output_retired:true,worktree_retired:true},
+  architecture_measurement_valid:true,
+  threshold_failure_is_valid_negative_evidence:true,
+  x86_64_measurement_may_start:$x86_may_start,
+  measurement_result_accepted:false,
+  e5_plan_may_start:false,
+  e5_source_may_start:false,
+  real_scheduler_attachment:false,
+  runtime_behavior_approved:false,
+  n136_complete:false,
+  bare_metal_validated:false,
+  performance_claim:false,
+  cost_claim:false,
+  production_protection:false,
+  deployment_ready:false,
+  multi_node_ready:false,
+  multi_cluster_ready:false,
+  datacenter_ready:false
+}' > "$OUT_DIR/result.json"
+file_sha "$OUT_DIR/result.json" > "$OUT_DIR/result.sha256"
+
+if [ "$classification" = rejected_r4_local_quantum_measurement ]; then
+	progress "100% complete valid negative arm64 evidence; rejected cells=$rejected_cells breaches=$threshold_breaches warnings=$warning_count skew=$clock_skew_count; x86 stopped"
+else
+	progress '100% arm64 local-quantum measurement passed; same-source x86_64 timing may start'
+fi
+printf 'result=%s\nsha256=%s\n' "$OUT_DIR/result.json" "$(cat "$OUT_DIR/result.sha256")"
