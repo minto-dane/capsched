@@ -279,6 +279,7 @@ Updated: 2026-07-24
 | 0271 | Corrected R7 passes six fresh objects, six profiles, 216/216 cases and receipts, and two read-only 272-artifact closures with one normalized decision; R6 remains independently closed and only fresh arm64 timing r7 is authorized | SchedExecLease P5A-R4 E4 R7 Source Closure and Arm64 Timing R7 Readiness |
 | 0272 | Complete arm64 timing r7 is valid negative evidence: 682/682 cells and 6,820,000 pairs are intact, 362 cells have 692 fixed-gate breaches, two independent closures reproduce one normalized decision, and R4/x86_64/E5 stop | SchedExecLease P5A-R4 E4 Arm64 Timing R7 Valid-Negative Closure |
 | 0273 | Exact R4 rejection and closures are reproduced; 11 Linux anchors, 6 future absences, safe 16/16/depth-16 plus two liveness properties, 49 counterexamples, and focused controls select source-free R5 immutable-view compile/install; only E1 planning is allowed | SchedExecLease P5A-R5 Generation-Sealed Immutable Projection |
+| 0274 | Exact R5 prerequisite and 18 dynamic-EEVDF anchors pass; safe stale refusal checks 3/3/depth-3, while stale trust violates safety and fail-closed refusal violates allowed progress, rejecting R5 before layout/source and allowing only successor analysis | SchedExecLease P5A-R5 E1 EEVDF Selector-Coherence Rejection |
 
 ## Principles
 

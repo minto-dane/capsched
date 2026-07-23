@@ -5052,3 +5052,14 @@ P5A-R3 E4 source and exact-source regression gate:
   16/16/depth 16, two liveness properties, and 49 expected counterexamples.
   Validation/0273 permits only a source-free E1 plan; no R5 layout/source or
   runtime/production/datacenter claim is approved.
+
+- R5 fails its source-free E1 selector-coherence gate before layout/source.
+  EEVDF's current vruntime, weighted sums, deadline tree, current entity, and
+  subtree minimum-vruntime augmentation change while authority generation is
+  stable, so an immutable selector view becomes stale after ordinary
+  scheduler progress. Result `6fee1f3f...b7fe0a5` passes 18 exact source
+  anchors and safe fail-closed TLC 3/3/depth 3; stale trust violates Safety
+  and stale refusal violates AllowedProgress. Validation/0274 stops R5 repair
+  and permits only source-free successor comparison of dynamic
+  authorization-aware EEVDF augmentation or an authority-aligned hierarchy.
+  R6 source and all runtime/production/datacenter claims remain false.

@@ -6831,3 +6831,26 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   liveness properties, 49 counterexamples, ShellCheck, and focused mutations.
   Only source-free R5-E1 planning is authorized; no layout, source, runtime, or
   broader claim exists.
+
+- P5A-R5 is rejected at E1 before layout or source:
+
+  Validation/0274 binds exact R5 prerequisite `ceb59532...4bf9b`, primary
+  Linux `5e1ca303...70280`/tree `54f685aa...234a`, and 18 current EEVDF
+  anchors. Authority generation can remain stable while ordinary scheduling
+  mutates vruntime, weighted aggregates, deadline-tree membership, current,
+  and subtree minimum-vruntime augmentation. The installed immutable selector
+  view therefore becomes stale after normal scheduler progress.
+
+  Canonical result `6fee1f3f...b7fe0a5` passes safe fail-closed TLC at
+  3/3/depth 3. Trusting the stale view produces the expected Safety invariant
+  counterexample; refusing it produces the expected AllowedProgress temporal
+  counterexample for an allowed runnable entity. The exact contract and eight
+  mutations pass focused testing; VM ShellCheck passes. R5 repair, layout, and
+  source are stopped.
+
+  The next reviewable transition is source-free successor comparison only:
+  generation-aware dynamic EEVDF augmentation, authority-aligned per-rq
+  scheduling queues with explicit fairness, or a monitor-compiled hierarchy
+  whose mutable policy is not authority. No R6 source, Linux primary/patch
+  promotion, runtime, protection, performance/cost, deployment, multi-node,
+  multi-cluster, or datacenter claim exists.
