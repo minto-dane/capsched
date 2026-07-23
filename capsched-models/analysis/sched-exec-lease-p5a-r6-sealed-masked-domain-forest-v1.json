@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-24",
+  "status": "sealed_masked_domain_forest_architecture_gate_no_linux_patch",
+  "trigger": {
+    "analysis": "analysis/0178-sched-exec-lease-p5a-r5-e1-eevdf-selector-coherence-rejection.md",
+    "validation": "validation/0274-sched-exec-lease-p5a-r5-e1-eevdf-selector-coherence-rejection.md",
+    "result": "build/source-check/sched-exec-lease-p5a-r5-e1-eevdf-selector-coherence-rejection/20260724T-p5a-r5-e1-eevdf-selector-coherence-rejection-r1/result.json",
+    "result_sha256": "6fee1f3f3d68cbc816321b2759de71b1a35e64f8d207425fcfe5d0d86b7fe0a5",
+    "r5_rejected_before_layout": true,
+    "r5_rejected_before_source": true,
+    "immutable_receipt_retained_as_ingredient": true,
+    "immutable_selector_view_retained": false
+  },
+  "source_basis": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "primary_linux_tree": "54f685aad94f28f0027cbba18cf5e29aadce234a"
+  },
+  "candidate_comparison": {
+    "flat_generation_augmentation": {
+      "selected": false,
+      "reason": "exact arbitrary-mask eligibility requires per-slot minima, variable search, or authority-update repair"
+    },
+    "cgroup_task_group_authority": {
+      "selected": false,
+      "reason": "mutable Linux policy and membership are not monitor authority"
+    },
+    "sealed_masked_domain_forest": {
+      "selected": true,
+      "reason": "separates immutable authorization mask from explicitly mutable bounded hierarchical selector state"
+    },
+    "exactly_one_selected": true
+  },
+  "authority_plane": {
+    "b_max": 64,
+    "allowed_mask_bits": 64,
+    "generation_non_reused": true,
+    "generation_saturation_blocks": true,
+    "slot_map_digest_frozen": true,
+    "receipt_sealed_before_use": true,
+    "publication_constant_work": true,
+    "publication_walks_rqs_tasks_or_queues": false,
+    "publication_allocates_queues_waits_flushes_cancels_or_repairs_selector": false,
+    "cgroup_task_group_weight_vruntime_deadline_or_topology_is_authority": false
+  },
+  "selector_plane": {
+    "one_dynamic_eevdf_queue_per_active_slot_per_rq": true,
+    "fixed_top_leaves": 64,
+    "fixed_top_depth": 6,
+    "top_subtree_slot_masks_static": true,
+    "top_scheduling_summaries_mutable_under_rq_lock": true,
+    "slot_queue_state_mutable_under_rq_lock": true,
+    "changed_slot_updates_one_leaf_and_at_most_six_ancestors": true,
+    "picker_intersects_static_subtree_mask_with_sealed_allowed_mask": true,
+    "masked_query_fixed_bounded": true,
+    "masked_query_worst_case_nodes": 127,
+    "masked_query_logarithmic_claimed": false,
+    "masked_query_independent_of_nr_running": true,
+    "picker_requires_live_summary_eligibility": true,
+    "slot_local_picker_uses_dynamic_eevdf": true,
+    "final_task_local_authority_check": true,
+    "flat_task_tree_variable_fallback": false,
+    "immutable_copy_of_dynamic_selector_state": false
+  },
+  "task_lifetime": {
+    "storage_allocated_before_admission": true,
+    "allocation_failure_state": "Blocked",
+    "one_slot_and_rq_contribution_per_task": true,
+    "enqueue_revalidates_generation_digest_and_slot": true,
+    "migration_remove_neutral_add": true,
+    "simultaneous_source_destination_contribution": false,
+    "slot_reuse_after_zero_contributors_refs_retirement_and_rcu": true,
+    "offline_stops_admission_before_visibility_removal": true,
+    "sleepable_teardown_drains_work_refs_and_rcu": true,
+    "current_stop_distributor_separate": true
+  },
+  "fairness_boundary": {
+    "two_level_domain_then_task_fairness_explicit": true,
+    "flat_cfs_equivalence_claimed": false,
+    "monitor_weight_receipt_required": true,
+    "lag_deadline_weight_sleeper_throttle_idle_capacity_proof_deferred": true,
+    "performance_claim": false
+  },
+  "source_anchors": [
+    {"id":"R6SRC-001","path":"linux/kernel/sched/sched.h","pattern":"struct task_group {"},
+    {"id":"R6SRC-002","path":"linux/kernel/sched/sched.h","pattern":"struct cfs_rq __percpu\t*cfs_rq;"},
+    {"id":"R6SRC-003","path":"linux/kernel/sched/sched.h","pattern":"extern int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent);"},
+    {"id":"R6SRC-004","path":"linux/kernel/sched/sched.h","pattern":"extern void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,"},
+    {"id":"R6SRC-005","path":"linux/include/linux/sched.h","pattern":"struct sched_entity\t\t*parent;"},
+    {"id":"R6SRC-006","path":"linux/include/linux/sched.h","pattern":"struct cfs_rq\t\t\t*cfs_rq;"},
+    {"id":"R6SRC-007","path":"linux/include/linux/sched.h","pattern":"struct cfs_rq\t\t\t*my_q;"},
+    {"id":"R6SRC-008","path":"linux/kernel/sched/sched.h","pattern":"static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)"},
+    {"id":"R6SRC-009","path":"linux/kernel/sched/sched.h","pattern":"return p->sched_task_group;"},
+    {"id":"R6SRC-010","path":"linux/kernel/sched/sched.h","pattern":"set_task_rq_fair(&p->se, p->se.cfs_rq, tg_cfs_rq(tg, cpu));"},
+    {"id":"R6SRC-011","path":"linux/kernel/sched/fair.c","pattern":"find_matching_se(struct sched_entity **se, struct sched_entity **pse)"},
+    {"id":"R6SRC-012","path":"linux/kernel/sched/fair.c","pattern":"while (!is_same_group(*se, *pse)) {"},
+    {"id":"R6SRC-013","path":"linux/kernel/sched/fair.c","pattern":"__pick_task_fair(struct rq *rq, struct rq_flags *rf,"},
+    {"id":"R6SRC-014","path":"linux/kernel/sched/fair.c","pattern":"cfs_rq = group_cfs_rq(se);"},
+    {"id":"R6SRC-015","path":"linux/kernel/sched/fair.c","pattern":"} while (cfs_rq);"},
+    {"id":"R6SRC-016","path":"linux/kernel/sched/sched.h","pattern":"we cannot pin it and might observe the wrong value."}
+  ],
+  "future_absence_checks": [
+    {"id":"R6ABS-001","pattern":"sched_exec_domain_forest"},
+    {"id":"R6ABS-002","pattern":"sched_exec_domain_slot"},
+    {"id":"R6ABS-003","pattern":"sched_exec_allowed_slot_mask"},
+    {"id":"R6ABS-004","pattern":"sched_exec_domain_top_selector"},
+    {"id":"R6ABS-005","pattern":"CONFIG_SCHED_EXEC_LEASE_R6"},
+    {"id":"R6ABS-006","pattern":"sched_exec_domain_slot_digest"}
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0142-p5a-r6-sealed-masked-domain-forest-model",
+    "model": "P5AR6SealedMaskedDomainForest.tla",
+    "safe_cfg": "P5AR6SealedMaskedDomainForestSafe.cfg",
+    "unsafe_safety_faults": [
+      "UnsealedReceipt",
+      "GenerationMismatch",
+      "MutableSlotMap",
+      "VariablePublicationWork",
+      "UnboundedTopSelector",
+      "CgroupAuthority",
+      "UnverifiedTaskSlot",
+      "LateAllocation",
+      "FlatTreeFallback",
+      "StaleSummary",
+      "DeniedBranchVisible",
+      "PrematureR6Source",
+      "ProductionOverclaim"
+    ],
+    "unsafe_liveness_faults": [
+      "MissingAllowedProgress",
+      "MissingCurrentStop"
+    ],
+    "safe_liveness_properties": 2
+  },
+  "next_gate": {
+    "r6_e1_source_free_plan_may_start_after_validation": true,
+    "r6_layout_or_source_may_start": false,
+    "primary_linux_or_patch_queue_change": false
+  },
+  "claims": {
+    "r6_architecture_selected": true,
+    "r6_source_approved": false,
+    "real_scheduler_attachment": false,
+    "runtime_behavior_approved": false,
+    "flat_cfs_fairness_equivalent": false,
+    "bare_metal_validated": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}
