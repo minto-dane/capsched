@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-21
+Updated: 2026-07-24
 
 Read this first when resuming the project.
 
@@ -6793,3 +6793,22 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   under paused-QMP two-vCPU placement and fixed 682-cell/6,820,000-pair gates.
   x86_64 still requires a clean arm64 result plus independent timing closure;
   all live/runtime/performance/production/datacenter claims remain false.
+
+- P5A-R4 E4 arm64 timing r7 is a closed valid-negative terminal:
+
+  Run `20260723T-p5a-r4-e4-arm64-timing-r7` completed all 682 cells and
+  6,820,000 paired samples with KUnit 7/0/0, QEMU zero, exact paused-QMP
+  singleton placement, byte-exact parser regeneration, zero diagnostics,
+  lossless Image/object preservation, and retired scratch. Result
+  `edb07251...a0951` rejects 362 cells with 692 fixed-gate breaches:
+  publication 184/288, picker/kick 3/144, IRQ dispatch 4/9, recovery 105/144,
+  notifier 48/48, current stop 0/24, and offline 18/25.
+
+  Two independent read-only closures over 58 timing and 27 job files produce
+  `b5279add...297af` and `75e734bc...a2719`, normalized to
+  `8ebacd3c...84b5`; focused exact and eight mutation/type controls pass.
+  Validation/0272 terminates R4, same-source x86_64 timing, and R4-E5. The
+  next reviewable transition is source-free successor analysis. No R5 source,
+  primary Linux/patch promotion, runtime, N-136, bare-metal, performance,
+  production, deployment, multi-node, multi-cluster, or datacenter claim is
+  authorized.

@@ -1,26 +1,24 @@
 # Implementation 0049: SchedExecLease P5A-R4 E4 Local-Quantum Measurement
 
-Date: 2026-07-21
+Date: 2026-07-24
 
-Status: arm64 timing attempt 3 is sealed as a shared-host ENOSPC harness
-failure, not a timing result. Paused-QMP placement succeeded, but the matrix
-stopped after 399 of 682 serial rows when a progress write exhausted shared
-storage. Two independent read-only closures give every partial row zero credit.
-The runner now maintains a 64 MiB failure-seal reserve and checks an 8 GiB host
-floor at every progress update. Config smoke and a forced-capacity negative
-control pass. Only fresh arm64 timing r4 is authorized; x86_64 and every broader
-runtime/production claim remain blocked.
+Status: terminal valid-negative arm64 result. Timing r7 completed all 682 cells
+and 6,820,000 paired samples with clean build, boot, KUnit, placement, parser,
+diagnostic, and artifact checks, but 362 cells produced 692 fixed-gate
+breaches. Two independent read-only closures reproduce one normalized
+decision. R4, same-source x86_64 timing, and R4-E5 stop; only a source-free
+successor analysis is reviewable.
 
 ## Source Identity
 
 ```text
-branch:    codex/p5a-r4-e4-local-quantum-measurement
+branch:    codex/p5a-r4-e4-local-quantum-measurement-r7
 parent:    da9ce9159b3450c28c8faf8dceac671fb7bfeba2
-commit:    5857720dedc49f89d2367442f8fdb1a806ffa1cc
-tree:      ee6e329106327a302bf63c78f2ed4fe3ddea7865
-diff sha:  d3f56505379bdb08b36e265424aa886fc4f79d2a5a1e9426c2e52c3db0912a93
+commit:    4077ba840f713979c29af64f405dbde39f845d93
+tree:      6ce127d738618fd356ed3533ac32e5796fa72d55
+diff sha:  a4886479f001ea3ef0dbc069ef44040f89df69cc9114421933a5592075bfe255
 files:     init/Kconfig, kernel/sched/exec_lease.c
-line diff: +1744 -82
+line diff: +1768 -97
 ```
 
 Linux Draft PR: `minto-dane/linux#4`, based on the exact R4-E3 branch.
@@ -353,6 +351,35 @@ Validation/0269 authorizes only a new complete arm64 r6 bound to the r5
 interruption result. It may not resume or combine r5 rows. All normal source,
 closure, parser, QMP, capacity, identity, and cleanup preflights remain
 mandatory.
+
+## Arm64 Timing R6 Repair, R7 Source Closure, and Terminal Rejection
+
+Timing r6 completed exact paused-QMP placement and QEMU exit zero but rejected
+all 538 partial rows after recovery lost-handoff and offline-oracle KUnit
+failures. Two failure closures normalize to
+`1ed1c743...a3c3f`. Direct-child R7 moves the bounded continuation to ordinary
+work self-requeue, adds an exact handoff-race case, and corrects the offline
+control oracle.
+
+Fresh combined R7 run
+`20260723T-p5a-r4-e4-owner-oracle-correction-source-e3-regression-r7` passes
+six source objects, six profiles, 216/216 cases and receipts, and zero
+diagnostics. Two 272-artifact source closures normalize to
+`f8e184c1...d4ba2`.
+
+Timing r7 then completes all 682 cells and 6,820,000 paired samples with KUnit
+7/0/0, QEMU exit zero, exact two-vCPU paused-QMP singleton placement, zero
+compiler/kernel/clock diagnostics, and exact parser regeneration. Result
+`edb07251...a0951` is nevertheless
+`rejected_r4_local_quantum_measurement`: 362 cells have 692 fixed-gate
+breaches. Family rejection counts are publication 184/288, picker/kick 3/144,
+IRQ dispatch 4/9, recovery 105/144, notifier 48/48, current stop 0/24, and
+offline 18/25.
+
+Two independent timing closures produce `b5279add...297af` and
+`75e734bc...a2719`, normalized to `8ebacd3c...84b5`. Validation/0272 therefore
+terminates R4 and stops same-source x86_64 plus R4-E5. No threshold, matrix, or
+claim boundary is relaxed.
 
 ## Claim Boundary
 

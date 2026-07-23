@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-21
+Updated: 2026-07-24
 
 ## Project
 
@@ -5028,3 +5028,15 @@ P5A-R3 E4 source and exact-source regression gate:
   all six receipts. Timing runner `54e1ee16...8a50` also binds both R6 failure
   closures; config smoke r10 and capacity-negative r4 pass. Only fresh arm64
   timing r7 is authorized. x86_64 and every broader claim remain blocked.
+
+- Arm64 timing r7 completes as valid negative R4 evidence. Exact source
+  `4077ba84...45d93` produces 682/682 cells and 6,820,000/6,820,000 pairs,
+  KUnit 7/0/0, QEMU zero, exact paused-QMP placement, zero diagnostics, and
+  byte-exact parser regeneration, but fixed gates reject 362 cells with 692
+  breaches. Family rejection is publication 184/288, picker/kick 3/144, IRQ
+  dispatch 4/9, recovery 105/144, notifier 48/48, current stop 0/24, and
+  offline 18/25. Two independent 58-timing/27-job-file closures
+  `b5279add...297af` and `75e734bc...a2719` normalize to
+  `8ebacd3c...84b5`. Validation/0272 stops R4, x86_64, and E5; source-free
+  successor analysis is next and all runtime/production/datacenter claims
+  remain false.
