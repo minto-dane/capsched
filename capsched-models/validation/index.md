@@ -278,6 +278,7 @@ Updated: 2026-07-24
 | 0270 | Arm64 timing r6 reaches exact QMP placement and QEMU-zero but rejects all 538 partial rows after recovery lost-handoff and offline-oracle KUnit failures; two 66-input closures reproduce the rejection, and minimal direct-child R7 passes strict source-only checks before a mandatory fresh combined regression | SchedExecLease P5A-R4 E4 Arm64 Timing R6 KUnit Rejection and R7 Source-Regression Readiness |
 | 0271 | Corrected R7 passes six fresh objects, six profiles, 216/216 cases and receipts, and two read-only 272-artifact closures with one normalized decision; R6 remains independently closed and only fresh arm64 timing r7 is authorized | SchedExecLease P5A-R4 E4 R7 Source Closure and Arm64 Timing R7 Readiness |
 | 0272 | Complete arm64 timing r7 is valid negative evidence: 682/682 cells and 6,820,000 pairs are intact, 362 cells have 692 fixed-gate breaches, two independent closures reproduce one normalized decision, and R4/x86_64/E5 stop | SchedExecLease P5A-R4 E4 Arm64 Timing R7 Valid-Negative Closure |
+| 0273 | Exact R4 rejection and closures are reproduced; 11 Linux anchors, 6 future absences, safe 16/16/depth-16 plus two liveness properties, 49 counterexamples, and focused controls select source-free R5 immutable-view compile/install; only E1 planning is allowed | SchedExecLease P5A-R5 Generation-Sealed Immutable Projection |
 
 ## Principles
 

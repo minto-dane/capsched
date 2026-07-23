@@ -6812,3 +6812,22 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   primary Linux/patch promotion, runtime, N-136, bare-metal, performance,
   production, deployment, multi-node, multi-cluster, or datacenter claim is
   authorized.
+
+- P5A-R5 source-free successor architecture is selected:
+
+  Validation/0273 reproduces exact R4 result `edb07251...a0951`, normalized
+  double closure `8ebacd3c...84b5`, 682 cells, 6,820,000 pairs, 362 rejected
+  cells, and 692 breaches. Sustained recovery/notifier/offline percentile
+  failures select Generation-Sealed Immutable Projection rather than an R4
+  tuning retry.
+
+  Immutable views are built outside rq-lock phases, require a seven-field
+  start/end sealed receipt, and install through one final exact
+  generation/membership/selector/digest check plus one RCU pointer swap.
+  Stale, raced, unsealed, allocation-failed, or mismatched views remain
+  Blocked. Projection repair notification is removed; current-stop
+  distribution remains separate. Result `ceb59532...4bf9b` passes 11 Linux
+  anchors, six future absences, safe TLC 16/16/depth 16, two stable-window
+  liveness properties, 49 counterexamples, ShellCheck, and focused mutations.
+  Only source-free R5-E1 planning is authorized; no layout, source, runtime, or
+  broader claim exists.

@@ -5040,3 +5040,15 @@ P5A-R3 E4 source and exact-source regression gate:
   `8ebacd3c...84b5`. Validation/0272 stops R4, x86_64, and E5; source-free
   successor analysis is next and all runtime/production/datacenter claims
   remain false.
+
+- R5 Generation-Sealed Immutable Projection is the selected source-free
+  successor. It moves variable projection compilation outside rq-lock phases,
+  requires an exact seven-field sealed receipt, installs one immutable RCU
+  pointer in constant work, and trusts only exact
+  generation/membership/selector/digest plus entity/task proof. Failures stay
+  Blocked; projection repair notifier is removed and current stop remains
+  separate. Canonical result `ceb59532...4bf9b` reproduces the R4
+  result/closures and distribution, passes 11 anchors, six absences, safe TLC
+  16/16/depth 16, two liveness properties, and 49 expected counterexamples.
+  Validation/0273 permits only a source-free E1 plan; no R5 layout/source or
+  runtime/production/datacenter claim is approved.
