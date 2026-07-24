@@ -151,6 +151,10 @@ Updated: 2026-07-18
 
 ## Planned
 
+| ID | Status | Model |
+|---|---|---|
+| 0143 | Planned source-free E1 contract check with 50 safety and 2 liveness counterexamples | P5A-R6 E1 Domain-Forest Evidence Plan Model |
+
 1. Runtime coverage execution under the N-138 contract after hook candidates are narrowed.
 2. Additional driver-specific QueueLease endpoint models for NVMe, GPU, or VFIO
    compatibility paths before L4 implementation work.
