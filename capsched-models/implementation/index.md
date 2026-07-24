@@ -1023,4 +1023,15 @@ Current monitor timer architecture substrate gate:
   tracepoint ABI, x86 VMX-root implementation, arm64 EL2 implementation, KVM or
   pKVM modification, behavior change, runtime coverage, monitor verification,
   or production protection is approved.
+
+Current R6-E2 disposable layout candidate:
+  implementation/0050 and the R6-E2 candidate JSON bind signed-off direct
+  primary child `66e2fd20fc85` on `codex/p5a-r6-e2-layout`. Its 208 added
+  lines change only `init/Kconfig` and `kernel/sched/exec_lease.c`, define a
+  default-off 64-slot/127-node private layout probe, and add no function,
+  callsite, allocation, hook, callback, ABI, or behavior. Arm64 preflight
+  measures slot/top/control/rq-state as 768/64/48/57,344 bytes and the
+  conservative formula as 74,688 bytes/rq below the 98,304-byte hard limit.
+  Source gate and fresh dual-architecture evidence remain required; all
+  runtime and production claims remain false.
 ```
