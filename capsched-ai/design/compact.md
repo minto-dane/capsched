@@ -5074,3 +5074,18 @@ P5A-R3 E4 source and exact-source regression gate:
   absences, safe TLC 5/5/depth 5, two liveness properties, and 15 expected
   counterexamples. Validation/0275 permits only source-free R6-E1 planning;
   layout/source and all runtime/production/datacenter claims remain false.
+
+- R6-E1 resolves the implementation boundary without adding source.
+  Validation/0276 fixes one sealed domain per dedicated root-child fair-group
+  subtree, with cgroups as mechanism only and final task-local authority
+  checks. The fixed selector has 64 leaves/127 nodes, separate 127-visit
+  aggregate and candidate phases, a 254-visit complete bound, 64-slot mask
+  reconciliation, and six-ancestor updates; there is no logarithmic claim.
+  Equal fixed domain fairness precedes ordinary within-domain fairness and is
+  not flat-CFS equivalence. Private state computes to 74,688 bytes/rq under a
+  98,304-byte hard limit with zero ordinary hot-object growth. Result
+  `364c1c21...11f62` passes 40 anchors, eight absences, safe TLC
+  10/10/depth 10, two liveness properties, and 52 counterexamples. Only the
+  exact disposable default-off two-file R6-E2 layout probe is next; E3,
+  behavior, primary/patch promotion, and all runtime/production/datacenter
+  claims remain false.

@@ -6876,3 +6876,29 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   source/locking/layout/fairness planning is authorized. No layout, source,
   runtime, protection, performance/cost, deployment, multi-node,
   multi-cluster, or datacenter claim exists.
+
+- P5A-R6 E1 domain-forest evidence planning is complete:
+
+  Validation/0276 fixes the Linux composition to one sealed domain per
+  dedicated root-child `FAIR_GROUP_SCHED` subtree. Descendant cgroups stay in
+  that domain, but cgroup/task-group state remains mechanism rather than
+  authority and a final task-local descriptor/domain/slot check is mandatory.
+  Mixed-domain subtrees, leased root tasks, authority-changing cgroup moves,
+  and `SCHED_AUTOGROUP` fail closed.
+
+  The top selector has 64 leaves and 127 unique nodes. Aggregate and candidate
+  phases each visit at most 127 nodes; the complete query is at most 254
+  visits, not 127 operations or logarithmic arbitrary-mask selection. Equal
+  fixed domain fairness precedes ordinary within-domain fairness; re-enable
+  creates no negative lag or catch-up credit. Flat-CFS equivalence remains
+  false.
+
+  Private layout computes to 74,688 bytes/rq under a 98,304-byte hard limit
+  and requires zero growth in ordinary `sched_entity`, `cfs_rq`, `rq`, and
+  `task_struct`. Result `364c1c21...11f62` passes 40 Linux anchors, eight
+  future absences, safe TLC 10/10/depth 10, two liveness properties, 50
+  safety and two liveness counterexamples, ShellCheck, and ten contract
+  mutations. Only a disposable direct-primary-child, default-off, two-file
+  R6-E2 layout probe may be drafted. E3/behavior, primary/patch promotion,
+  runtime, protection, performance/cost, deployment, multi-node,
+  multi-cluster, and datacenter claims remain false.

@@ -281,6 +281,7 @@ Updated: 2026-07-24
 | 0273 | Exact R4 rejection and closures are reproduced; 11 Linux anchors, 6 future absences, safe 16/16/depth-16 plus two liveness properties, 49 counterexamples, and focused controls select source-free R5 immutable-view compile/install; only E1 planning is allowed | SchedExecLease P5A-R5 Generation-Sealed Immutable Projection |
 | 0274 | Exact R5 prerequisite and 18 dynamic-EEVDF anchors pass; safe stale refusal checks 3/3/depth-3, while stale trust violates safety and fail-closed refusal violates allowed progress, rejecting R5 before layout/source and allowing only successor analysis | SchedExecLease P5A-R5 E1 EEVDF Selector-Coherence Rejection |
 | 0275 | Exact R5 rejection, 16 Linux hierarchy anchors, 6 future absences, safe 5/5/depth-5 with two liveness properties, 15 counterexamples, and focused controls select source-free R6 sealed mask plus mutable domain forest; only E1 planning is allowed | SchedExecLease P5A-R6 Sealed Masked Domain Forest |
+| 0276 | Exact R6 binding, Linux hierarchy composition, 40 anchors, 8 absences, safe 10/10/depth-10 with two liveness properties, 52 counterexamples, and focused controls authorize only the disposable default-off two-file R6-E2 layout candidate | SchedExecLease P5A-R6 E1 Domain-Forest Evidence Plan |
 
 ## Principles
 
