@@ -6902,3 +6902,26 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   R6-E2 layout probe may be drafted. E3/behavior, primary/patch promotion,
   runtime, protection, performance/cost, deployment, multi-node,
   multi-cluster, and datacenter claims remain false.
+
+- P5A-R6 E2 source is frozen and the dual-architecture layout matrix is
+  launch-ready:
+
+  Signed-off direct-primary child `66e2fd20...cbb94`, tree
+  `603762b7...ba16`, and diff `1ae8a83f...058ed` are pushed on
+  `fork/codex/p5a-r6-e2-layout`. The 208-line candidate changes exactly
+  `init/Kconfig` and `kernel/sched/exec_lease.c`; its default-off config adds
+  private 64-slot/127-node types and 49 ELF measurement symbols only.
+
+  Source-gate result `18c329d9...d452f` passes exact E1 binding, clean direct
+  parent/remote/sign-off, forward/reverse replay, checkpatch 0/0/0, 24
+  anchors, the unique symbol manifest, and zero functions, runtime calls, or
+  surfaces. Arm64 preflight measures slot/top/control/rq-state as
+  768/64/48/57,344 bytes and the conservative total as 74,688 under the
+  98,304-byte hard limit.
+
+  Detached job `p5a-r6-e2-dual-arch-build` performs four fresh modes on arm64
+  and x86_64, preserves all 51 existing values, checks 49 enabled-only R6
+  symbols, disabled absence, zero ordinary hot-object growth, and both
+  envelopes. Monitor with `./tools/long-job.sh watch
+  p5a-r6-e2-dual-arch-build 30`. No matrix pass, E3 source, runtime,
+  protection, performance/cost, or deployment/datacenter claim exists yet.

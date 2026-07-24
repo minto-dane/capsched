@@ -4678,6 +4678,18 @@ P5A-R3 E4 source and exact-source regression gate:
   latency, performance, deployment, multi-node/multi-cluster, and datacenter
   claims remain false.
 
+- R6-E2 source is frozen as signed-off direct-primary child
+  `66e2fd20...cbb94` with an exact two-file/208-line, default-off,
+  layout-only delta. Source result `18c329d9...d452f` passes direct
+  parent/remote/sign-off, replay, checkpatch 0/0/0, 24 anchors, 49-symbol
+  manifest, and zero function/runtime/surface additions. Arm64 preflight
+  measures 768/64/48/57,344 bytes for slot/top/control/rq-state and 74,688
+  conservative bytes/rq under 98,304. Detached job
+  `p5a-r6-e2-dual-arch-build` runs four fresh modes per arm64/x86_64 and
+  exposes 30-second progress through `tools/long-job.sh`. No layout pass,
+  E3 source, or runtime/production/datacenter claim exists until complete
+  evidence and closure.
+
 - P5A-R4 N-134 E3 source and source-gate launch boundary:
 
   Disposable commit `f9c737c93ecff48c6f512048b05b1b49f4a54ca5`, tree
