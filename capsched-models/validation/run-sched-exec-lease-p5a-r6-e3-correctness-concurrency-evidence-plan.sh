@@ -61,7 +61,7 @@ esac
 case "$RUN_ID" in
 	*[!A-Za-z0-9._-]*|.|..) die 'RUN_ID contains an unsafe component' ;;
 esac
-for command in awk chmod cp diff git grep java jq mkdir sed sha256sum \
+for command in awk chmod cp diff git grep java jq mkdir nproc sed sha256sum \
 	sort tail wc; do
 	command -v "$command" >/dev/null 2>&1 ||
 		die "missing command: $command"
@@ -456,11 +456,21 @@ safe_depth=$(sed -n \
 
 progress '42% reproducing 79 R6-E3 safety counterexamples'
 safety_fault_count=$(jq '.formal.unsafe_safety_faults | length' "$CONFIG")
-safety_expected=0
-safety_failures=0
-while IFS= read -r fault; do
-	cfg="$OUT_DIR/generated-unsafe-configs/safety-$fault.cfg"
-	log="$OUT_DIR/tlc-safety-$fault.log"
+tlc_parallel_jobs=${TLC_PARALLEL_JOBS:-$(nproc)}
+case "$tlc_parallel_jobs" in
+	''|*[!0-9]*) die 'TLC_PARALLEL_JOBS must be a positive integer' ;;
+esac
+[ "$tlc_parallel_jobs" -ge 1 ] ||
+	die 'TLC_PARALLEL_JOBS must be a positive integer'
+[ "$tlc_parallel_jobs" -le 6 ] || tlc_parallel_jobs=6
+
+run_safety_fault()
+{
+	local fault=$1
+	local cfg="$OUT_DIR/generated-unsafe-configs/safety-$fault.cfg"
+	local log="$OUT_DIR/tlc-safety-$fault.log"
+	local status="$OUT_DIR/status-safety-$fault"
+
 	printf '%s\n' \
 		'SPECIFICATION Spec' \
 		"CONSTANT Fault = \"$fault\"" \
@@ -469,20 +479,52 @@ while IFS= read -r fault; do
 		'INVARIANT EvidenceSafety' > "$cfg"
 	if (
 		cd "$SNAPSHOT_MODEL_DIR"
-		java -XX:+UseParallelGC -cp "$TLA_JAR" tlc2.TLC \
+		java -Xmx256m -XX:+UseSerialGC -cp "$TLA_JAR" tlc2.TLC \
 			-metadir "$OUT_DIR/states-safety-$fault" \
 			-config "$cfg" "$MODEL"
 	) > "$log" 2>&1; then
-		printf 'unsafe safety fault unexpectedly passed: %s\n' "$fault" >&2
-		safety_failures=$((safety_failures + 1))
+		printf 'unexpected-pass\n' > "$status"
 	elif grep -Eq \
 		'Invariant (TypeOK|EvidenceSafety) is violated' "$log"; then
-		safety_expected=$((safety_expected + 1))
+		printf 'expected-counterexample\n' > "$status"
 	else
-		printf 'unsafe safety fault failed unexpectedly: %s\n' "$fault" >&2
-		tail -n 40 "$log" >&2
-		safety_failures=$((safety_failures + 1))
+		printf 'unexpected-failure\n' > "$status"
 	fi
+}
+
+safety_pids=()
+while IFS= read -r fault; do
+	run_safety_fault "$fault" &
+	safety_pids+=("$!")
+	if [ "${#safety_pids[@]}" -ge "$tlc_parallel_jobs" ]; then
+		wait "${safety_pids[0]}"
+		safety_pids=("${safety_pids[@]:1}")
+	fi
+done < <(jq -r '.formal.unsafe_safety_faults[]' "$CONFIG")
+for pid in "${safety_pids[@]}"; do
+	wait "$pid"
+done
+
+safety_expected=0
+safety_failures=0
+while IFS= read -r fault; do
+	status=$(<"$OUT_DIR/status-safety-$fault")
+	case "$status" in
+		expected-counterexample)
+			safety_expected=$((safety_expected + 1))
+			;;
+		unexpected-pass)
+			printf 'unsafe safety fault unexpectedly passed: %s\n' \
+				"$fault" >&2
+			safety_failures=$((safety_failures + 1))
+			;;
+		*)
+			printf 'unsafe safety fault failed unexpectedly: %s\n' \
+				"$fault" >&2
+			tail -n 40 "$OUT_DIR/tlc-safety-$fault.log" >&2
+			safety_failures=$((safety_failures + 1))
+			;;
+	esac
 done < <(jq -r '.formal.unsafe_safety_faults[]' "$CONFIG")
 [ "$safety_failures" = 0 ] ||
 	die "unsafe safety TLC failures: $safety_failures"
@@ -572,7 +614,8 @@ jq -S -n \
 	--argjson safe_distinct "$safe_distinct" \
 	--argjson safe_depth "$safe_depth" \
 	--argjson safety_faults "$safety_expected" \
-	--argjson liveness_faults "$liveness_expected" '
+	--argjson liveness_faults "$liveness_expected" \
+	--argjson tlc_parallel_jobs "$tlc_parallel_jobs" '
 {
   schema_version:1,
   run_id:$run_id,
@@ -619,6 +662,7 @@ jq -S -n \
   safe_depth:$safe_depth,
   unsafe_safety_counterexamples:$safety_faults,
   unsafe_liveness_counterexamples:$liveness_faults,
+  tlc_parallel_jobs:$tlc_parallel_jobs,
   r6_e3_plan_accepted:true,
   disposable_e3_source_draft_may_start:true,
   r6_e3_source_accepted:false,
