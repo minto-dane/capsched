@@ -6947,3 +6947,24 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   R6-E3 correctness/concurrency plan. The disposable candidate is not
   promoted; E3 source and every runtime/production/datacenter claim remain
   false.
+
+- P5A-R6 E3 source-free correctness/concurrency planning is complete:
+
+  Validation/0279 binds the exact closed E2 input and fixes a direct-E2-child,
+  two-file, same-translation-unit, default-off KUnit draft. Complete isolated
+  runs r3/r4 are `7a1c6bc4...5eebe2` and `6f989baf...787917`, normalized to
+  `604f16ab...1e516`. Each passes 24 source anchors, 12 future absences,
+  14/14/depth-14 safe TLC with three progress properties, and all 79 safety
+  plus three liveness counterexamples.
+
+  The future suite `sched_exec_lease_r6_correctness` has a separate 64-leaf
+  oracle, six mask classes, exact 127/127/254 and 64/6 structural bounds, 55
+  non-reducible fairness/hierarchy/task/migration/current/hotplug/RCU/fault
+  cases, and four arm64/x86_64 standard/KASAN/KCSAN diagnostic profiles.
+  Six-way TLC uses unique per-fault JVM temp/state/log/status paths; two
+  earlier result-less harness attempts receive no credit. ShellCheck and 16
+  contract mutations pass.
+
+  Only the exact disposable E3 source draft and source gate may now start.
+  E3 correctness, E4, primary/patch promotion, and every
+  runtime/production/datacenter claim remain false.

@@ -149,6 +149,7 @@ Updated: 2026-07-18
 | 0141 | Checked with 3/3/depth-3 safe fail-closed pass, expected stale-trust safety counterexample, and expected allowed-progress liveness counterexample | P5A-R5 E1 EEVDF Selector-Coherence Model |
 | 0142 | Checked with 5/5/depth-5 safe pass, two liveness properties, 13 architecture-safety counterexamples, and 2 progress counterexamples | P5A-R6 Sealed Masked Domain Forest Model |
 | 0143 | Checked with 10/10/depth-10 safe pass, two liveness properties, 50 plan-safety counterexamples, and 2 progress counterexamples | P5A-R6 E1 Domain-Forest Evidence Plan Model |
+| 0144 | Reproduced with 14/14/depth-14 safe pass, bounded selector/reconcile, neutral migration, separate current observation, ordered RCU drain, three liveness properties, 79 safety counterexamples, and 3 liveness counterexamples | P5A-R6 E3 Correctness and Concurrency Evidence Plan Model |
 
 ## Planned
 

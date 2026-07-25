@@ -5114,3 +5114,15 @@ P5A-R3 E4 source and exact-source regression gate:
   Validation/0278 permits only source-free R6-E3 correctness/concurrency
   planning; source, runtime, protection, performance/cost, and
   deployment/datacenter claims remain false.
+
+- R6-E3 source-free planning passes reproducibly. Results
+  `7a1c6bc4...5eebe2` and `6f989baf...787917` normalize to
+  `604f16ab...1e516`, each with 24 anchors, 12 absences, safe
+  14/14/depth-14, three liveness properties, and 79 safety plus three
+  liveness counterexamples. The exact future default-off same-TU KUnit draft
+  binds a separate 64-leaf oracle, six mask classes, 55 selector/fairness/
+  hierarchy/task/migration/current/hotplug/RCU/fault cases, and four
+  arm64/x86_64 standard/KASAN/KCSAN profiles. Only disposable source drafting
+  and its source gate are authorized; correctness, E4, promotion, runtime,
+  protection, performance/cost, and deployment/datacenter claims remain
+  false.

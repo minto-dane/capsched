@@ -284,6 +284,7 @@ Updated: 2026-07-24
 | 0276 | Exact R6 binding, Linux hierarchy composition, 40 anchors, 8 absences, safe 10/10/depth-10 with two liveness properties, 52 counterexamples, and focused controls authorize only the disposable default-off two-file R6-E2 layout candidate | SchedExecLease P5A-R6 E1 Domain-Forest Evidence Plan |
 | 0277 | Exact direct-primary/two-file R6-E2 source passes signed-off identity, replay, checkpatch 0/0/0, 24 anchors, 49-symbol manifest, runtime-surface absence, and arm64 object preflight; detached arm64/x86_64 four-mode layout evidence is launch-ready | SchedExecLease P5A-R6 E2 Source Gate and Dual-Architecture Launch |
 | 0278 | Complete arm64/x86_64 four-mode evidence and independent read-only closure preserve 51 existing values, bind 49 enabled-only symbols, prove disabled artifact absence and zero ordinary growth, rederive the 74,688/98,304-byte envelope, and authorize only source-free R6-E3 planning | SchedExecLease P5A-R6 E2 Dual-Architecture Evidence Closure |
+| 0279 | Two isolated six-way runs bind exact E2 closure, 24 anchors, 12 absences, 55 future cases, safe 14/14/depth-14 with three liveness properties, 79 safety and 3 liveness counterexamples, normalized reproduction, ShellCheck, and 16 mutations; only the exact disposable R6-E3 source draft is authorized | SchedExecLease P5A-R6 E3 Correctness and Concurrency Evidence Plan |
 
 ## Principles
 
