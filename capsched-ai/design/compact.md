@@ -1,6 +1,6 @@
 # Compact Context
 
-Updated: 2026-07-24
+Updated: 2026-07-26
 
 ## Project
 
@@ -5101,3 +5101,16 @@ P5A-R3 E4 source and exact-source regression gate:
   exact disposable default-off two-file R6-E2 layout probe is next; E3,
   behavior, primary/patch promotion, and all runtime/production/datacenter
   claims remain false.
+
+- R6-E2 layout evidence is complete and independently closed. Matrix result
+  `6164a7a9...b2890a4` passes four fresh modes on each of arm64 and x86_64;
+  all 51 existing values remain exact, the 49 R6 symbols exist only when
+  enabled, disabled artifacts are absent, and ordinary hot-object growth is
+  zero. Arm64/x86_64 private slot state is 768/1,024 bytes and concrete rq
+  state is 57,344/73,728 bytes. Both remain within the conservative 74,688
+  bytes/rq and hard 98,304-byte limit; x86_64 is exactly at the slot ceiling.
+  Independent closure `e937c252...6b0c7b8` rechecks eight configs, 14 objects,
+  16 source blobs, 24 clean logs, and all values without rebuilding.
+  Validation/0278 permits only source-free R6-E3 correctness/concurrency
+  planning; source, runtime, protection, performance/cost, and
+  deployment/datacenter claims remain false.

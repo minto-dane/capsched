@@ -1030,8 +1030,12 @@ Current R6-E2 disposable layout candidate:
   lines change only `init/Kconfig` and `kernel/sched/exec_lease.c`, define a
   default-off 64-slot/127-node private layout probe, and add no function,
   callsite, allocation, hook, callback, ABI, or behavior. Arm64 preflight
-  measures slot/top/control/rq-state as 768/64/48/57,344 bytes and the
-  conservative formula as 74,688 bytes/rq below the 98,304-byte hard limit.
-  Source gate and fresh dual-architecture evidence remain required; all
+  is superseded by complete arm64/x86_64 four-mode result
+  `6164a7a9913e...b2890a4` and read-only closure
+  `e937c252819d...6b0c7b8`. Both architectures preserve all 51 existing
+  values, emit the exact 49 private symbols only when enabled, keep ordinary
+  hot-object growth at zero, and pass the 74,688-byte conservative private
+  envelope under the 98,304-byte hard limit. The x86_64 slot is exactly at
+  its 1,024-byte ceiling. Only source-free R6-E3 planning may start; all
   runtime and production claims remain false.
 ```

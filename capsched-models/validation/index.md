@@ -283,6 +283,7 @@ Updated: 2026-07-24
 | 0275 | Exact R5 rejection, 16 Linux hierarchy anchors, 6 future absences, safe 5/5/depth-5 with two liveness properties, 15 counterexamples, and focused controls select source-free R6 sealed mask plus mutable domain forest; only E1 planning is allowed | SchedExecLease P5A-R6 Sealed Masked Domain Forest |
 | 0276 | Exact R6 binding, Linux hierarchy composition, 40 anchors, 8 absences, safe 10/10/depth-10 with two liveness properties, 52 counterexamples, and focused controls authorize only the disposable default-off two-file R6-E2 layout candidate | SchedExecLease P5A-R6 E1 Domain-Forest Evidence Plan |
 | 0277 | Exact direct-primary/two-file R6-E2 source passes signed-off identity, replay, checkpatch 0/0/0, 24 anchors, 49-symbol manifest, runtime-surface absence, and arm64 object preflight; detached arm64/x86_64 four-mode layout evidence is launch-ready | SchedExecLease P5A-R6 E2 Source Gate and Dual-Architecture Launch |
+| 0278 | Complete arm64/x86_64 four-mode evidence and independent read-only closure preserve 51 existing values, bind 49 enabled-only symbols, prove disabled artifact absence and zero ordinary growth, rederive the 74,688/98,304-byte envelope, and authorize only source-free R6-E3 planning | SchedExecLease P5A-R6 E2 Dual-Architecture Evidence Closure |
 
 ## Principles
 

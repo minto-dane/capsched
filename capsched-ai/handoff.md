@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-07-24
+Updated: 2026-07-26
 
 Read this first when resuming the project.
 
@@ -6925,3 +6925,25 @@ P5A-R3 E4 source, source gate, and regression prerequisite:
   envelopes. Monitor with `./tools/long-job.sh watch
   p5a-r6-e2-dual-arch-build 30`. No matrix pass, E3 source, runtime,
   protection, performance/cost, or deployment/datacenter claim exists yet.
+
+- P5A-R6 E2 dual-architecture layout evidence is independently closed:
+
+  Complete matrix result `6164a7a9...b2890a4` passes primary baseline,
+  candidate-off, candidate-on, and candidate-normal on both arm64 and x86_64.
+  Per architecture, all 51 existing values are preserved and exactly 49 R6
+  symbols exist only when enabled. Disabled symbol, relocation, and string
+  counts are zero; ordinary `sched_entity`, `cfs_rq`, `rq`, and
+  `task_struct` deltas are zero.
+
+  Arm64 slot/top/control/rq-state is 768/64/48/57,344 bytes; x86_64 is
+  1,024/64/48/73,728 bytes. Both pass the conservative 74,688-byte total
+  under the 98,304-byte hard limit. The x86_64 slot is exactly at its
+  inclusive ceiling and has no measured headroom.
+
+  Read-only closure `e937c252...6b0c7b8` independently rechecks eight configs,
+  14 objects, 16 source blobs, 24 clean logs, direct-child/two-file identity,
+  all symbol tables, disabled absence, member order, arithmetic, and the
+  recorded results. Validation/0278 authorizes only a separate source-free
+  R6-E3 correctness/concurrency plan. The disposable candidate is not
+  promoted; E3 source and every runtime/production/datacenter claim remain
+  false.

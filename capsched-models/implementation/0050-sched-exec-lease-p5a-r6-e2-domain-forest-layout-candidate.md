@@ -2,8 +2,9 @@
 
 Date: 2026-07-25
 
-Status: exact disposable source candidate committed and awaiting the
-independent dual-architecture layout gate. No runtime behavior is accepted.
+Status: exact disposable source candidate passes the independent
+dual-architecture layout gate and evidence closure. It is accepted only for
+source-free R6-E3 planning. No runtime behavior is accepted.
 
 ## Disposable Source Identity
 
@@ -60,12 +61,39 @@ maximum alignment           64 bytes
 This is preflight only. It does not replace the required fresh
 primary/candidate off/on/normal arm64 and x86_64 matrix.
 
+## Closed Layout Evidence
+
+Validation/0278 records complete arm64 and x86_64 four-mode matrices at result
+SHA-256
+`6164a7a9913e9cf6da96a7f09944c3a18225ddddb8d1ccc690350d339b2890a4`
+and an independent read-only closure at
+`e937c252819d0e79b8815b540641002f9f9bb22b6f432f3ab1e18992d6b0c7b8`.
+
+All 51 existing layout values are unchanged on each architecture. Exactly 49
+private R6 symbols exist only when enabled; symbols, relocations, and strings
+are absent when disabled. Ordinary scheduler object growth is zero.
+
+```text
+                         arm64    x86_64
+slot state                  768      1,024
+top node                     64         64
+rq control                   48         48
+concrete rq state        57,344     73,728
+conservative total       74,688     74,688
+hard limit               98,304     98,304
+```
+
+The x86_64 slot consumes the exact inclusive 1,024-byte ceiling and therefore
+has no measured headroom. The immutable candidate JSON remains the frozen
+pre-matrix input contract; its historical status field is not rewritten after
+hash binding.
+
 ## Next Evidence
 
-The source gate must revalidate the exact R6-E1 result, direct-parent/two-file
-identity, forward/reverse replay, strict style, Kconfig, 49-symbol manifest,
-layout-only syntax, and runtime/surface absence. Only then may the
-dual-architecture matrix run.
+Only a separate source-free R6-E3 correctness and concurrency plan may start.
+It must bind the exact E2 result and closure before defining selector,
+reconcile, hierarchy, fairness, lifetime, fault, and architecture-profile
+evidence. R6-E3 source remains forbidden until that plan passes.
 
 No E3 source, real selector, scheduler/cgroup attachment, task binding,
 runtime denial, monitor verification, protection, performance, cost,
