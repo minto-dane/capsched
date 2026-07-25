@@ -1,0 +1,642 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r6-e3-correctness-concurrency-evidence-plan-v1",
+  "date": "2026-07-26",
+  "status": "r6_e3_source_free_pre_source_plan",
+  "source_basis": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "primary_linux_tree": "54f685aad94f28f0027cbba18cf5e29aadce234a",
+    "e2_candidate_parent": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "e2_candidate_commit": "66e2fd20fc85012d7dc03649fcf4c7af583cbb94",
+    "e2_candidate_tree": "603762b7a36d7b57e2456b90538c3ba77a1aba16",
+    "e2_candidate_diff_sha256": "1ae8a83fd083c9c96412da2db98298cc708b743fc8b6266a49e16e29c16058ed",
+    "e2_contract": "capsched-models/implementation/sched-exec-lease-p5a-r6-e2-domain-forest-layout-candidate-v1.json",
+    "e2_contract_sha256": "451704317503cf9453e1f3cb5b1de9d687209ba3a61f852bcbb3000e94af4dc6",
+    "e2_source_gate": "build/source-check/sched-exec-lease-p5a-r6-e2-source-gate/20260725T-p5a-r6-e2-source-gate-r1/result.json",
+    "e2_source_gate_sha256": "18c329d9f10a34559056f8ef00007f9d6644b82b5d4be5f8227a4d7f8f9d452f",
+    "e2_dual_arch_result": "build/source-check/sched-exec-lease-p5a-r6-e2-dual-arch-layout/20260725T-p5a-r6-e2-dual-arch-r1/result.json",
+    "e2_dual_arch_result_sha256": "6164a7a9913e9cf6da96a7f09944c3a18225ddddb8d1ccc690350d339b2890a4",
+    "e2_closure_result": "build/source-check/sched-exec-lease-p5a-r6-e2-evidence-closure/20260726T-p5a-r6-e2-closure-r2/result.json",
+    "e2_closure_result_sha256": "e937c252819d0e79b8815b540641002f9f9bb22b6f432f3ab1e18992d6b0c7b8",
+    "patch_queue_commit": "16bb080da472ffabbbafd2698073eca633fb0602",
+    "patch_queue_series_blob": "298567f8e0bd18168222da4e64da32750b9ea818",
+    "patch_queue_tail": "0014-sched-exec_lease-Expand-build-only-layout-probe.patch",
+    "primary_linux_change_allowed": false,
+    "patch_queue_change_allowed": false,
+    "e2_candidate_amend_allowed": false
+  },
+  "source_boundary": {
+    "future_parent": "66e2fd20fc85012d7dc03649fcf4c7af583cbb94",
+    "direct_child_required": true,
+    "future_branch": "codex/p5a-r6-e3-correctness-prototype",
+    "future_worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r6-e3-correctness-prototype",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "frozen_files": [
+      "include/linux/sched.h",
+      "include/linux/sched_exec_lease.h",
+      "kernel/sched/Makefile",
+      "kernel/sched/sched.h",
+      "kernel/sched/fair.c",
+      "kernel/sched/core.c",
+      "kernel/sched/exec_lease_layout_probe.c"
+    ],
+    "e2_private_layout_block_byte_preserved": true,
+    "e2_private_probe_values_preserved": 49,
+    "existing_expanded_probe_values_preserved": 51,
+    "ordinary_structure_growth_bytes": {
+      "sched_entity": 0,
+      "cfs_rq": 0,
+      "rq": 0,
+      "task_struct": 0
+    },
+    "strict_checkpatch_errors_allowed": 0,
+    "strict_checkpatch_warnings_allowed": 0,
+    "strict_checkpatch_checks_allowed": 0,
+    "primary_linux_change_allowed": false,
+    "patch_queue_change_allowed": false,
+    "production_attachment_allowed": false
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_R6_KUNIT_TEST",
+    "type": "bool",
+    "default_enabled": false,
+    "depends_on": [
+      "SCHED_EXEC_LEASE_R6_LAYOUT_PROBE",
+      "KUNIT=y"
+    ],
+    "selected_by_lease_layout_or_kunit_all_tests": false,
+    "same_translation_unit": "kernel/sched/exec_lease.c",
+    "suite": "sched_exec_lease_r6_correctness",
+    "release_config_enabled": false,
+    "disabled_symbols_relocations_strings_initcalls_or_allocations": false
+  },
+  "prototype_scope": {
+    "synthetic_rq_only": true,
+    "instantiates_exact_e2_private_types": true,
+    "real_raw_spinlocks_and_rcu": true,
+    "real_refcounts_and_cpumasks": true,
+    "real_cfs_rq_or_live_task_attachment": false,
+    "live_rq_task_group_or_cgroup_attachment": false,
+    "production_enqueue_dequeue_pick_migrate_or_hotplug_call": false,
+    "resched_curr_on_live_rq": false,
+    "monitor_policy_budget_or_authority_decision": false,
+    "export_trace_file_or_userspace_surface": false,
+    "timing_sleep_as_race_proof": false
+  },
+  "independent_oracle": {
+    "plain_64_leaf_records": true,
+    "reuses_implementation_tree_or_transition_helper": false,
+    "enumerates_all_64_leaves": true,
+    "allowed_runnable_aggregate_only": true,
+    "linux_left_biased_signed_division": true,
+    "live_eligibility_and_earliest_deadline": true,
+    "tie_break": "stable_slot_id",
+    "mask_cases": [
+      "empty",
+      "singleton",
+      "alternating",
+      "all_64",
+      "current_only",
+      "revoked_current"
+    ],
+    "expected_pick_and_no_pick_explicit": true,
+    "implementation_and_oracle_state_separate": true,
+    "receipt_after_every_forced_transition": true,
+    "cleanup_and_reference_equation_after_failure": true
+  },
+  "selector_bounds": {
+    "b_max": 64,
+    "unique_tree_nodes": 127,
+    "levels": 6,
+    "aggregate_phase_max_visits": 127,
+    "candidate_phase_max_visits": 127,
+    "complete_query_max_visits": 254,
+    "leaf_update_max_ancestors": 6,
+    "reconcile_max_slots": 64,
+    "reconcile_changed_bit_cases": [
+      0,
+      1,
+      63,
+      64
+    ],
+    "task_tree_authorization_scan": false,
+    "logarithmic_arbitrary_mask_claim": false,
+    "bounds_are_structural_not_latency": true,
+    "version_matches_after_each_mutation": true
+  },
+  "fairness_oracles": {
+    "fixed_equal_domain_weight": "NICE_0_LOAD",
+    "two_level_domain_then_internal_fairness": true,
+    "canonical_equal_domain_rounds": 4096,
+    "equal_service_difference_max_one_top_slice": true,
+    "stable_all_64_no_starvation_max_pick_gap": 64,
+    "denied_domain_service_increment": 0,
+    "reallowed_initial_negative_lag": 0,
+    "reallowed_first_service_max_one_top_slice": true,
+    "unauthorized_interval_catch_up_credit": 0,
+    "positive_debt_erased_on_reallow": false,
+    "flat_cfs_equivalence_claim": false,
+    "variable_domain_weight_supported": false
+  },
+  "hierarchy_and_authority": {
+    "one_domain_per_root_child_fair_subtree": true,
+    "descendant_cgroups_confined_to_domain": true,
+    "cgroup_is_mechanism_not_authority": true,
+    "mixed_domain_subtree_state": "Blocked",
+    "one_domain_multiple_roots_state": "Blocked",
+    "leased_root_task_state": "Blocked",
+    "sched_autogroup_state": "Blocked",
+    "final_task_generation_domain_slot_check": true,
+    "descriptor_checks": [
+      "sealed_state",
+      "generation",
+      "slot_map_digest",
+      "domain_root_digest",
+      "equal_weight_profile",
+      "descriptor_digest",
+      "cpu_allowed_mask"
+    ],
+    "old_descriptor_fallback_authority": false
+  },
+  "task_and_migration": {
+    "fork_inherits_frozen_binding": true,
+    "exec_advances_generation_before_runnable_commitment": true,
+    "enqueue_rechecks_descriptor_slot_root_mask_online_accepting": true,
+    "one_contribution_per_task": true,
+    "cgroup_move_uses_task_rq_lock_settlement": true,
+    "cgroup_move_same_slot_or_frozen_replacement_binding": true,
+    "migration_order": "remove_neutral_add",
+    "simultaneous_source_destination_contribution": false,
+    "destination_rechecks_descriptor_mask_root_capacity_online_accepting": true,
+    "destination_failure_state": "BlockedNeutral",
+    "source_restoration_after_destination_failure": false,
+    "ordinary_root_fallback": false
+  },
+  "current_hotplug_lifetime": {
+    "picker_mask_fence_stops_current": false,
+    "current_stop_request_separate": true,
+    "request_calls_resched_curr_under_synthetic_rq_lock": true,
+    "later_changed_or_revalidated_observation_required": true,
+    "request_is_monitor_interrupt_or_completion_receipt": false,
+    "offline_visibility_and_accepting_removed_first": true,
+    "sleepable_drain_outside_scheduler_locks": true,
+    "online_order": "allocate_initialize_publish_accept",
+    "offline_order": "stop_accepting_remove_visibility_drain_unpublish_grace_free",
+    "zero_contributions_readers_refs_and_transitions_before_free": true,
+    "rcu_grace_before_free": true,
+    "generation_saturation_state": "BlockedUntilQuiescentReplacement",
+    "slot_identity_saturation_state": "BlockedUntilQuiescentReplacement",
+    "generation_or_slot_reuse": false
+  },
+  "allocation_faults": {
+    "sites": [
+      "sealed_descriptor",
+      "per_cpu_rq_state",
+      "task_binding"
+    ],
+    "all_allocations_before_runnable_contribution": true,
+    "allocation_under_task_or_rq_lock": false,
+    "failure_state": "Blocked",
+    "failure_leaves_contribution_or_reference": false,
+    "clean_retry_after_fault_removal": true,
+    "slot_65_state": "Blocked"
+  },
+  "required_case_families": [
+    "mask_empty_blocks",
+    "mask_singleton_exact_pick",
+    "mask_alternating_matches_oracle",
+    "mask_all_64_matches_oracle",
+    "mask_current_only_exact_pick",
+    "mask_revoked_current_blocks_next_pick",
+    "aggregate_visit_bound_127",
+    "candidate_visit_bound_127",
+    "complete_query_visit_bound_254",
+    "leaf_updates_boundary_slots_0_and_63_six_ancestors",
+    "reconcile_zero_changed_bits",
+    "reconcile_one_changed_bit",
+    "reconcile_63_changed_bits",
+    "reconcile_64_changed_bits",
+    "leaf_and_tree_versions_match_after_mutation",
+    "left_biased_negative_signed_division",
+    "stable_slot_tie_break",
+    "equal_weight_4096_round_service_ratio",
+    "stable_all_64_no_starvation",
+    "denied_domain_zero_service",
+    "reallow_zero_negative_lag",
+    "reallow_no_catch_up_burst",
+    "descriptor_unsealed_blocks",
+    "descriptor_generation_mismatch_blocks",
+    "descriptor_slot_map_digest_mismatch_blocks",
+    "descriptor_domain_root_digest_mismatch_blocks",
+    "descriptor_profile_or_digest_mismatch_blocks",
+    "nested_same_domain_cgroups_accept",
+    "mixed_domain_subtree_blocks",
+    "one_domain_multiple_roots_blocks",
+    "leased_root_task_blocks",
+    "autogroup_blocks",
+    "final_task_generation_mismatch_blocks",
+    "final_task_domain_mismatch_blocks",
+    "final_task_slot_mismatch_blocks",
+    "fork_inherits_frozen_binding",
+    "exec_generation_before_runnable",
+    "enqueue_exact_recheck_one_contribution",
+    "cgroup_move_same_slot_accepts",
+    "cgroup_move_replacement_binding_accepts",
+    "cgroup_move_without_binding_blocks",
+    "migration_success_remove_neutral_add",
+    "migration_destination_mask_failure_stays_neutral",
+    "migration_destination_offline_failure_stays_neutral",
+    "current_revoke_requests_stop",
+    "current_changed_observation",
+    "current_revalidated_observation",
+    "offline_visibility_before_drain",
+    "online_initializes_before_accepting",
+    "reader_ref_rcu_grace_before_free",
+    "generation_saturation_blocks_without_wrap",
+    "slot_identity_saturation_blocks_without_reuse",
+    "every_allocation_fault_blocks_without_residue_and_retries",
+    "slot_65_blocks_without_alias_or_fallback",
+    "reference_equation_and_cleanup_after_each_failure"
+  ],
+  "race_control": {
+    "completions_atomic_checkpoints_or_explicit_barriers": true,
+    "timing_only_sleep_is_proof": false,
+    "hard_case_timeout_seconds": 15,
+    "stress_repetitions_per_diagnostic_profile": 4096,
+    "deterministic_seed_set_recorded": true,
+    "case_reduction_after_failure": false,
+    "skip_or_expected_failure_allowed": false
+  },
+  "build_and_boot_matrix": {
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "fresh_build_modes_per_architecture": [
+      "exact_e2_parent_layout_on",
+      "e3_candidate_layout_on_test_off",
+      "e3_candidate_layout_on_test_on",
+      "e3_candidate_release_normal"
+    ],
+    "diagnostic_boots": [
+      "arm64_standard_debug_lockdep_hotplug_faults",
+      "x86_64_standard_debug_lockdep_hotplug_faults",
+      "arm64_generic_kasan_lockdep",
+      "x86_64_kcsan_lockdep"
+    ],
+    "required_diagnostics": [
+      "PROVE_LOCKING",
+      "PROVE_RCU",
+      "DEBUG_IRQFLAGS",
+      "DEBUG_OBJECTS_WORK",
+      "HOTPLUG_CPU",
+      "fault_injection",
+      "KASAN_arm64",
+      "KCSAN_x86_64"
+    ],
+    "exact_suite_filter": "sched_exec_lease_r6_correctness",
+    "every_case_and_receipt_required": true,
+    "zero_fail_skip_timeout_or_warning": true,
+    "e2_49_values_preserved_when_enabled": true,
+    "existing_51_values_preserved": true,
+    "disabled_e3_symbols_relocations_strings_initcalls_absent": true,
+    "ordinary_structure_growth_bytes": 0,
+    "fresh_builds_and_boots_required": true
+  },
+  "warning_rejection_patterns": [
+    "KASAN",
+    "KCSAN",
+    "lockdep",
+    "refcount",
+    "workqueue",
+    "irq_work",
+    "RCU",
+    "kmemleak",
+    "WARNING:",
+    "BUG:",
+    "Oops:",
+    "Kernel panic",
+    "stall",
+    "hung task",
+    "soft lockup",
+    "hard lockup",
+    "CPUHP"
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0144-p5a-r6-e3-correctness-concurrency-evidence-plan-model",
+    "model": "P5AR6E3CorrectnessConcurrencyEvidencePlan.tla",
+    "safe_cfg": "P5AR6E3CorrectnessConcurrencyEvidencePlanSafe.cfg",
+    "safe_liveness_properties": [
+      "AllowedPickProgress",
+      "RevokedCurrentProgress",
+      "OfflineDrainProgress"
+    ],
+    "unsafe_safety_faults": [
+      "MissingE2ClosureBinding",
+      "WrongFutureParent",
+      "WrongTwoFileScope",
+      "E2LayoutBlockChanged",
+      "E2ProbeValuesChanged",
+      "E3NotDefaultOff",
+      "E3SelectedNormally",
+      "DisabledArtifactPresent",
+      "PublicSurfaceAdded",
+      "LiveSchedulerAttachment",
+      "ProductionHookCalled",
+      "OracleSharesImplementationHelper",
+      "OracleDoesNotEnumerate64",
+      "OracleCheckpointMissing",
+      "CaseReceiptMissing",
+      "WrongUniqueNodeBound",
+      "AggregateVisitOverflow",
+      "CandidateVisitOverflow",
+      "CompleteVisitOverflow",
+      "LeafAncestorOverflow",
+      "ReconcileOverflow",
+      "LogarithmicMaskClaim",
+      "StaleTreeVersion",
+      "WrongSignedDivision",
+      "UnstableTieBreak",
+      "DeniedDomainSelected",
+      "DeniedDomainService",
+      "EqualWeightServiceViolation",
+      "StableMaskStarvation",
+      "ReallowNegativeLag",
+      "ReallowCatchUpCredit",
+      "PositiveDebtErased",
+      "CgroupAuthority",
+      "MixedDomainSubtree",
+      "DuplicateDomainRoot",
+      "RootLeasedTask",
+      "AutogroupAccepted",
+      "MissingFinalTaskCheck",
+      "OldDescriptorFallback",
+      "ForkBindingMutable",
+      "ExecGenerationLate",
+      "EnqueueWithoutRecheck",
+      "ContributionDuplicated",
+      "CgroupMoveChangesAuthority",
+      "MigrationDoubleContribution",
+      "MigrationNeutralMissing",
+      "DestinationNotRechecked",
+      "DestinationFailureRestoresSource",
+      "OrdinaryRootFallback",
+      "CurrentConflatedWithPicker",
+      "CurrentRequestClaimedComplete",
+      "OfflineKeepsAccepting",
+      "OfflineKeepsVisibility",
+      "SleepableDrainUnderLock",
+      "OnlineAcceptsBeforeInit",
+      "FreeWithContribution",
+      "FreeWithReaderOrRef",
+      "RcuGraceMissing",
+      "GenerationWrapReused",
+      "SlotIdentityReused",
+      "AllocationUnderLock",
+      "AllocationFailureResidue",
+      "Slot65Accepted",
+      "TimingSleepUsedAsProof",
+      "RequiredCaseSkipped",
+      "DiagnosticMatrixReduced",
+      "WarningAccepted",
+      "E4SourcePremature",
+      "PrimaryLinuxChanged",
+      "RuntimeClaim",
+      "MonitorClaim",
+      "FlatCfsClaim",
+      "ProtectionClaim",
+      "PerformanceClaim",
+      "CostClaim",
+      "DeploymentClaim",
+      "MultiNodeClaim",
+      "MultiClusterClaim",
+      "DatacenterClaim"
+    ],
+    "unsafe_liveness_faults": [
+      "MissingAllowedPickProgress",
+      "MissingRevokedCurrentProgress",
+      "MissingOfflineDrainProgress"
+    ]
+  },
+  "authorization_after_pass": {
+    "disposable_e3_source_draft_may_start": true,
+    "e3_source_or_correctness_accepted": false,
+    "e4_plan_or_source_may_start": false,
+    "primary_linux_or_patch_queue_change": false
+  },
+  "claims": {
+    "r6_e3_plan_accepted": false,
+    "r6_e3_source_accepted": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "monitor_verified": false,
+    "flat_cfs_equivalence": false,
+    "bare_metal_validated": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  },
+  "source_anchors": [
+    {
+      "id": "R6E3SRC-001",
+      "tree": "candidate",
+      "path": "init/Kconfig",
+      "pattern": "config SCHED_EXEC_LEASE_R6_LAYOUT_PROBE"
+    },
+    {
+      "id": "R6E3SRC-002",
+      "tree": "candidate",
+      "path": "init/Kconfig",
+      "pattern": "depends on SCHED_EXEC_LEASE && SCHED_EXEC_LEASE_LAYOUT_PROBE"
+    },
+    {
+      "id": "R6E3SRC-003",
+      "tree": "candidate",
+      "path": "kernel/sched/exec_lease.c",
+      "pattern": "struct sched_exec_r6_slot_state {"
+    },
+    {
+      "id": "R6E3SRC-004",
+      "tree": "candidate",
+      "path": "kernel/sched/exec_lease.c",
+      "pattern": "struct sched_exec_r6_top_node {"
+    },
+    {
+      "id": "R6E3SRC-005",
+      "tree": "candidate",
+      "path": "kernel/sched/exec_lease.c",
+      "pattern": "struct sched_exec_r6_rq_control {"
+    },
+    {
+      "id": "R6E3SRC-006",
+      "tree": "candidate",
+      "path": "kernel/sched/exec_lease.c",
+      "pattern": "struct sched_exec_r6_rq_state {"
+    },
+    {
+      "id": "R6E3SRC-007",
+      "tree": "candidate",
+      "path": "kernel/sched/exec_lease.c",
+      "pattern": "slots[SCHED_EXEC_R6_B_MAX]"
+    },
+    {
+      "id": "R6E3SRC-008",
+      "tree": "candidate",
+      "path": "kernel/sched/exec_lease.c",
+      "pattern": "top[SCHED_EXEC_R6_TOP_NODE_COUNT]"
+    },
+    {
+      "id": "R6E3SRC-009",
+      "tree": "primary",
+      "path": "kernel/sched/fair.c",
+      "pattern": "u64 avg_vruntime(struct cfs_rq *cfs_rq)"
+    },
+    {
+      "id": "R6E3SRC-010",
+      "tree": "primary",
+      "path": "kernel/sched/fair.c",
+      "pattern": "if (runtime < 0)"
+    },
+    {
+      "id": "R6E3SRC-011",
+      "tree": "primary",
+      "path": "kernel/sched/fair.c",
+      "pattern": "place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)"
+    },
+    {
+      "id": "R6E3SRC-012",
+      "tree": "primary",
+      "path": "kernel/sched/fair.c",
+      "pattern": "pick_eevdf(struct cfs_rq *cfs_rq, bool protect,"
+    },
+    {
+      "id": "R6E3SRC-013",
+      "tree": "primary",
+      "path": "kernel/sched/sched.h",
+      "pattern": "return p->sched_task_group;"
+    },
+    {
+      "id": "R6E3SRC-014",
+      "tree": "primary",
+      "path": "kernel/sched/fair.c",
+      "pattern": "detach_task_cfs_rq(p);"
+    },
+    {
+      "id": "R6E3SRC-015",
+      "tree": "primary",
+      "path": "kernel/sched/fair.c",
+      "pattern": "attach_task_cfs_rq(p);"
+    },
+    {
+      "id": "R6E3SRC-016",
+      "tree": "primary",
+      "path": "kernel/sched/core.c",
+      "pattern": "CLASS(task_rq_lock, rq_guard)(tsk);"
+    },
+    {
+      "id": "R6E3SRC-017",
+      "tree": "primary",
+      "path": "kernel/sched/core.c",
+      "pattern": "deactivate_task(rq, p, DEQUEUE_NOCLOCK);"
+    },
+    {
+      "id": "R6E3SRC-018",
+      "tree": "primary",
+      "path": "kernel/sched/core.c",
+      "pattern": "set_task_cpu(p, new_cpu);"
+    },
+    {
+      "id": "R6E3SRC-019",
+      "tree": "primary",
+      "path": "kernel/sched/core.c",
+      "pattern": "activate_task(rq, p, 0);"
+    },
+    {
+      "id": "R6E3SRC-020",
+      "tree": "primary",
+      "path": "kernel/sched/fair.c",
+      "pattern": "static void rq_offline_fair(struct rq *rq)"
+    },
+    {
+      "id": "R6E3SRC-021",
+      "tree": "primary",
+      "path": "kernel/sched/fair.c",
+      "pattern": "static void rq_online_fair(struct rq *rq)"
+    },
+    {
+      "id": "R6E3SRC-022",
+      "tree": "primary",
+      "path": "kernel/sched/core.c",
+      "pattern": "call_rcu(&tg->rcu, sched_free_group_rcu);"
+    },
+    {
+      "id": "R6E3SRC-023",
+      "tree": "primary",
+      "path": "include/linux/cpuhotplug.h",
+      "pattern": "CPUHP_AP_ONLINE_DYN_END"
+    },
+    {
+      "id": "R6E3SRC-024",
+      "tree": "primary",
+      "path": "include/linux/cpuhotplug.h",
+      "pattern": "CPUHP_AP_ACTIVE,"
+    }
+  ],
+  "future_absence_checks": [
+    {
+      "id": "R6E3ABS-001",
+      "pattern": "SCHED_EXEC_LEASE_R6_KUNIT_TEST"
+    },
+    {
+      "id": "R6E3ABS-002",
+      "pattern": "sched_exec_lease_r6_correctness"
+    },
+    {
+      "id": "R6E3ABS-003",
+      "pattern": "sched_exec_r6_test_oracle"
+    },
+    {
+      "id": "R6E3ABS-004",
+      "pattern": "sched_exec_r6_test_pick_domain"
+    },
+    {
+      "id": "R6E3ABS-005",
+      "pattern": "sched_exec_r6_test_reconcile_mask"
+    },
+    {
+      "id": "R6E3ABS-006",
+      "pattern": "sched_exec_r6_test_update_leaf"
+    },
+    {
+      "id": "R6E3ABS-007",
+      "pattern": "sched_exec_r6_test_task_binding"
+    },
+    {
+      "id": "R6E3ABS-008",
+      "pattern": "sched_exec_r6_test_migrate"
+    },
+    {
+      "id": "R6E3ABS-009",
+      "pattern": "sched_exec_r6_test_current_stop"
+    },
+    {
+      "id": "R6E3ABS-010",
+      "pattern": "sched_exec_r6_test_offline"
+    },
+    {
+      "id": "R6E3ABS-011",
+      "pattern": "sched_exec_r6_test_receipt"
+    },
+    {
+      "id": "R6E3ABS-012",
+      "pattern": "sched_exec_r6_test_fault_site"
+    }
+  ]
+}
