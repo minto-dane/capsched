@@ -470,7 +470,9 @@ run_safety_fault()
 	local cfg="$OUT_DIR/generated-unsafe-configs/safety-$fault.cfg"
 	local log="$OUT_DIR/tlc-safety-$fault.log"
 	local status="$OUT_DIR/status-safety-$fault"
+	local java_tmp="$OUT_DIR/java-tmp-safety-$fault"
 
+	mkdir -p "$java_tmp"
 	printf '%s\n' \
 		'SPECIFICATION Spec' \
 		"CONSTANT Fault = \"$fault\"" \
@@ -479,7 +481,8 @@ run_safety_fault()
 		'INVARIANT EvidenceSafety' > "$cfg"
 	if (
 		cd "$SNAPSHOT_MODEL_DIR"
-		java -Xmx256m -XX:+UseSerialGC -cp "$TLA_JAR" tlc2.TLC \
+		java -Xmx256m -XX:+UseParallelGC \
+			-Djava.io.tmpdir="$java_tmp" -cp "$TLA_JAR" tlc2.TLC \
 			-metadir "$OUT_DIR/states-safety-$fault" \
 			-config "$cfg" "$MODEL"
 	) > "$log" 2>&1; then
