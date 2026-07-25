@@ -244,9 +244,9 @@ validate_config()
 			grep -q '^# CONFIG_SCHED_EXEC_LEASE_LAYOUT_PROBE is not set$' \
 				"$config" ||
 				die "$architecture/$mode existing probe is not off"
-			grep -q '^# CONFIG_SCHED_EXEC_LEASE_R6_LAYOUT_PROBE is not set$' \
+			! grep -q '^CONFIG_SCHED_EXEC_LEASE_R6_LAYOUT_PROBE=y$' \
 				"$config" ||
-				die "$architecture/$mode R6 probe is not off"
+				die "$architecture/$mode R6 probe is on"
 			;;
 		*) die "unknown mode: $mode" ;;
 	esac
