@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r6-post-e3-authorization-threat-boundary-v1",
+  "date": "2026-07-26",
+  "status": "source_free_post_e3_authorization_contract",
+  "threat_model": {
+    "target_id": "target_sha256_00f33333870097e986c36684a58470fe51e779600219938b209ca597ae663190",
+    "repository_version": "5e4121e614ba0745c0857f4cfbb0d4191fd4f3b6",
+    "sha256": "c26d7710338413408f8242da7fd1e58a0805ed95b85970a7db7a44a0e1f49050",
+    "security_guidance_bytes": 0,
+    "scope_classes": [
+      "runtime_linux_source",
+      "private_disposable_prototypes",
+      "developer_and_evidence_tooling"
+    ],
+    "trust_boundaries": [
+      "userspace_to_kernel",
+      "kernel_task_to_domain",
+      "linux_to_monitor",
+      "monitor_to_hardware",
+      "synchronous_to_async_worker",
+      "node_to_cluster_control_plane",
+      "upstream_patch_evidence_supply_chain"
+    ],
+    "claim_boundaries": [
+      "scheduler",
+      "async_service",
+      "memoryview_tlb",
+      "device_dma_iommu",
+      "monitor",
+      "cluster",
+      "supply_chain"
+    ],
+    "monitor_currently_implemented": false
+  },
+  "r6_e3_evidence": {
+    "plan_sha256": "36f5d2b0423d1a4f6de05e08ac4166e098bb7e7680ce81758b361187dc0e8d22",
+    "implementation_record_sha256": "7d58755a4fa825e70ede8b4c25563fea0369f3799da5afeb1ecc8d8ab15d5954",
+    "source_gate_result_sha256": "88376403879ecc2b0a059791ba59a5bd71addd493e9c8052c2742f877f9e7f25",
+    "four_profile_result_sha256": "bede4cbf4c5021eba080d0bd557f9e97529153e21da731ee729340ca8c2691be",
+    "profile_results_sha256": "9142a2a0ff800efbf2e9f5b5231575b6c6c47d26e14ca535265f81221e802b71",
+    "closure_runner_sha256": "5b4176a7b71b246f270a95db520ea7f5410dc25551adb75dfad9b873c387481b",
+    "closure_r1_result_sha256": "0dce94b2ddf3448727bf936611704e33637f9114e8668cf1311aa1274775239a",
+    "closure_r2_result_sha256": "964a16b0636d7f02850b851dd1530e9c08cc6c9e0c495c6b6a3ba78a1856a514",
+    "closure_normalized_sha256": "3aebe14122f4b678c56351ee07f6a0ad475f708156c3657032232b9a76c761f7",
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "profiles": [
+      "arm64_standard_debug_lockdep_hotplug_faults",
+      "x86_64_standard_debug_lockdep_hotplug_faults",
+      "arm64_generic_kasan_lockdep",
+      "x86_64_kcsan_lockdep"
+    ],
+    "fresh_builds": 4,
+    "qemu_boots": 4,
+    "cases_passed": 220,
+    "receipts": 220,
+    "case_failures": 0,
+    "case_skips": 0,
+    "case_timeouts": 0,
+    "warning_reports": 0,
+    "passed_twice": true,
+    "virtual_synthetic_protocol_only": true
+  },
+  "source_identity": {
+    "branch": "codex/p5a-r6-e3-correctness-prototype",
+    "fork_remote": "fork",
+    "parent_commit": "66e2fd20fc85012d7dc03649fcf4c7af583cbb94",
+    "candidate_commit": "99287291f1c8e0d6c1b3ea86d121508c5547f424",
+    "candidate_tree": "2b863b57dfe3f03609ad1a73c965874f71056e8f",
+    "candidate_diff_sha256": "2ed265756c1cee52252bedc6cbfb3d651eed136be9dca98992496ee80ebfb715",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "direct_e2_child": true,
+    "config_default_off": true,
+    "same_translation_unit": true,
+    "synthetic_scheduler_inputs_only": true,
+    "live_scheduler_attachment": false,
+    "pushed_remote_exact": true
+  },
+  "frozen_boundaries": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "patch_queue_commit": "16bb080da472ffabbbafd2698073eca633fb0602",
+    "patch_queue_series_blob": "298567f8e0bd18168222da4e64da32750b9ea818",
+    "primary_linux_change_allowed": false,
+    "patch_queue_change_allowed": false
+  },
+  "upstream_drift_freshness": {
+    "previous_observed_commit": "f2ec6312bf711369561bdcb22f8a63c0b118c479",
+    "current_observed_commit": "3dab139d4795f688e4f243e40c7474df00d329d9",
+    "previous_is_ancestor": true,
+    "advanced_commit_count": 543,
+    "candidate_merge_base": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "candidate_merge_tree": "e673de497ceed7f3ae446e2474a7b106a547fdff",
+    "merge_tree_clean": true,
+    "touched_paths": [
+      "init/Kconfig"
+    ],
+    "touched_path_diff_sha256": "2bf818b0a62bcb092a7a15c302a43bf6def37eb56f00d956aacd72de6a72e952",
+    "candidate_private_kconfig_block_sha256": "93bd31e2477cd4c0ac499ffc50fbd2000b79918ec7047a02b57cd19eea6b089a",
+    "merged_private_kconfig_block_sha256": "93bd31e2477cd4c0ac499ffc50fbd2000b79918ec7047a02b57cd19eea6b089a",
+    "touched_path_drift_observed": true,
+    "touched_path_drift_classified": "unrelated_init_kconfig_rustc_capability_probe_outside_private_sched_exec_lease_block",
+    "private_exec_lease_absent_upstream": true,
+    "private_source_scope_unchanged_after_merge": true,
+    "global_upstream_freshness_claim": false
+  },
+  "evidence_classes_present": [
+    "model_checked",
+    "linux_no_behavior_build",
+    "patch_queue_replay",
+    "source_drift_fresh",
+    "virtual_synthetic_protocol_diagnostics",
+    "independent_artifact_closure"
+  ],
+  "claim_ledger_row": {
+    "proposal_id": "sched-exec-lease-p5a-r6-post-e3-authorization-threat-boundary-v1",
+    "slice_id": "P5A-R6-POST-E3",
+    "linux_base_commit": "66e2fd20fc85012d7dc03649fcf4c7af583cbb94",
+    "linux_work_commit_or_expected_parent": "99287291f1c8e0d6c1b3ea86d121508c5547f424",
+    "patch_scope": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "behavior_mode": "default_off_disposable_same_translation_unit_virtual_synthetic_correctness_only",
+    "evidence_classes_present": [
+      "model_checked",
+      "linux_no_behavior_build",
+      "patch_queue_replay",
+      "source_drift_fresh",
+      "virtual_synthetic_protocol_diagnostics",
+      "independent_artifact_closure"
+    ],
+    "supported_claims": [
+      "exact_existing_r6_e3_disposable_source_identity_accepted",
+      "exact_four_profile_virtual_synthetic_protocol_correctness_accepted",
+      "separate_source_free_r6_e4_plan_may_be_drafted"
+    ],
+    "forbidden_claims": [
+      "r6_e4_plan_accepted",
+      "r6_e4_source_authorized",
+      "live_scheduler_attachment",
+      "runtime_scheduler_behavior",
+      "runtime_budget_or_denial_correctness",
+      "async_service_boundary",
+      "memoryview_or_tlb_boundary",
+      "device_dma_or_iommu_boundary",
+      "monitor_verified_protection",
+      "cluster_authority",
+      "bare_metal_or_performance",
+      "production_or_deployment_readiness",
+      "multi_node_multi_cluster_or_datacenter_readiness"
+    ],
+    "open_gaps": [
+      "source_free_r6_e4_plan_not_yet_written_or_accepted",
+      "no_live_scheduler_attachment",
+      "no_runtime_trace_or_denial_coverage",
+      "no_monitor_implementation_or_delivery_evidence",
+      "no_memoryview_tlb_or_dma_iommu_enforcement",
+      "no_bare_metal_or_performance_evidence",
+      "no_cluster_or_production_evidence"
+    ],
+    "required_validation_before_review": [
+      "exact_contract_and_claim_ledger_gate",
+      "safe_tla_model_and_all_expected_unsafe_counterexamples",
+      "immutable_r6_e3_evidence_reclosure",
+      "upstream_touched_path_drift_classification"
+    ],
+    "required_validation_before_acceptance": [
+      "canonical_authorization_gate_passed_twice",
+      "normalized_results_identical",
+      "mutation_rejection_regression_passed",
+      "independent_review_of_supported_and_forbidden_claims"
+    ],
+    "upstream_drift_freshness": {
+      "upstream_commit": "3dab139d4795f688e4f243e40c7474df00d329d9",
+      "touched_paths": [
+        "init/Kconfig"
+      ],
+      "drift_observed_and_classified": true,
+      "merge_tree_clean": true,
+      "global_freshness_claim": false
+    },
+    "safety_flags": {
+      "runtime_denial_approved": false,
+      "runtime_coverage": false,
+      "monitor_verified": false,
+      "production_protection": false,
+      "hypervisor_grade": false,
+      "cost_efficiency": false,
+      "public_abi": false,
+      "monitor_abi": false
+    }
+  },
+  "separate_runtime_budget_boundary": {
+    "subject_sha256": "d1dff5ebb6721575bf0c26c60d913eb5a9a5d95c179fba71969e3b7cb2d11065",
+    "validation_sha256": "be3e6159da5cccdd5996bb5d434f81e492aae37963d4af8f193d541e58de1f38",
+    "runtime_budget_hook_allowed": false,
+    "runtime_coverage": false,
+    "satisfied_by_r6_e3_evidence": false
+  },
+  "formal": {
+    "directory": "capsched-models/formal/0145-p5a-r6-post-e3-authorization-threat-boundary-model",
+    "manifest_sha256": "6ea9e39bb2f0cf041ea3f8904671ecefe0811778a311a5e5a10a8244b0579c18",
+    "safe_expected_distinct_states": 4,
+    "safe_expected_depth": 4,
+    "unsafe_expected_counterexamples": 24
+  },
+  "authorization_after_gate_pass": {
+    "exact_r6_e3_source_accepted": true,
+    "exact_r6_e3_synthetic_correctness_accepted": true,
+    "r6_e4_source_free_plan_may_be_drafted": true,
+    "r6_e4_plan_accepted": false,
+    "r6_e4_source_may_be_created": false,
+    "live_scheduler_attachment_allowed": false,
+    "primary_linux_may_change": false,
+    "patch_queue_may_change": false
+  },
+  "safety_flags": {
+    "runtime_scheduler_hook_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "runtime_budget_conflated": false,
+    "async_service_boundary_validated": false,
+    "memoryview_or_tlb_validated": false,
+    "device_dma_iommu_validated": false,
+    "monitor_verified": false,
+    "cluster_authority_validated": false,
+    "bare_metal_validated": false,
+    "bounded_wall_clock_latency_claim": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}
