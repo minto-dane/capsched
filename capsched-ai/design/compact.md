@@ -5126,3 +5126,17 @@ P5A-R3 E4 source and exact-source regression gate:
   and its source gate are authorized; correctness, E4, promotion, runtime,
   protection, performance/cost, and deployment/datacenter claims remain
   false.
+
+- R6-E4 local-quantum measurement planning passes reproducibly after the
+  post-E3 gate accepts only exact disposable source
+  `99287291...7f424`. Results `b2a689ab...0d1e6` and
+  `58984d7f...e092a` normalize to `4490f9cc...84f3d`. Each rechecks 24
+  source anchors, eight future-source absences, current upstream
+  `f5098b6b...33cff`, safe TLC 14/14/depth-14, two temporal properties,
+  and 82 safety plus two liveness counterexamples. The nine-family matrix
+  fixes 855 cells and 8,550,000 exact treatment/control pairs, arm64-first
+  rejection, truthful EEVDF exclusion, lossless raw evidence, and fixed
+  ordinary/offline/calibration thresholds. Validation/0283 authorizes only
+  the exact default-off disposable R6-E4 source draft and a separate source
+  gate. Measurement and every runtime/protection/performance/cost/
+  deployment/datacenter claim remain false.
