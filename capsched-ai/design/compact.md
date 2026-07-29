@@ -5153,3 +5153,14 @@ P5A-R3 E4 source and exact-source regression gate:
   four-profile E3 regression and independent closure; source acceptance,
   measurement, runtime/protection/performance/cost, and
   deployment/datacenter claims remain false.
+
+- The exact R6-E4 source is launch-ready for its mandatory E3 regression.
+  Contract `ade8e74b...bd30` and runner `670c314a...3364` bind candidate
+  `d51ebdc6...21f9`, source/build result `ab5b3365...04e6`, all four
+  arm64/x86_64 standard/KASAN/KCSAN profiles, 55 cases and receipts per
+  profile, six build jobs, internal-ext sequential build retirement, and
+  explicit E4 measurement disablement. Static preflight, eight mutations plus
+  symlink rejection, warning-classifier self-test, and all four zero-build/
+  zero-boot config smokes pass. Validation/0285 authorizes only the detached
+  exact-source E3 regression; independent closure, R6-E4 source acceptance,
+  measurement, and all runtime/production/deployment claims remain false.
