@@ -5140,3 +5140,16 @@ P5A-R3 E4 source and exact-source regression gate:
   the exact default-off disposable R6-E4 source draft and a separate source
   gate. Measurement and every runtime/protection/performance/cost/
   deployment/datacenter claim remain false.
+
+- R6-E4 exact source/build gating passes for direct-E3 child
+  `d51ebdc6...21f9`. The signed two-file default-off candidate implements all
+  nine families, 855 cells, 8,550,000 alternating raw pairs, fixed gates, and
+  truthful ordinary-EEVDF exclusion without a live scheduler attachment.
+  Result `ab5b3365...04e6` passes strict checkpatch 0/0/0 and six fresh W=1
+  arm64/x86_64 E3-on/E4-off, E4-on, and release builds with 49 private plus
+  51 expanded values unchanged, zero disabled E4 artifacts, and zero
+  diagnostics. Focused tests reject 12 contract mutations and a symlink.
+  Validation/0284 freezes the source only for a mandatory exact-source
+  four-profile E3 regression and independent closure; source acceptance,
+  measurement, runtime/protection/performance/cost, and
+  deployment/datacenter claims remain false.

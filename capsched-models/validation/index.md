@@ -1,6 +1,6 @@
 # Validation Index
 
-Updated: 2026-07-24
+Updated: 2026-07-29
 
 ## Current Validation Records
 
@@ -285,6 +285,11 @@ Updated: 2026-07-24
 | 0277 | Exact direct-primary/two-file R6-E2 source passes signed-off identity, replay, checkpatch 0/0/0, 24 anchors, 49-symbol manifest, runtime-surface absence, and arm64 object preflight; detached arm64/x86_64 four-mode layout evidence is launch-ready | SchedExecLease P5A-R6 E2 Source Gate and Dual-Architecture Launch |
 | 0278 | Complete arm64/x86_64 four-mode evidence and independent read-only closure preserve 51 existing values, bind 49 enabled-only symbols, prove disabled artifact absence and zero ordinary growth, rederive the 74,688/98,304-byte envelope, and authorize only source-free R6-E3 planning | SchedExecLease P5A-R6 E2 Dual-Architecture Evidence Closure |
 | 0279 | Two isolated six-way runs bind exact E2 closure, 24 anchors, 12 absences, 55 future cases, safe 14/14/depth-14 with three liveness properties, 79 safety and 3 liveness counterexamples, normalized reproduction, ShellCheck, and 16 mutations; only the exact disposable R6-E3 source draft is authorized | SchedExecLease P5A-R6 E3 Correctness and Concurrency Evidence Plan |
+| 0280 | Exact signed direct-E2-child two-file R6-E3 source and fail-closed preflight are frozen; the four-profile virtual diagnostic matrix is launch-ready, but no correctness or runtime claim is accepted | SchedExecLease P5A-R6 E3 Source-Gate Launch |
+| 0281 | Exact R6-E3 source passes four arm64/x86_64 standard/KASAN/KCSAN profiles at 55/55 cases and two independent read-only closures; only post-E3 authorization assessment is allowed | SchedExecLease P5A-R6 E3 Four-Profile Evidence Closure |
+| 0282 | Two immutable-input runs reproduce one scoped authorization decision accepting exact synthetic R6-E3 evidence and permitting only separate source-free R6-E4 planning | P5A-R6 Post-E3 Authorization and Threat-Boundary Closure |
+| 0283 | Two independent runs freeze nine families, 855 cells, 8,550,000 raw pairs, arm64-first rejection, truthful EEVDF exclusion, fixed gates, and 84 expected counterexamples; only an exact default-off R6-E4 source draft is authorized | P5A-R6-E4 Local-Quantum Measurement-Plan Validation |
+| 0284 | Exact signed direct-E3-child two-file R6-E4 source passes checkpatch 0/0/0, 13 focused tamper controls, and six fresh arm64/x86_64 W=1 modes with frozen layout and zero disabled artifacts; exact-source E3 regression remains mandatory | P5A-R6-E4 Local-Quantum Source/Build Gate |
 
 ## Principles
 
