@@ -291,6 +291,7 @@ Updated: 2026-07-29
 | 0283 | Two independent runs freeze nine families, 855 cells, 8,550,000 raw pairs, arm64-first rejection, truthful EEVDF exclusion, fixed gates, and 84 expected counterexamples; only an exact default-off R6-E4 source draft is authorized | P5A-R6-E4 Local-Quantum Measurement-Plan Validation |
 | 0284 | Exact signed direct-E3-child two-file R6-E4 source passes checkpatch 0/0/0, 13 focused tamper controls, and six fresh arm64/x86_64 W=1 modes with frozen layout and zero disabled artifacts; exact-source E3 regression remains mandatory | P5A-R6-E4 Local-Quantum Source/Build Gate |
 | 0285 | Exact R6-E4 source is rebound to an E4-off four-profile E3 runner; static preflight, eight mutations plus symlink rejection, warning classification, and four zero-build/zero-boot configs pass before detached launch | P5A-R6-E4 Exact-Source E3 Regression Launch |
+| 0286 | Four fresh E4-off profiles pass 220/220 cases and receipts; two read-only 72-artifact closures reconstruct the pushed candidate and normalize identically, completing only exact-source E3 regression evidence | P5A-R6-E4 Exact-Source E3 Regression Closure |
 
 ## Principles
 

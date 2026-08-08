@@ -5164,3 +5164,15 @@ P5A-R3 E4 source and exact-source regression gate:
   zero-boot config smokes pass. Validation/0285 authorizes only the detached
   exact-source E3 regression; independent closure, R6-E4 source acceptance,
   measurement, and all runtime/production/deployment claims remain false.
+
+- The exact-source R6-E3 regression and independent closure are complete for
+  R6-E4 candidate `d51ebdc6...21f9`. The matrix passes four fresh
+  arm64/x86_64 standard/KASAN/KCSAN builds and boots at 220/220 cases and
+  receipts with E4 measurement disabled and zero failures, skips, timeouts,
+  compiler diagnostics, clock skew, or classified warnings. Two independent
+  closures audit all 72 retained files, reconstruct the pushed candidate and
+  two-file diff, and normalize to `b46550c6...8e5c`. Validation/0286 completes
+  only the virtual synthetic E3 regression evidence; a separate
+  post-regression authorization gate is still required, and source
+  acceptance, measurement, runtime, protection, performance/cost, and
+  deployment/datacenter claims remain false.
