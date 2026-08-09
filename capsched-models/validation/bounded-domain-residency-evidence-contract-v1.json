@@ -1,0 +1,398 @@
+{
+  "schema_version": 1,
+  "id": "RESIDENCY-001-TLC-v1",
+  "target_claim": "RESIDENCY-001",
+  "evidence_level": "EC1",
+  "origin_model": {
+    "commit": "9f1eaae410fd4878d7e0e04bf757377434980b86",
+    "tree": "736a9484b931b79d6374c468831b6c0d78353fe2",
+    "model_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidency.tla"
+  },
+  "tool": {
+    "name": "tla2tools.jar",
+    "sha256": "936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88",
+    "maximum_run_seconds": 120,
+    "workers": 4
+  },
+  "static_inputs": {
+    "inputs/model/BoundedDomainResidency.tla": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidency.tla",
+      "sha256": "1efd0719569d31657c0b7aaf50e103f5fdcdc94dfce7499fc0f149780982a431",
+      "role": "formal_model"
+    },
+    "inputs/model/BoundedDomainResidencySafeAdmission.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencySafeAdmission.cfg",
+      "sha256": "fd573f8b5d210a7474d38fae6d8d5d78036b222c9e8b2564fa2759a84dd5cefa",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencySafeHotplug.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencySafeHotplug.cfg",
+      "sha256": "41a891c51ab4fcfb6e3afc58c1d3229406d4afda4750d4c41fb67594f000e22d",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencySafeMigration.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencySafeMigration.cfg",
+      "sha256": "b7bb0a6073c8932e369d33c76688a7223809e8e2b728d078e9c70760179d7d75",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencySafeRevoke.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencySafeRevoke.cfg",
+      "sha256": "ca87804aa5de5a7227c95256a73ffcf0b2e544df69b21ed46680265051352ac1",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeActivateDuringRevoke.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeActivateDuringRevoke.cfg",
+      "sha256": "4106a00d56a97a3f35654b1290bbafe17e098efae4fe204dadebf40216204711",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeBestEffortOverwrite.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeBestEffortOverwrite.cfg",
+      "sha256": "0b00e9eb225a5ec790e77deb2ad7527d6c2a4e27cee65f3827f04865de044f6b",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeCopyBeforeSourceFence.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeCopyBeforeSourceFence.cfg",
+      "sha256": "b36a1d46894b54e5ecdd9aeaa036ec42111653011cba730cbcd2d8c8471f80da",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeDestinationBeforeSourceStop.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeDestinationBeforeSourceStop.cfg",
+      "sha256": "34ac5e3e6c34d187746927126e8a6b9503ff48f5084ea955a1147ad3c434efb5",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeEpochBeforeDrain.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeEpochBeforeDrain.cfg",
+      "sha256": "9ed15de16022fa83b7e4853774cc2730e82e005c693ef2a1739821e78cbb4127",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeEvictPinned.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeEvictPinned.cfg",
+      "sha256": "ce0be9d474eb64d78e030a41166d9a6a4bed77a817a02f62aaf0419d2424b03c",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeLinuxMintsActivation.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeLinuxMintsActivation.cfg",
+      "sha256": "7a8ba772bc76f7c28c97ed54381247233f7b0f76b64d5710fbc4ba4cee492bd6",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeLinuxMintsOnlineCPU.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeLinuxMintsOnlineCPU.cfg",
+      "sha256": "04d6246a9e4cc4631ee26dc5b4f054d4dfae1e360f58f9bf7738a422c02f0147",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeLinuxOwnsBinding.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeLinuxOwnsBinding.cfg",
+      "sha256": "b661ac3d926f43ac95f7b893c28fbf1fae7ad234e640dd863067bcbe14a1b415",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeLinuxWritesRegistry.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeLinuxWritesRegistry.cfg",
+      "sha256": "c1166aa82067889084f901c50cbe39b12a9003a1068749719568a66b21bb75a0",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeManagementBindingLost.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeManagementBindingLost.cfg",
+      "sha256": "ecbd09be3ebc14f510339952cdaf63ce2e5fee4ec2c378bf4d86e50692ebc90f",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeMigrationIdentityDrift.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeMigrationIdentityDrift.cfg",
+      "sha256": "1451560c479653e0d965957f1b8b29ef1d6a55dd2e00f9e76d604bdb98ba301b",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeNoHardwareQuiesce.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeNoHardwareQuiesce.cfg",
+      "sha256": "f8d4bf0207d614322d7968185317fdabb6e09d41046fb95a4afc6fd67bf0e646",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeOfflineBeforeDrain.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeOfflineBeforeDrain.cfg",
+      "sha256": "66e0ace38ff22012723f0f64819d919c385219457fc32d10a4857c0ca87e5636",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafePublishBeforeSeal.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafePublishBeforeSeal.cfg",
+      "sha256": "69c076495e3e2f3b2a55e402545d5471d42ade9e3c00ea271ecc9742b1f2020e",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeResidentSlotIsAuthority.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeResidentSlotIsAuthority.cfg",
+      "sha256": "6649c97459df12535558c6e2f8f8dc02fa014e9e6c77ef3f5f7e9e85089bbece",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeReuseCpuIncarnation.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeReuseCpuIncarnation.cfg",
+      "sha256": "0558d2e5f33c851025dc88e271ea8f547f6424fb4436ae0c905417b74496b4f2",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeReuseGeneration.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeReuseGeneration.cfg",
+      "sha256": "8153f55593d428815e4e11d933399acd48c4c51158beb571b3b661b6f454bf14",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeSkipGuaranteed.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeSkipGuaranteed.cfg",
+      "sha256": "1670d04904c294d9b3cfc2b4002d9eee379ebf7cdd49f0d1b95a2ff0f2a8b71c",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeStaleEpochBinding.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeStaleEpochBinding.cfg",
+      "sha256": "4b82fc1423188f365aeb72cc92fbbc895679e4733a7dfdd1cc174b5cecc6f93c",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeTrustStaleHandle.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeTrustStaleHandle.cfg",
+      "sha256": "8e0747747337fe1891b4753057e5eddbfca553f5ab9ac2bdc96f23c88b49770b",
+      "role": "tlc_configuration"
+    },
+    "inputs/model/BoundedDomainResidencyUnsafeWaitForLinuxHint.cfg": {
+      "repository_path": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidencyUnsafeWaitForLinuxHint.cfg",
+      "sha256": "59a9b2989b790e1e1f3ceccdc9d9edb8677c4ee1721f2ec05199eda823b11cad",
+      "role": "tlc_configuration"
+    }
+  },
+  "expected_runs": [
+    {
+      "id": "safe-admission",
+      "config": "BoundedDomainResidencySafeAdmission.cfg",
+      "expected_exit_codes": [0],
+      "expected_marker": "Model checking completed. No error has been found.",
+      "expected_generated_states": 190271,
+      "expected_distinct_states": 2660,
+      "expected_depth": 23
+    },
+    {
+      "id": "safe-migration",
+      "config": "BoundedDomainResidencySafeMigration.cfg",
+      "expected_exit_codes": [0],
+      "expected_marker": "Model checking completed. No error has been found.",
+      "expected_generated_states": 39761,
+      "expected_distinct_states": 560,
+      "expected_depth": 10
+    },
+    {
+      "id": "safe-hotplug",
+      "config": "BoundedDomainResidencySafeHotplug.cfg",
+      "expected_exit_codes": [0],
+      "expected_marker": "Model checking completed. No error has been found.",
+      "expected_generated_states": 34791,
+      "expected_distinct_states": 490,
+      "expected_depth": 9
+    },
+    {
+      "id": "safe-revoke",
+      "config": "BoundedDomainResidencySafeRevoke.cfg",
+      "expected_exit_codes": [0],
+      "expected_marker": "Model checking completed. No error has been found.",
+      "expected_generated_states": 70071,
+      "expected_distinct_states": 980,
+      "expected_depth": 9
+    },
+    {
+      "id": "unsafe-wait-for-linux-hint",
+      "config": "BoundedDomainResidencyUnsafeWaitForLinuxHint.cfg",
+      "expected_exit_codes": [13],
+      "expected_marker": "Error: Temporal properties were violated.",
+      "expected_violation": "GuaranteedDomainsEventuallyReceiveResidentActivation",
+      "expected_failure_kind": "temporal_transition"
+    },
+    {
+      "id": "unsafe-skip-guaranteed",
+      "config": "BoundedDomainResidencyUnsafeSkipGuaranteed.cfg",
+      "expected_exit_codes": [13],
+      "expected_marker": "Error: Temporal properties were violated.",
+      "expected_violation": "GuaranteedDomainsEventuallyReceiveResidentActivation",
+      "expected_failure_kind": "temporal_transition"
+    },
+    {
+      "id": "unsafe-no-hardware-quiesce",
+      "config": "BoundedDomainResidencyUnsafeNoHardwareQuiesce.cfg",
+      "expected_exit_codes": [13],
+      "expected_marker": "Error: Temporal properties were violated.",
+      "expected_violation": "PendingGuaranteedRequestEventuallyCompletes",
+      "expected_failure_kind": "temporal_transition"
+    },
+    {
+      "id": "unsafe-evict-pinned",
+      "config": "BoundedDomainResidencyUnsafeEvictPinned.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant NoEvictWhileRunningOrReferenced is violated",
+      "expected_violation": "NoEvictWhileRunningOrReferenced",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-reuse-generation",
+      "config": "BoundedDomainResidencyUnsafeReuseGeneration.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant SlotGenerationFresh is violated",
+      "expected_violation": "SlotGenerationFresh",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-stale-epoch-binding",
+      "config": "BoundedDomainResidencyUnsafeStaleEpochBinding.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant ResidentEpochCurrent is violated",
+      "expected_violation": "ResidentEpochCurrent",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-best-effort-overwrite",
+      "config": "BoundedDomainResidencyUnsafeBestEffortOverwrite.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant HeldBindingMatchesRequest is violated",
+      "expected_violation": "HeldBindingMatchesRequest",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-publish-before-seal",
+      "config": "BoundedDomainResidencyUnsafePublishBeforeSeal.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant ResidentBindingSealed is violated",
+      "expected_violation": "ResidentBindingSealed",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-trust-stale-handle",
+      "config": "BoundedDomainResidencyUnsafeTrustStaleHandle.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant ActiveBindingExact is violated",
+      "expected_violation": "ActiveBindingExact",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-linux-owns-binding",
+      "config": "BoundedDomainResidencyUnsafeLinuxOwnsBinding.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant MonitorOwnsResidentBindings is violated",
+      "expected_violation": "MonitorOwnsResidentBindings",
+      "expected_failure_kind": "initial_state_boundary"
+    },
+    {
+      "id": "unsafe-resident-slot-is-authority",
+      "config": "BoundedDomainResidencyUnsafeResidentSlotIsAuthority.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant ActiveBindingExact is violated",
+      "expected_violation": "ActiveBindingExact",
+      "expected_failure_kind": "initial_state_boundary"
+    },
+    {
+      "id": "unsafe-linux-mints-activation",
+      "config": "BoundedDomainResidencyUnsafeLinuxMintsActivation.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant ActiveBindingExact is violated",
+      "expected_violation": "ActiveBindingExact",
+      "expected_failure_kind": "initial_state_boundary"
+    },
+    {
+      "id": "unsafe-management-binding-lost",
+      "config": "BoundedDomainResidencyUnsafeManagementBindingLost.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant ManagementRecoveryIndependent is violated",
+      "expected_violation": "ManagementRecoveryIndependent",
+      "expected_failure_kind": "initial_state_boundary"
+    },
+    {
+      "id": "unsafe-copy-before-source-fence",
+      "config": "BoundedDomainResidencyUnsafeCopyBeforeSourceFence.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant NoDuplicateExclusiveResidency is violated",
+      "expected_violation": "NoDuplicateExclusiveResidency",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-destination-before-source-stop",
+      "config": "BoundedDomainResidencyUnsafeDestinationBeforeSourceStop.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant ExclusiveAuthoritySingleCPU is violated",
+      "expected_violation": "ExclusiveAuthoritySingleCPU",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-migration-identity-drift",
+      "config": "BoundedDomainResidencyUnsafeMigrationIdentityDrift.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant MigrationPreservesIdentityAndAuthority is violated",
+      "expected_violation": "MigrationPreservesIdentityAndAuthority",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-offline-before-drain",
+      "config": "BoundedDomainResidencyUnsafeOfflineBeforeDrain.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant OfflineCPUHasNoAuthority is violated",
+      "expected_violation": "OfflineCPUHasNoAuthority",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-linux-mints-online-cpu",
+      "config": "BoundedDomainResidencyUnsafeLinuxMintsOnlineCPU.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant MonitorOwnsCPUOnlineState is violated",
+      "expected_violation": "MonitorOwnsCPUOnlineState",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-reuse-cpu-incarnation",
+      "config": "BoundedDomainResidencyUnsafeReuseCpuIncarnation.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant HotplugCreatesFreshCpuIncarnation is violated",
+      "expected_violation": "HotplugCreatesFreshCpuIncarnation",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-epoch-before-drain",
+      "config": "BoundedDomainResidencyUnsafeEpochBeforeDrain.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant ResidentEpochCurrent is violated",
+      "expected_violation": "ResidentEpochCurrent",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-activate-during-revoke",
+      "config": "BoundedDomainResidencyUnsafeActivateDuringRevoke.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant NoActivationIssuedDuringRevocation is violated",
+      "expected_violation": "NoActivationIssuedDuringRevocation",
+      "expected_failure_kind": "safety_transition"
+    },
+    {
+      "id": "unsafe-linux-writes-registry",
+      "config": "BoundedDomainResidencyUnsafeLinuxWritesRegistry.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Error: Invariant MonitorOwnsGlobalRegistry is violated",
+      "expected_violation": "MonitorOwnsGlobalRegistry",
+      "expected_failure_kind": "initial_state_boundary"
+    }
+  ],
+  "capture_policy": {
+    "object_set": "exactly_derived_from_static_inputs_expected_runs_and_fixed_validator_inputs",
+    "allow_extra_files": false,
+    "producer_summary_allowed": false,
+    "maximum_objects": 96,
+    "maximum_object_bytes": 8388608,
+    "maximum_total_bytes": 67108864
+  },
+  "forbidden_inputs": [
+    "producer_summary_as_oracle",
+    "mutable_worktree_model",
+    "uncaptured_configuration",
+    "linux_fairness_assumption",
+    "uncaptured_tlc_tool",
+    "unhashed_claim_validator",
+    "reexecution_before_input_trust_checks"
+  ],
+  "claim_boundary": {
+    "allowed": "RESIDENCY-001_open_to_model_supported",
+    "forbidden": [
+      "RESIDENCY-001_to_protection_evidenced",
+      "TOP-001_promotion",
+      "production_residency_algorithm_selection",
+      "monitor_implementation_claim",
+      "linux_behavior_claim",
+      "wall_clock_bound_claim",
+      "performance_or_cost_claim",
+      "multi_cluster_or_datacenter_deployment_claim"
+    ]
+  }
+}
