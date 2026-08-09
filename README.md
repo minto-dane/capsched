@@ -26,8 +26,18 @@ Read in this order:
 
 1. `capsched/capsched-ai/state/state.json`
 2. `capsched/capsched-ai/handoff.md`
-3. `capsched/capsched-ai/design/compact.md`
-4. `capsched/capsched-ai/decisions/index.md`
+3. `capsched/capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md`
+4. `capsched/capsched-models/plans/0006-final-compositional-model-completion-plan.md`
+
+When already inside this repository, omit the leading `capsched/` component.
+`capsched-ai/design/compact.md` is detailed historical chronology and is not in
+the default AI recovery path.
+
+Validate recovery state with:
+
+```sh
+./capsched-ai/state/check-current-state.sh
+```
 
 ## Git Plan
 

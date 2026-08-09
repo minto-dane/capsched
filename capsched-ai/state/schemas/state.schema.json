@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "capsched-ai-state.schema.json",
-  "title": "CapSched Project State",
+  "$id": "domainlease-ai-state-v2.schema.json",
+  "title": "DomainLease-Linux Compact Current State",
   "type": "object",
   "required": [
     "schema_version",
@@ -11,6 +11,8 @@
     "core_concepts",
     "accepted_invariants",
     "design_boundaries",
+    "completion",
+    "evidence",
     "planned_tracks",
     "open_questions",
     "next_actions",
@@ -18,57 +20,411 @@
   ],
   "properties": {
     "schema_version": {
-      "type": "integer",
-      "minimum": 1
+      "const": 2
     },
     "updated": {
-      "type": "string"
+      "type": "string",
+      "format": "date"
     },
     "project": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "name",
+        "purpose",
+        "current_phase",
+        "control_repository",
+        "superproject",
+        "linux_source",
+        "linux_patch_queue"
+      ],
+      "properties": {
+        "name": {
+          "const": "DomainLease-Linux"
+        },
+        "legacy_name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "current_phase": {
+          "enum": [
+            "final_compositional_model_reopened"
+          ]
+        },
+        "control_repository": {
+          "$ref": "#/$defs/gitControlRepository"
+        },
+        "superproject": {
+          "$ref": "#/$defs/gitReference"
+        },
+        "linux_source": {
+          "type": "object",
+          "required": [
+            "repository",
+            "branch",
+            "work_revision",
+            "work_tree",
+            "upstream_base_revision",
+            "fetched_upstream_revision",
+            "upstream_ref",
+            "upstream_remote",
+            "status"
+          ],
+          "properties": {
+            "repository": {
+              "type": "string"
+            },
+            "branch": {
+              "type": "string"
+            },
+            "work_revision": {
+              "$ref": "#/$defs/gitObject"
+            },
+            "work_tree": {
+              "$ref": "#/$defs/gitObject"
+            },
+            "upstream_base_revision": {
+              "$ref": "#/$defs/gitObject"
+            },
+            "fetched_upstream_revision": {
+              "$ref": "#/$defs/gitObject"
+            },
+            "upstream_ref": {
+              "type": "string"
+            },
+            "upstream_remote": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "linux_patch_queue": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/gitReference"
+            },
+            {
+              "type": "object",
+              "required": [
+                "repository",
+                "branch"
+              ],
+              "properties": {
+                "repository": {
+                  "type": "string"
+                },
+                "branch": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "architecture_intent": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "threat",
+        "hard_boundary",
+        "granularity",
+        "cluster_shape",
+        "linux_role",
+        "monitor_role"
+      ],
+      "properties": {
+        "threat": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hard_boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "granularity": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "cluster_shape": {
+          "type": "string"
+        },
+        "linux_role": {
+          "type": "string"
+        },
+        "monitor_role": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     },
     "core_concepts": {
       "type": "object"
     },
     "accepted_invariants": {
       "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/idText"
+      }
+    },
+    "design_boundaries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "completion": {
+      "type": "object",
+      "required": [
+        "v1_claim_inventory_complete",
+        "local_contract_coverage",
+        "final_compositional_model_complete",
+        "linux_implementation_complete",
+        "monitor_implementation_complete",
+        "protection_evidenced",
+        "cost_efficiency_evidenced",
+        "deployment_ready"
+      ],
+      "properties": {
+        "v1_claim_inventory_complete": {
+          "const": true
+        },
+        "local_contract_coverage": {
+          "type": "string"
+        },
+        "final_compositional_model_complete": {
+          "const": false
+        },
+        "linux_implementation_complete": {
+          "const": false
+        },
+        "monitor_implementation_complete": {
+          "const": false
+        },
+        "protection_evidenced": {
+          "const": false
+        },
+        "cost_efficiency_evidenced": {
+          "const": false
+        },
+        "deployment_ready": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "policy",
+        "contract_status",
+        "tooling_status",
+        "reviewed_positive_promotion_credit",
+        "reviewed_negative_results",
+        "exact_git_objects",
+        "codex_security_scan_required"
+      ],
+      "properties": {
+        "policy": {
+          "const": "ADR-0013_validator_owned_immutable_capsules"
+        },
+        "contract_status": {
+          "const": "defined"
+        },
+        "tooling_status": {
+          "enum": [
+            "not_implemented",
+            "partial",
+            "implemented"
+          ]
+        },
+        "reviewed_positive_promotion_credit": {
+          "const": "needs_revalidation"
+        },
+        "reviewed_negative_results": {
+          "const": "blocking_signal_pending_reproduction"
+        },
+        "exact_git_objects": {
+          "const": "retained_reproducible_input"
+        },
+        "codex_security_scan_required": {
+          "const": false
+        },
+        "codex_security_scan_note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "planned_tracks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/orderedWork"
+      }
+    },
+    "open_questions": {
+      "type": "array",
       "items": {
         "type": "object",
         "required": [
           "id",
+          "blocking",
           "text"
         ],
         "properties": {
           "id": {
             "type": "string"
           },
+          "blocking": {
+            "type": "boolean"
+          },
           "text": {
             "type": "string"
           }
+        },
+        "additionalProperties": false
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/orderedWork"
+      }
+    },
+    "canonical_files": {
+      "type": "object",
+      "required": [
+        "state",
+        "state_schema",
+        "state_checker",
+        "handoff",
+        "event_log",
+        "current_decision",
+        "evidence_decision",
+        "goal_audit",
+        "evidence_contract",
+        "active_plan",
+        "assurance_case",
+        "assurance_register"
+      ],
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "gitObject": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "gitReference": {
+      "type": "object",
+      "required": [
+        "revision",
+        "remote"
+      ],
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "remote": {
+          "type": "string",
+          "minLength": 1
         }
       }
     },
-    "design_boundaries": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "gitControlRepository": {
+      "type": "object",
+      "required": [
+        "branch",
+        "semantic_baseline_revision",
+        "reviewed_lineage_revision",
+        "stable_main_revision",
+        "remote"
+      ],
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "semantic_baseline_revision": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "reviewed_lineage_revision": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "stable_main_revision": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "remote": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
     },
-    "planned_tracks": {
-      "type": "array"
+    "idText": {
+      "type": "object",
+      "required": [
+        "id",
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
     },
-    "open_questions": {
-      "type": "array"
-    },
-    "next_actions": {
-      "type": "array"
-    },
-    "canonical_files": {
-      "type": "object"
+    "orderedWork": {
+      "type": "object",
+      "required": [
+        "order",
+        "id",
+        "status"
+      ],
+      "properties": {
+        "order": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string"
+        },
+        "next_artifact": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

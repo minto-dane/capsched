@@ -1,6 +1,22 @@
-# Compact Context
+# Historical Detailed Context
 
-Updated: 2026-07-26
+Current-state use discontinued: 2026-08-08
+
+This file is retained as detailed historical chronology. It is not the current
+AI handoff and should not be loaded during routine recovery. Use, in order:
+
+```text
+capsched-ai/state/state.json
+capsched-ai/handoff.md
+capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md
+capsched-models/plans/0006-final-compositional-model-completion-plan.md
+```
+
+The chronology below ends with the exact R6-E4 source regression lineage. Its
+historical statements do not supersede ADR-0012 or ADR-0013. In particular,
+final compositional-model completion is reopened, R6 is only a bounded local
+resident-set candidate, and affected positive promotion credit requires an
+Evidence Capsule revalidation before future use.
 
 ## Project
 

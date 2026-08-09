@@ -1,6 +1,7 @@
-# CapSched AI State Ledger
+# DomainLease-Linux AI State Ledger
 
-This directory is the minimal machine-readable state ledger for CapSched-Linux.
+This directory is the minimal machine-readable current-state ledger for
+DomainLease-Linux.
 It lives under `capsched-ai/` because it exists primarily to support reliable AI
 handoff and state recovery.
 
@@ -9,16 +10,24 @@ recover. A future AI or human should start with:
 
 1. `state.json`
 2. `../handoff.md`
-3. `../design/compact.md`
-4. `../decisions/index.md`
+3. `../../capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md`
+4. `../../capsched-models/plans/0006-final-compositional-model-completion-plan.md`
+
+Do not load `../design/compact.md` by default. It is retained as detailed
+historical chronology.
 
 ## Local Files
 
 `state.json`
-: Canonical compact machine-readable state. Keep it short and current.
+: Canonical compact machine-readable current state, schema v2. Keep it short,
+  current, and free of chronological result dumps.
 
 `events.jsonl`
 : Append-only chronological event log. One JSON object per line.
+
+`check-current-state.sh`
+: Checks the compact state, assurance reopen, canonical file set, branch and
+  commit ancestry, and strict same-commit freshness of state/handoff/events.
 
 `schemas/`
 : JSON schemas for state files.
@@ -32,16 +41,17 @@ Before major work:
 
 1. Read `state.json`.
 2. Read `../handoff.md`.
-3. Read `../design/compact.md`.
-4. Check `../decisions/index.md`.
+3. Read Analysis 0185 and active Plan 0006.
+4. Read focused artifacts only for the next requirement.
 5. Add an event to `events.jsonl` when the project state changes.
+6. Run `./capsched-ai/state/check-current-state.sh` after committing.
 
 When a decision is made:
 
 1. Create or update an ADR in `../decisions/`.
 2. Update `../decisions/index.md`.
-3. Update `state.json` if it affects current direction, constraints, or next
-   actions.
+3. Update `state.json` and `../handoff.md` in the same commit if it affects
+   current direction, constraints, completion status, or next actions.
 
 When upstream Linux is pulled:
 
@@ -49,3 +59,18 @@ When upstream Linux is pulled:
 2. Create an investigation note before choosing patch points.
 3. Do not commit to implementation structure until the relevant upstream code is
    read.
+
+## Freshness Rule
+
+Any commit that changes semantic state under decisions, plans, analysis,
+formal, validation, implementation, assurance, or traceability must update:
+
+```text
+state.json
+../handoff.md
+events.jsonl
+```
+
+in that commit. The strict checker rejects a stale state commit. During editing,
+`check-current-state.sh --allow-draft` performs structural checks without the
+same-commit requirement.
