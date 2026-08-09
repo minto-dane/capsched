@@ -990,11 +990,12 @@
     {
       "id": "EVIDENCE-001",
       "parent": "TOP-001",
-      "status": "open",
+      "status": "contract_defined",
       "title": "Positive gates consume validator-owned immutable evidence",
       "claim": "Positive promotion decisions are derived from validator-captured immutable bytes with transitive source, configuration, tool, command, image, raw-output, and result provenance.",
       "evidence": [
-        "E-GOAL-CONFORMANCE-001"
+        "E-GOAL-CONFORMANCE-001",
+        "E-EVIDENCE-CAPSULE-001"
       ],
       "gaps": [
         "No repository-wide Evidence Capsule contract.",
@@ -1812,6 +1813,16 @@
         "EVIDENCE-001"
       ],
       "limitation": "Gap evidence only. It records missing obligations and does not satisfy or support any reopened claim."
+    },
+    {
+      "id": "E-EVIDENCE-CAPSULE-001",
+      "kind": "assurance_contract",
+      "record": "capsched-models/analysis/0186-evidence-capsule-trust-boundary-and-migration.md",
+      "supports": [],
+      "defines": [
+        "EVIDENCE-001"
+      ],
+      "limitation": "Defines the validator-owned capture and migration contract only. Capsule tooling, historical migration, independent reproduction, and positive promotion evidence remain absent."
     },
     {
       "id": "HAZ-ENDP-001",

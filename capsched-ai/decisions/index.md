@@ -16,3 +16,4 @@ Updated: 2026-08-08
 | ADR-0010 | Accepted | Private superproject and Linux patch queue |
 | ADR-0011 | Accepted | Design-ready scope before next Linux implementation |
 | ADR-0012 | Accepted | Distinguish local model coverage from system completion |
+| ADR-0013 | Accepted | Validator-owned immutable evidence capsules |

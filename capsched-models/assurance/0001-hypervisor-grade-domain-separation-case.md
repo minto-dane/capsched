@@ -759,8 +759,9 @@ a semantic or production claim.
 
 ## Reopened System Claims
 
-All claims in this section are Open. `E-GOAL-CONFORMANCE-001` is gap evidence,
-not evidence that any claim is satisfied.
+All claims in this section are Open unless stated otherwise.
+`E-GOAL-CONFORMANCE-001` is gap evidence, not evidence that a reopened system
+claim is satisfied.
 
 ### ROOTSCHED-001: Monitor-Owned Root Scheduling
 
@@ -832,6 +833,20 @@ Positive promotion decisions consume immutable bytes captured by the validator
 with transitive source/config/tool/command/image/raw-output provenance. A
 producer-authored summary is not a validation oracle.
 
+Current status: Contract-defined; tooling and migration open
+
+Current evidence:
+
+- `capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md`
+- `analysis/0186-evidence-capsule-trust-boundary-and-migration.md`
+
+Open gaps:
+
+- no capsule JSON schemas or Collector implementation
+- no structural mutation test suite
+- no historical positive-gate migration ledger
+- no EC2/EC3 independent reproduction
+
 ## Evidence Index
 
 | Evidence ID | Kind | Record | Supports |
@@ -872,6 +887,7 @@ producer-authored summary is not a validation oracle.
 | E-FINAL-MODEL-COMPLETION-001 | TLA validation | `validation/0126-final-model-completeness-ledger-tlc.md` | model-only goal, no production subclaim |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
 | E-GOAL-CONFORMANCE-001 | Architecture gap audit | `analysis/0185-final-goal-conformance-and-compositional-model-reopen.md` | Reopens ROOTSCHED, RESIDENCY, ENTRY, CODE, STATE, SVC, MGMT, CLUSTER-PART, COMPOSE, GRANULARITY, EVIDENCE |
+| E-EVIDENCE-CAPSULE-001 | Assurance contract | `analysis/0186-evidence-capsule-trust-boundary-and-migration.md` | Defines EVIDENCE contract only; no tooling or migrated result |
 
 ## Counterexample and Negative Evidence Log
 
