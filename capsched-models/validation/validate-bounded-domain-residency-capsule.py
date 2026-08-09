@@ -21,7 +21,7 @@ from typing import Any
 CONTRACT_ID = "RESIDENCY-001-TLC-v1"
 TARGET_CLAIM = "RESIDENCY-001"
 EXPECTED_CONTRACT_SHA256 = (
-    "6bb792016d74172501f75556924a6a5eb7819443f637408a37254d05b2e3ba1c"
+    "f0047ad634feea5746d2a7fea7c3dd603894bf1f8dd6dfd988f08478fba0ccfe"
 )
 ORIGIN_COMMIT = "9f1eaae410fd4878d7e0e04bf757377434980b86"
 ORIGIN_TREE = "736a9484b931b79d6374c468831b6c0d78353fe2"
@@ -128,6 +128,10 @@ def expected_commands(contract: dict[str, Any]) -> dict[str, Any]:
                 "tlc2.TLC",
                 "-workers",
                 workers,
+                "-fp",
+                str(contract["tool"]["fingerprint_index"]),
+                "-seed",
+                str(contract["tool"]["seed"]),
                 "-metadir",
                 f"../../work/states-{run['id']}",
                 "-config",
@@ -210,7 +214,9 @@ def contract_shape_valid(contract: dict[str, Any]) -> bool:
         "name": "tla2tools.jar",
         "sha256": TOOL_SHA256,
         "maximum_run_seconds": 120,
-        "workers": 4,
+        "workers": 1,
+        "fingerprint_index": 0,
+        "seed": 20260809014235,
     }:
         return False
 
@@ -700,6 +706,10 @@ def main() -> int:
                         "tlc2.TLC",
                         "-workers",
                         str(contract["tool"]["workers"]),
+                        "-fp",
+                        str(contract["tool"]["fingerprint_index"]),
+                        "-seed",
+                        str(contract["tool"]["seed"]),
                         "-metadir",
                         str(state_dir),
                         "-config",

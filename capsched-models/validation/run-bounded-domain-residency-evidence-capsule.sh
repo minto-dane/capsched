@@ -83,7 +83,9 @@ done < <(jq -r '
 ' "$CONTRACT")
 
 WORKERS=$(jq -er '.tool.workers' "$CONTRACT")
-jq --arg workers "$WORKERS" '{
+FP_INDEX=$(jq -er '.tool.fingerprint_index' "$CONTRACT")
+SEED=$(jq -er '.tool.seed' "$CONTRACT")
+jq --arg workers "$WORKERS" --arg fp_index "$FP_INDEX" --arg seed "$SEED" '{
   schema_version: 1,
   runs: [.expected_runs[] | {
     id: .id,
@@ -96,6 +98,10 @@ jq --arg workers "$WORKERS" '{
       "tlc2.TLC",
       "-workers",
       $workers,
+      "-fp",
+      $fp_index,
+      "-seed",
+      $seed,
       "-metadir",
       ("../../work/states-" + .id),
       "-config",
@@ -143,6 +149,8 @@ for row in "${RUN_ROWS[@]}"; do
 		timeout "$MAX_SECONDS" java -XX:+UseParallelGC \
 			-cp ../tools/tla2tools.jar tlc2.TLC \
 			-workers "$WORKERS" \
+			-fp "$FP_INDEX" \
+			-seed "$SEED" \
 			-metadir "../../work/states-$run_name" \
 			-config "$config_name" \
 			BoundedDomainResidency.tla

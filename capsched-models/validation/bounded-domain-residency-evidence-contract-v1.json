@@ -12,7 +12,9 @@
     "name": "tla2tools.jar",
     "sha256": "936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88",
     "maximum_run_seconds": 120,
-    "workers": 4
+    "workers": 1,
+    "fingerprint_index": 0,
+    "seed": 20260809014235
   },
   "static_inputs": {
     "inputs/model/BoundedDomainResidency.tla": {
@@ -159,7 +161,7 @@
       "expected_marker": "Model checking completed. No error has been found.",
       "expected_generated_states": 190271,
       "expected_distinct_states": 2660,
-      "expected_depth": 23
+      "expected_depth": 21
     },
     {
       "id": "safe-migration",
@@ -168,7 +170,7 @@
       "expected_marker": "Model checking completed. No error has been found.",
       "expected_generated_states": 39761,
       "expected_distinct_states": 560,
-      "expected_depth": 10
+      "expected_depth": 8
     },
     {
       "id": "safe-hotplug",
@@ -177,7 +179,7 @@
       "expected_marker": "Model checking completed. No error has been found.",
       "expected_generated_states": 34791,
       "expected_distinct_states": 490,
-      "expected_depth": 9
+      "expected_depth": 7
     },
     {
       "id": "safe-revoke",
@@ -186,7 +188,7 @@
       "expected_marker": "Model checking completed. No error has been found.",
       "expected_generated_states": 70071,
       "expected_distinct_states": 980,
-      "expected_depth": 9
+      "expected_depth": 8
     },
     {
       "id": "unsafe-wait-for-linux-hint",
