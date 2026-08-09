@@ -21,6 +21,7 @@ The plan is complete only when all of the following are true:
 ```text
 ROOTSCHED-001 closed
 RESIDENCY-001 closed
+RESIDENCY-DYN-001 closed
 ENTRY-001 closed
 CODE-001 closed
 STATE-001 closed
@@ -63,9 +64,10 @@ negative evidence and counterexamples remain usable with explicit provenance
 ```
 
 Current status: the compact state check and minimal Evidence Capsule v1
-Collector/structural Verifier are complete. EVIDENCE-001 remains open because
-only ROOTSCHED-001 has a claim-specific EC1 Validator and approval binding;
-historical migration and EC2/EC3 evidence do not yet exist.
+Collector/structural Verifier are complete. ROOTSCHED-001 and RESIDENCY-001
+have separate claim-specific EC1 Validators and approval bindings.
+EVIDENCE-001 remains open because historical migration and EC2/EC3 evidence do
+not yet exist.
 
 ## Phase B: Root Execution and Scale
 
@@ -100,7 +102,17 @@ liveness:
 Expected tool: TLA+ with explicit weak/strong fairness assumptions limited to
 Monitor and hardware actions. Do not assume fairness from adversarial Linux.
 
-### B2: Bounded Residency
+### B2a: Finite Bounded-Residency Reference
+
+Current status: Model-supported at EC1 by Analysis 0188, Formal 0148, and
+Validation 0289. The accepted claim is limited to a fixed finite
+Monitor-pre-admitted population and one modeled request per guaranteed Domain.
+It does not close the broader dynamic-residency requirement.
+
+### B2b: Dynamic Admission and Recurring Residency
+
+Current status: Open as `RESIDENCY-DYN-001`; this is the immediate next model.
+ADR-0014 makes this split mandatory; finite EC1 evidence cannot close B2b.
 
 Model more global Domains than per-CPU slots. Include:
 
@@ -115,8 +127,11 @@ guaranteed versus best-effort classes
 churn and overflow
 ```
 
-R6 is accepted only as a local refinement candidate if its slot and selector
-actions refine this model.
+The model must refine all B2a invariants while adding Monitor-owned feasibility
+admission/rejection, recurring request identity and cancellation, bounded
+coalescing and churn work, explicit overflow behavior, and safe generation
+saturation/rekey. R6 is accepted only as a local refinement candidate if its
+slot and selector actions refine both B2 stages.
 
 Expected tool: TLA+ for temporal behavior; Alloy may be used as a bounded
 structural cross-check for identity/slot aliasing, but is not required.
@@ -313,13 +328,13 @@ polling a healthy long-running job.
 
 ## Immediate Next Artifact
 
-The next semantic model is bounded residency. It must place more global
-Domains than per-CPU resident slots, preserve stable DomainID/epoch and slot
-generation, prevent running/reference eviction and migration duplication, and
-guarantee admission progress for nonresident guaranteed Domains despite
-best-effort churn and adversarial Linux hints. Its positive result must use a
-new claim-specific Evidence Capsule decision rather than reusing ROOTSCHED
-evidence.
+The next semantic model is `RESIDENCY-DYN-001`. It must add dynamic
+admission/rejection and class changes, recurring request identity,
+cancellation/coalescing, bounded best-effort churn and overflow work, and safe
+generation-saturation/rekey while preserving the accepted finite-reference
+safety properties. `ENTRY-001 + CODE-001` follows this closure. Any positive
+result must use a new claim-specific Evidence Capsule decision rather than
+reusing ROOTSCHED or finite RESIDENCY evidence.
 
 ## Non-Claims
 

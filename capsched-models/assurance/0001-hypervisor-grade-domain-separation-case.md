@@ -79,7 +79,8 @@ Required children:
 ACT-001    Non-forgeable Domain activation
 EXEC-001   No CPU execution without runnable authority
 ROOTSCHED-001 Monitor-owned root scheduling and guaranteed-Domain progress
-RESIDENCY-001 Global Domain identity with bounded per-CPU residency
+RESIDENCY-001 Finite pre-admitted bounded-residency reference
+RESIDENCY-DYN-001 Dynamic admission and recurring residency service
 BUDGET-001 CPU and service execution cannot exceed root budget
 ENDP-001   Resource access requires typed endpoint authority
 ASYNC-001  Async work preserves caller provenance and authority
@@ -759,9 +760,10 @@ a semantic or production claim.
 
 ## Reopened System Claims
 
-All claims in this section remain Open except `ROOTSCHED-001`, which is now
-Model-supported by Validation 0288. `E-GOAL-CONFORMANCE-001` is gap evidence,
-not evidence that another reopened system claim is satisfied.
+All claims in this section remain Open except `ROOTSCHED-001` and
+`RESIDENCY-001`, which are Model-supported by Validations 0288 and 0289.
+`E-GOAL-CONFORMANCE-001` is gap evidence, not evidence that another reopened
+system claim is satisfied.
 
 ### ROOTSCHED-001: Monitor-Owned Root Scheduling
 
@@ -783,12 +785,44 @@ opportunities, explicit Monitor/hardware fairness, and no Linux fairness.
 Production server selection, wall-clock bounds, multi-CPU refinement,
 implementation, and protection remain open.
 
-### RESIDENCY-001: Global Identity with Bounded Local Residency
+### RESIDENCY-001: Finite Bounded Residency Reference
 
-Global Domain cardinality is not bounded by R6's 64 slots. A bounded per-CPU
-resident slot maps by generation to an exact Monitor-owned DomainID and epoch.
-Admission, eviction, reuse, migration, hotplug, overflow, and churn must not
-alias authority or starve admitted guaranteed Domains.
+For a fixed finite Monitor-pre-admitted population, global Domain cardinality
+is not bounded by R6's 64 slots. A bounded per-CPU resident slot maps by
+generation to an exact Monitor-owned DomainID and epoch. One-shot residency,
+eviction, reuse, migration, hotplug, and revoke must not alias authority,
+duplicate an exclusive placement, or starve a modeled guaranteed request.
+
+Current status: Model-supported at EC1
+
+Current evidence:
+
+- `analysis/0188-global-domain-identity-and-bounded-residency-reference-contract.md`
+- `formal/0148-bounded-domain-residency-model/`
+- `validation/0289-bounded-domain-residency-reference-contract-ec1.md`
+
+The accepted finite reference separates stable global identity, Monitor-owned
+per-CPU bindings, slot generations, and exact activation authority. It permits
+ordinary multi-CPU replicas, constrains explicit exclusive migration, keeps
+management recovery independent, and gives admitted guaranteed one-shot
+requests progress without Linux fairness. Production residency, safe rekey,
+physical backing, implementation, wall-clock bounds, and protection remain
+open.
+
+### RESIDENCY-DYN-001: Dynamic and Recurring Residency
+
+Dynamic Domain join/leave and guarantee-class changes require Monitor-owned
+feasibility admission and rejection. Recurring requests need stable request
+identity, cancellation, coalescing, bounded churn work, overflow policy, and a
+safe generation-saturation/rekey protocol. These transitions must preserve the
+finite reference safety properties and feasible guaranteed service without
+using Linux hints, popularity, or queue state as authority.
+
+Current status: Open
+
+Validation 0289 is gap evidence for this claim, not supporting evidence. It
+explicitly assumes the pre-admitted set and does not model recurring service,
+dynamic admission/rejection, production replacement, or safe rekey.
 
 ### ENTRY-001: Privileged Entry and Return Integrity
 
@@ -846,8 +880,8 @@ Positive promotion decisions consume immutable bytes captured by the validator
 with transitive source/config/tool/command/image/raw-output provenance. A
 producer-authored summary is not a validation oracle.
 
-Current status: Contract-defined; structural tooling and one claim-specific
-EC1 pipeline implemented; migration remains open
+Current status: Contract-defined; structural tooling and two claim-specific
+EC1 pipelines implemented; migration remains open
 
 Current evidence:
 
@@ -855,10 +889,12 @@ Current evidence:
 - `analysis/0186-evidence-capsule-trust-boundary-and-migration.md`
 - `validation/0287-evidence-capsule-v1-bootstrap-structural-validation.md`
 - `validation/0288-monitor-root-scheduler-reference-contract-ec1.md`
+- `validation/0289-bounded-domain-residency-reference-contract-ec1.md`
 
 Open gaps:
 
-- only ROOTSCHED-001 has a claim-specific Validator and capsule-bound decision
+- only ROOTSCHED-001 and RESIDENCY-001 have claim-specific Validators and
+  capsule-bound decisions
 - no historical positive-gate migration ledger
 - no EC2/EC3 independent reproduction
 
@@ -902,8 +938,9 @@ Open gaps:
 | E-FINAL-MODEL-COMPLETION-001 | TLA validation | `validation/0126-final-model-completeness-ledger-tlc.md` | model-only goal, no production subclaim |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
 | E-GOAL-CONFORMANCE-001 | Architecture gap audit | `analysis/0185-final-goal-conformance-and-compositional-model-reopen.md` | Reopens ROOTSCHED, RESIDENCY, ENTRY, CODE, STATE, SVC, MGMT, CLUSTER-PART, COMPOSE, GRANULARITY, EVIDENCE |
-| E-EVIDENCE-CAPSULE-001 | Assurance contract | `analysis/0186-evidence-capsule-trust-boundary-and-migration.md` | Defines EVIDENCE contract; structural tooling and ROOTSCHED EC1 use are recorded separately |
+| E-EVIDENCE-CAPSULE-001 | Assurance contract | `analysis/0186-evidence-capsule-trust-boundary-and-migration.md` | Defines EVIDENCE contract; structural tooling and ROOTSCHED/RESIDENCY EC1 uses are recorded separately |
 | E-ROOTSCHED-001 | EC1 evidence-capsule formal validation | `validation/0288-monitor-root-scheduler-reference-contract-ec1.md` | ROOTSCHED model support; demonstrates first EVIDENCE claim-specific pipeline |
+| E-RESIDENCY-001 | EC1 evidence-capsule formal validation | `validation/0289-bounded-domain-residency-reference-contract-ec1.md` | RESIDENCY finite-reference model support; demonstrates the second EVIDENCE claim-specific pipeline |
 
 ## Counterexample and Negative Evidence Log
 
@@ -919,6 +956,7 @@ Open gaps:
 | CEX-MONITOR-TIMER-001 | `validation/0110` | Running without monitor timer, running without root budget, Linux timer as root authority, overrun after expiry, Linux charge as monitor charge, unsealed activation, run after epoch revoke, run after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation are rejected. |
 | CEX-MONITOR-TIMER-ARCH-001 | `validation/0115` | Missing or wrong monitor architecture substrate, Linux hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2-as-timer, missing binding tuple, Linux/KVM/guest deadline retiming, NO_HZ control, Linux-minted receipts, and protection overclaims are rejected. |
 | CEX-ROOTSCHED-001 | `validation/0288` | Linux-gated readiness, skipped/stolen reservations, stale epochs, Linux lease extension/minting, run after expiry, terminal stop after expiry, management revoke, and missing Monitor timer are rejected. |
+| CEX-RESIDENCY-001 | `validation/0289` | Linux-gated/skipped admission, absent quiescence, unsafe eviction/reuse, stale or Linux-owned authority, recovery loss, migration duplication, hotplug incarnation reuse, and activation during revoke are rejected. |
 | CEX-SCHED-F1-FREEZE-001 | `validation/0113` | TASK_WAKING, wake_list, and enqueue before freeze; incomplete frozen tuple; raw cap after publication; heavy post-publication lookup; late lost-wakeup denial; placement/current/fork authority minting; and protection overclaims are rejected. |
 | CEX-SCHED-INTEGRATION-001 | `validation/0114` | Publication without frozen tuple; run without frozen tuple, selected settlement, server authority, deadline compatibility, or monitor root; Linux runtime/server runtime/deadline compatibility/placement authority; raw cap/heavy lookup after publication; fail-closed running; and protection overclaims are rejected. |
 | CEX-SCHED-PLACEMENT-INTEGRATION-001 | `validation/0116` | Running without grant provenance, frozen placement, fresh placement epoch, current Linux mask, active CPU, monitor CPU binding, MemoryView CPU binding, or no-pending-migration state; selected CPU, class selection, sched_ext, core scheduling, sched_exec, fallback, force affinity, cpuset fallback, migrate-disable, per-cpu kthread exception, and protection overclaims are rejected. |
@@ -1122,8 +1160,8 @@ cost, tail latency, throughput, and density measurement
 
 ## Next Decision
 
-Behavior-changing Linux work remains paused. The next compositional decision
-is `RESIDENCY-001`: how a Monitor-owned global DomainID/epoch maps into bounded
-per-CPU resident slots without alias, unsafe eviction, migration duplication,
-or guaranteed-Domain starvation when global Domain cardinality exceeds the
-resident set.
+Behavior-changing Linux work remains paused. The next semantic decision is
+`RESIDENCY-DYN-001`: dynamic admission/rejection, recurring request identity,
+bounded churn/overflow work, and generation-saturation/rekey while preserving
+the accepted finite residency safety boundary. `ENTRY-001 + CODE-001` follows
+that closure.

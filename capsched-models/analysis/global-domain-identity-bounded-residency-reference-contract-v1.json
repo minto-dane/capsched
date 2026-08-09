@@ -2,13 +2,14 @@
   "schema_version": 1,
   "id": "global-domain-identity-bounded-residency-reference-contract-v1",
   "date": "2026-08-09",
-  "status": "semantic_reference_locally_checked_pending_claim_specific_ec1",
+  "status": "model_supported_ec1",
   "work_record": "N-176",
   "requirement": "RESIDENCY-001",
   "analysis": "analysis/0188-global-domain-identity-and-bounded-residency-reference-contract.md",
   "formal_model": "formal/0148-bounded-domain-residency-model/BoundedDomainResidency.tla",
   "threat": "adversarial_domain_local_linux_and_untrusted_linux_residency_hints",
   "implementation_selected": false,
+  "claim_scope": "fixed_finite_monitor_preadmitted_population_and_one_shot_guaranteed_residency_requests",
   "identity_layers": [
     "principal_id",
     "domain_or_instance_id_and_domain_epoch",
@@ -148,12 +149,14 @@
   },
   "local_tlc_result": {
     "tool": "TLC 2.19",
-    "workers": 4,
+    "workers": 1,
+    "fingerprint_index": 0,
+    "seed": 20260809014235,
     "safe": {
-      "Admission": {"generated": 190271, "distinct": 2660, "depth": 23},
-      "Migration": {"generated": 39761, "distinct": 560, "depth": 10},
-      "Hotplug": {"generated": 34791, "distinct": 490, "depth": 9},
-      "Revoke": {"generated": 70071, "distinct": 980, "depth": 9}
+      "Admission": {"generated": 190271, "distinct": 2660, "depth": 21},
+      "Migration": {"generated": 39761, "distinct": 560, "depth": 8},
+      "Hotplug": {"generated": 34791, "distinct": 490, "depth": 7},
+      "Revoke": {"generated": 70071, "distinct": 980, "depth": 8}
     },
     "expected_counterexamples": 22,
     "expected_counterexamples_observed": 22,
@@ -165,7 +168,7 @@
       "ManagementBindingLost",
       "LinuxWritesRegistry"
     ],
-    "claim_specific_capsule": false
+    "claim_specific_capsule": true
   },
   "model_limits": [
     "finite_one_shot_guaranteed_admission_sequence",
@@ -200,12 +203,21 @@
     "kernel/sched/core.c CPU hotplug",
     "kernel/sched/core.c core scheduling"
   ],
-  "next_refinement": "ENTRY-001+CODE-001",
-  "evidence": null,
+  "next_refinement": "RESIDENCY-DYN-001",
+  "evidence": {
+    "record": "validation/0289-bounded-domain-residency-reference-contract-ec1.md",
+    "level": "EC1",
+    "run_id": "20260809T060117Z-residency-ec1-deterministic",
+    "capsule_id": "efecb20ac9132caf6e20e6a8faac47704fad6429a48416910be62615163e5314",
+    "validator_result_sha256": "9f4156a60746587a5e6e30583be5fdeeae594655d5babc44f78bc1919dea4e93",
+    "decision_sha256": "534cf2c87219962a23ae3432b4bf0a22ce2429adda85984be333a7f7dfc224fb",
+    "allowed_transition": "RESIDENCY-001.open_to_model_supported",
+    "diagnostic_rejected_capsule_id": "9b7bfd68b91caac3018bf3248af6649504fe7dd81cd83a56b9c3934624afd24c"
+  },
   "claims": {
     "local_model_checked": true,
-    "semantic_reference_supported": false,
-    "claim_specific_capsule_validated": false,
+    "semantic_reference_supported": true,
+    "claim_specific_capsule_validated": true,
     "production_cache_selected": false,
     "linux_behavior_changed": false,
     "monitor_implemented": false,

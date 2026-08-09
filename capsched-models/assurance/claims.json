@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-08-08",
+  "updated": "2026-08-09",
   "scope": "DomainLease-H production assurance case with Linux-only prototype boundaries and reopened final-system composition requirements",
   "status_legend": {
     "open": "Required for the final goal but not established.",
@@ -22,6 +22,7 @@
         "EXEC-001",
         "ROOTSCHED-001",
         "RESIDENCY-001",
+        "RESIDENCY-DYN-001",
         "BUDGET-001",
         "ENDP-001",
         "ASYNC-001",
@@ -827,8 +828,10 @@
       "title": "Monitor-owned root scheduling and guaranteed-Domain progress",
       "claim": "A compromised Linux scheduler cannot extend or suppress a root lease, and another eligible guaranteed Domain is eventually selected by Monitor-owned state after expiry, revoke, or handoff.",
       "evidence": [
-        "E-GOAL-CONFORMANCE-001",
         "E-ROOTSCHED-001"
+      ],
+      "gap_evidence": [
+        "E-GOAL-CONFORMANCE-001"
       ],
       "counterexamples": [
         "CEX-ROOTSCHED-001"
@@ -845,17 +848,44 @@
     {
       "id": "RESIDENCY-001",
       "parent": "TOP-001",
-      "status": "open",
-      "title": "Global Domain identity with bounded per-CPU residency",
-      "claim": "Global Domain cardinality exceeds bounded per-CPU resident slots without slot alias, stale-generation use, unsafe eviction, migration duplication, or starvation of admitted guaranteed Domains.",
+      "status": "model_supported",
+      "title": "Finite bounded-residency reference contract",
+      "claim": "For a fixed finite Monitor-pre-admitted population larger than the replaceable per-CPU slot set, Monitor-owned binding, generation, quiescence, migration, hotplug, and revoke transitions prevent identity alias and exclusive-authority duplication and complete each modeled one-shot guaranteed residency request under the declared fairness assumptions.",
       "evidence": [
+        "E-RESIDENCY-001"
+      ],
+      "gap_evidence": [
         "E-GOAL-CONFORMANCE-001"
       ],
+      "counterexamples": [
+        "CEX-RESIDENCY-001"
+      ],
       "gaps": [
-        "R6 models only a bounded local slot set.",
-        "No global registry to resident-slot refinement.",
-        "No admission, eviction, reuse, churn, or hotplug model.",
-        "No more-than-64-Domain liveness model."
+        "The model assumes a fixed pre-admitted population and one request per guaranteed Domain.",
+        "No physical Linux-shadow backing, MemoryView/TLB fence, or privileged-entry composition exists.",
+        "No Domain Monitor or architecture-specific migration, hotplug, and trusted-reference implementation exists.",
+        "Root-budget conservation across multi-CPU replicas and migration is not composed.",
+        "No wall-clock, protection, performance, cost, multi-cluster, or datacenter evidence exists."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "RESIDENCY-DYN-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Dynamic admission and recurring bounded-residency service",
+      "claim": "Monitor-owned dynamic admission, rejection, recurring requests, churn control, overflow handling, generation saturation and rekey preserve residency safety and feasible guaranteed service without trusting Linux policy state.",
+      "evidence": [],
+      "gap_evidence": [
+        "E-GOAL-CONFORMANCE-001",
+        "E-RESIDENCY-001"
+      ],
+      "gaps": [
+        "No dynamic Domain join, leave, class-change, feasibility-admission, or rejection transition model exists.",
+        "No recurring request identity, cancellation, coalescing, or service-bound model exists.",
+        "No attacker-amplification budget for best-effort churn, misses, drains, or malformed hints exists.",
+        "No generation-saturation quarantine or safe rekey protocol exists.",
+        "No production directory, cache hierarchy, replacement policy, or physical-shadow lifetime refinement is selected."
       ],
       "forbidden_l0": true
     },
@@ -865,7 +895,8 @@
       "status": "open",
       "title": "Privileged entry and return preserve Domain authority",
       "claim": "Syscall, exception, IRQ, NMI-class, nested entry, and return transitions use the correct active Domain, MemoryView, epoch, stack, and per-CPU state.",
-      "evidence": [
+      "evidence": [],
+      "gap_evidence": [
         "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
@@ -882,7 +913,8 @@
       "status": "open",
       "title": "Shared executable code is sealed, W^X, and versioned",
       "claim": "Executable content shared across Domains is Monitor-verified and not Domain-writable; every authorized code mutation is versioned and invalidated across MemoryViews before execution.",
-      "evidence": [
+      "evidence": [],
+      "gap_evidence": [
         "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
@@ -898,7 +930,8 @@
       "status": "open",
       "title": "Every privileged mutable page has one explicit security owner",
       "claim": "Every mutable privileged page is Domain-private, typed-service-owned, Monitor-owned, or an explicitly shared typed buffer; unknown ownership is unmapped.",
-      "evidence": [
+      "evidence": [],
+      "gap_evidence": [
         "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
@@ -914,7 +947,8 @@
       "status": "open",
       "title": "Compromised service Domains remain endpoint-bounded",
       "claim": "Arbitrary kernel-context compromise of one service Domain is bounded by typed endpoint operations, caller-frozen authority intersection, explicit buffers, service-local objects, budgets, and Monitor receipts.",
-      "evidence": [
+      "evidence": [],
+      "gap_evidence": [
         "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
@@ -930,7 +964,8 @@
       "status": "open",
       "title": "Management, signing, recovery, and node-root trust are separated",
       "claim": "Offline roots, online cluster management, node Monitors, management Domains, key rotation, and recovery operations have explicit compromise and recovery boundaries.",
-      "evidence": [
+      "evidence": [],
+      "gap_evidence": [
         "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
@@ -947,9 +982,11 @@
       "title": "Partition-aware cluster authority and migration fencing",
       "claim": "Signed bounded node-local leases remain safe under partitions, local clock assumptions, delayed or reordered messages, restart, fencing, migration, and namespace recovery.",
       "evidence": [
-        "E-GOAL-CONFORMANCE-001",
         "E-CLUSTER-001",
         "E-CLUSTER-002"
+      ],
+      "gap_evidence": [
+        "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
         "Existing cluster revoke is atomically visible across nodes.",
@@ -964,7 +1001,8 @@
       "status": "open",
       "title": "Component contracts compose into the hostile-kernel system claim",
       "claim": "Scheduler, Monitor, memory, entry, async, service, device, revoke, and cluster contracts have compatible assumptions, guarantees, state ownership, visible actions, and refinement mappings.",
-      "evidence": [
+      "evidence": [],
+      "gap_evidence": [
         "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
@@ -982,8 +1020,10 @@
       "title": "Process-through-container granularity has a security and cost envelope",
       "claim": "Domain granularity is selected under an explicit threat and complete-path cost envelope, and monitor-backed process Domains are compared with matched container, KVM, and microVM baselines.",
       "evidence": [
-        "E-GOAL-CONFORMANCE-001",
         "E-EVAL-CONTRACT-001"
+      ],
+      "gap_evidence": [
+        "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
         "No complete activation, MemoryView, TLB, service, async, and device-path measurement.",
@@ -999,13 +1039,16 @@
       "title": "Positive gates consume validator-owned immutable evidence",
       "claim": "Positive promotion decisions are derived from validator-captured immutable bytes with transitive source, configuration, tool, command, image, raw-output, and result provenance.",
       "evidence": [
-        "E-GOAL-CONFORMANCE-001",
         "E-EVIDENCE-CAPSULE-001",
         "E-EVIDENCE-CAPSULE-TOOL-001",
-        "E-ROOTSCHED-001"
+        "E-ROOTSCHED-001",
+        "E-RESIDENCY-001"
+      ],
+      "gap_evidence": [
+        "E-GOAL-CONFORMANCE-001"
       ],
       "gaps": [
-        "Only ROOTSCHED-001 currently has a claim-specific EC1 Validator and capsule-bound Approver decision.",
+        "Only ROOTSCHED-001 and RESIDENCY-001 currently have claim-specific EC1 Validators and capsule-bound Approver decisions.",
         "Affected positive gates have not been migrated or revalidated.",
         "No EC2 independent implementation or EC3 external reproduction exists."
       ],
@@ -1809,6 +1852,7 @@
       "reopens": [
         "ROOTSCHED-001",
         "RESIDENCY-001",
+        "RESIDENCY-DYN-001",
         "ENTRY-001",
         "CODE-001",
         "STATE-001",
@@ -1829,7 +1873,7 @@
       "defines": [
         "EVIDENCE-001"
       ],
-      "limitation": "Defines the validator-owned capture and migration contract. Minimal structural tooling now exists, but claim-specific validation, historical migration, independent reproduction, and positive promotion evidence remain absent."
+      "limitation": "Defines the validator-owned capture and migration contract. Minimal structural tooling and two scoped EC1 consumers now exist, but historical migration, independent reproduction, and broader positive-promotion evidence remain absent."
     },
     {
       "id": "E-EVIDENCE-CAPSULE-TOOL-001",
@@ -1853,6 +1897,19 @@
       ],
       "capsule_id": "d805b92acee2bca93a965e63925f7f48b8bf8d518043b0c55edf9ca3a3210abe",
       "limitation": "EC1 model support only. The fixed frame is a reference contract; no Monitor/Linux implementation, wall-clock bound, protection, performance, cost, cluster, or deployment claim is supported."
+    },
+    {
+      "id": "E-RESIDENCY-001",
+      "kind": "evidence_capsule_formal_validation",
+      "record": "capsched-models/validation/0289-bounded-domain-residency-reference-contract-ec1.md",
+      "supports": [
+        "RESIDENCY-001"
+      ],
+      "demonstrates": [
+        "EVIDENCE-001"
+      ],
+      "capsule_id": "efecb20ac9132caf6e20e6a8faac47704fad6429a48416910be62615163e5314",
+      "limitation": "EC1 finite-model support only. It does not select a production residency algorithm or support Monitor/Linux implementation, physical-lifetime composition, wall-clock, protection, performance, cost, cluster, or deployment claims."
     },
     {
       "id": "HAZ-ENDP-001",
@@ -2131,6 +2188,11 @@
       "meaning": "Unsafe Monitor root-scheduler models reject Linux-gated readiness, skipped or stolen reservations, stale epochs, Linux lease extension or minting, running after expiry, terminal stop after expiry, management revocation, and activation without a Monitor timer."
     },
     {
+      "id": "CEX-RESIDENCY-001",
+      "record": "capsched-models/validation/0289-bounded-domain-residency-reference-contract-ec1.md",
+      "meaning": "Unsafe bounded-residency models reject Linux-gated or skipped admission, absent trusted quiescence, pinned eviction, generation and epoch reuse, handoff overwrite, unsealed or stale activation, Linux-owned binding/registry/CPU authority, recovery loss, exclusive-migration duplication, offline authority, CPU-incarnation reuse, and activation during revoke."
+    },
+    {
       "id": "CEX-SCHED-PLACEMENT-INTEGRATION-001",
       "record": "capsched-models/validation/0116-placement-affinity-hotplug-integration-gate-tlc.md",
       "meaning": "Unsafe placement integration models show expected counterexamples for running without grant provenance, frozen placement, fresh placement epoch, current Linux mask, active CPU, monitor CPU binding, MemoryView CPU binding, or no-pending-migration state; selected CPU, class selection, sched_ext, core scheduling, sched_exec, fallback, force affinity, cpuset fallback, migrate-disable, per-cpu kthread exception, and protection overclaims."
@@ -2397,7 +2459,7 @@
   "next_linux_choice": [
     "No behavior-changing Linux choice is currently authorized.",
     "Read current Linux sources only as required by reopened model refinement mappings.",
-    "Re-evaluate R6 or a successor only after ROOTSCHED-001, RESIDENCY-001, ENTRY-001, CODE-001, CLUSTER-PART-001, COMPOSE-001, and EVIDENCE-001 close."
+    "Re-evaluate R6 or a successor only after ROOTSCHED-001, RESIDENCY-001, RESIDENCY-DYN-001, ENTRY-001, CODE-001, CLUSTER-PART-001, COMPOSE-001, and EVIDENCE-001 close."
   ],
   "safer_default": "Advance the compositional model and evidence-capsule gates without changing Linux behavior."
 }

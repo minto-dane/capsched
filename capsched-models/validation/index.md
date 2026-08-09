@@ -294,6 +294,7 @@ Updated: 2026-08-09
 | 0286 | Four fresh E4-off profiles pass 220/220 cases and receipts; two read-only 72-artifact closures reconstruct the pushed candidate and normalize identically, completing only exact-source E3 regression evidence | P5A-R6-E4 Exact-Source E3 Regression Closure |
 | 0287 | Bootstrap structural validation passes 6 positive and 32 fail-closed fixtures; the minimal capture-first Collector/Verifier is usable for the next model run, but no claim-specific validation or promotion is complete | Evidence Capsule v1 Bootstrap Structural Validation |
 | 0288 | ROOTSCHED EC1 capsule captures 43 declared objects, reproduces two safe state spaces and ten counterexamples in producer and validator runs, rejects direct/resealed mutations, and authorizes only Open-to-Model-supported | Monitor Root Scheduler Reference Contract EC1 |
+| 0289 | RESIDENCY finite pre-admitted EC1 capsule captures 85 declared objects, deterministically reproduces four safe state spaces and 22 counterexamples, retains one fail-closed diagnostic capsule, rejects direct/resealed mutations, and authorizes only Open-to-Model-supported | Bounded Domain Residency Reference Contract EC1 |
 
 ## Principles
 

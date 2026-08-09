@@ -1,7 +1,7 @@
 # Analysis 0186: Evidence Capsule Trust Boundary and Migration
 
-Status: Accepted assurance contract; minimal structural tooling and the first
-claim-specific EC1 pipeline implemented; historical revalidation remains open
+Status: Accepted assurance contract; minimal structural tooling and two
+claim-specific EC1 pipelines implemented; historical revalidation remains open
 
 Date: 2026-08-08
 
@@ -228,7 +228,7 @@ historical result is wrong.
    paths before any validator reads inputs. Complete for v1 bootstrap.
 3. Implement structural validation and mutation fixtures. Complete for v1
    bootstrap; see Validation 0287.
-4. Migrate the next root-scheduler formal run first.
+4. Migrate the root-scheduler and bounded-residency formal runs first.
 5. Migrate R6 source/build/E3 positive gates only if R6 remains a candidate
    after residency and composition modeling.
 6. Add append-only/remote storage and signatures before production evidence.
@@ -246,7 +246,7 @@ minimal capture and structural verification:
   true
 
 claim-specific validator and approver:
-  true for ROOTSCHED-001 only
+  true for ROOTSCHED-001 and RESIDENCY-001
 
 historical positive promotion credit migrated:
   false
@@ -264,13 +264,19 @@ Validation 0288 is the first claim-specific use. It captures the exact
 ROOTSCHED model, configurations, TLC jar, commands, raw logs/statuses, and
 validator; re-executes all runs from captured bytes; and binds a separate EC1
 decision to the capsule id. It permits only `ROOTSCHED-001` Open-to-
-Model-supported. Other positive gates still require their own validators and
-decisions.
+Model-supported.
+
+Validation 0289 applies the same boundary independently to `RESIDENCY-001`.
+It retains a rejected parallel-run capsule as fail-closed diagnostic evidence,
+then captures deterministic TLC parameters and reproduces four safe scenarios
+and 22 targeted failures from captured bytes. It permits only
+`RESIDENCY-001` Open-to-Model-supported. Other positive gates still require
+their own validators and decisions.
 
 ## Non-Claims
 
-This analysis plus Validations 0287 and 0288 has a minimal capsule
-implementation and one scoped EC1 claim-specific result. It is not migration
+This analysis plus Validations 0287 through 0289 has a minimal capsule
+implementation and two scoped EC1 claim-specific results. It is not migration
 completion, cryptographic attestation, independent reproduction, or approval
 of any Linux behavior, Monitor implementation, R6 promotion, performance,
 protection, or deployment claim.

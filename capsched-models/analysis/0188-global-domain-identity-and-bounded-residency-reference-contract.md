@@ -1,6 +1,6 @@
 # Analysis 0188: Global Domain Identity and Bounded Residency Reference Contract
 
-Status: Accepted semantic reference pending claim-specific EC1; no Linux
+Status: Model-supported at EC1 for the finite reference contract; no Linux
 behavior change approved
 
 Date: 2026-08-09
@@ -70,7 +70,9 @@ Domain epoch, MemoryView, root budget, and lease interval.
 
 The first executable reference uses a Monitor-serialized ensure-resident
 transaction and more guaranteed Domains than replaceable slots. It is a
-semantic lower bound, not a production cache or replacement algorithm.
+semantic lower bound over a fixed Monitor-pre-admitted population, not a
+dynamic-admission protocol, recurring service, production cache, or
+replacement algorithm.
 
 ## Four Different Objects Previously Called Resident
 
@@ -527,9 +529,55 @@ Linux-owned binding/registry/CPU state, resident-slot-as-authority, management
 loss, copy-before-fence migration, destination-before-source-stop, identity
 drift, offline-before-drain, and activation during revoke.
 
+## Claim-Specific EC1 Result
+
+Validation 0289 binds the exact model, 26 configurations, TLC jar, deterministic
+commands, raw logs/statuses, claim-specific Validator, and separate approval
+decision into Evidence Capsule v1.
+
+```text
+canonical run:
+  20260809T060117Z-residency-ec1-deterministic
+capsule id:
+  efecb20ac9132caf6e20e6a8faac47704fad6429a48416910be62615163e5314
+validator-result SHA-256:
+  9f4156a60746587a5e6e30583be5fdeeae594655d5babc44f78bc1919dea4e93
+decision SHA-256:
+  534cf2c87219962a23ae3432b4bf0a22ce2429adda85984be333a7f7dfc224fb
+allowed transition:
+  RESIDENCY-001.open_to_model_supported
+```
+
+TLC 2.19 ran with one worker, fingerprint index 0, and seed
+20260809014235. Producer and Validator replay agreed exactly:
+
+| Scenario | Generated | Distinct | Depth |
+| --- | ---: | ---: | ---: |
+| Admission | 190271 | 2660 | 21 |
+| Migration | 39761 | 560 | 8 |
+| Hotplug | 34791 | 490 | 7 |
+| Revoke | 70071 | 980 | 8 |
+
+All 22 negative configurations were classified as expected. Direct mutation
+and a structurally resealed semantic mutation were both rejected.
+
+An earlier four-worker capsule remains retained as a fail-closed diagnostic.
+Its state counts matched but parallel exploration reported a different search
+depth than the frozen oracle. The Validator rejected it and skipped
+re-execution. This caused deterministic tool parameters to become part of the
+contract; the failed capsule receives no claim credit.
+
+The EC1 decision therefore closes only `RESIDENCY-001` as the finite,
+pre-admitted, one-shot reference claim. It does not close the broader work
+that the original Phase B2 prose grouped under residency. That work is now
+explicitly preserved as `RESIDENCY-DYN-001`: dynamic feasibility
+admission/rejection and class changes, recurring request identity and
+cancellation, coalescing, bounded churn/overflow work, and safe generation
+saturation/rekey.
+
 ## Accepted and Deferred
 
-Accepted after claim-specific EC1:
+Accepted by the claim-specific EC1 decision:
 
 ```text
 stable identity is not a slot
@@ -563,4 +611,5 @@ path, establish a wall-clock service bound, select the production cache, or
 support hypervisor-grade protection, performance, cost-efficiency,
 multi-cluster, or deployment claims.
 
-The next composition obligation after this contract is `ENTRY-001 + CODE-001`.
+The next semantic obligation is `RESIDENCY-DYN-001`. `ENTRY-001 + CODE-001`
+follows after the dynamic residency contract closes.

@@ -46,21 +46,23 @@ already bounded trusted lease/reference. It does not assume a cooperative
 Linux scheduler, a useful task inside a compromised Domain, or a wall-clock
 latency bound.
 
-The one-shot admission scenario uses one request per guaranteed Domain. It
-proves finite reference-protocol progress under the stated assumptions, not
+The one-shot admission scenario starts with every Domain already admitted and
+uses one request per guaranteed Domain. It proves finite reference-protocol
+progress under the stated assumptions, not dynamic admission/rejection,
 recurring production service, unbounded admission, slot-generation rekey, or
 request-ID semantics.
 
-## Local TLC Result
+## EC1 TLC Result
 
-TLC 2.19 with four workers checked the final safe model locally:
+Validation 0289 captured and replayed TLC 2.19 with one worker, fingerprint
+index 0, and seed 20260809014235:
 
 | Configuration | Generated | Distinct | Depth | Result |
 | --- | ---: | ---: | ---: | --- |
-| `SafeAdmission` | 190,271 | 2,660 | 23 | pass |
-| `SafeMigration` | 39,761 | 560 | 10 | pass |
-| `SafeHotplug` | 34,791 | 490 | 9 | pass |
-| `SafeRevoke` | 70,071 | 980 | 9 | pass |
+| `SafeAdmission` | 190,271 | 2,660 | 21 | pass |
+| `SafeMigration` | 39,761 | 560 | 8 | pass |
+| `SafeHotplug` | 34,791 | 490 | 7 | pass |
+| `SafeRevoke` | 70,071 | 980 | 8 | pass |
 
 All 22 negative configurations produced the expected counterexample. Three
 are temporal failures: Linux-gated admission, skipped guaranteed admission,
@@ -78,16 +80,21 @@ LinuxWritesRegistry
 
 Initial-state rejection is recorded separately because it checks admissible
 state ownership, not a protocol transition. The claim-specific EC1 capsule
-must replay every safe and unsafe configuration, bind exact model/config/tool
-hashes, and verify the expected property name. These local counts are not yet
-that capsule.
+replayed every safe and unsafe configuration, bound exact model/config/tool
+hashes, and verified every expected property name. Its capsule id is
+`efecb20ac9132caf6e20e6a8faac47704fad6429a48416910be62615163e5314`.
+
+An earlier parallel run was rejected because its search depth did not match
+the frozen oracle even though generated and distinct counts matched. That
+diagnostic result is retained, but only the deterministic capsule supports the
+claim.
 
 Example safe invocation:
 
 ```sh
 java -XX:+UseParallelGC \
   -cp /home/nia/tools/tla/tla2tools.jar \
-  tlc2.TLC -workers 4 \
+  tlc2.TLC -workers 1 -fp 0 -seed 20260809014235 \
   -config BoundedDomainResidencySafeAdmission.cfg \
   BoundedDomainResidency.tla
 ```
@@ -104,10 +111,12 @@ NeedResident(DomainID, DomainEpoch, eligible CPUs)
         -> TrustedReferenceRelease
 ```
 
-It does not yet compose physical slot backing, kernel entry, `MemoryView`, TLB
-fences, root-budget conservation across migration, or cross-node fencing.
-Those remain `ENTRY-001 + CODE-001`, later memory/state composition, and
-`CLUSTER-PART-001` obligations.
+It does not yet compose dynamic admission/rejection, recurring request
+identity/cancellation, bounded churn/overflow work, or generation rekey. Those
+are the immediate `RESIDENCY-DYN-001` refinement. Physical slot backing,
+kernel entry, `MemoryView`, TLB fences, root-budget conservation across
+migration, and cross-node fencing remain `ENTRY-001 + CODE-001`, later
+memory/state composition, and `CLUSTER-PART-001` obligations.
 
 R6's fixed-depth forest can only refine the bounded Linux policy projection.
 It cannot be the global Domain registry, own slot generations, mint active

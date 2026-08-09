@@ -191,9 +191,9 @@ Updated: 2026-08-09
 | 0183 | R6-E4 local selector measurement plan accepted; assurance promotion paused by 0185 | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Plan |
 | 0184 | Exact disposable R6-E4 source and regression lineage retained; no live scheduler or system claim | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Source |
 | 0185 | Accepted goal-conformance audit; N-155 scoped, system composition reopened, R6 treated only as a local residency candidate | Final Goal Conformance and Compositional Model Reopen |
-| 0186 | Accepted Evidence Capsule v1 trust boundary; structural tooling passes 0287 and ROOTSCHED is the first scoped EC1 consumer in 0288, while broader revalidation remains open | Evidence Capsule Trust Boundary and Migration |
+| 0186 | Accepted Evidence Capsule v1 trust boundary; structural tooling passes 0287 and ROOTSCHED/RESIDENCY are scoped EC1 consumers in 0288/0289, while broader revalidation remains open | Evidence Capsule Trust Boundary and Migration |
 | 0187 | Accepted Monitor-owned root-scheduling reference contract; two safe modes and ten targeted faults modeled without selecting an implementation | Monitor-Owned Root Scheduling Reference Contract |
-| 0188 | Accepted bounded-residency semantic reference; four safe scenarios and 22 targeted faults locally checked, claim-specific EC1 pending | Global Domain Identity and Bounded Residency Reference Contract |
+| 0188 | RESIDENCY-001 finite pre-admitted one-shot reference is Model-supported at EC1; four deterministic safe scenarios and 22 faults replay, while RESIDENCY-DYN-001 and implementation remain open | Global Domain Identity and Bounded Residency Reference Contract |
 
 ## Planned Analysis Notes
 
@@ -285,7 +285,7 @@ Updated: 2026-08-09
 | `final-goal-conformance-and-compositional-model-reopen-v1.json` | Accepted architecture audit | Machine-readable N-174 scope correction, reopened requirements, R6 disposition, and model work order |
 | `evidence-capsule-trust-boundary-and-migration-v1.json` | Accepted assurance contract | Machine-readable producer/collector/validator split, capture state, provenance, evidence levels, and migration policy |
 | `monitor-owned-root-scheduling-reference-contract-v1.json` | Accepted model-supported reference contract | Machine-readable N-175 Monitor/Linux ownership split, fairness assumptions, safety/liveness obligations, counterexamples, and non-claims |
-| `global-domain-identity-bounded-residency-reference-contract-v1.json` | Locally checked reference contract | Machine-readable N-176 global identity, bounded per-CPU projection, version algebra, ownership, progress assumptions, counterexamples, and non-claims |
+| `global-domain-identity-bounded-residency-reference-contract-v1.json` | EC1 model-supported finite reference contract | Machine-readable N-176 fixed pre-admitted global identity, bounded per-CPU projection, version algebra, ownership, one-shot progress assumptions, counterexamples, evidence identity, and non-claims |
 | `terminology-freeze-rename-risk-review-v1.json` | Public vocabulary lock | Machine-readable N-156 terminology freeze, inventory, and alias policy |
 | `sched-exec-lease-p4-pre-entry-risk-gate-v1.json` | P4 pre-entry gate | Machine-readable P4 allow-all/no-denial pre-entry evidence, generated-code review, QEMU matrix, drift, security-diff preflight, and non-claim constraints |
 | `sched-exec-lease-p4-pre-implementation-critical-audit-v1.json` | P4 pause gate | Machine-readable P4 pre-implementation multi-axis audit, hardened fresh drift result, stale global D4 finding, axis verdicts, and reopen criteria |

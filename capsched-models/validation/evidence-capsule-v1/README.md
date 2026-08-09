@@ -123,7 +123,8 @@ SHA-256 implementation, Collector, and Validator account remain trusted.
 Captured bytes and their hashes are authoritative; a dirty Git identity does
 not claim that those bytes belong to the named commit tree.
 
-`ROOTSCHED-001` is the first claim-specific consumer. Its separate producer,
-validator, mutation test, capsule-bound decision, and scoped result are
-recorded by Validation 0288. They do not turn this generic structural tool into
-a TLC validator or close broader EVIDENCE-001 migration.
+`ROOTSCHED-001` and `RESIDENCY-001` are the first two claim-specific consumers.
+Their separate producers, validators, mutation tests, capsule-bound decisions,
+and scoped results are recorded by Validations 0288 and 0289. They do not turn
+this generic structural tool into a TLC validator or close broader
+EVIDENCE-001 migration.
