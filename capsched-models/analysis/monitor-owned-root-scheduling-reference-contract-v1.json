@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "id": "monitor-owned-root-scheduling-reference-contract-v1",
+  "date": "2026-08-09",
+  "status": "model_supported_reference_contract_pending_capsule_decision",
+  "work_record": "N-175",
+  "requirement": "ROOTSCHED-001",
+  "analysis": "analysis/0187-monitor-owned-root-scheduling-reference-contract.md",
+  "formal_model": "formal/0147-monitor-root-scheduler-model/MonitorRootScheduler.tla",
+  "threat": "adversarial_domain_local_linux_scheduler",
+  "policy_class": "monitor_owned_cyclic_reserved_service_reference",
+  "implementation_selected": false,
+  "root_frame": [
+    "management_recovery",
+    "guaranteed_1",
+    "guaranteed_2",
+    "best_effort_slack"
+  ],
+  "monitor_owned": [
+    "admission_class",
+    "domain_epoch",
+    "root_frame",
+    "trusted_cursor",
+    "root_lease",
+    "root_budget_ledger",
+    "root_expiry_timer",
+    "sealed_activation_token",
+    "handoff_state",
+    "expiry_receipt"
+  ],
+  "linux_adversarial": [
+    "runnable_hints",
+    "candidate_proposal",
+    "shadow_cursor",
+    "extension_request",
+    "within_domain_task_policy",
+    "linux_timer_and_nohz_state"
+  ],
+  "fairness_assumptions": {
+    "monitor_reserved_dispatch": "weak_fairness",
+    "monitor_close_and_advance": "weak_fairness",
+    "hardware_lease_step": "weak_fairness",
+    "linux_actions": "none"
+  },
+  "safety": [
+    "NoRootRunWithoutLease",
+    "NoRootBudgetOverrun",
+    "LinuxCannotExtendRootLease",
+    "CurrentEpochOnly",
+    "ReservedSlotIntegrity",
+    "GuaranteedOnlyUsesReservedSlot",
+    "BestEffortOnlyUsesSlack",
+    "ExpiredOrRevokedAuthorityCleared",
+    "BoundedGuaranteedWait",
+    "ManagementAlwaysAdmitted",
+    "LinuxCannotMintRootAuthority",
+    "NoProtectionClaim"
+  ],
+  "liveness": [
+    "AdmittedGuaranteedEventuallyRuns",
+    "GuaranteedRecurringService",
+    "ManagementRecurringService",
+    "TrustedHandoffProgress"
+  ],
+  "negative_cases": {
+    "WaitForLinuxHint": "GuaranteedRecurringService",
+    "SkipReserved": "BoundedGuaranteedWait",
+    "StealReserved": "ReservedSlotIntegrity",
+    "StaleEpoch": "CurrentEpochOnly",
+    "LinuxExtend": "LinuxCannotExtendRootLease",
+    "ExpiryStillRunning": "NoRootBudgetOverrun",
+    "StopAfterExpiry": "TrustedHandoffProgress",
+    "RevokeManagement": "ManagementAlwaysAdmitted",
+    "NoTimer": "NoRootRunWithoutLease",
+    "LinuxMint": "LinuxCannotMintRootAuthority"
+  },
+  "guarantee_semantics": {
+    "unit": "monitor_activated_service_opportunity",
+    "not_guaranteed": "useful_application_progress_inside_a_compromised_or_idle_domain",
+    "wait_measure": "completed_root_slots",
+    "wall_clock_bound_requires": [
+      "maximum_quantum",
+      "timer_overrun_bound",
+      "monitor_action_latency_bound",
+      "interrupt_masking_bound",
+      "declared_firmware_and_hardware_assumptions"
+    ]
+  },
+  "linux_source_identity": {
+    "commit": "74311ca1ac4937e0e62f1e0f6a3e5bfa4fc77d6f",
+    "tree": "54f685aad94f28f0027cbba18cf5e29aadce234a",
+    "fetched_upstream": "a7c7074b58d28c4206d666a12aa2e33447b3c581"
+  },
+  "next_refinement": "RESIDENCY-001",
+  "claims": {
+    "semantic_reference_supported": true,
+    "claim_specific_capsule_validated": false,
+    "production_policy_selected": false,
+    "linux_behavior_changed": false,
+    "monitor_implemented": false,
+    "wall_clock_bound_proved": false,
+    "protection_evidenced": false,
+    "performance_evidenced": false,
+    "cost_efficiency_evidenced": false,
+    "datacenter_deployment_evidenced": false
+  }
+}

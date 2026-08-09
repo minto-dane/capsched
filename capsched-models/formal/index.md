@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-07-18
+Updated: 2026-08-09
 
 ## Current Formal Records
 
@@ -150,6 +150,9 @@ Updated: 2026-07-18
 | 0142 | Checked with 5/5/depth-5 safe pass, two liveness properties, 13 architecture-safety counterexamples, and 2 progress counterexamples | P5A-R6 Sealed Masked Domain Forest Model |
 | 0143 | Checked with 10/10/depth-10 safe pass, two liveness properties, 50 plan-safety counterexamples, and 2 progress counterexamples | P5A-R6 E1 Domain-Forest Evidence Plan Model |
 | 0144 | Reproduced with 14/14/depth-14 safe pass, bounded selector/reconcile, neutral migration, separate current observation, ordered RCU drain, three liveness properties, 79 safety counterexamples, and 3 liveness counterexamples | P5A-R6 E3 Correctness and Concurrency Evidence Plan Model |
+| 0145 | Reproduced with 5/4/depth-4 safe pass and 24 expected authorization counterexamples | P5A-R6 Post-E3 Authorization and Threat Boundary Model |
+| 0146 | Reproduced with 14/14/depth-14 safe pass, two liveness properties, 82 safety counterexamples, and 2 liveness counterexamples | P5A-R6 E4 Local-Quantum Measurement Plan Model |
+| 0147 | Local diagnostic pass: steady 155817/1920/depth-21, revoke 853049/10400/depth-21, four liveness properties, and 10 expected safety/liveness counterexamples; claim-specific capsule validation pending | Monitor Root Scheduler Model |
 
 ## Planned
 

@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-08-08
+Updated: 2026-08-09
 
 ## Current Analysis Notes
 
@@ -192,6 +192,7 @@ Updated: 2026-08-08
 | 0184 | Exact disposable R6-E4 source and regression lineage retained; no live scheduler or system claim | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Source |
 | 0185 | Accepted goal-conformance audit; N-155 scoped, system composition reopened, R6 treated only as a local residency candidate | Final Goal Conformance and Compositional Model Reopen |
 | 0186 | Accepted Evidence Capsule v1 trust boundary; minimal structural tooling passes Validation 0287, while claim-specific validation and revalidation remain open | Evidence Capsule Trust Boundary and Migration |
+| 0187 | Accepted Monitor-owned root-scheduling reference contract; two safe modes and ten targeted faults modeled without selecting an implementation | Monitor-Owned Root Scheduling Reference Contract |
 
 ## Planned Analysis Notes
 
@@ -282,6 +283,7 @@ Updated: 2026-08-08
 | `final-model-completeness-ledger-v1.json` | Final completion ledger | Machine-readable final model-only completion audit for N-155 |
 | `final-goal-conformance-and-compositional-model-reopen-v1.json` | Accepted architecture audit | Machine-readable N-174 scope correction, reopened requirements, R6 disposition, and model work order |
 | `evidence-capsule-trust-boundary-and-migration-v1.json` | Accepted assurance contract | Machine-readable producer/collector/validator split, capture state, provenance, evidence levels, and migration policy |
+| `monitor-owned-root-scheduling-reference-contract-v1.json` | Accepted model-supported reference contract | Machine-readable N-175 Monitor/Linux ownership split, fairness assumptions, safety/liveness obligations, counterexamples, and non-claims |
 | `terminology-freeze-rename-risk-review-v1.json` | Public vocabulary lock | Machine-readable N-156 terminology freeze, inventory, and alias policy |
 | `sched-exec-lease-p4-pre-entry-risk-gate-v1.json` | P4 pre-entry gate | Machine-readable P4 allow-all/no-denial pre-entry evidence, generated-code review, QEMU matrix, drift, security-diff preflight, and non-claim constraints |
 | `sched-exec-lease-p4-pre-implementation-critical-audit-v1.json` | P4 pause gate | Machine-readable P4 pre-implementation multi-axis audit, hardened fresh drift result, stale global D4 finding, axis verdicts, and reopen criteria |
