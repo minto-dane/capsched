@@ -8,7 +8,7 @@
     "current_phase": "final_compositional_model_reopened",
     "control_repository": {
       "branch": "codex/goal-conformance-and-assurance-repair",
-      "semantic_baseline_revision": "3f04454c4aadbeba41eefa23d4e3821f519910d2",
+      "semantic_baseline_revision": "f15ca0af4bfff5ff624af2931d8aeeeebc145516",
       "reviewed_lineage_revision": "75e34749b94af52338085caced75c44c70f0a1b4",
       "stable_main_revision": "4aa3f5427e1d3649d4de1cadcbcb8f268fb932a9",
       "remote": "https://github.com/minto-dane/capsched"
@@ -152,6 +152,15 @@
         "decision_sha256": "3617a503b103a76e1e4a7b5e90905041f221c94d73b658ba2af901e24a261958",
         "evidence_level": "EC1",
         "allowed_transition": "ROOTSCHED-001.open_to_model_supported"
+      },
+      {
+        "claim_id": "RESIDENCY-001",
+        "run_id": "20260809T060117Z-residency-ec1-deterministic",
+        "capsule_id": "efecb20ac9132caf6e20e6a8faac47704fad6429a48416910be62615163e5314",
+        "validator_result_sha256": "9f4156a60746587a5e6e30583be5fdeeae594655d5babc44f78bc1919dea4e93",
+        "decision_sha256": "534cf2c87219962a23ae3432b4bf0a22ce2429adda85984be333a7f7dfc224fb",
+        "evidence_level": "EC1",
+        "allowed_transition": "RESIDENCY-001.open_to_model_supported"
       }
     ]
   },
@@ -159,7 +168,7 @@
     {
       "order": 1,
       "id": "EVIDENCE-001",
-      "status": "partial_structural_plus_rootsched_ec1",
+      "status": "partial_structural_plus_two_claim_specific_ec1_results",
       "next_artifact": "Claim-specific capsules for successor models and selective historical migration"
     },
     {
@@ -171,35 +180,41 @@
     {
       "order": 3,
       "id": "RESIDENCY-001",
-      "status": "open",
-      "next_artifact": "Global Domain identity plus bounded per-CPU residency model"
+      "status": "model_supported_ec1",
+      "next_artifact": "Dynamic admission and recurring-service refinement"
     },
     {
       "order": 4,
+      "id": "RESIDENCY-DYN-001",
+      "status": "open",
+      "next_artifact": "Dynamic admission/rejection, recurring requests, bounded churn/overflow, and safe rekey model"
+    },
+    {
+      "order": 5,
       "id": "ENTRY-001+CODE-001",
       "status": "open",
       "next_artifact": "Privileged entry, MemoryView/TLB, stack, and executable-integrity composition"
     },
     {
-      "order": 5,
+      "order": 6,
       "id": "STATE-001+SVC-001+MGMT-001",
       "status": "open",
       "next_artifact": "Mutable-state ownership and compromised service/management model"
     },
     {
-      "order": 6,
+      "order": 7,
       "id": "CLUSTER-PART-001",
       "status": "open",
       "next_artifact": "Partition, clock, fencing, migration, and namespace model"
     },
     {
-      "order": 7,
+      "order": 8,
       "id": "COMPOSE-001",
       "status": "open",
       "next_artifact": "Assume/guarantee ledger and architecture refinement composition"
     },
     {
-      "order": 8,
+      "order": 9,
       "id": "GRANULARITY-001",
       "status": "open",
       "next_artifact": "Complete-path security and cost evaluation contract"
@@ -212,9 +227,9 @@
       "text": "Which production Monitor root server refines the accepted cyclic-reservation reference while preserving bounded service and cost efficiency?"
     },
     {
-      "id": "Q-RESIDENCY-OWNER",
+      "id": "Q-RESIDENCY-DYNAMIC",
       "blocking": true,
-      "text": "Which Monitor versus Linux state owns resident-slot admission, eviction, and guaranteed nonresident progress?"
+      "text": "Which dynamic admission/rejection, recurring-request, churn/overflow, generation-rekey, and directory semantics refine the accepted finite Monitor-owned contract?"
     },
     {
       "id": "Q-ENTRY-VIEW",
@@ -242,8 +257,8 @@
     {
       "order": 2,
       "id": "EC-V1",
-      "status": "partial_structural_plus_rootsched_ec1",
-      "text": "Evidence Capsule v1 provides the structural layer; ROOTSCHED-001 now has the first claim-specific Validator and capsule-bound EC1 decision, while successor claims remain open."
+      "status": "partial_structural_plus_two_claim_specific_ec1_results",
+      "text": "Evidence Capsule v1 provides the structural layer; ROOTSCHED-001 and RESIDENCY-001 have separate claim-specific Validators and capsule-bound EC1 decisions, while broader migration and EC2/EC3 remain open."
     },
     {
       "order": 3,
@@ -254,8 +269,20 @@
     {
       "order": 4,
       "id": "RESIDENCY-MODEL",
+      "status": "completed_model_supported_ec1",
+      "text": "Analysis 0188, Formal 0148, and Validation 0289 close finite-reference RESIDENCY model support with a deterministic capsule-bound EC1 decision."
+    },
+    {
+      "order": 5,
+      "id": "RESIDENCY-DYNAMIC-MODEL",
       "status": "next",
-      "text": "Draft the more-global-Domains-than-slots residency and migration model."
+      "text": "Model dynamic feasibility admission/rejection and class changes, recurring request identity/cancellation/coalescing, bounded churn/overflow work, and safe generation saturation/rekey."
+    },
+    {
+      "order": 6,
+      "id": "ENTRY-CODE-MODEL",
+      "status": "pending_after_residency_dynamic",
+      "text": "Compose privileged and nested entry/return with MemoryView/TLB, stacks, CPU incarnation, W^X, code sealing, code epochs, and authorized text mutation."
     }
   ],
   "canonical_files": {
@@ -267,6 +294,7 @@
     "historical_chronology": "capsched-ai/design/compact.md",
     "current_decision": "capsched-ai/decisions/ADR-0012-distinguish-local-model-coverage-from-system-completion.md",
     "evidence_decision": "capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md",
+    "residency_scope_decision": "capsched-ai/decisions/ADR-0014-separate-finite-and-dynamic-residency-claims.md",
     "goal_audit": "capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md",
     "evidence_contract": "capsched-models/analysis/0186-evidence-capsule-trust-boundary-and-migration.md",
     "evidence_tool": "capsched-models/validation/evidence-capsule-v1/evidence_capsule_v1.py",
@@ -276,6 +304,10 @@
     "root_scheduler_model": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootScheduler.tla",
     "root_scheduler_validation": "capsched-models/validation/0288-monitor-root-scheduler-reference-contract-ec1.md",
     "root_scheduler_validator": "capsched-models/validation/validate-monitor-root-scheduler-capsule.py",
+    "residency_analysis": "capsched-models/analysis/0188-global-domain-identity-and-bounded-residency-reference-contract.md",
+    "residency_model": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidency.tla",
+    "residency_validation": "capsched-models/validation/0289-bounded-domain-residency-reference-contract-ec1.md",
+    "residency_validator": "capsched-models/validation/validate-bounded-domain-residency-capsule.py",
     "active_plan": "capsched-models/plans/0006-final-compositional-model-completion-plan.md",
     "assurance_case": "capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md",
     "assurance_register": "capsched-models/assurance/claims.json"

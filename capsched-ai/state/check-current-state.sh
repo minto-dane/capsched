@@ -72,7 +72,8 @@ jq -e '
 	([.evidence[].id] | length == (unique | length)) and
 	(.claims[] | select(.id == "TOP-001") | .status) == "open" and
 	([.claims[].id] as $ids |
-	 ["ROOTSCHED-001", "RESIDENCY-001", "ENTRY-001", "CODE-001",
+	 ["ROOTSCHED-001", "RESIDENCY-001", "RESIDENCY-DYN-001",
+	  "ENTRY-001", "CODE-001",
 	  "STATE-001", "SVC-001", "MGMT-001", "CLUSTER-PART-001",
 	  "COMPOSE-001", "GRANULARITY-001", "EVIDENCE-001"] |
 	 all(. as $id | $ids | index($id) != null))
