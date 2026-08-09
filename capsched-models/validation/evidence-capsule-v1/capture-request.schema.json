@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "domainlease-evidence-capsule-v1-capture-request.schema.json",
+  "title": "DomainLease Evidence Capsule v1 Capture Request",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "capsule_kind",
+    "producer_identity",
+    "experiment_contract",
+    "target_claims",
+    "source_identity",
+    "declared_environment",
+    "completeness_rule",
+    "objects"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "capsule_kind": {
+      "enum": [
+        "formal_validation",
+        "linux_build",
+        "qemu_kunit",
+        "fault_matrix",
+        "performance",
+        "source_drift",
+        "generic"
+      ]
+    },
+    "producer_identity": {
+      "$ref": "#/$defs/token"
+    },
+    "experiment_contract": {
+      "type": "object",
+      "required": [
+        "id",
+        "object_path",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/token"
+        },
+        "object_path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    },
+    "target_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/token"
+      }
+    },
+    "source_identity": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/gitIdentity"
+        },
+        {
+          "$ref": "#/$defs/fixtureIdentity"
+        }
+      ]
+    },
+    "declared_environment": {
+      "type": "object"
+    },
+    "completeness_rule": {
+      "type": "object",
+      "required": [
+        "allow_extra_files",
+        "required_capsule_paths"
+      ],
+      "properties": {
+        "allow_extra_files": {
+          "const": false
+        },
+        "required_capsule_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/safePath"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "objects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "source_path",
+          "capsule_path",
+          "role",
+          "media_type",
+          "required"
+        ],
+        "properties": {
+          "source_path": {
+            "$ref": "#/$defs/safePath"
+          },
+          "capsule_path": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/safePath"
+              },
+              {
+                "pattern": "^(inputs|raw)/"
+              }
+            ]
+          },
+          "role": {
+            "$ref": "#/$defs/token"
+          },
+          "media_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "token": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+-]*$"
+    },
+    "safePath": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*//)(?!.*\\\\)(?!\\.{1,2}(?:/|$))(?!.*/\\.{1,2}(?:/|$))[A-Za-z0-9._+-]+(?:/[A-Za-z0-9._+-]+)*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitObject": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "gitIdentity": {
+      "type": "object",
+      "required": [
+        "kind",
+        "repository",
+        "object_format",
+        "commit",
+        "tree",
+        "parents",
+        "dirty"
+      ],
+      "properties": {
+        "kind": {
+          "const": "git"
+        },
+        "repository": {
+          "$ref": "#/$defs/token"
+        },
+        "object_format": {
+          "enum": [
+            "sha1",
+            "sha256"
+          ]
+        },
+        "commit": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "tree": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "parents": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/gitObject"
+          }
+        },
+        "dirty": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "object_format": {
+                "const": "sha1"
+              }
+            },
+            "required": [
+              "object_format"
+            ]
+          },
+          "then": {
+            "properties": {
+              "commit": {
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "tree": {
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "parents": {
+                "items": {
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "object_format": {
+                "const": "sha256"
+              }
+            },
+            "required": [
+              "object_format"
+            ]
+          },
+          "then": {
+            "properties": {
+              "commit": {
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "tree": {
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "parents": {
+                "items": {
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "fixtureIdentity": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "fixture"
+        },
+        "id": {
+          "$ref": "#/$defs/token"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

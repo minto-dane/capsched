@@ -62,6 +62,11 @@ no new positive promotion gate may consume uncaptured producer summaries
 negative evidence and counterexamples remain usable with explicit provenance
 ```
 
+Current status: the compact state check and minimal Evidence Capsule v1
+Collector/structural Verifier are complete. EVIDENCE-001 remains open because
+claim-specific Validators, approval binding, historical migration, and EC2/EC3
+evidence do not yet exist.
+
 ## Phase B: Root Execution and Scale
 
 ### B1: Adversarial Root Scheduler
@@ -304,9 +309,10 @@ polling a healthy long-running job.
 
 ## Immediate Next Artifact
 
-The next semantic model is the adversarial Monitor root scheduler. Evidence
-Capsule v1 and compact state repair are prerequisites for accepting its
-positive validation result, but they do not block drafting the model itself.
+The next semantic model is the adversarial Monitor root scheduler. Its
+claim-specific Validator is the first consumer of Evidence Capsule v1. The
+bootstrap container is ready; a positive root-scheduler result still requires
+captured raw model/tool output and a capsule-bound decision.
 
 ## Non-Claims
 

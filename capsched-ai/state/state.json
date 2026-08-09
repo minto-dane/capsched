@@ -137,7 +137,7 @@
   "evidence": {
     "policy": "ADR-0013_validator_owned_immutable_capsules",
     "contract_status": "defined",
-    "tooling_status": "not_implemented",
+    "tooling_status": "partial",
     "reviewed_positive_promotion_credit": "needs_revalidation",
     "reviewed_negative_results": "blocking_signal_pending_reproduction",
     "exact_git_objects": "retained_reproducible_input",
@@ -148,8 +148,8 @@
     {
       "order": 1,
       "id": "EVIDENCE-001",
-      "status": "contract_defined",
-      "next_artifact": "Evidence Capsule v1 JSON schemas, Collector, and mutation fixtures"
+      "status": "minimal_structural_tooling",
+      "next_artifact": "ROOTSCHED claim-specific Validator, result, and capsule-bound decision"
     },
     {
       "order": 2,
@@ -231,13 +231,13 @@
     {
       "order": 2,
       "id": "EC-V1",
-      "status": "pending",
-      "text": "Implement Evidence Capsule v1 schemas and a capture-first structural validator."
+      "status": "completed_minimal_structural",
+      "text": "Evidence Capsule v1 schemas, capture-first Collector, structural Verifier, and 38 bootstrap fixtures are implemented; claim-specific validation remains open."
     },
     {
       "order": 3,
       "id": "ROOTSCHED-MODEL",
-      "status": "pending",
+      "status": "next",
       "text": "Draft and validate the adversarial Monitor root scheduler model."
     },
     {
@@ -258,6 +258,9 @@
     "evidence_decision": "capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md",
     "goal_audit": "capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md",
     "evidence_contract": "capsched-models/analysis/0186-evidence-capsule-trust-boundary-and-migration.md",
+    "evidence_tool": "capsched-models/validation/evidence-capsule-v1/evidence_capsule_v1.py",
+    "evidence_tool_readme": "capsched-models/validation/evidence-capsule-v1/README.md",
+    "evidence_bootstrap_validation": "capsched-models/validation/0287-evidence-capsule-v1-bootstrap-structural-validation.md",
     "active_plan": "capsched-models/plans/0006-final-compositional-model-completion-plan.md",
     "assurance_case": "capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md",
     "assurance_register": "capsched-models/assurance/claims.json"

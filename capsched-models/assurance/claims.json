@@ -995,12 +995,13 @@
       "claim": "Positive promotion decisions are derived from validator-captured immutable bytes with transitive source, configuration, tool, command, image, raw-output, and result provenance.",
       "evidence": [
         "E-GOAL-CONFORMANCE-001",
-        "E-EVIDENCE-CAPSULE-001"
+        "E-EVIDENCE-CAPSULE-001",
+        "E-EVIDENCE-CAPSULE-TOOL-001"
       ],
       "gaps": [
-        "No repository-wide Evidence Capsule contract.",
+        "The minimal Evidence Capsule v1 Collector and structural Verifier exist, but no claim-specific Validator or Approver pipeline exists.",
         "Affected positive gates have not been migrated or revalidated.",
-        "AI recovery state is not HEAD-fresh at the reviewed revision."
+        "No EC2 independent implementation or EC3 external reproduction exists."
       ],
       "forbidden_l0": false
     }
@@ -1822,7 +1823,17 @@
       "defines": [
         "EVIDENCE-001"
       ],
-      "limitation": "Defines the validator-owned capture and migration contract only. Capsule tooling, historical migration, independent reproduction, and positive promotion evidence remain absent."
+      "limitation": "Defines the validator-owned capture and migration contract. Minimal structural tooling now exists, but claim-specific validation, historical migration, independent reproduction, and positive promotion evidence remain absent."
+    },
+    {
+      "id": "E-EVIDENCE-CAPSULE-TOOL-001",
+      "kind": "bootstrap_structural_validation",
+      "record": "capsched-models/validation/0287-evidence-capsule-v1-bootstrap-structural-validation.md",
+      "supports": [],
+      "defines": [
+        "EVIDENCE-001"
+      ],
+      "limitation": "Six positive and 32 negative fixtures validate only the minimal capture-first container and structural Verifier. This bootstrap result is not an EC1 claim-specific decision or positive assurance promotion."
     },
     {
       "id": "HAZ-ENDP-001",

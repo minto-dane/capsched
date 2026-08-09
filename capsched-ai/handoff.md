@@ -130,18 +130,21 @@ recompute summaries from retained raw evidence
 bind approval to the capsule id
 ```
 
-The contract exists; schemas, Collector tooling, mutation fixtures, and
-historical migration are not yet implemented. Codex Security plugin completion
-is not a project gate. Its non-sealed diagnostic run is not assurance evidence.
+The v1 schemas, capture-first Collector, structural Verifier, and bootstrap
+mutation fixtures now exist under `validation/evidence-capsule-v1/`.
+Validation 0287 passes six positive and 32 fail-closed cases. This is only the
+minimal structural layer: no claim-specific Validator/Approver, historical
+migration, EC2 independence, or EC3 reproduction is complete. Codex Security
+plugin completion is not a project gate, and its non-sealed diagnostic run is
+not assurance evidence.
 
 ## Next Order
 
-1. Complete and commit compact state v2; run `state/check-current-state.sh`.
-2. Implement Evidence Capsule v1 schemas, Collector, and mutation fixtures.
-3. Draft the adversarial Monitor root scheduler model.
-4. Draft the global Domain identity and bounded residency model.
-5. Compose entry, MemoryView/TLB, stack, and code-integrity semantics.
-6. Continue Plan 0006 through state/service/management, cluster partitions,
+1. Draft the adversarial Monitor root scheduler model and its claim-specific
+   capsule Validator.
+2. Draft the global Domain identity and bounded residency model.
+3. Compose entry, MemoryView/TLB, stack, and code-integrity semantics.
+4. Continue Plan 0006 through state/service/management, cluster partitions,
    composition, and the full cost contract.
 
 ## Do Not Do Yet

@@ -833,17 +833,18 @@ Positive promotion decisions consume immutable bytes captured by the validator
 with transitive source/config/tool/command/image/raw-output provenance. A
 producer-authored summary is not a validation oracle.
 
-Current status: Contract-defined; tooling and migration open
+Current status: Contract-defined; minimal structural tooling implemented;
+claim-specific validation and migration open
 
 Current evidence:
 
 - `capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md`
 - `analysis/0186-evidence-capsule-trust-boundary-and-migration.md`
+- `validation/0287-evidence-capsule-v1-bootstrap-structural-validation.md`
 
 Open gaps:
 
-- no capsule JSON schemas or Collector implementation
-- no structural mutation test suite
+- no claim-specific Validator or Approver implementation
 - no historical positive-gate migration ledger
 - no EC2/EC3 independent reproduction
 

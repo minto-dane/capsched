@@ -1,7 +1,7 @@
 # Analysis 0186: Evidence Capsule Trust Boundary and Migration
 
-Status: Accepted assurance contract; tooling and historical revalidation remain
-open
+Status: Accepted assurance contract; minimal structural tooling implemented;
+claim-specific validation and historical revalidation remain open
 
 Date: 2026-08-08
 
@@ -74,9 +74,12 @@ schema_version
 capsule_kind
 created_at
 collector_identity
+collector_implementation_sha256
 producer_identity
+capture_source_root_id
+capture_limits
 target_claims
-experiment_contract_id
+experiment_contract
 source_identity
 objects[]
 declared_environment
@@ -95,6 +98,11 @@ producer_path_or_source
 capture_method
 required
 ```
+
+For a captured object from a declared clean Git source, the row additionally
+records commit-tree mode, blob object id, blob size, and SHA-256 of bytes read
+independently through Git. A pre/post clean status observation alone is not a
+source-byte binding.
 
 `capsule_id` is computed from canonical core-manifest bytes after every required
 object is captured and hashed. The stored manifest may carry the id in a
@@ -215,10 +223,11 @@ historical result is wrong.
 
 ## Rollout Order
 
-1. Define JSON schemas for core manifest, result, and decision.
+1. Define JSON schemas for core manifest, result, and decision. Complete.
 2. Implement a small Collector that creates fresh capsules and rejects unsafe
-   paths before any validator reads inputs.
-3. Implement structural validation and mutation fixtures.
+   paths before any validator reads inputs. Complete for v1 bootstrap.
+3. Implement structural validation and mutation fixtures. Complete for v1
+   bootstrap; see Validation 0287.
 4. Migrate the next root-scheduler formal run first.
 5. Migrate R6 source/build/E3 positive gates only if R6 remains a candidate
    after residency and composition modeling.
@@ -233,7 +242,10 @@ already been rejected, unless their result is used by a successor decision.
 EVIDENCE-001 status:
   contract_defined
 
-capsule tooling implemented:
+minimal capture and structural verification:
+  true
+
+claim-specific validator and approver:
   false
 
 historical positive promotion credit migrated:
@@ -243,8 +255,14 @@ new positive gate permitted without capsule:
   false
 ```
 
+The implementation is in "validation/evidence-capsule-v1/". Validation 0287
+passes six positive and 32 fail-closed fixtures. This closes only the
+capture-first structural layer. It does not discharge EVIDENCE-001 or grant
+promotion authority to a producer self-check.
+
 ## Non-Claims
 
-This analysis is not a capsule implementation, validation result, migration
-completion, cryptographic attestation, independent reproduction, or approval of
-any Linux, Monitor, R6, performance, protection, or deployment claim.
+This analysis plus Validation 0287 now has a minimal capsule implementation and
+bootstrap structural result. It is not a claim-specific validator, migration
+completion, cryptographic attestation, independent reproduction, or approval
+of any Linux, Monitor, R6, performance, protection, or deployment claim.

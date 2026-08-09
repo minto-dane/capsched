@@ -90,6 +90,7 @@ patch or binary diff identity where relevant
 configuration bytes
 tool and helper bytes plus versions
 complete command and declared environment
+validator-owned request/object/count/total capture limits
 architecture and execution substrate
 kernel image, initramfs, module, and firmware identities
 QEMU/VM/container image identity

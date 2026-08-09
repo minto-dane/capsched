@@ -191,7 +191,7 @@ Updated: 2026-08-08
 | 0183 | R6-E4 local selector measurement plan accepted; assurance promotion paused by 0185 | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Plan |
 | 0184 | Exact disposable R6-E4 source and regression lineage retained; no live scheduler or system claim | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Source |
 | 0185 | Accepted goal-conformance audit; N-155 scoped, system composition reopened, R6 treated only as a local residency candidate | Final Goal Conformance and Compositional Model Reopen |
-| 0186 | Accepted Evidence Capsule v1 trust boundary and historical migration contract; tooling and revalidation remain open | Evidence Capsule Trust Boundary and Migration |
+| 0186 | Accepted Evidence Capsule v1 trust boundary; minimal structural tooling passes Validation 0287, while claim-specific validation and revalidation remain open | Evidence Capsule Trust Boundary and Migration |
 
 ## Planned Analysis Notes
 

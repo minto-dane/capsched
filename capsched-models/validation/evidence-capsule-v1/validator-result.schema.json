@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "domainlease-evidence-capsule-v1-validator-result.schema.json",
+  "title": "DomainLease Evidence Capsule v1 Validator Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "capsule_id",
+    "validator_id",
+    "validator_implementation_sha256",
+    "contract_id",
+    "contract_sha256",
+    "status",
+    "checks",
+    "raw_objects_consumed",
+    "derived_objects_produced",
+    "unknown_classifications",
+    "failure_reasons"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "capsule_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "validator_id": {
+      "$ref": "#/$defs/token"
+    },
+    "validator_implementation_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "contract_id": {
+      "$ref": "#/$defs/token"
+    },
+    "contract_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "status": {
+      "enum": [
+        "Valid",
+        "Invalid",
+        "Incomplete"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "witness"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/token"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "unknown"
+            ]
+          },
+          "witness": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "raw_objects_consumed": {
+      "$ref": "#/$defs/pathArray"
+    },
+    "derived_objects_produced": {
+      "$ref": "#/$defs/pathArray"
+    },
+    "unknown_classifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "failure_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "token": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "safePath": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*//)(?!.*\\\\)(?!\\.{1,2}(?:/|$))(?!.*/\\.{1,2}(?:/|$))[A-Za-z0-9._+-]+(?:/[A-Za-z0-9._+-]+)*$"
+    },
+    "pathArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/safePath"
+      }
+    }
+  },
+  "additionalProperties": false
+}
