@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated": "2026-08-08",
+  "updated": "2026-08-09",
   "project": {
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
@@ -8,7 +8,7 @@
     "current_phase": "final_compositional_model_reopened",
     "control_repository": {
       "branch": "codex/goal-conformance-and-assurance-repair",
-      "semantic_baseline_revision": "8fa312728240edaa256746a235e387c90ede7956",
+      "semantic_baseline_revision": "3f04454c4aadbeba41eefa23d4e3821f519910d2",
       "reviewed_lineage_revision": "75e34749b94af52338085caced75c44c70f0a1b4",
       "stable_main_revision": "4aa3f5427e1d3649d4de1cadcbcb8f268fb932a9",
       "remote": "https://github.com/minto-dane/capsched"
@@ -142,20 +142,31 @@
     "reviewed_negative_results": "blocking_signal_pending_reproduction",
     "exact_git_objects": "retained_reproducible_input",
     "codex_security_scan_required": false,
-    "codex_security_scan_note": "A non-sealed scan was diagnostic input only; project progress does not depend on plugin completion."
+    "codex_security_scan_note": "A non-sealed scan was diagnostic input only; project progress does not depend on plugin completion.",
+    "claim_specific_results": [
+      {
+        "claim_id": "ROOTSCHED-001",
+        "run_id": "20260809T043801Z-rootsched-ec1",
+        "capsule_id": "d805b92acee2bca93a965e63925f7f48b8bf8d518043b0c55edf9ca3a3210abe",
+        "validator_result_sha256": "99b63b6cf050b972ae1a218e2ff7adf4de9e66f490b56f83b5d55508f301ba87",
+        "decision_sha256": "3617a503b103a76e1e4a7b5e90905041f221c94d73b658ba2af901e24a261958",
+        "evidence_level": "EC1",
+        "allowed_transition": "ROOTSCHED-001.open_to_model_supported"
+      }
+    ]
   },
   "planned_tracks": [
     {
       "order": 1,
       "id": "EVIDENCE-001",
-      "status": "minimal_structural_tooling",
-      "next_artifact": "ROOTSCHED claim-specific Validator, result, and capsule-bound decision"
+      "status": "partial_structural_plus_rootsched_ec1",
+      "next_artifact": "Claim-specific capsules for successor models and selective historical migration"
     },
     {
       "order": 2,
       "id": "ROOTSCHED-001",
-      "status": "open",
-      "next_artifact": "Adversarial Linux plus Monitor root scheduler model"
+      "status": "model_supported_ec1",
+      "next_artifact": "Production algorithm and architecture refinement after residency/composition"
     },
     {
       "order": 3,
@@ -197,8 +208,8 @@
   "open_questions": [
     {
       "id": "Q-ROOT-POLICY",
-      "blocking": true,
-      "text": "Which minimal Monitor root server algorithm provides bounded guaranteed-Domain service without importing Linux policy complexity?"
+      "blocking": false,
+      "text": "Which production Monitor root server refines the accepted cyclic-reservation reference while preserving bounded service and cost efficiency?"
     },
     {
       "id": "Q-RESIDENCY-OWNER",
@@ -231,19 +242,19 @@
     {
       "order": 2,
       "id": "EC-V1",
-      "status": "completed_minimal_structural",
-      "text": "Evidence Capsule v1 schemas, capture-first Collector, structural Verifier, and 38 bootstrap fixtures are implemented; claim-specific validation remains open."
+      "status": "partial_structural_plus_rootsched_ec1",
+      "text": "Evidence Capsule v1 provides the structural layer; ROOTSCHED-001 now has the first claim-specific Validator and capsule-bound EC1 decision, while successor claims remain open."
     },
     {
       "order": 3,
       "id": "ROOTSCHED-MODEL",
-      "status": "next",
-      "text": "Draft and validate the adversarial Monitor root scheduler model."
+      "status": "completed_model_supported_ec1",
+      "text": "Analysis 0187, Formal 0147, and Validation 0288 close ROOTSCHED model support with a capsule-bound EC1 decision."
     },
     {
       "order": 4,
       "id": "RESIDENCY-MODEL",
-      "status": "pending",
+      "status": "next",
       "text": "Draft the more-global-Domains-than-slots residency and migration model."
     }
   ],
@@ -261,6 +272,10 @@
     "evidence_tool": "capsched-models/validation/evidence-capsule-v1/evidence_capsule_v1.py",
     "evidence_tool_readme": "capsched-models/validation/evidence-capsule-v1/README.md",
     "evidence_bootstrap_validation": "capsched-models/validation/0287-evidence-capsule-v1-bootstrap-structural-validation.md",
+    "root_scheduler_analysis": "capsched-models/analysis/0187-monitor-owned-root-scheduling-reference-contract.md",
+    "root_scheduler_model": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootScheduler.tla",
+    "root_scheduler_validation": "capsched-models/validation/0288-monitor-root-scheduler-reference-contract-ec1.md",
+    "root_scheduler_validator": "capsched-models/validation/validate-monitor-root-scheduler-capsule.py",
     "active_plan": "capsched-models/plans/0006-final-compositional-model-completion-plan.md",
     "assurance_case": "capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md",
     "assurance_register": "capsched-models/assurance/claims.json"

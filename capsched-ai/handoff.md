@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-08-08
+Updated: 2026-08-09
 
 This file is current-state context only. Detailed chronology is in
 `state/events.jsonl`, `design/compact.md`, focused model notes, and Git history.
@@ -26,6 +26,9 @@ v1 claim inventory/local-contract coverage:
 final compositional model:
   reopened and incomplete
 
+ROOTSCHED-001:
+  model-supported at EC1; production refinement and composition remain open
+
 Linux implementation:
   historical scaffold and experimental prototypes only
 
@@ -37,7 +40,8 @@ protection/cost/deployment claims:
 ```
 
 ADR-0012 and Analysis 0185 are authoritative. They preserve N-155 as a narrow
-historical result and add the missing system requirements.
+historical result and add the missing system requirements. Analysis 0187,
+Formal 0147, and Validation 0288 close only the ROOTSCHED model-support step.
 
 ## Current Git State
 
@@ -47,8 +51,8 @@ Project-control work is isolated on:
 branch:
   codex/goal-conformance-and-assurance-repair
 
-semantic baseline before this state repair:
-  8fa312728240edaa256746a235e387c90ede7956
+semantic baseline before this state update:
+  3f04454c4aadbeba41eefa23d4e3821f519910d2
 
 reviewed prior lineage:
   75e34749b94af52338085caced75c44c70f0a1b4
@@ -131,18 +135,48 @@ bind approval to the capsule id
 ```
 
 The v1 schemas, capture-first Collector, structural Verifier, and bootstrap
-mutation fixtures now exist under `validation/evidence-capsule-v1/`.
-Validation 0287 passes six positive and 32 fail-closed cases. This is only the
-minimal structural layer: no claim-specific Validator/Approver, historical
-migration, EC2 independence, or EC3 reproduction is complete. Codex Security
-plugin completion is not a project gate, and its non-sealed diagnostic run is
-not assurance evidence.
+mutation fixtures exist under `validation/evidence-capsule-v1/`. Validation
+0287 passes six positive and 32 fail-closed cases. ROOTSCHED is the first
+claim-specific consumer: its Validator rechecks captured bytes and raw TLC
+results, reruns all 12 captured configurations only after trust checks pass,
+and permits only `ROOTSCHED-001.open_to_model_supported`.
+
+```text
+run:       20260809T043801Z-rootsched-ec1
+capsule:   d805b92acee2bca93a965e63925f7f48b8bf8d518043b0c55edf9ca3a3210abe
+result:    99b63b6cf050b972ae1a218e2ff7adf4de9e66f490b56f83b5d55508f301ba87
+decision:  3617a503b103a76e1e4a7b5e90905041f221c94d73b658ba2af901e24a261958
+```
+
+This is EC1 model evidence, not Monitor or Linux implementation evidence.
+Historical migration, successor claim Validators, EC2 independence, and EC3
+reproduction remain open. Codex Security plugin completion is not a project
+gate, and its non-sealed diagnostic run is not assurance evidence.
+
+## ROOTSCHED Result
+
+The accepted reference contract is a fixed-frame Monitor-owned lower bound:
+
+```text
+management reservation -> guaranteed Domain 1 -> guaranteed Domain 2
+                       -> best-effort slack
+```
+
+The Monitor owns admission, epochs, root budget/lease/timer, reserved-slot
+selection, tokens, and authoritative handoff. Hostile Linux may propose hints
+and schedule within the active Domain, but cannot mint, extend, or suppress
+root authority. The model establishes bounded recurring service for admitted
+guaranteed Domains under its explicit fairness assumptions. It does not select
+the production scheduler, prove useful application progress, establish a
+wall-clock bound, or support protection/performance/cost claims.
 
 ## Next Order
 
-1. Draft the adversarial Monitor root scheduler model and its claim-specific
-   capsule Validator.
-2. Draft the global Domain identity and bounded residency model.
+1. Draft the global Domain identity and bounded per-CPU residency model,
+   including admission, eviction, migration, stale-slot fencing, and progress
+   when global Domains outnumber resident slots.
+2. Build its claim-specific EC1 Validator and capsule only after the contract
+   and counterexample plan are frozen.
 3. Compose entry, MemoryView/TLB, stack, and code-integrity semantics.
 4. Continue Plan 0006 through state/service/management, cluster partitions,
    composition, and the full cost contract.
@@ -176,6 +210,10 @@ Do not poll a healthy long-running job merely to keep a chat session alive.
 2. this file
 3. `../capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md`
 4. `../capsched-models/plans/0006-final-compositional-model-completion-plan.md`
-5. focused artifacts for the next requirement only
+5. focused RESIDENCY-001 artifacts for the next requirement only
+
+Read Analysis 0187 and Validation 0288 only when ROOTSCHED assumptions or its
+composition interface are needed; they are closed reference context, not the
+next work queue.
 
 Use `design/compact.md` only for historical detail.
