@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-07-18
+Updated: 2026-08-08
 
 ## Current Analysis Notes
 
@@ -181,6 +181,16 @@ Updated: 2026-07-18
 | 0173 | R4-E1 fixes finite storage, the rq-locked irq-work to unbound-work bridge, cursor restart/late admission, one-projection recovery, current observation, and sleepable hotplug/RCU drain before layout source | SchedExecLease P5A-R4 E1 Dispatch and Lifetime Evidence Plan |
 | 0174 | R4-E3 fixes the exact direct-E2-child same-TU synthetic KUnit boundary, independent receipts/oracle, 36 forced concurrency cases, six fault sites, and six dual-architecture diagnostic boots | SchedExecLease P5A-R4 E3 Concurrency and Diagnostic Evidence Plan |
 | 0175 | Post-N-135 gate adds the exact claim-ledger row and fresh touched-path drift proof, accepts only the disposable virtual synthetic R4-E3 boundary, and authorizes source-free R4-E4 plan drafting | SchedExecLease P5A-R4 Post-N135 Authorization Gate |
+| 0176 | Source-free R4-E4 local-quantum rejection plan; later completed as valid negative R4 evidence | SchedExecLease P5A-R4 E4 Local-Quantum Measurement Plan |
+| 0177 | R5 successor selected from the R4 rejection; later rejected by selector-coherence analysis | SchedExecLease P5A-R5 Generation-Sealed Immutable Projection |
+| 0178 | R5 rejected before source because ordinary EEVDF progress invalidates an immutable selector view | SchedExecLease P5A-R5 E1 EEVDF Selector-Coherence Rejection |
+| 0179 | R6 bounded local selector selected as a source-free candidate; final architecture role reopened by 0185 | SchedExecLease P5A-R6 Sealed Masked Domain Forest |
+| 0180 | R6-E1 bounded layout and local fairness evidence plan accepted for disposable probing | SchedExecLease P5A-R6 E1 Domain Forest Evidence Plan |
+| 0181 | R6-E3 source-free correctness/concurrency plan accepted for exact disposable source | SchedExecLease P5A-R6 E3 Correctness and Concurrency Evidence Plan |
+| 0182 | R6 post-E3 authorization boundary closed for exact disposable evidence only | SchedExecLease P5A-R6 Post-E3 Authorization Threat Boundary |
+| 0183 | R6-E4 local selector measurement plan accepted; assurance promotion paused by 0185 | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Plan |
+| 0184 | Exact disposable R6-E4 source and regression lineage retained; no live scheduler or system claim | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Source |
+| 0185 | Accepted goal-conformance audit; N-155 scoped, system composition reopened, R6 treated only as a local residency candidate | Final Goal Conformance and Compositional Model Reopen |
 
 ## Planned Analysis Notes
 
@@ -269,6 +279,7 @@ Updated: 2026-07-18
 | `side-channel-cotenancy-policy-gate-v1.json` | Draft model gate | Machine-readable explicit co-tenancy and side-channel policy contract for N-153 |
 | `evaluation-contract-gate-v1.json` | Draft model gate | Machine-readable production protection and cost-efficiency evaluation contract for N-154 |
 | `final-model-completeness-ledger-v1.json` | Final completion ledger | Machine-readable final model-only completion audit for N-155 |
+| `final-goal-conformance-and-compositional-model-reopen-v1.json` | Accepted architecture audit | Machine-readable N-174 scope correction, reopened requirements, R6 disposition, and model work order |
 | `terminology-freeze-rename-risk-review-v1.json` | Public vocabulary lock | Machine-readable N-156 terminology freeze, inventory, and alias policy |
 | `sched-exec-lease-p4-pre-entry-risk-gate-v1.json` | P4 pre-entry gate | Machine-readable P4 allow-all/no-denial pre-entry evidence, generated-code review, QEMU matrix, drift, security-diff preflight, and non-claim constraints |
 | `sched-exec-lease-p4-pre-implementation-critical-audit-v1.json` | P4 pause gate | Machine-readable P4 pre-implementation multi-axis audit, hardened fresh drift result, stale global D4 finding, axis verdicts, and reopen criteria |

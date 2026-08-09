@@ -4,6 +4,15 @@ Status: Active
 
 Date: 2026-06-26
 
+Updated: 2026-08-08
+
+## Current Scope Notice
+
+ADR-0012 and Analysis 0185 reopen final compositional-model completeness. The
+earlier N-155 result remains historical evidence that the v1 claim inventory,
+local contracts, and overclaim gates were covered. It is not evidence that the
+component models compose into this top-level claim.
+
 ## Top-Level Production Claim
 
 ```text
@@ -69,23 +78,35 @@ Required children:
 ```text
 ACT-001    Non-forgeable Domain activation
 EXEC-001   No CPU execution without runnable authority
+ROOTSCHED-001 Monitor-owned root scheduling and guaranteed-Domain progress
+RESIDENCY-001 Global Domain identity with bounded per-CPU residency
 BUDGET-001 CPU and service execution cannot exceed root budget
 ENDP-001   Resource access requires typed endpoint authority
 ASYNC-001  Async work preserves caller provenance and authority
 MEM-001    Other Domain memory and mutable kernel state are unmapped
 TLB-001    No stale direct-map or TLB translation crosses activation/revoke
+ENTRY-001  Privileged entry/return preserves Domain and MemoryView authority
+CODE-001   Shared executable code is sealed, W^X, and versioned
+STATE-001  Every privileged mutable page has one explicit owner/class
+SVC-001    Compromised service Domains remain endpoint-bounded
+MGMT-001   Management, signing, recovery, and node-root trust are separated
 PCACHE-001 Mutable page-cache state is per-Domain or service-mediated
 DEV-001    Queue submit, DMA, IRQ, and rate/budget revoke as one lease
 REVOKE-001 Epoch revoke invalidates all active and delayed authority
 CLUSTER-001 Cluster leases compile into node-local authority before use
+CLUSTER-PART-001 Partition, clock, fencing, and migration semantics are safe
 COMPAT-001 Linux ABI and existing policy substrates remain compatible
 TCB-001    Service domains and monitor remain smaller than VM/VMM attack area
 SIDE-001   Co-tenancy and side-channel policy is explicit
 EVAL-001   Claims are tested against exploit and cost baselines
+GRANULARITY-001 Process-through-container granularity has a cost envelope
+COMPOSE-001 Component contracts compose into the hostile-kernel system claim
+EVIDENCE-001 Positive gates consume validator-owned immutable evidence
 ```
 
-The top-level claim is blocked until at least ACT, EXEC, BUDGET, ENDP, ASYNC,
-MEM, TLB, DEV, REVOKE, TCB, and EVAL have production evidence.
+The top-level claim is blocked until every hard-boundary child has composed
+semantic support and then production evidence. A checked local component model
+does not discharge a successor composition claim.
 
 ## Claim Details
 
@@ -642,7 +663,7 @@ shared Linux plus monitor-backed Domains improves or preserves attack surface
 while reducing cost.
 ```
 
-Current status: Model-supported
+Current status: Contract-defined; local gate checked
 
 Current evidence:
 
@@ -667,7 +688,7 @@ CPU core, SMT, cache, NUMA, device, and queue co-tenancy decisions are explicit
 Domain policy and do not accidentally weaken hard boundaries.
 ```
 
-Current status: Model-supported
+Current status: Contract-defined; local gate checked
 
 Current evidence:
 
@@ -692,7 +713,7 @@ CapSched-H provides cross-Domain protection comparable to VM boundaries and
 better cost efficiency for selected datacenter workloads.
 ```
 
-Current status: Model-supported
+Current status: Contract-defined; no evaluation executed
 
 Current evidence:
 
@@ -713,7 +734,8 @@ Open gaps:
 Current status:
 
 ```text
-model-only goal: complete
+v1 claim-inventory/local-contract coverage: historically complete
+final compositional model: reopened and incomplete
 production protection: not complete
 ```
 
@@ -722,7 +744,7 @@ Current evidence:
 - `formal/0087-final-model-completeness-ledger-model/`
 - `validation/0126-final-model-completeness-ledger-tlc.md`
 
-The final ledger records:
+The historical ledger records:
 
 ```text
 14 top-level children are model-supported.
@@ -730,10 +752,85 @@ The final ledger records:
 0 model-only blockers remain open.
 ```
 
-This closes the current modeling goal. It does not close `TOP-001` as a
-production protection claim, because implementation, monitor verification,
-runtime coverage, exploit-containment tests, and cost/performance evaluation
-remain future work.
+That result closes only the rule declared by N-155. Analysis 0185 identifies
+system obligations that were absent from the inventory, and ADR-0012 prohibits
+using the ledger as a system-composition proof. It does not close `TOP-001` as
+a semantic or production claim.
+
+## Reopened System Claims
+
+All claims in this section are Open. `E-GOAL-CONFORMANCE-001` is gap evidence,
+not evidence that any claim is satisfied.
+
+### ROOTSCHED-001: Monitor-Owned Root Scheduling
+
+Linux may propose candidates and schedule within an active Domain, but cannot
+extend, suppress, or forge root leases. The Monitor must stop expired or
+revoked execution and eventually select another eligible guaranteed Domain
+without trusting Linux scheduler state.
+
+### RESIDENCY-001: Global Identity with Bounded Local Residency
+
+Global Domain cardinality is not bounded by R6's 64 slots. A bounded per-CPU
+resident slot maps by generation to an exact Monitor-owned DomainID and epoch.
+Admission, eviction, reuse, migration, hotplug, overflow, and churn must not
+alias authority or starve admitted guaranteed Domains.
+
+### ENTRY-001: Privileged Entry and Return Integrity
+
+Syscall, exception, IRQ, NMI-class, nested entry, and return transitions use the
+correct Domain, MemoryView, epoch, stack, and per-CPU state. A stale view or
+return context cannot cross a Domain boundary.
+
+### CODE-001: Shared Executable Integrity
+
+Shared kernel executable pages are Monitor-verified, read-only, W^X, and
+versioned. Modules, livepatch, alternatives/static keys, ftrace/kprobe,
+text-poke, and JIT paths cannot give a Domain writable executable authority
+over another Domain.
+
+### STATE-001: Exhaustive Mutable-State Ownership
+
+Every mutable privileged page is Domain-private, typed-service-owned,
+Monitor-owned, or an explicitly shared typed buffer. Unknown ownership is not
+mapped into a Domain view.
+
+### SVC-001: Service Compromise Containment
+
+Arbitrary kernel-context compromise of one service Domain is bounded by typed
+endpoint operations, caller-frozen authority intersection, explicit buffers,
+service-local objects, budgets, and Monitor receipts.
+
+### MGMT-001: Management and Recovery Trust Split
+
+Offline signing roots, online management, node Monitors, management Domains,
+key rotation, and recovery authority have explicit compromise and recovery
+semantics rather than one ambient root trust assumption.
+
+### CLUSTER-PART-001: Partition-Aware Cluster Authority
+
+Node-local leases remain safe under partitions, local clock assumptions,
+delayed/reordered/duplicated messages, restart, fencing, migration, and
+namespace recovery. The maximum stale-authority window is explicit.
+
+### COMPOSE-001: Component Contract Composition
+
+Scheduler, Monitor, memory, entry, async, service, device, revoke, and cluster
+models publish compatible assumptions, guarantees, state ownership, visible
+actions, and refinement mappings. No component assumption is silently treated
+as another component's guarantee.
+
+### GRANULARITY-001: Security and Cost Envelope
+
+Process-through-container Domain granularity is evaluated on the complete
+activation, MemoryView, TLB, service, async, and device path against matched
+container, KVM, and microVM security envelopes.
+
+### EVIDENCE-001: Validator-Owned Positive Evidence
+
+Positive promotion decisions consume immutable bytes captured by the validator
+with transitive source/config/tool/command/image/raw-output provenance. A
+producer-authored summary is not a validation oracle.
 
 ## Evidence Index
 
@@ -774,6 +871,7 @@ remain future work.
 | E-EVAL-CONTRACT-001 | TLA validation | `validation/0125-evaluation-contract-gate-tlc.md` | EVAL |
 | E-FINAL-MODEL-COMPLETION-001 | TLA validation | `validation/0126-final-model-completeness-ledger-tlc.md` | model-only goal, no production subclaim |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
+| E-GOAL-CONFORMANCE-001 | Architecture gap audit | `analysis/0185-final-goal-conformance-and-compositional-model-reopen.md` | Reopens ROOTSCHED, RESIDENCY, ENTRY, CODE, STATE, SVC, MGMT, CLUSTER-PART, COMPOSE, GRANULARITY, EVIDENCE |
 
 ## Counterexample and Negative Evidence Log
 

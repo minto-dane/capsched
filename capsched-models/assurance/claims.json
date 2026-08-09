@@ -1,10 +1,11 @@
 {
   "schema_version": 1,
-  "updated": "2026-07-02",
-  "scope": "CapSched-H production assurance case with Linux-only L0 prototype boundaries",
+  "updated": "2026-08-08",
+  "scope": "DomainLease-H production assurance case with Linux-only prototype boundaries and reopened final-system composition requirements",
   "status_legend": {
     "open": "Required for the final goal but not established.",
-    "model_supported": "Supported by small or decomposed semantic models.",
+    "model_supported": "Supported by small or decomposed semantic models; this does not imply system composition.",
+    "contract_defined": "A requirement or acceptance contract exists, but the claimed system behavior is not yet semantically established.",
     "prototype_evidenced": "Supported by Linux compatibility or integration evidence only.",
     "protection_evidenced": "Supported by monitor-backed production implementation and validation.",
     "forbidden_for_l0": "Must not be claimed by Linux-only prototypes."
@@ -19,19 +20,30 @@
       "children": [
         "ACT-001",
         "EXEC-001",
+        "ROOTSCHED-001",
+        "RESIDENCY-001",
         "BUDGET-001",
         "ENDP-001",
         "ASYNC-001",
         "MEM-001",
         "TLB-001",
+        "ENTRY-001",
+        "CODE-001",
+        "STATE-001",
+        "SVC-001",
+        "MGMT-001",
         "PCACHE-001",
         "DEV-001",
         "REVOKE-001",
         "CLUSTER-001",
+        "CLUSTER-PART-001",
         "COMPAT-001",
         "TCB-001",
         "SIDE-001",
-        "EVAL-001"
+        "EVAL-001",
+        "GRANULARITY-001",
+        "COMPOSE-001",
+        "EVIDENCE-001"
       ],
       "evidence": [
         "E-MAP-001"
@@ -39,7 +51,12 @@
       "gaps": [
         "No monitor implementation.",
         "No per-Domain mutable kernel state implementation.",
-        "No exploit-containment evaluation."
+        "No exploit-containment evaluation.",
+        "No monitor-owned root scheduling liveness model.",
+        "No process-scale bounded-residency model.",
+        "No privileged entry or shared executable-integrity model.",
+        "No partition-aware cluster model.",
+        "No explicit component assume/guarantee composition."
       ],
       "forbidden_l0": true
     },
@@ -751,7 +768,7 @@
     {
       "id": "TCB-001",
       "parent": "TOP-001",
-      "status": "model_supported",
+      "status": "contract_defined",
       "title": "Monitor and service domains stay smaller than VM/VMM attack area",
       "claim": "The production TCB is small enough to improve or preserve attack surface while reducing cost versus per-VM guest kernels.",
       "evidence": [
@@ -769,7 +786,7 @@
     {
       "id": "SIDE-001",
       "parent": "TOP-001",
-      "status": "model_supported",
+      "status": "contract_defined",
       "title": "Co-tenancy and side-channel policy is explicit",
       "claim": "CPU core, SMT, cache, NUMA, device, and queue co-tenancy decisions are explicit Domain policy.",
       "evidence": [
@@ -787,7 +804,7 @@
     {
       "id": "EVAL-001",
       "parent": "TOP-001",
-      "status": "model_supported",
+      "status": "contract_defined",
       "title": "Exploit and cost baselines are tested",
       "claim": "CapSched-H provides VM-like cross-Domain protection and better cost efficiency for selected datacenter workloads.",
       "evidence": [
@@ -802,6 +819,189 @@
         "No throughput, tail-latency, density, or operational-cost benchmark result."
       ],
       "forbidden_l0": true
+    },
+    {
+      "id": "ROOTSCHED-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Monitor-owned root scheduling and guaranteed-Domain progress",
+      "claim": "A compromised Linux scheduler cannot extend or suppress a root lease, and another eligible guaranteed Domain is eventually selected by Monitor-owned state after expiry, revoke, or handoff.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "No adversarial Linux selector model.",
+        "No Monitor root scheduler policy selected.",
+        "No bounded handoff or guaranteed-Domain liveness proof.",
+        "No management/recovery reserved-service model."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "RESIDENCY-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Global Domain identity with bounded per-CPU residency",
+      "claim": "Global Domain cardinality exceeds bounded per-CPU resident slots without slot alias, stale-generation use, unsafe eviction, migration duplication, or starvation of admitted guaranteed Domains.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "R6 models only a bounded local slot set.",
+        "No global registry to resident-slot refinement.",
+        "No admission, eviction, reuse, churn, or hotplug model.",
+        "No more-than-64-Domain liveness model."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "ENTRY-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Privileged entry and return preserve Domain authority",
+      "claim": "Syscall, exception, IRQ, NMI-class, nested entry, and return transitions use the correct active Domain, MemoryView, epoch, stack, and per-CPU state.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "No syscall or exception entry model.",
+        "No IRQ, NMI, machine-check, or SError-class nesting model.",
+        "No entry-stack and per-CPU mutable-state ownership model.",
+        "No return-to-revoked-view model."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "CODE-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Shared executable code is sealed, W^X, and versioned",
+      "claim": "Executable content shared across Domains is Monitor-verified and not Domain-writable; every authorized code mutation is versioned and invalidated across MemoryViews before execution.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "No executable provenance or W^X model.",
+        "No module, livepatch, alternatives/static-key, tracing, text-poke, or JIT model.",
+        "No cross-view code epoch and invalidation model."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "STATE-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Every privileged mutable page has one explicit security owner",
+      "claim": "Every mutable privileged page is Domain-private, typed-service-owned, Monitor-owned, or an explicitly shared typed buffer; unknown ownership is unmapped.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "No exhaustive allocation-family ownership ledger.",
+        "No composed allocator, VFS, network, async, credential, and device-state model.",
+        "No proof that arbitrary Domain kernel code cannot address global Linux mutable state."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "SVC-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Compromised service Domains remain endpoint-bounded",
+      "claim": "Arbitrary kernel-context compromise of one service Domain is bounded by typed endpoint operations, caller-frozen authority intersection, explicit buffers, service-local objects, budgets, and Monitor receipts.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "No compromised-service composition with MemoryView and revoke.",
+        "No complete parser and shared-control-state ownership model.",
+        "No service recovery and dependent-caller settlement model."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "MGMT-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Management, signing, recovery, and node-root trust are separated",
+      "claim": "Offline roots, online cluster management, node Monitors, management Domains, key rotation, and recovery operations have explicit compromise and recovery boundaries.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "Management Domain compromise is not classified.",
+        "Signing-key rotation and recovery are not modeled.",
+        "Break-glass authority and audit-root recovery are not modeled."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "CLUSTER-PART-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Partition-aware cluster authority and migration fencing",
+      "claim": "Signed bounded node-local leases remain safe under partitions, local clock assumptions, delayed or reordered messages, restart, fencing, migration, and namespace recovery.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001",
+        "E-CLUSTER-001",
+        "E-CLUSTER-002"
+      ],
+      "gaps": [
+        "Existing cluster revoke is atomically visible across nodes.",
+        "No partition, local clock, drift, expiry, quorum, or fencing model.",
+        "No migration non-duplication or global namespace uniqueness model."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "COMPOSE-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Component contracts compose into the hostile-kernel system claim",
+      "claim": "Scheduler, Monitor, memory, entry, async, service, device, revoke, and cluster contracts have compatible assumptions, guarantees, state ownership, visible actions, and refinement mappings.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "No component assume/guarantee ledger.",
+        "No cross-component refinement mapping.",
+        "No adversarial composition model.",
+        "N-155 is a boolean completion ledger, not a transition-system composition."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "GRANULARITY-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Process-through-container granularity has a security and cost envelope",
+      "claim": "Domain granularity is selected under an explicit threat and complete-path cost envelope, and monitor-backed process Domains are compared with matched container, KVM, and microVM baselines.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001",
+        "E-EVAL-CONTRACT-001"
+      ],
+      "gaps": [
+        "No complete activation, MemoryView, TLB, service, async, and device-path measurement.",
+        "No process-Domain versus grouped-Domain selection rule.",
+        "No matched-security baseline result."
+      ],
+      "forbidden_l0": true
+    },
+    {
+      "id": "EVIDENCE-001",
+      "parent": "TOP-001",
+      "status": "open",
+      "title": "Positive gates consume validator-owned immutable evidence",
+      "claim": "Positive promotion decisions are derived from validator-captured immutable bytes with transitive source, configuration, tool, command, image, raw-output, and result provenance.",
+      "evidence": [
+        "E-GOAL-CONFORMANCE-001"
+      ],
+      "gaps": [
+        "No repository-wide Evidence Capsule contract.",
+        "Affected positive gates have not been migrated or revalidated.",
+        "AI recovery state is not HEAD-fresh at the reviewed revision."
+      ],
+      "forbidden_l0": false
     }
   ],
   "evidence": [
@@ -1594,6 +1794,26 @@
       ]
     },
     {
+      "id": "E-GOAL-CONFORMANCE-001",
+      "kind": "architecture_gap_audit",
+      "record": "capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md",
+      "supports": [],
+      "reopens": [
+        "ROOTSCHED-001",
+        "RESIDENCY-001",
+        "ENTRY-001",
+        "CODE-001",
+        "STATE-001",
+        "SVC-001",
+        "MGMT-001",
+        "CLUSTER-PART-001",
+        "COMPOSE-001",
+        "GRANULARITY-001",
+        "EVIDENCE-001"
+      ],
+      "limitation": "Gap evidence only. It records missing obligations and does not satisfy or support any reopened claim."
+    },
+    {
       "id": "HAZ-ENDP-001",
       "kind": "analysis_hazard",
       "record": "capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md",
@@ -1945,7 +2165,16 @@
     "Direct-call source inventory permits Linux modification, root requirement in source-only mode, tracefs writes in source-only mode, probe attachment, public tracepoint ABI creation, source/trace observations as authority, runtime observation claims, raw handle exposure, monitor verification claims, or protection claims.",
     "EndpointCap is CPU execution authority.",
     "Evaluation contract modeling is evaluation execution, exploit-containment success, benchmark result, production protection, or cost-efficiency evidence.",
-    "Final model-only completion is Linux implementation, runtime coverage, monitor verification, exploit-containment success, production protection, cost efficiency, or datacenter deployment readiness.",
+    "Historical N-155 v1 inventory completion is final system composition, Linux implementation, runtime coverage, monitor verification, exploit-containment success, production protection, cost efficiency, or datacenter deployment readiness.",
+    "A collection of independently checked component models composes without explicit compatible assumptions, guarantees, state ownership, actions, and refinement mappings.",
+    "R6's 64 per-rq slots bound global node or datacenter Domain cardinality.",
+    "A Linux-owned mutable selector or runqueue is sufficient to guarantee root Domain availability after Linux compromise.",
+    "Monitor timer expiry alone proves handoff to or eventual service for another eligible guaranteed Domain.",
+    "An atomic all-node epoch update models safe revocation during a network partition.",
+    "Instantaneous global revocation and unrestricted partition availability are both guaranteed.",
+    "A shared executable kernel page is safe merely because it is intended to be read-only, without Monitor-enforced W^X, provenance, code epochs, and controlled mutation.",
+    "A local selector microbenchmark establishes process-granular or datacenter cost efficiency.",
+    "A producer-authored summary or hash-then-reopened mutable input is independent positive validation evidence.",
     "FDIR ctx_irq, ctx_done, timer completion, IRQ completion, or service flush is frozen OffloadCap or VF request carrier authority.",
     "IRQ route invalidation proves DMA reachability revocation.",
     "LAG lower_dev rewrite preserves lower QueueLease authority without metadata and QueueLease rebind.",
@@ -2001,7 +2230,7 @@
     },
     {
       "id": "G1",
-      "status": "active",
+      "status": "active_reopened",
       "title": "Assurance case foundation",
       "exit_criteria": [
         "Top-level claim exists.",
@@ -2009,7 +2238,10 @@
         "Current evidence is mapped.",
         "Counterexamples are visible.",
         "Forbidden L0 claims are visible.",
-        "Next Linux slice must name which claim it supports."
+        "Next Linux slice must name which claim it supports.",
+        "Reopened system claims have semantic models.",
+        "Component assumptions and guarantees are explicitly composed.",
+        "Positive promotion evidence uses validator-owned immutable capsules."
       ]
     },
     {
@@ -2117,8 +2349,9 @@
     }
   ],
   "next_linux_choice": [
-    "Slice 0C trace-only Domain shadow identity and transition observation.",
-    "Narrow source-analysis gate for wakeup/enqueue/runnable-state coverage before any trace patch."
+    "No behavior-changing Linux choice is currently authorized.",
+    "Read current Linux sources only as required by reopened model refinement mappings.",
+    "Re-evaluate R6 or a successor only after ROOTSCHED-001, RESIDENCY-001, ENTRY-001, CODE-001, CLUSTER-PART-001, COMPOSE-001, and EVIDENCE-001 close."
   ],
-  "safer_default": "Run the source-analysis gate if any scheduler path coverage question remains unclear."
+  "safer_default": "Advance the compositional model and evidence-capsule gates without changing Linux behavior."
 }

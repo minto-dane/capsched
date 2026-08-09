@@ -1,23 +1,46 @@
 # Analysis 0109: Final Model Completeness Ledger
 
-Status: Final model-only completion gate passed; production protection remains
-unclaimed
+Status: Historical v1 inventory/local-contract completion gate passed; final
+compositional model reopened by ADR-0012 and Analysis 0185
 
 Date: 2026-07-02
 
+## 2026-08-08 Scope Correction
+
+The original N-155 result and validation remain valid for the completion rule
+defined in this document. That rule audits whether the then-declared claim
+inventory was classified and whether implementation, runtime, production, and
+cost overclaims remained forbidden.
+
+It does not compose the component transition systems and did not include the
+later-identified root-scheduling, Domain-residency, privileged-entry,
+executable-integrity, management, distributed-partition, and explicit
+composition obligations.
+
+ADR-0012 and Analysis 0185 therefore preserve this record with the narrower
+public meaning:
+
+```text
+v1 claim-inventory, local-contract, and overclaim-gate coverage complete
+```
+
+The statement `final compositional model complete` is now false until the
+successor requirements close. IDs, historical results, and counterexamples are
+not renamed or deleted.
+
 ## Purpose
 
-N-155 answers the completion question after N-152, N-153, and N-154 closed the
+Historically, N-155 answered the completion question after N-152, N-153, and N-154 closed the
 previously open model blockers:
 
 ```text
-Can the model-only goal be marked complete now?
+Can the v1 declared model-inventory goal be marked complete now?
 ```
 
 Answer:
 
 ```text
-Yes, for the model-only goal.
+Yes, for the v1 declared model-inventory goal.
 No, for implementation, runtime coverage, production protection, or cost
 efficiency.
 ```
@@ -119,15 +142,21 @@ TOP production completion claim from model-only evidence
 
 ## Result
 
-The model-only goal is complete because the semantic model set now covers the
-planned scheduler, budget, endpoint, async, memory, TLB, page-cache, device,
-revoke, cluster, TCB, side-channel, and evaluation-contract obligations, and no
-known model-only blocker remains.
+The v1 declared model-inventory goal was complete because the semantic model
+set covered the obligations declared at that time and no blocker in that
+inventory remained. This historical result must not be expanded into a claim
+that those component abstractions compose or that the final hostile-kernel,
+process-scale, partition-aware architecture is semantically complete.
 
 `TOP-001` remains open as a production protection claim. Future work must still
 provide Linux implementation, HyperTag Monitor implementation, monitor
 verification, hostile-kernel containment evidence, runtime coverage, exploit
 evaluation, and cost/performance measurements.
+
+The successor compositional-model blockers are recorded in Analysis 0185 as
+`ROOTSCHED-001`, `RESIDENCY-001`, `ENTRY-001`, `CODE-001`, `STATE-001`,
+`SVC-001`, `MGMT-001`, `CLUSTER-PART-001`, `COMPOSE-001`,
+`GRANULARITY-001`, and `EVIDENCE-001`.
 
 ## Non-Claims
 

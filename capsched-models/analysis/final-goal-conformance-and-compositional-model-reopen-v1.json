@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "id": "final-goal-conformance-and-compositional-model-reopen-v1",
+  "work_record": "N-174",
+  "date": "2026-08-08",
+  "reviewed_revision": "75e34749b94af52338085caced75c44c70f0a1b4",
+  "status": "final_compositional_model_reopened",
+  "verdict": {
+    "v1_claim_inventory_complete": true,
+    "substantial_local_contract_coverage": true,
+    "final_compositional_model_complete": false,
+    "implementation_complete": false,
+    "protection_evidenced": false,
+    "cost_efficiency_evidenced": false,
+    "top_claim_complete": false
+  },
+  "n155_disposition": {
+    "historical_result_retained": true,
+    "historical_scope": "v1_claim_inventory_local_contract_and_overclaim_gate_coverage",
+    "ids_renamed": false,
+    "validation_result_deleted": false,
+    "final_system_completion_reopened": true,
+    "superseding_decision": "capsched-ai/decisions/ADR-0012-distinguish-local-model-coverage-from-system-completion.md"
+  },
+  "requirements": [
+    {
+      "id": "ROOTSCHED-001",
+      "status": "open",
+      "summary": "A Monitor-owned root scheduler bounds hostile Domain execution and eventually selects another eligible guaranteed Domain without trusting Linux selector state."
+    },
+    {
+      "id": "RESIDENCY-001",
+      "status": "open",
+      "summary": "Global Domain identity scales beyond a bounded per-CPU resident slot set without alias, stale generation use, unsafe eviction, or starvation of guaranteed Domains."
+    },
+    {
+      "id": "ENTRY-001",
+      "status": "open",
+      "summary": "Every syscall, exception, IRQ, NMI-class entry, nested entry, and return preserves the active Domain, MemoryView, epoch, stack, and per-CPU ownership invariants."
+    },
+    {
+      "id": "CODE-001",
+      "status": "open",
+      "summary": "Shared executable kernel content is Monitor-verified, read-only, W^X, versioned, and updated only through an authority-checked cross-view transaction."
+    },
+    {
+      "id": "STATE-001",
+      "status": "open",
+      "summary": "Every mutable privileged page is Domain-private, typed-service-owned, Monitor-owned, or an explicitly shared typed buffer; unknown ownership is unmapped."
+    },
+    {
+      "id": "SVC-001",
+      "status": "open",
+      "summary": "Arbitrary service Domain compromise is bounded by typed endpoints, caller-frozen authority intersection, explicit buffers, budgets, and Monitor receipts."
+    },
+    {
+      "id": "MGMT-001",
+      "status": "open",
+      "summary": "Offline roots, online management, node Monitors, recovery, and key rotation have explicit trust and compromise boundaries."
+    },
+    {
+      "id": "CLUSTER-PART-001",
+      "status": "open",
+      "summary": "Signed bounded leases remain safe under partitions, delayed or reordered messages, local clock assumptions, fencing, restart, migration, and namespace recovery."
+    },
+    {
+      "id": "COMPOSE-001",
+      "status": "open",
+      "summary": "Component assumptions, guarantees, owned state, visible actions, and refinement mappings compose into the hostile-kernel top-level claim."
+    },
+    {
+      "id": "GRANULARITY-001",
+      "status": "open",
+      "summary": "Process-through-container Domain granularity has an explicit security and complete-path cost envelope against container, KVM, and microVM baselines."
+    },
+    {
+      "id": "EVIDENCE-001",
+      "status": "open",
+      "summary": "Positive assurance decisions consume validator-owned immutable captured bytes and retain raw evidence with transitive provenance."
+    }
+  ],
+  "r6_disposition": {
+    "research_history_retained": true,
+    "global_domain_cardinality_bound": false,
+    "candidate_role": "bounded_per_cpu_resident_domain_working_set",
+    "measurement_may_continue_as_engineering_experiment": true,
+    "measurement_may_advance_assurance_before_reopen_gates": false,
+    "linux_promotion_paused": true,
+    "linux_revert_required": false
+  },
+  "required_compositions": [
+    "root_scheduler_run_token_root_budget",
+    "activation_entry_memoryview_tlb",
+    "domain_identity_resident_slot_migration",
+    "async_service_endpoint_budget_revoke",
+    "queuelease_pageowner_iommu_irq",
+    "clusterlease_locallease_epoch_partition_fencing"
+  ],
+  "work_order": [
+    "validator_owned_evidence_capsule",
+    "monitor_root_scheduler_adversarial_linux_model",
+    "global_identity_bounded_residency_model",
+    "entry_memoryview_tlb_code_integrity_model",
+    "mutable_state_service_management_model",
+    "partition_lease_fencing_migration_model",
+    "assume_guarantee_composition_and_refinement",
+    "complete_granularity_cost_contract",
+    "local_linux_mechanism_reselection"
+  ],
+  "claims": {
+    "linux_behavior_change_approved": false,
+    "monitor_scheduler_selected": false,
+    "root_scheduling_liveness_proved": false,
+    "process_scale_proved": false,
+    "multi_cluster_partition_safety_proved": false,
+    "component_composition_proved": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "deployment_ready": false,
+    "datacenter_ready": false
+  }
+}

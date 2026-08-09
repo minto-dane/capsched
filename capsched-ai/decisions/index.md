@@ -1,6 +1,6 @@
 # Decision Index
 
-Updated: 2026-07-02
+Updated: 2026-08-08
 
 | ID | Status | Title |
 | --- | --- | --- |
@@ -15,3 +15,4 @@ Updated: 2026-07-02
 | ADR-0009 | Accepted | Async carrier API direction |
 | ADR-0010 | Accepted | Private superproject and Linux patch queue |
 | ADR-0011 | Accepted | Design-ready scope before next Linux implementation |
+| ADR-0012 | Accepted | Distinguish local model coverage from system completion |

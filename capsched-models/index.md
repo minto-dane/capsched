@@ -1,9 +1,13 @@
 # DomainLease Models and Engineering Work
 
-Updated: 2026-07-02
+Updated: 2026-08-08
 
 This directory contains the modeling and engineering work products for
 DomainLease-Linux, formerly CapSched-Linux during the private modeling phase.
+
+Current critical path: `plans/0006-final-compositional-model-completion-plan.md`.
+N-155 is historical v1 inventory/local-contract coverage; Analysis 0185 and
+ADR-0012 reopen final system composition without discarding prior models.
 
 ## Subdirectories
 
