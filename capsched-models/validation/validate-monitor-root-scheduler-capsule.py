@@ -506,60 +506,73 @@ def main() -> int:
             "validator consumed raw logs/status only",
         )
 
-        java = shutil.which("java")
-        if java is None:
-            raise ValidationError("java executable is unavailable")
-        rerun_ok = True
-        rerun_witness: list[str] = []
-        with tempfile.TemporaryDirectory(prefix="rootsched-validator-") as temporary:
-            root = Path(temporary)
-            model_dir = root / "inputs" / "model"
-            tool_dir = root / "inputs" / "tools"
-            work_dir = root / "work"
-            model_dir.mkdir(parents=True)
-            tool_dir.mkdir(parents=True)
-            work_dir.mkdir()
-            for path in STATIC_HASHES:
-                source = capsule / path
-                destination = root / path
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                destination.write_bytes(read_regular(source, 4 * 1024 * 1024, path))
-            for run in EXPECTED_RUNS:
-                state_dir = work_dir / f"states-{run['id']}"
-                command = [
-                    java,
-                    "-XX:+UseParallelGC",
-                    "-cp",
-                    str(tool_dir / "tla2tools.jar"),
-                    "tlc2.TLC",
-                    "-workers",
-                    "2",
-                    "-metadir",
-                    str(state_dir),
-                    "-config",
-                    run["config"],
-                    MODEL_NAME,
-                ]
-                completed = subprocess.run(
-                    command,
-                    cwd=model_dir,
-                    check=False,
-                    capture_output=True,
-                    text=True,
-                    timeout=120,
-                    env={**os.environ, "LC_ALL": "C"},
-                )
-                output_text = completed.stdout + completed.stderr
-                current_ok = (
-                    completed.returncode in run["codes"]
-                    and run["marker"] in output_text
-                )
-                if run["stats"] is not None:
-                    current_ok &= parse_stats(output_text) == run["stats"]
-                    current_ok &= "Error:" not in output_text
-                rerun_ok &= current_ok
-                rerun_witness.append(f"{run['id']}={completed.returncode}")
-        check("validator_reexecution", rerun_ok, ",".join(rerun_witness))
+        if failures:
+            check(
+                "validator_reexecution",
+                False,
+                "skipped because a pre-execution trust check failed",
+            )
+        else:
+            java = shutil.which("java")
+            if java is None:
+                raise ValidationError("java executable is unavailable")
+            rerun_ok = True
+            rerun_witness: list[str] = []
+            with tempfile.TemporaryDirectory(
+                prefix="rootsched-validator-"
+            ) as temporary:
+                root = Path(temporary)
+                model_dir = root / "inputs" / "model"
+                tool_dir = root / "inputs" / "tools"
+                work_dir = root / "work"
+                model_dir.mkdir(parents=True)
+                tool_dir.mkdir(parents=True)
+                work_dir.mkdir()
+                for path in STATIC_HASHES:
+                    source = capsule / path
+                    destination = root / path
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    destination.write_bytes(
+                        read_regular(source, 4 * 1024 * 1024, path)
+                    )
+                for run in EXPECTED_RUNS:
+                    state_dir = work_dir / f"states-{run['id']}"
+                    command = [
+                        java,
+                        "-XX:+UseParallelGC",
+                        "-cp",
+                        str(tool_dir / "tla2tools.jar"),
+                        "tlc2.TLC",
+                        "-workers",
+                        "2",
+                        "-metadir",
+                        str(state_dir),
+                        "-config",
+                        run["config"],
+                        MODEL_NAME,
+                    ]
+                    completed = subprocess.run(
+                        command,
+                        cwd=model_dir,
+                        check=False,
+                        capture_output=True,
+                        text=True,
+                        timeout=120,
+                        env={**os.environ, "LC_ALL": "C"},
+                    )
+                    output_text = completed.stdout + completed.stderr
+                    current_ok = (
+                        completed.returncode in run["codes"]
+                        and run["marker"] in output_text
+                    )
+                    if run["stats"] is not None:
+                        current_ok &= parse_stats(output_text) == run["stats"]
+                        current_ok &= "Error:" not in output_text
+                    rerun_ok &= current_ok
+                    rerun_witness.append(
+                        f"{run['id']}={completed.returncode}"
+                    )
+            check("validator_reexecution", rerun_ok, ",".join(rerun_witness))
 
         structural_after = subprocess.run(
             [sys.executable, str(local_collector), "verify", "--capsule", str(capsule)],
