@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "id": "global-domain-identity-bounded-residency-reference-contract-v1",
+  "date": "2026-08-09",
+  "status": "semantic_reference_locally_checked_pending_claim_specific_ec1",
+  "work_record": "N-176",
+  "requirement": "RESIDENCY-001",
+  "analysis": "analysis/0188-global-domain-identity-and-bounded-residency-reference-contract.md",
+  "formal_model": "formal/0148-bounded-domain-residency-model/BoundedDomainResidency.tla",
+  "threat": "adversarial_domain_local_linux_and_untrusted_linux_residency_hints",
+  "implementation_selected": false,
+  "identity_layers": [
+    "principal_id",
+    "domain_or_instance_id_and_domain_epoch",
+    "node_id_monitor_boot_epoch_and_node_lease_epoch",
+    "hardware_cpu_id_and_cpu_incarnation",
+    "optional_locality_descriptor_cache",
+    "per_cpu_bounded_scheduling_projection_and_slot_generation",
+    "cpu_bound_sealed_activation_token",
+    "linux_non_authoritative_shadow"
+  ],
+  "version_spaces": [
+    "domain_epoch",
+    "node_lease_epoch",
+    "table_epoch",
+    "slot_generation",
+    "monitor_boot_epoch",
+    "cpu_incarnation",
+    "activation_generation",
+    "placement_generation",
+    "task_and_run_cap_generations"
+  ],
+  "monitor_owned": [
+    "global_domain_identity",
+    "domain_epoch",
+    "node_admission_class",
+    "node_lease_epoch",
+    "eligible_execution_contexts",
+    "resident_binding",
+    "slot_generation",
+    "resident_lifecycle",
+    "trusted_active_and_entry_references",
+    "guaranteed_admission_cursor_and_work",
+    "cpu_online_and_accepting_authority",
+    "monitor_boot_epoch_and_cpu_incarnation",
+    "memory_view_binding",
+    "sealed_activation_token",
+    "explicit_exclusive_placement_lease"
+  ],
+  "linux_untrusted": [
+    "runnable_and_idle_hints",
+    "preferred_cpu_numa_and_llc",
+    "load_utilization_cache_hotness_and_queue_depth",
+    "best_effort_admission_and_eviction_proposals",
+    "within_domain_fairness_state",
+    "linux_object_lifetime_and_rcu_state",
+    "cgroup_membership_and_affinity_policy"
+  ],
+  "reference_cardinality": {
+    "global_ordinary_domains": 5,
+    "cpus": 2,
+    "replaceable_slots_per_cpu": 1,
+    "guaranteed_domains": 3,
+    "global_population_exceeds_total_replaceable_capacity": true
+  },
+  "resident_binding_is_execution_authority": false,
+  "management_recovery_uses_replaceable_general_slot": false,
+  "replication": {
+    "same_domain_multi_cpu_residency_allowed": true,
+    "requires_current_domain_epoch": true,
+    "requires_cpu_local_slot_generations": true,
+    "requires_exact_cpu_bound_run_tokens": true,
+    "exclusive_uniqueness_only_when_declared": true
+  },
+  "guaranteed_progress_assumptions": [
+    "finite_monitor_feasibility_admission",
+    "at_least_one_eligible_authoritative_online_execution_context",
+    "bounded_root_lease_and_trusted_hardware_reference_completion",
+    "weak_fairness_for_monitor_and_hardware_actions_only",
+    "fresh_slot_generation_or_safe_rekey_capacity",
+    "independent_management_recovery_binding"
+  ],
+  "fairness_assumptions": {
+    "monitor_protocol_actions": "weak_fairness",
+    "hardware_release": "weak_fairness_per_cpu",
+    "linux_actions": "none"
+  },
+  "root_scheduler_interface": [
+    "NeedResident",
+    "ResidentReady",
+    "ActivateExactBinding",
+    "ExpireOrStop",
+    "TrustedReferenceRelease"
+  ],
+  "safety": [
+    "GlobalPopulationExceedsResidentCapacity",
+    "MonitorOwnsGlobalRegistry",
+    "MonitorOwnsCPUOnlineState",
+    "EmptyBindingExact",
+    "MonitorOwnsResidentBindings",
+    "ResidentEpochCurrent",
+    "ResidentBindingSealed",
+    "SlotGenerationFresh",
+    "NoSlotAlias",
+    "ActiveBindingExact",
+    "NoEvictWhileRunningOrReferenced",
+    "HeldBindingMatchesRequest",
+    "NoDuplicateExclusiveResidency",
+    "ExclusiveAuthoritySingleCPU",
+    "MigrationPreservesIdentityAndAuthority",
+    "OfflineCPUHasNoAuthority",
+    "HotplugCreatesFreshCpuIncarnation",
+    "NoActivationIssuedDuringRevocation",
+    "ManagementRecoveryIndependent",
+    "BoundedGuaranteedWait",
+    "NoProtectionClaim"
+  ],
+  "liveness": [
+    "GuaranteedDomainsEventuallyReceiveResidentActivation",
+    "PendingGuaranteedRequestEventuallyCompletes",
+    "ExclusiveMigrationEventuallyCompletes",
+    "HotplugEventuallyQuiesces",
+    "RevocationEventuallyCommits"
+  ],
+  "negative_cases": {
+    "WaitForLinuxHint": "GuaranteedDomainsEventuallyReceiveResidentActivation",
+    "SkipGuaranteed": "GuaranteedDomainsEventuallyReceiveResidentActivation",
+    "NoHardwareQuiesce": "PendingGuaranteedRequestEventuallyCompletes",
+    "EvictPinned": "NoEvictWhileRunningOrReferenced",
+    "ReuseGeneration": "SlotGenerationFresh",
+    "StaleEpochBinding": "ResidentEpochCurrent",
+    "BestEffortOverwrite": "HeldBindingMatchesRequest",
+    "PublishBeforeSeal": "ResidentBindingSealed",
+    "TrustStaleHandle": "ActiveBindingExact",
+    "LinuxOwnsBinding": "MonitorOwnsResidentBindings",
+    "ResidentSlotIsAuthority": "ActiveBindingExact",
+    "LinuxMintsActivation": "ActiveBindingExact",
+    "ManagementBindingLost": "ManagementRecoveryIndependent",
+    "CopyBeforeSourceFence": "NoDuplicateExclusiveResidency",
+    "DestinationBeforeSourceStop": "ExclusiveAuthoritySingleCPU",
+    "MigrationIdentityDrift": "MigrationPreservesIdentityAndAuthority",
+    "OfflineBeforeDrain": "OfflineCPUHasNoAuthority",
+    "LinuxMintsOnlineCPU": "MonitorOwnsCPUOnlineState",
+    "ReuseCpuIncarnation": "HotplugCreatesFreshCpuIncarnation",
+    "EpochBeforeDrain": "ResidentEpochCurrent",
+    "ActivateDuringRevoke": "NoActivationIssuedDuringRevocation",
+    "LinuxWritesRegistry": "MonitorOwnsGlobalRegistry"
+  },
+  "local_tlc_result": {
+    "tool": "TLC 2.19",
+    "workers": 4,
+    "safe": {
+      "Admission": {"generated": 190271, "distinct": 2660, "depth": 23},
+      "Migration": {"generated": 39761, "distinct": 560, "depth": 10},
+      "Hotplug": {"generated": 34791, "distinct": 490, "depth": 9},
+      "Revoke": {"generated": 70071, "distinct": 980, "depth": 9}
+    },
+    "expected_counterexamples": 22,
+    "expected_counterexamples_observed": 22,
+    "transition_mutants": 17,
+    "initial_state_boundary_rejections": [
+      "LinuxOwnsBinding",
+      "ResidentSlotIsAuthority",
+      "LinuxMintsActivation",
+      "ManagementBindingLost",
+      "LinuxWritesRegistry"
+    ],
+    "claim_specific_capsule": false
+  },
+  "model_limits": [
+    "finite_one_shot_guaranteed_admission_sequence",
+    "no_request_identifier_or_recurring_residency_service",
+    "no_slot_generation_saturation_rekey_protocol",
+    "no_monitor_boot_or_node_lease_transition",
+    "no_physical_shadow_backing_or_translation_fence",
+    "no_root_budget_conservation_across_migration",
+    "no_cross_node_partition_or_fencing_protocol",
+    "no_wall_clock_bound"
+  ],
+  "r6_refinement": {
+    "role": "bounded_per_cpu_linux_scheduling_projection_candidate",
+    "global_registry": false,
+    "resident_binding_authority": false,
+    "fixed_task_slot_stable_across_independent_cpu_maps": false,
+    "whole_table_generation_per_slot_reuse_accepted": false,
+    "fixed_forest_and_slot_local_eevdf_reusable_as_policy_shadow": true,
+    "linux_source_change_approved": false
+  },
+  "linux_source_identity": {
+    "commit": "74311ca1ac4937e0e62f1e0f6a3e5bfa4fc77d6f",
+    "tree": "54f685aad94f28f0027cbba18cf5e29aadce234a",
+    "fetched_upstream": "a7c7074b58d28c4206d666a12aa2e33447b3c581"
+  },
+  "source_surfaces": [
+    "kernel/sched/core.c task_rq_lock and move_queued_task",
+    "kernel/sched/core.c affinity stopper and wake placement",
+    "kernel/sched/fair.c detach and attach balancing",
+    "kernel/sched/deadline.c and kernel/sched/ext/ext.c class-specific moves",
+    "kernel/sched/core.c cgroup movement",
+    "kernel/sched/core.c CPU hotplug",
+    "kernel/sched/core.c core scheduling"
+  ],
+  "next_refinement": "ENTRY-001+CODE-001",
+  "evidence": null,
+  "claims": {
+    "local_model_checked": true,
+    "semantic_reference_supported": false,
+    "claim_specific_capsule_validated": false,
+    "production_cache_selected": false,
+    "linux_behavior_changed": false,
+    "monitor_implemented": false,
+    "wall_clock_bound_proved": false,
+    "protection_evidenced": false,
+    "performance_evidenced": false,
+    "cost_efficiency_evidenced": false,
+    "multi_cluster_evidenced": false,
+    "datacenter_deployment_evidenced": false
+  }
+}

@@ -153,6 +153,7 @@ Updated: 2026-08-09
 | 0145 | Reproduced with 5/4/depth-4 safe pass and 24 expected authorization counterexamples | P5A-R6 Post-E3 Authorization and Threat Boundary Model |
 | 0146 | Reproduced with 14/14/depth-14 safe pass, two liveness properties, 82 safety counterexamples, and 2 liveness counterexamples | P5A-R6 E4 Local-Quantum Measurement Plan Model |
 | 0147 | EC1 capsule and validator replay pass: steady 155817/1920/depth-21, revoke 853049/10400/depth-21, four liveness properties, and 10 expected safety/liveness counterexamples | Monitor Root Scheduler Model |
+| 0148 | Locally checked: four safe scenarios pass (190271/2660/depth-23 maximum) and 22 expected safety/liveness counterexamples; claim-specific EC1 pending | Bounded Domain Residency Model |
 
 ## Planned
 
