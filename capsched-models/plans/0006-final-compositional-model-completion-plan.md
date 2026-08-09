@@ -64,12 +64,16 @@ negative evidence and counterexamples remain usable with explicit provenance
 
 Current status: the compact state check and minimal Evidence Capsule v1
 Collector/structural Verifier are complete. EVIDENCE-001 remains open because
-claim-specific Validators, approval binding, historical migration, and EC2/EC3
-evidence do not yet exist.
+only ROOTSCHED-001 has a claim-specific EC1 Validator and approval binding;
+historical migration and EC2/EC3 evidence do not yet exist.
 
 ## Phase B: Root Execution and Scale
 
 ### B1: Adversarial Root Scheduler
+
+Current status: closed at Model-supported EC1 by Analysis 0187, Formal 0147,
+and Validation 0288. Production policy refinement, implementation, wall-clock
+bounds, and protection remain outside this model closure.
 
 Model the Linux scheduler state as attacker-controlled after Domain compromise.
 The Monitor must independently enforce:
@@ -309,10 +313,13 @@ polling a healthy long-running job.
 
 ## Immediate Next Artifact
 
-The next semantic model is the adversarial Monitor root scheduler. Its
-claim-specific Validator is the first consumer of Evidence Capsule v1. The
-bootstrap container is ready; a positive root-scheduler result still requires
-captured raw model/tool output and a capsule-bound decision.
+The next semantic model is bounded residency. It must place more global
+Domains than per-CPU resident slots, preserve stable DomainID/epoch and slot
+generation, prevent running/reference eviction and migration duplication, and
+guarantee admission progress for nonresident guaranteed Domains despite
+best-effort churn and adversarial Linux hints. Its positive result must use a
+new claim-specific Evidence Capsule decision rather than reusing ROOTSCHED
+evidence.
 
 ## Non-Claims
 

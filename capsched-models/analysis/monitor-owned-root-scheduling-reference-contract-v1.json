@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "monitor-owned-root-scheduling-reference-contract-v1",
   "date": "2026-08-09",
-  "status": "model_supported_reference_contract_pending_capsule_decision",
+  "status": "model_supported_ec1",
   "work_record": "N-175",
   "requirement": "ROOTSCHED-001",
   "analysis": "analysis/0187-monitor-owned-root-scheduling-reference-contract.md",
@@ -92,9 +92,16 @@
     "fetched_upstream": "a7c7074b58d28c4206d666a12aa2e33447b3c581"
   },
   "next_refinement": "RESIDENCY-001",
+  "evidence": {
+    "record": "validation/0288-monitor-root-scheduler-reference-contract-ec1.md",
+    "level": "EC1",
+    "capsule_id": "d805b92acee2bca93a965e63925f7f48b8bf8d518043b0c55edf9ca3a3210abe",
+    "validator_result_sha256": "99b63b6cf050b972ae1a218e2ff7adf4de9e66f490b56f83b5d55508f301ba87",
+    "decision_sha256": "3617a503b103a76e1e4a7b5e90905041f221c94d73b658ba2af901e24a261958"
+  },
   "claims": {
     "semantic_reference_supported": true,
-    "claim_specific_capsule_validated": false,
+    "claim_specific_capsule_validated": true,
     "production_policy_selected": false,
     "linux_behavior_changed": false,
     "monitor_implemented": false,

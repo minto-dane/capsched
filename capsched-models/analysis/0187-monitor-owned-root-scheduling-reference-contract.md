@@ -214,9 +214,12 @@ datacenter OS.
 | `NoTimer` | no run without lease/timer | active execution lacks independent expiry |
 | `LinuxMint` | authority provenance | Linux shadow state becomes root authority |
 
-Local TLC diagnostics found all ten intended counterexamples. Promotion credit
-depends on the separate claim-specific Evidence Capsule and validator; these
-diagnostics are not themselves an assurance decision.
+Validation 0288 captures the exact model, configurations, tool, commands, raw
+logs, statuses, and validator in EC1 capsule
+`d805b92acee2bca93a965e63925f7f48b8bf8d518043b0c55edf9ca3a3210abe`.
+Producer and validator executions reproduced both safe state spaces and all
+ten intended counterexamples. The capsule-bound decision permits only
+`ROOTSCHED-001` Open-to-Model-supported.
 
 ## Current Linux and Architecture Anchors
 
@@ -299,4 +302,3 @@ algorithm, dynamic admission protocol, global residency protocol, public ABI,
 or Linux patch. They do not prove Monitor code, hardware behavior, protection,
 availability under hardware/firmware failure, performance, cost efficiency,
 multi-node operation, multi-cluster operation, or hypervisor replacement.
-

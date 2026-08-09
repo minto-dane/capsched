@@ -4,7 +4,7 @@ Status: Active
 
 Date: 2026-06-26
 
-Updated: 2026-08-08
+Updated: 2026-08-09
 
 ## Current Scope Notice
 
@@ -759,9 +759,9 @@ a semantic or production claim.
 
 ## Reopened System Claims
 
-All claims in this section are Open unless stated otherwise.
-`E-GOAL-CONFORMANCE-001` is gap evidence, not evidence that a reopened system
-claim is satisfied.
+All claims in this section remain Open except `ROOTSCHED-001`, which is now
+Model-supported by Validation 0288. `E-GOAL-CONFORMANCE-001` is gap evidence,
+not evidence that another reopened system claim is satisfied.
 
 ### ROOTSCHED-001: Monitor-Owned Root Scheduling
 
@@ -769,6 +769,19 @@ Linux may propose candidates and schedule within an active Domain, but cannot
 extend, suppress, or forge root leases. The Monitor must stop expired or
 revoked execution and eventually select another eligible guaranteed Domain
 without trusting Linux scheduler state.
+
+Current status: Model-supported at EC1
+
+Current evidence:
+
+- `analysis/0187-monitor-owned-root-scheduling-reference-contract.md`
+- `formal/0147-monitor-root-scheduler-model/`
+- `validation/0288-monitor-root-scheduler-reference-contract-ec1.md`
+
+The accepted semantic reference uses Monitor-owned reserved service
+opportunities, explicit Monitor/hardware fairness, and no Linux fairness.
+Production server selection, wall-clock bounds, multi-CPU refinement,
+implementation, and protection remain open.
 
 ### RESIDENCY-001: Global Identity with Bounded Local Residency
 
@@ -833,18 +846,19 @@ Positive promotion decisions consume immutable bytes captured by the validator
 with transitive source/config/tool/command/image/raw-output provenance. A
 producer-authored summary is not a validation oracle.
 
-Current status: Contract-defined; minimal structural tooling implemented;
-claim-specific validation and migration open
+Current status: Contract-defined; structural tooling and one claim-specific
+EC1 pipeline implemented; migration remains open
 
 Current evidence:
 
 - `capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md`
 - `analysis/0186-evidence-capsule-trust-boundary-and-migration.md`
 - `validation/0287-evidence-capsule-v1-bootstrap-structural-validation.md`
+- `validation/0288-monitor-root-scheduler-reference-contract-ec1.md`
 
 Open gaps:
 
-- no claim-specific Validator or Approver implementation
+- only ROOTSCHED-001 has a claim-specific Validator and capsule-bound decision
 - no historical positive-gate migration ledger
 - no EC2/EC3 independent reproduction
 
@@ -888,7 +902,8 @@ Open gaps:
 | E-FINAL-MODEL-COMPLETION-001 | TLA validation | `validation/0126-final-model-completeness-ledger-tlc.md` | model-only goal, no production subclaim |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
 | E-GOAL-CONFORMANCE-001 | Architecture gap audit | `analysis/0185-final-goal-conformance-and-compositional-model-reopen.md` | Reopens ROOTSCHED, RESIDENCY, ENTRY, CODE, STATE, SVC, MGMT, CLUSTER-PART, COMPOSE, GRANULARITY, EVIDENCE |
-| E-EVIDENCE-CAPSULE-001 | Assurance contract | `analysis/0186-evidence-capsule-trust-boundary-and-migration.md` | Defines EVIDENCE contract only; no tooling or migrated result |
+| E-EVIDENCE-CAPSULE-001 | Assurance contract | `analysis/0186-evidence-capsule-trust-boundary-and-migration.md` | Defines EVIDENCE contract; structural tooling and ROOTSCHED EC1 use are recorded separately |
+| E-ROOTSCHED-001 | EC1 evidence-capsule formal validation | `validation/0288-monitor-root-scheduler-reference-contract-ec1.md` | ROOTSCHED model support; demonstrates first EVIDENCE claim-specific pipeline |
 
 ## Counterexample and Negative Evidence Log
 
@@ -903,6 +918,7 @@ Open gaps:
 | CEX-SCHED-COVERAGE-001 | `validation/0109` | Missing current, missing donor, missing proxy relation, missing server coverage, missing evidence class, sched_stat_runtime authority, remote tick proxy coverage, trace protection claim, server lifecycle-only coverage, and class runtime root evidence are rejected. |
 | CEX-MONITOR-TIMER-001 | `validation/0110` | Running without monitor timer, running without root budget, Linux timer as root authority, overrun after expiry, Linux charge as monitor charge, unsealed activation, run after epoch revoke, run after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation are rejected. |
 | CEX-MONITOR-TIMER-ARCH-001 | `validation/0115` | Missing or wrong monitor architecture substrate, Linux hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2-as-timer, missing binding tuple, Linux/KVM/guest deadline retiming, NO_HZ control, Linux-minted receipts, and protection overclaims are rejected. |
+| CEX-ROOTSCHED-001 | `validation/0288` | Linux-gated readiness, skipped/stolen reservations, stale epochs, Linux lease extension/minting, run after expiry, terminal stop after expiry, management revoke, and missing Monitor timer are rejected. |
 | CEX-SCHED-F1-FREEZE-001 | `validation/0113` | TASK_WAKING, wake_list, and enqueue before freeze; incomplete frozen tuple; raw cap after publication; heavy post-publication lookup; late lost-wakeup denial; placement/current/fork authority minting; and protection overclaims are rejected. |
 | CEX-SCHED-INTEGRATION-001 | `validation/0114` | Publication without frozen tuple; run without frozen tuple, selected settlement, server authority, deadline compatibility, or monitor root; Linux runtime/server runtime/deadline compatibility/placement authority; raw cap/heavy lookup after publication; fail-closed running; and protection overclaims are rejected. |
 | CEX-SCHED-PLACEMENT-INTEGRATION-001 | `validation/0116` | Running without grant provenance, frozen placement, fresh placement epoch, current Linux mask, active CPU, monitor CPU binding, MemoryView CPU binding, or no-pending-migration state; selected CPU, class selection, sched_ext, core scheduling, sched_exec, fallback, force affinity, cpuset fallback, migrate-disable, per-cpu kthread exception, and protection overclaims are rejected. |
@@ -1106,17 +1122,8 @@ cost, tail latency, throughput, and density measurement
 
 ## Next Decision
 
-The next Linux-facing choice is not enforcement. It is one of:
-
-```text
-Slice 0C:
-  trace-only Domain shadow identity and transition observation
-
-or
-
-source-analysis gate:
-  wakeup/enqueue/runnable-state coverage map before any trace patch
-```
-
-The safer default is the source-analysis gate if any scheduler path coverage
-question remains unclear.
+Behavior-changing Linux work remains paused. The next compositional decision
+is `RESIDENCY-001`: how a Monitor-owned global DomainID/epoch maps into bounded
+per-CPU resident slots without alias, unsafe eviction, migration duplication,
+or guaranteed-Domain starvation when global Domain cardinality exceeds the
+resident set.

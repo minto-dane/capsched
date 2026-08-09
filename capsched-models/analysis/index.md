@@ -191,7 +191,7 @@ Updated: 2026-08-09
 | 0183 | R6-E4 local selector measurement plan accepted; assurance promotion paused by 0185 | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Plan |
 | 0184 | Exact disposable R6-E4 source and regression lineage retained; no live scheduler or system claim | SchedExecLease P5A-R6 E4 Local-Quantum Measurement Source |
 | 0185 | Accepted goal-conformance audit; N-155 scoped, system composition reopened, R6 treated only as a local residency candidate | Final Goal Conformance and Compositional Model Reopen |
-| 0186 | Accepted Evidence Capsule v1 trust boundary; minimal structural tooling passes Validation 0287, while claim-specific validation and revalidation remain open | Evidence Capsule Trust Boundary and Migration |
+| 0186 | Accepted Evidence Capsule v1 trust boundary; structural tooling passes 0287 and ROOTSCHED is the first scoped EC1 consumer in 0288, while broader revalidation remains open | Evidence Capsule Trust Boundary and Migration |
 | 0187 | Accepted Monitor-owned root-scheduling reference contract; two safe modes and ten targeted faults modeled without selecting an implementation | Monitor-Owned Root Scheduling Reference Contract |
 
 ## Planned Analysis Notes

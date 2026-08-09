@@ -1,7 +1,7 @@
 # Analysis 0186: Evidence Capsule Trust Boundary and Migration
 
-Status: Accepted assurance contract; minimal structural tooling implemented;
-claim-specific validation and historical revalidation remain open
+Status: Accepted assurance contract; minimal structural tooling and the first
+claim-specific EC1 pipeline implemented; historical revalidation remains open
 
 Date: 2026-08-08
 
@@ -246,7 +246,7 @@ minimal capture and structural verification:
   true
 
 claim-specific validator and approver:
-  false
+  true for ROOTSCHED-001 only
 
 historical positive promotion credit migrated:
   false
@@ -260,9 +260,17 @@ passes six positive and 32 fail-closed fixtures. This closes only the
 capture-first structural layer. It does not discharge EVIDENCE-001 or grant
 promotion authority to a producer self-check.
 
+Validation 0288 is the first claim-specific use. It captures the exact
+ROOTSCHED model, configurations, TLC jar, commands, raw logs/statuses, and
+validator; re-executes all runs from captured bytes; and binds a separate EC1
+decision to the capsule id. It permits only `ROOTSCHED-001` Open-to-
+Model-supported. Other positive gates still require their own validators and
+decisions.
+
 ## Non-Claims
 
-This analysis plus Validation 0287 now has a minimal capsule implementation and
-bootstrap structural result. It is not a claim-specific validator, migration
+This analysis plus Validations 0287 and 0288 has a minimal capsule
+implementation and one scoped EC1 claim-specific result. It is not migration
 completion, cryptographic attestation, independent reproduction, or approval
-of any Linux, Monitor, R6, performance, protection, or deployment claim.
+of any Linux behavior, Monitor implementation, R6 promotion, performance,
+protection, or deployment claim.

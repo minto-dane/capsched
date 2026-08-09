@@ -823,17 +823,22 @@
     {
       "id": "ROOTSCHED-001",
       "parent": "TOP-001",
-      "status": "open",
+      "status": "model_supported",
       "title": "Monitor-owned root scheduling and guaranteed-Domain progress",
       "claim": "A compromised Linux scheduler cannot extend or suppress a root lease, and another eligible guaranteed Domain is eventually selected by Monitor-owned state after expiry, revoke, or handoff.",
       "evidence": [
-        "E-GOAL-CONFORMANCE-001"
+        "E-GOAL-CONFORMANCE-001",
+        "E-ROOTSCHED-001"
+      ],
+      "counterexamples": [
+        "CEX-ROOTSCHED-001"
       ],
       "gaps": [
-        "No adversarial Linux selector model.",
-        "No Monitor root scheduler policy selected.",
-        "No bounded handoff or guaranteed-Domain liveness proof.",
-        "No management/recovery reserved-service model."
+        "The fixed cyclic frame is a reference contract, not a selected production root-server algorithm.",
+        "No Domain Monitor implementation or architecture-specific root-scheduler path exists.",
+        "No wall-clock service bound including timer overrun, interrupt masking, firmware, and Monitor WCET exists.",
+        "No multi-CPU, global-residency, migration, or dynamic-admission refinement exists.",
+        "No monitor-backed protection or availability evidence exists."
       ],
       "forbidden_l0": true
     },
@@ -996,10 +1001,11 @@
       "evidence": [
         "E-GOAL-CONFORMANCE-001",
         "E-EVIDENCE-CAPSULE-001",
-        "E-EVIDENCE-CAPSULE-TOOL-001"
+        "E-EVIDENCE-CAPSULE-TOOL-001",
+        "E-ROOTSCHED-001"
       ],
       "gaps": [
-        "The minimal Evidence Capsule v1 Collector and structural Verifier exist, but no claim-specific Validator or Approver pipeline exists.",
+        "Only ROOTSCHED-001 currently has a claim-specific EC1 Validator and capsule-bound Approver decision.",
         "Affected positive gates have not been migrated or revalidated.",
         "No EC2 independent implementation or EC3 external reproduction exists."
       ],
@@ -1836,6 +1842,19 @@
       "limitation": "Six positive and 32 negative fixtures validate only the minimal capture-first container and structural Verifier. This bootstrap result is not an EC1 claim-specific decision or positive assurance promotion."
     },
     {
+      "id": "E-ROOTSCHED-001",
+      "kind": "evidence_capsule_formal_validation",
+      "record": "capsched-models/validation/0288-monitor-root-scheduler-reference-contract-ec1.md",
+      "supports": [
+        "ROOTSCHED-001"
+      ],
+      "demonstrates": [
+        "EVIDENCE-001"
+      ],
+      "capsule_id": "d805b92acee2bca93a965e63925f7f48b8bf8d518043b0c55edf9ca3a3210abe",
+      "limitation": "EC1 model support only. The fixed frame is a reference contract; no Monitor/Linux implementation, wall-clock bound, protection, performance, cost, cluster, or deployment claim is supported."
+    },
+    {
       "id": "HAZ-ENDP-001",
       "kind": "analysis_hazard",
       "record": "capsched-models/analysis/0015-endpoint-async-linux-attachment-map.md",
@@ -2105,6 +2124,11 @@
       "id": "CEX-MONITOR-TIMER-ARCH-001",
       "record": "capsched-models/validation/0115-monitor-timer-architecture-substrate-tlc.md",
       "meaning": "Unsafe monitor architecture-substrate models show expected counterexamples for missing or wrong monitor architecture substrate, Linux hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2-as-timer, missing binding tuple, Linux/KVM/guest deadline retiming, NO_HZ control, Linux-minted receipts, and protection overclaims."
+    },
+    {
+      "id": "CEX-ROOTSCHED-001",
+      "record": "capsched-models/validation/0288-monitor-root-scheduler-reference-contract-ec1.md",
+      "meaning": "Unsafe Monitor root-scheduler models reject Linux-gated readiness, skipped or stolen reservations, stale epochs, Linux lease extension or minting, running after expiry, terminal stop after expiry, management revocation, and activation without a Monitor timer."
     },
     {
       "id": "CEX-SCHED-PLACEMENT-INTEGRATION-001",
