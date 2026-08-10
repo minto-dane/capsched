@@ -118,7 +118,7 @@ Sibling patch queue:
 
 ```text
 branch: codex/replay-clone-portability
-HEAD:   16bb080da472ffabbbafd2698073eca633fb0602
+HEAD:   3fe92f5f252cfc8e6d6e39914237a8f96d4cd79f
 replay base:
         4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
 replay endpoint:
@@ -129,6 +129,10 @@ The replay endpoint is the historical L0 patch-series result. It is not the
 later local experimental Linux head `74311ca1...`. A fresh machine can recreate
 the historical queue exactly and may separately fetch or rebuild later
 experimental work. Neither is a production protection boundary.
+
+The patch-queue HEAD above adds only the intentional-public/secret-free README
+policy after `16bb080...`; the replay base, patch bytes, and replay endpoint are
+unchanged.
 
 ## Reopened Requirements
 

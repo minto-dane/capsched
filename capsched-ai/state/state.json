@@ -38,7 +38,7 @@
     "linux_patch_queue": {
       "repository": "../linux-patches",
       "branch": "codex/replay-clone-portability",
-      "revision": "16bb080da472ffabbbafd2698073eca633fb0602",
+      "revision": "3fe92f5f252cfc8e6d6e39914237a8f96d4cd79f",
       "remote": "https://github.com/minto-dane/capsched-linux",
       "replay_base_revision": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
       "replay_work_revision": "6537a57d3d4bcf61d92b0081275081d69c5ff2fd",
