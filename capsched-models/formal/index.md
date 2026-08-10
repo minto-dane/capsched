@@ -154,6 +154,7 @@ Updated: 2026-08-09
 | 0146 | Reproduced with 14/14/depth-14 safe pass, two liveness properties, 82 safety counterexamples, and 2 liveness counterexamples | P5A-R6 E4 Local-Quantum Measurement Plan Model |
 | 0147 | EC1 capsule and validator replay pass: steady 155817/1920/depth-21, revoke 853049/10400/depth-21, four liveness properties, and 10 expected safety/liveness counterexamples | Monitor Root Scheduler Model |
 | 0148 | Finite pre-admitted EC1 capsule replay passes: admission 190271/2660/depth-21, migration 39761/560/depth-8, hotplug 34791/490/depth-7, revoke 70071/980/depth-8, and 22 expected counterexamples; dynamic recurring residency remains open | Bounded Domain Residency Model |
+| 0149 | Retained rejected R10 typed machine artifact; structural tooling is negative regression evidence, while semantic self-certification and vacuity forbid freeze, TLA+ authorization, or model support | Dynamic Residency R10 Machine Semantics |
 
 ## Planned
 

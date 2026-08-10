@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-draft0-hostile-rejection-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "supervisor_v3_draft0_locally_rejected_successor_required",
+  "reviewed_snapshot": {
+    "path": "capsched-models/validation/f0_supervisor_lts_v3_draft0_rejected.py",
+    "sha256": "4249abd9942f158e5daba52d0f9166ca17e56b2029b4d427f938400f5683a6f8"
+  },
+  "local_reviews": [
+    {
+      "axis": "TRANSITION_SYSTEM_SOUNDNESS",
+      "session_id": "019feb89-a286-7763-b147-717e82d24d18",
+      "disposition": "LOCAL_ADVISORY_REJECT"
+    },
+    {
+      "axis": "HOSTILE_LINUX_CONTAINMENT",
+      "session_id": "019feb89-bdc3-7853-8873-27b6ded4ff9d",
+      "disposition": "LOCAL_ADVISORY_REJECT"
+    },
+    {
+      "axis": "ASSURANCE_OWNERSHIP",
+      "session_id": "019feb89-d5b8-7ab2-8816-04d7a94d26a3",
+      "disposition": "LOCAL_ADVISORY_REJECT"
+    }
+  ],
+  "reproduced_reachability_per_role": {
+    "state_count": 10648,
+    "edge_count": 10647,
+    "terminal_state_count": 2118,
+    "nonterminal_deadlock_count": 273,
+    "states_without_terminal_path": 686,
+    "semantic_deadlock_shapes_after_history_projection": 4
+  },
+  "registry_result": {
+    "declared_action_ids": 23,
+    "reachable_action_ids": 23,
+    "exact_intersection_count": 0
+  },
+  "blocking_findings": [
+    "LEADER_REAP_CONFLATED_WITH_CONTAINMENT_SUBTREE_DRAIN",
+    "OFFLINED_CONFLATES_SIX_DISTINCT_LINUX_LIFECYCLE_EVENTS",
+    "NO_TRUSTED_BOOTSTRAP_HOSTILE_RELEASE_BOUNDARY",
+    "RESOURCE_CAUSALITY_AND_WAIT_QUOTA_ARE_ORACLES",
+    "RECEIPT_SCHEMA_ISSUER_PAYLOAD_AND_CHAIN_NOT_VALIDATED",
+    "NO_IMMUTABLE_EVIDENCE_ROOT_OR_BOUND_DECISION",
+    "ARBITRATION_WINNER_CAN_BE_OVERWRITTEN",
+    "HOSTILE_ACTIONS_EXCLUDED_FROM_REACHABLE_NEXT",
+    "EXTERNAL_CONTEXT_AND_OWNER_ARE_SELF_ISSUED",
+    "PRODUCER_CHECKER_CHILD_RUNS_NOT_COMPOSED",
+    "NO_OWNER_GUARDIAN_CRASH_RECOVERY_AFTER_IMPORT",
+    "PUBLICATION_DURABILITY_AND_ANTI_REPLAY_ARE_SELF_DECLARED",
+    "NONTERMINAL_DEADLOCKS_AND_LOST_TERMINAL_PATHS",
+    "TRACE_HISTORY_ENUMERATION_MISLABELED_AS_SEMANTIC_EXPLORATION",
+    "ACTION_REGISTRY_HAS_ZERO_EXACT_REACHABLE_MATCHES"
+  ],
+  "required_successor_properties": [
+    "ACTOR_SEPARATED_NEXT_RELATIONS",
+    "EXTERNALLY_ISSUED_PARENT_RUN_GRANT",
+    "DISTINCT_DERIVED_PRODUCER_AND_CHECKER_RUN_IDS",
+    "EXACT_CHECKER_INPUT_TO_PRODUCER_ROOT_BINDING",
+    "TYPED_AUTHORITY_BOUND_HASH_CHAINED_RECEIPTS",
+    "EVIDENCE_WF_AND_INSTANCE_WF",
+    "IMMUTABLE_LINEARIZATION_WINNER",
+    "DECOMPOSED_SCOPE_AND_HIDDEN_WORK_LIFECYCLE",
+    "TRUSTED_BOOTSTRAP_BEFORE_HOSTILE_RELEASE",
+    "CAUSAL_RESOURCE_RECEIPTS_WITH_BASELINE_AND_FINAL_VALUES",
+    "HOSTILE_AND_CRASH_ACTIONS_IN_REACHABLE_RELATION",
+    "SEALED_EVIDENCE_BOUND_DECISION_EXTERNAL_PUBLICATION",
+    "SEMANTIC_PROJECTION_AND_ORDERED_HISTORY_PROPERTIES",
+    "EXPLICIT_LINUX_ONLY_AND_MONITOR_REFINEMENT_OBLIGATIONS"
+  ],
+  "authorization": {
+    "draft0_locally_rejected": true,
+    "successor_design_authorized": true,
+    "external_review": false,
+    "protocol_normative": false,
+    "linux_refinement": false,
+    "resource_causality_proved": false,
+    "checker_soundness": false,
+    "InstanceWF": false,
+    "F0_local_acceptance": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

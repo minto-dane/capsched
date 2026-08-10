@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-supervisor-v2-hostile-rejection-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "supervisor_v2_locally_rejected_redesign_required",
+  "reviewed_snapshot": [
+    {
+      "path": "capsched-models/analysis/0223-dynamic-residency-f0-v5-supervised-evaluation-protocol-v2.md",
+      "sha256": "992e9877b3a0f63025017041e95b82cd3d593510f07d11abacfa704d70b5583b"
+    },
+    {
+      "path": "capsched-models/analysis/dynamic-residency-f0-v5-supervised-evaluation-protocol-v2.json",
+      "sha256": "b92b3bb1794555366f5e89283a54fd33611dff742de095c14f861a360e90d695"
+    },
+    {
+      "path": "capsched-models/validation/validate-f0-supervisor-protocol-v2.py",
+      "sha256": "5d689ad5711f423d2c47136ed833f407a9c2ba0cdb8aed55bcca83ab093f9e9d"
+    },
+    {
+      "path": "capsched-models/validation/test-f0-supervisor-protocol-v2-mutations.py",
+      "sha256": "fd4ce236acb2c1140dc1bb8e3c462eee48aecc3cc753d3d2e4179b2e16625209"
+    }
+  ],
+  "local_reviews": [
+    {
+      "axis": "EXECUTABLE_LTS_REACHABILITY_AND_ORDERING",
+      "session_id": "019feb74-9d2c-73b1-838b-e09c08afb9cc",
+      "disposition": "LOCAL_ADVISORY_REJECT"
+    },
+    {
+      "axis": "LINUX_CONTAINMENT_AND_CAUSAL_RECEIPTS",
+      "session_id": "019feb74-dc7f-7180-b03f-6118a81857ac",
+      "disposition": "LOCAL_ADVISORY_REJECT"
+    },
+    {
+      "axis": "EXTERNAL_OWNERSHIP_AND_SEMANTIC_CREDIT",
+      "session_id": "019feb75-11d1-70a1-b3d7-c94a1e50dd09",
+      "disposition": "LOCAL_ADVISORY_REJECT"
+    }
+  ],
+  "reproduced_local_results": {
+    "classifier_cartesian_product_count": 82944,
+    "quiescent_input_products": 41472,
+    "hostile_drift_mutations_rejected": 97,
+    "hostile_drift_mutations_total": 97,
+    "credit": "SNAPSHOT_DRIFT_AND_NORMALIZED_TRUTH_TABLE_REGRESSION_ONLY"
+  },
+  "blocking_findings": [
+    "NO_EXECUTABLE_GUARDED_EFFECTFUL_LTS",
+    "NO_REACHABLE_STATE_EXPLORATION",
+    "QUIESCENCE_IS_CALLER_SELECTED_BOOLEAN",
+    "ORDER_TEST_ERASES_ORDER_BEFORE_REDUCTION",
+    "CANDIDATE_FRAME_PROMOTED_TO_SEMANTIC_SUCCESS",
+    "PRODUCER_AND_CHECKER_LIFECYCLES_NOT_SEPARATED",
+    "EVIDENCE_LEDGER_SEALED_TWICE_THEN_APPENDED",
+    "NO_RAW_RECEIPT_NORMALIZATION_OR_CONTRADICTION_PREDICATE",
+    "NO_COMPLETION_QUOTA_LINEARIZATION_WINNER",
+    "CONTRADICTORY_FRAME_CHECKPOINT_PAIRS_CAN_BECOME_RESOURCE",
+    "RUN_ID_POLICY_AND_ISSUER_FIELDS_DO_NOT_ESTABLISH_AUTHORITY",
+    "NO_ROLLBACK_RESISTANT_PUBLICATION_OR_REPLAY_BARRIER",
+    "EMPTY_SCOPE_DOES_NOT_PROVE_NO_FUTURE_ATTACHMENT",
+    "RESOURCE_CAUSALITY_REMAINS_ORACLE"
+  ],
+  "required_successor_properties": [
+    "EXECUTABLE_INIT_NEXT_TYPEOK_REACHABLE_WF",
+    "TYPED_RECEIPT_SCHEMAS_AND_ISSUER_MATRIX",
+    "DETERMINISTIC_RAW_EVIDENCE_NORMALIZATION",
+    "STICKY_CONTRADICTION_FAULT",
+    "SEPARATE_PRODUCER_AND_CHECKER_CHILD_RUNS",
+    "SEPARATE_CANDIDATE_DISPOSITION_AND_SEMANTIC_VERDICT",
+    "COMPLETION_QUOTA_LINEARIZATION",
+    "DERIVED_QUIESCENCE_WITH_SCOPE_OFFLINED",
+    "EVIDENCE_DECISION_PUBLICATION_CHAIN_SEPARATION",
+    "OUTER_LIFECYCLE_OWNER_AND_CRASH_RECOVERY",
+    "ORDER_PRESERVING_INTERLEAVING_EXPLORATION",
+    "EXTERNALLY_OWNED_RUN_NAMESPACE_POLICY_AND_VALIDATION_CONTEXT"
+  ],
+  "authorization": {
+    "v2_locally_rejected": true,
+    "v3_authorized_for_design_only": true,
+    "v3_authorized_for_semantic_credit": false,
+    "external_review": false,
+    "protocol_normative": false,
+    "supervisor_implemented": false,
+    "executed_artifact_bound": false,
+    "external_process_supervisor_bound": false,
+    "result_taxonomy_closed": false,
+    "ValidationContextDigest_issued": false,
+    "evaluation_validated": false,
+    "CoreSyntaxWF": false,
+    "InstanceWF": false,
+    "F0_local_acceptance": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-checked-evaluation-trust-boundary-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "checked_evaluation_construction_partial_not_hostile_input_ready",
+  "normative_inputs": {
+    "F05-00_sha256": "b9725ea4144649bbb186912bff8962a57a868bc6ad628ffe3bfef8fd29edd308",
+    "F05-01_sha256": "db17921615081f79046dfe29efaca64ee3405fe4e349457665da411398164483",
+    "F05-02_sha256": "0781fd947bf297c16281c2787e8d613bc254d11bda2a53e02823321adf1ddf2f",
+    "eval_rules_raw_sha256": "2eff5d28735982da18020a5cc74b8006f26a25ffbed671938ac437c421f82eb7",
+    "eval_rules_canonical_sha256": "a40b4e91e751adae2ba20ea076c839453acab5f77101d10136f16489b1920f9b",
+    "generated_manifest_sha256": "5df81e354f76f03cdc513616f3c3975d5a0f33796713e9e38405e2f1fbf6f1ee"
+  },
+  "closed_local_construction_properties": [
+    "DELTA_SEPARATE_FROM_DYNAMIC_RHO",
+    "MAYDEPS_SEEDED_FROM_CHECKED_DELTA",
+    "TYPED_EXACT_INTERPRETATION_REFS",
+    "SOURCE_DERIVED_CHECKED_TERM_OCCURRENCE",
+    "REHASHED_OCCURRENCE_METADATA_REJECTED_BY_SOURCE_RECONSTRUCTION",
+    "CALLER_TERM_GAMMA_DELTA_PROVENANCE_REJECTED",
+    "EXACT_PARAMETER_AND_VIEW_PRESENCE",
+    "ONE_SHOT_PROFILE_INPUT_EVALUATION_LEDGER",
+    "REQUEST_VALIDATION_CONTEXT_BINDING",
+    "REQUESTED_EFFECTIVE_OPERATOR_PROFILE_SEPARATION",
+    "LINK_EVENT_COORDINATE_PREALLOCATION_METER",
+    "RESULT_CONTEXT_CONSTRUCTION_ID",
+    "GENERIC_HOST_FAILURE_INTERNAL_ONLY"
+  ],
+  "local_hostile_reviews": [
+    {
+      "session_id": "019feb33-2e88-73f0-9286-3c6abfe7cbba",
+      "axis": "checked_request_semantic_and_implementation_boundary",
+      "external_authority": false,
+      "verdict": "NOT_HOSTILE_INPUT_READY"
+    },
+    {
+      "session_id": "019feb3d-9098-7af3-b903-e229f7c1bd45",
+      "axis": "atomic_rule_bundle_and_runtime_identity",
+      "external_authority": false,
+      "verdict": "RULE_BUNDLE_PARTIAL"
+    },
+    {
+      "session_id": "019feb3d-7563-74a1-9888-441877441d93",
+      "axis": "whole_pipeline_resource_and_taxonomy",
+      "external_authority": false,
+      "verdict": "SUPERVISOR_AND_PHASE_METER_OPEN"
+    }
+  ],
+  "local_regression": {
+    "eval_constructor_coverage": 42,
+    "eval_rule_mutations": {"total": 380, "rejected_at_expected_id": 380},
+    "checked_occurrence_cases": {"total": 15, "classified_at_expected_id": 15},
+    "checked_request_context_cases": {"total": 22, "classified_at_expected_tag": 22},
+    "closed_result_taxonomy_bound": false
+  },
+  "open_blockers": [
+    "CAPTURED_IMPLEMENTATION_BYTES_NOT_DIRECTLY_EXECUTED",
+    "WHOLE_PIPELINE_RESOURCE_METER_INCOMPLETE",
+    "EXTERNAL_WORKER_SUPERVISOR_ABSENT",
+    "NO_GENUINE_END_TO_END_UNSUPPORTED_FIXTURE",
+    "POST_EVENT_CHECKED_SOURCE_ROOTS_ABSENT",
+    "FINITE_REFINEMENT_METATHEORY_UNPROVED",
+    "INDEPENDENT_EVALUATOR_ABSENT",
+    "TRANSITION_INSTANCE_CLAIM_MORPHISM_PROOF_LAYERS_ABSENT"
+  ],
+  "authorization": {
+    "checked_term_occurrences_materialized": true,
+    "complete_request_snapshot_materialized": true,
+    "source_reconstruction_bound": true,
+    "validation_context_locally_bound": true,
+    "result_taxonomy_dispatch_bound": true,
+    "result_taxonomy_closed": false,
+    "captured_implementation_executed_directly": false,
+    "whole_pipeline_resource_envelope_complete": false,
+    "external_process_supervisor_bound": false,
+    "evaluation_validated": false,
+    "CoreSyntaxWF": false,
+    "InstanceWF": false,
+    "F0_local_acceptance": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "semantic_freeze": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

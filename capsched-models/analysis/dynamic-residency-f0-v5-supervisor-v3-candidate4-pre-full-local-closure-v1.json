@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure",
+  "date": "2026-08-10",
+  "status": "pre_full_local_closure_ready_for_restartable_checkpoint",
+  "scope": "offline_finite_model_and_local_assurance_runner_only",
+  "claim_registry": {
+    "path": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
+    "sha256": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
+    "claim_count": 11,
+    "fast_pass_count": 1,
+    "full_not_run_count": 3,
+    "open_refinement_count": 7
+  },
+  "exact_inputs": {
+    "f0_supervisor_lts_v3.py": "55b577c4c0af8f433707d305a802d001a7685b43d2598d79937413f2730b6958",
+    "f0_supervisor_orchestrator_v3.py": "cb75d720ae8f36b5a440e3480f5053fc75b47a2a7b652b679ea53257f57eeff6",
+    "test-f0-supervisor-lts-v3-mutations.py": "9513a985e6708a5d071dfd9605eff760e5128c107bd622d55563458d93a9d0bd",
+    "test-f0-supervisor-orchestrator-v3-mutations.py": "84abc2882dd05e9a47231bb3b29ccc18c7f006c90bd2899ab752fc9173767d05",
+    "test-run-f0-supervisor-v3-full.sh": "e8b1ec7f934d6c2a53a817631bd4101ae531f5655ed72b1c73b488b88a78fcdf",
+    "validate-f0-supervisor-lts-v3.py": "f8c724cece29031b49744e4322671b6bd9fd204e4e53c1982e132816ba592f3b",
+    "run-f0-supervisor-v3-full.sh": "3c4a3001683970a6652622bced756d78e87bda6e6ac243b0fd6619a39258cf30"
+  },
+  "local_regression": {
+    "child_hostile_cases": 274,
+    "parent_hostile_cases": 715,
+    "runner_hostile_cases": 44,
+    "total_hostile_cases": 1033,
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "full_validator_status": "NOT_RUN"
+  },
+  "local_evidence_properties": {
+    "strict_duplicate_key_rejection": true,
+    "raw_component_receipts_bound": true,
+    "exact_nested_component_schemas": true,
+    "claim_specific_status_derivation": true,
+    "claim_specific_obligation_resolution": true,
+    "bounded_process_group_cleanup": true,
+    "bash_startup_hook_scrubbing": true,
+    "privileged_option_position_checked_from_proc_cmdline": true,
+    "sourced_or_command_string_launch_rejected": true,
+    "invalid_launch_fail_stop_uses_sigkill": true,
+    "producer_checker_exact_result_agreement": true,
+    "commutation_actions_are_reachable": true,
+    "commutation_witness_counts_cross_bound_to_nonterminal_states": true,
+    "commutation_pair_edge_lower_bounds_checked": true,
+    "aggregate_cardinality_relations_checked": true,
+    "deterministic_edge_upper_bounds_checked": true,
+    "unpredictable_private_temporary_names": true,
+    "component_receipt_capture_authority": "candidate_validator_local_process"
+  },
+  "unclosed_assurance_properties": {
+    "runtime_input_write_prevention": false,
+    "continuous_input_stability": false,
+    "descendant_containment": false,
+    "post_finalization_storage_immutability": false,
+    "toolchain_runtime_closure": false,
+    "external_toolchain_authentication": false,
+    "component_receipt_external_attestation": false,
+    "checker_soundness": false
+  },
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "model_complete": false,
+    "linux_behavior_change": false,
+    "protection_claim": false,
+    "cost_efficiency_claim": false
+  },
+  "next_gate": "authority_disjoint_full_run_capture_and_detached_execution"
+}

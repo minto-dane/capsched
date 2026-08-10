@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "catalog_id": "dynamic-residency-r10-independent-hostile-v1",
+  "model_id": "DynamicResidencyR10",
+  "status": "negative_and_regression_evidence_only",
+  "baseline_inputs": {
+    "materialize-r10.py": "a6c5a541259ef6eb29f0f16da222d065f126f6311de22edae9f4c6577c836e7e",
+    "r10-schema.json": "9764d711c14f41de07185a359814522ddca563b0e52593f3c6b4334e75fcfadf",
+    "r10-source.json": "ad463ae92004e962cbe8719073453aba4f60345e0c8099683a2b858268ef6f97",
+    "r9-rejection-disposition.json": "509378203b8dc4009054487585da1ae82a38bde713f3bd539545120e8a4b8d5c"
+  },
+  "repetition_seeds": [104729, 130363],
+  "timeout_seconds": 20,
+  "cases": [
+    {"id": "HOSTILE-STATUS-PROMOTION", "mutation": "status_promotion", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-SCHEMA"}, "allowed_change_roots": ["/status"]},
+    {"id": "HOSTILE-FUNCTION-RECURSION", "mutation": "function_recursion", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-FUNCTION-CYCLE"}, "allowed_change_roots": ["/functions/@AuthorityUseBalance/body_ast"]},
+    {"id": "HOSTILE-HIDDEN-CROSS-SHARD-READ", "mutation": "hidden_cross_shard_read", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-CD"}, "allowed_change_roots": ["/actions/@ACT-MONITOR-CRASH/guard_ast", "/functions"]},
+    {"id": "HOSTILE-TXN-IDENTITY-ALIAS", "mutation": "transaction_identity_alias", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-TXN-IDENTITY"}, "allowed_change_roots": ["/transaction_kinds/@TXN-PUBLISH-ELIGIBLE/instance_scope/catalog_rows"]},
+    {"id": "HOSTILE-TEMPORAL-ACTION-GUARD", "mutation": "temporal_action_guard", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-AST-CONTEXT"}, "allowed_change_roots": ["/actions/@ACT-MONITOR-CRASH/guard_ast"]},
+    {"id": "HOSTILE-STATEFUL-INIT", "mutation": "stateful_init", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-AST-CONTEXT"}, "allowed_change_roots": ["/variables/@monitor_epoch/init_ast"]},
+    {"id": "HOSTILE-UNGUARDED-VARIANT-FIELD", "mutation": "unguarded_variant_field", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-VARIANT-FIELD"}, "allowed_change_roots": ["/functions/@AuthorityUseBalance/body_ast"]},
+    {"id": "HOSTILE-CONCRETE-DUPLICATE-WRITE", "mutation": "concrete_duplicate_write", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-DUPLICATE-WRITE"}, "allowed_change_roots": ["/actions/@ACT-MONITOR-CRASH/parameters", "/actions/@ACT-MONITOR-CRASH/updates"]},
+    {"id": "HOSTILE-LINEARIZATION-OUTSIDE-WRITE", "mutation": "linearization_outside_write", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-LINEARIZATION"}, "allowed_change_roots": ["/actions/@ACT-MONITOR-CRASH/linearization_ast"]},
+    {"id": "HOSTILE-AUTHORITY-EXEMPTION", "mutation": "authority_exemption", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-AUTHORITY-CLASS"}, "allowed_change_roots": ["/variables/@authority_account/authority_relevant"]},
+    {"id": "HOSTILE-STATEFUL-OWNER", "mutation": "stateful_owner", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-AST-CONTEXT"}, "allowed_change_roots": ["/variables/@authority_account/owner_ast"]},
+    {"id": "HOSTILE-WRITER-CD-MISMATCH", "mutation": "writer_cd_mismatch", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-WRITER-CD"}, "allowed_change_roots": ["/variables/@cpu_state/consistency_domain_ast"]},
+    {"id": "HOSTILE-BOOLEAN-SHARD", "mutation": "boolean_shard", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-SHARD"}, "allowed_change_roots": ["/variables/@authority_account/transaction_shard_ast"]},
+    {"id": "HOSTILE-MISSING-EDGE-PATH", "mutation": "missing_edge_path", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-EDGE"}, "allowed_change_roots": ["/objects/@OBJDEF-AuthorityCore/reference_edges/4/field_path"]},
+    {"id": "HOSTILE-EDGE-COVERAGE-HOLE", "mutation": "edge_coverage_hole", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-EDGE-COVERAGE"}, "allowed_change_roots": ["/objects/@OBJDEF-AuthorityCore/reference_edges"]},
+    {"id": "HOSTILE-CONSTRUCTOR-NO-ALLOCATOR", "mutation": "constructor_no_allocator", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-OBJECT-ALLOCATOR"}, "allowed_change_roots": ["/transaction_kinds/@TXN-AUTH-ISSUE/commit_updates"]},
+    {"id": "HOSTILE-INSTANCE-SCOPE-HOLE", "mutation": "instance_scope_hole", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-INSTANCE-POLICY"}, "allowed_change_roots": ["/actions/@ACT-MONITOR-CRASH/instance_scope"]},
+    {"id": "HOSTILE-RECOVERY-MISMATCH", "mutation": "recovery_mismatch", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-RECOVERY"}, "allowed_change_roots": ["/actions/@ACT-MONITOR-CRASH/recovery_ast"]},
+    {"id": "HOSTILE-PROVIDER-FACT-OVERWRITE", "mutation": "provider_fact_overwrite", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-PROVIDER-WRITE-ONCE"}, "allowed_change_roots": ["/variables/@monitor_epoch/storage_class"]},
+    {"id": "HOSTILE-UNKNOWN-CLAIM", "mutation": "unknown_claim", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-PROOF"}, "allowed_change_roots": ["/proof_nodes/@PROOF-BASE-TYPING/claim_ids"]},
+    {"id": "HOSTILE-INVARIANT-MATRIX-HOLE", "mutation": "invariant_matrix_hole", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-INVARIANT-COVERAGE"}, "allowed_change_roots": ["/invariants/@INV-NONNEGATIVE-AUTHORITY/preserved_by"]},
+    {"id": "HOSTILE-UNKNOWN-WITNESS-STEP", "mutation": "unknown_witness_step", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-WITNESS"}, "allowed_change_roots": ["/witnesses/@WIT-AUTHORITY-TRANSFER/steps/0/parameters/node"]},
+    {"id": "HOSTILE-DISABLED-WITNESS-STEP", "mutation": "disabled_witness_step", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-WITNESS-DISABLED"}, "allowed_change_roots": ["/witnesses/@WIT-AUTHORITY-TRANSFER/steps/0", "/witnesses/@WIT-AUTHORITY-TRANSFER/steps/1"]},
+    {"id": "HOSTILE-FALSE-WITNESS-FINAL", "mutation": "false_witness_final", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-WITNESS-FINAL"}, "allowed_change_roots": ["/witnesses/@WIT-AUTHORITY-TRANSFER/final_formula_ast"]},
+    {"id": "HOSTILE-ALLOCATOR-UNDERCOUNTS-PUBLICATIONS", "mutation": "allocator_undercounts_publications", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-OBJECT-ALLOCATOR"}, "allowed_change_roots": ["/transaction_kinds/@TXN-ASYNC-CARRIER/commit_updates/7/value_ast/2/exhausted", "/transaction_kinds/@TXN-ASYNC-CARRIER/commit_updates/7/value_ast/2/next_ordinal"]},
+    {"id": "HOSTILE-CONDITIONAL-OBJECT-CONSTRUCTOR", "mutation": "conditional_object_constructor", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-OBJECT-CONSTRUCTOR"}, "allowed_change_roots": ["/transaction_kinds/@TXN-AUTH-ISSUE/commit_updates/3/value_ast"]},
+    {"id": "HOSTILE-FAKE-EDGE-POLICY", "mutation": "fake_edge_policy", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-EDGE-POLICY"}, "allowed_change_roots": ["/objects/@OBJDEF-AuthorityCore/reference_edges/0/class", "/objects/@OBJDEF-AuthorityCore/reference_edges/0/strength"]},
+    {"id": "HOSTILE-WITNESS-SKIPS-INVARIANTS", "mutation": "witness_skips_invariants", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-SCHEMA"}, "allowed_change_roots": ["/witnesses/@WIT-AUTHORITY-TRANSFER/invariant_scope"]},
+    {"id": "HOSTILE-CROSS-NEXT-TAG-FACT", "mutation": "cross_next_tag_fact", "expected": {"exit_code": 1, "status": "rejected", "reject_id": "IR-VARIANT-FIELD"}, "allowed_change_roots": ["/provider_formulas/@PF-STORE-EPOCH/guarantee_ast"]}
+  ],
+  "nonclaims": [
+    "This catalog does not establish semantic completeness.",
+    "This catalog does not authenticate its own runner or runtime.",
+    "Passing this catalog does not authorize promotion, freeze, TLA+, or a protection claim."
+  ]
+}

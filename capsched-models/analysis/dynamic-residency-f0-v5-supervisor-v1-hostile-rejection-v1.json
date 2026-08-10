@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-supervisor-v1-hostile-rejection-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "predecessor_rejected_by_local_hostile_review",
+  "reviewed_artifacts": [
+    {
+      "path": "capsched-models/analysis/0221-dynamic-residency-f0-v5-supervised-evaluation-protocol.md",
+      "sha256": "c90bf32d32a3128e9f9d4cf7248fd9d830ac1d8abca692e9458aa6fc0b0d9fd4"
+    },
+    {
+      "path": "capsched-models/analysis/dynamic-residency-f0-v5-supervised-evaluation-protocol-v1.json",
+      "sha256": "35d2f6c711a54a96841076882d97177b78a81e90dc16ff6e852e83d568d6f5f5"
+    }
+  ],
+  "local_reviews": [
+    {
+      "axis": "ASYNCHRONOUS_LTS_AND_CLASSIFICATION",
+      "session_id": "019feb5a-b381-7722-9e1e-2ce396cc003c",
+      "disposition": "LOCAL_ADVISORY_REJECT"
+    },
+    {
+      "axis": "LINUX_SUPERVISION_ACCOUNTING_AND_AUTHORITY",
+      "session_id": "019feb5a-7790-7383-8d25-550c55106625",
+      "disposition": "LOCAL_ADVISORY_REJECT"
+    }
+  ],
+  "counterexamples": [
+    "EARLY_INTERNAL_BEFORE_BUFFERED_FRAME",
+    "EARLY_INTERNAL_BEFORE_EXIT",
+    "PARTIAL_READ_INVALID_THEN_COMPLETE_OVERWRITE",
+    "SUCCESS_BEFORE_EOF_TRAILING_BYTE",
+    "PROTOCOL_FAULT_LAUNDERED_BY_LATER_QUOTA",
+    "SUCCESS_REJECT_HIDDEN_FRAME_TAG_NONDETERMINISM",
+    "CROSS_RUN_FRAME_EXIT_RECEIPT_REPLAY",
+    "UNSUPERVISED_PREWORKER_HOSTILE_PARSE",
+    "LEADER_EXIT_WITH_LIVE_DESCENDANT_AND_WRITER",
+    "UNSUPERVISED_PARENT_RESULT_JSON_PARSE"
+  ],
+  "blocking_findings": [
+    {
+      "id": "SV1-REJECT-001",
+      "severity": "CRITICAL",
+      "axis": "STATE",
+      "finding": "DECLARED_PRODUCT_OMITS_CLASSIFICATION_RELEVANT_STATE"
+    },
+    {
+      "id": "SV1-REJECT-002",
+      "severity": "CRITICAL",
+      "axis": "ASYNCHRONY",
+      "finding": "FALLBACK_COMMIT_REQUIRES_PROPHECY_OR_COMMITS_EARLY"
+    },
+    {
+      "id": "SV1-REJECT-003",
+      "severity": "CRITICAL",
+      "axis": "FRAMING",
+      "finding": "FRAME_STATE_IS_NONMONOTONE_AND_HAS_NO_EOF_BARRIER"
+    },
+    {
+      "id": "SV1-REJECT-004",
+      "severity": "CRITICAL",
+      "axis": "RESOURCE",
+      "finding": "QUOTA_CAN_LAUNDER_PROTOCOL_OR_CONTAINMENT_FAILURE"
+    },
+    {
+      "id": "SV1-REJECT-005",
+      "severity": "CRITICAL",
+      "axis": "TRUST",
+      "finding": "REQUESTER_AND_RESULT_PARSING_BYPASS_SUPERVISED_SCOPE"
+    },
+    {
+      "id": "SV1-REJECT-006",
+      "severity": "HIGH",
+      "axis": "REPLAY",
+      "finding": "RECEIPTS_LACK_FRESH_COMPLETE_RUN_BINDING"
+    },
+    {
+      "id": "SV1-REJECT-007",
+      "severity": "HIGH",
+      "axis": "CLEANUP",
+      "finding": "PIDFD_LEADER_IDENTITY_DOES_NOT_PROVE_SCOPE_EMPTY"
+    },
+    {
+      "id": "SV1-REJECT-008",
+      "severity": "HIGH",
+      "axis": "LAUNCH",
+      "finding": "NO_INSTRUCTION_BEFORE_BINDING_IS_NOT_ESTABLISHED_BY_STOP_OR_FREEZER"
+    },
+    {
+      "id": "SV1-REJECT-009",
+      "severity": "HIGH",
+      "axis": "LINUX_REFINEMENT",
+      "finding": "MECHANISM_NAMES_DO_NOT_ESTABLISH_EXACT_RESOURCE_CAUSALITY"
+    },
+    {
+      "id": "SV1-REJECT-010",
+      "severity": "HIGH",
+      "axis": "AUTHORITY",
+      "finding": "NO_OPEN_NO_SOCKET_DOES_NOT_CLOSE_AMBIENT_AUTHORITY"
+    },
+    {
+      "id": "SV1-REJECT-011",
+      "severity": "HIGH",
+      "axis": "LIVENESS",
+      "finding": "SUPERVISOR_DEATH_CANNOT_SELF_ISSUE_INTERNAL_OR_COMPLETE_CLEANUP"
+    },
+    {
+      "id": "SV1-REJECT-012",
+      "severity": "HIGH",
+      "axis": "SEMANTIC_CREDIT",
+      "finding": "NORMAL_REFERENCE_EVALUATOR_EXIT_DOES_NOT_PROVE_RESULT_SEMANTICS"
+    }
+  ],
+  "required_successor_properties": [
+    "FRESH_RUN_ID_AND_COMPLETE_CONTEXT_TUPLE_ON_EVERY_RECEIPT",
+    "APPEND_ONLY_MONOTONE_EVIDENCE_LEDGER",
+    "OPAQUE_BOUNDED_SUPERVISOR_INPUT_HANDLING",
+    "ALL_REQUESTER_SEMANTICS_INSIDE_SUPERVISED_SCOPE",
+    "FIRST_INSTRUCTION_ACCOUNTING_AND_SANDBOX_READY_RELEASE",
+    "FIXED_FD_AND_AUTHORITY_MANIFEST",
+    "NONBLOCKING_BOUNDED_DRAIN_THROUGH_EOF",
+    "PROTOCOL_AND_CONTAINMENT_FAULT_PRECEDENCE_OVER_RESOURCE",
+    "LEADER_REAP_AND_EXECUTION_SCOPE_EMPTY",
+    "FINAL_COUNTER_CAPTURE_AND_QUIESCENCE_BARRIER",
+    "PURE_TOTAL_DETERMINISTIC_CLASSIFICATION_AFTER_QUIESCENCE",
+    "OUTER_GUARDIAN_ABORT_WITH_NO_RESULT_PUBLICATION",
+    "ATOMIC_TERMINAL_CAPSULE_PUBLICATION",
+    "INDEPENDENT_PROOF_OR_CERTIFICATE_FOR_POSITIVE_SEMANTIC_CREDIT"
+  ],
+  "authorization": {
+    "predecessor_locally_rejected": true,
+    "successor_authorized": false,
+    "external_review": false,
+    "ValidationContextDigest_issued": false,
+    "external_process_supervisor_bound": false,
+    "result_taxonomy_closed": false,
+    "evaluation_validated": false,
+    "CoreSyntaxWF": false,
+    "InstanceWF": false,
+    "F0_local_acceptance": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}
