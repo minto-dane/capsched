@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-08-09
+Updated: 2026-08-10
 
 This file is current-state context only. Detailed chronology is in
 `state/events.jsonl`, `design/compact.md`, focused model notes, and Git history.
@@ -33,8 +33,12 @@ RESIDENCY-001:
   model-supported at EC1 only for a fixed pre-admitted finite one-shot reference
 
 RESIDENCY-DYN-001:
-  open; dynamic admission/rejection, recurring service, bounded churn/overflow,
-  and safe generation rekey are the immediate next model
+  open; Candidate-4 is a pre-full local checkpoint only. Child 274, parent
+  715, and runner 44 hostile regressions plus the fast validator pass. Full
+  child/parent reachability and declared commutation have not run
+
+R11 machine IR / Formal 0150 / TLA+:
+  unauthorized until complete F0-F3 and an executable externally rooted K0
 
 Linux implementation:
   historical scaffold and experimental prototypes only
@@ -53,6 +57,24 @@ Formal 0148, and Validation 0289 close only finite-reference RESIDENCY model
 support. ADR-0014 preserves dynamic and recurring residency as a separate
 mandatory requirement.
 
+ADR-0020 and Analysis 0217 preserve exact F0 v4 as rejected. Analysis 0218 and
+Validation 0307 preserve the first F0 v5 machine draft as a separate parity
+rejection. Rejected bytes remain negative regression evidence and are not
+repaired in place. Analysis 0219 through 0225 then record the source-static,
+linked-model, checked-evaluation, supervisor, and hostile-redesign sequence.
+
+Analysis 0226 and Validation 0313 are the current boundary. Candidate-4 binds
+strict nested schemas, exact action registries, producer/checker agreement,
+reachable-action commutation membership, exact witness-count equality and
+nonterminal-state bounds, raw component receipt bytes, claim predicates,
+timeout classification, and bounded
+process-group cleanup. Its component receipts are still captured by the
+candidate validator and checked by the same-UID outer runner; they are not
+authority-disjoint observations. The full campaign is `NOT_RUN`, so all three
+full-only local claims remain `NOT_RUN`, seven refinement claims remain
+`OPEN_REFINEMENT`, and F0, R11, K0/G0, protection, and model completion remain
+false.
+
 ## Current Git State
 
 Project-control work is isolated on:
@@ -69,7 +91,17 @@ reviewed prior lineage:
 
 stable main:
   4aa3f5427e1d3649d4de1cadcbcb8f268fb932a9
+
+checkpoint commit:
+  resolve from the branch or the superproject gitlink; it cannot be embedded
+  in the bytes from which its own Git object ID is derived
 ```
+
+ADR-0023 records that the GitHub superproject, project-control/model repository,
+and patch queue are intentionally public by owner decision. Public visibility
+is not a blocker.
+Credentials, private keys, tokens, and private operational data must never be
+committed.
 
 Sibling Linux source:
 
@@ -87,10 +119,16 @@ Sibling patch queue:
 ```text
 branch: codex/replay-clone-portability
 HEAD:   16bb080da472ffabbbafd2698073eca633fb0602
+replay base:
+        4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
+replay endpoint:
+        6537a57d3d4bcf61d92b0081275081d69c5ff2fd
 ```
 
-All three repositories were clean when this repair began. No Linux source or
-patch-queue change is part of the current branch.
+The replay endpoint is the historical L0 patch-series result. It is not the
+later local experimental Linux head `74311ca1...`. A fresh machine can recreate
+the historical queue exactly and may separately fetch or rebuild later
+experimental work. Neither is a production protection boundary.
 
 ## Reopened Requirements
 
@@ -216,15 +254,22 @@ open.
 
 ## Next Order
 
-1. Model `RESIDENCY-DYN-001`: dynamic feasibility admission/rejection and
-   class changes, recurring request identity/cancellation/coalescing, bounded
-   churn/overflow work, and safe generation saturation/rekey.
-2. Freeze its threat boundary, assumptions, negative cases, and refinement
-   map to the accepted finite contract before selecting an implementation.
-3. Build a separate claim-specific EC1 Validator and capsule only after that
-   contract is frozen.
-4. Then compose `ENTRY-001 + CODE-001`, followed by state/service/management,
-   cluster partitions, composition, and the full cost contract.
+1. Specify and hostile-review a root-owned, dedicated-UID, nondelegated cgroup
+   v2 launcher that directly observes component execution and retains output
+   outside candidate authority.
+2. Capture exact Candidate-4 inputs, launch the full bounded child/parent
+   reachability and declared-commutation campaign detached, then independently
+   reduce retained raw evidence in a later session.
+3. Disposition the three full-only local claims without changing any external
+   claim. A local pass still does not authorize F0 or external R11 review.
+4. Complete F1 claim semantics, F2 platform/threat refinement, and F3 external
+   policy/generators/mutations/proof/trust, then obtain an independently rooted
+   K0/G0 decision over one immutable F0-F3 source set.
+5. Only then construct Formal 0150, materialize D0-D17, execute W0-W12, freeze
+   semantics, translate to TLA+/other backends, and build claim-specific
+   evidence.
+6. Compose `ENTRY-001 + CODE-001`, then state/service/management, cluster
+   partitions, composition, and the complete-path cost contract.
 
 ## Do Not Do Yet
 
@@ -235,6 +280,9 @@ do not treat Linux runqueue or selector state as root availability authority
 do not claim final model completion
 do not claim monitor-backed protection or cost efficiency
 do not accept positive producer summaries without a captured validator capsule
+do not externally review or repair the rejected R11 G0 v1 snapshot in place
+do not start F1 before the exact F0 package survives local hostile closure
+do not construct Formal 0150 or TLA+ before an externally accepted epoch-2 K0
 ```
 
 ## Long-Running Work
@@ -255,10 +303,29 @@ Do not poll a healthy long-running job merely to keep a chat session alive.
 2. this file
 3. `../capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md`
 4. `../capsched-models/plans/0006-final-compositional-model-completion-plan.md`
-5. focused `RESIDENCY-DYN-001` artifacts once created
+5. `../capsched-ai/decisions/ADR-0020-close-f0-before-policy-with-total-actions-batches-and-morphisms.md`
+6. `../capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
+7. `../capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
+8. `../capsched-models/policy/r11/epoch2/foundation-v5/README.md`
 
 Read Analysis 0188 and Validation 0289 as the immediate refinement baseline.
 ROOTSCHED is closed reference context. Finite RESIDENCY is a lower-layer
 contract for, not a substitute for, the next dynamic-residency work queue.
 
 Use `design/compact.md` only for historical detail.
+
+## Fresh Clone Recovery
+
+Preferred public recovery path:
+
+```sh
+git clone --recurse-submodules https://github.com/minto-dane/linux-cap.git
+cd linux-cap/capsched
+./capsched-ai/state/check-current-state.sh
+python3 -I -S -B capsched-models/validation/validate-f0-supervisor-lts-v3.py
+```
+
+Required host tools are Git, Bash, jq, awk, `sha256sum`, Python 3, and the
+Python `jsonschema` package with Draft 2020-12 support. The fast validator is
+the restart smoke test. Do not launch `run-f0-supervisor-v3-full.sh` until the
+authority-disjoint launcher contract and immutable capture are ready.

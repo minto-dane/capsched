@@ -32,6 +32,7 @@
         "name",
         "purpose",
         "current_phase",
+        "publication",
         "control_repository",
         "superproject",
         "linux_source",
@@ -50,14 +51,58 @@
         },
         "current_phase": {
           "enum": [
-            "final_compositional_model_reopened"
+            "f0_v5_supervisor_v3_candidate4_pre_full_checkpoint"
           ]
+        },
+        "publication": {
+          "type": "object",
+          "required": [
+            "github_visibility",
+            "decision_date",
+            "secrets_allowed",
+            "scope"
+          ],
+          "properties": {
+            "github_visibility": {
+              "const": "public_intentional"
+            },
+            "decision_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "secrets_allowed": {
+              "const": false
+            },
+            "scope": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
         },
         "control_repository": {
           "$ref": "#/$defs/gitControlRepository"
         },
         "superproject": {
-          "$ref": "#/$defs/gitReference"
+          "type": "object",
+          "required": [
+            "remote",
+            "checkpoint_resolution",
+            "recorded_parent_baseline_revision"
+          ],
+          "properties": {
+            "remote": {
+              "type": "string",
+              "minLength": 1
+            },
+            "checkpoint_resolution": {
+              "const": "default_branch_gitlink"
+            },
+            "recorded_parent_baseline_revision": {
+              "$ref": "#/$defs/gitObject"
+            }
+          },
+          "additionalProperties": false
         },
         "linux_source": {
           "type": "object",
@@ -112,7 +157,10 @@
               "type": "object",
               "required": [
                 "repository",
-                "branch"
+                "branch",
+                "replay_base_revision",
+                "replay_work_revision",
+                "replay_scope"
               ],
               "properties": {
                 "repository": {
@@ -120,6 +168,15 @@
                 },
                 "branch": {
                   "type": "string"
+                },
+                "replay_base_revision": {
+                  "$ref": "#/$defs/gitObject"
+                },
+                "replay_work_revision": {
+                  "$ref": "#/$defs/gitObject"
+                },
+                "replay_scope": {
+                  "const": "historical_l0_endpoint_not_current_experimental_head"
                 }
               }
             }
@@ -234,7 +291,9 @@
         "reviewed_positive_promotion_credit",
         "reviewed_negative_results",
         "exact_git_objects",
-        "codex_security_scan_required"
+        "codex_security_scan_required",
+        "claim_specific_results",
+        "local_candidate_checkpoint"
       ],
       "properties": {
         "policy": {
@@ -311,6 +370,70 @@
             },
             "additionalProperties": false
           }
+        },
+        "local_candidate_checkpoint": {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "status",
+            "fast_validator_status",
+            "full_validator_status",
+            "hostile_case_counts",
+            "component_receipt_capture_authority",
+            "authority_disjoint_capture",
+            "authorization"
+          ],
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "status": {
+              "const": "pre_full_local_checkpoint"
+            },
+            "fast_validator_status": {
+              "const": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY"
+            },
+            "full_validator_status": {
+              "const": "NOT_RUN"
+            },
+            "hostile_case_counts": {
+              "type": "object",
+              "required": ["child", "parent", "runner", "total"],
+              "properties": {
+                "child": {"type": "integer", "minimum": 1},
+                "parent": {"type": "integer", "minimum": 1},
+                "runner": {"type": "integer", "minimum": 1},
+                "total": {"type": "integer", "minimum": 1}
+              },
+              "additionalProperties": false
+            },
+            "component_receipt_capture_authority": {
+              "const": "candidate_validator_local_process"
+            },
+            "authority_disjoint_capture": {
+              "const": false
+            },
+            "authorization": {
+              "type": "object",
+              "required": [
+                "F0_local_acceptance",
+                "external_R11_review",
+                "G0_authorized",
+                "self_authorization",
+                "protection_claim"
+              ],
+              "properties": {
+                "F0_local_acceptance": {"const": false},
+                "external_R11_review": {"const": false},
+                "G0_authorized": {"const": false},
+                "self_authorization": {"const": false},
+                "protection_claim": {"const": false}
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

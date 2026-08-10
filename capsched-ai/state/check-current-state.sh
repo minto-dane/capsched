@@ -22,6 +22,18 @@ command -v jq >/dev/null 2>&1 || {
 	printf 'error: jq is required\n' >&2
 	exit 1
 }
+command -v python3 >/dev/null 2>&1 || {
+	printf 'error: python3 is required\n' >&2
+	exit 1
+}
+command -v sha256sum >/dev/null 2>&1 || {
+	printf 'error: sha256sum is required\n' >&2
+	exit 1
+}
+command -v awk >/dev/null 2>&1 || {
+	printf 'error: awk is required\n' >&2
+	exit 1
+}
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 repo_root=$(git -C "$script_dir" rev-parse --show-toplevel)
@@ -31,6 +43,23 @@ handoff_rel=capsched-ai/handoff.md
 events_rel=capsched-ai/state/events.jsonl
 claims_rel=capsched-models/assurance/claims.json
 ledger_rel=capsched-models/analysis/final-model-completeness-ledger-v1.json
+assurance_head_rels=(
+	capsched-ai/decisions/ADR-0018-split-foundation-candidate-freeze-and-proof-gates.md
+	capsched-ai/state/schemas/state.schema.json
+	capsched-ai/state/check-current-state.sh
+	capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
+	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure-v1.json
+	capsched-models/assurance/claims.json
+	capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
+	capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json
+	capsched-models/validation/f0_supervisor_lts_v3.py
+	capsched-models/validation/f0_supervisor_orchestrator_v3.py
+	capsched-models/validation/test-f0-supervisor-lts-v3-mutations.py
+	capsched-models/validation/test-f0-supervisor-orchestrator-v3-mutations.py
+	capsched-models/validation/test-run-f0-supervisor-v3-full.sh
+	capsched-models/validation/validate-f0-supervisor-lts-v3.py
+	capsched-models/validation/run-f0-supervisor-v3-full.sh
+)
 
 state="$repo_root/$state_rel"
 schema="$repo_root/$schema_rel"
@@ -46,12 +75,41 @@ for required in "$state" "$schema" "$handoff" "$events" "$claims" "$ledger"; do
 	}
 done
 
-jq empty "$state" "$schema" "$claims" "$ledger"
+jq empty "$state" "$schema" "$claims" "$ledger" "$events"
+
+PYTHONDONTWRITEBYTECODE=1 python3 - "$schema" "$state" <<'PY'
+import json
+import sys
+
+try:
+    from jsonschema import Draft202012Validator, FormatChecker
+except ImportError as error:
+    raise SystemExit(
+        "error: python3 jsonschema support is required for state validation"
+    ) from error
+
+with open(sys.argv[1], encoding="utf-8") as handle:
+    schema = json.load(handle)
+with open(sys.argv[2], encoding="utf-8") as handle:
+    state = json.load(handle)
+
+Draft202012Validator.check_schema(schema)
+validator = Draft202012Validator(schema, format_checker=FormatChecker())
+errors = sorted(validator.iter_errors(state), key=lambda item: list(item.path))
+if errors:
+    for error in errors:
+        path = ".".join(str(part) for part in error.absolute_path) or "<root>"
+        print(f"error: state schema violation at {path}: {error.message}", file=sys.stderr)
+    raise SystemExit(1)
+PY
 
 jq -e '
 	.schema_version == 2 and
 	.project.name == "DomainLease-Linux" and
-	.project.current_phase == "final_compositional_model_reopened" and
+	.project.current_phase ==
+	 "f0_v5_supervisor_v3_candidate4_pre_full_checkpoint" and
+	.project.publication.github_visibility == "public_intentional" and
+	.project.publication.secrets_allowed == false and
 	.completion.v1_claim_inventory_complete == true and
 	.completion.final_compositional_model_complete == false and
 	.completion.linux_implementation_complete == false and
@@ -62,14 +120,47 @@ jq -e '
 	.evidence.contract_status == "defined" and
 	.evidence.reviewed_positive_promotion_credit == "needs_revalidation" and
 	.evidence.codex_security_scan_required == false and
+	.evidence.local_candidate_checkpoint.full_validator_status == "NOT_RUN" and
+	.evidence.local_candidate_checkpoint.authority_disjoint_capture == false and
+	(.evidence.local_candidate_checkpoint.hostile_case_counts |
+	 .total == (.child + .parent + .runner)) and
 	([.accepted_invariants[].id] | length == (unique | length)) and
 	([.planned_tracks[].order] == ([.planned_tracks[].order] | sort)) and
 	([.next_actions[].order] == ([.next_actions[].order] | sort))
 ' "$state" >/dev/null
 
+patch_queue_rel=$(jq -er '.project.linux_patch_queue.repository' "$state")
+patch_queue_root=$(CDPATH= cd -- "$repo_root/$patch_queue_rel" 2>/dev/null &&
+	pwd -P || true)
+if [[ -n $patch_queue_root && -f $patch_queue_root/upstream/base.txt ]]; then
+	recorded_replay_base=$(jq -er \
+		'.project.linux_patch_queue.replay_base_revision' "$state")
+	recorded_replay_work=$(jq -er \
+		'.project.linux_patch_queue.replay_work_revision' "$state")
+	metadata_replay_base=$(awk -F= '$1 == "base_commit" { print $2 }' \
+		"$patch_queue_root/upstream/base.txt")
+	metadata_replay_work=$(awk -F= '$1 == "work_commit" { print $2 }' \
+		"$patch_queue_root/upstream/base.txt")
+	[[ $recorded_replay_base == "$metadata_replay_base" &&
+	   $recorded_replay_work == "$metadata_replay_work" ]] || {
+		printf 'error: Linux patch-queue replay identity mismatch\n' >&2
+		exit 1
+	}
+fi
+
 jq -e '
 	([.claims[].id] | length == (unique | length)) and
 	([.evidence[].id] | length == (unique | length)) and
+	([.gates[].id] | length == (unique | length)) and
+	([.gates[] | select(.id == "G0")] | length == 0) and
+	(.gate_identifier_policy.bare_G0_semantics ==
+	 "K0 foundation adoption only, as fixed by ADR-0018") and
+	([.gates[] | select(.id == "K0-G0" and .status == "open" and
+	 .current_authorization == false)] | length == 1) and
+	([.gates[] | select(.id == "LINUX-L0-G0" and
+	 .historical_alias == "G0" and
+	 .historical_alias_is_authority == false and
+	 .status == "completed")] | length == 1) and
 	(.claims[] | select(.id == "TOP-001") | .status) == "open" and
 	([.claims[].id] as $ids |
 	 ["ROOTSCHED-001", "RESIDENCY-001", "RESIDENCY-DYN-001",
@@ -78,6 +169,97 @@ jq -e '
 	  "COMPOSE-001", "GRANULARITY-001", "EVIDENCE-001"] |
 	 all(. as $id | $ids | index($id) != null))
 ' "$claims" >/dev/null
+
+registry_rel=$(jq -er '
+	.local_validation_claim_registries[] |
+	select(.id == "F0-C4-CLAIM-REGISTRY-v1") |
+	.path
+' "$claims")
+[[ $registry_rel == \
+	capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json ]] || {
+	printf 'error: unexpected F0 C4 claim registry path: %s\n' \
+		"$registry_rel" >&2
+	exit 1
+}
+registry="$repo_root/$registry_rel"
+[[ -f $registry ]] || {
+	printf 'error: F0 C4 claim registry missing: %s\n' "$registry" >&2
+	exit 1
+}
+registry_digest=$(sha256sum -- "$registry" | awk '{print $1}')
+recorded_registry_digest=$(jq -er '
+	.local_validation_claim_registries[] |
+	select(.id == "F0-C4-CLAIM-REGISTRY-v1") |
+	.sha256
+' "$claims")
+[[ $registry_digest == "$recorded_registry_digest" ]] || {
+	printf 'error: F0 C4 claim registry digest mismatch\n' >&2
+	exit 1
+}
+
+jq -e '
+	.artifact_id ==
+	 "dynamic-residency-f0-v5-supervisor-v3-candidate4-claim-registry" and
+	([.claims[].id] | length == 11 and length == (unique | length)) and
+	.authorization.F0_local_acceptance == false and
+	.authorization.external_R11_review == false and
+	.authorization.G0_authorized == false and
+	.authorization.self_authorization == false and
+	.authorization.protection_claim == false
+' "$registry" >/dev/null
+
+jq -e --slurpfile registry "$registry" '
+	(.local_validation_claim_registries[] |
+	 select(.id == "F0-C4-CLAIM-REGISTRY-v1")) as $link |
+	($link.claim_ids | sort) ==
+	 ($registry[0].claims | map(.id) | sort) and
+	$link.authorization.F0_local_acceptance == false and
+	$link.authorization.external_R11_review == false and
+	$link.authorization.G0_authorized == false and
+	$link.authorization.self_authorization == false and
+	$link.authorization.protection_claim == false
+' "$claims" >/dev/null
+
+c4_contract_rel=$(jq -er '.canonical_files.f0_c4_pre_full_contract' "$state")
+c4_contract="$repo_root/$c4_contract_rel"
+[[ -f $c4_contract ]] || {
+	printf 'error: F0 C4 pre-full contract missing: %s\n' "$c4_contract" >&2
+	exit 1
+}
+jq empty "$c4_contract"
+while IFS=$'\t' read -r input_name expected_digest; do
+	input_path="$repo_root/capsched-models/validation/$input_name"
+	[[ -f $input_path ]] || {
+		printf 'error: F0 C4 exact input missing: %s\n' "$input_path" >&2
+		exit 1
+	}
+	actual_digest=$(sha256sum -- "$input_path" | awk '{print $1}')
+	[[ $actual_digest == "$expected_digest" ]] || {
+		printf 'error: F0 C4 exact input digest mismatch: %s\n' \
+			"$input_name" >&2
+		exit 1
+	}
+done < <(jq -r '.exact_inputs | to_entries[] | [.key, .value] | @tsv' \
+	"$c4_contract")
+
+jq -e --slurpfile state "$state" '
+	.local_regression.full_validator_status == "NOT_RUN" and
+	.local_regression.fast_validator_status ==
+	 "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY" and
+	.local_regression.child_hostile_cases ==
+	 $state[0].evidence.local_candidate_checkpoint.hostile_case_counts.child and
+	.local_regression.parent_hostile_cases ==
+	 $state[0].evidence.local_candidate_checkpoint.hostile_case_counts.parent and
+	.local_regression.runner_hostile_cases ==
+	 $state[0].evidence.local_candidate_checkpoint.hostile_case_counts.runner and
+	.local_regression.total_hostile_cases ==
+	 $state[0].evidence.local_candidate_checkpoint.hostile_case_counts.total and
+	.authorization.F0_local_acceptance == false and
+	.authorization.external_R11_review == false and
+	.authorization.G0_authorized == false and
+	.authorization.self_authorization == false and
+	.authorization.protection_claim == false
+' "$c4_contract" >/dev/null
 
 jq -e '
 	.status == "historical_v1_inventory_complete_final_composition_reopened" and
@@ -100,11 +282,35 @@ baseline=$(jq -r '.project.control_repository.semantic_baseline_revision' "$stat
 reviewed=$(jq -r '.project.control_repository.reviewed_lineage_revision' "$state")
 stable_main=$(jq -r '.project.control_repository.stable_main_revision' "$state")
 
-[[ $branch == "$recorded_branch" ]] || {
-	printf 'error: state branch %s does not match current branch %s\n' \
-		"$recorded_branch" "${branch:-DETACHED}" >&2
-	exit 1
-}
+if [[ -n $branch ]]; then
+	[[ $branch == "$recorded_branch" ]] || {
+		printf 'error: state branch %s does not match current branch %s\n' \
+			"$recorded_branch" "$branch" >&2
+		exit 1
+	}
+else
+	superproject=$(git -C "$repo_root" rev-parse \
+		--show-superproject-working-tree)
+	[[ -n $superproject ]] || {
+		printf 'error: detached HEAD is allowed only at a superproject gitlink\n' >&2
+		exit 1
+	}
+	case $repo_root in
+	"$superproject"/*)
+		submodule_path=${repo_root#"$superproject"/}
+		;;
+	*)
+		printf 'error: detached repository is outside its superproject\n' >&2
+		exit 1
+		;;
+	esac
+	gitlink=$(git -C "$superproject" ls-files -s -- "$submodule_path" |
+		awk '$1 == "160000" { print $2 }')
+	[[ -n $gitlink && $gitlink == "$head" ]] || {
+		printf 'error: detached HEAD does not match its superproject gitlink\n' >&2
+		exit 1
+	}
+fi
 
 for commit in "$baseline" "$reviewed" "$stable_main"; do
 	git -C "$repo_root" cat-file -e "$commit^{commit}"
@@ -131,9 +337,25 @@ if ! $allow_draft; then
 		printf 'error: event log and state were not updated in the same commit\n' >&2
 		exit 1
 	}
-	if [[ -n $(git -C "$repo_root" status --porcelain -- \
-		"$state_rel" "$schema_rel" "$handoff_rel" "$events_rel") ]]; then
-		printf 'error: current-state artifacts have uncommitted changes\n' >&2
+	for assurance_rel in "${assurance_head_rels[@]}"; do
+		git -C "$repo_root" ls-files --error-unmatch -- \
+			"$assurance_rel" >/dev/null || {
+			printf 'error: assurance artifact is not tracked: %s\n' \
+				"$assurance_rel" >&2
+			exit 1
+		}
+	done
+	while IFS= read -r canonical; do
+		git -C "$repo_root" ls-files --error-unmatch -- \
+			"$canonical" >/dev/null || {
+			printf 'error: canonical file is not tracked: %s\n' \
+				"$canonical" >&2
+			exit 1
+		}
+	done < <(jq -r '.canonical_files[]' "$state")
+	if [[ -n $(git -C "$repo_root" status --porcelain \
+		--untracked-files=all) ]]; then
+		printf 'error: checkpoint worktree is not completely clean\n' >&2
 		exit 1
 	fi
 fi

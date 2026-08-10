@@ -1,11 +1,17 @@
 {
   "schema_version": 2,
-  "updated": "2026-08-09",
+  "updated": "2026-08-10",
   "project": {
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "final_compositional_model_reopened",
+    "current_phase": "f0_v5_supervisor_v3_candidate4_pre_full_checkpoint",
+    "publication": {
+      "github_visibility": "public_intentional",
+      "decision_date": "2026-08-10",
+      "secrets_allowed": false,
+      "scope": "The superproject, project-control/models, and Linux patch-queue repositories are intentionally public; no credentials, private keys, tokens, or private operational data may be committed."
+    },
     "control_repository": {
       "branch": "codex/goal-conformance-and-assurance-repair",
       "semantic_baseline_revision": "f15ca0af4bfff5ff624af2931d8aeeeebc145516",
@@ -14,8 +20,9 @@
       "remote": "https://github.com/minto-dane/capsched"
     },
     "superproject": {
-      "revision": "8ae7d4a3d6a7943d4807d3fcf7f1d9f18a1aa51b",
-      "remote": "https://github.com/minto-dane/linux-cap"
+      "remote": "https://github.com/minto-dane/linux-cap",
+      "checkpoint_resolution": "default_branch_gitlink",
+      "recorded_parent_baseline_revision": "8ae7d4a3d6a7943d4807d3fcf7f1d9f18a1aa51b"
     },
     "linux_source": {
       "repository": "../linux",
@@ -32,7 +39,10 @@
       "repository": "../linux-patches",
       "branch": "codex/replay-clone-portability",
       "revision": "16bb080da472ffabbbafd2698073eca633fb0602",
-      "remote": "https://github.com/minto-dane/capsched-linux"
+      "remote": "https://github.com/minto-dane/capsched-linux",
+      "replay_base_revision": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+      "replay_work_revision": "6537a57d3d4bcf61d92b0081275081d69c5ff2fd",
+      "replay_scope": "historical_l0_endpoint_not_current_experimental_head"
     }
   },
   "architecture_intent": {
@@ -122,6 +132,16 @@
     "Process-granular Domains are supported but selected under an explicit security and complete-path cost envelope.",
     "N-155 is historical v1 inventory/local-contract coverage, not final component composition.",
     "No behavior-changing Linux patch is currently approved.",
+    "The exact R11 G0 v1 bundle is rejected before external review and remains an immutable negative snapshot.",
+    "The epoch-2 v2, v3, first F0 v4, and F0 v5 machine draft-1 semantic artifacts are immutable rejected snapshots; local structural checks and advisory reviews are not K0 authority.",
+    "Analysis 0219 and Validation 0308 locally close only F0 v5 canonical source static checking and immutable link construction; Eval, Reads, transition, WF, claim, proof, and external assurance remain open.",
+    "The production source path is byte-snapshot only; direct mutable-dict checker construction cannot issue wire-validation evidence, and local cross reconstruction is not external validation.",
+    "Seven issued F0 v5 construction ID kinds have machine-readable preimage and invalidation policies; future semantic IDs remain forbidden until alpha normalization and semantic context are frozen.",
+    "ADR-0020 requires F0 v5 to close normative denotation, machine grammar, proof identity, total action closure, finite batches, claim-bound nonvacuity, and extension/platform morphisms before F1.",
+    "No F1, F2, F3 completion, R11 machine IR, or TLA+ translation is authorized before an executable externally rooted epoch-2 K0 decision.",
+    "Candidate-4 currently has only fast/static local credit: child 274, parent 715, and runner 44 hostile cases pass, while full child/parent reachability and declared commutation are not run.",
+    "Candidate-4 component receipts are captured by the candidate validator and checked for internal consistency by the outer runner; they are not authority-disjoint execution observations or externally attested evidence.",
+    "The same-UID runner does not prove runtime input immutability, escaped-descendant containment, post-finalization storage immutability, or external toolchain authentication; full promotion requires a root-owned dedicated-UID containment service.",
     "Long-running builds, model checks, and matrices are detached after immutable input capture and reviewed in a later session."
   ],
   "completion": {
@@ -162,7 +182,28 @@
         "evidence_level": "EC1",
         "allowed_transition": "RESIDENCY-001.open_to_model_supported"
       }
-    ]
+    ],
+    "local_candidate_checkpoint": {
+      "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure",
+      "status": "pre_full_local_checkpoint",
+      "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+      "full_validator_status": "NOT_RUN",
+      "hostile_case_counts": {
+        "child": 274,
+        "parent": 715,
+        "runner": 44,
+        "total": 1033
+      },
+      "component_receipt_capture_authority": "candidate_validator_local_process",
+      "authority_disjoint_capture": false,
+      "authorization": {
+        "F0_local_acceptance": false,
+        "external_R11_review": false,
+        "G0_authorized": false,
+        "self_authorization": false,
+        "protection_claim": false
+      }
+    }
   },
   "planned_tracks": [
     {
@@ -186,8 +227,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open",
-      "next_artifact": "Dynamic admission/rejection, recurring requests, bounded churn/overflow, and safe rekey model"
+      "status": "open_candidate4_fast_local_pass_full_not_run",
+      "next_artifact": "Authority-disjoint Candidate-4 capture followed by detached full bounded reachability and declared-commutation evaluation"
     },
     {
       "order": 5,
@@ -232,6 +273,16 @@
       "text": "Which dynamic admission/rejection, recurring-request, churn/overflow, generation-rekey, and directory semantics refine the accepted finite Monitor-owned contract?"
     },
     {
+      "id": "Q-R11-G0-AUTHORITY",
+      "blocking": true,
+      "text": "Which externally rooted policy, reviewer, and gate authorities can independently pin and accept the final F0-F3 epoch-2 K0 source set without candidate self-attestation?"
+    },
+    {
+      "id": "Q-C4-CAPTURE-AUTHORITY",
+      "blocking": true,
+      "text": "Which root-owned dedicated-UID service captures Candidate-4 component execution, cgroup lifecycle, immutable inputs, toolchain identity, and final evidence without trusting candidate-validator self-report?"
+    },
+    {
       "id": "Q-ENTRY-VIEW",
       "blocking": true,
       "text": "Which privileged entry classes execute in a Domain view versus a Monitor/service entry view?"
@@ -274,12 +325,30 @@
     },
     {
       "order": 5,
-      "id": "RESIDENCY-DYNAMIC-MODEL",
-      "status": "next",
-      "text": "Model dynamic feasibility admission/rejection and class changes, recurring request identity/cancellation/coalescing, bounded churn/overflow work, and safe generation saturation/rekey."
+      "id": "F0-C4-PRE-FULL-CHECKPOINT",
+      "status": "fast_local_pass_full_not_run",
+      "text": "Candidate-4 child 274, parent 715, runner 44, strict state schema, and fast validator pass locally; the three GitHub repositories are intentionally public and the checkpoint must contain no secrets."
     },
     {
       "order": 6,
+      "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
+      "status": "next",
+      "text": "Specify and review a root-owned dedicated-UID cgroup-v2 launcher that directly captures component execution and retains immutable output without promoting self-attested receipts."
+    },
+    {
+      "order": 7,
+      "id": "F0-C4-FULL-LOCAL",
+      "status": "blocked_until_authority_disjoint_capture",
+      "text": "Capture exact inputs and launch the long full child/parent reachability and declared-commutation campaign detached; independently reduce retained receipts later."
+    },
+    {
+      "order": 8,
+      "id": "R11-MACHINE-IR",
+      "status": "blocked_until_external_epoch2_K0_accept",
+      "text": "Only after F0-F3 close and a valid externally rooted K0 decision, construct Formal 0150, materialize D0-D17, and execute W0-W12 before semantic freeze and TLA+."
+    },
+    {
+      "order": 9,
       "id": "ENTRY-CODE-MODEL",
       "status": "pending_after_residency_dynamic",
       "text": "Compose privileged and nested entry/return with MemoryView/TLB, stacks, CPU incarnation, W^X, code sealing, code epochs, and authorized text mutation."
@@ -292,7 +361,9 @@
     "handoff": "capsched-ai/handoff.md",
     "event_log": "capsched-ai/state/events.jsonl",
     "historical_chronology": "capsched-ai/design/compact.md",
-    "current_decision": "capsched-ai/decisions/ADR-0012-distinguish-local-model-coverage-from-system-completion.md",
+    "current_decision": "capsched-ai/decisions/ADR-0020-close-f0-before-policy-with-total-actions-batches-and-morphisms.md",
+    "publication_decision": "capsched-ai/decisions/ADR-0023-intentionally-public-repositories-and-secret-free-checkpoints.md",
+    "model_reopen_decision": "capsched-ai/decisions/ADR-0012-distinguish-local-model-coverage-from-system-completion.md",
     "evidence_decision": "capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md",
     "residency_scope_decision": "capsched-ai/decisions/ADR-0014-separate-finite-and-dynamic-residency-claims.md",
     "goal_audit": "capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md",
@@ -308,6 +379,34 @@
     "residency_model": "capsched-models/formal/0148-bounded-domain-residency-model/BoundedDomainResidency.tla",
     "residency_validation": "capsched-models/validation/0289-bounded-domain-residency-reference-contract-ec1.md",
     "residency_validator": "capsched-models/validation/validate-bounded-domain-residency-capsule.py",
+    "r11_g0_v1_rejection_analysis": "capsched-models/analysis/0214-dynamic-residency-r11-g0-v1-rejection-and-epoch2-semantic-kernel.md",
+    "r11_g0_v1_rejection_contract": "capsched-models/analysis/dynamic-residency-r11-g0-v1-rejection-and-epoch2-kernel-v1.json",
+    "r11_g0_v1_rejection_validation": "capsched-models/validation/0303-dynamic-residency-r11-g0-v1-hostile-rejection.md",
+    "r11_g0_v1_manifest": "capsched-models/policy/r11/g0-candidate-bundle-v1.json",
+    "epoch2_layering_decision": "capsched-ai/decisions/ADR-0019-decompose-foundation-calculus-claims-platform-and-assurance.md",
+    "f0_v5_decision": "capsched-ai/decisions/ADR-0020-close-f0-before-policy-with-total-actions-batches-and-morphisms.md",
+    "semantic_v3_rejection_analysis": "capsched-models/analysis/0216-dynamic-residency-semantic-foundation-v3-rejection-and-v4-layering.md",
+    "semantic_v3_rejection_validation": "capsched-models/validation/0305-dynamic-residency-semantic-foundation-v3-hostile-rejection.md",
+    "f0_v4_rejection_analysis": "capsched-models/analysis/0217-dynamic-residency-f0-v4-hostile-rejection-and-v5-closure.md",
+    "f0_v4_rejection_validation": "capsched-models/validation/0306-dynamic-residency-f0-v4-hostile-rejection.md",
+    "f0_v5_draft1_rejection_analysis": "capsched-models/analysis/0218-dynamic-residency-f0-v5-machine-draft1-parity-rejection.md",
+    "f0_v5_draft1_rejection_validation": "capsched-models/validation/0307-dynamic-residency-f0-v5-machine-draft1-structural-and-parity-disposition.md",
+    "f0_v5_static_link_closure_analysis": "capsched-models/analysis/0219-dynamic-residency-f0-v5-static-semantics-and-immutable-link-closure.md",
+    "f0_v5_static_link_closure_contract": "capsched-models/analysis/dynamic-residency-f0-v5-static-link-construction-closure-v1.json",
+    "f0_v5_static_link_closure_validation": "capsched-models/validation/0308-dynamic-residency-f0-v5-static-link-construction-regression.md",
+    "f0_v5_readme": "capsched-models/policy/r11/epoch2/foundation-v5/README.md",
+    "f0_v5_core_language": "capsched-models/policy/r11/epoch2/foundation-v5/f0-00-core-language-v5.md",
+    "f0_v5_transition_claims": "capsched-models/policy/r11/epoch2/foundation-v5/f0-01-model-transition-claims-v5.md",
+    "f0_v5_morphisms_proof": "capsched-models/policy/r11/epoch2/foundation-v5/f0-02-morphisms-proof-boundary-v5.md",
+    "f0_v5_machine_grammar_draft": "capsched-models/policy/r11/epoch2/foundation-v5/f0-machine-grammar-v5.json",
+    "f0_c4_pre_full_analysis": "capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md",
+    "f0_c4_pre_full_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure-v1.json",
+    "f0_c4_pre_full_validation": "capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md",
+    "f0_c4_claim_registry": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
+    "f0_c4_child_model": "capsched-models/validation/f0_supervisor_lts_v3.py",
+    "f0_c4_parent_model": "capsched-models/validation/f0_supervisor_orchestrator_v3.py",
+    "f0_c4_validator": "capsched-models/validation/validate-f0-supervisor-lts-v3.py",
+    "f0_c4_runner": "capsched-models/validation/run-f0-supervisor-v3-full.sh",
     "active_plan": "capsched-models/plans/0006-final-compositional-model-completion-plan.md",
     "assurance_case": "capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md",
     "assurance_register": "capsched-models/assurance/claims.json"
