@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://domainlease.invalid/schema/r11-g0-review-receipt-v1.json",
+  "title": "DomainLease R11 G0 external review receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "receipt_epoch",
+    "status",
+    "review_role",
+    "reviewer",
+    "independence",
+    "candidate_bundle",
+    "assigned_checks",
+    "check_dispositions",
+    "findings",
+    "blocking_finding_count",
+    "verdict",
+    "limitations",
+    "attestation",
+    "authorization"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_id": {"type": "string", "pattern": "^domainlease-r11-g0-review-receipt-[a-z0-9-]+-v1$"},
+    "receipt_epoch": {"type": "integer", "minimum": 1},
+    "status": {"const": "final"},
+    "review_role": {
+      "enum": [
+        "REVIEW-G0-SECURITY-SEMANTIC",
+        "REVIEW-G0-FORMAL-ENCODABILITY",
+        "REVIEW-G0-SCENARIO-SCALE"
+      ]
+    },
+    "reviewer": {"$ref": "#/$defs/reviewer"},
+    "independence": {"$ref": "#/$defs/independence"},
+    "candidate_bundle": {"$ref": "#/$defs/bundleRef"},
+    "assigned_checks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"pattern": "^CAT-G0-[0-9]{3}$"}
+    },
+    "check_dispositions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/checkDisposition"}
+    },
+    "findings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/finding"}
+    },
+    "blocking_finding_count": {"type": "integer", "minimum": 0},
+    "verdict": {"enum": ["accept", "reject"]},
+    "limitations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonemptyString"}
+    },
+    "attestation": {"$ref": "#/$defs/attestation"},
+    "authorization": {"$ref": "#/$defs/authorization"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"verdict": {"const": "accept"}}},
+      "then": {"properties": {"blocking_finding_count": {"const": 0}}}
+    }
+  ],
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principal_id", "authority_id", "credential_fingerprint", "review_nonce"],
+      "properties": {
+        "principal_id": {"$ref": "#/$defs/nonemptyString"},
+        "authority_id": {"$ref": "#/$defs/nonemptyString"},
+        "credential_fingerprint": {"$ref": "#/$defs/sha256"},
+        "review_nonce": {"pattern": "^[A-Za-z0-9._:-]{16,128}$"}
+      }
+    },
+    "independence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "can_modify_candidate_bundle",
+        "can_modify_checker",
+        "can_modify_mutation_catalog",
+        "same_change_authority_as_candidate_author",
+        "same_orchestrator_only",
+        "subject_to_gate_verification"
+      ],
+      "properties": {
+        "can_modify_candidate_bundle": {"const": false},
+        "can_modify_checker": {"const": false},
+        "can_modify_mutation_catalog": {"const": false},
+        "same_change_authority_as_candidate_author": {"const": false},
+        "same_orchestrator_only": {"const": false},
+        "subject_to_gate_verification": {"const": true}
+      }
+    },
+    "bundleRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "manifest_byte_length", "manifest_sha256"],
+      "properties": {
+        "artifact_id": {"const": "domainlease-r11-g0-candidate-bundle-v1"},
+        "manifest_byte_length": {"type": "integer", "minimum": 1},
+        "manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "checkDisposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check_id", "verdict", "evidence_digest", "rationale"],
+      "properties": {
+        "check_id": {"pattern": "^CAT-G0-[0-9]{3}$"},
+        "verdict": {"enum": ["pass", "fail"]},
+        "evidence_digest": {"$ref": "#/$defs/sha256"},
+        "rationale": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "severity", "status", "statement", "evidence_digest"],
+      "properties": {
+        "id": {"pattern": "^G0-FINDING-[A-Za-z0-9-]+$"},
+        "severity": {"enum": ["blocking", "high", "medium", "low", "note"]},
+        "status": {"enum": ["open", "resolved", "accepted_limitation"]},
+        "statement": {"$ref": "#/$defs/nonemptyString"},
+        "evidence_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "signed_payload_sha256", "reference", "verification_required"],
+      "properties": {
+        "method": {"enum": ["detached_signature", "organizational_record"]},
+        "signed_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "reference": {"$ref": "#/$defs/nonemptyString"},
+        "verification_required": {"const": true}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receipt_self_promotes", "g0_complete", "semantic_freeze", "tla_translation", "model_supported"],
+      "properties": {
+        "receipt_self_promotes": {"const": false},
+        "g0_complete": {"const": false},
+        "semantic_freeze": {"const": false},
+        "tla_translation": {"const": false},
+        "model_supported": {"const": false}
+      }
+    }
+  }
+}

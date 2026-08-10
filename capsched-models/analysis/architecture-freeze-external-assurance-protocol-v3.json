@@ -1,0 +1,1020 @@
+{
+  "schema_version": 1,
+  "id": "architecture-freeze-external-assurance-protocol-v3",
+  "protocol_revision": "3.0.0-preimplementation",
+  "date": "2026-08-09",
+  "work_record": "N-189",
+  "analysis": "0201-architecture-freeze-external-assurance-protocol-v3.md",
+  "requirements": [
+    "RESIDENCY-DYN-001",
+    "EVIDENCE-001"
+  ],
+  "status": "semantic_protocol_candidate_real_verifier_campaign_and_freeze_absent",
+  "supersedes_for_future_campaigns": "architecture-freeze-external-assurance-protocol-v2",
+  "does_not_rehabilitate_rejected_candidate": "24bb1320d3f50a10195d18e899d7101d7f422ca6ed18c5bedfb088ff4bdc174f",
+  "canonicalization": {
+    "payload_character_set": "NFC_UTF8",
+    "number_domain": "bounded_integers_only_no_floating_point_or_negative_zero",
+    "serialization": "RFC8785_JCS",
+    "object_keys": "exact_schema_keys_only",
+    "set_like_arrays": "sorted_unique_policy_bounded",
+    "unions": "exact_discriminator_and_variant_schema_no_ambiguous_null",
+    "hash_transcript": "domain_separator_then_length_delimited_schema_then_length_delimited_canonical_payload",
+    "unknown_duplicate_missing_extra_malformed_or_oversized_field": "reject",
+    "object_may_contain_its_own_digest": false
+  },
+  "thresholds": {
+    "review_roles": [
+      "security",
+      "formal_refinement",
+      "scalability_liveness",
+      "integration_evidence"
+    ],
+    "review_acceptance": "exactly_4_of_4_unique_assignments_accept",
+    "semantic_runners": {
+      "population": 3,
+      "matching_success_threshold": 2,
+      "independent_policy_pinned_principals_required": true
+    },
+    "checkpoint_witnesses": {
+      "population": 4,
+      "signature_threshold": 3,
+      "maximum_Byzantine": 1
+    },
+    "decision_authorities": {
+      "population": 3,
+      "signature_threshold": 2
+    },
+    "candidate_seals": {
+      "required_roles": [
+        "author",
+        "independent_custodian"
+      ],
+      "same_principal_may_fill_both_roles": false
+    }
+  },
+  "external_verifier_inputs": [
+    "TrustRoot_digest",
+    "CampaignPolicy_digest",
+    "policy_TransparencyCheckpoint_digest",
+    "assurance_verifier_ToolManifest_digest",
+    "assurance_RuntimeProfile_digest",
+    "terminal_TransparencyCheckpoint_digest"
+  ],
+  "repository_discovery_TOFU_or_candidate_supplied_external_pin_allowed": false,
+  "trust_chain": {
+    "objects": [
+      "SignedEnvelope",
+      "TrustRoot",
+      "Principal",
+      "PrincipalRegistry",
+      "SchemaBundle",
+      "ToolManifest",
+      "RuntimeProfile",
+      "RequiredCheckCatalog",
+      "RequiredFindingCatalog",
+      "CampaignPolicy",
+      "WitnessPersistentState",
+      "WitnessPersistenceReceipt",
+      "ConsistencyProof",
+      "InclusionProof",
+      "TransparencyCheckpoint",
+      "CandidateManifest",
+      "CandidateCapsule",
+      "PredecessorPublicationProof",
+      "RetentionAttestation",
+      "CandidateSeal",
+      "SemanticValidationReceipt",
+      "ReviewRoster",
+      "FindingCatalog",
+      "ReviewPayload",
+      "ReviewCommitment",
+      "SignedReviewReveal",
+      "CampaignEvent",
+      "AdmissionVote",
+      "CampaignSubmissionAdmission",
+      "CommitmentCheckpoint",
+      "CampaignEventReplay",
+      "CampaignTerminalMapEntry",
+      "CampaignTerminalMap",
+      "TerminalCheckpoint",
+      "AggregateDecision",
+      "DecisionAuthorization",
+      "FreezeRecord"
+    ],
+    "nested_value_types": [
+      "Signature",
+      "ArtifactEntry",
+      "SemanticCheckResult",
+      "ReviewAssignment",
+      "Finding",
+      "FindingDisposition",
+      "Limitation",
+      "CoverageAnswer",
+      "PredecessorLink"
+    ],
+    "every_object_and_nested_value_has_exact_schema": true,
+    "candidate_bytes_change_after_capsule_seal": false,
+    "freeze_status_is_derived_and_not_stored_in_candidate": true,
+    "complete_chain_revalidation_required_for_every_freeze_record": true
+  },
+  "exact_nested_schemas": {
+    "Signature": {
+      "exact_keys": [
+        "algorithm",
+        "key_epoch",
+        "key_id",
+        "signature_b64"
+      ]
+    },
+    "ArtifactEntry": {
+      "exact_keys": [
+        "media_type",
+        "path",
+        "raw_digest",
+        "role",
+        "size"
+      ]
+    },
+    "SemanticCheckResult": {
+      "exact_keys": [
+        "check_id",
+        "reason_code",
+        "result_digest",
+        "status",
+        "version"
+      ],
+      "status_enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "ReviewAssignment": {
+      "exact_keys": [
+        "assignment_id",
+        "checklist_digest",
+        "reviewer_key_epoch",
+        "reviewer_principal_id",
+        "role",
+        "scope_digest",
+        "terminal_map_key"
+      ]
+    },
+    "Finding": {
+      "exact_keys": [
+        "affected_artifact_digests",
+        "category",
+        "claim_impacts",
+        "counterexample_ref",
+        "decision_blocking",
+        "finding_id",
+        "origin",
+        "required_response_text_ref",
+        "role",
+        "severity",
+        "statement_text_ref"
+      ],
+      "severity_enum": [
+        "blocker",
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "informational"
+      ]
+    },
+    "FindingDisposition": {
+      "exact_keys": [
+        "blocking",
+        "evidence_digests",
+        "finding_id",
+        "rationale_text_ref",
+        "resolution_artifact_digests",
+        "status"
+      ],
+      "status_enum": [
+        "closed_verified",
+        "open",
+        "not_reproducible_with_evidence",
+        "accepted_nonclaim_limitation"
+      ]
+    },
+    "Limitation": {
+      "exact_keys": [
+        "affected_scope",
+        "blocking",
+        "evidence_digests",
+        "limitation_id",
+        "reason_code",
+        "statement_text_ref"
+      ]
+    },
+    "CoverageAnswer": {
+      "exact_keys": [
+        "answer",
+        "evidence_digests",
+        "question_id"
+      ],
+      "answer_enum": [
+        "covered",
+        "not_applicable_by_policy",
+        "not_covered"
+      ]
+    },
+    "PredecessorLink": {
+      "exact_keys": [
+        "consistency_proof_digest",
+        "inclusion_proof_digest",
+        "predecessor_capsule_digest",
+        "terminal_checkpoint_digest"
+      ]
+    }
+  },
+  "exact_object_schemas": {
+    "SignedEnvelope": {
+      "schema": "linux-cap.archfreeze.v3.signed-envelope",
+      "exact_keys": [
+        "payload_b64",
+        "payload_type",
+        "schema",
+        "signatures"
+      ],
+      "signature_type": "Signature"
+    },
+    "TrustRoot": {
+      "schema": "linux-cap.archfreeze.v3.trust-root",
+      "exact_keys": [
+        "algorithm_profile",
+        "bootstrap_profile_digest",
+        "project_id",
+        "requirement_id",
+        "root_epoch",
+        "root_keys",
+        "root_threshold",
+        "schema"
+      ]
+    },
+    "Principal": {
+      "schema": "linux-cap.archfreeze.v3.principal",
+      "exact_keys": [
+        "independence_group_id",
+        "key_epoch",
+        "key_id",
+        "organization_id",
+        "person_id",
+        "principal_id",
+        "public_key_b64",
+        "revocation_state",
+        "roles",
+        "schema",
+        "trust_root_digest",
+        "validity_range"
+      ]
+    },
+    "PrincipalRegistry": {
+      "schema": "linux-cap.archfreeze.v3.principal-registry",
+      "exact_keys": [
+        "principal_digests",
+        "registry_epoch",
+        "revocation_digests",
+        "schema",
+        "trust_root_digest"
+      ]
+    },
+    "SchemaBundle": {
+      "schema": "linux-cap.archfreeze.v3.schema-bundle",
+      "exact_keys": [
+        "bounds",
+        "bundle_id",
+        "canonicalization_profile",
+        "cross_object_rules",
+        "enum_catalog",
+        "id_grammars",
+        "object_schemas",
+        "schema"
+      ]
+    },
+    "ToolManifest": {
+      "schema": "linux-cap.archfreeze.v3.tool-manifest",
+      "exact_keys": [
+        "artifact_digest",
+        "artifact_size",
+        "build_provenance_digest",
+        "entrypoint",
+        "format",
+        "result_schema_digest",
+        "schema",
+        "source_digest",
+        "tool_id",
+        "version"
+      ]
+    },
+    "RuntimeProfile": {
+      "schema": "linux-cap.archfreeze.v3.runtime-profile",
+      "exact_keys": [
+        "architecture",
+        "attestation_policy_digest",
+        "environment_digest",
+        "filesystem_digest",
+        "image_digest",
+        "io_policy_digest",
+        "loader_digest",
+        "profile_id",
+        "resource_limits",
+        "runtime_digest",
+        "sandbox_digest",
+        "schema"
+      ]
+    },
+    "RequiredCheckCatalog": {
+      "schema": "linux-cap.archfreeze.v3.required-check-catalog",
+      "exact_keys": [
+        "catalog_id",
+        "check_count",
+        "checks",
+        "schema",
+        "tool_manifest_digest"
+      ],
+      "check_exact_keys": [
+        "check_id",
+        "cost_class",
+        "input_roles",
+        "mandatory",
+        "result_schema_digest",
+        "version"
+      ]
+    },
+    "RequiredFindingCatalog": {
+      "schema": "linux-cap.archfreeze.v3.required-finding-catalog",
+      "exact_keys": [
+        "catalog_id",
+        "finding_count",
+        "findings",
+        "requirement_id",
+        "schema",
+        "scope_digest",
+        "source_candidate_digests"
+      ],
+      "finding_type": "Finding"
+    },
+    "CampaignPolicy": {
+      "schema": "linux-cap.archfreeze.v3.campaign-policy",
+      "exact_keys": [
+        "assurance_tool_digest",
+        "bounds",
+        "campaign_id",
+        "canonicalization_digest",
+        "check_catalog_digest",
+        "claim_allowlist",
+        "decision_authorities",
+        "decision_threshold",
+        "finding_catalog_digest",
+        "policy_epoch",
+        "policy_id",
+        "predecessor_limit",
+        "principal_registry_digest",
+        "project_id",
+        "requirement_id",
+        "retention_minimum",
+        "review_roles",
+        "roster_authorities",
+        "runner_principals",
+        "runner_threshold",
+        "runtime_profile_digests",
+        "schema",
+        "schema_bundle_digest",
+        "semantic_tool_digest",
+        "trust_root_digest",
+        "witness_fault_bound",
+        "witness_principals",
+        "witness_threshold"
+      ]
+    },
+    "WitnessPersistentState": {
+      "schema": "linux-cap.archfreeze.v3.witness-persistent-state",
+      "exact_keys": [
+        "antirollback_counter",
+        "assignment_state_root",
+        "campaign_id",
+        "checkpoint_heads",
+        "closed",
+        "event_tree_root",
+        "event_tree_size",
+        "highest_admitted_ref",
+        "key_epoch",
+        "last_event_ref",
+        "log_id",
+        "policy_checkpoint_digest",
+        "previous_state_ref",
+        "schema",
+        "state_sequence",
+        "witness_id",
+        "witness_incarnation"
+      ]
+    },
+    "WitnessPersistenceReceipt": {
+      "schema": "linux-cap.archfreeze.v3.witness-persistence-receipt",
+      "exact_keys": [
+        "antirollback_after",
+        "antirollback_before",
+        "campaign_id",
+        "commit_status",
+        "durable_store_id",
+        "durable_store_incarnation",
+        "external_anchor_digest",
+        "key_epoch",
+        "schema",
+        "state_after_digest",
+        "state_before_digest",
+        "transaction_id",
+        "witness_id"
+      ],
+      "commit_status_fixed": "durable_committed"
+    },
+    "ConsistencyProof": {
+      "schema": "linux-cap.archfreeze.v3.consistency-proof",
+      "exact_keys": [
+        "algorithm",
+        "from_root",
+        "from_size",
+        "log_id",
+        "path_hashes",
+        "schema",
+        "to_root",
+        "to_size"
+      ]
+    },
+    "InclusionProof": {
+      "schema": "linux-cap.archfreeze.v3.inclusion-proof",
+      "exact_keys": [
+        "algorithm",
+        "leaf_digest",
+        "leaf_index",
+        "log_id",
+        "path_hashes",
+        "root",
+        "schema",
+        "tree_size"
+      ]
+    },
+    "TransparencyCheckpoint": {
+      "schema": "linux-cap.archfreeze.v3.transparency-checkpoint",
+      "exact_keys": [
+        "assignment_state_root",
+        "campaign_id",
+        "checkpoint_vote_digests",
+        "closed",
+        "kind",
+        "last_event_digest",
+        "policy_digest",
+        "prior_checkpoint_digest",
+        "schema",
+        "sequence",
+        "tree_root",
+        "tree_size"
+      ]
+    },
+    "CandidateManifest": {
+      "schema": "linux-cap.archfreeze.v3.candidate-manifest",
+      "exact_keys": [
+        "artifact_count",
+        "capsule_id",
+        "entries",
+        "schema",
+        "total_bytes"
+      ],
+      "entry_type": "ArtifactEntry"
+    },
+    "CandidateCapsule": {
+      "schema": "linux-cap.archfreeze.v3.candidate-capsule",
+      "exact_keys": [
+        "capsule_id",
+        "contract_digest",
+        "manifest_digest",
+        "object_set_digest",
+        "policy_checkpoint_digest",
+        "predecessor_ref",
+        "project_id",
+        "requirement_id",
+        "schema",
+        "source_identity_digest",
+        "witness_digest"
+      ]
+    },
+    "PredecessorPublicationProof": {
+      "schema": "linux-cap.archfreeze.v3.predecessor-publication-proof",
+      "exact_keys": [
+        "capsule_digest",
+        "link_count",
+        "links",
+        "schema"
+      ],
+      "link_type": "PredecessorLink"
+    },
+    "RetentionAttestation": {
+      "schema": "linux-cap.archfreeze.v3.retention-attestation",
+      "exact_keys": [
+        "attestation_sequence",
+        "capsule_digest",
+        "checkpoint_digest",
+        "inclusion_proof_digest",
+        "lock_mode",
+        "manifest_digest",
+        "object_version_ids",
+        "policy_checkpoint_digest",
+        "retention_tick",
+        "retention_timebase",
+        "schema",
+        "storage_principal_id",
+        "store_id",
+        "store_incarnation"
+      ]
+    },
+    "CandidateSeal": {
+      "schema": "linux-cap.archfreeze.v3.candidate-seal",
+      "exact_keys": [
+        "campaign_id",
+        "capsule_digest",
+        "manifest_digest",
+        "nonce",
+        "policy_checkpoint_digest",
+        "predecessor_proof_digest",
+        "retention_digest",
+        "schema",
+        "sealer_principal_id",
+        "sealer_role"
+      ]
+    },
+    "SemanticValidationReceipt": {
+      "schema": "linux-cap.archfreeze.v3.semantic-validation-receipt",
+      "exact_keys": [
+        "campaign_id",
+        "capsule_digest",
+        "check_catalog_digest",
+        "check_results",
+        "descendants_reaped",
+        "executed_check_set_digest",
+        "exit_code",
+        "exit_kind",
+        "host_attestation_digest",
+        "input_set_digest",
+        "loaded_tool_measurement",
+        "manifest_digest",
+        "policy_checkpoint_digest",
+        "policy_digest",
+        "prohibited_io_observed",
+        "receipt_id",
+        "resource_limit_hit",
+        "result_complete",
+        "result_digest",
+        "result_size",
+        "result_status",
+        "run_nonce",
+        "runner_key_epoch",
+        "runner_principal_id",
+        "runtime_measurement",
+        "runtime_profile_digest",
+        "sandbox_measurement",
+        "schema",
+        "signal_number",
+        "stderr_complete",
+        "stderr_digest",
+        "stderr_size",
+        "stdout_complete",
+        "stdout_digest",
+        "stdout_size",
+        "timed_out",
+        "tool_manifest_digest"
+      ],
+      "check_result_type": "SemanticCheckResult"
+    },
+    "ReviewRoster": {
+      "schema": "linux-cap.archfreeze.v3.review-roster",
+      "exact_keys": [
+        "assignment_set_digest",
+        "assignments",
+        "campaign_id",
+        "capsule_digest",
+        "coordinator_principal_id",
+        "policy_digest",
+        "roster_nonce",
+        "schema"
+      ],
+      "assignment_type": "ReviewAssignment",
+      "assignment_count_fixed": 4
+    },
+    "FindingCatalog": {
+      "schema": "linux-cap.archfreeze.v3.finding-catalog",
+      "exact_keys": [
+        "assignment_id",
+        "baseline_catalog_digest",
+        "campaign_id",
+        "capsule_digest",
+        "catalog_kind",
+        "finding_count",
+        "findings",
+        "schema",
+        "scope_digest"
+      ],
+      "finding_type": "Finding"
+    },
+    "ReviewPayload": {
+      "schema": "linux-cap.archfreeze.v3.review-payload",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "claims_assessed",
+        "coverage_answers",
+        "dispositions",
+        "limitations",
+        "nonclaims",
+        "reason_codes",
+        "required_finding_catalog_digest",
+        "reviewed_manifest_digest",
+        "reviewer_finding_catalog_digest",
+        "role",
+        "schema",
+        "semantic_receipt_set_digest",
+        "summary_text_ref",
+        "verdict"
+      ],
+      "coverage_answer_type": "CoverageAnswer",
+      "disposition_type": "FindingDisposition",
+      "limitation_type": "Limitation",
+      "verdict_enum": [
+        "accept",
+        "reject"
+      ]
+    },
+    "ReviewCommitment": {
+      "schema": "linux-cap.archfreeze.v3.review-commitment",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_value",
+        "schema",
+        "terminal_map_key"
+      ]
+    },
+    "SignedReviewReveal": {
+      "schema": "linux-cap.archfreeze.v3.signed-review-reveal",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_checkpoint_digest",
+        "commitment_digest",
+        "nonce_b64",
+        "review_payload_b64",
+        "schema",
+        "terminal_map_key"
+      ]
+    },
+    "CampaignEvent": {
+      "schema": "linux-cap.archfreeze.v3.campaign-event",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "event_index",
+        "object_class",
+        "object_digest",
+        "prior_event_digest",
+        "schema"
+      ]
+    },
+    "AdmissionVote": {
+      "schema": "linux-cap.archfreeze.v3.admission-vote",
+      "exact_keys": [
+        "consistency_proof_digest",
+        "event_digest",
+        "event_index",
+        "key_epoch",
+        "new_last_event_digest",
+        "new_state_digest",
+        "new_tree_root",
+        "new_tree_size",
+        "persistence_receipt_digest",
+        "prior_last_event_digest",
+        "prior_state_digest",
+        "prior_tree_root",
+        "prior_tree_size",
+        "schema",
+        "witness_id"
+      ]
+    },
+    "CampaignSubmissionAdmission": {
+      "schema": "linux-cap.archfreeze.v3.campaign-submission-admission",
+      "exact_keys": [
+        "campaign_id",
+        "event_digest",
+        "event_index",
+        "post_assignment_state_digest",
+        "post_tree_root",
+        "post_tree_size",
+        "prior_assignment_state_digest",
+        "schema",
+        "vote_digests",
+        "witness_set_digest"
+      ]
+    },
+    "CommitmentCheckpoint": {
+      "schema": "linux-cap.archfreeze.v3.commitment-checkpoint",
+      "exact_keys": [
+        "assignment_set_digest",
+        "assignment_state_root",
+        "campaign_id",
+        "capsule_digest",
+        "checkpoint_vote_digests",
+        "commitment_digests",
+        "event_tree_root",
+        "event_tree_size",
+        "last_event_digest",
+        "policy_checkpoint_digest",
+        "reveal_count",
+        "roster_digest",
+        "schema"
+      ],
+      "fixed_values": {
+        "commitment_count": 4,
+        "reveal_count": 0
+      }
+    },
+    "CampaignEventReplay": {
+      "schema": "linux-cap.archfreeze.v3.campaign-event-replay",
+      "exact_keys": [
+        "admission_digests",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_checkpoint_digest",
+        "event_count",
+        "event_tree_root",
+        "events",
+        "schema",
+        "terminal_map_digest",
+        "terminal_map_root"
+      ]
+    },
+    "CampaignTerminalMapEntry": {
+      "schema": "linux-cap.archfreeze.v3.terminal-map-entry",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_digest",
+        "commitment_submission_count",
+        "conflict_detected",
+        "reason_codes",
+        "reveal_digest",
+        "reveal_submission_count",
+        "review_verdict",
+        "schema",
+        "terminal_map_key",
+        "terminal_state"
+      ]
+    },
+    "CampaignTerminalMap": {
+      "schema": "linux-cap.archfreeze.v3.campaign-terminal-map",
+      "exact_keys": [
+        "assignment_set_digest",
+        "campaign_id",
+        "capsule_digest",
+        "entries",
+        "entry_count",
+        "root_digest",
+        "schema"
+      ],
+      "entry_count_fixed": 4
+    },
+    "TerminalCheckpoint": {
+      "schema": "linux-cap.archfreeze.v3.terminal-checkpoint",
+      "exact_keys": [
+        "assignment_state_root",
+        "campaign_id",
+        "capsule_digest",
+        "checkpoint_vote_digests",
+        "closure_state",
+        "commitment_checkpoint_digest",
+        "event_replay_digest",
+        "event_tree_root",
+        "event_tree_size",
+        "last_event_digest",
+        "policy_checkpoint_digest",
+        "schema",
+        "terminal_map_root"
+      ],
+      "closure_state_fixed": "closed"
+    },
+    "AggregateDecision": {
+      "schema": "linux-cap.archfreeze.v3.aggregate-decision",
+      "exact_keys": [
+        "campaign_id",
+        "candidate_seal_digests",
+        "capsule_digest",
+        "claims_denied",
+        "claims_granted",
+        "complete_provenance_digest",
+        "decision",
+        "policy_digest",
+        "reason_codes",
+        "required_and_aggregate_finding_catalog_digests",
+        "retention_digest",
+        "review_payload_digests",
+        "roster_digest",
+        "schema",
+        "semantic_receipt_set_digest",
+        "terminal_checkpoint_digest",
+        "terminal_map_root"
+      ]
+    },
+    "DecisionAuthorization": {
+      "schema": "linux-cap.archfreeze.v3.decision-authorization",
+      "exact_keys": [
+        "aggregate_decision_digest",
+        "campaign_id",
+        "capsule_digest",
+        "claims_denied",
+        "claims_granted",
+        "decision",
+        "policy_digest",
+        "schema",
+        "terminal_checkpoint_digest"
+      ]
+    },
+    "FreezeRecord": {
+      "schema": "linux-cap.archfreeze.v3.freeze-record",
+      "exact_keys": [
+        "aggregate_decision_digest",
+        "architecture_frozen_pre_formal",
+        "campaign_id",
+        "capsule_digest",
+        "claim_scope",
+        "complete_provenance_digest",
+        "decision_authorization_digest",
+        "model_checked",
+        "policy_checkpoint_digest",
+        "protection_evidenced",
+        "publication_checkpoint_digest",
+        "record_id",
+        "schema",
+        "terminal_checkpoint_digest",
+        "tla_authorized",
+        "tla_proved",
+        "tla_written"
+      ]
+    }
+  },
+  "witness_persistence": {
+    "proposal_prior_state_must_equal_each_signers_exact_persisted_state": true,
+    "verify_consistency_extension_before_persist": true,
+    "durably_persist_successor_and_external_anchor_before_sign": true,
+    "signing_before_persistence": "invalid",
+    "restart_with_missing_rollback_or_inconsistent_state": "permanently_quarantine_witness_key_for_campaign",
+    "key_rotation_may_resume_old_campaign": false,
+    "commitment_and_terminal_votes_use_same_exact_extension_rule": true,
+    "fork_argument": "two_3_of_4_quorums_intersect_in_at_least_2_and_with_at_most_1_Byzantine_include_one_honest_nonforking_persisted_witness",
+    "threshold_collusion_or_durable_state_failure_is_tolerated": false
+  },
+  "semantic_validation_success": {
+    "required_predicates": [
+      "valid_runner_signature_identity_key_epoch_campaign_capsule_policy_and_pin_tuple",
+      "loaded_tool_runtime_and_sandbox_measurements_equal_policy_manifests",
+      "exit_kind_normal_and_exit_code_zero",
+      "result_status_pass",
+      "signal_number_absent_timed_out_false_resource_limit_hit_false",
+      "prohibited_io_observed_false_and_descendants_reaped_true",
+      "stdout_stderr_and_result_complete_true_and_within_bounds",
+      "required_and_executed_check_sets_exactly_equal",
+      "every_mandatory_check_present_once_and_pass",
+      "input_manifest_and_candidate_capsule_exactly_match"
+    ],
+    "matching_receipts": "2_of_3_distinct_policy_pinned_runner_principals",
+    "matching_failure_timeout_signal_truncation_or_partial_inventory_is_success": false,
+    "launcher_receives_tool_runtime_policy_and_verifier_pins_externally": true,
+    "tool_or_verifier_checks_its_own_embedded_digest_constant": false
+  },
+  "review_acceptance": {
+    "required_predicates": [
+      "assignment_role_candidate_policy_scope_and_manifests_match",
+      "semantic_success_receipt_quorum_valid",
+      "every_mandatory_coverage_question_has_evidence_backed_nonblocking_answer",
+      "every_required_finding_has_exactly_one_disposition",
+      "every_new_finding_is_present_in_reviewer_FindingCatalog",
+      "no_disposition_or_limitation_is_decision_blocking",
+      "no_claimed_scope_is_omitted",
+      "declared_verdict_equals_derived_verdict"
+    ],
+    "digest_only_accept_payload_allowed": false,
+    "differing_content_under_same_finding_ID": "equivocation_and_reject",
+    "semantic_deduplication_may_drop_reviewer_finding": false
+  },
+  "campaign_log": {
+    "all_four_commitments_checkpointed_before_any_reveal": true,
+    "same_assignment_key_signs_commitment_and_reveal": true,
+    "terminal_states": [
+      "UNSET",
+      "COMMITTED",
+      "ACCEPTED",
+      "REJECTED",
+      "REJECTED_INCOMPLETE",
+      "REJECTED_CONFLICT"
+    ],
+    "absorbing_rejection_states": true,
+    "acceptance": "exactly_four_unique_ACCEPTED_entries_one_commitment_and_reveal_each_no_conflict_complete_replay_valid_semantic_retention_and_seal_evidence_and_no_open_aggregate_blocker",
+    "any_admitted_reject_omission_duplicate_conflict_or_missing_entry": "reject",
+    "decision_authorities_may_override_recomputed_aggregate": false
+  },
+  "candidate_retention": {
+    "manifest_binds_path_role_media_type_raw_digest_and_size": true,
+    "capsule_binds_manifest_object_set_contract_witness_source_predecessor_and_policy_checkpoint": true,
+    "author_and_independent_custodian_seal_same_capsule": true,
+    "retention_binds_storage_principal_object_versions_lock_sequence_external_checkpoint_and_interval": true,
+    "Git_commit_or_mutable_repository_URL_is_immutable_retention_by_itself": false
+  },
+  "bounds": {
+    "policy_fixed_positive_finite": [
+      "KArtifacts",
+      "KArtifactBytes",
+      "KCapsuleBytes",
+      "KSchemaNodes",
+      "KEvents",
+      "KFindings",
+      "KReviewBytes",
+      "KChecks",
+      "KLogBytes",
+      "KPredecessorLinks",
+      "KSignatures",
+      "CPUTime",
+      "WallTime",
+      "AddressSpace",
+      "FileBytes",
+      "ProcessCount",
+      "ThreadCount",
+      "FileDescriptorCount"
+    ],
+    "overflow_result": "reject_or_campaign_incomplete_never_truncate_sample_or_carry_forward_credit",
+    "verification_cost": "O_capsule_bytes_plus_schema_nodes_plus_events_plus_findings_plus_checks_plus_signatures",
+    "terminal_map_size": 4,
+    "structural_bounds_are_latency_cost_efficiency_or_availability_evidence": false
+  },
+  "validation_order": [
+    "bind_external_trust_policy_checkpoint_assurance_tool_runtime_and_terminal_inputs",
+    "validate_complete_schema_bundle_and_exact_key_grammars",
+    "validate_trust_root_principals_registry_policy_and_thresholds",
+    "validate_policy_checkpoint_predecessor_chain_and_consistency",
+    "single_read_retained_candidate_manifest_capsule_seals_and_retention",
+    "validate_matching_successful_semantic_receipt_quorum",
+    "validate_roster_assignments_independence_and_commitments",
+    "validate_each_witness_vote_exact_prior_state_persistence_and_consistency_extension",
+    "validate_zero_reveal_commitment_checkpoint_then_every_reveal_opening",
+    "replay_every_admitted_event_into_absorbing_terminal_map",
+    "validate_terminal_checkpoint_is_consistent_extension_and_omits_no_admitted_event",
+    "derive_every_review_verdict_and_aggregate_finding_state",
+    "recompute_aggregate_and_validate_decision_authorization",
+    "derive_freeze_record_for_exact_capsule_without_candidate_mutation"
+  ],
+  "fixture": {
+    "fixture_keys_runtimes_receipts_logs_and_results_are_cryptographically_separate": true,
+    "fixture_result_may_set_architecture_frozen_or_tla_authorized": false
+  },
+  "freeze_record_semantics": {
+    "possible_after_complete_accept": {
+      "architecture_frozen_pre_formal": true,
+      "tla_authorized": true,
+      "tla_written": false,
+      "model_checked": false,
+      "tla_proved": false,
+      "protection_evidenced": false
+    },
+    "formal_counterexample_reopens_architecture_and_requires_new_campaign": true
+  },
+  "residual_external_assumptions": [
+    "external_bootstrap_pins_are_authentic",
+    "cryptography_canonicalization_and_attestation_are_correct",
+    "honest_witnesses_and_runners_satisfy_durable_behavior_within_threshold",
+    "retention_attestations_are_truthful",
+    "reviewer_identity_independence_and_competence_are_real",
+    "decision_authorities_do_not_collude_above_threshold",
+    "hardware_time_ENTRY_CODE_STATE_and_device_interfaces_are_later_refined"
+  ],
+  "claims": {
+    "protocol_v3_semantics_written": true,
+    "all_trust_objects_have_exact_schemas": true,
+    "schema_and_cross_object_validator_written": false,
+    "real_verifier_implemented": false,
+    "measured_launcher_implemented": false,
+    "durable_witness_service_implemented": false,
+    "external_campaign_started": false,
+    "architecture_frozen": false,
+    "tla_authorized": false,
+    "tla_written": false,
+    "model_checked": false,
+    "model_supported": false,
+    "protection_evidenced": false,
+    "performance_evidenced": false,
+    "cost_efficiency_evidenced": false,
+    "deployment_ready": false
+  }
+}

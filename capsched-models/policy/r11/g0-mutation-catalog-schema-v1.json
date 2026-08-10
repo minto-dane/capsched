@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://domainlease.invalid/schema/r11-g0-mutation-catalog-v1.json",
+  "title": "DomainLease R11 G0 exact mutation catalog candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "catalog_epoch",
+    "status",
+    "authority",
+    "encoding_contract",
+    "baseline_artifacts",
+    "meta_fixtures",
+    "cases",
+    "future_ir_phase",
+    "authorization",
+    "nonclaims"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_id": {"const": "domainlease-r11-g0-exact-mutation-catalog-v1"},
+    "catalog_epoch": {"const": 1},
+    "status": {"const": "candidate_proposed_pending_external_adoption"},
+    "authority": {"const": "local_change_authority_not_promotion_authority"},
+    "encoding_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parsed_json", "raw_json", "json_pointer", "digest"],
+      "properties": {
+        "parsed_json": {"const": "strict_utf8_json_then_rfc6902_subset_then_canonical_ascii_json_lf"},
+        "raw_json": {"const": "strict_utf8_json_then_canonical_ascii_json_lf_then_exact_utf8_splice"},
+        "json_pointer": {"const": "RFC6901"},
+        "digest": {"const": "sha256_raw_bytes_lower_hex"}
+      }
+    },
+    "baseline_artifacts": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {"$ref": "#/$defs/artifact"}
+    },
+    "meta_fixtures": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {"$ref": "#/$defs/metaFixture"}
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {"$ref": "#/$defs/case"}
+    },
+    "future_ir_phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["materialized", "gate", "reason"],
+      "properties": {
+        "materialized": {"const": false},
+        "gate": {"const": "G2"},
+        "reason": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "authorization": {"$ref": "#/$defs/authorization"},
+    "nonclaims": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonemptyString"}
+    }
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "path", "media_type", "byte_length", "sha256"],
+      "properties": {
+        "role": {"pattern": "^[a-z][a-z0-9_]+$"},
+        "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+        "media_type": {"enum": ["application/json", "text/x-python"]},
+        "byte_length": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "metaFixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "document", "canonical_sha256"],
+      "properties": {
+        "id": {"pattern": "^META-G0-[A-Z0-9-]+$"},
+        "document": {"type": "object"},
+        "canonical_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "precondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "pointer_equals",
+            "pointer_absent",
+            "array_not_contains",
+            "canonical_prefix_equals"
+          ]
+        },
+        "path": {"type": "string"},
+        "value": {},
+        "value_utf8": {"type": "string"}
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op"],
+      "properties": {
+        "op": {"enum": ["add", "remove", "replace", "insert_after_prefix"]},
+        "path": {"type": "string"},
+        "value": {},
+        "prefix_utf8": {"type": "string"},
+        "value_utf8": {"type": "string"}
+      }
+    },
+    "transform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "operations"],
+      "properties": {
+        "kind": {"enum": ["rfc6902_subset", "canonical_raw_splice", "meta_rfc6902_subset"]},
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/operation"}
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exit_code", "status", "reject_id"],
+      "properties": {
+        "exit_code": {"const": 1},
+        "status": {"const": "rejected"},
+        "reject_id": {"pattern": "^(?:CAT|HM)-G0-[A-Z0-9-]+$"}
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "template_id",
+        "target_type",
+        "target_id",
+        "baseline_sha256",
+        "preconditions",
+        "transform",
+        "mutant_sha256",
+        "expected"
+      ],
+      "properties": {
+        "id": {"pattern": "^MUT-G0-[A-Z0-9-]+$"},
+        "template_id": {"pattern": "^MUT-G0-[A-Z0-9-]+$"},
+        "target_type": {"enum": ["artifact", "meta_fixture"]},
+        "target_id": {"pattern": "^[A-Za-z0-9_-]+$"},
+        "baseline_sha256": {"$ref": "#/$defs/sha256"},
+        "preconditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/precondition"}
+        },
+        "transform": {"$ref": "#/$defs/transform"},
+        "mutant_sha256": {"$ref": "#/$defs/sha256"},
+        "expected": {"$ref": "#/$defs/expected"}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_self_accepts",
+        "exact_external_campaign_complete",
+        "g0_complete",
+        "r11_machine_source_construction",
+        "semantic_freeze",
+        "tla_translation",
+        "model_supported"
+      ],
+      "properties": {
+        "catalog_self_accepts": {"const": false},
+        "exact_external_campaign_complete": {"const": false},
+        "g0_complete": {"const": false},
+        "r11_machine_source_construction": {"const": false},
+        "semantic_freeze": {"const": false},
+        "tla_translation": {"const": false},
+        "model_supported": {"const": false}
+      }
+    }
+  }
+}

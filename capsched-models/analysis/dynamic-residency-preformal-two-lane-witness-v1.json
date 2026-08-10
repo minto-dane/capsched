@@ -1,0 +1,629 @@
+{
+  "schema_version": 3,
+  "id": "dynamic-residency-preformal-two-lane-witness-v1",
+  "date": "2026-08-09",
+  "work_record": "N-179",
+  "requirement": "RESIDENCY-DYN-001",
+  "analysis": "analysis/0192-dynamic-residency-preformal-two-lane-witness.md",
+  "architecture_contract": "analysis/dynamic-admission-recurring-residency-architecture-contract-v1.json",
+  "kind": "executable_preformal_architecture_witness",
+  "purpose": "execute_bounded_arithmetic_state_transitions_and_counterexample_guards_for_cross_lane_capacity_activation_service_placement_failure_recovery_retirement_and_calendar_transfer_before_candidate_sealing",
+  "not_a_tla_or_proof_result": true,
+  "execution_semantics": {
+    "integer_domain": "nonnegative_checked_integers_without_wrap",
+    "time_intervals": "half_open_start_inclusive_end_exclusive",
+    "state_updates": "ordered_total_transitions_with_explicit_pre_state_guards",
+    "scenario_result": "validator_must_execute_every_required_check_from_structured_input_and_must_not_accept_narrative_labels_as_evidence",
+    "failure_result": "one_failed_required_check_rejects_the_candidate",
+    "scope": "finite_architecture_consistency_counterexample_witness_not_proof_not_freeze_not_protection_evidence"
+  },
+  "topology": {
+    "protected_service_parent": "pool_root",
+    "physical_execution_parent": "cpu_pool_root",
+    "lanes": ["lane_A", "lane_B"],
+    "plan_shards": ["plan_A", "plan_B"],
+    "control_shards": ["control_A", "control_B"],
+    "control_targets": ["target_A", "target_B"],
+    "streams": ["stream_A", "stream_B"],
+    "source_shards": ["source_A", "source_B"],
+    "transition_shards": ["txn_A", "txn_B"],
+    "failure_scopes": ["scope_A", "scope_B", "source_health_A"],
+    "audit_shards": ["audit_A", "audit_B"],
+    "hierarchy_paths": {"stream_A": ["node_root", "tenant_A", "process_A"], "stream_B": ["node_root", "tenant_B", "container_B"]},
+    "partition_modes": ["CONNECTED_ONLY", "CONTINUE_TO_CONSERVATIVE_EXPIRY", "RECOVERY_ONLY"],
+    "clock_epochs": {"root_execution": 1, "service_opportunity": 1, "lane": 2, "control": 2, "target_control": 2, "lease": 1, "watchdog": 4},
+    "bounds": {"KDepth": 3, "KEligibleContexts": 2, "KSecurityScopes": 2, "KFailureScopesPerEvent": 1, "KFailureClosureIterations": 4, "KFailureClosureScopes": 6, "KFailureClosureEdges": 8, "KDelegationEdges": 2, "KReplicas": 2, "KTransitionShards": 2, "KControlTargets": 2, "KLiveAuthorityUsesPerScope": 2, "KLiveAuthorityUsesPerCoverAncestor": 6, "KQuiescenceReceipts": 7, "KProofBytes": 4096, "KVectorBytes": 2048, "KMutationFootprintEntries": 16}
+  },
+  "ownership": [
+    {"object":"lane_A_state_and_ApplyCell_A","sole_writer":"lane_A_apply_owner","readers":["root_service","control_A","failure_scope_owner_A"],"forbidden_writers":["linux","lane_B_apply_owner","failure_scope_owner_A"]},
+    {"object":"lane_B_state_and_ApplyCell_B","sole_writer":"lane_B_apply_owner","readers":["root_service","control_B","failure_scope_owner_B"],"forbidden_writers":["linux","lane_A_apply_owner","failure_scope_owner_B"]},
+    {"object":"EntryFailClosedFence_A_or_B","sole_writer":"exact_lane_apply_owner","readers":["root_service","cleanup_owner"],"forbidden_writers":["failure_scope_owner","linux"]},
+    {"object":"SecurityScopeFence_A_or_B","sole_writer":"exact_failure_scope_owner","readers":["lane_apply_owner","activation","recovery"],"forbidden_writers":["lane_apply_owner","audit_owner","linux"]},
+    {"object":"PlanTransitionRecord","sole_writer":"control_commit_owner","readers":["lane_A_apply_owner","lane_B_apply_owner"],"forbidden_writers":["local_apply","failure_scope_owner","linux"]},
+    {"object":"EscrowReclaimCell","sole_writer":"exact_capacity_owner","readers":["transition_settlement"],"forbidden_writers":["local_apply","cleanup_before_terminal","linux"]},
+    {"object":"SourceReplayCell_A","sole_writer":"source_A_owner","readers":["txn_A_owner","restart_recovery"],"forbidden_writers":["txn_A_owner","scope_A_owner","audit_A_owner","linux"]},
+    {"object":"ScopeTransitionTxn_A_and_outbox_retire_receipt","sole_writer":"txn_A_owner","readers":["scope_A_owner","audit_A_owner","restart_recovery"],"forbidden_writers":["source_A_owner","scope_A_owner","audit_A_owner","linux"]},
+    {"object":"ScopeAuthorityCell_A","sole_writer":"scope_A_owner","readers":["activation","lane_A_apply_owner","recovery","restart_recovery"],"forbidden_writers":["txn_A_owner","audit_A_owner","linux"]},
+    {"object":"AuditState_A_and_AuditReceipt_A","sole_writer":"audit_A_owner","readers":["checkpoint_observer","reconciliation"],"forbidden_writers":["failure_scope_owner","txn_A_owner","root_service","linux"]},
+    {"object":"CheckpointAggregate","sole_writer":"derived_observation_only","readers":["management"],"forbidden_writers":["authority_transition","root_service","linux"]},
+    {"object":"SourceReleaseGate","sole_writer":"source_lane_owner","readers":["source_quiescence_owner","transfer_owner"],"forbidden_writers":["destination_owner","linux"]},
+    {"object":"SourcePlacementQuiescenceReceipt","sole_writer":"source_quiescence_owner","readers":["transfer_owner","destination_control_owner"],"forbidden_writers":["transfer_owner","destination_lane_owner","linux"]},
+    {"object":"CalendarTransferRecord_or_StoppedFailed","sole_writer":"transfer_owner","readers":["destination_control_owner","cleanup_owner"],"forbidden_writers":["source_lane_owner","destination_lane_owner","linux"]},
+    {"object":"NodeConfig","sole_writer":"protected_boot_root","readers":["admission","management_bootstrap","validator"],"forbidden_writers":["ordinary_management","linux","admission"]},
+    {"object":"DomainHierarchyCertificate_A_or_B","sole_writer":"hierarchy_commit_owner","readers":["admission","activation","failure_cleanup"],"forbidden_writers":["parent_linux","child_linux","scheduler"]},
+    {"object":"HardwareCapacityRootSchedule_and_ExecutionCellLeases","sole_writer":"root_execution_capacity_owner","readers":["lane_A_root_owner","lane_B_root_owner","joint_activation_owner"],"forbidden_writers":["lane_A_root_owner","lane_B_root_owner","linux"]},
+    {"object":"ExecutionCellUseCell_A_or_B","sole_writer":"exact_physical_context_activation_shard","readers":["lane_prepare_owner","hardware_token_check","settlement_observer"],"forbidden_writers":["lane_prepare_owner","root_allocator","settlement_observer","linux"]},
+    {"object":"TargetControlTurn_A_or_B","sole_writer":"exact_target_microstep_dispatch","readers":["lane_quota_guard","rank_checker"],"forbidden_writers":["other_target_dispatch","shard_turn_owner","linux"]},
+    {"object":"NodeLeaseImportCertificate_and_GlobalPlacementUse","sole_writer":"external_authenticated_issuer_or_quorum","readers":["admission","joint_activation_owner","transfer_owner"],"forbidden_writers":["node_monitor_narrowing","linux","local_placement_owner"]},
+    {"object":"ClockRelationCertificate","sole_writer":"external_authenticated_clock_relation_producer","readers":["deadline_normalizer","calendar_transfer","validator"],"forbidden_writers":["deadline_normalizer","transfer_owner","linux"]},
+    {"object":"NormalizedAuthorityHorizonVector","sole_writer":"protected_deadline_normalizer","readers":["activation_shard","hardware_token_check","active_context_check"],"forbidden_writers":["issuer","lane_prepare_owner","linux"]},
+    {"object":"IndependentWatchdog","sole_writer":"independent_hardware_watchdog","readers":["time_scope_stop_owner","validator"],"forbidden_writers":["lease_clock_owner","scheduler","linux"]},
+    {"object":"FailureClosureSnapshot","sole_writer":"protected_failure_cover_owner","readers":["source_owner","transaction_owner","cleanup_owner"],"forbidden_writers":["failure_source","topology_writer","linux"]},
+    {"object":"FailureCoverCertificate","sole_writer":"protected_failure_cover_owner","readers":["source_owner","transaction_owner","cleanup_owner"],"forbidden_writers":["failure_source","linux","audit_owner"]},
+    {"object":"ActivationIntent","sole_writer":"lane_prepare_owner","readers":["joint_activation_owner"],"forbidden_writers":["root_execution_cell_state_machine","residency_worker","linux","entry_component_alone"]},
+    {"object":"ActivationDecisionCell","sole_writer":"exact_physical_context_activation_shard","readers":["cancel_owner","hardware_token_check","restart_recovery","settlement_observer"],"forbidden_writers":["cancel_owner","lane_prepare_owner","entry_component_alone","linux"]},
+    {"object":"DeliverySettlementCell","sole_writer":"exact_physical_context_activation_shard","readers":["hardware_active_context_check","stream_ledger_owner","restart_recovery"],"forbidden_writers":["stream_ledger_owner","domain","linux"]},
+    {"object":"ExecutionContextKey_and_ActivationCommitReceipt","sole_writer":"exact_physical_context_activation_shard","readers":["hardware_token_check","settlement_observer"],"forbidden_writers":["ROOTSCHED_alone","residency_alone","linux"]},
+    {"object":"ManagementRecoveryBootstrapContract","sole_writer":"protected_boot_root","readers":["restart_recovery","capacity_checker"],"forbidden_writers":["ordinary_delegation","ordinary_plan_update","linux"]},
+    {"object":"namespace_publication_ledger","sole_writer":"namespace_capacity_owner","readers":["admission","control","renewal"],"forbidden_writers":["settlement","linux"]}
+  ],
+  "shared_rely_guarantee": {
+    "external_relies": [
+      "exact_HardwareProgressInvariant_and_independent_WatchdogTurn_progress_for_pool_root_and_LeaseClockEpoch",
+      "typed_NodeLeaseImportCertificate_and_GlobalPlacementUse_producer_contracts",
+      "boot_root_authenticated_ManagementRecoveryBootstrapContract_or_node_failstop",
+      "nonvacuous_ExogenousStableWindow_and_finite_external_countdown_receipt_contracts",
+      "AuditHeadroomWindow_for_this_finite_trace"
+    ],
+    "internal_guarantees": [
+      "literal_parent_service_schedule_conserves_all_live_child_reservations",
+      "one_physical_opportunity_advances_at_most_one_descendant_control_turn",
+      "literal_parent_execution_schedule_conserves_all_live_lane_allocations",
+      "one_physical_execution_cell_advances_one_lane_and_one_allocator_ActivationSlot_without_future_intent_cycle",
+      "one_control_shard_turn_advances_at_most_one_exact_TargetControlTurn",
+      "target_local_lane_control_quota_uses_only_post_anchor_TargetControlTurns",
+      "CanonicalFailureCover_uses_a_publication_fenced_bounded_least_fixed_point_and_cleanup_uses_only_charged_cover_ancestor_reverse_edges",
+      "only_idempotently_accounted_qualifying_ExecutionDeliveryReceipt_counts_service",
+      "linux_steps_never_publish_monitor_authority",
+      "audit_checkpoint_and_summary_never_gate_or_mutate_authority",
+      "no_local_apply_waits_for_another_lane_or_future_receipt"
+    ],
+    "not_assumed": ["linux_fairness", "monitor_target_picker_fairness", "network_silence_means_quiescence", "global_lane_barrier", "infinite_audit_storage", "simultaneous_lane_boundaries"]
+  },
+  "scenarios": [
+    {
+      "id":"WIT-HIERARCHY-BOUNDS",
+      "purpose":"node_fixed_widths_and_every_ancestor_capacity_hold_for_process_and_container_leaves",
+      "preconditions":["KDepth_3_and_all_vector_widths_boot_sealed","path_A_node_root_tenant_A_process_A_and_path_B_node_root_tenant_B_container_B","tenant_A_reservation_6_equals_current_3_plus_pending_1_plus_retiring_1_plus_failureEscrow_1"],
+      "trace_left":["validate_path_A_length_3","debit_every_A_ancestor","publish_A_certificate","validate_path_B_length_3","debit_every_B_ancestor","publish_B_certificate"],
+      "trace_right":["validate_path_B_length_3","debit_every_B_ancestor","publish_B_certificate","reject_A_fourth_parent_as_TooWide","reject_A_demand_7_as_NoParentCapacity"],
+      "required_observations":["all_published_paths_fit_NodeConfig","every_ancestor_equation_holds","no_parent_Linux_authority","depth_one_flat_path_would_use_same_rules"],
+      "forbidden":["per_request_width_override","leaf_only_capacity_check","live_reparent_without_old_path_fence_and_zero_refs"],
+      "executable": {
+        "machine": "hierarchy_capacity",
+        "paths": {"A": ["node_root", "tenant_A", "process_A"], "B": ["node_root", "tenant_B", "container_B"]},
+        "max_depth": 3,
+        "proof_bytes": 3072,
+        "vector_bytes": 1536,
+        "mutation_footprint_entries": 12,
+        "bounds": {"proof_bytes": 4096, "vector_bytes": 2048, "mutation_footprint_entries": 16},
+        "reservations": {"tenant_A": {"capacity": 6, "current": 3, "pending": 1, "retiring": 1, "failure_escrow": 1}, "tenant_B": {"capacity": 5, "current": 2, "pending": 1, "retiring": 1, "failure_escrow": 0}},
+        "required_checks": ["all_paths_within_depth", "all_serialized_bounds_hold", "every_ancestor_capacity_conserved", "over_capacity_demand_rejected"]
+      },
+      "residual_executable_model":"DYN_ADMIT_hierarchy_induction"
+    },
+    {
+      "id":"WIT-ROOT-EXECUTION-CAPACITY",
+      "purpose":"two_lane_progress_certificates_share_one_conserved_physical_CPU_schedule_without_double_spend",
+      "preconditions":["HardwareFrame_16_partitions_control_4_execution_8_management_1_emergency_1_slack_2","ExecutionFrame_8_equals_ManagementExecution_1_plus_EmergencyExecution_1_plus_A_3_plus_B_2_plus_SlackExecution_1","allocator_issues_only_parent_debited_immutable_leases"],
+      "trace_left":["allocator_issues_lease_A1_before_due_cell","lane_A_reserves_use_cell_and_prepares_intent_without_consumption","due_root_cell_CASes_use_to_Consumed_and_activates_once","cell_end_settles_and_handoffs"],
+      "trace_right":["allocator_issues_lease_B1_on_next_nonoverlapping_occurrence","expired_A2_use_cell_cannot_carry","fresh_A3_lease_is_required_for_retry","management_and_emergency_cells_remain_reserved"],
+      "required_observations":["shared_hardware_root_conserved","execution_parent_conserved","immutable_lease_separate_from_one_way_use_cell","one_occurrence_one_lease_token","one_context_one_active_owner","budget_within_cell_and_horizon","expired_cell_no_carry"],
+      "forbidden":["independent_control_and_execution_roots_on_same_context","lane_mints_unbacked_lease","lease_mutated_by_multiple_writers","one_CPU_cell_two_tokens","retiring_or_management_capacity_omitted"],
+      "executable": {
+        "machine": "hardware_execution_cells",
+        "hardware_frame": {
+          "capacity": 16,
+          "occurrences": ["h0","h1","h2","h3","h4","h5","h6","h7","h8","h9","h10","h11","h12","h13","h14","h15"],
+          "partitions": {
+            "protected_control": ["h0","h1","h2","h3"],
+            "domain_execution": ["h4","h5","h6","h7","h8","h9","h10","h11"],
+            "management": ["h12"],
+            "emergency": ["h13"],
+            "slack": ["h14","h15"]
+          }
+        },
+        "execution_frame": {
+          "capacity": 8,
+          "parent_partition": "domain_execution",
+          "occurrences": ["h4","h5","h6","h7","h8","h9","h10","h11"],
+          "partitions": {
+            "management": ["h4"],
+            "emergency": ["h5"],
+            "lane_A": ["h6","h8","h10"],
+            "lane_B": ["h7","h9"],
+            "slack": ["h11"]
+          }
+        },
+        "leases": [
+          {"id":"lease_A1","physical_occurrence":"h6","occurrence":"cpu0:100:110","lane":"lane_A","context":"cpu0","activation_slot_id":"slot_A1","start":100,"end":110,"entry_exit_guard":2,"token_budget":7,"unused":1,"target_lease_clock_epoch":1,"normalized_not_after":110,"normalized_source_count":7,"issued_at":80},
+          {"id":"lease_B1","physical_occurrence":"h7","occurrence":"cpu0:110:120","lane":"lane_B","context":"cpu0","activation_slot_id":"slot_B1","start":110,"end":120,"entry_exit_guard":2,"token_budget":6,"unused":2,"target_lease_clock_epoch":1,"normalized_not_after":119,"normalized_source_count":7,"issued_at":81},
+          {"id":"lease_A2","physical_occurrence":"h8","occurrence":"cpu1:120:130","lane":"lane_A","context":"cpu1","activation_slot_id":"slot_A2","start":120,"end":130,"entry_exit_guard":2,"token_budget":7,"unused":1,"target_lease_clock_epoch":1,"normalized_not_after":130,"normalized_source_count":7,"issued_at":82},
+          {"id":"lease_A3","physical_occurrence":"h10","occurrence":"cpu1:130:140","lane":"lane_A","context":"cpu1","activation_slot_id":"slot_A3","start":130,"end":140,"entry_exit_guard":2,"token_budget":7,"unused":1,"target_lease_clock_epoch":1,"normalized_not_after":140,"normalized_source_count":7,"issued_at":121}
+        ],
+        "use_cells": [
+          {"id":"use_A1","lease":"lease_A1","physical_occurrence":"h6","activation_slot_id":"slot_A1","intent_prepared_at":90,"bound_intent_digest":"sha256:intent_A1","decision_cell":"decision_A1","states":["Unbound","Reserved","Consumed","Settled"]},
+          {"id":"use_B1","lease":"lease_B1","physical_occurrence":"h7","activation_slot_id":"slot_B1","intent_prepared_at":95,"bound_intent_digest":"sha256:intent_B1","decision_cell":"decision_B1","states":["Unbound","Reserved","Consumed","Settled"]},
+          {"id":"use_A2","lease":"lease_A2","physical_occurrence":"h8","activation_slot_id":"slot_A2","intent_prepared_at":100,"bound_intent_digest":"sha256:intent_A2","decision_cell":"decision_A2","states":["Unbound","Reserved","Expired"]},
+          {"id":"use_A3","lease":"lease_A3","physical_occurrence":"h10","activation_slot_id":"slot_A3","intent_prepared_at":125,"bound_intent_digest":"sha256:intent_A3","decision_cell":"decision_A3","states":["Unbound","Reserved","Consumed","Settled"]}
+        ],
+        "token_executions": [
+          {"token":"token_A1","lease":"lease_A1","use_cell":"use_A1","activation_slot_id":"slot_A1","context":"cpu0","entry_permit_uses":1,"decision_state":"Settled","settlement_state":"Settled","segments":[{"resume_sequence":0,"start":101,"end":108}],"reported_consumed_budget":7,"replay_after_settlement_executable":false},
+          {"token":"token_B1","lease":"lease_B1","use_cell":"use_B1","activation_slot_id":"slot_B1","context":"cpu0","entry_permit_uses":1,"decision_state":"Settled","settlement_state":"Settled","segments":[{"resume_sequence":0,"start":111,"end":117}],"reported_consumed_budget":6,"replay_after_settlement_executable":false},
+          {"token":"token_A3","lease":"lease_A3","use_cell":"use_A3","activation_slot_id":"slot_A3","context":"cpu1","entry_permit_uses":1,"decision_state":"Settled","settlement_state":"Settled","segments":[{"resume_sequence":0,"start":131,"end":138}],"reported_consumed_budget":7,"replay_after_settlement_executable":false}
+        ],
+        "required_checks": ["shared_hardware_exact_partition", "execution_is_exact_parent_subset_partition", "lease_occurrence_matches_lane_partition", "unique_schedule_occurrence", "allocator_slot_precedes_intent_binding", "prepare_precedes_due", "one_way_use_state_from_unbound", "cell_budget_sum", "token_lease_slot_bijection", "one_use_entry_and_cumulative_budget", "segments_within_cell_and_normalized_horizon", "resume_sequences_monotonic", "no_context_overlap", "settled_token_replay_rejected", "expired_has_no_token", "retry_uses_fresh_occurrence"]
+      },
+      "residual_executable_model":"DYN_SHARD_parent_execution_conservation"
+    },
+    {
+      "id":"WIT-TARGET-CONTROL-CONSERVATION",
+      "purpose":"one_control_shard_turn_pays_exactly_one_target_rank_and_never_all_targets",
+      "preconditions":["ControlTurn_10_TargetA_4_TargetB_7","target_A_and_B_have_distinct_reserved_schedule_cells","both_quota_anchors_use_their_own_TargetControlTurn"],
+      "trace_left":["dispatch_target_A_microstep","ControlTurn_11_TargetA_5_TargetB_7","dispatch_target_B_microstep","ControlTurn_12_TargetA_5_TargetB_8"],
+      "trace_right":["target_A_microstep_returns_typed_terminal_without_block","dispatch_target_B_microstep","only_TargetB_rank_decreases"],
+      "required_observations":["sum_target_delta_equals_shard_delta_for_each_step","pre_anchor_shard_turns_give_no_credit","target_schedule_not_external_fairness"],
+      "forbidden":["ControlTurn_11_advances_both_targets","target_A_work_decreases_B_rank","blocking_microstep_holds_schedule_cell"],
+      "executable": {
+        "machine": "target_control_conservation",
+        "initial": {"control_turn": 10, "target_A": 4, "target_B": 7},
+        "dispatches": [
+          {"target": "target_A", "after": {"control_turn": 11, "target_A": 5, "target_B": 7}},
+          {"target": "target_B", "after": {"control_turn": 12, "target_A": 5, "target_B": 8}}
+        ],
+        "anchors": {"target_A": {"lane_turn": 20, "target_turn": 4, "min_control_per_lane": 1, "max_initial_lead": 1}, "target_B": {"lane_turn": 30, "target_turn": 7, "min_control_per_lane": 1, "max_initial_lead": 1}},
+        "post_state_lane_turns": {"target_A": 22, "target_B": 32},
+        "required_checks": ["one_shard_turn_per_dispatch", "exactly_one_target_advances", "other_target_unchanged", "post_anchor_quota_holds"]
+      },
+      "residual_executable_model":"DYN_CHURN_and_DYN_SHARD_target_turn_arithmetic"
+    },
+    {
+      "id":"WIT-PARTITION-IMPORT",
+      "purpose":"typed_partition_modes_can_only_narrow_one_imported_term_and_disconnection_never_extends_it",
+      "preconditions":["issuer_interval_and_local_conversion_give_earliest_safe_expiry_180_and_latest_possible_horizon_188","disconnect_tick_160_MaxOfflineDuration_20","mode_is_immutable_in_signed_NodeLeaseImportCertificate"],
+      "trace_left":["CONNECTED_ONLY_loses_connectivity_evidence","block_release_and_joint_activation","protected_stop_by_sealed_deadline"],
+      "trace_right":["CONTINUE_TO_CONSERVATIVE_EXPIRY_sets_deadline_min_180_and_160_plus_20_equal_180","allow_before_180_only","block_at_180","RECOVERY_ONLY_uses_bootstrap_actions_only"],
+      "required_observations":["no_mode_change_on_disconnect","no_term_extension","reconnection_imports_fresh_generation","old_frozen_use_never_reopens"],
+      "forbidden":["raw_network_reachability_as_authority","latest_uncertain_expiry_used_for_new_authority","offline_timer_reset","local_rights_growth"],
+      "executable": {
+        "machine": "partition_import",
+        "certificate_installed_at": 150,
+        "issuer_earliest_safe_expiry": 180,
+        "issuer_latest_possible_expiry": 188,
+        "disconnect_tick": 160,
+        "max_offline_duration": 20,
+        "modes": {
+          "CONNECTED_ONLY": {"connectivity": false, "ordinary_release": false, "ordinary_activation": false},
+          "CONTINUE_TO_CONSERVATIVE_EXPIRY": {"computed_deadline": 180, "allow_tick": 179, "deny_tick": 180},
+          "RECOVERY_ONLY": {"connectivity": true, "ordinary_release_at_install": false, "ordinary_activation_at_install": false, "bootstrap_recovery": true}
+        },
+        "required_checks": ["conservative_deadline_is_minimum", "connected_only_requires_evidence", "recovery_only_blocks_from_installation", "connectivity_cannot_reopen_recovery_only", "expiry_is_half_open"]
+      },
+      "residual_executable_model":"DYN_RENEW_RESTART_partition_import"
+    },
+    {
+      "id":"WIT-GLOBAL-PLACEMENT-SUPERSESSION",
+      "purpose":"destination_exclusive_authority_requires_exact_quiescence_or_waits_beyond_the_full_predecessor_horizon",
+      "preconditions":["source_GlobalPlacementUse_epoch_7_token_41_owner_node_A","successor_epoch_8_token_42_owner_node_B","new_authority_uses_minimum_of_all_horizons_and_supersession_uses_maximum_residual_effect_horizon"],
+      "trace_left":["source_quiesces_and_emits_exact_receipt_at_204","destination_validates_successor_use","joint_activate_destination_after_204"],
+      "trace_right":["source_unreachable_without_receipt","quorum_commits_supersession_with_bounded_residual_effects","activationNotBefore_237_strictly_after_max_228_plus_uncertainty_5_plus_stop_3","joint_activate_destination_at_237"],
+      "required_observations":["effective_new_authority_horizon_is_minimum","lease_only_extension_does_not_extend_placement","never_source_destination_overlap","unbounded_effect_requires_exact_quiescence","every_destination_artifact_binds_epoch_8_token_42","reconnection_rejects_epoch_7_token_41"],
+      "forbidden":["network_silence_as_quiescence","lease_extension_authorizes_tick_221","activation_at_or_before_236","time_supersession_of_unbounded_DMA","local_PlacementGeneration_as_global_fence"],
+      "executable": {
+        "machine": "placement_horizon_supersession",
+        "target_lease_clock_epoch": 1,
+        "required_source_classes": ["frozen_lease","node_lease_import","global_placement","security_use","retirement_fence","execution_cell","root_budget"],
+        "deadline_entries": [
+          {"source_class":"frozen_lease","source_clock":"issuer_A","source_epoch":3,"source_expiry":300,"conversion_certificate":"rel_A_to_local","target_epoch":1,"conservative_not_after":260},
+          {"source_class":"node_lease_import","source_clock":"issuer_A","source_epoch":3,"source_expiry":290,"conversion_certificate":"rel_A_to_local","target_epoch":1,"conservative_not_after":250},
+          {"source_class":"global_placement","source_clock":"quorum_clock","source_epoch":8,"source_expiry":240,"conversion_certificate":"rel_Q_to_local","target_epoch":1,"conservative_not_after":220},
+          {"source_class":"security_use","source_clock":"security_clock","source_epoch":5,"source_expiry":260,"conversion_certificate":"rel_S_to_local","target_epoch":1,"conservative_not_after":240},
+          {"source_class":"retirement_fence","source_clock":"lane_clock","source_epoch":2,"source_expiry":235,"conversion_certificate":"rel_L_to_local","target_epoch":1,"conservative_not_after":230},
+          {"source_class":"execution_cell","source_clock":"root_execution_clock","source_epoch":1,"source_expiry":226,"conversion_certificate":"rel_R_to_local","target_epoch":1,"conservative_not_after":225},
+          {"source_class":"root_budget","source_clock":"budget_clock","source_epoch":9,"source_expiry":230,"conversion_certificate":"rel_B_to_local","target_epoch":1,"conservative_not_after":224}
+        ],
+        "expected_effective_horizon": 220,
+        "predecessor_global_placement": {"ownership_epoch":7,"fencing_token":41,"normalized_horizon":220},
+        "raw_cross_clock_minimum_allowed": false,
+        "lease_only_extension": {"new_frozen_lease": 300, "unchanged_global_placement": 220, "requested_release_tick": 221, "allowed": false},
+        "fresh_global_placement": {"new_ownership_epoch": 8, "new_fencing_token": 42, "new_horizon": 280, "requested_release_tick": 221, "allowed": true},
+        "bounded_residual_effect_horizons": {"cpu": 220, "device_queue": 226, "dma_write": 228},
+        "clock_uncertainty": 5,
+        "protected_stop_bound": 3,
+        "activation_not_before": 237,
+        "unbounded_effect_classes": ["firmware_command_without_revocation_receipt"],
+        "exact_source_quiescence_present_for_unbounded": false,
+        "time_supersession_allowed_for_unbounded": false,
+        "required_checks": ["deadline_source_schema_complete_unique", "all_deadlines_normalized_to_exact_target_epoch", "raw_cross_clock_minimum_rejected", "effective_horizon_is_conservative_minimum", "lease_only_extension_rejected", "fresh_placement_can_extend", "activation_strictly_after_all_residual_effects", "unbounded_effect_rejects_time_supersession", "successor_epoch_and_token_advance"]
+      },
+      "residual_executable_model":"DYN_REGRESSION_global_placement_transfer"
+    },
+    {
+      "id":"WIT-FAILURE-COVER-AND-CLEANUP",
+      "purpose":"every_real_failure_has_a_total_bounded_cover_and_cleanup_never_exceeds_precharged_reverse_edges",
+      "preconditions":["KFailureScopesPerEvent_1","source_current_and_live_intermediate_closures_union_to_child_A1_child_A2","tenant_A_is_unique_LCA_in_boot_fixed_cover_tree","KLiveAuthorityUsesPerScope_2_and_two_reverse_edges_precharged"],
+      "trace_left":["derive_union_across_source_current_and_live_referenced_topology_generations","select_tenant_A_unique_LCA","PersistPending_with_FailureCoverCertificate","commit_bit_moves_all_selected_charges_to_FailureEscrow_before_fence","cleanup_exact_two_reverse_edges_then_release_escrow"],
+      "trace_right":["derive_oversized_closure_with_no_bounded_sound_ancestor","consume_pre_reserved_node_failstop","stop_without_truncation_or_reject_continue"],
+      "required_observations":["cover_function_total","intermediate_live_topology_not_omitted","capacity_moves_without_duplication","unaffected_tenant_B_unchanged_when_tenant_A_cover_exists","root_cover_means_node_failstop","cleanup_rank_at_most_2","recovery_requires_zero_predecessor_uses_or_permanent_fence"],
+      "forbidden":["truncate_to_child_A1","source_current_only_omits_live_intermediate_path","reject_event_and_continue","capacity_remains_current_and_failure_escrow","third_uncharged_reverse_edge","population_scan"],
+      "executable": {
+        "machine": "failure_cover_and_escrow",
+        "cover_tree_parent": {"node_root":null,"tenant_A":"node_root","tenant_B":"node_root","child_A1":"tenant_A","child_A2":"tenant_A","child_A3":"tenant_A","child_B1":"tenant_B"},
+        "stable_order": ["node_root","tenant_A","tenant_B","child_A1","child_A2","child_A3","child_B1"],
+        "publication_snapshot": {"fence_position":40,"reverse_index_highwater":9,"committed_before_highwater":["U8","U9"],"after_fence_use":"U10","after_fence_published":false},
+        "closure_seed": {"scopes":["child_A1"],"topology_generations":["source_gen_7","current_gen_10"]},
+        "reverse_index": {
+          "scope_to_uses": {"child_A1":["U8"],"child_A2":["U9"],"child_A3":[]},
+          "uses": {
+            "U8":{"sequence":8,"adds_scopes":["child_A2"],"topology_generation":"live_ref_gen_8"},
+            "U9":{"sequence":9,"adds_scopes":["child_A3"],"topology_generation":"live_ref_gen_9"}
+          }
+        },
+        "claimed_iterations": [
+          {"ordinal":0,"scopes":["child_A1"],"uses":[],"topology_generations":["current_gen_10","source_gen_7"]},
+          {"ordinal":1,"scopes":["child_A1","child_A2"],"uses":["U8"],"topology_generations":["current_gen_10","live_ref_gen_8","source_gen_7"]},
+          {"ordinal":2,"scopes":["child_A1","child_A2","child_A3"],"uses":["U8","U9"],"topology_generations":["current_gen_10","live_ref_gen_8","live_ref_gen_9","source_gen_7"]},
+          {"ordinal":3,"scopes":["child_A1","child_A2","child_A3"],"uses":["U8","U9"],"topology_generations":["current_gen_10","live_ref_gen_8","live_ref_gen_9","source_gen_7"]}
+        ],
+        "closure_bounds": {"iterations":4,"scopes":6,"edges":8},
+        "max_failure_scopes": 1,
+        "expected_union": ["child_A1","child_A2","child_A3"],
+        "expected_cover": "tenant_A",
+        "root_case_union": ["child_A1", "child_B1"],
+        "root_case_result": "node_failstop",
+        "capacity_before": {"current": 3, "pending": 2, "retiring": 1, "failure_escrow": 0},
+        "capacity_after_commit": {"current": 0, "pending": 0, "retiring": 0, "failure_escrow": 6},
+        "capacity_after_terminal_cleanup": {"current": 0, "pending": 0, "retiring": 0, "failure_escrow": 0, "released": 6},
+        "leaf_reverse_edges": {"child_A1":2,"child_A2":2,"child_A3":2},
+        "cover_ancestor_cleanup_reservations": {"tenant_A":6,"node_root":6},
+        "cleanup_steps": 6,
+        "unaffected_scope": "tenant_B",
+        "required_checks": ["cover_tree_is_rooted_unique_parent_acyclic", "publication_fence_snapshot_is_total", "claimed_iterations_equal_monotonic_least_fixed_point", "least_fixed_point_within_NodeConfig_bounds", "all_intermediate_topology_generations_reached", "oversized_union_uses_unique_lca", "root_lca_forces_node_failstop", "commit_conserves_and_moves_to_escrow", "cleanup_only_releases_after_terminal", "cover_ancestor_cleanup_within_precharge", "unaffected_is_outside_selected_cover"]
+      },
+      "residual_executable_model":"DYN_CHURN_failure_cover_and_cleanup"
+    },
+    {
+      "id":"WIT-JOINT-ACTIVATION",
+      "purpose":"residency_readiness_is_nonexecutable_and_only_complete_atomic_context_commit_counts_service",
+      "preconditions":["held_binding_allocator_issued_lease_and_Reserved_use_cell_exact","receipt_classes_view_code_entry_translation_backing_state_all_enumerated","device_class_has_typed_NotApplicable_with_reason_and_context"],
+      "trace_left":["create_nonexecutable_ActivationIntent_I","due_cell_CAS_Reserved_to_Consumed","commit_one_ActivationDecisionCell_and_inert_staging","publish_final_valid_gate_and_same_ActivationID_token_receipt","emit_positive_ExecutionDeliveryReceipt","mark_Served_then_settle_use_cell"],
+      "trace_right":["commit_same_decision_then_crash_before_valid_gate","observe_no_execution_or_service","recover_same_ActivationID_only_within_same_cell_or_expire","missing_code_receipt_expires_fresh_due_cell_without_partial_state"],
+      "required_observations":["intent_and_committed_pre_gate_decision_never_execute","ActivationID_is_bijective_and_retry_idempotent","budget_fits_remaining_cell_and_all_horizons","commit_receipt_sets_ActivatedUnserved_only","qualifying_delivery_sets_Served","zero_delivery_without_yield_is_not_service"],
+      "forbidden":["ROOTSCHED_alone_issues_token","pre_gate_staging_executes","retry_mints_second_id","activation_receipt_counts_service","missing_receipt_means_NotApplicable","partial_context_survives_failure","ResidentReady_counts_service"],
+      "executable": {
+        "machine": "activation_delivery_crash",
+        "identity": {
+          "activation_scoped_namespace_root": {"root_id":"nsroot_A:17","domain_key":"tenant_A/process_A","domain_epoch":11,"plan_shard_id":"shard_A","plan_namespace_epoch":6,"root_plan_epoch":4,"lane_id":"lane_A","lane_clock_epoch":2,"lane_turn":33,"service_stream_id":"stream_A","service_stream_incarnation":2,"opportunity_ordinal":44},
+          "monitor_boot_epoch":1,
+          "projection_epoch":5,
+          "cpu_incarnation":6,
+          "physical_context":"cpu0",
+          "root_execution_allocation_generation":8,
+          "activation_slot_id":"slot_A1",
+          "lease_issuance_id":"lease_issue_31",
+          "activation_generation":9,
+          "intent_generation":12,
+          "intent_digest":"sha256:intent_A1"
+        },
+        "expected_activation_id": "nsroot:nsroot_A:17|domain:tenant_A/process_A@11|plan:shard_A:6:4|lane:lane_A:2:33|stream:stream_A:2:q44|boot:1|projection:5|cpu:6|context:cpu0|allocation:8|slot:slot_A1|lease:lease_issue_31|activation:9|intent:12|sha256:intent_A1",
+        "lease": {"id":"lease_A1","issuance_id":"lease_issue_31","physical_occurrence":"h6","lane":"lane_A","physical_context":"cpu0","activation_slot_id":"slot_A1","issued_at":80,"cell_start":100,"cell_end":110,"entry_exit_guard":2,"budget":7,"target_lease_clock_epoch":1,"normalized_authority_not_after":109,"normalized_source_count":7,"stop_tick":108},
+        "use_cell": {"id":"use_A1","lease":"lease_A1","physical_occurrence":"h6","activation_slot_id":"slot_A1","intent_prepared_at":90,"bound_intent_digest":"sha256:intent_A1","decision_key":"stream_A:inc2:q44","states":["Unbound","Reserved","Consumed","Settled"]},
+        "required_receipt_classes": ["view", "code", "entry", "translation", "backing", "mutable_state", "device"],
+        "receipt_policy": {"view":"required_present","code":"required_present","entry":"required_present","translation":"required_present","backing":"required_present","mutable_state":"required_present","device":"typed_optional"},
+        "receipts": {
+          "view":{"status":"present","receipt":"view_r1"},
+          "code":{"status":"present","receipt":"code_r1"},
+          "entry":{"status":"present","receipt":"entry_r1"},
+          "translation":{"status":"present","receipt":"translation_r1"},
+          "backing":{"status":"present","receipt":"backing_r1"},
+          "mutable_state":{"status":"present","receipt":"state_r1"},
+          "device":{"status":"typed_not_applicable","reason":"no_device_binding","context_receipt":"device_context_r1"}
+        },
+        "decision": {"key":"stream_A:inc2:q44","expected_key":"stream_A:inc2:q44","states":["Undecided","PreparedInert","Entered","Settled"],"staging_generation":5,"expected_staging_generation":5,"valid_gate_before_PreparedInert":false,"valid_gate_after_Entered":true,"entry_permit_uses":1,"activation_commit_receipt_id":"acr:activation_A1","retry_activation_id":"nsroot:nsroot_A:17|domain:tenant_A/process_A@11|plan:shard_A:6:4|lane:lane_A:2:33|stream:stream_A:2:q44|boot:1|projection:5|cpu:6|context:cpu0|allocation:8|slot:slot_A1|lease:lease_issue_31|activation:9|intent:12|sha256:intent_A1"},
+        "cancel_race": {
+          "cancel_winner":{"states":["Undecided","SuppressedBeforeActivation"],"entry_allowed":false},
+          "activation_winner":{"states":["Undecided","PreparedInert","Entered","StopPending","Settled"],"late_cancel_can_suppress":false,"late_cancel_requests_stop":true},
+          "distinct_shadow_decision_cell":false
+        },
+        "pre_gate_crash": {"decision_state":"PreparedInert","use_state":"Consumed","valid_gate":false,"entry_permit_consumed":false,"executable":false,"service":false,"recovery_activation_id":"nsroot:nsroot_A:17|domain:tenant_A/process_A@11|plan:shard_A:6:4|lane:lane_A:2:33|stream:stream_A:2:q44|boot:1|projection:5|cpu:6|context:cpu0|allocation:8|slot:slot_A1|lease:lease_issue_31|activation:9|intent:12|sha256:intent_A1","within_same_cell":true},
+        "settlement": {"states":["Inert","Active","Settled"],"entry_tick":101,"entry_permit_uses":1,"initial_budget":7,"segments":[{"resume_sequence":0,"start":101,"end":104}],"consumed_budget":3,"remaining_budget":4,"activation_commit_receipt_id":"acr:activation_A1","delivery_receipt_id":"edr:activation_A1","retry_delivery_receipt_id":"edr:activation_A1","first_service_account_apply":true,"duplicate_service_account_apply":false},
+        "delivery": {"activation_commit_receipt":true,"state_after_commit":"ActivatedUnserved","delivered_ticks":3,"authenticated_post_entry_yield":false,"state_after_delivery":"Served","consumed_budget":3,"remaining_budget":4},
+        "zero_delivery": {"activation_commit_receipt": true, "delivered_ticks": 0, "authenticated_post_entry_yield": false, "counts_service": false},
+        "voluntary_yield": {"activation_commit_receipt": true, "hardware_entry_seen": true, "delivered_ticks": 0, "authenticated_post_entry_yield": true, "counts_service": true},
+        "token_replay": {"after_settlement_executable":false,"after_cell_end_executable":false,"untrusted_reentry_allowed":false},
+        "failed_validation": {"missing_class":"code","use_state":"Expired","canonical_decision_state":"Undecided","partial_executable_state":false,"token_count":0,"failed_activation_slot_id":"slot_A2","fresh_activation_slot_required_for_retry":true},
+        "required_checks": ["activation_id_full_parent_derivation", "slot_intent_lease_binding_acyclic", "one_way_use_state_from_unbound", "receipt_class_schema_fixed", "required_receipts_cannot_be_not_applicable", "typed_optional_receipt_has_reason_and_context", "budget_within_cell_and_normalized_horizon", "canonical_cancel_activation_race", "decision_key_staging_and_retry_bijection", "pre_gate_crash_nonexecutable", "one_use_entry_permit", "delivery_settlement_one_way_resume_and_budget", "commit_is_activated_unserved", "positive_delivery_counts_service", "delivery_retry_and_service_accounting_idempotent", "zero_without_yield_not_service", "post_entry_yield_counts_service", "settled_or_expired_token_replay_rejected", "failed_validation_expires_attempt_only_without_partial_state"]
+      },
+      "residual_executable_model":"DYN_COMPOSE_and_later_ENTRY_CODE_STATE_refinement"
+    },
+    {
+      "id":"WIT-MANAGEMENT-BOOTSTRAP",
+      "purpose":"recovery_progress_uses_a_boot_root_installed_context_and_independent_conserved_resources_or_failstops",
+      "preconditions":["NodeConfig_installed","management_execution_control_namespace_audit_failure_and_cleanup_cells_reserved_before_ordinary_admission","closed_recovery_action_set_and_immutable_context_roots_exact"],
+      "trace_left":["ordinary_admission_attempts_to_borrow_management_cell_and_is_rejected","management_cell_dispatches_reconciliation_action","joint_management_activation_uses_complete_context_receipts","ordinary_capacity_unchanged"],
+      "trace_right":["bootstrap_clock_or_immutable_code_root_fails","commit_node_failstop","withdraw_recovery_liveness","never_fallback_to_ordinary_Linux"],
+      "required_observations":["bootstrap_capacity_is_not_free_or_shared","ordinary_delegation_cannot_revoke_or_replace_it","failure_has_one_failstop result"],
+      "forbidden":["management_availability_oracle","best_effort_borrows_bootstrap_namespace","unprotected_recovery_fallback"],
+      "executable": {
+        "machine": "management_bootstrap",
+        "reserved": {"execution_cells": 1, "control_cells": 1, "namespace_slots": 2, "audit_slots": 2, "failure_slots": 1, "cleanup_units": 2},
+        "ordinary_before": {"execution_cells": 4, "control_cells": 4, "namespace_slots": 8},
+        "ordinary_borrow_attempt": {"resource": "management_execution_cells", "accepted": false},
+        "recovery_action": {"uses_management_execution": 1, "uses_management_control": 1, "ordinary_delta": 0, "terminal": true},
+        "bootstrap_root_failure": {"result": "node_failstop", "ordinary_linux_fallback": false},
+        "required_checks": ["all_bootstrap_resources_positive", "ordinary_cannot_borrow", "recovery_debits_reserved_capacity", "ordinary_capacity_unchanged", "bootstrap_failure_failstops"]
+      },
+      "residual_executable_model":"DYN_RENEW_RESTART_then_MGMT_ENTRY_CODE_STATE_refinement"
+    },
+    {
+      "id":"WIT-DISJOINT-COMMIT",
+      "purpose":"structural_owner_partitions_and_typed_reads_make_disjoint_apply_order_commute",
+      "preconditions":["owner_write_partitions_and_noncommuting_mutable_reads_are_disjoint","both_intents_selected_authorized_feasible_and_horizon_valid","shared_effects_are_immutable_escrows"],
+      "trace_left":["reserve_intent_A","commit_A","reserve_intent_B","commit_B","apply_A_Applied","apply_B_Applied"],
+      "trace_right":["reserve_intent_B","commit_B","reserve_intent_A","commit_A","apply_B_Applied","apply_A_Applied"],
+      "required_observations":["same_authority_projection","same_plan_membership","same_escrow_owners","no_pairwise_commutation_certificate"],
+      "forbidden":["nodewide_snapshot_conflict","cross_lane_lock_wait","shared_ancestor_direct_write"],
+      "executable": {
+        "machine": "disjoint_commutation",
+        "initial": {"A": 0, "B": 0, "escrow_A": 4, "escrow_B": 6},
+        "operation_A": {"writes": ["A"], "mutable_reads": ["A"], "set": {"A": 3}},
+        "operation_B": {"writes": ["B"], "mutable_reads": ["B"], "set": {"B": 5}},
+        "left_order": ["operation_A", "operation_B"],
+        "right_order": ["operation_B", "operation_A"],
+        "expected_terminal": {"A": 3, "B": 5, "escrow_A": 4, "escrow_B": 6},
+        "required_checks": ["write_read_footprints_disjoint", "left_and_right_terminal_equal", "immutable_escrow_unchanged", "no_shared_ancestor_direct_write"]
+      },
+      "residual_executable_model":"DYN_ADMIT_and_DYN_SHARD_frame_theorem"
+    },
+    {
+      "id":"WIT-PARENT-SERVICE-CAPACITY",
+      "purpose":"two_live_control_shards_cannot_overbook_one_physical_parent_executor",
+      "preconditions":["FrameLength_8_equals_Emergency_1_plus_Management_1_plus_Local_1_plus_A_2_plus_B_2_plus_Slack_1","literal_schedule_has_exactly_two_A_and_two_B_slots","both_target_anchors_use_fresh_TargetControlTurns"],
+      "trace_left":["physical_opportunity_A1_to_ControlTurn_A_then_TargetControlTurn_A","physical_opportunity_B1_to_ControlTurn_B_then_TargetControlTurn_B","physical_opportunity_A2_to_ControlTurn_A_then_TargetControlTurn_A","physical_opportunity_B2_to_ControlTurn_B_then_TargetControlTurn_B"],
+      "trace_right":["same_immutable_frame_next_cycle","lane_A_held_while_B_owned_slots_continue","lane_B_boundary_preserves_post_anchor_quota"],
+      "required_observations":["each_physical_opportunity_has_one_descendant","each_shard_turn_advances_at_most_one_exact_target","A_and_B_certificates_share_one_simultaneously_valid_parent_capacity_witness","pre_anchor_turns_supply_no_target_credit"],
+      "forbidden":["independent_leaf_rate_certificates_without_parent_debit","one_opportunity_advances_A_and_B","hardware_certificate_assumes_control_fairness"],
+      "executable": {
+        "machine": "protected_service_capacity",
+        "frame": {"capacity": 8, "emergency": 1, "management": 1, "local": 1, "A": 2, "B": 2, "slack": 1},
+        "literal_schedule": ["A", "B", "management", "A", "B", "emergency", "local", "slack"],
+        "dispatches": [{"cell": 0, "child": "A"}, {"cell": 1, "child": "B"}, {"cell": 3, "child": "A"}, {"cell": 4, "child": "B"}],
+        "required_checks": ["frame_partition_sum", "literal_occurrences_equal_reservations", "one_cell_one_descendant", "both_children_share_parent_certificate"]
+      },
+      "residual_executable_model":"DYN_CHURN_DYN_SHARD_and_DYN_MULTILANE_COMPOSE_service_capacity"
+    },
+    {
+      "id":"WIT-INDEPENDENT-PROGRESS",
+      "purpose":"lane_A_stall_does_not_block_lane_B_recurring_service",
+      "preconditions":["stream_A_has_active_token_or_cleanup_countdown","stream_B_due_and_stable","B_has_owned_parent_slots_and_fresh_quota_anchor"],
+      "trace_left":["hold_lane_A_boundary","protected_slot_B","target_control_turn_B","materialize_B_opportunity","hold_B_binding","ActivationIntent_B","joint_ActivateHeld_B_and_ActivationCommitReceipt_B","terminal_settle_B"],
+      "trace_right":["finish_A_countdown","protected_slot_B","target_control_turn_B","materialize_B_opportunity","hold_B_binding","ActivationIntent_B","joint_ActivateHeld_B_and_ActivationCommitReceipt_B","terminal_settle_B"],
+      "required_observations":["B_rank_contains_no_A_token_cleanup_or_boundary","B_root_and_service_reservations_remain_owned","A_changes_no_B_scope_clock_membership_or_anchor"],
+      "forbidden":["global_lane_barrier","strict_fifo_starvation","linux_activation_gate"],
+      "executable": {
+        "machine": "independent_lane_progress",
+        "selected_failure_cover": "tenant_A",
+        "node_failstop": false,
+        "lane_scopes": {"lane_A": "tenant_A", "lane_B": "tenant_B"},
+        "lane_A": {"held": true, "rank": 5, "owned_cells": [0, 3]},
+        "lane_B": {"rank_trace": [4, 3, 2, 1, 0], "owned_cells": [1, 4], "terminal": true},
+        "cross_lane_writes": [],
+        "required_checks": ["lane_B_outside_selected_cover", "no_node_failstop", "lane_B_rank_strictly_decreases_on_owned_steps", "no_cross_lane_write", "lane_A_hold_not_in_lane_B_rank"]
+      },
+      "residual_executable_model":"DYN_MULTILANE_COMPOSE"
+    },
+    {
+      "id":"WIT-MIXED-APPLY-FAILURE",
+      "purpose":"component_maximum_escrow_and_single_writers_cover_mixed_terminal_states",
+      "preconditions":["Base_5_plus_EscrowA_4_plus_EscrowB_6_plus_Slack_1_equals_Capacity_16","DemandA_Applied_3_and_residual_1","DemandB_FailedFenced_cleanup_6"],
+      "trace_left":["ApplyOwnerA_sets_Applied","ScopeOwnerB_commits_SecurityScopeFenceB","ApplyOwnerB_atomically_sets_EntryFailClosedFenceB_and_FailedFenced","capacity_owner_retains_escrows"],
+      "trace_right":["ScopeOwnerB_commits_SecurityScopeFenceB","ApplyOwnerB_sets_FailedFenced","ApplyOwnerA_sets_Applied","capacity_owner_retains_escrows"],
+      "required_observations":["A_successor_exact","B_successor_absent","same_total_16","transition_record_immutable","B_apply_owner_never_writes_SecurityScopeFence"],
+      "forbidden":["pairwise_proof","two_apply_status_writers","local_apply_reclaims_escrow","FailedFenced_advances_SecurityScopeFence"],
+      "executable": {
+        "machine": "mixed_apply_failure",
+        "capacity": 16,
+        "base": 5,
+        "slack": 1,
+        "entries": {"A": {"escrow": 4, "status": "Applied", "demand": 3, "residual": 1, "status_writer": "apply_A"}, "B": {"escrow": 6, "status": "FailedFenced", "demand": 6, "residual": 0, "status_writer": "apply_B"}},
+        "security_fence_writer": {"A": "scope_A", "B": "scope_B"},
+        "left_order": ["apply_A", "scope_fence_B", "apply_B"],
+        "right_order": ["scope_fence_B", "apply_B", "apply_A"],
+        "expected_successors": ["A"],
+        "required_checks": ["each_demand_plus_residual_equals_escrow", "total_capacity_conserved", "one_status_writer_per_entry", "failure_scope_writer_distinct", "orders_have_same_terminal_projection"]
+      },
+      "residual_executable_model":"DYN_ADMIT_and_DYN_SHARD_single_entry_induction"
+    },
+    {
+      "id":"WIT-RETIRING-OPPORTUNITY",
+      "purpose":"cutover_cannot_strand_or_reopen_one_already_released_opportunity",
+      "preconditions":["old_opportunity_released_before_cutover","one_preserved_opportunity_named","RetiringOpportunityReservation_charged"],
+      "trace_left":["publish_cutover_fence","validate_live_preservation","ActivationIntent_old","joint_ActivateHeld_old_and_ActivationCommitReceipt","terminal_settle_old","reclaim_retiring_reservation"],
+      "trace_right":["ActivationIntent_old","joint_ActivateHeld_old_and_ActivationCommitReceipt","publish_cutover_fence_constrains_token","terminal_settle_old","reclaim_retiring_reservation"],
+      "required_observations":["at_most_one_old_opportunity_survives","new_token_binds_current_fence","root_service_until_terminal","no_new_old_membership_release"],
+      "forbidden":["obsolete_generation_equality_guard","same_boundary_exception","ownerless_retiring_work"],
+      "executable": {
+        "machine": "retiring_opportunity",
+        "cutover_turn": 40,
+        "opportunities": [{"id": "old_39", "released_turn": 39, "preserved": true}],
+        "old_membership_release_attempts": [{"turn": 41, "accepted": false}],
+        "retirement_fence": {"generation_before": 7, "generation_after": 8, "release_not_after": 40, "activation_not_after": 44, "preserved_opportunity": "old_39"},
+        "token": {"opportunity": "old_39", "fence_generation": 8, "activation_turn": 42, "stop_turn": 43},
+        "reservation": {"owner": "old_39", "held_until_terminal": true, "released_after_terminal": true},
+        "required_checks": ["at_most_one_preserved", "preserved_was_preboundary_released", "token_binds_current_fence", "activation_within_cutoff", "reservation_has_owner_until_terminal", "no_post_cutover_old_release"]
+      },
+      "residual_executable_model":"DYN_COMPOSE_cutover_races"
+    },
+    {
+      "id":"WIT-SCOPED-FAILURE-CRASH",
+      "purpose":"self_contained_pending_single_commit_bit_and_async_audit_survive_every_named_crash_cut_without_stopping_B",
+      "preconditions":["source_A_evidence_authenticated_fresh_and_precharged","stream_B_certificate_excludes_scope_A_and_source_health_A","audit_A_headroom_reserved"],
+      "trace_left":["PersistPending_A","crash_before_BuildTxn","RecoveryOnly_BuildTxn_A","Reserve_and_Prepare_scope_A","CommitTxn_A","continue_B_release_ActivationCommitReceipt_terminal","Materialize_A","FinalizeSource_A","AuditReserve_A","AuditCommit_A"],
+      "trace_right":["continue_B_release_ActivationCommitReceipt_terminal","PersistPending_A","BuildTxn_A","Reserve_and_Prepare_scope_A","crash_before_commit","CommitTxn_A","crash_after_commit_before_materialize","FinalizeSource_A","AuditReserve_and_Commit_A"],
+      "required_observations":["before_commit_EffectiveScope_A_is_predecessor","after_commit_EffectiveScope_A_is_successor_even_unmaterialized","source_highwater_after_commit_only","one_audit_position","same_B_bound","no_Domain_scan"],
+      "forbidden":["atomic_source_and_transaction_cross_writer_write","raw_current_authority_check","audit_authority_gate","second_audit_position","ordinary_restart_with_unresolved_pending"],
+      "executable": {
+        "machine": "scoped_failure_crash",
+        "events": [
+          {"step": 1, "writer": "source_A", "source_state": "DurablePending", "txn_state": "None", "commit_bit": false, "materialized_generation": 4, "effective_generation": 4, "audit_positions": 0},
+          {"step": 2, "writer": "txn_A", "source_state": "DurablePendingLinked", "txn_state": "Prepared", "commit_bit": false, "materialized_generation": 4, "effective_generation": 4, "audit_positions": 0},
+          {"step": 3, "writer": "txn_A", "source_state": "DurablePendingLinked", "txn_state": "Committed", "commit_bit": true, "materialized_generation": 4, "effective_generation": 5, "audit_positions": 0},
+          {"step": 4, "writer": "scope_A", "source_state": "DurablePendingLinked", "txn_state": "Committed", "commit_bit": true, "materialized_generation": 5, "effective_generation": 5, "audit_positions": 0},
+          {"step": 5, "writer": "source_A", "source_state": "Terminal", "txn_state": "Committed", "commit_bit": true, "materialized_generation": 5, "effective_generation": 5, "audit_positions": 0},
+          {"step": 6, "writer": "audit_A", "source_state": "Terminal", "txn_state": "Committed", "commit_bit": true, "materialized_generation": 5, "effective_generation": 5, "audit_positions": 1}
+        ],
+        "crash_recovery_prefixes": [1, 2, 3, 4, 5, 6],
+        "lane_B": {"scope": "scope_B", "delivery_receipts": 1, "terminal": true, "changed_by_failure_A": false},
+        "required_checks": ["source_pending_precedes_txn_link", "effective_generation_changes_only_at_commit", "materialization_does_not_change_authority", "source_terminal_after_commit", "one_audit_position", "every_prefix_has_fail_closed_recovery", "disjoint_lane_unchanged"]
+      },
+      "residual_executable_model":"DYN_CHURN_and_DYN_RENEW_RESTART_crash_matrix"
+    },
+    {
+      "id":"WIT-SOURCE-EXHAUSTION",
+      "purpose":"source_freshness_exhaustion_fences_predeclared_dependent_authority_without_using_exhausted_namespace",
+      "preconditions":["stream_A_certificate_includes_source_health_A","emergency_source_health_transaction_pre_reserved","stream_B_has_independent_preauthorized_coverage"],
+      "trace_left":["detect_source_A_sequence_exhaustion","commit_SourceUnavailableFence_A_via_emergency_identity","A_token_check_denied","B_continues"],
+      "trace_right":["detect_same_id_different_digest","commit_source_compromise_fence","A_denied","B_continues"],
+      "required_observations":["source_health_derived_from_EffectiveScope","A_cannot_switch_alternate_after_failure","B_independent_coverage_was_selected_before_use"],
+      "forbidden":["ingress_reject_only","fence_allocated_from_exhausted_namespace","retroactive_alternate_source_selection"],
+      "executable": {
+        "machine": "source_exhaustion",
+        "source_namespace": {"next": 16, "maximum": 15, "exhausted": true},
+        "emergency_transaction": {"namespace": "source_health_emergency", "pre_reserved": true, "uses_exhausted_namespace": false},
+        "dependent_uses": {"A": {"binds_source_health": true, "token_executable_after_fence": false}, "B": {"binds_source_health": false, "alternate_coverage_preselected": true, "token_executable_after_fence": true}},
+        "alternate_selection_after_failure": false,
+        "required_checks": ["exhaustion_detected_before_wrap", "emergency_identity_is_independent", "dependent_use_fenced", "independent_preselected_coverage_survives", "no_retroactive_alternate"]
+      },
+      "residual_executable_model":"DYN_CHURN_source_health"
+    },
+    {
+      "id":"WIT-EXCLUSIVE-TRANSFER",
+      "purpose":"exact_next_ordinal_maps_across_node_local_clocks_only_through_an_interval_ClockRelationCertificate_after_source_write_close_and_quiescence",
+      "preconditions":["destination_Calendar_baseOrdinal_40_baseTick_1000_period_20_epoch_5","precommitted_skip_moves_ordinal_43_and_debt_7_to_nextOrdinal_44_and_debt_11","source_epoch_3_last_delivery_1040_stop_1052_and_zero_active_at_write_close_88","ClockRelationCertificate_maps_source_events_to_destination_intervals","destination_currentTurn_70_lead_1_Cell_44_equals_74"],
+      "trace_left":["Reserve","GateA","QuiesceA","CalendarOk_q44_B74","CommitB","ApplyB","Terminal"],
+      "trace_right":["Reserve","precommit_skip_before_due","GateA","QuiesceA","CalendarOk_q44_B74","CommitB","ApplyB","Terminal"],
+      "required_observations":["DueTick_44_equals_1080","releaseU_1082_activateU_1084_firstDeliveryU_1086_terminalU_1092","envelope_1055_1090_dueEnd_1100_expiry_1120","worst_case_gapU_48_from_earliest_converted_last_delivery_at_most_50","activation_strictly_after_latest_converted_source_stop_1054","rankUpper_6_at_most_8","no_naked_source_destination_tick_subtraction"],
+      "forbidden":["open_source_opportunity_or_active_context","gap_measured_from_source_stop","arbitrary_destination_cell","cross_epoch_naked_tick_conversion","rejection_reopens_source","stored_overwritable_transfer_phase"],
+      "executable": {
+        "machine": "calendar_migration",
+        "calendar": {"base_ordinal":40,"base_tick":1000,"period":20,"destination_lease_clock_epoch":5},
+        "source": {"node_incarnation":"node_A:4","lease_clock_epoch":3,"next_ordinal_before_skip":43,"debt_before_skip":7,"next_ordinal_after_skip":44,"debt_after_skip":11,"last_delivery_receipt":"delivery_q42","last_delivery_tick":1040,"stop_tick":1052,"current_opportunity":null,"write_close_position":88,"zero_active_tokens":true,"zero_active_contexts":true,"unsettled_delivery_cells":0,"all_prior_settlements_terminal":true},
+        "destination": {"node_incarnation":"node_B:7","lease_clock_epoch":5,"current_turn":70,"preparation_lead":1,"cell_for_q44":74,"release_tick":1082,"activation_tick":1084,"first_delivery_tick":1086,"terminal_tick":1092},
+        "clock_relation": {"certificate":"clockrel_A3_B5","source_epoch":3,"destination_epoch":5,"valid":true,"source_last_delivery_to_destination_interval":[1038,1042],"source_stop_to_destination_interval":[1050,1054],"valid_destination_interval":[1000,1121]},
+        "envelope": {"not_before": 1055, "not_after": 1090, "authority_expiry": 1120, "maximum_gap": 50, "rank_upper": 6, "rank_bound": 8},
+        "expected": {"due_tick_q44":1080,"due_end_tick_q44":1100,"worst_case_delivery_gap":48},
+        "required_checks": ["due_tick_checked_arithmetic", "clock_relation_binds_both_node_epochs_and_intervals", "source_quiescence_write_close_and_zero_active", "destination_activation_strictly_after_converted_source_stop", "destination_cell_is_exact_future_ordinal", "activation_after_due_and_envelope_start", "first_delivery_inside_envelope_and_due_period", "terminal_before_due_end_and_authority_expiry", "worst_case_gap_uses_earliest_converted_last_delivery", "worst_case_gap_within_bound", "rank_within_bound", "debt_and_ordinal_preserved"]
+      },
+      "residual_executable_model":"DYN_SHARD_and_DYN_REGRESSION_CalendarTransferV1"
+    },
+    {
+      "id":"WIT-NAMESPACE-WEAR-AND-SPARSE-CONTROL",
+      "purpose":"best_effort_wear_and_empty_principals_cannot_overtake_guaranteed_control",
+      "preconditions":["separate_best_effort_guaranteed_and_renewal_headroom","guaranteed_principal_slot_occupied_in_sparse_ring","many_admitted_principal_slots_empty"],
+      "trace_left":["cursor_selects_occupied_guaranteed_successor_O1","reserve_conflict_intent","reject_or_charge_best_effort_overlap","commit_guaranteed","consume_guaranteed_wear"],
+      "trace_right":["best_effort_sponsor_exhausts_to_reject","cursor_selects_same_nonempty_successor_O1","commit_guaranteed","consume_guaranteed_wear"],
+      "required_observations":["no_empty_slot_scan","new_insert_does_not_move_cursor_behind_old_member","wear_never_refunded","renewal_headroom_unchanged"],
+      "forbidden":["flat_empty_principal_scan","shared_unattributed_wear","peer_overtake","attacker_triggered_peer_or_boot_renewal"],
+      "executable": {
+        "machine": "namespace_and_sparse_control",
+        "ring": {"slots": 8, "occupied": [1, 5], "cursor": 1, "successor": 5, "slots_inspected": 1},
+        "wear": {"guaranteed_before": 8, "guaranteed_after": 7, "best_effort_before": 2, "best_effort_after_reject": 0, "renewal_before": 4, "renewal_after": 4, "refund": 0},
+        "new_insert": {"slot": 7, "cursor_before": 1, "cursor_after": 1, "older_successor": 5},
+        "guaranteed_commit": {"principal": 5, "committed": true, "peer_overtook": false},
+        "required_checks": ["selection_cost_constant_not_slot_scan", "cursor_stable_on_insert", "best_effort_cannot_spend_guaranteed", "wear_nonrefundable", "renewal_headroom_unchanged", "selected_guaranteed_not_overtaken"]
+      },
+      "residual_executable_model":"DYN_ADMIT_and_DYN_CHURN_control_and_namespace_flood"
+    },
+    {
+      "id": "WIT-CLOCK-PROGRESS-OR-FAILSTOP",
+      "purpose": "time_bounded_authority_never_relies_on_an_unboundedly_stuttering_LeaseTick",
+      "preconditions": ["LeaseTick_is_protected_and_independent_of_Linux", "watchdog_has_pre_reserved_failstop_path"],
+      "trace_left": ["LeaseTick_100_101_102", "expiry_guard_fires_at_102", "time_bounded_claim_remains_enabled"],
+      "trace_right": ["LeaseTick_stutters_at_200", "watchdog_reaches_bound_2", "failstop_commits", "time_bounded_liveness_is_withdrawn"],
+      "required_observations": ["clock_progress_or_failstop", "no_infinite_stutter_with_live_time_claim", "Linux_cannot_reset_tick_or_watchdog"],
+      "forbidden": ["LeaseTick_stutters_forever_while_expiry_or_gap_claim_remains_live", "Linux_time_authorizes_extension"],
+      "executable": {
+        "machine": "clock_progress_or_failstop",
+        "lease_clock": {"source":"lease_oscillator_A","epoch":1},
+        "watchdog_clock": {"source":"independent_watchdog_oscillator_B","epoch":4},
+        "progress_branch": {"lease_ticks":[100,101,102],"watchdog_turns":[500,501,502],"expiry_tick":102,"expiry_fired":true,"time_bounded_liveness_claimed":true},
+        "stutter_branch": {"lease_ticks":[200,200,200],"watchdog_turns":[700,701,702],"maximum_watchdog_turn_delta_without_lease_progress":2,"time_scope_fence_committed":true,"node_failstop":true,"time_bounded_liveness_claimed_after_failstop":false},
+        "required_checks": ["clock_sources_and_epochs_are_distinct", "all_clock_values_and_bounds_are_natural", "progress_branch_lease_and_watchdog_advance", "expiry_fires_at_boundary", "lease_stutter_reaches_independent_watchdog_bound", "stutter_branch_fences_and_failstops", "liveness_withdrawn_after_failstop"]
+      },
+      "residual_executable_model": "DYN_RENEW_RESTART_clock_progress_or_failstop"
+    },
+    {
+      "id": "WIT-SETTLEMENT-PREFIX-OR-CONTINUITY-LOSS",
+      "purpose": "quorum_supersession_preserves_recurring_identity_only_with_an_exact_fault_tolerant_settlement_prefix",
+      "preconditions": ["source_is_unreachable", "quorum_no_fork_epoch_and_successor_placement_are_valid", "residual_effect_horizon_has_elapsed", "authenticated_interval_clock_relation_converts_predecessor_delivery_to_successor_clock"],
+      "trace_left": ["verify_replicated_settlement_prefix", "copy_exact_next_ordinal_debt_and_last_delivery", "retain_stream_incarnation", "permit_gap_claim"],
+      "trace_right": ["no_exact_prefix_available", "publish_ContinuityLossRecord", "advance_stream_incarnation", "forbid_exactly_once_and_gap_claims"],
+      "required_observations": ["no_vacuous_prefix_reconstruction", "one_of_prefix_or_continuity_loss_is_mandatory", "old_uncertain_ordinal_never_replayed_as_service", "maximum_gap_uses_earliest_converted_predecessor_delivery"],
+      "forbidden": ["quorum_silence_reconstructs_volatile_source_state", "same_stream_incarnation_without_prefix", "ContinuityLossRecord_claims_gap_continuity"],
+      "executable": {
+        "machine": "settlement_prefix_or_continuity_loss",
+        "predecessor": {"stream_incarnation":9,"placement_epoch":7,"fencing_token":41,"lease_clock_epoch":31,"write_close_position":90,"last_delivery_tick":1040},
+        "successor": {"placement_epoch":8,"fencing_token":42,"lease_clock_epoch":44,"first_delivery_tick":1086,"maximum_gap":50},
+        "clock_relation": {"certificate":"clockrel:prefix:31:44","predecessor_epoch":31,"successor_epoch":44,"valid":true,"last_delivery_source_tick":1040,"last_delivery_to_successor_interval":[1038,1042],"valid_successor_interval":[1000,1200]},
+        "prefix_branch": {"certificate":{"quorum_replicated":true,"predecessor_write_close_position":90,"no_later_delivery_fence":true,"quorum_checkpoint_position":95,"prefix_position":96,"settled_through_ordinal":43,"next_ordinal":44,"debt":11,"last_delivery_receipt":"delivery_q42","last_delivery_tick":1040,"open_ordinal_disposition":"none","prefix_digest":"sha256:prefix44"},"successor_stream_incarnation":9,"exactly_once_claim":true,"maximum_gap_claim":true},
+        "loss_branch": {"certificate": null, "continuity_loss_record": {"old_stream_incarnation": 9, "new_stream_incarnation": 10, "uncertain_ordinal_range": [43, 44], "old_range_nonservice": true}, "successor_stream_incarnation": 10, "exactly_once_claim": false, "maximum_gap_claim": false},
+        "required_checks": ["successor_placement_advances", "prefix_clock_relation_binds_epochs_and_interval", "prefix_follows_write_close_and_quorum_checkpoint", "prefix_branch_preserves_exact_state", "same_incarnation_requires_prefix", "prefix_branch_gap_theorem_holds", "missing_prefix_advances_incarnation", "loss_branch_withdraws_continuity_claims", "uncertain_old_range_is_nonservice"]
+      },
+      "residual_executable_model": "DYN_REGRESSION_quorum_supersession_continuity"
+    },
+    {
+      "id": "WIT-LIFECYCLE-WRITER-REFINEMENT",
+      "purpose": "human_lifecycle_machine_states_and_failure_pending_writer_order_have_one_total_refinement",
+      "preconditions": ["activation_and_delivery_are_distinct", "source_and_transaction_objects_have_distinct_writers"],
+      "trace_left": ["Released_Preparing_HeldReady_ActivationIntentPending_ActivatedUnserved_Served_StopPending_Settling_Terminal"],
+      "trace_right": ["Released_Preparing_HeldReady_ActivationIntentPending_SuppressedBeforeActivation_Settling_Terminal", "source_DurablePending_before_transaction_link"],
+      "required_observations": ["all_machine_states_reachable_or_branch_terminal", "human_Activated_refines_two_machine_states", "writer_order_is_source_then_transaction"],
+      "forbidden": ["ActivationCommitReceipt_directly_refines_Served", "source_owner_allocates_transaction_object", "human_state_without_machine_image"],
+      "executable": {
+        "machine": "lifecycle_writer_refinement",
+        "machine_states": ["Released", "Preparing", "HeldReady", "ActivationIntentPending", "ActivatedUnserved", "Served", "SuppressedBeforeActivation", "StopPending", "Settling", "Terminal"],
+        "service_trace": ["Released", "Preparing", "HeldReady", "ActivationIntentPending", "ActivatedUnserved", "Served", "StopPending", "Settling", "Terminal"],
+        "suppressed_trace": ["Released", "Preparing", "HeldReady", "ActivationIntentPending", "SuppressedBeforeActivation", "Settling", "Terminal"],
+        "allowed_edges": [["Released", "Preparing"], ["Preparing", "HeldReady"], ["HeldReady", "ActivationIntentPending"], ["ActivationIntentPending", "ActivatedUnserved"], ["ActivationIntentPending", "SuppressedBeforeActivation"], ["ActivatedUnserved", "Served"], ["ActivatedUnserved", "StopPending"], ["Served", "StopPending"], ["SuppressedBeforeActivation", "Settling"], ["StopPending", "Settling"], ["Settling", "Terminal"]],
+        "human_to_machine": {"Released": ["Released"], "Preparing": ["Preparing"], "HeldReady": ["HeldReady"], "ActivationIntentPending": ["ActivationIntentPending"], "Activated": ["ActivatedUnserved", "Served"], "WithdrawOrRevokePending": ["SuppressedBeforeActivation", "StopPending"], "Cleanup": ["Settling"], "Settling": ["Settling"], "Completed_Withdrawn_Revoked_LeaseExpired_or_ActivatedAndStopped": ["Terminal"]},
+        "failure_writer_events": [{"step": 1, "writer": "source_owner", "effect": "publish_DurablePending"}, {"step": 2, "writer": "transaction_owner", "effect": "allocate_and_link_PhysicalResidencyTxn"}],
+        "required_checks": ["trace_edges_allowed", "every_machine_state_has_human_preimage", "activated_unserved_distinct_from_served", "terminal_is_absorbing", "source_pending_precedes_transaction_link", "writers_are_distinct"]
+      },
+      "residual_executable_model": "DYN_COMPOSE_lifecycle_and_DYN_CHURN_writer_order"
+    }
+  ],
+  "coverage": {
+    "all_second_round_findings_partitioned": true,
+    "third_round_trace_findings": ["SEC-R3-01","SEC-R3-02","FORM-R3-02","FORM-R3-03","FORM-R3-04","FORM-R3-05","FORM-R3-06","FORM-R3-07","SCALE-R3-01","SCALE-R3-02","SCALE-R3-03","SELF-R3-01","SELF-R3-02","SELF-R3-03","SELF-R3-04","SELF-R3-05","SELF-R3-06","SELF-R3-07","SELF-R3-08","SELF-R3-09","SELF-R3-10","SELF-R3-11","SELF-R3-12","SELF-R3-13"],
+    "datacenter_composition_boundary_findings": ["DC-R3X-01","DC-R3X-02","DC-R3X-03","DC-R3X-04","DC-R3X-05","DC-R3X-06","DC-R3X-07","DC-R3X-08"],
+    "third_round_assurance_findings_owned_by_protocol_v2": ["SEC-R3-04","INT-R3-01","INT-R3-02"],
+    "third_round_schema_mapping_and_vocabulary_findings_owned_by_validator": ["SEC-R3-03","FORM-R3-01","INT-R3-03","INT-R3-04","INT-R3-05","INT-R3-06"],
+    "fourth_round_architecture_findings_executed": ["R4-EXEC-01","R4-EXEC-02","R4-SVC-01","R4-ACT-01","R4-PLACE-01","R4-PLACE-02","R4-MIG-01","R4-FAIL-01","R4-FAIL-02","R4-FAIL-03","R4-MODE-01","R4-CAP-01","R4-ACT-02","R4-CLOCK-01","R4-LIFE-01","R4-VAL-01"],
+    "fifth_round_architecture_findings_executed": ["R5-EXEC-01","R5-CLOCK-01","R5-ID-01","R5-SLOT-01","R5-ACT-01","R5-ACT-02","R5-FAIL-01","R5-SVC-01","R5-VAL-01","R5-LIVE-01","R5-FORMAL-01","R5-CLOCK-02","R5-LIVE-02","R5-FAIL-02","R5-PLACE-01","R5-MIG-01","R5-BOUNDARY-01","R5-CAP-01","R5-PLAN-01"],
+    "every_scenario_has_structured_executable_input_and_required_checks": true,
+    "validator_must_report_every_executed_check": true,
+    "no_finding_is_closed_by_this_witness": true
+  },
+  "claims": {
+    "witness_written": true,
+    "architecture_consistent": false,
+    "architecture_frozen": false,
+    "tla_written": false,
+    "model_checked": false,
+    "liveness_proved": false,
+    "implementation_approved": false,
+    "protection_evidenced": false,
+    "performance_evidenced": false,
+    "deployment_ready": false
+  }
+}

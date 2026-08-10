@@ -1,0 +1,532 @@
+{
+  "schema_version": 1,
+  "artifact_id": "domainlease-r11-g0-exact-mutation-catalog-v1",
+  "catalog_epoch": 1,
+  "status": "candidate_proposed_pending_external_adoption",
+  "authority": "local_change_authority_not_promotion_authority",
+  "encoding_contract": {
+    "parsed_json": "strict_utf8_json_then_rfc6902_subset_then_canonical_ascii_json_lf",
+    "raw_json": "strict_utf8_json_then_canonical_ascii_json_lf_then_exact_utf8_splice",
+    "json_pointer": "RFC6901",
+    "digest": "sha256_raw_bytes_lower_hex"
+  },
+  "baseline_artifacts": [
+    {
+      "role": "policy_schema",
+      "path": "capsched-models/policy/r11/semantic-policy-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 22194,
+      "sha256": "38a5d6a2b0b87966cb4ce41863cc9ef507474dd3e4d1fc78cba81f21c1c76d08"
+    },
+    {
+      "role": "policy",
+      "path": "capsched-models/policy/r11/semantic-policy-v1.json",
+      "media_type": "application/json",
+      "byte_length": 44824,
+      "sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d"
+    },
+    {
+      "role": "registry_schema",
+      "path": "capsched-models/policy/r11/semantic-rule-registry-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 4613,
+      "sha256": "454787855a13049a9c4b064c82b5e7a3e4df7d536ab98160411304d105b95ad3"
+    },
+    {
+      "role": "registry",
+      "path": "capsched-models/policy/r11/semantic-rule-registry-v1.json",
+      "media_type": "application/json",
+      "byte_length": 41806,
+      "sha256": "145cc701cdcc9ed76628e29ed21a115c4a5977d16a76fdfaa37bc58da729b948"
+    },
+    {
+      "role": "profile_schema",
+      "path": "capsched-models/policy/r11/scenario-profile-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 14053,
+      "sha256": "7c863ecb8731392d8c4b7a7af83871c2d9eaaf254581b90b8aae5d92f86365a4"
+    },
+    {
+      "role": "profile",
+      "path": "capsched-models/policy/r11/scenario-profile-v1.json",
+      "media_type": "application/json",
+      "byte_length": 48637,
+      "sha256": "3e3158e1d3aa00bf2a4d96eee6ee86dfadadcbdc4b4eeb937ecbcc0828bc59b0"
+    },
+    {
+      "role": "review_contract_schema",
+      "path": "capsched-models/policy/r11/g0-review-contract-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 9666,
+      "sha256": "be12d17c8e7dc01e91934bb59acc16781aef92c0bda1faa7e1e29bf6ac3a1a6d"
+    },
+    {
+      "role": "review_contract",
+      "path": "capsched-models/policy/r11/g0-review-contract-v1.json",
+      "media_type": "application/json",
+      "byte_length": 7709,
+      "sha256": "8a54586092962fd78219e74b63e6ed5bc720df14a40df10096941f8a12368b1d"
+    },
+    {
+      "role": "claims",
+      "path": "capsched-models/assurance/claims.json",
+      "media_type": "application/json",
+      "byte_length": 118191,
+      "sha256": "6f2ff8df988db00444c0d995bcb732c3f93df72790e46400ff8eb89d7e257a66"
+    },
+    {
+      "role": "mechanical_checker",
+      "path": "capsched-models/validation/validate-r11-g0-policy-profile.py",
+      "media_type": "text/x-python",
+      "byte_length": 39754,
+      "sha256": "e875d79118f134042142951a9d4c9595f3dc8d7ad5e01e698ff9acefaa01a7a1"
+    }
+  ],
+  "meta_fixtures": [
+    {
+      "id": "META-G0-CHECK-RECEIPT",
+      "document": {
+        "candidate_bundle_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "required_checks": [
+          "HM-G0-001",
+          "HM-G0-002",
+          "CAT-G0-001",
+          "CAT-G0-002",
+          "CAT-G0-003",
+          "CAT-G0-004",
+          "CAT-G0-005",
+          "CAT-G0-006",
+          "HM-G0-003",
+          "HM-G0-004",
+          "HM-G0-005"
+        ],
+        "executed_checks": [
+          "HM-G0-001",
+          "HM-G0-002",
+          "CAT-G0-001",
+          "CAT-G0-002",
+          "CAT-G0-003",
+          "CAT-G0-004",
+          "CAT-G0-005",
+          "CAT-G0-006",
+          "HM-G0-003",
+          "HM-G0-004",
+          "HM-G0-005"
+        ]
+      },
+      "canonical_sha256": "2c4c7e5e66a5aeb29a6870cc617ef7f4ebe3874156f633ebcd111118edd260e8"
+    },
+    {
+      "id": "META-G0-STALE-REVIEW",
+      "document": {
+        "candidate_bundle_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "review_receipt": {
+          "review_role": "REVIEW-G0-SECURITY-SEMANTIC",
+          "candidate_bundle_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "canonical_sha256": "8456ef758a0e04e40cee16e66a606399bd2f94474baf86cc619b9e9cd6a4b52f"
+    }
+  ],
+  "cases": [
+    {
+      "id": "MUT-G0-UNKNOWN-FIELD",
+      "template_id": "MUT-G0-UNKNOWN-FIELD",
+      "target_type": "artifact",
+      "target_id": "policy",
+      "baseline_sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d",
+      "preconditions": [
+        {
+          "kind": "pointer_absent",
+          "path": "/candidate_selected_truth"
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "add",
+            "path": "/candidate_selected_truth",
+            "value": true
+          }
+        ]
+      },
+      "mutant_sha256": "43587cbb0c053116d452682c3c0b8694ef4c8331a8e13d670348b167a16b446c",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-SCHEMA"
+      }
+    },
+    {
+      "id": "MUT-G0-DUPLICATE-KEY",
+      "template_id": "MUT-G0-DUPLICATE-KEY",
+      "target_type": "artifact",
+      "target_id": "policy",
+      "baseline_sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d",
+      "preconditions": [
+        {
+          "kind": "canonical_prefix_equals",
+          "value_utf8": "{"
+        }
+      ],
+      "transform": {
+        "kind": "canonical_raw_splice",
+        "operations": [
+          {
+            "op": "insert_after_prefix",
+            "prefix_utf8": "{",
+            "value_utf8": "\"schema_version\":1,"
+          }
+        ]
+      },
+      "mutant_sha256": "73607c8549337fdc3a7654f36698853a7190ae43e22fac8c5ebb442a8b7a279b",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-DUPLICATE-KEY"
+      }
+    },
+    {
+      "id": "MUT-G0-SELF-AUTHORIZE",
+      "template_id": "MUT-G0-SELF-AUTHORIZE",
+      "target_type": "artifact",
+      "target_id": "policy",
+      "baseline_sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/authorization/g0_complete",
+          "value": false
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "replace",
+            "path": "/authorization/g0_complete",
+            "value": true
+          }
+        ]
+      },
+      "mutant_sha256": "93383c46770aeece56eb40da0edf921d20c499bb7a20203ce6cb6ba6c425d6cf",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-SELF-AUTHORIZATION"
+      }
+    },
+    {
+      "id": "MUT-G0-DELETE-CATALOG-ITEM",
+      "template_id": "MUT-G0-DELETE-CATALOG-ITEM",
+      "target_type": "artifact",
+      "target_id": "policy",
+      "baseline_sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/trust_roles/13/id",
+          "value": "ROLE-SERVICE-DOMAIN"
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "remove",
+            "path": "/trust_roles/13"
+          }
+        ]
+      },
+      "mutant_sha256": "370226b3b8ca2016db4d5b94ff084b75535f541a06740bce15ef54ddbeba85fa",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-CATALOG-COVERAGE"
+      }
+    },
+    {
+      "id": "MUT-G0-REFERENCE-UNKNOWN",
+      "template_id": "MUT-G0-REFERENCE-UNKNOWN",
+      "target_type": "artifact",
+      "target_id": "policy",
+      "baseline_sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/provider_contracts/0/writer_role",
+          "value": "ROLE-DOMAIN-MONITOR"
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "replace",
+            "path": "/provider_contracts/0/writer_role",
+            "value": "ROLE-UNKNOWN"
+          }
+        ]
+      },
+      "mutant_sha256": "133ab3453b5cdcd46905192b8ccda897c43b45555fdce9be211344b8c7298889",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-REFERENCE"
+      }
+    },
+    {
+      "id": "MUT-G0-LINUX-AUTHORITY",
+      "template_id": "MUT-G0-LINUX-AUTHORITY",
+      "target_type": "artifact",
+      "target_id": "policy",
+      "baseline_sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d",
+      "preconditions": [
+        {
+          "kind": "array_not_contains",
+          "path": "/trust_roles/11/may_write_state_classes",
+          "value": "provider_immutable_receipt"
+        },
+        {
+          "kind": "array_not_contains",
+          "path": "/state_classes/4/allowed_writer_roles",
+          "value": "ROLE-LINUX"
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "add",
+            "path": "/trust_roles/11/may_write_state_classes/-",
+            "value": "provider_immutable_receipt"
+          },
+          {
+            "op": "add",
+            "path": "/state_classes/4/allowed_writer_roles/-",
+            "value": "ROLE-LINUX"
+          }
+        ]
+      },
+      "mutant_sha256": "1d2315fa6f0f16aaed7513be50c5c676e13328f3f6d6c5d6a3e24585bbbe34ac",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-TRUST"
+      }
+    },
+    {
+      "id": "MUT-G0-PROVIDER-GENESIS",
+      "template_id": "MUT-G0-PROVIDER-GENESIS",
+      "target_type": "artifact",
+      "target_id": "policy",
+      "baseline_sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/provider_contracts/0/receipt_initial",
+          "value": "Vacant"
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "replace",
+            "path": "/provider_contracts/0/receipt_initial",
+            "value": "Present"
+          }
+        ]
+      },
+      "mutant_sha256": "3fc31103a5131c73b69ef58e86629d7ce3e324c46bbe42004fff15d929a95c7a",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-PROVIDER"
+      }
+    },
+    {
+      "id": "MUT-G0-PROFILE-COLLAPSE",
+      "template_id": "MUT-G0-PROFILE-COLLAPSE",
+      "target_type": "artifact",
+      "target_id": "profile",
+      "baseline_sha256": "3e3158e1d3aa00bf2a4d96eee6ee86dfadadcbdc4b4eeb937ecbcc0828bc59b0",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/profiles/15/id",
+          "value": "PROFILE-W12-PARTITION-CONNECTED-ONLY"
+        },
+        {
+          "kind": "pointer_equals",
+          "path": "/profiles/15/dimensions/clusters",
+          "value": 2
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "replace",
+            "path": "/profiles/15/dimensions/clusters",
+            "value": 1
+          }
+        ]
+      },
+      "mutant_sha256": "f67ace109169f55a45c2e55d115e6c26fcf9592c290ff66f383c738aa476ce8a",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-PROFILE"
+      }
+    },
+    {
+      "id": "MUT-G0-PROFILE-SKIP",
+      "template_id": "MUT-G0-PROFILE-SKIP",
+      "target_type": "artifact",
+      "target_id": "profile",
+      "baseline_sha256": "3e3158e1d3aa00bf2a4d96eee6ee86dfadadcbdc4b4eeb937ecbcc0828bc59b0",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/profiles/8/id",
+          "value": "PROFILE-W8-REVOKE-OFFLINE"
+        },
+        {
+          "kind": "pointer_equals",
+          "path": "/profiles/8/cutpoints/0",
+          "value": "CUT-PRE-CONTEXT"
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "remove",
+            "path": "/profiles/8/cutpoints/0"
+          }
+        ]
+      },
+      "mutant_sha256": "2f9b74a0770a81c49bad11be919a7052865a602278e18a4c8046a57bf2e832a5",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "CAT-G0-PROFILE-COVERAGE"
+      }
+    },
+    {
+      "id": "MUT-G0-ORACLE-FORGERY",
+      "template_id": "MUT-G0-ORACLE-FORGERY",
+      "target_type": "artifact",
+      "target_id": "policy",
+      "baseline_sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/mutation_oracle/g0_policy_profile_templates/9/id",
+          "value": "MUT-G0-ORACLE-FORGERY"
+        },
+        {
+          "kind": "pointer_equals",
+          "path": "/mutation_oracle/g0_policy_profile_templates/9/expected_reject",
+          "value": "HM-G0-ORACLE-DIGEST"
+        }
+      ],
+      "transform": {
+        "kind": "rfc6902_subset",
+        "operations": [
+          {
+            "op": "replace",
+            "path": "/mutation_oracle/g0_policy_profile_templates/9/expected_reject",
+            "value": "HM-G0-CHECK-COVERAGE"
+          }
+        ]
+      },
+      "mutant_sha256": "170330c494b49c1f91a8a5d7494c4397f8fa98932c330e80f179fc2c92066060",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "HM-G0-ORACLE-DIGEST"
+      }
+    },
+    {
+      "id": "MUT-G0-CHECKER-SKIP",
+      "template_id": "MUT-G0-CHECKER-SKIP",
+      "target_type": "meta_fixture",
+      "target_id": "META-G0-CHECK-RECEIPT",
+      "baseline_sha256": "2c4c7e5e66a5aeb29a6870cc617ef7f4ebe3874156f633ebcd111118edd260e8",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/executed_checks/10",
+          "value": "HM-G0-005"
+        }
+      ],
+      "transform": {
+        "kind": "meta_rfc6902_subset",
+        "operations": [
+          {
+            "op": "remove",
+            "path": "/executed_checks/10"
+          }
+        ]
+      },
+      "mutant_sha256": "f23af7965403bd53c3e437e4fc286def10ec8491aab8e8a2547370c7a2829405",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "HM-G0-CHECK-COVERAGE"
+      }
+    },
+    {
+      "id": "MUT-G0-STALE-REVIEW",
+      "template_id": "MUT-G0-STALE-REVIEW",
+      "target_type": "meta_fixture",
+      "target_id": "META-G0-STALE-REVIEW",
+      "baseline_sha256": "8456ef758a0e04e40cee16e66a606399bd2f94474baf86cc619b9e9cd6a4b52f",
+      "preconditions": [
+        {
+          "kind": "pointer_equals",
+          "path": "/candidate_bundle_sha256",
+          "value": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ],
+      "transform": {
+        "kind": "meta_rfc6902_subset",
+        "operations": [
+          {
+            "op": "replace",
+            "path": "/candidate_bundle_sha256",
+            "value": "2222222222222222222222222222222222222222222222222222222222222222"
+          }
+        ]
+      },
+      "mutant_sha256": "36c3c4250b096668dd909339b28f16f5b54d24ea21aa4feb3ac1b79aa29521ac",
+      "expected": {
+        "exit_code": 1,
+        "status": "rejected",
+        "reject_id": "HM-G0-REVIEW-DIGEST"
+      }
+    }
+  ],
+  "future_ir_phase": {
+    "materialized": false,
+    "gate": "G2",
+    "reason": "Candidate IR does not exist at G0, so only externally owned mutation templates are fixed before their G2 instantiation."
+  },
+  "authorization": {
+    "catalog_self_accepts": false,
+    "exact_external_campaign_complete": false,
+    "g0_complete": false,
+    "r11_machine_source_construction": false,
+    "semantic_freeze": false,
+    "tla_translation": false,
+    "model_supported": false
+  },
+  "nonclaims": [
+    "This candidate catalog is controlled by the local change authority until an independent gate adopts its exact digest.",
+    "A local pass cannot authenticate review principals, the promotion runtime, or a gate decision.",
+    "Future candidate-IR semantic mutation templates remain unexecuted until G2."
+  ]
+}

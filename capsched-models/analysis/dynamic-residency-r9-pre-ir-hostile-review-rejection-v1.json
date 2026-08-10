@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "id": "dynamic-residency-r9-pre-ir-hostile-review-rejection-v1",
+  "date": "2026-08-09",
+  "work_record": "N-195",
+  "analysis": "0207-dynamic-residency-r9-pre-ir-hostile-review-rejection.md",
+  "requirement": "RESIDENCY-DYN-001",
+  "reviewed_human_raw_sha256": "4f30f2b85b67c3209661461f6cc82bff44575e1e00ca8b3ec0833f4f41837b5b",
+  "review_roles": [
+    "authority_activation",
+    "distributed_failure_transfer",
+    "formal_IR_readiness",
+    "system_goal_composition"
+  ],
+  "role_raw_finding_counts": {
+    "authority_activation": 16,
+    "distributed_failure_transfer": 12,
+    "formal_IR_readiness": 15,
+    "system_goal_composition": 11
+  },
+  "raw_finding_count": 54,
+  "role_verdicts": {
+    "authority_activation": {
+      "IR_ENCODING_READY": "NO",
+      "FREEZE": "NO"
+    },
+    "distributed_failure_transfer": {
+      "IR_ENCODING_READY": "NO",
+      "FREEZE": "NO"
+    },
+    "formal_IR_readiness": {
+      "IR_ENCODING_READY": "NO",
+      "FREEZE": "NO"
+    },
+    "system_goal_composition": {
+      "IR_ENCODING_READY": "NO",
+      "FREEZE": "NO"
+    }
+  },
+  "verdict": "FREEZE_NO",
+  "finding_groups": {
+    "closed_formal_boundary": [
+      "R9-IMPORT-01",
+      "R9-SCHEMA-OWNER-01",
+      "R9-RECOVERY-01",
+      "R9-RANK-FORMULA-01",
+      "R9-PROOF-CYCLE-01",
+      "R9-MUTATION-01"
+    ],
+    "authority_identity_ready": [
+      "R9-ISSUANCE-01",
+      "R9-RUNUSE-ALLOC-01",
+      "R9-SPAWN-LEAF-01",
+      "R9-EXEC-EXIT-01",
+      "R9-READY-01",
+      "R9-ROOT-READY-REFINE-01"
+    ],
+    "portal_entry_execution": [
+      "R9-PORTAL-01",
+      "R9-ENTRY-TIMER-01",
+      "R9-ENTRY-PROJECTION-01",
+      "R9-EXEC-PREDICATE-01",
+      "R9-QUANTUM-01",
+      "R9-ATTEMPT-TERMINAL-01",
+      "R9-OCCURRENCE-HANDSHAKE-01"
+    ],
+    "release_budget_settlement": [
+      "R9-RELEASE-OUTCOME-01",
+      "R9-BUDGET-EQUATION-01",
+      "R9-INTERVAL-SETTLEMENT-01",
+      "R9-BUDGET-SETTLEMENT-01",
+      "R9-TERMINAL-CLOSE-01"
+    ],
+    "publication_failure_transfer": [
+      "R9-ENROLL-CLOSE-01",
+      "R9-MERGE-OUTCOME-01",
+      "R9-COVER-RANK-01",
+      "R9-SOURCE-FENCE-01",
+      "R9-NOREISSUE-ENTRY-01",
+      "R9-SUCCESSOR-AUTH-01",
+      "R9-FENCED-REJECTION-01",
+      "R9-CLOSE-RESUME-01",
+      "R9-OFFLINE-ACTOR-01",
+      "R9-MIGRATION-01",
+      "R9-REFERENCE-REGISTRY-01"
+    ],
+    "systems_composition_cost": [
+      "R9-ASYNC-CARRIER-01",
+      "R9-COALESCING-01",
+      "R9-RESIDENCY-AGGREGATE-01",
+      "R9-CONSISTENCY-DOMAIN-01",
+      "R9-MGMT-BOOTSTRAP-01"
+    ]
+  },
+  "canonical_local_blocker_count": 40,
+  "canonical_findings": {
+    "R9-IMPORT-01": "closed formula-level import manifest",
+    "R9-SCHEMA-OWNER-01": "exact schema, identity, allocator, variable, field, and owner equal sets",
+    "R9-RECOVERY-01": "durable decision and deterministic recovery for every crashable transaction",
+    "R9-RANK-FORMULA-01": "numeric rank deltas and exact temporal relies",
+    "R9-PROOF-CYCLE-01": "acyclic proof decomposition or explicit simultaneous invariant",
+    "R9-MUTATION-01": "stable obligation-to-mutation-to-rejection mapping",
+    "R9-ISSUANCE-01": "parent-conserved attenuating issuance and delegation",
+    "R9-RUNUSE-ALLOC-01": "conserved one-use run allocation",
+    "R9-SPAWN-LEAF-01": "spawn-authorized leaf protection-domain creation",
+    "R9-EXEC-EXIT-01": "ordered exec and exit authority transition",
+    "R9-READY-01": "generation-bound ready, claim, entry, and cancellation lifecycle",
+    "R9-ROOT-READY-REFINE-01": "root-slot-to-ready-claim refinement",
+    "R9-PORTAL-01": "authoritative protected scheduler portal state",
+    "R9-ENTRY-TIMER-01": "provider-owned atomic physical entry, CPU owner, and timer enable",
+    "R9-ENTRY-PROJECTION-01": "EntryOutcome as sole execution-consumption truth",
+    "R9-EXEC-PREDICATE-01": "closed current-executability predicate",
+    "R9-QUANTUM-01": "repeatable nonwrapping quantum lifecycle",
+    "R9-ATTEMPT-TERMINAL-01": "terminal-before-clear attempt ordering",
+    "R9-OCCURRENCE-HANDSHAKE-01": "typed provider-grant and Monitor-consume handshake",
+    "R9-RELEASE-OUTCOME-01": "crash-safe recurring ordinal release root",
+    "R9-BUDGET-EQUATION-01": "typed root, context, execution, service, and overhead conservation equation",
+    "R9-INTERVAL-SETTLEMENT-01": "one-use physical interval charge and service transaction",
+    "R9-BUDGET-SETTLEMENT-01": "single settlement root with idempotent ledger application",
+    "R9-TERMINAL-CLOSE-01": "acyclic runtime, terminal, reverse-slot, and prefix ordering",
+    "R9-ENROLL-CLOSE-01": "atomic enrollment and closure-prefix ordering domain",
+    "R9-MERGE-OUTCOME-01": "single-domain failure merge root",
+    "R9-COVER-RANK-01": "precharged cover cells and finite discovery/merge credits",
+    "R9-SOURCE-FENCE-01": "issuance fence linearized with stream cursor",
+    "R9-NOREISSUE-ENTRY-01": "quorum no-reissue receipt required by entry",
+    "R9-SUCCESSOR-AUTH-01": "successor authority derived after finalized fenced transfer",
+    "R9-FENCED-REJECTION-01": "post-fence continuity-loss outcome retains fence payload",
+    "R9-CLOSE-RESUME-01": "scope close revokes active aggregate/use generation",
+    "R9-OFFLINE-ACTOR-01": "provider physical fail-stop separated from protected settlement",
+    "R9-MIGRATION-01": "entered migration creates a new opportunity",
+    "R9-REFERENCE-REGISTRY-01": "closed GC reference class and tombstone registry",
+    "R9-ASYNC-CARRIER-01": "typed caller-service authority intersection carrier",
+    "R9-COALESCING-01": "no authority-level coalescing",
+    "R9-RESIDENCY-AGGREGATE-01": "off-hot-path dependency aggregate and constant-size dispatch snapshot",
+    "R9-CONSISTENCY-DOMAIN-01": "atomic actions confined to one named consistency domain",
+    "R9-MGMT-BOOTSTRAP-01": "crash-safe management bootstrap before tenant admission"
+  },
+  "fixed_R9_choices": {
+    "authority_issuance": "parent_conserved_attenuating_allocation",
+    "dispatch_validation": "constant_size_snapshot_of_generation_fenced_residency_aggregate",
+    "physical_entry_owner": "trusted_physical_entry_provider",
+    "physical_entry_atomic_fields": [
+      "EntryOutcome",
+      "CpuOwner",
+      "timer_enabled"
+    ],
+    "execution_consumption_truth": "derived_from_immutable_EntryOutcome",
+    "runtime_quantum": "nonwrapping_generation_cycle",
+    "crash_recovery": "durable_CommitIntent_or_AbortIntent_then_unique_completion",
+    "failure_merge": "one_local_MergeOutcomeCell",
+    "transfer_order": "source_fence_then_finalized_outcome_then_successor_authority",
+    "post_fence_failure": "FinalizedContinuityLost_with_fence_payload",
+    "entered_migration": "terminal_old_opportunity_then_new_opportunity",
+    "authority_coalescing": "forbidden",
+    "protected_occurrence": "provider_grant_then_exact_typed_monitor_consume"
+  },
+  "deferred_system_obligations": [
+    "physical_memory_code_stack_and_mutable_state_isolation",
+    "IOMMU_DMA_queue_IRQ_and_device_reset_isolation",
+    "physical_watchdog_stop_and_failstop_refinement",
+    "quorum_crypto_clock_and_Byzantine_strengthening",
+    "typed_endpoint_effect_semantics",
+    "concrete_Linux_scheduler_process_and_async_refinement",
+    "measured_TCB_cost_scale_and_multicluster_deployment"
+  ],
+  "claims": {
+    "R8_IR_encoding_ready": false,
+    "R8_architecture_frozen": false,
+    "R9_architecture_written": false,
+    "tla_authorized": false,
+    "model_supported": false,
+    "protection_evidenced": false,
+    "cost_efficiency_evidenced": false,
+    "multi_cluster_correctness_evidenced": false,
+    "Linux_compatibility_evidenced": false,
+    "deployment_ready": false
+  }
+}

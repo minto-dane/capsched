@@ -1,0 +1,326 @@
+{
+  "schema_version": 2,
+  "artifact_id": "domainlease-r11-g0-semantic-kernel-contract-v2",
+  "language_id": "DL-SemKernel-2",
+  "status": "local_draft_external_adoption_required",
+  "owner_role": "ROLE-EXTERNAL-SEMANTIC-AUTHORITY",
+  "predecessor": {
+    "manifest_sha256": "bcdd6c26c5a651f7630df5d218cbd6fb2f20922e2e03cdf109b68b69a7250037",
+    "disposition": "rejected_before_external_review",
+    "analysis": "0214",
+    "validation": "0303"
+  },
+  "normative_boundary": {
+    "canonical_semantics": "the pinned reference interpreter plus this contract and its complete conformance corpus",
+    "schema_role": "shape prefilter only",
+    "candidate_extension_policy": "closed operator and sort-kind sets; a new operator or kind requires a new externally adopted language epoch",
+    "backend_policy": "each backend consumes expanded typed AST and must pass differential conformance before any proof receipt is accepted",
+    "prose_policy": "descriptions and notes are non-normative; formulas and structured obligation fields carry normative meaning",
+    "authority_policy": "local authors may draft but cannot set external adoption or G0"
+  },
+  "canonical_encoding": {
+    "input": "UTF-8 JSON decoded with duplicate-key rejection",
+    "semantic_scalars": ["boolean", "integer", "typed finite atom"],
+    "forbidden_scalars": ["null", "floating_point", "untyped_semantic_string"],
+    "canonical_output": "ASCII JSON with lexicographically sorted object keys, no insignificant whitespace, and one trailing LF",
+    "ast_encoding": "nonempty JSON arrays whose first item is a closed operator id",
+    "identity_encoding": "an atom is legal only through typed_lit with a declared finite sort",
+    "digest_encoding": "SHA-256 lowercase hexadecimal over exact raw bytes; digest is metadata and never a formula operator"
+  },
+  "limits": {
+    "max_input_bytes": 16777216,
+    "max_ast_nodes": 8192,
+    "max_ast_depth": 64,
+    "max_function_call_depth": 64,
+    "max_quantifier_product": 1048576,
+    "max_sort_cardinality": 65536,
+    "max_state_locations": 1048576,
+    "max_operator_arity": 256,
+    "limit_authority": "validator-owned and externally pinned; candidate cannot increase a limit"
+  },
+  "contexts": [
+    {
+      "id": "STATIC",
+      "ast_allowed": true,
+      "pre_state": false,
+      "post_state": false,
+      "action_parameters": false,
+      "bounded_quantifiers": true,
+      "result_constraint": "declared result sort"
+    },
+    {
+      "id": "STATE",
+      "ast_allowed": true,
+      "pre_state": true,
+      "post_state": false,
+      "action_parameters": false,
+      "bounded_quantifiers": true,
+      "result_constraint": "declared result sort"
+    },
+    {
+      "id": "GUARD",
+      "ast_allowed": true,
+      "pre_state": true,
+      "post_state": false,
+      "action_parameters": true,
+      "bounded_quantifiers": true,
+      "result_constraint": "Bool"
+    },
+    {
+      "id": "TRANSITION",
+      "ast_allowed": true,
+      "pre_state": true,
+      "post_state": true,
+      "action_parameters": true,
+      "bounded_quantifiers": true,
+      "result_constraint": "Bool"
+    },
+    {
+      "id": "INVARIANT",
+      "ast_allowed": true,
+      "pre_state": true,
+      "post_state": false,
+      "action_parameters": false,
+      "bounded_quantifiers": true,
+      "result_constraint": "Bool"
+    },
+    {
+      "id": "RANK",
+      "ast_allowed": true,
+      "pre_state": true,
+      "post_state": false,
+      "action_parameters": false,
+      "bounded_quantifiers": true,
+      "result_constraint": "bounded Nat or lexicographic tuple of bounded Nat"
+    },
+    {
+      "id": "OBSERVATION",
+      "ast_allowed": true,
+      "pre_state": true,
+      "post_state": false,
+      "action_parameters": false,
+      "bounded_quantifiers": true,
+      "result_constraint": "declared finite observation sort",
+      "notes": "state products are restricted by an external observation projection"
+    },
+    {
+      "id": "TEMPORAL",
+      "ast_allowed": false,
+      "pre_state": false,
+      "post_state": false,
+      "action_parameters": false,
+      "bounded_quantifiers": false,
+      "result_constraint": "structured obligation record only",
+      "notes": "general free-form temporal AST is forbidden"
+    }
+  ],
+  "sort_kinds": [
+    {
+      "id": "BOOL",
+      "finite": true,
+      "semantic_rule": "exact values false and true",
+      "required_fields": [],
+      "forbidden_fields": ["unit", "maximum", "values"]
+    },
+    {
+      "id": "BOUNDED_NAT",
+      "finite": true,
+      "semantic_rule": "integers from zero through a validator-pinned maximum with one declared unit",
+      "required_fields": ["unit", "maximum"],
+      "forbidden_fields": ["values"]
+    },
+    {
+      "id": "FINITE_ENUM",
+      "finite": true,
+      "semantic_rule": "closed nonempty set of distinct typed atoms",
+      "required_fields": ["values"],
+      "forbidden_fields": ["unit", "maximum"]
+    },
+    {
+      "id": "FINITE_IDENTITY",
+      "finite": true,
+      "semantic_rule": "closed nonempty atom set with mandatory namespace and generation component policy",
+      "required_fields": ["values", "namespace_kind", "generation_sort"],
+      "forbidden_fields": ["unit", "maximum"]
+    },
+    {
+      "id": "OPTION",
+      "finite": true,
+      "semantic_rule": "disjoint None or Some(element); elimination is total only through option_match",
+      "required_fields": ["element_sort"],
+      "forbidden_fields": ["unit", "maximum", "values"]
+    },
+    {
+      "id": "RECORD",
+      "finite": true,
+      "semantic_rule": "named product with a closed nonempty ordered field signature",
+      "required_fields": ["fields"],
+      "forbidden_fields": ["unit", "maximum", "values"]
+    },
+    {
+      "id": "VARIANT",
+      "finite": true,
+      "semantic_rule": "disjoint tagged sum with closed tags; field access occurs only in variant_match branch scope",
+      "required_fields": ["variants"],
+      "forbidden_fields": ["unit", "maximum", "values"]
+    },
+    {
+      "id": "TUPLE",
+      "finite": true,
+      "semantic_rule": "fixed ordered product of declared member sorts",
+      "required_fields": ["member_sorts"],
+      "forbidden_fields": ["unit", "maximum", "values"]
+    },
+    {
+      "id": "FINITE_SET",
+      "finite": true,
+      "semantic_rule": "canonical duplicate-free subset of a declared finite element sort",
+      "required_fields": ["element_sort"],
+      "forbidden_fields": ["unit", "maximum", "values"]
+    },
+    {
+      "id": "RESOURCE_VECTOR",
+      "finite": true,
+      "semantic_rule": "closed record of named bounded-Nat components preserving each component unit",
+      "required_fields": ["components"],
+      "forbidden_fields": ["unit", "maximum", "values"]
+    }
+  ],
+  "operators": [
+    {"id":"bool_lit","arity":{"minimum":1,"maximum":1},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"BOOLEAN-SCALAR","result_rule":"BOOL","evaluation_rule":"BOOLEAN-LITERAL","total":true},
+    {"id":"typed_lit","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"DECLARED-SORT-AND-MEMBER","result_rule":"NAMED-SORT","evaluation_rule":"TYPED-LITERAL","total":true},
+    {"id":"param","arity":{"minimum":1,"maximum":1},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"BOUND-PARAMETER-ID","result_rule":"PARAMETER-SORT","evaluation_rule":"ENVIRONMENT-LOOKUP","total":true},
+    {"id":"const","arity":{"minimum":1,"maximum":1},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"DECLARED-CONSTANT-ID","result_rule":"CONSTANT-SORT","evaluation_rule":"CONSTANT-LOOKUP","total":true},
+    {"id":"pre","arity":{"minimum":1,"maximum":257},"allowed_contexts":["STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"STATE-PRODUCT-AND-TYPED-KEYS","result_rule":"STATE-PRODUCT-VALUE-SORT","evaluation_rule":"PRE-STATE-LOOKUP","total":true},
+    {"id":"post","arity":{"minimum":1,"maximum":257},"allowed_contexts":["TRANSITION"],"operand_rule":"STATE-PRODUCT-AND-TYPED-KEYS","result_rule":"STATE-PRODUCT-VALUE-SORT","evaluation_rule":"POST-STATE-LOOKUP","total":true},
+    {"id":"call","arity":{"minimum":1,"maximum":257},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"PURE-FUNCTION-AND-TYPED-ARGUMENTS","result_rule":"FUNCTION-RESULT-SORT","evaluation_rule":"ACYCLIC-CALL-BY-VALUE","total":true},
+    {"id":"record","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"RECORD-SORT-AND-EXACT-FIELD-AST-MAP","result_rule":"NAMED-RECORD-SORT","evaluation_rule":"RECORD-CONSTRUCTION","total":true},
+    {"id":"field","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"RECORD-EXPRESSION-AND-DECLARED-FIELD","result_rule":"FIELD-SORT","evaluation_rule":"RECORD-PROJECTION","total":true},
+    {"id":"variant","arity":{"minimum":3,"maximum":3},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"VARIANT-SORT-TAG-AND-EXACT-FIELD-AST-MAP","result_rule":"NAMED-VARIANT-SORT","evaluation_rule":"VARIANT-CONSTRUCTION","total":true},
+    {"id":"variant_match","arity":{"minimum":3,"maximum":3},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"VARIANT-EXPRESSION-EXACT-BRANCH-MAP-AND-CLOSED-RESULT-SORT","result_rule":"COMMON-BRANCH-SORT","evaluation_rule":"TOTAL-TAGGED-BRANCH","total":true},
+    {"id":"option_none","arity":{"minimum":1,"maximum":1},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"OPTION-SORT","result_rule":"NAMED-OPTION-SORT","evaluation_rule":"OPTION-NONE","total":true},
+    {"id":"option_some","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"OPTION-SORT-AND-ELEMENT","result_rule":"NAMED-OPTION-SORT","evaluation_rule":"OPTION-SOME","total":true},
+    {"id":"option_match","arity":{"minimum":4,"maximum":4},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"OPTION-EXPRESSION-NONE-BRANCH-BINDER-SOME-BRANCH","result_rule":"COMMON-BRANCH-SORT","evaluation_rule":"TOTAL-OPTION-BRANCH","total":true},
+    {"id":"tuple","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"TUPLE-SORT-AND-EXACT-MEMBER-AST-LIST","result_rule":"NAMED-TUPLE-SORT","evaluation_rule":"TUPLE-CONSTRUCTION","total":true},
+    {"id":"set","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"FINITE-SET-SORT-AND-UNIQUE-ELEMENT-AST-LIST","result_rule":"NAMED-SET-SORT","evaluation_rule":"CANONICAL-FINITE-SET","total":true},
+    {"id":"and","arity":{"minimum":2,"maximum":256},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"ALL-BOOL","result_rule":"BOOL","evaluation_rule":"BOOLEAN-CONJUNCTION","total":true},
+    {"id":"or","arity":{"minimum":2,"maximum":256},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"ALL-BOOL","result_rule":"BOOL","evaluation_rule":"BOOLEAN-DISJUNCTION","total":true},
+    {"id":"not","arity":{"minimum":1,"maximum":1},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"BOOL","result_rule":"BOOL","evaluation_rule":"BOOLEAN-NEGATION","total":true},
+    {"id":"implies","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-BOOL","result_rule":"BOOL","evaluation_rule":"BOOLEAN-IMPLICATION","total":true},
+    {"id":"iff","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-BOOL","result_rule":"BOOL","evaluation_rule":"BOOLEAN-EQUIVALENCE","total":true},
+    {"id":"eq","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-SAME-SORT","result_rule":"BOOL","evaluation_rule":"STRUCTURAL-EQUALITY","total":true},
+    {"id":"ne","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-SAME-SORT","result_rule":"BOOL","evaluation_rule":"STRUCTURAL-INEQUALITY","total":true},
+    {"id":"lt","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-SAME-UNIT-BOUNDED-NAT","result_rule":"BOOL","evaluation_rule":"NATURAL-LESS-THAN","total":true},
+    {"id":"le","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-SAME-UNIT-BOUNDED-NAT","result_rule":"BOOL","evaluation_rule":"NATURAL-LESS-EQUAL","total":true},
+    {"id":"gt","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-SAME-UNIT-BOUNDED-NAT","result_rule":"BOOL","evaluation_rule":"NATURAL-GREATER-THAN","total":true},
+    {"id":"ge","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-SAME-UNIT-BOUNDED-NAT","result_rule":"BOOL","evaluation_rule":"NATURAL-GREATER-EQUAL","total":true},
+    {"id":"nat_add_eq","arity":{"minimum":3,"maximum":3},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"THREE-SAME-UNIT-BOUNDED-NAT","result_rule":"BOOL","evaluation_rule":"EXACT-NONOVERFLOWING-SUM-RELATION","total":true},
+    {"id":"nat_sub_eq","arity":{"minimum":3,"maximum":3},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"THREE-SAME-UNIT-BOUNDED-NAT","result_rule":"BOOL","evaluation_rule":"EXACT-NONUNDERFLOWING-DIFFERENCE-RELATION","total":true},
+    {"id":"nat_sum_eq","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"FINITE-LIST-OF-SAME-UNIT-NAT-AND-RESULT","result_rule":"BOOL","evaluation_rule":"EXACT-NONOVERFLOWING-FINITE-SUM-RELATION","total":true},
+    {"id":"if","arity":{"minimum":3,"maximum":3},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","RANK","OBSERVATION"],"operand_rule":"BOOL-AND-TWO-SAME-SORT-BRANCHES","result_rule":"BRANCH-SORT","evaluation_rule":"TOTAL-CONDITIONAL","total":true},
+    {"id":"in","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"ELEMENT-AND-MATCHING-FINITE-SET","result_rule":"BOOL","evaluation_rule":"FINITE-SET-MEMBERSHIP","total":true},
+    {"id":"subset","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-SAME-FINITE-SET-SORT","result_rule":"BOOL","evaluation_rule":"FINITE-SUBSET","total":true},
+    {"id":"disjoint","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT"],"operand_rule":"TWO-SAME-FINITE-SET-SORT","result_rule":"BOOL","evaluation_rule":"FINITE-SET-DISJOINTNESS","total":true},
+    {"id":"set_union","arity":{"minimum":2,"maximum":256},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","OBSERVATION"],"operand_rule":"ALL-SAME-FINITE-SET-SORT","result_rule":"SAME-FINITE-SET-SORT","evaluation_rule":"CANONICAL-FINITE-UNION","total":true},
+    {"id":"set_difference","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","OBSERVATION"],"operand_rule":"TWO-SAME-FINITE-SET-SORT","result_rule":"SAME-FINITE-SET-SORT","evaluation_rule":"CANONICAL-FINITE-DIFFERENCE","total":true},
+    {"id":"forall","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","OBSERVATION"],"operand_rule":"NONEMPTY-FRESH-TYPED-BINDER-LIST-AND-BOOL-BODY","result_rule":"BOOL","evaluation_rule":"FINITE-UNIVERSAL-PRODUCT","total":true},
+    {"id":"exists","arity":{"minimum":2,"maximum":2},"allowed_contexts":["STATIC","STATE","GUARD","TRANSITION","INVARIANT","OBSERVATION"],"operand_rule":"NONEMPTY-FRESH-TYPED-BINDER-LIST-AND-BOOL-BODY","result_rule":"BOOL","evaluation_rule":"FINITE-EXISTENTIAL-PRODUCT","total":true}
+  ],
+  "structured_obligations": [
+    {
+      "id": "INIT-CONFORMANCE",
+      "required_fields": ["policy_formula", "candidate_init_formula"],
+      "semantic_checks": ["candidate Init implies external genesis policy", "candidate Init implies every simultaneous invariant", "no runtime success receipt or executable subject exists in genesis"]
+    },
+    {
+      "id": "INVARIANT",
+      "required_fields": ["formula_ast", "scope", "required_actions", "claim_ids", "mutation_ids"],
+      "semantic_checks": ["formula type is Bool in INVARIANT context", "all invariants are conjoined", "each concrete action has an inductive preservation obligation"]
+    },
+    {
+      "id": "PROVIDER-CONTRACT",
+      "required_fields": ["trigger_ast", "precondition_ast", "owned_products", "writer_actions", "success_transition_ast", "success_receipt", "fault_partition", "failure_transition_ast", "frame", "bound", "fair_actions", "consumer_obligations"],
+      "semantic_checks": ["fault guards are disjoint and total over enabled trigger states", "success and failure transitions are typed", "exact writer and frame equality", "bound unit is declared", "only named trusted actions may be fair"]
+    },
+    {
+      "id": "PROGRESS",
+      "required_fields": ["trigger_ast", "success_ast", "terminal_failures", "rank_ast", "rank_order", "fair_actions", "adversarial_actions", "bound", "witness_ids", "mutation_ids"],
+      "semantic_checks": ["trigger is reachable", "success excludes withdrawal rejection and fail-stop unless explicitly claimed", "rank is well founded or bound is finite", "adversarial actions receive no fairness"]
+    },
+    {
+      "id": "NONINTERFERENCE",
+      "required_fields": ["high_projection", "low_observation_ast", "declassification_actions", "paired_initial_relation_ast", "paired_step_relation_ast", "scheduler_leakage_policy", "claim_ids", "mutation_ids"],
+      "semantic_checks": ["observation AST uses only externally permitted products", "declassification is explicit", "paired execution assumptions are named", "timing leakage is not silently excluded"]
+    },
+    {
+      "id": "REFINEMENT",
+      "required_fields": ["abstract_model_digest", "concrete_model_digest", "state_mapping_ast", "action_mapping", "stutter_actions", "init_obligation", "step_obligations", "claim_projection"],
+      "semantic_checks": ["all concrete actions map exactly once", "state mapping is typed", "stutter cannot hide protected writes", "proof receipts bind both exact model digests"]
+    },
+    {
+      "id": "REACHABILITY",
+      "required_fields": ["antecedent_ast", "initial_profile", "trace_actions", "expected_terminal", "state_hashes", "obligation_ids"],
+      "semantic_checks": ["trace starts in generated Init", "every action is enabled", "all invariants hold at every state", "antecedent becomes true", "terminal outcome is typed"]
+    }
+  ],
+  "template_system": {
+    "template_owner": "ROLE-EXTERNAL-SEMANTIC-AUTHORITY",
+    "template_fields": ["id", "digest", "scope", "typed_holes", "formula_ast", "generated_obligation_constructor", "required_reachability", "semantic_mutations", "claim_ids", "nonclaim_ids"],
+    "hole_kinds": ["SORT", "UNIT", "CONSTANT", "PURE_FUNCTION", "STATE_PRODUCT", "ACTION", "OWNER_ROLE", "CONSISTENCY_DOMAIN_KEY", "RECEIPT_PRODUCT"],
+    "binding_rules": ["every hole is bound exactly once", "binding target exists", "sort and formula context match", "distinct holes remain distinct when required", "function and binding graphs are acyclic", "candidate cannot supply or replace formula_ast", "unused candidate bindings reject", "all external templates required by policy are instantiated"],
+    "substitution": "capture-avoiding typed substitution followed by complete re-typecheck and canonical AST hashing",
+    "backend_source_in_formula": false
+  },
+  "state_product_system": {
+    "required_fields": ["id", "key_sorts", "value_sort", "owner_role", "consistency_domain_key_function", "genesis", "writer_actions", "linearization", "visibility", "mutation_discipline", "failure_successor", "reconciliation_actions"],
+    "write_semantics": "an action transition formula relates pre and post values only for its exact declared write products",
+    "frame_semantics": "the materializer derives equality of pre and post for every nonwritten concrete location",
+    "writer_semantics": "every authoritative product has one owner role and a nonempty exact writer action set; each writer action executes in the same consistency domain",
+    "cross_domain_rule": "one transition cannot authoritatively write products in two distinct consistency domains",
+    "receipt_rule": "runtime success receipts begin Vacant and are emitted only by their exact provider action",
+    "derived_state_rule": "derived indexes are observations and cannot authorize execution or satisfy provider truth"
+  },
+  "conformance": {
+    "required_artifacts": ["kernel contract", "strict schema", "reference typechecker/interpreter", "positive corpus", "negative corpus", "metamorphic corpus", "backend differential corpus", "implementation mutation catalog"],
+    "positive_classes": ["every sort kind", "every operator", "every allowed context", "pre and post distinction", "same-unit arithmetic relations", "total option and variant elimination", "bounded quantification", "state-product lookup", "acyclic pure function call"],
+    "negative_classes": ["duplicate JSON key", "null float or untyped semantic string", "unknown sort operator state product or function", "wrong arity", "context escape", "free or shadowed binding", "unit mismatch", "out-of-range literal", "partial option or variant elimination", "function cycle", "state-product key mismatch", "AST depth node and quantifier-product overflow", "candidate operator extension", "post-state outside transition"],
+    "metamorphic_classes": ["alpha-renaming invariance", "object-key-order invariance", "quantifier enumeration-order invariance", "set-order and duplicate rejection", "canonical output determinism", "pre-post swap sensitivity", "unit-renaming sensitivity only through declaration-preserving bijection"],
+    "backend_rule": "for every finite corpus case the reference interpreter and backend agree on type result value reject id read set write set and obligation identity",
+    "local_pass_authority": "development regression only",
+    "external_gate_required": true
+  },
+  "reject_taxonomy": [
+    {"id":"SK-JSON","meaning":"invalid UTF-8 or JSON"},
+    {"id":"SK-DUPLICATE-KEY","meaning":"duplicate JSON object key"},
+    {"id":"SK-SCALAR","meaning":"null float or forbidden untyped semantic scalar"},
+    {"id":"SK-SCHEMA","meaning":"shape fails the strict schema"},
+    {"id":"SK-LIMIT","meaning":"validator-owned input AST state or enumeration limit exceeded"},
+    {"id":"SK-SORT","meaning":"unknown malformed recursive or nonfinite sort"},
+    {"id":"SK-UNIT","meaning":"numeric unit mismatch or undeclared unit"},
+    {"id":"SK-CONTEXT","meaning":"operator state view or function effect used in a forbidden context"},
+    {"id":"SK-OP","meaning":"unknown or candidate-extended operator"},
+    {"id":"SK-ARITY","meaning":"operator parameter key or field arity mismatch"},
+    {"id":"SK-TYPE","meaning":"operand result branch field or return type mismatch"},
+    {"id":"SK-FREE","meaning":"free duplicate shadowed or unbound parameter or hole"},
+    {"id":"SK-CYCLE","meaning":"function sort binding template or obligation dependency cycle"},
+    {"id":"SK-PARTIAL","meaning":"partial option variant map or arithmetic operation lacks total semantics"},
+    {"id":"SK-STATE","meaning":"unknown state product key location owner writer frame or consistency-domain mismatch"},
+    {"id":"SK-BIND","meaning":"candidate template binding missing extra redefines formula or violates hole constraints"},
+    {"id":"SK-TEMPLATE","meaning":"external template missing malformed or incompatible with the pinned kernel"},
+    {"id":"SK-EVAL","meaning":"reference evaluation differs from declared total semantics"},
+    {"id":"SK-CONFORMANCE","meaning":"required corpus case missing skipped stale nondeterministic or unexpectedly accepted"},
+    {"id":"SK-BACKEND","meaning":"backend differs from reference type value frame read write or obligation result"},
+    {"id":"SK-AUTHORITY","meaning":"artifact adoption review or gate authority is absent stale invalid or self-asserted"}
+  ],
+  "authorization": {
+    "local_contract_draft": true,
+    "external_adoption": false,
+    "g0_complete": false,
+    "candidate_machine_ir": false,
+    "semantic_freeze": false,
+    "tla_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

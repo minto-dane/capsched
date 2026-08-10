@@ -1,0 +1,1098 @@
+{
+  "schema_version": 1,
+  "id": "dynamic-residency-r6-successor-semantic-overlay-v1",
+  "date": "2026-08-09",
+  "work_record": "N-188",
+  "analysis": "0200-dynamic-residency-r6-successor-semantic-architecture.md",
+  "requirement": "RESIDENCY-DYN-001",
+  "base": {
+    "path": "dynamic-admission-recurring-residency-architecture-contract-v1.json",
+    "raw_sha256": "015838a03f7967522d4998bf05b93fa70153bc14c3800a0fd300804574e5901f",
+    "rejected_candidate_object_set_sha256": "24bb1320d3f50a10195d18e899d7101d7f422ca6ed18c5bedfb088ff4bdc174f",
+    "disposition": "immutable_rejected_regression_target"
+  },
+  "effective_contract": {
+    "path": "dynamic-admission-recurring-residency-architecture-contract-v2.json",
+    "id": "dynamic-admission-recurring-residency-architecture-contract-v2",
+    "status": "r6_successor_machine_candidate_pending_witness_validator_and_fresh_review"
+  },
+  "composition": {
+    "algorithm": "strict_recursive_object_merge_then_exact_list_item_removal_then_unique_append",
+    "object_merge": "objects_merge_recursively_arrays_and_scalars_replace_exactly",
+    "remove_paths_must_exist": true,
+    "remove_list_items_must_exist_exactly_once": true,
+    "append_items_must_not_already_exist": true,
+    "base_hash_mismatch": "reject_without_output",
+    "unknown_overlay_top_level_key": "reject_without_output",
+    "semantic_deletion_without_remove_path_or_remove_list_item": false,
+    "output_serialization": "UTF_8_ASCII_subset_JSON_indent_2_preserve_insertion_order_single_trailing_newline"
+  },
+  "remove_paths": [
+    "/v1_work_frame",
+    "/control_operation/DelegationScope_fields",
+    "/control_operation/CalendarTransferV1_inputs",
+    "/control_operation/CalendarTransferV1_result",
+    "/control_operation/destination_calendar_is_derived_only_from_boundary_final_source_receipt_and_immutable_destination_calendar",
+    "/control_operation/cross_node_or_cross_epoch_transfer_requires_valid_interval_ClockRelationCertificate",
+    "/control_operation/same_clock_transfer_fast_path_requires_exact_same_LeaseClockEpoch_and_trusted_time_domain",
+    "/control_operation/missing_or_expired_clock_relation_with_continuity_claim_result",
+    "/control_operation/source_receipt_calendar_fields",
+    "/control_operation/CalendarTransferRecord_exact_copy_fields",
+    "/control_operation/CalendarTransferRecord_sets",
+    "/control_operation/CalendarTransferReject_precedence",
+    "/activation_composition_interface/RequiredQuiescenceReceiptSet_rules",
+    "/activation_composition_interface/failed_attempt_expires_only_its_ExecutionCellUseCell_and_leaves_ActivationDecisionCell_Undecided_for_fresh_slot_retry",
+    "/activation_composition_interface/one_successful_ActivationSlotID_and_ActivationIntent_pair_can_have_more_than_one_ActivationID_or_initial_entry_RunToken",
+    "/cancellation/cancel_wins_only_by_ActivationDecisionCell_Undecided_to_SuppressedBeforeActivation",
+    "/cancellation/activation_wins_only_by_same_cell_Undecided_to_PreparedInert_then_atomic_entry"
+  ],
+  "remove_list_items": {
+    "object_types": [
+      "DelegationScope",
+      "RequiredQuiescenceReceiptSet"
+    ],
+    "negative_cases": [
+      "CalendarTransferConvertsAcrossLeaseClockEpochOrTrustedTimeDomain"
+    ],
+    "safety": [
+      "ProofDependencyDAGIsAcyclicAndStableWindowIsNonvacuous"
+    ]
+  },
+  "append_unique": {
+    "object_types": [
+      "OpportunityReservation",
+      "ActivationAttemptID",
+      "ExecutionCellLeaseCore",
+      "ActivationAttemptRecord",
+      "ActivationPrepareTxn",
+      "ExecutionContextCore",
+      "PreEntryPermit",
+      "EntryCommitRecord",
+      "DueCellRejectionReceipt",
+      "RequiredActivationReceiptSet",
+      "MemoryViewInstallReceipt",
+      "CodeIntegrityReceipt",
+      "EntryStateInstallReceipt",
+      "MutableStateBindingReceipt",
+      "DeviceIsolationReceipt",
+      "StopEnforcementReceipt",
+      "NotApplicableReceipt",
+      "DelegationGrant",
+      "HolderAuthorizationProof",
+      "AuthorityPublicationTxn",
+      "ScopePublicationGate",
+      "CalendarBoundaryCertificateV2",
+      "CalendarBoundaryState",
+      "ReplicatedActivationSettlementClosureCertificate",
+      "BoundedUncertainSuffixDisposition",
+      "ConnectivityFreshnessCertificate",
+      "GuaranteedOccurrenceReservation",
+      "ProtectedWorkFrameCertificate",
+      "AuthorizedExternalWithdrawalReceipt",
+      "OpportunityTerminalCell"
+    ],
+    "negative_cases": [
+      "InitialRunTokenRequiresFutureActivationCommitReceipt",
+      "PreEntryPermitUsedForResumeOrOrdinaryExecution",
+      "RunTokenMintedBeforeProtectedEntryCommit",
+      "RetryAllocatesShadowActivationDecisionCell",
+      "PreparedInertMissingFromHighLevelRefinement",
+      "DelegationGrantReplayedByWrongHolderOrAudience",
+      "ExecutionCellLeaseAndHorizonVectorDigestCycle",
+      "DelimiterConcatenatedIdentityAliasesTypedTuple",
+      "SymbolicOrMalformedDigestAcceptedAsCryptographicIdentity",
+      "StaleOrLinuxAuthoredEntryCodeStateReceiptAccepted",
+      "CallerAuthoredNotApplicableOmitsRequiredDependency",
+      "QuorumSupersessionCannotConstructCalendarBoundary",
+      "QuorumPrefixClaimsStrongContinuityWithUnknownActivationSuffix",
+      "FailureClosureMissesPublicationThroughNewlyDiscoveredScope",
+      "AuthorityUseExecutableBeforeAllReverseLinksCommit",
+      "InternalFailStopDischargesGuaranteedService",
+      "ValidDueEntryNondeterministicallyExpires",
+      "FreshAttemptRetryNeverDecreasesOpportunityRank",
+      "TwoGuaranteedOccurrencesOwnSameLaneCell",
+      "ConnectivityBooleanOrReplayedCertificateAuthorizesConnectedOnly",
+      "ProtectedWorkFrameHumanMachineCapacityMismatch",
+      "CrossEpochTransferRuleDiffersAcrossArtifacts",
+      "ProofDAGOmitHardwareAdmissionOrOperationalPreservation",
+      "UnexplainedInternalFailureClassifiedAuthorizedExternalWithdrawal"
+    ],
+    "safety": [
+      "CanonicalTypedIdentityEncodingIsInjectiveAtTheModelBoundary",
+      "EveryCryptographicIdentityHasExactDigestGrammarAndComputedPayload",
+      "AuthorityConstructionGraphIsAcyclic",
+      "ExecutionCellLeaseCorePrecedesAndIsExcludedFromFinalLeaseSelfReference",
+      "OneCurrentOpportunityHasExactlyOneActivationDecisionCell",
+      "EveryActivationAttemptIsSubordinateToTheOpportunityDecision",
+      "PreEntryPermitCannotAuthorizeOrdinaryExecutionOrResume",
+      "RunTokenExistsOnlyAfterTheExactActivationCommitReceipt",
+      "InitialEntryNeverDependsOnAPostEntryRunToken",
+      "EveryLowerActivationStateHasExactlyOneHighLevelRefinement",
+      "ValidDueEntryHasPriorityOverExpiry",
+      "AttemptBudgetIsFiniteAdmissionChargedAndMonotonic",
+      "InternalAttemptExhaustionIsNotAuthorizedExternalWithdrawal",
+      "DelegatedAuthorityIsHolderAudienceAndGenerationBound",
+      "EveryActivationReceiptClassHasProtectedIssuerSubjectEpochAndPhysicalPredicate",
+      "NotApplicableRequiresProtectedProofOfExactEmptyDependencySet",
+      "AuthorityUseIsExecutableOnlyAfterEveryDependencyReverseLinkCommits",
+      "FailureClosureClosesAndDrainsEveryDiscoveredScopeBeforeHighWater",
+      "FailureClosureIsAClosedBoundedLeastFixedPoint",
+      "ConnectivityEvidenceIsFreshOneUseAndIncludedInAuthorityHorizon",
+      "CalendarBoundaryIsNormalizedFromTypedOrdinaryOrSupersessionEvidence",
+      "StrongContinuityRequiresNoUnknownActivationOrSettlementSuffix",
+      "AmbiguousSourceOrdinalsAreNeverReused",
+      "CrossEpochTransferUsesAuthenticatedIntervalRelationOnly",
+      "GuaranteedCalendarReservationsAreInjectiveOverPhysicalCells",
+      "ProtectedWorkFrameHasOneCanonicalStructuredNineSlotDefinition",
+      "ExogenousStableWindowContainsNoInternalOperationalConclusion",
+      "InternalFailStopDoesNotSatisfyService",
+      "OperationalPreservationPrecedesPerOpportunityRank"
+    ],
+    "architecture_freeze_candidate": [
+      "canonical_typed_identity_and_exact_digest_grammar_remove_aliases_and_symbolic_hashes",
+      "acyclic_LeaseCore_vector_final_lease_intent_permit_entry_receipt_token_delivery_construction_order",
+      "one_complete_CurrentOpportunity_key_owns_all_attempt_cancel_prepare_entry_stop_and_terminal_state",
+      "one_use_PreEntryPermit_authorizes_only_protected_initial_entry_and_post_entry_RunToken_binds_the_already_created_ActivationCommitReceipt",
+      "holder_audience_generation_and_proof_bound_delegation_attenuates_through_every_child",
+      "exact_protected_ENTRY_CODE_STATE_device_and_NotApplicable_receipt_semantics_remain_explicit_refinement_interfaces",
+      "multi_scope_authority_publication_commits_all_reverse_links_before_execution_and_failure_closure_fences_drains_and_scans_every_discovered_scope_to_a_bounded_closed_fixed_point",
+      "ordinary_quiescence_and_quorum_supersession_normalize_to_typed_calendar_boundaries_with_strong_continuity_only_when_unknown_activation_and_settlement_suffix_is_empty",
+      "connected_only_authority_consumes_current_one_use_connectivity_certificate_and_ends_at_its_conservative_horizon",
+      "guaranteed_occurrences_and_attempts_have_injective_parent_conserved_calendar_and_execution_cell_reservations",
+      "one_structured_nine_slot_protected_work_frame_has_two_guaranteed_residency_cells_and_exact_slot_distance_bounds",
+      "OperationalPreservation_is_proved_from_exogenous_relies_before_due_cell_rank_and_internal_failstop_never_counts_as_service"
+    ]
+  },
+  "deep_merge": {
+    "schema_version": 2,
+    "id": "dynamic-admission-recurring-residency-architecture-contract-v2",
+    "date": "2026-08-09",
+    "work_record": "N-188",
+    "analysis": "0200-dynamic-residency-r6-successor-semantic-architecture.md",
+    "status": "r6_successor_machine_candidate_pending_witness_validator_and_fresh_review",
+    "architecture_contract_generation": 2,
+    "successor_lineage": {
+      "base_contract_id": "dynamic-admission-recurring-residency-architecture-contract-v1",
+      "base_raw_sha256": "015838a03f7967522d4998bf05b93fa70153bc14c3800a0fd300804574e5901f",
+      "rejected_candidate_object_set_sha256": "24bb1320d3f50a10195d18e899d7101d7f422ca6ed18c5bedfb088ff4bdc174f",
+      "rejection_analysis": "0199-dynamic-residency-sixth-fresh-hostile-review-rejection.md",
+      "r6_finding_count": 21,
+      "r6_findings_closed_by_this_unreviewed_candidate": false,
+      "base_bytes_remain_immutable_regression_target": true
+    },
+    "canonical_identity_encoding": {
+      "model_identity": "injective_typed_structural_constructor_not_free_string_or_hash",
+      "key_byte_encoding": "RFC8949_deterministic_CBOR_definite_array_of_schema_version_object_type_and_schema_ordered_field_tag_type_tag_value_tuples",
+      "canonical_key_array_grammar": "CBOR_array_uint1_NFC_object_type_text_array_of_NFC_field_tag_text_exact_type_tag_text_and_canonical_value_triples_in_schema_order",
+      "canonical_value_type_tags": {
+        "uint": "bounded_unsigned_integer_minimum_width_CBOR",
+        "bool": "CBOR_false_or_true",
+        "bytes": "definite_length_byte_string",
+        "text": "definite_length_NFC_UTF8_text",
+        "array": "definite_length_array_of_schema_declared_homogeneous_or_tuple_values"
+      },
+      "canonical_value_domain": "bounded_unsigned_integers_booleans_byte_strings_and_NFC_UTF8_only_no_floats_indefinite_lengths_or_wrap",
+      "CID_text_encoding": "lcid1_colon_base64url_without_padding_of_CanonicalKeyBytesV1",
+      "CID_must_decode_and_reencode_byte_identically": true,
+      "payload_digest_domain_separator": "DomainLease-Linux/PayloadDigest/v1",
+      "payload_digest_algorithm": "SHA-256",
+      "canonical_payload_bytes": "RFC8949_deterministic_CBOR_definite_array_of_schema_ordered_field_tag_type_tag_value_tuples_without_identity_fields_omitted_only_when_schema_marks_them_identity_only",
+      "payload_digest_transcript": "ASCII_domain_separator_then_u64be_object_type_UTF8_byte_length_then_NFC_object_type_UTF8_then_u64be_CanonicalPayloadBytesV1_length_then_CanonicalPayloadBytesV1",
+      "length_prefix_overflow_or_payload_exceeding_boot_fixed_object_bound": "reject_before_digest_or_authority_publication",
+      "payload_digest_text_grammar": "sha256_colon_exactly_64_lowercase_hex_digits",
+      "authority_equality": "decoded_structural_CID_key_equality_plus_recomputed_payload_digest_equality",
+      "same_CID_different_payload_digest": "equivocation",
+      "same_digest_different_CID": "cryptographic_fault_never_identity_equality",
+      "unknown_duplicate_reordered_missing_or_extra_fields": "reject",
+      "enclosing_parent_CIDs_and_payload_digests_required": true,
+      "symbolic_digest_placeholders_allowed_in_candidate_or_witness": false,
+      "hash_or_payload_digest_is_claimed_mathematically_injective": false,
+      "cryptographic_collision_resistance_and_encoder_correctness_are_external_relies": true,
+      "CurrentOpportunityID_fields": [
+        "ClusterIssuerIncarnation_and_NodeLease_lineage",
+        "NodeConfigGeneration_and_MonitorBootEpoch",
+        "DomainKey_DomainEpoch_and_complete_hierarchy_path",
+        "AdmissionSnapshot_and_BindingAuthorityKey",
+        "PlanNamespaceEpoch_RootPlanEpoch_PlanShardID_PlanMembershipID_and_lane",
+        "ServiceStreamID_ServiceStreamIncarnation_ServiceContractGeneration_and_OpportunitySequence",
+        "exact_parent_GuaranteedOccurrenceReservation_and_calendar_identity",
+        "boot_fixed_ActivationShardMapGeneration"
+      ],
+      "ActivationAttemptID_fields": [
+        "CurrentOpportunityID",
+        "AttemptOrdinal"
+      ],
+      "ActivationID_fields": [
+        "CurrentOpportunityID",
+        "successful_ActivationAttemptID",
+        "ExecutionCellLeaseCoreID",
+        "ExecutionCellLeaseID",
+        "ActivationIntentID",
+        "ExecutionContextKeyID",
+        "EntryCommitRecordID",
+        "hardware_context_incarnation",
+        "protected_entry_generation"
+      ]
+    },
+    "opportunity_identity": [
+      "ClusterIssuerIncarnation_and_NodeLease_lineage",
+      "NodeConfigGeneration_and_MonitorBootEpoch",
+      "DomainKey_DomainEpoch_and_complete_DomainHierarchyCertificate",
+      "AdmissionSnapshot_CID_generation_and_payload_digest",
+      "PlanNamespaceEpoch_RootPlanEpoch_PlanShardID_lane_and_PlanMembershipID",
+      "ServiceStreamID_ServiceStreamIncarnation_and_ServiceContractGeneration",
+      "OpportunitySequence",
+      "GuaranteedOccurrenceReservation_and_ServiceCalendar_identity",
+      "boot_fixed_ActivationShardMapGeneration"
+    ],
+    "opportunity_accounting": {
+      "CurrentOpportunity_fields": [
+        "exact_CurrentOpportunity_CID_payload_digest_ObligationID_and_OpportunityReservation",
+        "frozen_AdmissionSnapshot_PlanMembership_FrozenLeaseUse_and_BindingAuthorityKey",
+        "frozen_SecurityDependencyCertificate_SecurityUseVector_AuthorityUseID_and_RetirementFence",
+        "exact_ClockBridgeCertificate_NormalizedAuthorityHorizonVector_and_GlobalPlacementUse",
+        "frozen_eligible_lane_root_rank_GuaranteedOccurrenceReservation_and_stable_ActivationShard",
+        "release_activation_delivery_and_terminal_deadlines",
+        "one_ActivationDecisionCell_with_monotonic_activated_and_served_bits",
+        "current_ActivationAttemptID_ExecutionCellLease_ActivationIntent_PreEntryPermit_EntryCommitRecord_ActivationID_ActivationCommitReceipt_RunToken_DeliverySettlementCell_and_ExecutionDeliveryReceipt_or_None",
+        "StopPending_and_first_cause_or_None",
+        "OpportunityTerminalCell_and_terminal_disposition_or_None"
+      ]
+    },
+    "authority_construction_dag_v2": {
+      "nodes": [
+        "OpportunityReservation",
+        "ActivationDecisionCell",
+        "CurrentOpportunity",
+        "ActivationAttemptID",
+        "ExecutionCellLeaseCore",
+        "AuthoritySourceCores",
+        "NormalizedAuthorityHorizonVector",
+        "ExecutionCellLease",
+        "ExecutionCellUseCell",
+        "ActivationIntent",
+        "ExecutionContextCore",
+        "RequiredActivationReceiptSet",
+        "ExecutionContextKey",
+        "ActivationAttemptRecord",
+        "PreEntryPermit",
+        "EntryCommitRecord",
+        "ActivationID",
+        "ActivationCommitReceipt",
+        "DeliverySettlementCell",
+        "RunToken",
+        "ExecutionDeliveryReceipt",
+        "OpportunityTerminalCell"
+      ],
+      "edges": [
+        ["OpportunityReservation", "ActivationDecisionCell"],
+        ["OpportunityReservation", "CurrentOpportunity"],
+        ["ActivationDecisionCell", "CurrentOpportunity"],
+        ["CurrentOpportunity", "ActivationAttemptID"],
+        ["ActivationAttemptID", "ExecutionCellLeaseCore"],
+        ["AuthoritySourceCores", "NormalizedAuthorityHorizonVector"],
+        ["ExecutionCellLeaseCore", "NormalizedAuthorityHorizonVector"],
+        ["ExecutionCellLeaseCore", "ExecutionCellLease"],
+        ["NormalizedAuthorityHorizonVector", "ExecutionCellLease"],
+        ["ExecutionCellLease", "ExecutionCellUseCell"],
+        ["ExecutionCellLease", "ActivationIntent"],
+        ["CurrentOpportunity", "ActivationIntent"],
+        ["ActivationIntent", "ExecutionContextCore"],
+        ["ExecutionContextCore", "RequiredActivationReceiptSet"],
+        ["RequiredActivationReceiptSet", "ExecutionContextKey"],
+        ["ExecutionContextCore", "ExecutionContextKey"],
+        ["ActivationAttemptID", "ActivationAttemptRecord"],
+        ["ExecutionCellUseCell", "ActivationAttemptRecord"],
+        ["ExecutionContextKey", "ActivationAttemptRecord"],
+        ["ActivationAttemptRecord", "PreEntryPermit"],
+        ["ActivationDecisionCell", "PreEntryPermit"],
+        ["ExecutionContextKey", "PreEntryPermit"],
+        ["PreEntryPermit", "EntryCommitRecord"],
+        ["EntryCommitRecord", "ActivationID"],
+        ["ActivationAttemptID", "ActivationID"],
+        ["ActivationID", "ActivationCommitReceipt"],
+        ["EntryCommitRecord", "ActivationCommitReceipt"],
+        ["ActivationCommitReceipt", "DeliverySettlementCell"],
+        ["ActivationCommitReceipt", "RunToken"],
+        ["DeliverySettlementCell", "RunToken"],
+        ["RunToken", "ExecutionDeliveryReceipt"],
+        ["DeliverySettlementCell", "ExecutionDeliveryReceipt"],
+        ["ActivationDecisionCell", "OpportunityTerminalCell"],
+        ["ExecutionDeliveryReceipt", "OpportunityTerminalCell"]
+      ],
+      "mutable_state_owners": {
+        "ActivationDecisionCell": "stable_OpportunityActivationShard",
+        "ExecutionCellUseCell": "stable_OpportunityActivationShard",
+        "DeliverySettlementCell": "stable_OpportunityActivationShard_plus_protected_hardware_actions",
+        "OpportunityTerminalCell": "protected_opportunity_settlement_owner"
+      },
+      "every_edge_points_from_existing_ancestor_to_later_descendant": true,
+      "graph_must_be_acyclic": true,
+      "duplicate_mutable_owner_allowed": false,
+      "same_protected_entry_commit_bit_may_publish_ordered_descendants_atomically_without_creating_back_edge": true
+    },
+    "normalized_authority_horizons": {
+      "required_source_classes": [
+        "FrozenLeaseUse",
+        "NodeLeaseImportCertificate",
+        "GlobalPlacementUse",
+        "SecurityUseVector",
+        "RetirementFence",
+        "ExecutionCellLeaseCore",
+        "RequiredActivationReceiptSet",
+        "ConnectivityFreshnessCertificate_when_partition_mode_CONNECTED_ONLY",
+        "root_budget"
+      ],
+      "entry_fields": [
+        "exact_source_core_identity_generation_schema_and_rights_projection_digest",
+        "source_clock_domain_and_full_epoch_identity",
+        "source_half_open_expiry_or_policy_pinned_typed_no_deadline",
+        "exact_ClockRelationCertificate_and_validity_interval",
+        "earliest_possible_expiry_in_target_LeaseClockEpoch",
+        "conversion_uncertainty_direction_and_checked_arithmetic_receipt"
+      ],
+      "ExecutionCellLeaseCore_projection_excludes_final_ExecutionCellLease_identity_and_digest": true,
+      "final_ExecutionCellLease_is_not_a_vector_source": true
+    },
+    "root_execution_capacity": {
+      "RootExecutionStep": "total_ordered_due_cell_function_terminal_settlement_else_valid_PreEntryPermit_entry_else_first_fixed_false_predicate_rejection",
+      "ExecutionCellLeaseCore_fields": [
+        "LeaseCoreID_and_LeaseCoreGeneration",
+        "CurrentOpportunityID_and_ActivationAttemptID",
+        "HardwareCapacityRootCertificate_and_RootExecutionAllocationCertificate",
+        "PhysicalOccurrenceID_exact_physical_context_and_CpuIncarnation",
+        "RootExecutionClockEpoch_turn_frame_ordinal_and_cell_ordinal",
+        "half_open_cell_start_and_end",
+        "positive_entry_exit_guard_and_execution_budget_ceilings",
+        "allocator_identity_issuance_sequence_and_seal"
+      ],
+      "ExecutionCellLease_fields": [
+        "exact_ExecutionCellLeaseCore_identity_and_digest",
+        "exact_complete_NormalizedAuthorityHorizonVector_identity_and_digest",
+        "policy_profile_and_immutable_allocator_seal"
+      ],
+      "ExecutionCellUseCell_fields": [
+        "exact_ExecutionCellLease_and_PhysicalOccurrenceID",
+        "single_writer_stable_OpportunityActivationShard_from_boot_fixed_map",
+        "one_way_state_Unbound_Bound_Consumed_Expired_or_Settled",
+        "None_or_exact_ActivationAttemptID_ActivationIntentID_and_ActivationDecisionCell",
+        "entry_exit_budget_and_terminal_settlement_receipts"
+      ],
+      "final_lease_and_horizon_vector_can_authenticate_each_other_recursively": false,
+      "valid_entry_can_nondeterministically_expire_same_due_cell": false
+    },
+    "trusted_lease_clock": {
+      "TokenExecutable_definition": "post_entry_only_valid_RunToken_exact_ActivationCommitReceipt_active_hardware_owner_ExecutionContextKey_next_protected_resume_sequence_positive_remaining_budget_current_cell_and_normalized_horizon_all_bound_fences_current_and_stop_not_asserted",
+      "PreEntryEligible_definition": "valid_unconsumed_PreEntryPermit_exact_CurrentOpportunity_and_Attempt_PreparedInert_decision_current_due_cell_inert_context_complete_receipt_set_positive_budget_and_stop_enforcement_and_all_normalized_authority_horizons_current",
+      "ActiveContextExecutable_definition": "TokenExecutable_and_DeliverySettlementCell_Active_or_exact_interrupt_resume_transition",
+      "initial_entry_uses_RunToken": false,
+      "initial_entry_consumes_only_PreEntryPermit": true,
+      "RunToken_is_created_only_after_ActivationCommitReceipt": true,
+      "protected_interrupt_return_uses_RunToken_plus_exact_monotonic_resume_sequence": true
+    },
+    "opportunity_lifecycle": {
+      "machine_states": [
+        "Released",
+        "Preparing",
+        "HeldReady",
+        "ActivationPending",
+        "PreparedInert",
+        "EnteredUnserved",
+        "StopPending",
+        "Settling",
+        "Served",
+        "SuppressedBeforeEntry",
+        "ExternalExpiredBeforeEntry",
+        "InternalGuaranteeViolation",
+        "Terminal"
+      ],
+      "human_to_machine_refinement": {
+        "Released": "Released",
+        "Preparing": "Preparing",
+        "HeldReady": "HeldReady",
+        "ActivationPending": "ActivationPending",
+        "PreparedInert": "PreparedInert",
+        "Activated": "EnteredUnserved_or_Served_by_monotonic_served_bit",
+        "WithdrawOrRevokePending": "SuppressedBeforeEntry_or_StopPending_selected_by_entry_bundle_presence",
+        "Cleanup": "Settling",
+        "Settling": "Settling",
+        "Completed_Withdrawn_Revoked_LeaseExpired_or_ActivatedAndStopped": "Terminal"
+      },
+      "decision_refinement_is_total": true,
+      "PreparedInert_has_distinct_high_level_state": true,
+      "retry_is_monotonic_attempt_log_append_not_state_rollback": true,
+      "internal_guarantee_violation_is_safety_failclosed_but_not_liveness_success": true,
+      "low_product_projection_priority": [
+        "invalid_product_to_InternalGuaranteeViolation",
+        "terminal_cell",
+        "cleanup_or_settling",
+        "stop_pending",
+        "qualifying_delivery_served_bit",
+        "entry_commit_bundle",
+        "prepared_permit",
+        "suppression_or_external_expiry",
+        "attempt_pending",
+        "held_ready",
+        "preparing",
+        "released"
+      ],
+      "activated_and_served_are_orthogonal_monotonic_bits": true,
+      "invalid_low_product_can_map_to_service_or_external_withdrawal": false
+    },
+    "activation_composition_interface": {
+      "ActivationIntent_fields": [
+        "ActivationIntentGeneration_and_ActivationAttemptID",
+        "exact_ObligationID_CurrentOpportunityID_and_held_ResidentBinding",
+        "exact_final_ExecutionCellLease_ExecutionCellUseCell_and_physical_occurrence",
+        "exact_hierarchy_FrozenLeaseUse_GlobalPlacementUse_SecurityUseVector_RetirementFence_and_NormalizedAuthorityHorizonVector",
+        "exact_ExecutionContextCore_and_policy_selected_expected_receipt_class_inventory"
+      ],
+      "ActivationDecisionCell_key": "exact_complete_CurrentOpportunityID_only",
+      "OpportunityReservation_publication_rule": "allocate_complete_CurrentOpportunityID_stable_ActivationShard_and_sole_decision_cell_atomically_before_CurrentOpportunity_visibility",
+      "ActivationDecisionCell_fields": [
+        "exact_CurrentOpportunity_CID_payload_digest_boot_fixed_ActivationShardMapGeneration_and_single_stable_ActivationShard_writer",
+        "phase_Open_PreparedInert_EnteredUnserved_StopPending_Settling_ServedTerminal_UnservedTerminal_SuppressedBeforeEntry_ExternalExpiredBeforeEntry_or_InternalGuaranteeViolation",
+        "positive_NodeConfig_bounded_MaxActivationAttempts_nextAttemptOrdinal_and_immutable_AttemptResult_log_root",
+        "None_or_exact_active_and_successful_ActivationAttemptIDs",
+        "None_or_exact_PreEntryPermit_EntryCommitRecord_ActivationID_ActivationCommitReceipt_RunToken_DeliverySettlementCell_and_OpportunityTerminalCell",
+        "monotonic_activated_and_served_bits",
+        "MonitorBootEpoch_due_interval_recovery_rank_and_first_terminal_or_stop_cause"
+      ],
+      "ActivationDecisionCell_allowed_edges": [
+        "Open_to_Open_by_one_failed_attempt_append_and_nextAttemptOrdinal_increment",
+        "Open_to_PreparedInert",
+        "Open_to_SuppressedBeforeEntry",
+        "Open_to_ExternalExpiredBeforeEntry",
+        "Open_to_InternalGuaranteeViolation",
+        "PreparedInert_to_EnteredUnserved",
+        "PreparedInert_to_StopPending",
+        "EnteredUnserved_to_StopPending",
+        "EnteredUnserved_to_Settling",
+        "StopPending_to_Settling",
+        "Settling_to_ServedTerminal",
+        "Settling_to_UnservedTerminal"
+      ],
+      "ExecutionContextKey_fields": [
+        "ExecutionContextKeyGeneration",
+        "exact_ExecutionContextCore_CID_and_payload_digest",
+        "complete_schema_ordered_RequiredActivationReceiptSet_CIDs_and_payload_digests",
+        "Domain_hierarchy_physical_context_MemoryView_code_entry_mutable_state_device_and_stop_semantic_projection"
+      ],
+      "ActivationAttemptRecord_fields": [
+        "CurrentOpportunityID_and_AttemptOrdinal",
+        "ActivationAttemptID_ExecutionCellLease_ActivationIntent_and_receipt_set",
+        "prepare_validation_result_and_exact_reason",
+        "PreEntryPermit_or_None",
+        "attempt_terminal_cell_disposition"
+      ],
+      "PreEntryPermit_fields": [
+        "permit_schema_generation_issuer_seal_epoch_and_one_use_cell",
+        "CurrentOpportunityID_ActivationAttemptID_and_PreparedInert_decision_generation",
+        "ActivationIntent_ExecutionCellLease_ExecutionCellUseCell_and_ExecutionContextKey",
+        "RequiredActivationReceiptSet_and_NormalizedAuthorityHorizonVector",
+        "physical_context_CpuIncarnation_due_cell_budget_stop_enforcement_and_expected_entry_generation",
+        "half_open_permit_expiry"
+      ],
+      "PreEntryPermit_authorizes": "protected_initial_entry_gate_only",
+      "PreEntryPermit_authorizes_ordinary_execution_interrupt_return_resume_or_migration": false,
+      "retry_may_change_ActivationShard_writer_because_CPU_or_cell_changes": false,
+      "cross_shard_decision_transfer_without_separate_modeled_protocol": false,
+      "prepare_inert_atomic_effects": [
+        "validate_exact_attempt_cell_intent_receipts_horizons_and_fences",
+        "require_the_exact_ExecutionCellUseCell_already_bound_Unbound_to_Bound_for_this_attempt_and_keep_it_Bound_without_consumption",
+        "append_attempt_and_CAS_one_CurrentOpportunity_decision_Open_to_PreparedInert",
+        "install_exact_ExecutionContextKey_in_nonexecutable_hardware_staging",
+        "arm_budget_and_independent_stop",
+        "create_one_sealed_PreEntryPermit"
+      ],
+      "entry_atomic_effects": [
+        "revalidate_and_consume_exact_PreEntryPermit",
+        "confirm_inert_context_no_conflicting_active_owner_and_ExecutionCellUseCell_Bound",
+        "consume_exact_ExecutionCellUseCell_once",
+        "atomically_install_view_code_entry_state_translation_device_and_stop_context",
+        "publish_active_hardware_owner_and_decision_EnteredUnserved",
+        "derive_one_EntryCommitRecord_and_ActivationID",
+        "create_one_ActivationCommitReceipt_without_RunToken_digest",
+        "create_one_active_DeliverySettlementCell_without_RunToken_digest",
+        "create_one_RunToken_binding_the_already_created_ActivationCommitReceipt_and_DeliverySettlementCell",
+        "publish_the_complete_entry_bundle_under_one_protected_commit_bit"
+      ],
+      "EntryCommitRecord_fields": [
+        "protected_entry_generation_and_hardware_commit_position",
+        "exact_CurrentOpportunity_attempt_permit_context_and_physical_owner",
+        "entry_bundle_commit_bit_and_MonitorBootEpoch"
+      ],
+      "ActivationCommitReceipt_fields": [
+        "ActivationCommitGeneration",
+        "exact_CurrentOpportunity_ActivationAttempt_ActivationIntent_ExecutionCellLease_EntryCommitRecord_ActivationID_and_ExecutionContextKey",
+        "exact_budget_stop_and_active_hardware_owner_generation",
+        "exact_protected_hardware_entry_commit_position",
+        "RequiredActivationReceiptSet_digest"
+      ],
+      "ActivationID_derivation": "canonical_CID_over_CurrentOpportunity_successful_Attempt_LeaseCore_final_lease_Intent_ExecutionContextKey_EntryCommitRecord_hardware_context_and_protected_entry_generation",
+      "RunToken_fields": [
+        "monitor_seal_algorithm_key_epoch_and_canonical_encoding_version",
+        "exact_ActivationID_and_ActivationCommitReceipt_identity_and_digest",
+        "exact_CurrentOpportunity_ActivationAttempt_ActivationIntent_ExecutionCellLease_and_ExecutionCellUseCell",
+        "exact_ActivationDecisionCell_DeliverySettlementCell_and_next_resume_sequence_namespace",
+        "ExecutionContextKey_physical_context_CpuIncarnation_and_RootExecutionAllocation",
+        "half_open_cell_complete_NormalizedAuthorityHorizonVector_positive_remaining_budget_and_all_fence_digests"
+      ],
+      "ActivationCommitReceipt_binds_future_RunToken_digest": false,
+      "DeliverySettlementCell_binds_future_RunToken_digest": false,
+      "RunToken_binds_existing_ActivationCommitReceipt": true,
+      "RunToken_binds_existing_DeliverySettlementCell": true,
+      "MaxActivationAttempts_is_positive_bounded_and_admission_charged": true,
+      "valid_due_entry_has_priority_over_expiry": true,
+      "attempt_exhaustion_without_authenticated_external_cause_result": "InternalGuaranteeViolation",
+      "failed_joint_validation_result": "expire_only_the_exact_Bound_ExecutionCellUseCell_append_one_typed_attempt_result_keep_the_same_opportunity_decision_and_retry_only_with_next_pre_reserved_attempt_when_rank_and_horizons_allow",
+      "crash_after_PreparedInert_before_entry_result": "no_ActivationID_receipt_token_or_execution_resume_only_the_same_PreEntryPermit_attempt_cell_staging_generation_and_boot_epoch_within_the_same_due_interval_else_void_permit_then_StopPending_and_settle",
+      "crash_after_entry_before_delivery_settlement_result": "recover_the_existing_entry_bundle_assert_independent_stop_and_settle_the_same_ActivationID_conservatively_without_minting_replacement_objects",
+      "DeliverySettlementCell_fields": [
+        "exact_ActivationID_ActivationCommitReceipt_ActivationDecisionCell_ExecutionCellUseCell_and_ExecutionContextKey",
+        "single_writer_stable_OpportunityActivationShard_and_protected_hardware_path",
+        "one_way_state_Active_StopPending_or_Settled",
+        "monotonic_next_resume_sequence_active_hardware_owner_and_served_bit",
+        "initial_budget_nonincreasing_remaining_budget_and_checked_execution_intervals",
+        "deterministic_ExecutionDeliveryReceiptID_service_accounting_key_and_terminal_disposition",
+        "no_future_RunToken_digest"
+      ],
+      "only_qualifying_ExecutionDeliveryReceipt_counts_service": true
+    },
+    "activation_receipt_contract": {
+      "ExecutionContextCore_fields": [
+        "CurrentOpportunityID_ActivationAttemptID_DomainKey_DomainEpoch_and_hierarchy",
+        "physical_context_CpuIncarnation_RootExecutionAllocation_and_slot",
+        "intended_MemoryView_code_entry_stack_mutable_state_device_and_stop_profiles",
+        "expected_exact_receipt_class_inventory",
+        "no_receipt_or_final_ExecutionContextKey_identity_or_digest"
+      ],
+      "ExecutionContextKey_derivation": "exact_ExecutionContextCore_CID_and_payload_digest_plus_complete_schema_ordered_receipt_CID_and_payload_digest_set",
+      "common_envelope_fields": [
+        "schema_and_class",
+        "protected_issuer_root_identity_incarnation_and_key_or_seal_epoch",
+        "CurrentOpportunityID_ActivationAttemptID_DomainKey_and_DomainEpoch",
+        "ExecutionContextCore_physical_context_and_CpuIncarnation",
+        "source_object_IDs_generations_rights_and_projection_digests",
+        "observed_protected_state_predicate_and_commit_position",
+        "source_clock_epoch_observation_interval_expiry_and_clock_relation",
+        "antirollback_checkpoint_root_and_monotonic_sequence",
+        "one_use_or_fence_generation_binding",
+        "canonical_payload_digest_and_authentication"
+      ],
+      "required_classes": {
+        "MemoryViewInstallReceipt": "exact_stage2_or_EPT_view_ownership_root_View_Backing_translation_epochs_target_register_state_and_no_executable_predecessor_translation",
+        "CodeIntegrityReceipt": "exact_executable_root_CodeEpoch_WX_no_Domain_writable_executable_alias_and_module_JIT_policy",
+        "EntryStateInstallReceipt": "Domain_owned_stack_entry_exception_return_nested_generations_per_CPU_state_view_and_predecessor_quiescence",
+        "MutableStateBindingReceipt": "exact_Domain_private_mutable_state_ownership_epoch_and_explicit_shared_typed_buffers_and_endpoints",
+        "DeviceIsolationReceipt": "tagged_PRESENT_binds_device_firmware_queue_IOMMU_PASID_ATS_IRQ_DMA_MemoryView_reset_generations_old_queue_disable_and_no_live_predecessor_DMA_reference_or_ABSENT_binds_protected_inventory_snapshot_proving_no_binding_mapping_or_queue",
+        "StopEnforcementReceipt": "independent_timer_watchdog_budget_cell_vector_expiry_physical_stop_target_and_reserved_failclosed_action",
+        "NotApplicableReceipt": "optional_policy_enumerated_extension_class_only_with_protected_proof_of_exact_empty_dependency_set_for_named_context_core_profile_and_reason"
+      },
+      "one_exact_class_set_selected_by_policy_profile": true,
+      "MemoryView_Code_Entry_MutableState_Device_and_Stop_classes_are_mandatory": true,
+      "core_security_class_may_use_NotApplicableReceipt": false,
+      "linux_authored_nonempty_string_boolean_or_omission_is_valid_receipt": false,
+      "claim_is_interface_conditional_until_physical_refinement": true
+    },
+    "control_operation": {
+      "id_fields": [
+        "MonitorBootEpoch",
+        "exact_authenticated_Channel_or_DelegationGrantID",
+        "full_control_ScopedNamespaceRoot_identity",
+        "ControlNamespaceEpoch",
+        "ControlOpSequence"
+      ],
+      "DelegationGrant_fields": [
+        "grant_parent_grant_issuer_principal_key_epoch_and_generation",
+        "grantee_DomainKey_principal_and_protected_proof_key_or_nontransferable_handle",
+        "audience_ControlEndpointID_channel_binding_and_capability_mode",
+        "attenuation_depth_complete_parent_chain_digest_and_rights",
+        "authorized_targets_operations_fields_resource_delta_shards_and_effects",
+        "not_before_commit_not_after_effect_not_after_and_clock_relation",
+        "revocation_root_and_per_grant_revocation_generation",
+        "operation_sequence_namespace_challenge_policy_and_seal"
+      ],
+      "HolderAuthorizationProof_fields": [
+        "grant_and_current_revocation_generation",
+        "exact_ControlOp_digest",
+        "grantee_audience_channel_and_challenge",
+        "monotonic_operation_sequence",
+        "holder_signature_MAC_or_protected_handle_proof"
+      ],
+      "child_delegation_may_amplify_any_right_horizon_target_delta_or_depth": false,
+      "copied_grant_without_current_holder_proof_authorizes_operation": false,
+      "CalendarTransferV2_inputs": [
+        "exact_CalendarBoundaryCertificateV2",
+        "exact_destination_reservation_and_immutable_service_calendar",
+        "current_destination_lane_clock_and_component_certificate_tuple",
+        "same_epoch_identity_or_interval_valued_ClockRelationCertificate",
+        "preauthorized_half_open_TransferReleaseEnvelope",
+        "authority_expiry_preparation_lead_and_checked_activation_delivery_terminal_gap_rank_envelope"
+      ],
+      "CalendarTransferV2_result": "Ok_exact_earliest_CalendarTransferRecord_or_typed_total_Reject",
+      "CalendarTransferV2_cross_epoch_policy": "authenticated_interval_relation_allowed_missing_or_expired_relation_rejects_continuity_and_permits_only_explicit_ContinuityLost_new_incarnation",
+      "CalendarTransferV2_never_reuses_ambiguous_source_ordinal": true
+    },
+    "delegation_authority_v2": {
+      "unbound_bearer_scope_allowed_on_hostile_Linux_transport": false,
+      "holder_binding_survives_transport_copy": true,
+      "proof_key_or_handle_is_protected_by_grantee_Domain_MemoryView": true,
+      "compromise_of_grantee_allows_only_that_grants_attenuated_authority": true,
+      "intra_Domain_principal_isolation_requires_separate_Domain_boundary": true
+    },
+    "commit_dependency_vector": {
+      "fields": [
+        "DelegationGrant_identity_generation_revocation_fence_holder_audience_and_effective_interval",
+        "MonitorBootEpoch_ReconciledEpoch_reconciledThroughNodeSecurityEpoch_checkpoint_and_DirtyArmReceipt",
+        "only_relevant_SecurityDependencyCertificate_SecurityScopeFence_failure_and_topology_projection_intersecting_MutationFootprint_NodeSecurityEpoch_audit_checkpoint_is_not_a_guard",
+        "LeaseAuthorityRecord_latest_term_current_tick_margin_and_local_reject_fence",
+        "affected_current_committed_pending_retiring_AdmissionSnapshots_StreamLedgers_PlanMemberships_PlanTransitionRecords_apply_ledgers_and_RetirementFences",
+        "affected_plan_shard_epochs_lane_turns_reservations_and_capacity_journal_entries",
+        "affected_active_held_retiring_identity_and_MonotoneSuffix_upper_envelopes_bindings_cpu_topology_modes_and_failures",
+        "parent_residual_capacity_and_exact_delta_certificates",
+        "affected_namespace_headroom_renewal_work_and_replay_watermarks",
+        "ClockBridgeCertificate_and_worst_case_horizon"
+      ]
+    },
+    "cancellation": {
+      "cancel_wins_only_by_ActivationDecisionCell_Open_to_SuppressedBeforeEntry": true,
+      "activation_prepare_wins_only_by_same_cell_Open_to_PreparedInert_then_mandatory_valid_entry": true,
+      "retry_never_allocates_a_new_decision_cell_or_writer": true
+    },
+    "failure_publication_protocol_v2": {
+      "AuthorityPublicationTxn_fields": [
+        "PublicationTxnID_and_generation",
+        "exact_AuthorityUseID_digest_and_complete_DependencyScopeSet",
+        "one_prepared_reservation_and_reverse_link_sequence_per_scope",
+        "bounded_state_Preparing_Committed_Aborted_orSettled",
+        "single_protected_commit_bit_and_crash_recovery_owner"
+      ],
+      "ScopePublicationGate_states": [
+        "Open",
+        "Closing_failureID_and_preclose_prepared_publication_set",
+        "Closed_failureID_and_drained_reverse_log_highwater"
+      ],
+      "publication_order": [
+        "derive_and_validate_complete_NodeConfig_bounded_dependency_scope_set",
+        "prepare_scope_reservations_in_canonical_scope_order",
+        "persist_identical_use_ID_digest_and_reverse_link_in_every_scope",
+        "commit_publication_transaction_only_after_all_links_are_durable",
+        "make_authority_executable_only_after_commit"
+      ],
+      "closure_order": [
+        "CAS_every_frontier_scope_Open_to_Closing",
+        "abort_uncommitted_or_include_committed_preclose_publications",
+        "drain_prepared_set_then_seal_reverse_log_highwater_and_Close",
+        "scan_through_highwater_fence_uses_and_add_every_dependency_and_topology_scope",
+        "repeat_until_frontier_empty_every_discovered_scope_Closed_and_one_complete_pass_adds_no_use_scope_or_topology_generation"
+      ],
+      "overlapping_failures_serialize_at_first_common_scope_gate": true,
+      "disjoint_failure_closures_commute": true,
+      "recovery_installs_successor_generation_before_reopening_publication": true,
+      "closure_bound": "O_KFailureClosureEdges_plus_KFailureClosureScopes_times_KDepth_with_precharged_prepared_publication_and_cleanup_bounds",
+      "bound_exhaustion_after_authority": "consume_pre_reserved_node_failstop",
+      "global_publication_fence_required": false,
+      "disjoint_open_scope_may_continue": true,
+      "executable_partial_reverse_link_publication_allowed": false
+    },
+    "connectivity_freshness_contract_v2": {
+      "ConnectivityFreshnessCertificate_fields": [
+        "protected_channel_or_quorum_issuer_key_incarnation_and_antirollback_root",
+        "NodeLease_GlobalPlacementUse_nodes_resources_and_partition_mode",
+        "channel_session_challenge_request_response_transcript_digest",
+        "monotonic_channel_sequence_and_issuer_checkpoint",
+        "source_observation_interval_and_ClockRelationCertificate",
+        "target_LeaseClockEpoch_valid_not_after_and_maximum_stale_authority_horizon",
+        "exact_ControlOp_placement_transition_or_activation_use_cell"
+      ],
+      "CONNECTED_ONLY_requires_current_unconsumed_certificate": true,
+      "certificate_expiry_is_normalized_authority_horizon_entry": true,
+      "certificate_proves_future_connectivity": false,
+      "replay_boolean_network_silence_or_transport_success_is_authority": false
+    },
+    "calendar_boundary_transfer_v2": {
+      "ServiceCalendar_timebase": "issuer_owned_CalendarTimeDomainID_and_CalendarEpoch_distinct_from_lane_and_node_LeaseClock_epochs",
+      "same_time_mapping": "identity_only_for_exact_same_CalendarTimeDomainID_and_epoch",
+      "cross_time_mapping": "one_direct_authenticated_ClockRelationCertificate_bound_to_exact_transfer_no_inferred_or_transitive_chain",
+      "ClockRelationCertificate_fields": [
+        "complete_source_and_target_clock_identities_and_epochs",
+        "valid_source_and_target_intervals",
+        "monotonic_interval_mapping_equations_and_uncertainty",
+        "producer_identity_no_fork_epoch_and_certificate_expiry",
+        "exact_TransferID_and_CalendarBoundaryCertificateID"
+      ],
+      "interval_mapping_rules": {
+        "MapR": "source_tick_x_maps_to_half_open_target_interval_L_x_U_x",
+        "expiry": "use_L_of_expiry_as_earliest_safe_target_expiry",
+        "destination_not_before": "use_U_of_predecessor_stop_and_residual_effect_bound",
+        "maximum_gap": "U_of_first_successor_delivery_minus_L_of_last_predecessor_delivery"
+      },
+      "variants": [
+        "SourceQuiesced",
+        "QuorumSupersededStrongContinuity",
+        "QuorumSupersededSafeGap",
+        "ContinuityLost"
+      ],
+      "CalendarBoundaryState_fields": [
+        "source_stream_incarnation_and_calendar",
+        "last_committed_last_delivered_and_next_safe_ordinals",
+        "debt_last_qualifying_delivery_and_trusted_time_interval",
+        "source_stop_and_residual_effect_upper_bound",
+        "write_close_settlement_checkpoint_and_uncertain_suffix",
+        "continuity_class_and_exact_authority_objects"
+      ],
+      "ordinal_cut_rule": "predecessor_owns_ordinals_strictly_below_qCut_successor_may_own_qCut_and_above_only",
+      "strong_continuity_requires_no_unresolved_predecessor_ordinal_at_or_above_qCut": true,
+      "safe_gap_qCut_advances_beyond_every_bounded_ambiguous_ordinal_with_explicit_nonservice_dispositions": true,
+      "SourceQuiesced_requires": [
+        "SourcePlacementQuiescenceReceipt",
+        "complete_CalendarBoundaryState",
+        "identity_or_interval_ClockRelationCertificate"
+      ],
+      "QuorumSupersededStrongContinuity_requires": [
+        "predecessor_write_close_fence",
+        "QuorumSupersessionFence",
+        "strictly_later_quorum_checkpoint",
+        "ReplicatedActivationSettlementClosureCertificate_with_empty_unknown_suffix",
+        "SettlementPrefixCertificate",
+        "complete_CalendarBoundaryState",
+        "identity_or_interval_ClockRelationCertificate"
+      ],
+      "QuorumSupersededSafeGap_requires": [
+        "predecessor_write_close_fence",
+        "QuorumSupersessionFence",
+        "strictly_later_quorum_checkpoint",
+        "SettlementPrefixCertificate",
+        "NodeConfig_bounded_BoundedUncertainSuffixDisposition",
+        "complete_CalendarBoundaryState",
+        "identity_or_interval_ClockRelationCertificate"
+      ],
+      "ContinuityLost_requires_new_ServiceStreamIncarnation": true,
+      "strong_continuity_from_settlement_prefix_alone": false,
+      "destination_activation_is_strictly_after_converted_stop_residual_and_uncertainty_upper_bounds": true,
+      "destination_selection": "unique_earliest_reserved_cell_satisfying_release_authority_activation_delivery_terminal_and_gap_bounds",
+      "missing_clock_relation_with_same_incarnation_continuity": "reject",
+      "unreachable_source_exact_continuity_without_replicated_activation_settlement_closure_claimed": false
+    },
+    "guaranteed_calendar_v2": {
+      "GuaranteedOccurrenceReservation_fields": [
+        "ServiceOccurrenceID_and_future_CurrentOpportunity_constructor",
+        "nominal_release_interval_and_service_deadline",
+        "unique_ReservedReleaseCellID",
+        "unique_RootExecution_PhysicalOccurrenceID",
+        "protected_prepare_activation_delivery_terminal_and_retry_work_reservations",
+        "FreshnessHorizon_and_renewal_generation"
+      ],
+      "occurrence_to_release_cell_is_injective": true,
+      "attempt_to_execution_cell_is_injective": true,
+      "same_nominal_release_time_requires_distinct_feasible_cells": true,
+      "same_lane_epoch_turn_and_cell_ordinal_multiowner_allowed": false,
+      "renewal_reserves_next_finite_horizon_before_old_boundary": true,
+      "collision_or_insufficient_retry_or_terminal_headroom_result": "reject_admission_or_renewal_before_authority",
+      "unbounded_hyperperiod_table_required": false,
+      "conditional_omega_requires_infinite_successful_finite_renewals": true
+    },
+    "protected_work_frame_v2": {
+      "frame_generation": 2,
+      "frame_length": 9,
+      "second_GuaranteedResidency_position_is_intentionally_rebalanced_from_rejected_prose": true,
+      "ordered_slots": [
+        {"slot_id":"PW0","class":"SafetyCleanup"},
+        {"slot_id":"PW1","class":"ManagementRecovery"},
+        {"slot_id":"PW2","class":"GuaranteedResidency"},
+        {"slot_id":"PW3","class":"GuaranteedCleanup"},
+        {"slot_id":"PW4","class":"ProjectionRenewal"},
+        {"slot_id":"PW5","class":"AdmissionControl"},
+        {"slot_id":"PW6","class":"GuaranteedResidency"},
+        {"slot_id":"PW7","class":"BestEffortCleanup"},
+        {"slot_id":"PW8","class":"Slack"}
+      ],
+      "class_counts": {
+        "SafetyCleanup": 1,
+        "ManagementRecovery": 1,
+        "GuaranteedResidency": 2,
+        "GuaranteedCleanup": 1,
+        "ProjectionRenewal": 1,
+        "AdmissionControl": 1,
+        "BestEffortCleanup": 1,
+        "Slack": 1
+      },
+      "maximum_cyclic_slot_gap": {
+        "SafetyCleanup": 9,
+        "ManagementRecovery": 9,
+        "GuaranteedResidency": 5,
+        "GuaranteedCleanup": 9,
+        "ProjectionRenewal": 9,
+        "AdmissionControl": 9,
+        "BestEffortCleanup": 9,
+        "Slack": 9
+      },
+      "occurrence_identity_fields": [
+        "HardwareCapacityRootCertificate",
+        "ServiceAllocationCertificate",
+        "FrameGeneration",
+        "FrameOrdinal",
+        "SlotID"
+      ],
+      "human_machine_structural_parity_required": true,
+      "empty_protected_slot_donation": "revocable_slack_only_with_hardware_reclaim_before_next_slot_and_no_future_debt",
+      "free_frequency_scalar_is_rank_proof": false
+    },
+    "protected_service_capacity": {
+      "canonical_work_frame": "protected_work_frame_v2",
+      "frame_length": 9,
+      "GuaranteedResidency_slots_per_frame": 2,
+      "GuaranteedResidency_maximum_cyclic_gap": 5,
+      "other_single_slot_class_maximum_cyclic_gap": 9,
+      "rank_uses_exact_slot_distance_and_reserved_work_count": true
+    },
+    "safe_recurring_liveness_witness": {
+      "claim_classes": {
+        "finite_machine_safety": "all_identity_authority_conservation_nonexecution_publication_and_failclosed_invariants_for_every_reachable_state",
+        "bounded_recurrence": "each_admitted_guaranteed_opportunity_has_one_qualifying_delivery_by_its_deadline_unless_a_claim_excluded_AuthorizedExternalWithdrawal_began_before_that_deadline",
+        "omega_recurrence": "conditional_induction_under_InfiniteFreshnessSupply_and_repeated_ExogenousStableWindow_after_OperationalPreservation",
+        "freshness_exhaustion": "terminal_quarantine_or_failstop_with_liveness_violation_or_explicit_external_withdrawal_and_no_identifier_or_authority_reuse"
+      },
+      "activation_rank": [
+        "remaining_admission_charged_activation_attempt_budget",
+        "future_reserved_cell_distance",
+        "remaining_protected_prepare_and_recovery_work",
+        "entry_guard_steps",
+        "victim_stop_and_trusted_reference_countdowns",
+        "residency_transaction_phases",
+        "delivery_stop_and_terminal_settlement_steps",
+        "admitted_calendar_and_namespace_renewal_steps"
+      ],
+      "valid_due_entry_can_expire_by_nondeterministic_choice": false,
+      "internal_failstop_or_InternalGuaranteeViolation_counts_as_service_or_authorized_withdrawal": false,
+      "service_theorem": "every_admitted_guaranteed_CurrentOpportunity_released_in_a_qualifying_ExogenousStableWindow_has_exactly_one_qualifying_ExecutionDeliveryReceipt_by_deadline_unless_a_claim_excluded_AuthorizedExternalWithdrawal_began_before_deadline"
+    },
+    "external_relies": [
+      "cryptographic_hash_seal_signature_and_deterministic_encoding_contracts_are_sound_and_nonrollback",
+      "NodeLeaseImport_GlobalPlacement_quorum_settlement_and_clock_relation_producers_satisfy_their_typed_fault_threshold_and_horizon_contracts",
+      "declared_hardware_contexts_HardwareProgressCertificate_LeaseClock_and_independent_watchdog_sources_function_within_exact_bounds",
+      "no_authenticated_issuer_revoke_partition_mode_change_planned_maintenance_or_uncovered_hardware_loss_invalidates_the_target_before_its_claimed_deadline",
+      "ENTRY_CODE_STATE_device_interface_receipt_owners_satisfy_exact_finite_contracts",
+      "external_replication_and_receipt_channels_used_by_the_selected_claim_meet_their_admitted_bounds",
+      "AuditHeadroomWindow_or_authenticated_checkpoint_renewal_covers_the_admitted_failure_envelope",
+      "fresh_authority_namespace_calendar_and_outer_epoch_supply_exists_only_for_the_explicit_finite_horizon_or_conditional_InfiniteFreshnessSupply_claim",
+      "protected_nonrollback_source_transition_scope_publication_outbox_audit_and_reconciliation_storage_obeys_its_interface_contract"
+    ],
+    "internal_liveness_obligations": [
+      "all_internal_protocols_preserve_ContractOperationalState_under_ExogenousStableWindow_or_expose_InternalGuaranteeViolation",
+      "valid_due_PreEntryPermit_entry_has_priority_over_expiry",
+      "bounded_retry_prepare_recovery_stop_and_settlement_ranks_decrease_on_their_exact_reserved_slots",
+      "internal_failstop_capacity_overflow_deadlock_or_attempt_exhaustion_cannot_discharge_guaranteed_service",
+      "qualifying_delivery_or_claim_excluded_AuthorizedExternalWithdrawal_is_total_for_each_guaranteed_opportunity"
+    ],
+    "liveness_contract_v2": {
+      "ExogenousStableWindow_may_reference_internal_Operational_or_successful_failure_processing": false,
+      "AuthorizedExternalWithdrawalReceipt_fields": [
+        "typed_external_cause_and_claim_exclusion_ID",
+        "protected_issuer_observation_and_authentication",
+        "CurrentOpportunityID_and_affected_authority",
+        "cause_start_interval_and_deadline_relation",
+        "terminal_fence_and_nonservice_disposition"
+      ],
+      "unexplained_internal_failstop_is_AuthorizedExternalWithdrawal": false,
+      "OperationalPreservation_guarantee": "valid_admitted_state_plus_ExogenousStableWindow_implies_no_internal_owner_loss_overdraft_deadlock_permanent_protected_work_suppression_InternalGuaranteeViolation_or_unexplained_failstop",
+      "per_opportunity_guarantee": "one_qualifying_ExecutionDeliveryReceipt_by_deadline_or_only_claim_excluded_AuthorizedExternalWithdrawal_started_before_deadline",
+      "service_or_declared_failstop_is_valid_liveness_guarantee": false
+    },
+    "formal_decomposition": {
+      "proof_dependency_dag_order": [
+        "ENV_CRYPTO_CANONICAL_SEAL",
+        "ENV_HARDWARE_TIME_ROOT",
+        "ENV_CLUSTER_ISSUER_QUORUM_TIME",
+        "ENV_ENTRY_CODE_STATE_DEVICE_INTERFACE",
+        "RESOURCE_HIERARCHY_SET_ALGEBRA",
+        "DYN_ADMIT",
+        "DYN_REQUEST",
+        "DYN_CHURN",
+        "DYN_RENEW_RESTART",
+        "DYN_SHARD",
+        "DYN_COMPOSE",
+        "DYN_MULTILANE_COMPOSE",
+        "OPERATIONAL_PRESERVATION_THEOREM",
+        "PER_OPPORTUNITY_RANK_THEOREM",
+        "DYN_LIVENESS_THEOREM",
+        "DYN_REGRESSION"
+      ],
+      "component_assume_guarantee_ledger": {
+        "ENV_CRYPTO_CANONICAL_SEAL": {
+          "node_class": "external_interface",
+          "internal_predecessors": [],
+          "temporal_relies": [],
+          "conditional_omega_relies": [],
+          "guarantee": "injective_typed_model_identity_deterministic_encoding_collision_resistant_digest_unforgeable_seal_and_nonrollback_key_epoch",
+          "discharge_state": "pending_separate_crypto_encoding_refinement"
+        },
+        "ENV_ENTRY_CODE_STATE_DEVICE_INTERFACE": {
+          "guarantee": "exact_protected_MemoryView_CodeIntegrity_EntryState_MutableState_DeviceIsolation_StopEnforcement_and_NotApplicable_receipts_with_issuer_subject_epoch_physical_predicate_freshness_and_atomic_entry_semantics",
+          "discharge_state": "pending_separate_entry_code_state_device_refinement"
+        },
+        "DYN_ADMIT": {
+          "internal_predecessors": [
+            "ENV_CRYPTO_CANONICAL_SEAL",
+            "ENV_HARDWARE_TIME_ROOT",
+            "ENV_CLUSTER_ISSUER_QUORUM_TIME",
+            "RESOURCE_HIERARCHY_SET_ALGEBRA"
+          ],
+          "guarantee": "bounded_feasible_admission_with_injective_guaranteed_calendar_execution_and_protected_work_reservations_and_future_effective_publication_only"
+        },
+        "DYN_COMPOSE": {
+          "internal_predecessors": [
+            "ENV_CRYPTO_CANONICAL_SEAL",
+            "ENV_ENTRY_CODE_STATE_DEVICE_INTERFACE",
+            "RESOURCE_HIERARCHY_SET_ALGEBRA",
+            "DYN_ADMIT",
+            "DYN_REQUEST",
+            "DYN_CHURN",
+            "DYN_RENEW_RESTART",
+            "DYN_SHARD"
+          ],
+          "guarantee": "acyclic_lease_intent_permit_entry_receipt_token_delivery_construction_one_opportunity_decision_and_total_lifecycle_safety"
+        },
+        "OPERATIONAL_PRESERVATION_THEOREM": {
+          "node_class": "inductive_theorem",
+          "internal_predecessors": [
+            "DYN_ADMIT",
+            "DYN_REQUEST",
+            "DYN_CHURN",
+            "DYN_RENEW_RESTART",
+            "DYN_SHARD",
+            "DYN_COMPOSE",
+            "DYN_MULTILANE_COMPOSE"
+          ],
+          "temporal_relies": [
+            "ExogenousStableWindow",
+            "AuditHeadroomWindow",
+            "ProtectedClockProgressOrExternallyCausedFailStop"
+          ],
+          "conditional_omega_relies": [],
+          "guarantee": "no_internal_guarantee_violation_owner_loss_overdraft_deadlock_permanent_protected_work_suppression_or_unexplained_failstop",
+          "discharge_state": "pending_inductive_operational_preservation_proof"
+        },
+        "PER_OPPORTUNITY_RANK_THEOREM": {
+          "node_class": "inductive_theorem",
+          "internal_predecessors": [
+            "OPERATIONAL_PRESERVATION_THEOREM"
+          ],
+          "temporal_relies": [
+            "ExogenousStableWindow",
+            "AuditHeadroomWindow",
+            "ProtectedClockProgressOrExternallyCausedFailStop"
+          ],
+          "conditional_omega_relies": [],
+          "guarantee": "one_current_opportunity_has_one_qualifying_delivery_by_deadline_unless_claim_excluded_AuthorizedExternalWithdrawal_started_before_deadline",
+          "discharge_state": "pending_inductive_rank_proof"
+        },
+        "DYN_LIVENESS_THEOREM": {
+          "internal_predecessors": [
+            "PER_OPPORTUNITY_RANK_THEOREM"
+          ],
+          "temporal_relies": [
+            "ExogenousStableWindow",
+            "AuditHeadroomWindow",
+            "ProtectedClockProgressOrExternallyCausedFailStop"
+          ],
+          "conditional_omega_relies": [
+            "InfiniteFreshnessSupply"
+          ],
+          "guarantee": "finite_horizon_bounded_recurrence_and_separate_conditional_omega_recurrence_without_internal_failstop_discharge",
+          "discharge_state": "pending_infinite_induction_proof"
+        }
+      },
+      "minimum_state_and_rank": {
+        "DYN_SHARD": "at_least_two_plan_control_and_execution_lanes_under_parent_conserved_HardwareCapacityRoot_TargetControlTurn_and_protected_work_occurrences_disjoint_and_intersecting_footprints_publication_fenced_failure_closure_and_total_CalendarTransferV2_over_typed_CalendarBoundaryCertificate_with_no_cross_lane_wait",
+        "DYN_COMPOSE": "stable_StreamLedger_CurrentOpportunity_OpportunityReservation_single_stable_ActivationDecisionCell_bounded_AttemptRecords_ExecutionCellLeaseCore_NormalizedAuthorityHorizonVector_final_ExecutionCellLease_ExecutionCellUseCell_ActivationIntent_ExecutionContextCore_complete_RequiredActivationReceiptSet_ExecutionContextKey_PreEntryPermit_EntryCommitRecord_ActivationCommitReceipt_DeliverySettlementCell_RunToken_ExecutionDeliveryReceipt_and_OpportunityTerminalCell",
+        "DYN_LIVENESS_THEOREM": "abstract_finite_stable_stream_set_ExogenousStableWindow_OperationalPreservation_AuthorizedExternalWithdrawal_qualifying_ExecutionDeliveryReceipt_bounded_attempt_and_due_entry_rank_finite_recurrence_until_FreshnessHorizon_plus_separate_conditional_omega_induction_under_InfiniteFreshnessSupply"
+      },
+      "derived_not_stored_predicates": [
+        "Feasible",
+        "LeaseValidForNewRelease",
+        "LeaseValidForFrozenUse",
+        "AdmissionUsable",
+        "BindingAuthorityKeyOf",
+        "CanonicalFailureCover",
+        "RequiredActivationReceiptSetOf",
+        "ActivatedFromEntryCommitBundle",
+        "ServedFromExecutionDeliveryReceipt",
+        "EffectiveAuthorityHorizon",
+        "NormalizedAuthorityHorizonVectorValid",
+        "ExecutionCellEligible",
+        "PreEntryEligible",
+        "TokenExecutable",
+        "ActiveContextExecutable",
+        "FailureImpactLeastFixedPoint",
+        "CandidateDeltaConfinedToDelegation",
+        "Operational",
+        "StableState",
+        "NodeModeSummary",
+        "FailureReceiptValid",
+        "QuiescenceReceiptValid",
+        "ReconciliationAckValid",
+        "ClockBridgeInvariant",
+        "RankEligible"
+      ],
+      "temporal_not_stored_relies": [
+        "ExogenousStableWindow",
+        "AuditHeadroomWindow",
+        "ProtectedClockProgressOrExternallyCausedFailStop",
+        "InfiniteFreshnessSupply"
+      ],
+      "node_schema_required_fields": [
+        "component_ID_and_node_class",
+        "owned_state_variable_IDs",
+        "read_state_variable_IDs",
+        "action_IDs_and_exact_read_write_sets",
+        "formula_IDs",
+        "external_assume_formula_IDs",
+        "internal_predecessor_provider_component_formula_and_action_set_refs",
+        "guarantee_formula_IDs",
+        "provider_and_refinement_mapping",
+        "stuttering_and_failure_actions",
+        "finite_rank_and_bound_units",
+        "consumer_component_IDs",
+        "structural_cost_bound",
+        "claim_and_nonclaim_IDs",
+        "discharge_state"
+      ],
+      "prose_only_provider_name_discharges_edge": false,
+      "graph_validation_rejects": [
+        "unresolved_provider_or_formula_reference",
+        "cycle_or_descendant_assumption",
+        "duplicate_mutable_state_owner",
+        "external_rely_that_mentions_internal_Operational_or_protocol_success"
+      ]
+    },
+    "r6_fresh_review_disposition": {
+      "source": "dynamic-residency-sixth-fresh-hostile-review-rejection-v1.json",
+      "finding_count": 21,
+      "candidate_responses_encoded": true,
+      "responses_validated": false,
+      "findings_closed": false,
+      "fresh_successor_review_complete": false
+    },
+    "next_step": "materialize_v2_validate_overlay_and_human_machine_parity_add_every_R6_counterexample_to_successor_witness_then_fresh_hostile_review_before_external_assurance_or_TLA",
+    "claims": {
+      "architecture_contract_written": true,
+      "r6_successor_candidate_written": true,
+      "r6_findings_closed": false,
+      "adversarial_semantic_freeze_complete": false,
+      "tla_authorized": false,
+      "tla_written": false,
+      "model_checked": false,
+      "claim_specific_capsule_validated": false,
+      "residency_dynamic_model_supported": false,
+      "linux_behavior_changed": false,
+      "monitor_implemented": false,
+      "protection_evidenced": false,
+      "performance_evidenced": false,
+      "cost_efficiency_evidenced": false,
+      "multi_cluster_evidenced": false,
+      "deployment_ready": false
+    }
+  }
+}

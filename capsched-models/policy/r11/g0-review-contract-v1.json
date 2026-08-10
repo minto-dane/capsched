@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "artifact_id": "domainlease-r11-g0-review-contract-v1",
+  "contract_epoch": 1,
+  "status": "draft_pending_external_acceptance",
+  "gate_id": "G0",
+  "meaning": "one_external_policy_profile_bundle_is_accepted_as_the_only_semantic_input_for_draft_R11_IR_construction",
+  "externality_definition": {
+    "separate_directory_is_sufficient": false,
+    "separate_agent_context_is_sufficient": false,
+    "required": "review_and_decision_authorities_cannot_change_candidate_policy_profile_checker_or_mutation_expectations_under_the_same_change_authority",
+    "local_subagent_reviews_are": "role_separated_local_advisory_only"
+  },
+  "artifact_role_layers": {
+    "candidate_bundle": [
+      "semantic_policy_schema",
+      "semantic_policy",
+      "semantic_rule_registry_schema",
+      "semantic_rule_registry",
+      "scenario_profile_schema",
+      "scenario_profile",
+      "review_contract_schema",
+      "review_contract",
+      "exact_mutation_catalog_schema",
+      "exact_mutation_catalog",
+      "assurance_claim_catalog",
+      "mechanical_checker",
+      "exact_mutation_runner",
+      "candidate_bundle_schema",
+      "candidate_bundle_verifier",
+      "review_receipt_schema",
+      "gate_decision_schema"
+    ],
+    "review_set": [
+      "external_authority_registry",
+      "security_semantic_review_receipt",
+      "formal_encodability_review_receipt",
+      "scenario_scale_review_receipt"
+    ],
+    "gate_decision": [
+      "exact_mutation_result",
+      "promotion_runtime_identity",
+      "promotion_verifier",
+      "gate_decision"
+    ],
+    "evidence_capsule": [
+      "candidate_bundle_manifest",
+      "review_set_manifest",
+      "gate_decision",
+      "evidence_capsule_manifest"
+    ]
+  },
+  "evidence_layer_dag": [
+    {
+      "id": "L0-CANDIDATE-BUNDLE",
+      "predecessors": [],
+      "binds": "exact_candidate_artifact_bytes",
+      "output_digest": "candidate_bundle_manifest_sha256"
+    },
+    {
+      "id": "L1-EXTERNAL-REVIEW-SET",
+      "predecessors": ["L0-CANDIDATE-BUNDLE"],
+      "binds": "three_authority_disjoint_review_receipts_over_the_L0_digest",
+      "output_digest": "review_set_manifest_sha256"
+    },
+    {
+      "id": "L2-INDEPENDENT-GATE-DECISION",
+      "predecessors": ["L0-CANDIDATE-BUNDLE", "L1-EXTERNAL-REVIEW-SET"],
+      "binds": "externally_executed_exact_mutation_result_runtime_and_scoped_gate_decision",
+      "output_digest": "gate_decision_sha256"
+    },
+    {
+      "id": "L3-EVIDENCE-CAPSULE",
+      "predecessors": ["L0-CANDIDATE-BUNDLE", "L1-EXTERNAL-REVIEW-SET", "L2-INDEPENDENT-GATE-DECISION"],
+      "binds": "all_preceding_layer_outputs_without_authorizing_any_broader_claim",
+      "output_digest": "evidence_capsule_manifest_sha256"
+    }
+  ],
+  "capture_contract": {
+    "read_each_input_once": true,
+    "manifest_fields": ["path", "role", "media_type", "byte_length", "sha256"],
+    "repository_glob_or_discovery": false,
+    "mutable_branch_reference": false,
+    "network_import": false,
+    "candidate_selected_policy_digest": false,
+    "external_gate_selects_bundle_digest": true,
+    "post_capture_mutation_reuse": false,
+    "self_referential_digest_required": false,
+    "layer_outputs_bind_only_predecessor_bytes": true
+  },
+  "checks": [
+    {"id":"HM-G0-001","class":"assurance","requirement":"capture_each_required_role_once_and_bind_exact_raw_bytes_in_a_manifest"},
+    {"id":"HM-G0-002","class":"assurance","requirement":"all_references_close_over_manifest_path_role_and_digest_without_glob_network_or_mutable_ref"},
+    {"id":"CAT-G0-001","class":"catalog","requirement":"strict_schema_duplicate_key_unknown_field_integer_bound_unit_and_reference_validation"},
+    {"id":"CAT-G0-002","class":"catalog","requirement":"policy_owns_claim_nonclaim_threat_trust_resource_writer_partition_provider_fairness_DAG_obligation_and_mutation_meaning"},
+    {"id":"CAT-G0-003","class":"catalog","requirement":"profile_fixes_nonvacuous_distinct_alias_generation_lane_node_cluster_partition_transfer_restart_exhaustion_and_GC_cases"},
+    {"id":"CAT-G0-004","class":"catalog","requirement":"Linux_has_no_fairness_mint_authoritative_writer_or_entry_role_and_runtime_receipts_start_Vacant"},
+    {"id":"CAT-G0-005","class":"catalog","requirement":"each_semantic_rule_maps_to_typed_candidate_binding_obligation_witness_mutation_and_claim"},
+    {"id":"CAT-G0-006","class":"catalog","requirement":"policy_profile_mutations_have_external_exact_patch_precondition_mutant_digest_and_expected_reject"},
+    {"id":"HM-G0-003","class":"assurance","requirement":"author_disjoint_security_semantic_formal_encodability_and_scenario_scale_reviews_bind_the_final_bundle_digest_and_have_zero_blocker"},
+    {"id":"HM-G0-004","class":"assurance","requirement":"every_byte_change_requires_new_bundle_identity_all_checks_and_all_final_reviews"},
+    {"id":"HM-G0-005","class":"assurance","requirement":"independent_gate_decision_binds_exact_bundle_and_derives_only_the_allowed_authorization"}
+  ],
+  "review_roles": [
+    {
+      "id":"REVIEW-G0-SECURITY-SEMANTIC",
+      "scope":["threat_model","trust_writers","authority_resource","entry_revocation_async_settlement","claim_boundary"],
+      "assigned_checks":["CAT-G0-002","CAT-G0-004","CAT-G0-005","CAT-G0-006"]
+    },
+    {
+      "id":"REVIEW-G0-FORMAL-ENCODABILITY",
+      "scope":["typed_templates","DAG","consistency_domains","atomicity","obligations","rank_and_fairness","no_semantic_invention"],
+      "assigned_checks":["CAT-G0-001","CAT-G0-002","CAT-G0-005","CAT-G0-006"]
+    },
+    {
+      "id":"REVIEW-G0-SCENARIO-SCALE",
+      "scope":["finite_cardinalities","distinctness","reachability","cuts","fixed_modes","state_space_decomposition","multi_cluster_nonclaims"],
+      "assigned_checks":["CAT-G0-003","CAT-G0-005","CAT-G0-006"]
+    }
+  ],
+  "review_acceptance": {
+    "author_may_fill_review_role": false,
+    "one_principal_may_fill_multiple_review_roles": false,
+    "review_must_bind_final_bundle_sha256": true,
+    "review_must_dispose_every_assigned_check": true,
+    "blocking_finding_count": 0,
+    "limitations_may_expand_claim": false,
+    "post_review_edit_requires_full_rereview": true,
+    "same_orchestrator_AI_review_completes_externality": false
+  },
+  "mutation_phases": {
+    "G0": "execute_exact_policy_profile_schema_checker_oracle_and_review_chain_mutations",
+    "G2": "instantiate_and_execute_future_candidate_IR_semantic_mutation_templates",
+    "G7": "execute_safe_and_unsafe_formal_model_variants_against_frozen_translation"
+  },
+  "acceptance_rule": {
+    "all_checks_pass_exactly_once": true,
+    "all_review_roles_accept": true,
+    "blocking_findings": 0,
+    "missing_duplicate_conflicting_stale_or_unbound_input": "reject",
+    "checker_timeout_signal_truncation_or_live_child": "reject",
+    "candidate_status_or_authorization_field_is_evidence": false
+  },
+  "allowed_gate_output": {
+    "r11_machine_source_construction": true,
+    "semantic_freeze": false,
+    "proof_complete": false,
+    "tla_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  },
+  "current_disposition": {
+    "mechanical_consistency": "local_pass",
+    "local_role_separated_advisory_reviews": 3,
+    "exact_external_mutation_campaign": false,
+    "external_review_receipts": 0,
+    "external_gate_decision": false,
+    "g0_complete": false,
+    "r11_machine_source_construction": false
+  },
+  "authorization": {
+    "contract_self_accepts": false,
+    "g0_complete": false,
+    "r11_machine_source_construction": false,
+    "semantic_freeze": false,
+    "tla_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

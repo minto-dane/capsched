@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "id": "dynamic-residency-fourth-hostile-counterexample-review-v1",
+  "date": "2026-08-09",
+  "work_record": "N-183",
+  "requirement": "RESIDENCY-DYN-001",
+  "analysis": "0196-dynamic-residency-fourth-hostile-counterexample-review.md",
+  "reviewed_contract": "dynamic-admission-recurring-residency-architecture-contract-v1.json",
+  "reviewer_identity_authenticated": false,
+  "review_kind": "independent_internal_counterexample_discovery_not_external_assurance",
+  "source_verdict": "FREEZE_NO",
+  "review_provenance": {
+    "raw_independent_session_transcripts_retained_as_immutable_artifacts": false,
+    "this_record_is_an_unattested_internal_discovery_transcription": true,
+    "may_count_as_external_freeze_acceptance_or_rejection_evidence": false,
+    "future_disposition_requires_v2_1_checkpointed_signed_review_reveal": true
+  },
+  "status": "redesign_integrated_pending_fresh_review_and_formal_refinement",
+  "finding_count": 16,
+  "findings": [
+    {"id": "R4-EXEC-01", "severity": "blocker", "finding": "physical_cell_count_and_RunToken_occupancy_budget_are_not_one_conservation_system", "required_response": "one_use_execution_cell_lease_single_physical_owner_exact_budget_ceiling_and_forced_handoff", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-EXEC-02", "severity": "blocker", "finding": "ActivationIntent_can_outlive_the_physical_cell_that_allegedly_backs_it", "required_response": "prepare_before_cell_and_consume_only_current_due_unconsumed_cell_in_joint_activation", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-SVC-01", "severity": "blocker", "finding": "ActivationCommitReceipt_without_delivered_execution_can_vacuously_satisfy_recurring_service", "required_response": "separate_authority_activation_from_hardware_visible_positive_quantum_or_authenticated_yield_service", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-ACT-01", "severity": "high", "finding": "ActivationID_generation_uniqueness_and_receipt_token_bijection_are_missing", "required_response": "derive_one_id_from_intent_and_consumed_cell_and_make_retries_idempotent", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-PLACE-01", "severity": "blocker", "finding": "lease_extension_can_authorize_source_execution_beyond_GlobalPlacementUse_horizon", "required_response": "minimum_all_horizons_guard_and_fresh_global_authority_for_extension", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-PLACE-02", "severity": "blocker", "finding": "quorum_supersession_cannot_reconstruct_source_settlement_prefix_after_source_loss", "required_response": "fault_tolerant_prefix_evidence_or_explicit_continuity_lost_epoch", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-MIG-01", "severity": "blocker", "finding": "migration_gap_is_measured_from_source_stop_not_last_delivered_service", "required_response": "seal_last_delivered_service_receipt_and_tick_in_source_transfer_evidence", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-FAIL-01", "severity": "high", "finding": "canonically_least_sound_cover_is_not_total_on_an_unordered_ancestor_DAG", "required_response": "rooted_cover_tree_or_boot_fixed_total_tie_break_bound_to_topology_generation", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-FAIL-02", "severity": "high", "finding": "failure_cover_topology_generation_is_undefined_across_reparent", "required_response": "freeze_source_topology_and_use_conservative_union_with_current_or_failstop", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-FAIL-03", "severity": "high", "finding": "failure_capacity_transfer_and_node_cover_noninterference_exception_are_undefined", "required_response": "atomic_Current_to_FailureEscrow_transfer_and_cover_relative_unaffected_definition", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-MODE-01", "severity": "high", "finding": "RECOVERY_ONLY_semantics_disagree_before_connectivity_expiry", "required_response": "recovery_only_from_certificate_installation_without_connectivity_reopen", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-CAP-01", "severity": "high", "finding": "control_and_execution_frames_can_overbook_shared_physical_CPU", "required_response": "common_hardware_capacity_root_or_disjoint_hardware_identity", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-ACT-02", "severity": "high", "finding": "joint_activation_crash_cuts_before_final_publication_are_undefined", "required_response": "hardware_inert_staging_and_one_final_valid_entry_gate", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-CLOCK-01", "severity": "high", "finding": "LeaseTick_can_stutter_forever_under_current_upper_bound_only_relation", "required_response": "explicit_protected_clock_progress_rely_or_withdraw_time_bounded_liveness", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-LIFE-01", "severity": "medium", "finding": "human_machine_lifecycle_and_pending_transaction_writer_semantics_diverge", "required_response": "total_refinement_map_and_source_then_transaction_owner_order", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"},
+    {"id": "R4-VAL-01", "severity": "high", "finding": "pins_and_assertion_labels_do_not_validate_nested_semantics_or_review_provenance", "required_response": "executable_witness_exact_nested_schemas_immutable_review_digests_and_semantic_mutations", "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"}
+  ],
+  "claims": {
+    "findings_recorded": true,
+    "candidate_redesign_integrated": true,
+    "findings_closed": false,
+    "architecture_frozen": false,
+    "tla_authorized": false,
+    "model_supported": false,
+    "protection_evidenced": false
+  }
+}

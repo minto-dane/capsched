@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "id": "dynamic-residency-sixth-fresh-hostile-review-rejection-v1",
+  "date": "2026-08-09",
+  "work_record": "N-187",
+  "requirement": "RESIDENCY-DYN-001",
+  "analysis": "0199-dynamic-residency-sixth-fresh-hostile-review-rejection.md",
+  "reviewed_candidate_object_set_sha256": "24bb1320d3f50a10195d18e899d7101d7f422ca6ed18c5bedfb088ff4bdc174f",
+  "review_kind": "four_independent_unauthenticated_internal_hostile_counterexample_discovery_passes",
+  "reviewer_identity_authenticated": false,
+  "raw_review_transcripts_retained_as_external_evidence": false,
+  "verdict": "FREEZE_NO",
+  "candidate_disposition": "rejected_preserved_as_exact_regression_target",
+  "finding_count": 21,
+  "finding_ids": [
+    "R6-AUTH-01",
+    "R6-AUTH-02",
+    "R6-ACT-01",
+    "R6-ACT-02",
+    "R6-DELEG-01",
+    "R6-ID-01",
+    "R6-BOUNDARY-01",
+    "R6-XFER-01",
+    "R6-XFER-02",
+    "R6-FAIL-01",
+    "R6-LIVE-01",
+    "R6-LIVE-02",
+    "R6-CALENDAR-01",
+    "R6-CONN-01",
+    "R6-SVC-01",
+    "R6-REFINE-01",
+    "R6-FORMAL-01",
+    "R6-ASSURE-01",
+    "R6-ASSURE-02",
+    "R6-ASSURE-03",
+    "R6-ASSURE-04"
+  ],
+  "findings": [
+    {
+      "id": "R6-AUTH-01",
+      "severity": "blocker",
+      "finding": "initial_RunToken_construction_precedes_the_ActivationCommitReceipt_to_which_its_authority_is_said_to_bind",
+      "required_response": "separate_one_use_PreEntryPermit_and_atomically_create_ActivationCommitReceipt_plus_post_entry_RunToken_at_the_protected_entry_gate",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-AUTH-02",
+      "severity": "blocker",
+      "finding": "ExecutionCellLease_and_its_complete_authority_vector_recursively_authenticate_one_another",
+      "required_response": "seal_ExecutionCellLeaseCore_first_authenticate_only_its_pinned_projection_then_seal_the_final_lease_without_a_self_dependent_digest",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-ACT-01",
+      "severity": "blocker",
+      "finding": "machine_and_prose_use_incompatible_ActivationDecisionCell_keys_and_allow_retry_or_cancel_to_create_a_shadow_winner",
+      "required_response": "key_exactly_one_decision_cell_by_complete_CurrentOpportunityID_and_store_all_attempt_identities_inside_it",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-ACT-02",
+      "severity": "blocker",
+      "finding": "the_high_level_lifecycle_omits_PreparedInert_and_has_no_total_mapping_for_cancel_crash_stop_and_settlement_prefixes",
+      "required_response": "define_one_canonical_activation_lifecycle_and_total_high_to_low_simulation_relation",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-DELEG-01",
+      "severity": "blocker",
+      "finding": "DelegationScope_is_observable_replayable_bearer_authority_without_grantee_or_proof_of_possession_binding",
+      "required_response": "bind_grantee_key_audience_channel_attenuation_chain_grant_generation_mode_and_holder_proof_or_use_a_protected_nontransferable_reference",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-ID-01",
+      "severity": "blocker",
+      "finding": "delimiter_concatenated_identities_can_alias_and_symbolic_sha256_strings_are_accepted_as_real_digests",
+      "required_response": "use_typed_canonical_serialization_exact_digest_computation_and_complete_enclosing_authority_parent_identities",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-BOUNDARY-01",
+      "severity": "blocker",
+      "finding": "ENTRY_CODE_STATE_and_device_receipts_are_type_placeholders_instead_of_security_contracts",
+      "required_response": "define_exact_protected_issuers_subjects_epochs_physical_state_quiescence_DMA_closure_install_entry_atomicity_expiry_and_autonomous_stop_predicates",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-XFER-01",
+      "severity": "blocker",
+      "finding": "prose_rejects_every_cross_epoch_calendar_transfer_while_machine_and_witness_accept_a_clock_relation_certificate",
+      "required_response": "select_one_total_cross_epoch_rule_and_make_prose_machine_witness_and_bounds_identical",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-XFER-02",
+      "severity": "blocker",
+      "finding": "quorum_supersession_authorizes_placement_but_cannot_construct_the_source_receipt_required_by_CalendarTransferV1",
+      "required_response": "normalize_ordinary_quiescence_and_quorum_supersession_into_a_typed_calendar_boundary_certificate_with_exact_continuity_state",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-FAIL-01",
+      "severity": "blocker",
+      "finding": "failure_closure_can_miss_a_later_publication_through_a_scope_discovered_after_the_first_highwater_snapshot",
+      "required_response": "fence_and_drain_publication_per_discovered_scope_atomically_index_every_dependency_before_executability_and_iterate_to_a_bounded_closed_fixed_point",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-LIVE-01",
+      "severity": "blocker",
+      "finding": "StableWindow_assumes_internal_Operational_and_generic_failstop_can_discharge_service_after_internal_failure",
+      "required_response": "state_only_exogenous_relies_prove_OperationalPreservation_separately_and_treat_unexplained_internal_failstop_as_a_violated_guarantee",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-LIVE-02",
+      "severity": "blocker",
+      "finding": "a_due_activation_may_expire_despite_valid_guards_and_fresh_retries_can_repeat_without_a_decreasing_rank",
+      "required_response": "give_valid_due_entry_deterministic_priority_enumerate_exact_expiry_causes_and_charge_a_bounded_attempt_rank_at_admission",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-CALENDAR-01",
+      "severity": "blocker",
+      "finding": "two_guaranteed_streams_may_own_the_same_lane_turn_and_advancing_after_one_can_lose_the_other",
+      "required_response": "make_guaranteed_calendar_ownership_collision_free_at_admission_and_renewal_or_define_a_bounded_conserved_multi_release_cell",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-CONN-01",
+      "severity": "high",
+      "finding": "CONNECTED_ONLY_relies_on_replayable_boolean_like_connectivity_observation",
+      "required_response": "require_protected_current_sequence_challenge_bound_evidence_tied_to_lease_placement_channel_clock_interval_and_expiry",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-SVC-01",
+      "severity": "blocker",
+      "finding": "JSON_defines_an_eight_cell_work_frame_while_prose_defines_nine_cells_and_two_guaranteed_residency_positions",
+      "required_response": "freeze_one_structured_slot_ID_frame_validate_human_machine_parity_and_recompute_capacity_deadlines_and_ranks",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-REFINE-01",
+      "severity": "blocker",
+      "finding": "lifecycle_decision_use_and_settlement_views_lack_one_total_abstraction_relation",
+      "required_response": "define_canonical_state_ownership_derived_views_stuttering_rules_and_a_total_simulation_map_before_formal_decomposition",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-FORMAL-01",
+      "severity": "blocker",
+      "finding": "proof_DAG_omits_the_hardware_time_root_for_dynamic_admission_and_has_no_OperationalPreservation_predecessor",
+      "required_response": "add_exact_formula_action_provider_dependencies_and_an_acyclic_OperationalPreservation_predecessor_before_recurrence",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-ASSURE-01",
+      "severity": "blocker",
+      "finding": "no_real_verifier_trust_root_runtime_policy_pin_signed_campaign_or_external_evidence_exists_and_the_candidate_digest_does_not_bind_the_validator",
+      "required_response": "keep_freeze_false_define_non_self_referential_tool_and_policy_manifests_then_implement_and_externally_pin_the_campaign_only_after_semantic_repair",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-ASSURE-02",
+      "severity": "blocker",
+      "finding": "ReviewPayload_finding_catalog_limitations_dispositions_and_final_decision_are_underspecified_or_absent_from_exact_schemas",
+      "required_response": "freeze_exact_schemas_and_cross_object_relations_for_every_trust_object_and_forbid_vacuous_accept_payloads",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-ASSURE-03",
+      "severity": "blocker",
+      "finding": "witness_signers_need_not_prove_extension_from_their_exact_persisted_prior_tree_root_allowing_an_admitted_event_fork_to_be_hidden",
+      "required_response": "bind_every_signature_to_prior_size_root_event_digest_and_a_verified_consistency_extension_to_the_new_root",
+      "status": "open_successor_redesign_required"
+    },
+    {
+      "id": "R6-ASSURE-04",
+      "severity": "blocker",
+      "finding": "a_matching_semantic_validation_receipt_can_represent_failure_timeout_signal_truncation_or_an_incomplete_check_set",
+      "required_response": "bind_success_exit_result_exact_check_inventory_complete_logs_no_timeout_signal_or_truncation_tool_runtime_identity_and_candidate_capsule",
+      "status": "open_successor_redesign_required"
+    }
+  ],
+  "claims": {
+    "exact_rejected_digest_preserved": true,
+    "four_internal_discovery_passes_synthesized": true,
+    "review_provenance_is_external_assurance": false,
+    "successor_architecture_defined": false,
+    "findings_closed": false,
+    "architecture_frozen": false,
+    "tla_authorized": false,
+    "tla_written": false,
+    "model_supported": false,
+    "protection_evidenced": false,
+    "performance_supported": false,
+    "cost_efficiency_supported": false,
+    "deployment_supported": false
+  }
+}

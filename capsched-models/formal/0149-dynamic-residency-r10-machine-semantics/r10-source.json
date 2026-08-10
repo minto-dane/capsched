@@ -1,0 +1,1921 @@
+{
+  "schema_version": 1,
+  "model_id": "DynamicResidencyR10",
+  "status": "draft",
+  "requirement": "RESIDENCY-DYN-001",
+  "predecessor": {
+    "analysis": "Analysis-0209",
+    "validation": "Validation-0296",
+    "reviewed_sha256": "f7e9f3df695af3015681da99a48bffcc44fe916588da66230fff82be5b411362"
+  },
+  "claim_boundary": {
+    "claims": [
+      "R10-DRAFT-IR-STRUCTURE-EXISTS",
+      "R10-DRAFT-AUTHORITY-TRANSFER-SLICE-ENCODED"
+    ],
+    "nonclaims": [
+      "R10-ARCHITECTURE-FROZEN",
+      "R10-DYNAMIC-RESIDENCY-CLOSED",
+      "R10-TLA-AUTHORIZED",
+      "MODEL-SUPPORTED",
+      "PHYSICAL-ISOLATION-EVIDENCED",
+      "HYPERVISOR-LEVEL-PROTECTION-EVIDENCED",
+      "LINUX-REFINEMENT-EVIDENCED",
+      "MULTI-CLUSTER-CORRECTNESS-EVIDENCED",
+      "PERFORMANCE-OR-COST-EFFICIENCY-EVIDENCED",
+      "DEPLOYMENT-READY"
+    ]
+  },
+  "bounds": {
+    "MaxGeneration": 4,
+    "MaxTxnLocations": 12,
+    "MaxProjectionCursor": 4,
+    "MaxDelegationDepth": 2,
+    "InitialAuthorityUses": 2,
+    "ObjectSlotCapacity": 16,
+    "MaxInstanceCandidates": 1024
+  },
+  "types": [
+    {"id": "Bool", "kind": "builtin", "builtin": "Bool"},
+    {"id": "Int", "kind": "builtin", "builtin": "Int"},
+    {"id": "String", "kind": "builtin", "builtin": "String"},
+    {"id": "NodeID", "kind": "nominal", "values": ["N0", "N1"]},
+    {"id": "ShardID", "kind": "nominal", "values": ["S0", "S1"]},
+    {"id": "TxnSlotID", "kind": "nominal", "values": ["TS0", "TS1", "TS2", "TS3", "TS4", "TS5", "TS6", "TS7", "TS8", "TS9", "TS10", "TS11"]},
+    {"id": "TxnID", "kind": "nominal", "values": ["TX0", "TX1", "TX2", "TX3", "TX4", "TX5", "TX6", "TX7", "TX8", "TX9", "TX10", "TX11"]},
+    {"id": "OutcomeID", "kind": "nominal", "values": ["OUT0", "OUT1", "OUT2", "OUT3", "OUT4", "OUT5", "OUT6", "OUT7", "OUT8", "OUT9", "OUT10", "OUT11"]},
+    {"id": "TombstoneID", "kind": "nominal", "values": ["TOMB0", "TOMB1", "TOMB2", "TOMB3", "TOMB4", "TOMB5", "TOMB6", "TOMB7", "TOMB8", "TOMB9", "TOMB10", "TOMB11"]},
+    {"id": "ObjectSlotID", "kind": "nominal", "values": ["OBJ0", "OBJ1", "OBJ2", "OBJ3", "OBJ4", "OBJ5", "OBJ6", "OBJ7", "OBJ8", "OBJ9", "OBJ10", "OBJ11", "OBJ12", "OBJ13", "OBJ14", "OBJ15"]},
+    {"id": "AuthorityID", "kind": "nominal", "values": ["AUTH0", "AUTH1", "AUTH2"]},
+    {"id": "RevScopeID", "kind": "nominal", "values": ["REV0", "REV1", "REV2"]},
+    {"id": "SubjectID", "kind": "nominal", "values": ["MGMT", "DOM0", "DOM1"]},
+    {"id": "CpuID", "kind": "nominal", "values": ["CPU0", "CPU1"]},
+    {"id": "ProgramID", "kind": "nominal", "values": ["PROG0", "PROG1"]},
+    {"id": "ProtectionDomainID", "kind": "nominal", "values": ["PD-MGMT", "PD0", "PD1"]},
+    {"id": "CarrierID", "kind": "nominal", "values": ["CAR0", "CAR1"]},
+    {"id": "AdmissionID", "kind": "nominal", "values": ["ADM0", "ADM1"]},
+    {"id": "AggregateID", "kind": "nominal", "values": ["AGG0", "AGG1"]},
+    {"id": "StreamID", "kind": "nominal", "values": ["STR0", "STR1"]},
+    {"id": "OpportunityID", "kind": "nominal", "values": ["OPP0", "OPP1"]},
+    {"id": "AttemptID", "kind": "nominal", "values": ["ATT0", "ATT1"]},
+    {"id": "ReadyID", "kind": "nominal", "values": ["READY0", "READY1"]},
+    {"id": "RootFrameID", "kind": "nominal", "values": ["FRAME0", "FRAME1"]},
+    {"id": "RootSlotID", "kind": "nominal", "values": ["RSLOT0", "RSLOT1"]},
+    {"id": "EscrowID", "kind": "nominal", "values": ["ESC0", "ESC1"]},
+    {"id": "EntryBindingID", "kind": "nominal", "values": ["ENTRY0", "ENTRY1"]},
+    {"id": "StopID", "kind": "nominal", "values": ["STOP0", "STOP1"]},
+    {"id": "SettlementID", "kind": "nominal", "values": ["SETTLE0", "SETTLE1"]},
+    {"id": "QuantumID", "kind": "nominal", "values": ["QUANT0", "QUANT1"]},
+    {"id": "ReceiptID", "kind": "nominal", "values": ["RECEIPT0", "RECEIPT1", "RECEIPT2"]},
+    {"id": "ContextID", "kind": "nominal", "values": ["CTX0", "CTX1"]},
+    {"id": "PartitionReceiptID", "kind": "nominal", "values": ["PART0", "PART1"]},
+    {"id": "GrantID", "kind": "nominal", "values": ["GRANT0", "GRANT1"]},
+    {"id": "DecisionTag", "kind": "enum", "values": ["Commit", "Abort"]},
+    {"id": "AbortReason", "kind": "enum", "values": ["CrashBeforeDecision", "VersionMismatch", "GuardFalse", "Cancelled", "Expired"]},
+    {"id": "AuthorityKind", "kind": "enum", "values": ["Run", "Spawn", "Async", "Sched", "Charge"]},
+    {"id": "ActivationSourceKind", "kind": "enum", "values": ["Sync", "Async"]},
+    {"id": "SubjectKind", "kind": "enum", "values": ["Management", "Process", "Thread", "Service"]},
+    {"id": "ApplyBit", "kind": "enum", "values": ["NotApplicable", "Pending", "Applied"]},
+    {"id": "ChargeMode", "kind": "enum", "values": ["ExecutionOnly", "ExecutionAndOverhead", "ServiceOnly"]},
+    {"id": "ShardKey", "kind": "tuple", "members": ["NodeID", "ShardID"]},
+    {
+      "id": "ResourceVector",
+      "kind": "record",
+      "fields": [
+        {"name": "uses", "type": "Int"},
+        {"name": "sched_ticks", "type": "Int"},
+        {"name": "root_ticks", "type": "Int"},
+        {"name": "charge_ticks", "type": "Int"},
+        {"name": "stop_credits", "type": "Int"},
+        {"name": "execution_cells", "type": "Int"}
+      ]
+    },
+    {
+      "id": "AuthorityConstraints",
+      "kind": "record",
+      "fields": [
+        {"name": "operation_mask", "type": "Int"},
+        {"name": "cpu_mask", "type": "Int"},
+        {"name": "priority_ceiling", "type": "Int"},
+        {"name": "co_tenancy_class", "type": "Int"},
+        {"name": "horizon_end", "type": "Int"},
+        {"name": "delegation_depth", "type": "Int"}
+      ]
+    },
+    {
+      "id": "RevScopeRef",
+      "kind": "record",
+      "fields": [
+        {"name": "active", "type": "Bool"},
+        {"name": "scope", "type": "RevScopeID"},
+        {"name": "generation", "type": "Int"}
+      ]
+    },
+    {"id": "RevocationPath", "kind": "vector", "element_type": "RevScopeRef", "length_ast": ["bound", "MaxDelegationDepth"]},
+    {
+      "id": "TxnPlan",
+      "kind": "record",
+      "fields": [
+        {"name": "plan_slot", "type": "ObjectSlotID"},
+        {"name": "expected_digest", "type": "String"}
+      ]
+    },
+    {
+      "id": "AuthorityCore",
+      "kind": "record",
+      "fields": [
+        {"name": "id", "type": "AuthorityID"},
+        {"name": "parent", "type": "AuthorityID"},
+        {"name": "owner", "type": "SubjectID"},
+        {"name": "kind", "type": "AuthorityKind"},
+        {"name": "grant", "type": "ResourceVector"},
+        {"name": "constraints", "type": "AuthorityConstraints"},
+        {"name": "revocation_path", "type": "RevocationPath"},
+        {"name": "own_scope", "type": "RevScopeID"},
+        {"name": "issue_ordinal", "type": "Int"}
+      ]
+    },
+    {
+      "id": "AuthorityIntersectionCore",
+      "kind": "record",
+      "fields": [
+        {"name": "caller_authority", "type": "AuthorityID"},
+        {"name": "service_authority", "type": "AuthorityID"},
+        {"name": "effective_constraints", "type": "AuthorityConstraints"},
+        {"name": "caller_use_ordinal", "type": "Int"},
+        {"name": "service_use_ordinal", "type": "Int"},
+        {"name": "caller_escrow", "type": "EscrowID"},
+        {"name": "service_escrow", "type": "EscrowID"}
+      ]
+    },
+    {
+      "id": "ActivationRequestCore",
+      "kind": "record",
+      "fields": [
+        {"name": "id", "type": "ObjectSlotID"},
+        {"name": "source_kind", "type": "ActivationSourceKind"},
+        {"name": "carrier", "type": "CarrierID"},
+        {"name": "execution_subject", "type": "SubjectID"},
+        {"name": "program", "type": "ProgramID"},
+        {"name": "protection_domain", "type": "ProtectionDomainID"},
+        {"name": "run_authority", "type": "AuthorityID"},
+        {"name": "sched_authority", "type": "AuthorityID"},
+        {"name": "charge_authority", "type": "AuthorityID"},
+        {"name": "constraints", "type": "AuthorityConstraints"},
+        {"name": "requested_service", "type": "Int"},
+        {"name": "horizon_end", "type": "Int"}
+      ]
+    },
+    {
+      "id": "DispatchAuthoritySnapshot",
+      "kind": "record",
+      "fields": [
+        {"name": "id", "type": "ObjectSlotID"},
+        {"name": "opportunity", "type": "OpportunityID"},
+        {"name": "attempt", "type": "AttemptID"},
+        {"name": "ready", "type": "ReadyID"},
+        {"name": "activation_request", "type": "ObjectSlotID"},
+        {"name": "subject", "type": "SubjectID"},
+        {"name": "subject_generation", "type": "Int"},
+        {"name": "program", "type": "ProgramID"},
+        {"name": "program_generation", "type": "Int"},
+        {"name": "aggregate", "type": "AggregateID"},
+        {"name": "aggregate_generation", "type": "Int"},
+        {"name": "run_authority", "type": "AuthorityID"},
+        {"name": "run_generation", "type": "Int"},
+        {"name": "sched_authority", "type": "AuthorityID"},
+        {"name": "charge_authority", "type": "AuthorityID"},
+        {"name": "escrow", "type": "EscrowID"},
+        {"name": "context", "type": "ContextID"},
+        {"name": "target_cpu", "type": "CpuID"},
+        {"name": "cpu_incarnation", "type": "Int"},
+        {"name": "revocation_path", "type": "RevocationPath"},
+        {"name": "horizon_end", "type": "Int"}
+      ]
+    },
+    {
+      "id": "EligibilitySealCore",
+      "kind": "record",
+      "fields": [
+        {"name": "id", "type": "ObjectSlotID"},
+        {"name": "snapshot", "type": "ObjectSlotID"},
+        {"name": "context_receipt", "type": "ReceiptID"},
+        {"name": "eligibility_generation", "type": "Int"},
+        {"name": "not_after", "type": "Int"}
+      ]
+    },
+    {
+      "id": "PhysicalEntryBindingCore",
+      "kind": "record",
+      "fields": [
+        {"name": "id", "type": "EntryBindingID"},
+        {"name": "eligibility_seal", "type": "ObjectSlotID"},
+        {"name": "root_frame", "type": "RootFrameID"},
+        {"name": "root_slot", "type": "RootSlotID"},
+        {"name": "ready", "type": "ReadyID"},
+        {"name": "attempt", "type": "AttemptID"},
+        {"name": "quantum", "type": "QuantumID"},
+        {"name": "stop", "type": "StopID"},
+        {"name": "target_cpu", "type": "CpuID"},
+        {"name": "cpu_incarnation", "type": "Int"},
+        {"name": "partition_receipt", "type": "PartitionReceiptID"},
+        {"name": "clock_epoch", "type": "Int"},
+        {"name": "not_before", "type": "Int"},
+        {"name": "not_after", "type": "Int"},
+        {"name": "quantum_upper", "type": "Int"}
+      ]
+    },
+    {
+      "id": "StopRequestCore",
+      "kind": "record",
+      "fields": [
+        {"name": "id", "type": "StopID"},
+        {"name": "entry_binding", "type": "EntryBindingID"},
+        {"name": "cpu", "type": "CpuID"},
+        {"name": "cpu_incarnation", "type": "Int"},
+        {"name": "entry_generation", "type": "Int"},
+        {"name": "quantum", "type": "QuantumID"},
+        {"name": "quantum_generation", "type": "Int"},
+        {"name": "residual_upper", "type": "Int"},
+        {"name": "deadline", "type": "Int"}
+      ]
+    },
+    {
+      "id": "LedgerPlan",
+      "kind": "record",
+      "fields": [
+        {"name": "root", "type": "ApplyBit"},
+        {"name": "sched", "type": "ApplyBit"},
+        {"name": "charge", "type": "ApplyBit"},
+        {"name": "caller", "type": "ApplyBit"},
+        {"name": "service", "type": "ApplyBit"},
+        {"name": "charge_mode", "type": "ChargeMode"}
+      ]
+    },
+    {
+      "id": "OverheadReceiptCore",
+      "kind": "record",
+      "fields": [
+        {"name": "id", "type": "ReceiptID"},
+        {"name": "cpu", "type": "CpuID"},
+        {"name": "cpu_incarnation", "type": "Int"},
+        {"name": "entry_binding", "type": "EntryBindingID"},
+        {"name": "phase", "type": "String"},
+        {"name": "sequence", "type": "Int"},
+        {"name": "ticks", "type": "Int"},
+        {"name": "upper_bound", "type": "Int"},
+        {"name": "previous_digest", "type": "String"}
+      ]
+    },
+    {
+      "id": "ObjectPayload",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Authority", "fields": [{"name": "authority", "type": "AuthorityCore"}]},
+        {"tag": "AuthorityIntersection", "fields": [{"name": "intersection", "type": "AuthorityIntersectionCore"}]},
+        {"tag": "ActivationRequest", "fields": [{"name": "activation", "type": "ActivationRequestCore"}]},
+        {"tag": "DispatchSnapshot", "fields": [{"name": "snapshot", "type": "DispatchAuthoritySnapshot"}]},
+        {"tag": "EligibilitySeal", "fields": [{"name": "eligibility", "type": "EligibilitySealCore"}]}
+      ]
+    },
+    {
+      "id": "ObjectSlotState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Staged",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "payload", "type": "ObjectPayload"},
+            {"name": "digest", "type": "String"}
+          ]
+        },
+        {
+          "tag": "Published",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "payload", "type": "ObjectPayload"},
+            {"name": "digest", "type": "String"},
+            {"name": "txn_id", "type": "TxnID"}
+          ]
+        },
+        {
+          "tag": "Retired",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "tombstone", "type": "TombstoneID"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TxnState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "slot_generation", "type": "Int"}]},
+        {
+          "tag": "Prepared",
+          "fields": [
+            {"name": "slot_generation", "type": "Int"},
+            {"name": "txn_id", "type": "TxnID"},
+            {"name": "txn_kind", "type": "String"},
+            {"name": "plan", "type": "TxnPlan"},
+            {"name": "prepared_epoch", "type": "Int"}
+          ]
+        },
+        {
+          "tag": "CommitIntent",
+          "fields": [
+            {"name": "slot_generation", "type": "Int"},
+            {"name": "txn_id", "type": "TxnID"},
+            {"name": "txn_kind", "type": "String"},
+            {"name": "plan", "type": "TxnPlan"},
+            {"name": "outcome_id", "type": "OutcomeID"},
+            {"name": "projection_cursor", "type": "Int"}
+          ]
+        },
+        {
+          "tag": "AbortIntent",
+          "fields": [
+            {"name": "slot_generation", "type": "Int"},
+            {"name": "txn_id", "type": "TxnID"},
+            {"name": "txn_kind", "type": "String"},
+            {"name": "plan", "type": "TxnPlan"},
+            {"name": "outcome_id", "type": "OutcomeID"},
+            {"name": "reason", "type": "AbortReason"},
+            {"name": "projection_cursor", "type": "Int"}
+          ]
+        },
+        {
+          "tag": "Applying",
+          "fields": [
+            {"name": "slot_generation", "type": "Int"},
+            {"name": "txn_id", "type": "TxnID"},
+            {"name": "txn_kind", "type": "String"},
+            {"name": "plan", "type": "TxnPlan"},
+            {"name": "decision", "type": "DecisionTag"},
+            {"name": "outcome_id", "type": "OutcomeID"},
+            {"name": "projection_cursor", "type": "Int"}
+          ]
+        },
+        {
+          "tag": "Complete",
+          "fields": [
+            {"name": "slot_generation", "type": "Int"},
+            {"name": "txn_id", "type": "TxnID"},
+            {"name": "txn_kind", "type": "String"},
+            {"name": "decision", "type": "DecisionTag"},
+            {"name": "outcome_id", "type": "OutcomeID"}
+          ]
+        },
+        {
+          "tag": "Retired",
+          "fields": [
+            {"name": "slot_generation", "type": "Int"},
+            {"name": "txn_id", "type": "TxnID"},
+            {"name": "tombstone_id", "type": "TombstoneID"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AuthorityAccountState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Live",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "balance", "type": "ResourceVector"},
+            {"name": "next_ordinal", "type": "Int"},
+            {"name": "authority_object", "type": "ObjectSlotID"},
+            {"name": "rev_scope", "type": "RevScopeID"}
+          ]
+        },
+        {
+          "tag": "Closing",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "balance", "type": "ResourceVector"},
+            {"name": "active_use_cut", "type": "Int"},
+            {"name": "rev_scope", "type": "RevScopeID"}
+          ]
+        },
+        {
+          "tag": "Revoked",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "unused_returned", "type": "ResourceVector"}
+          ]
+        },
+        {"tag": "Retired", "fields": [{"name": "generation", "type": "Int"}]}
+      ]
+    },
+    {
+      "id": "RevocationScopeState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {"tag": "Live", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "RevokeRequested",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "active_use_cut", "type": "Int"}
+          ]
+        },
+        {
+          "tag": "RevokedEffective",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "stop_receipt", "type": "OutcomeID"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ObjectAllocatorState",
+      "kind": "record",
+      "fields": [
+        {"name": "next_ordinal", "type": "Int"},
+        {"name": "exhausted", "type": "Bool"}
+      ]
+    },
+    {
+      "id": "GcState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Blocked", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Authorized",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "checkpoint", "type": "OutcomeID"},
+            {"name": "horizon", "type": "Int"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SubjectState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Initializing",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "kind", "type": "SubjectKind"},
+            {"name": "protection_domain", "type": "ProtectionDomainID"}
+          ]
+        },
+        {
+          "tag": "Live",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "kind", "type": "SubjectKind"},
+            {"name": "program", "type": "ProgramID"},
+            {"name": "program_generation", "type": "Int"},
+            {"name": "protection_domain", "type": "ProtectionDomainID"},
+            {"name": "publication_generation", "type": "Int"}
+          ]
+        },
+        {
+          "tag": "ExecClosing",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "old_program", "type": "ProgramID"},
+            {"name": "new_program", "type": "ProgramID"},
+            {"name": "drain_cut", "type": "Int"}
+          ]
+        },
+        {
+          "tag": "ExitClosing",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "drain_cut", "type": "Int"}
+          ]
+        },
+        {"tag": "Terminal", "fields": [{"name": "generation", "type": "Int"}]}
+      ]
+    },
+    {
+      "id": "CarrierState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Live",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "intersection_object", "type": "ObjectSlotID"},
+            {"name": "activation_object", "type": "ObjectSlotID"},
+            {"name": "caller_ordinal", "type": "Int"},
+            {"name": "service_ordinal", "type": "Int"},
+            {"name": "horizon_end", "type": "Int"}
+          ]
+        },
+        {"tag": "Bound", "fields": [{"name": "generation", "type": "Int"}, {"name": "activation_object", "type": "ObjectSlotID"}]},
+        {"tag": "Terminal", "fields": [{"name": "generation", "type": "Int"}, {"name": "outcome", "type": "OutcomeID"}]}
+      ]
+    },
+    {
+      "id": "AggregateState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Current",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "admission", "type": "AdmissionID"},
+            {"name": "next_use_ordinal", "type": "Int"},
+            {"name": "horizon_end", "type": "Int"},
+            {"name": "partition_receipt", "type": "PartitionReceiptID"}
+          ]
+        },
+        {
+          "tag": "Closing",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "active_use_cut", "type": "Int"},
+            {"name": "terminal_prefix", "type": "Int"},
+            {"name": "cause", "type": "String"}
+          ]
+        },
+        {"tag": "Closed", "fields": [{"name": "generation", "type": "Int"}, {"name": "stop_outcome", "type": "OutcomeID"}]}
+      ]
+    },
+    {
+      "id": "OpportunityState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Open",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "stream", "type": "StreamID"},
+            {"name": "ordinal", "type": "Int"},
+            {"name": "next_attempt_ordinal", "type": "Int"},
+            {"name": "horizon_end", "type": "Int"}
+          ]
+        },
+        {"tag": "Active", "fields": [{"name": "generation", "type": "Int"}, {"name": "attempt", "type": "AttemptID"}]},
+        {
+          "tag": "AwaitRetry",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "last_attempt", "type": "AttemptID"},
+            {"name": "next_attempt_ordinal", "type": "Int"}
+          ]
+        },
+        {"tag": "Terminal", "fields": [{"name": "generation", "type": "Int"}, {"name": "outcome", "type": "OutcomeID"}]}
+      ]
+    },
+    {
+      "id": "AttemptState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Allocated",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "opportunity", "type": "OpportunityID"},
+            {"name": "attempt_ordinal", "type": "Int"},
+            {"name": "ready", "type": "ReadyID"},
+            {"name": "snapshot", "type": "ObjectSlotID"},
+            {"name": "entry_binding", "type": "EntryBindingID"}
+          ]
+        },
+        {"tag": "Prepared", "fields": [{"name": "generation", "type": "Int"}, {"name": "eligibility", "type": "ObjectSlotID"}]},
+        {"tag": "EntryRequested", "fields": [{"name": "generation", "type": "Int"}, {"name": "entry_binding", "type": "EntryBindingID"}]},
+        {"tag": "Entered", "fields": [{"name": "generation", "type": "Int"}, {"name": "receipt", "type": "ReceiptID"}]},
+        {"tag": "NeverEntered", "fields": [{"name": "generation", "type": "Int"}, {"name": "receipt", "type": "ReceiptID"}]},
+        {"tag": "Settling", "fields": [{"name": "generation", "type": "Int"}, {"name": "settlement", "type": "SettlementID"}]},
+        {"tag": "Terminal", "fields": [{"name": "generation", "type": "Int"}, {"name": "outcome", "type": "OutcomeID"}, {"name": "entered", "type": "Bool"}]}
+      ]
+    },
+    {
+      "id": "ReadyState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {"tag": "Available", "fields": [{"name": "generation", "type": "Int"}, {"name": "opportunity", "type": "OpportunityID"}]},
+        {"tag": "Preparing", "fields": [{"name": "generation", "type": "Int"}, {"name": "attempt", "type": "AttemptID"}]},
+        {"tag": "Eligible", "fields": [{"name": "generation", "type": "Int"}, {"name": "attempt", "type": "AttemptID"}, {"name": "eligibility", "type": "ObjectSlotID"}]},
+        {"tag": "Claimed", "fields": [{"name": "generation", "type": "Int"}, {"name": "attempt", "type": "AttemptID"}, {"name": "root_slot", "type": "RootSlotID"}]},
+        {"tag": "Terminal", "fields": [{"name": "generation", "type": "Int"}, {"name": "outcome", "type": "OutcomeID"}]}
+      ]
+    },
+    {
+      "id": "RootFrameState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Released",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "ordinal", "type": "Int"},
+            {"name": "root_budget", "type": "Int"},
+            {"name": "deadline", "type": "Int"}
+          ]
+        },
+        {"tag": "Closed", "fields": [{"name": "generation", "type": "Int"}, {"name": "outcome", "type": "OutcomeID"}]}
+      ]
+    },
+    {
+      "id": "RootSlotState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {"tag": "Open", "fields": [{"name": "generation", "type": "Int"}, {"name": "frame", "type": "RootFrameID"}]},
+        {"tag": "Claimed", "fields": [{"name": "generation", "type": "Int"}, {"name": "frame", "type": "RootFrameID"}, {"name": "ready", "type": "ReadyID"}, {"name": "attempt", "type": "AttemptID"}]},
+        {"tag": "NoReady", "fields": [{"name": "generation", "type": "Int"}, {"name": "frame", "type": "RootFrameID"}]},
+        {"tag": "Delivered", "fields": [{"name": "generation", "type": "Int"}, {"name": "receipt", "type": "ReceiptID"}]}
+      ]
+    },
+    {
+      "id": "EscrowState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Reserved",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "root_reserved", "type": "Int"},
+            {"name": "run_reserved", "type": "Int"},
+            {"name": "entry_overhead_reserved", "type": "Int"},
+            {"name": "stop_overhead_reserved", "type": "Int"},
+            {"name": "run_remaining", "type": "Int"},
+            {"name": "overhead_remaining", "type": "Int"},
+            {"name": "armed_upper", "type": "Int"},
+            {"name": "run_charged", "type": "Int"},
+            {"name": "overhead_charged", "type": "Int"},
+            {"name": "verified_service", "type": "Int"},
+            {"name": "ledger_plan", "type": "LedgerPlan"}
+          ]
+        },
+        {"tag": "Settled", "fields": [{"name": "generation", "type": "Int"}, {"name": "settlement", "type": "SettlementID"}]}
+      ]
+    },
+    {
+      "id": "StopState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {"tag": "Open", "fields": [{"name": "generation", "type": "Int"}, {"name": "entry_binding", "type": "EntryBindingID"}]},
+        {"tag": "Requested", "fields": [{"name": "generation", "type": "Int"}, {"name": "request_object", "type": "ObjectSlotID"}]},
+        {"tag": "ProviderStopped", "fields": [{"name": "generation", "type": "Int"}, {"name": "receipt", "type": "ReceiptID"}]},
+        {"tag": "Settled", "fields": [{"name": "generation", "type": "Int"}, {"name": "settlement", "type": "SettlementID"}]}
+      ]
+    },
+    {
+      "id": "SettlementState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {
+          "tag": "Committed",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "root_consumed", "type": "Int"},
+            {"name": "sched_consumed", "type": "Int"},
+            {"name": "charge_consumed", "type": "Int"},
+            {"name": "root_return", "type": "Int"},
+            {"name": "sched_return", "type": "Int"},
+            {"name": "charge_return", "type": "Int"},
+            {"name": "ledger_plan", "type": "LedgerPlan"}
+          ]
+        },
+        {"tag": "Applied", "fields": [{"name": "generation", "type": "Int"}, {"name": "receipt", "type": "OutcomeID"}]}
+      ]
+    },
+    {
+      "id": "LedgerApplyState",
+      "kind": "record",
+      "fields": [
+        {"name": "generation", "type": "Int"},
+        {"name": "settlement", "type": "SettlementID"},
+        {"name": "root", "type": "ApplyBit"},
+        {"name": "sched", "type": "ApplyBit"},
+        {"name": "charge", "type": "ApplyBit"},
+        {"name": "caller", "type": "ApplyBit"},
+        {"name": "service", "type": "ApplyBit"}
+      ]
+    },
+    {
+      "id": "CpuExecutionState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Offline", "fields": [{"name": "incarnation", "type": "Int"}, {"name": "current_tick", "type": "Int"}]},
+        {"tag": "Idle", "fields": [{"name": "incarnation", "type": "Int"}, {"name": "current_tick", "type": "Int"}, {"name": "state_version", "type": "Int"}]},
+        {
+          "tag": "ContextInstalled",
+          "fields": [
+            {"name": "incarnation", "type": "Int"},
+            {"name": "current_tick", "type": "Int"},
+            {"name": "state_version", "type": "Int"},
+            {"name": "context", "type": "ContextID"},
+            {"name": "receipt", "type": "ReceiptID"}
+          ]
+        },
+        {
+          "tag": "EntryPrepared",
+          "fields": [
+            {"name": "incarnation", "type": "Int"},
+            {"name": "current_tick", "type": "Int"},
+            {"name": "state_version", "type": "Int"},
+            {"name": "entry_binding", "type": "EntryBindingID"},
+            {"name": "subject", "type": "SubjectID"},
+            {"name": "subject_generation", "type": "Int"},
+            {"name": "program", "type": "ProgramID"},
+            {"name": "program_generation", "type": "Int"},
+            {"name": "aggregate", "type": "AggregateID"},
+            {"name": "aggregate_generation", "type": "Int"},
+            {"name": "run_authority", "type": "AuthorityID"},
+            {"name": "run_generation", "type": "Int"},
+            {"name": "rev_scope", "type": "RevScopeID"},
+            {"name": "rev_generation", "type": "Int"},
+            {"name": "quantum", "type": "QuantumID"},
+            {"name": "quantum_generation", "type": "Int"},
+            {"name": "quantum_upper", "type": "Int"},
+            {"name": "not_after", "type": "Int"},
+            {"name": "context", "type": "ContextID"},
+            {"name": "timer_enabled", "type": "Bool"},
+            {"name": "execution_gate", "type": "Bool"}
+          ]
+        },
+        {
+          "tag": "Running",
+          "fields": [
+            {"name": "incarnation", "type": "Int"},
+            {"name": "current_tick", "type": "Int"},
+            {"name": "state_version", "type": "Int"},
+            {"name": "entry_binding", "type": "EntryBindingID"},
+            {"name": "entry_generation", "type": "Int"},
+            {"name": "subject", "type": "SubjectID"},
+            {"name": "subject_generation", "type": "Int"},
+            {"name": "program", "type": "ProgramID"},
+            {"name": "program_generation", "type": "Int"},
+            {"name": "aggregate", "type": "AggregateID"},
+            {"name": "aggregate_generation", "type": "Int"},
+            {"name": "run_authority", "type": "AuthorityID"},
+            {"name": "run_generation", "type": "Int"},
+            {"name": "rev_scope", "type": "RevScopeID"},
+            {"name": "rev_generation", "type": "Int"},
+            {"name": "quantum", "type": "QuantumID"},
+            {"name": "quantum_generation", "type": "Int"},
+            {"name": "quantum_upper", "type": "Int"},
+            {"name": "executed", "type": "Int"},
+            {"name": "not_after", "type": "Int"},
+            {"name": "context", "type": "ContextID"},
+            {"name": "timer_enabled", "type": "Bool"},
+            {"name": "execution_gate", "type": "Bool"}
+          ]
+        },
+        {
+          "tag": "Stopped",
+          "fields": [
+            {"name": "incarnation", "type": "Int"},
+            {"name": "current_tick", "type": "Int"},
+            {"name": "state_version", "type": "Int"},
+            {"name": "entry_binding", "type": "EntryBindingID"},
+            {"name": "entry_generation", "type": "Int"},
+            {"name": "quantum", "type": "QuantumID"},
+            {"name": "quantum_generation", "type": "Int"},
+            {"name": "actual_ticks", "type": "Int"},
+            {"name": "receipt", "type": "ReceiptID"},
+            {"name": "timer_enabled", "type": "Bool"},
+            {"name": "execution_gate", "type": "Bool"}
+          ]
+        },
+        {"tag": "FailStopped", "fields": [{"name": "incarnation", "type": "Int"}, {"name": "current_tick", "type": "Int"}, {"name": "receipt", "type": "ReceiptID"}]}
+      ]
+    },
+    {
+      "id": "CpuReceiptState",
+      "kind": "variant",
+      "variants": [
+        {"tag": "Vacant", "fields": [{"name": "generation", "type": "Int"}]},
+        {"tag": "ContextInstalled", "fields": [{"name": "generation", "type": "Int"}, {"name": "context", "type": "ContextID"}, {"name": "cpu_incarnation", "type": "Int"}]},
+        {
+          "tag": "Entered",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "entry_binding", "type": "EntryBindingID"},
+            {"name": "entry_generation", "type": "Int"},
+            {"name": "start_tick", "type": "Int"}
+          ]
+        },
+        {"tag": "NeverEntered", "fields": [{"name": "generation", "type": "Int"}, {"name": "entry_binding", "type": "EntryBindingID"}, {"name": "reason", "type": "String"}]},
+        {
+          "tag": "Boundary",
+          "fields": [
+            {"name": "generation", "type": "Int"},
+            {"name": "entry_binding", "type": "EntryBindingID"},
+            {"name": "quantum", "type": "QuantumID"},
+            {"name": "actual_ticks", "type": "Int"},
+            {"name": "overhead_ticks", "type": "Int"}
+          ]
+        },
+        {"tag": "Offline", "fields": [{"name": "generation", "type": "Int"}, {"name": "old_incarnation", "type": "Int"}, {"name": "new_incarnation", "type": "Int"}]}
+      ]
+    }
+  ],
+  "consistency_domains": [
+    {"id": "CD-NODE-SHARD", "index_types": ["NodeID", "ShardID"]},
+    {"id": "CD-CPU", "index_types": ["NodeID", "ShardID", "CpuID"]}
+  ],
+  "writers": [
+    {
+      "id": "WR-MONITOR",
+      "class": "monitor",
+      "index_names": ["node", "shard"],
+      "index_types": ["NodeID", "ShardID"],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]]
+    },
+    {
+      "id": "WR-STORE",
+      "class": "time_provider",
+      "index_names": ["node", "shard"],
+      "index_types": ["NodeID", "ShardID"],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]]
+    },
+    {
+      "id": "WR-CPU",
+      "class": "cpu_provider",
+      "index_names": ["node", "shard", "cpu"],
+      "index_types": ["NodeID", "ShardID", "CpuID"],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]]
+    }
+  ],
+  "objects": [
+    {
+      "id": "OBJDEF-AuthorityCore",
+      "version": 1,
+      "record_type": "AuthorityCore",
+      "identity_fields": ["id", "issue_ordinal"],
+      "allocator": "object_allocator",
+      "constructor_action": "TXN-AUTH-ISSUE",
+      "reference_edges": [
+        {"field_path": "id", "target_type": "AuthorityID", "class": "REF-AUTHORITY-ID", "strength": "identity"},
+        {"field_path": "parent", "target_type": "AuthorityID", "class": "REF-AUTHORITY-PARENT", "strength": "liveness"},
+        {"field_path": "owner", "target_type": "SubjectID", "class": "REF-SUBJECT", "strength": "liveness"},
+        {"field_path": "revocation_path[].scope", "target_type": "RevScopeID", "class": "REF-REVOCATION-PATH", "strength": "authorization_horizon"},
+        {"field_path": "own_scope", "target_type": "RevScopeID", "class": "REF-REVOCATION", "strength": "authorization_horizon"}
+      ]
+    },
+    {
+      "id": "OBJDEF-AuthorityIntersectionCore",
+      "version": 1,
+      "record_type": "AuthorityIntersectionCore",
+      "identity_fields": ["caller_authority", "service_authority", "caller_use_ordinal", "service_use_ordinal"],
+      "allocator": "object_allocator",
+      "constructor_action": "TXN-ASYNC-CARRIER",
+      "reference_edges": [
+        {"field_path": "caller_authority", "target_type": "AuthorityID", "class": "REF-ASYNC-CALLER", "strength": "authorization_horizon"},
+        {"field_path": "service_authority", "target_type": "AuthorityID", "class": "REF-ASYNC-SERVICE", "strength": "authorization_horizon"},
+        {"field_path": "caller_escrow", "target_type": "EscrowID", "class": "REF-ASYNC-CALLER-ESCROW", "strength": "liveness"},
+        {"field_path": "service_escrow", "target_type": "EscrowID", "class": "REF-ASYNC-SERVICE-ESCROW", "strength": "liveness"}
+      ]
+    },
+    {
+      "id": "OBJDEF-ActivationRequestCore",
+      "version": 1,
+      "record_type": "ActivationRequestCore",
+      "identity_fields": ["id"],
+      "allocator": "object_allocator",
+      "constructor_action": "TXN-ASYNC-CARRIER",
+      "reference_edges": [
+        {"field_path": "id", "target_type": "ObjectSlotID", "class": "REF-ACTIVATION-ID", "strength": "identity"},
+        {"field_path": "carrier", "target_type": "CarrierID", "class": "REF-ACTIVATION-CARRIER", "strength": "liveness"},
+        {"field_path": "execution_subject", "target_type": "SubjectID", "class": "REF-ACTIVATION-SUBJECT", "strength": "liveness"},
+        {"field_path": "program", "target_type": "ProgramID", "class": "REF-ACTIVATION-PROGRAM", "strength": "liveness"},
+        {"field_path": "protection_domain", "target_type": "ProtectionDomainID", "class": "REF-ACTIVATION-PDOMAIN", "strength": "authorization_horizon"},
+        {"field_path": "run_authority", "target_type": "AuthorityID", "class": "REF-ACTIVATION-RUN", "strength": "authorization_horizon"},
+        {"field_path": "sched_authority", "target_type": "AuthorityID", "class": "REF-ACTIVATION-SCHED", "strength": "authorization_horizon"},
+        {"field_path": "charge_authority", "target_type": "AuthorityID", "class": "REF-ACTIVATION-CHARGE", "strength": "authorization_horizon"}
+      ]
+    },
+    {
+      "id": "OBJDEF-DispatchAuthoritySnapshot",
+      "version": 1,
+      "record_type": "DispatchAuthoritySnapshot",
+      "identity_fields": ["id", "opportunity", "attempt"],
+      "allocator": "object_allocator",
+      "constructor_action": "TXN-ATTEMPT-PREPARE",
+      "reference_edges": [
+        {"field_path": "id", "target_type": "ObjectSlotID", "class": "REF-DISPATCH-ID", "strength": "identity"},
+        {"field_path": "opportunity", "target_type": "OpportunityID", "class": "REF-DISPATCH-OPPORTUNITY", "strength": "liveness"},
+        {"field_path": "attempt", "target_type": "AttemptID", "class": "REF-DISPATCH-ATTEMPT", "strength": "liveness"},
+        {"field_path": "activation_request", "target_type": "ObjectSlotID", "class": "REF-ACTIVATION-OBJECT", "strength": "liveness"},
+        {"field_path": "subject", "target_type": "SubjectID", "class": "REF-DISPATCH-SUBJECT", "strength": "authorization_horizon"},
+        {"field_path": "program", "target_type": "ProgramID", "class": "REF-DISPATCH-PROGRAM", "strength": "authorization_horizon"},
+        {"field_path": "run_authority", "target_type": "AuthorityID", "class": "REF-DISPATCH-RUN", "strength": "authorization_horizon"},
+        {"field_path": "sched_authority", "target_type": "AuthorityID", "class": "REF-DISPATCH-SCHED", "strength": "authorization_horizon"},
+        {"field_path": "charge_authority", "target_type": "AuthorityID", "class": "REF-DISPATCH-CHARGE", "strength": "authorization_horizon"},
+        {"field_path": "aggregate", "target_type": "AggregateID", "class": "REF-DISPATCH-AGGREGATE", "strength": "authorization_horizon"},
+        {"field_path": "ready", "target_type": "ReadyID", "class": "REF-DISPATCH-READY", "strength": "liveness"},
+        {"field_path": "escrow", "target_type": "EscrowID", "class": "REF-DISPATCH-ESCROW", "strength": "authorization_horizon"},
+        {"field_path": "context", "target_type": "ContextID", "class": "REF-DISPATCH-CONTEXT", "strength": "authorization_horizon"},
+        {"field_path": "target_cpu", "target_type": "CpuID", "class": "REF-DISPATCH-CPU", "strength": "authorization_horizon"},
+        {"field_path": "revocation_path[].scope", "target_type": "RevScopeID", "class": "REF-DISPATCH-REVOCATION-PATH", "strength": "authorization_horizon"}
+      ]
+    },
+    {
+      "id": "OBJDEF-EligibilitySealCore",
+      "version": 1,
+      "record_type": "EligibilitySealCore",
+      "identity_fields": ["id", "eligibility_generation"],
+      "allocator": "object_allocator",
+      "constructor_action": "TXN-PUBLISH-ELIGIBLE",
+      "reference_edges": [
+        {"field_path": "id", "target_type": "ObjectSlotID", "class": "REF-ELIGIBILITY-ID", "strength": "identity"},
+        {"field_path": "snapshot", "target_type": "ObjectSlotID", "class": "REF-ELIGIBILITY-SNAPSHOT", "strength": "liveness"},
+        {"field_path": "context_receipt", "target_type": "ReceiptID", "class": "REF-CONTEXT-RECEIPT", "strength": "authorization_horizon"}
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "id": "monitor_epoch",
+      "key_names": ["node", "shard"],
+      "key_types": ["NodeID", "ShardID"],
+      "value_type": "Int",
+      "init_ast": ["int", 0],
+      "owner_ast": ["writer", "WR-STORE", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "provider_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "txn_slots",
+      "key_names": ["node", "shard", "slot"],
+      "key_types": ["NodeID", "ShardID", "TxnSlotID"],
+      "value_type": "TxnState",
+      "init_ast": ["variant", "TxnState", "Vacant", {"slot_generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "object_store",
+      "key_names": ["node", "shard", "object"],
+      "key_types": ["NodeID", "ShardID", "ObjectSlotID"],
+      "value_type": "ObjectSlotState",
+      "init_ast": ["variant", "ObjectSlotState", "Vacant", {"generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "object_allocator",
+      "key_names": ["node", "shard"],
+      "key_types": ["NodeID", "ShardID"],
+      "value_type": "ObjectAllocatorState",
+      "init_ast": ["record", "ObjectAllocatorState", {"next_ordinal": ["int", 0], "exhausted": ["bool", false]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "authority_account",
+      "key_names": ["node", "shard", "authority"],
+      "key_types": ["NodeID", "ShardID", "AuthorityID"],
+      "value_type": "AuthorityAccountState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "authority"], ["id", "AuthorityID", "AUTH0"]],
+        [
+          "variant",
+          "AuthorityAccountState",
+          "Live",
+          {
+            "generation": ["int", 0],
+            "balance": [
+              "record",
+              "ResourceVector",
+              {
+                "uses": ["bound", "InitialAuthorityUses"],
+                "sched_ticks": ["int", 0],
+                "root_ticks": ["int", 0],
+                "charge_ticks": ["int", 0],
+                "stop_credits": ["int", 0],
+                "execution_cells": ["int", 0]
+              }
+            ],
+            "next_ordinal": ["int", 0],
+            "authority_object": ["id", "ObjectSlotID", "OBJ0"],
+            "rev_scope": ["id", "RevScopeID", "REV0"]
+          }
+        ],
+        ["variant", "AuthorityAccountState", "Vacant", {"generation": ["int", 0]}]
+      ],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "revocation_scope",
+      "key_names": ["node", "shard", "scope"],
+      "key_types": ["NodeID", "ShardID", "RevScopeID"],
+      "value_type": "RevocationScopeState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "scope"], ["id", "RevScopeID", "REV0"]],
+        ["variant", "RevocationScopeState", "Live", {"generation": ["int", 0]}],
+        ["variant", "RevocationScopeState", "Vacant", {"generation": ["int", 0]}]
+      ],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "gc_state",
+      "key_names": ["node", "shard", "tombstone"],
+      "key_types": ["NodeID", "ShardID", "TombstoneID"],
+      "value_type": "GcState",
+      "init_ast": ["variant", "GcState", "Blocked", {"generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "audit_counter",
+      "key_names": ["node", "shard"],
+      "key_types": ["NodeID", "ShardID"],
+      "value_type": "Int",
+      "init_ast": ["int", 0],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "audit",
+      "authority_relevant": false
+    },
+    {
+      "id": "subject_state",
+      "key_names": ["node", "shard", "subject"],
+      "key_types": ["NodeID", "ShardID", "SubjectID"],
+      "value_type": "SubjectState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "subject"], ["id", "SubjectID", "MGMT"]],
+        ["variant", "SubjectState", "Live", {"generation": ["int", 0], "kind": ["enum", "SubjectKind", "Management"], "program": ["id", "ProgramID", "PROG0"], "program_generation": ["int", 0], "protection_domain": ["id", "ProtectionDomainID", "PD-MGMT"], "publication_generation": ["int", 0]}],
+        [
+          "if",
+          ["eq", ["param", "subject"], ["id", "SubjectID", "DOM0"]],
+          ["variant", "SubjectState", "Live", {"generation": ["int", 0], "kind": ["enum", "SubjectKind", "Process"], "program": ["id", "ProgramID", "PROG0"], "program_generation": ["int", 0], "protection_domain": ["id", "ProtectionDomainID", "PD0"], "publication_generation": ["int", 0]}],
+          ["variant", "SubjectState", "Vacant", {"generation": ["int", 0]}]
+        ]
+      ],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "carrier_state",
+      "key_names": ["node", "shard", "carrier"],
+      "key_types": ["NodeID", "ShardID", "CarrierID"],
+      "value_type": "CarrierState",
+      "init_ast": ["variant", "CarrierState", "Vacant", {"generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "aggregate_state",
+      "key_names": ["node", "shard", "aggregate"],
+      "key_types": ["NodeID", "ShardID", "AggregateID"],
+      "value_type": "AggregateState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "aggregate"], ["id", "AggregateID", "AGG0"]],
+        ["variant", "AggregateState", "Current", {"generation": ["int", 0], "admission": ["id", "AdmissionID", "ADM0"], "next_use_ordinal": ["int", 0], "horizon_end": ["int", 4], "partition_receipt": ["id", "PartitionReceiptID", "PART0"]}],
+        ["variant", "AggregateState", "Vacant", {"generation": ["int", 0]}]
+      ],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "opportunity_state",
+      "key_names": ["node", "shard", "opportunity"],
+      "key_types": ["NodeID", "ShardID", "OpportunityID"],
+      "value_type": "OpportunityState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "opportunity"], ["id", "OpportunityID", "OPP0"]],
+        ["variant", "OpportunityState", "Open", {"generation": ["int", 0], "stream": ["id", "StreamID", "STR0"], "ordinal": ["int", 0], "next_attempt_ordinal": ["int", 0], "horizon_end": ["int", 4]}],
+        ["variant", "OpportunityState", "Vacant", {"generation": ["int", 0]}]
+      ],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "attempt_state",
+      "key_names": ["node", "shard", "attempt"],
+      "key_types": ["NodeID", "ShardID", "AttemptID"],
+      "value_type": "AttemptState",
+      "init_ast": ["variant", "AttemptState", "Vacant", {"generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "ready_state",
+      "key_names": ["node", "shard", "ready"],
+      "key_types": ["NodeID", "ShardID", "ReadyID"],
+      "value_type": "ReadyState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "ready"], ["id", "ReadyID", "READY0"]],
+        ["variant", "ReadyState", "Available", {"generation": ["int", 0], "opportunity": ["id", "OpportunityID", "OPP0"]}],
+        ["variant", "ReadyState", "Vacant", {"generation": ["int", 0]}]
+      ],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "root_frame_state",
+      "key_names": ["node", "shard", "frame"],
+      "key_types": ["NodeID", "ShardID", "RootFrameID"],
+      "value_type": "RootFrameState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "frame"], ["id", "RootFrameID", "FRAME0"]],
+        ["variant", "RootFrameState", "Released", {"generation": ["int", 0], "ordinal": ["int", 0], "root_budget": ["int", 4], "deadline": ["int", 4]}],
+        ["variant", "RootFrameState", "Vacant", {"generation": ["int", 0]}]
+      ],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "root_slot_state",
+      "key_names": ["node", "shard", "root_slot"],
+      "key_types": ["NodeID", "ShardID", "RootSlotID"],
+      "value_type": "RootSlotState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "root_slot"], ["id", "RootSlotID", "RSLOT0"]],
+        ["variant", "RootSlotState", "Open", {"generation": ["int", 0], "frame": ["id", "RootFrameID", "FRAME0"]}],
+        ["variant", "RootSlotState", "Vacant", {"generation": ["int", 0]}]
+      ],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "escrow_state",
+      "key_names": ["node", "shard", "escrow"],
+      "key_types": ["NodeID", "ShardID", "EscrowID"],
+      "value_type": "EscrowState",
+      "init_ast": ["variant", "EscrowState", "Vacant", {"generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "stop_state",
+      "key_names": ["node", "shard", "stop"],
+      "key_types": ["NodeID", "ShardID", "StopID"],
+      "value_type": "StopState",
+      "init_ast": ["variant", "StopState", "Vacant", {"generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "settlement_state",
+      "key_names": ["node", "shard", "settlement"],
+      "key_types": ["NodeID", "ShardID", "SettlementID"],
+      "value_type": "SettlementState",
+      "init_ast": ["variant", "SettlementState", "Vacant", {"generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "ledger_apply_state",
+      "key_names": ["node", "shard", "settlement"],
+      "key_types": ["NodeID", "ShardID", "SettlementID"],
+      "value_type": "LedgerApplyState",
+      "init_ast": ["record", "LedgerApplyState", {"generation": ["int", 0], "settlement": ["param", "settlement"], "root": ["enum", "ApplyBit", "NotApplicable"], "sched": ["enum", "ApplyBit", "NotApplicable"], "charge": ["enum", "ApplyBit", "NotApplicable"], "caller": ["enum", "ApplyBit", "NotApplicable"], "service": ["enum", "ApplyBit", "NotApplicable"]}],
+      "owner_ast": ["writer", "WR-MONITOR", ["param", "node"], ["param", "shard"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "protected_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "cpu_state",
+      "key_names": ["node", "shard", "cpu"],
+      "key_types": ["NodeID", "ShardID", "CpuID"],
+      "value_type": "CpuExecutionState",
+      "init_ast": [
+        "if",
+        ["eq", ["param", "cpu"], ["id", "CpuID", "CPU0"]],
+        ["variant", "CpuExecutionState", "Idle", {"incarnation": ["int", 0], "current_tick": ["int", 0], "state_version": ["int", 0]}],
+        ["variant", "CpuExecutionState", "Offline", {"incarnation": ["int", 0], "current_tick": ["int", 0]}]
+      ],
+      "owner_ast": ["writer", "WR-CPU", ["param", "node"], ["param", "shard"], ["param", "cpu"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "provider_authoritative",
+      "authority_relevant": true
+    },
+    {
+      "id": "cpu_receipt",
+      "key_names": ["node", "shard", "cpu", "receipt"],
+      "key_types": ["NodeID", "ShardID", "CpuID", "ReceiptID"],
+      "value_type": "CpuReceiptState",
+      "init_ast": ["variant", "CpuReceiptState", "Vacant", {"generation": ["int", 0]}],
+      "owner_ast": ["writer", "WR-CPU", ["param", "node"], ["param", "shard"], ["param", "cpu"]],
+      "consistency_domain_ast": ["cd", "CD-NODE-SHARD", ["param", "node"], ["param", "shard"]],
+      "transaction_shard_ast": ["tuple", "ShardKey", [["param", "node"], ["param", "shard"]]],
+      "storage_class": "provider_immutable_fact",
+      "authority_relevant": true
+    }
+  ],
+  "functions": [
+    {
+      "id": "AuthorityUseBalance",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"},
+        {"name": "authority", "type": "AuthorityID"}
+      ],
+      "return_type": "Int",
+      "body_ast": [
+        "if",
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "authority"]]], ["string", "Live"]],
+        ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "authority"]], "balance"], "uses"],
+        ["int", 0]
+      ]
+    },
+    {
+      "id": "TotalAuthorityUses",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"}
+      ],
+      "return_type": "Int",
+      "body_ast": ["sum", [["authority", "AuthorityID"]], ["call", "AuthorityUseBalance", ["param", "node"], ["param", "shard"], ["param", "authority"]]]
+    },
+    {
+      "id": "TxnRank",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"},
+        {"name": "slot", "type": "TxnSlotID"}
+      ],
+      "return_type": "Int",
+      "body_ast": [
+        "if",
+        ["eq", ["tag", ["read", "txn_slots", ["param", "node"], ["param", "shard"], ["param", "slot"]]], ["string", "Prepared"]],
+        ["int", 5],
+        [
+          "if",
+          ["or", ["eq", ["tag", ["read", "txn_slots", ["param", "node"], ["param", "shard"], ["param", "slot"]]], ["string", "CommitIntent"]], ["eq", ["tag", ["read", "txn_slots", ["param", "node"], ["param", "shard"], ["param", "slot"]]], ["string", "AbortIntent"]]],
+          ["int", 4],
+          [
+            "if",
+            ["eq", ["tag", ["read", "txn_slots", ["param", "node"], ["param", "shard"], ["param", "slot"]]], ["string", "Applying"]],
+            ["int", 3],
+            [
+              "if",
+              ["eq", ["tag", ["read", "txn_slots", ["param", "node"], ["param", "shard"], ["param", "slot"]]], ["string", "Complete"]],
+              ["int", 2],
+              ["if", ["eq", ["tag", ["read", "txn_slots", ["param", "node"], ["param", "shard"], ["param", "slot"]]], ["string", "Retired"]], ["int", 1], ["int", 0]]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "ReadyConsumed",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"},
+        {"name": "ready", "type": "ReadyID"}
+      ],
+      "return_type": "Bool",
+      "body_ast": [
+        "and",
+        ["eq", ["tag", ["read", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]]], ["string", "Claimed"]],
+        ["eq", ["tag", ["read", "attempt_state", ["param", "node"], ["param", "shard"], ["field", ["read", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]], "attempt"]]], ["string", "Entered"]]
+      ]
+    },
+    {
+      "id": "EscrowSafe",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"},
+        {"name": "escrow", "type": "EscrowID"}
+      ],
+      "return_type": "Bool",
+      "body_ast": [
+        "implies",
+        ["eq", ["tag", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]]], ["string", "Reserved"]],
+        [
+          "and",
+          ["ge", ["field", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]], "run_remaining"], ["int", 0]],
+          ["ge", ["field", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]], "overhead_remaining"], ["int", 0]],
+          ["ge", ["field", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]], "armed_upper"], ["int", 0]],
+          ["le", ["field", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]], "armed_upper"], ["field", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]], "run_remaining"]],
+          ["le", ["field", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]], "verified_service"], ["field", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]], "run_charged"]]
+        ]
+      ]
+    },
+    {
+      "id": "CurrentExecutable",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"},
+        {"name": "cpu", "type": "CpuID"}
+      ],
+      "return_type": "Bool",
+      "body_ast": [
+        "and",
+        ["eq", ["tag", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]]], ["string", "Running"]],
+        ["eq", ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "timer_enabled"], ["bool", true]],
+        ["eq", ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "execution_gate"], ["bool", true]],
+        ["lt", ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "executed"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "quantum_upper"]],
+        ["lt", ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "current_tick"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "not_after"]],
+        ["eq", ["tag", ["read", "subject_state", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "subject"]]], ["string", "Live"]],
+        ["eq", ["field", ["read", "subject_state", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "subject"]], "generation"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "subject_generation"]],
+        ["eq", ["field", ["read", "subject_state", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "subject"]], "program_generation"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "program_generation"]],
+        ["eq", ["tag", ["read", "aggregate_state", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "aggregate"]]], ["string", "Current"]],
+        ["eq", ["field", ["read", "aggregate_state", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "aggregate"]], "generation"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "aggregate_generation"]],
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "run_authority"]]], ["string", "Live"]],
+        ["eq", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "run_authority"]], "generation"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "run_generation"]],
+        ["eq", ["tag", ["read", "revocation_scope", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "rev_scope"]]], ["string", "Live"]],
+        ["eq", ["field", ["read", "revocation_scope", ["param", "node"], ["param", "shard"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "rev_scope"]], "generation"], ["field", ["read", "cpu_state", ["param", "node"], ["param", "shard"], ["param", "cpu"]], "rev_generation"]]
+      ]
+    }
+  ],
+  "transaction_kinds": [
+    {
+      "id": "TXN-AUTH-ISSUE",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"},
+        {"name": "slot", "type": "TxnSlotID"},
+        {"name": "txn", "type": "TxnID"},
+        {"name": "outcome", "type": "OutcomeID"},
+        {"name": "tombstone", "type": "TombstoneID"},
+        {"name": "parent", "type": "AuthorityID"},
+        {"name": "child", "type": "AuthorityID"},
+        {"name": "child_scope", "type": "RevScopeID"},
+        {"name": "object", "type": "ObjectSlotID"},
+        {"name": "owner", "type": "SubjectID"}
+      ],
+      "instance_scope": {
+        "mode": "catalog",
+        "catalog_rows": [
+          {"node": "N0", "shard": "S0", "slot": "TS0", "txn": "TX0", "outcome": "OUT0", "tombstone": "TOMB0", "parent": "AUTH0", "child": "AUTH1", "child_scope": "REV1", "object": "OBJ1", "owner": "DOM0"},
+          {"node": "N0", "shard": "S0", "slot": "TS1", "txn": "TX1", "outcome": "OUT1", "tombstone": "TOMB1", "parent": "AUTH0", "child": "AUTH2", "child_scope": "REV2", "object": "OBJ2", "owner": "MGMT"}
+        ],
+        "scope_nonclaim": "Only these two bounded invocation rows are modeled; this catalog does not claim completeness over production requests."
+      },
+      "slot_variable": "txn_slots",
+      "slot_keys_ast": [["param", "node"], ["param", "shard"], ["param", "slot"]],
+      "expected_slot_generation_ast": ["int", 0],
+      "txn_id_ast": ["param", "txn"],
+      "outcome_id_ast": ["param", "outcome"],
+      "tombstone_id_ast": ["param", "tombstone"],
+      "plan_ast": ["record", "TxnPlan", {"plan_slot": ["param", "object"], "expected_digest": ["string", "authority-issue-v1"]}],
+      "prepare_guard_ast": [
+        "and",
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]]], ["string", "Live"]],
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "child"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "revocation_scope", ["param", "node"], ["param", "shard"], ["param", "child_scope"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "object"]]], ["string", "Vacant"]],
+        ["eq", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "exhausted"], ["bool", false]],
+        ["le", ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 1]], ["bound", "ObjectSlotCapacity"]],
+        ["ge", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "balance"], "uses"], ["int", 1]]
+      ],
+      "decision_ast": [
+        "and",
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]]], ["string", "Live"]],
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "child"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "revocation_scope", ["param", "node"], ["param", "shard"], ["param", "child_scope"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "object"]]], ["string", "Vacant"]],
+        ["eq", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "exhausted"], ["bool", false]],
+        ["le", ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 1]], ["bound", "ObjectSlotCapacity"]],
+        ["ge", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "balance"], "uses"], ["int", 1]]
+      ],
+      "commit_updates": [
+        {
+          "target": ["loc", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]],
+          "value_ast": [
+            "variant",
+            "AuthorityAccountState",
+            "Live",
+            {
+              "generation": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "generation"],
+              "balance": ["with", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "balance"], {"uses": ["sub", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "balance"], "uses"], ["int", 1]]}],
+              "next_ordinal": ["add", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "next_ordinal"], ["int", 1]],
+              "authority_object": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "authority_object"],
+              "rev_scope": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "rev_scope"]
+            }
+          ]
+        },
+        {
+          "target": ["loc", "authority_account", ["param", "node"], ["param", "shard"], ["param", "child"]],
+          "value_ast": [
+            "variant",
+            "AuthorityAccountState",
+            "Live",
+            {
+              "generation": ["int", 0],
+              "balance": ["record", "ResourceVector", {"uses": ["int", 1], "sched_ticks": ["int", 0], "root_ticks": ["int", 0], "charge_ticks": ["int", 0], "stop_credits": ["int", 0], "execution_cells": ["int", 0]}],
+              "next_ordinal": ["int", 0],
+              "authority_object": ["param", "object"],
+              "rev_scope": ["param", "child_scope"]
+            }
+          ]
+        },
+        {
+          "target": ["loc", "revocation_scope", ["param", "node"], ["param", "shard"], ["param", "child_scope"]],
+          "value_ast": ["variant", "RevocationScopeState", "Live", {"generation": ["int", 0]}]
+        },
+        {
+          "target": ["loc", "object_store", ["param", "node"], ["param", "shard"], ["param", "object"]],
+          "value_ast": [
+            "variant",
+            "ObjectSlotState",
+            "Published",
+            {
+              "generation": ["field", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "object"]], "generation"],
+              "payload": [
+                "variant",
+                "ObjectPayload",
+                "Authority",
+                {
+                  "authority": [
+                    "record",
+                    "AuthorityCore",
+                    {
+                      "id": ["param", "child"],
+                      "parent": ["param", "parent"],
+                      "owner": ["param", "owner"],
+                      "kind": ["enum", "AuthorityKind", "Run"],
+                      "grant": ["record", "ResourceVector", {"uses": ["int", 1], "sched_ticks": ["int", 0], "root_ticks": ["int", 0], "charge_ticks": ["int", 0], "stop_credits": ["int", 0], "execution_cells": ["int", 0]}],
+                      "constraints": ["record", "AuthorityConstraints", {"operation_mask": ["int", 1], "cpu_mask": ["int", 1], "priority_ceiling": ["int", 0], "co_tenancy_class": ["int", 0], "horizon_end": ["int", 3], "delegation_depth": ["int", 1]}],
+                      "revocation_path": [
+                        "vector",
+                        "RevocationPath",
+                        [
+                          ["record", "RevScopeRef", {"active": ["bool", true], "scope": ["id", "RevScopeID", "REV0"], "generation": ["int", 0]}],
+                          ["record", "RevScopeRef", {"active": ["bool", true], "scope": ["param", "child_scope"], "generation": ["int", 0]}]
+                        ]
+                      ],
+                      "own_scope": ["param", "child_scope"],
+                      "issue_ordinal": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "parent"]], "next_ordinal"]
+                    }
+                  ]
+                }
+              ],
+              "digest": ["string", "authority-core-auth1-v1"],
+              "txn_id": ["param", "txn"]
+            }
+          ]
+        },
+        {
+          "target": ["loc", "object_allocator", ["param", "node"], ["param", "shard"]],
+          "value_ast": ["record", "ObjectAllocatorState", {"next_ordinal": ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 1]], "exhausted": ["ge", ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 1]], ["bound", "ObjectSlotCapacity"]]}]
+        }
+      ],
+      "abort_reason_ast": ["enum", "AbortReason", "VersionMismatch"],
+      "projections": [
+        {
+          "id": "AUDIT-AUTH-ISSUE",
+          "target_storage_class": "audit",
+          "updates": [
+            {
+              "target": ["loc", "audit_counter", ["param", "node"], ["param", "shard"]],
+              "value_ast": ["add", ["read", "audit_counter", ["param", "node"], ["param", "shard"]], ["int", 1]]
+            }
+          ]
+        }
+      ],
+      "retire_guard_ast": ["bool", true],
+      "reuse_guard_ast": ["eq", ["tag", ["read", "gc_state", ["param", "node"], ["param", "shard"], ["param", "tombstone"]]], ["string", "Authorized"]],
+      "rank_delta_ast": ["int", -1],
+      "blocker_ids": ["R10-AUTH-CONSERVATION-01", "R10-REVOCATION-01", "R10-TXN-LIFECYCLE-01", "R10-RECOVERY-01"]
+    },
+    {
+      "id": "TXN-ASYNC-CARRIER",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"},
+        {"name": "slot", "type": "TxnSlotID"},
+        {"name": "txn", "type": "TxnID"},
+        {"name": "outcome", "type": "OutcomeID"},
+        {"name": "tombstone", "type": "TombstoneID"},
+        {"name": "caller", "type": "AuthorityID"},
+        {"name": "service", "type": "AuthorityID"},
+        {"name": "carrier", "type": "CarrierID"},
+        {"name": "intersection_object", "type": "ObjectSlotID"},
+        {"name": "activation_object", "type": "ObjectSlotID"},
+        {"name": "caller_escrow", "type": "EscrowID"},
+        {"name": "service_escrow", "type": "EscrowID"}
+      ],
+      "instance_scope": {"mode": "catalog", "catalog_rows": [{"node": "N0", "shard": "S0", "slot": "TS2", "txn": "TX2", "outcome": "OUT2", "tombstone": "TOMB2", "caller": "AUTH1", "service": "AUTH2", "carrier": "CAR0", "intersection_object": "OBJ3", "activation_object": "OBJ4", "caller_escrow": "ESC0", "service_escrow": "ESC1"}], "scope_nonclaim": "Only the distinct caller/service bounded async row is modeled; aliased authority remains a separate required transaction kind."},
+      "slot_variable": "txn_slots",
+      "slot_keys_ast": [["param", "node"], ["param", "shard"], ["param", "slot"]],
+      "expected_slot_generation_ast": ["int", 0],
+      "txn_id_ast": ["param", "txn"],
+      "outcome_id_ast": ["param", "outcome"],
+      "tombstone_id_ast": ["param", "tombstone"],
+      "plan_ast": ["record", "TxnPlan", {"plan_slot": ["param", "intersection_object"], "expected_digest": ["string", "async-carrier-v1"]}],
+      "prepare_guard_ast": [
+        "and",
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]]], ["string", "Live"]],
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]]], ["string", "Live"]],
+        ["ge", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "balance"], "uses"], ["int", 1]],
+        ["ge", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "balance"], "uses"], ["int", 1]],
+        ["eq", ["tag", ["read", "carrier_state", ["param", "node"], ["param", "shard"], ["param", "carrier"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "caller_escrow"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "service_escrow"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "intersection_object"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "activation_object"]]], ["string", "Vacant"]],
+        ["eq", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "exhausted"], ["bool", false]],
+        ["le", ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 2]], ["bound", "ObjectSlotCapacity"]]
+      ],
+      "decision_ast": [
+        "and",
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]]], ["string", "Live"]],
+        ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]]], ["string", "Live"]],
+        ["ge", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "balance"], "uses"], ["int", 1]],
+        ["ge", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "balance"], "uses"], ["int", 1]],
+        ["eq", ["tag", ["read", "carrier_state", ["param", "node"], ["param", "shard"], ["param", "carrier"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "caller_escrow"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "service_escrow"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "intersection_object"]]], ["string", "Vacant"]],
+        ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "activation_object"]]], ["string", "Vacant"]],
+        ["eq", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "exhausted"], ["bool", false]],
+        ["le", ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 2]], ["bound", "ObjectSlotCapacity"]]
+      ],
+      "commit_updates": [
+        {
+          "target": ["loc", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]],
+          "value_ast": ["variant", "AuthorityAccountState", "Live", {"generation": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "generation"], "balance": ["with", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "balance"], {"uses": ["sub", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "balance"], "uses"], ["int", 1]]}], "next_ordinal": ["add", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "next_ordinal"], ["int", 1]], "authority_object": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "authority_object"], "rev_scope": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "rev_scope"]}]
+        },
+        {
+          "target": ["loc", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]],
+          "value_ast": ["variant", "AuthorityAccountState", "Live", {"generation": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "generation"], "balance": ["with", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "balance"], {"uses": ["sub", ["field", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "balance"], "uses"], ["int", 1]]}], "next_ordinal": ["add", ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "next_ordinal"], ["int", 1]], "authority_object": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "authority_object"], "rev_scope": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "rev_scope"]}]
+        },
+        {
+          "target": ["loc", "carrier_state", ["param", "node"], ["param", "shard"], ["param", "carrier"]],
+          "value_ast": ["variant", "CarrierState", "Live", {"generation": ["int", 0], "intersection_object": ["param", "intersection_object"], "activation_object": ["param", "activation_object"], "caller_ordinal": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "next_ordinal"], "service_ordinal": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "next_ordinal"], "horizon_end": ["int", 3]}]
+        },
+        {
+          "target": ["loc", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "caller_escrow"]],
+          "value_ast": ["variant", "EscrowState", "Reserved", {"generation": ["int", 0], "root_reserved": ["int", 0], "run_reserved": ["int", 1], "entry_overhead_reserved": ["int", 0], "stop_overhead_reserved": ["int", 0], "run_remaining": ["int", 1], "overhead_remaining": ["int", 0], "armed_upper": ["int", 0], "run_charged": ["int", 0], "overhead_charged": ["int", 0], "verified_service": ["int", 0], "ledger_plan": ["record", "LedgerPlan", {"root": ["enum", "ApplyBit", "NotApplicable"], "sched": ["enum", "ApplyBit", "NotApplicable"], "charge": ["enum", "ApplyBit", "Pending"], "caller": ["enum", "ApplyBit", "Pending"], "service": ["enum", "ApplyBit", "NotApplicable"], "charge_mode": ["enum", "ChargeMode", "ServiceOnly"]}]}]
+        },
+        {
+          "target": ["loc", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "service_escrow"]],
+          "value_ast": ["variant", "EscrowState", "Reserved", {"generation": ["int", 0], "root_reserved": ["int", 3], "run_reserved": ["int", 1], "entry_overhead_reserved": ["int", 1], "stop_overhead_reserved": ["int", 1], "run_remaining": ["int", 1], "overhead_remaining": ["int", 2], "armed_upper": ["int", 0], "run_charged": ["int", 0], "overhead_charged": ["int", 0], "verified_service": ["int", 0], "ledger_plan": ["record", "LedgerPlan", {"root": ["enum", "ApplyBit", "Pending"], "sched": ["enum", "ApplyBit", "Pending"], "charge": ["enum", "ApplyBit", "NotApplicable"], "caller": ["enum", "ApplyBit", "NotApplicable"], "service": ["enum", "ApplyBit", "Pending"], "charge_mode": ["enum", "ChargeMode", "ExecutionAndOverhead"]}]}]
+        },
+        {
+          "target": ["loc", "object_store", ["param", "node"], ["param", "shard"], ["param", "intersection_object"]],
+          "value_ast": ["variant", "ObjectSlotState", "Published", {"generation": ["field", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "intersection_object"]], "generation"], "payload": ["variant", "ObjectPayload", "AuthorityIntersection", {"intersection": ["record", "AuthorityIntersectionCore", {"caller_authority": ["param", "caller"], "service_authority": ["param", "service"], "effective_constraints": ["record", "AuthorityConstraints", {"operation_mask": ["int", 1], "cpu_mask": ["int", 1], "priority_ceiling": ["int", 0], "co_tenancy_class": ["int", 0], "horizon_end": ["int", 3], "delegation_depth": ["int", 1]}], "caller_use_ordinal": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "caller"]], "next_ordinal"], "service_use_ordinal": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "service"]], "next_ordinal"], "caller_escrow": ["param", "caller_escrow"], "service_escrow": ["param", "service_escrow"]}]}], "digest": ["string", "authority-intersection-v1"], "txn_id": ["param", "txn"]}]
+        },
+        {
+          "target": ["loc", "object_store", ["param", "node"], ["param", "shard"], ["param", "activation_object"]],
+          "value_ast": ["variant", "ObjectSlotState", "Published", {"generation": ["field", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "activation_object"]], "generation"], "payload": ["variant", "ObjectPayload", "ActivationRequest", {"activation": ["record", "ActivationRequestCore", {"id": ["param", "activation_object"], "source_kind": ["enum", "ActivationSourceKind", "Async"], "carrier": ["param", "carrier"], "execution_subject": ["id", "SubjectID", "MGMT"], "program": ["id", "ProgramID", "PROG0"], "protection_domain": ["id", "ProtectionDomainID", "PD-MGMT"], "run_authority": ["param", "service"], "sched_authority": ["param", "service"], "charge_authority": ["param", "caller"], "constraints": ["record", "AuthorityConstraints", {"operation_mask": ["int", 1], "cpu_mask": ["int", 1], "priority_ceiling": ["int", 0], "co_tenancy_class": ["int", 0], "horizon_end": ["int", 3], "delegation_depth": ["int", 1]}], "requested_service": ["int", 1], "horizon_end": ["int", 3]}]}], "digest": ["string", "activation-request-v1"], "txn_id": ["param", "txn"]}]
+        },
+        {
+          "target": ["loc", "object_allocator", ["param", "node"], ["param", "shard"]],
+          "value_ast": ["record", "ObjectAllocatorState", {"next_ordinal": ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 2]], "exhausted": ["ge", ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 2]], ["bound", "ObjectSlotCapacity"]]}]
+        }
+      ],
+      "abort_reason_ast": ["enum", "AbortReason", "VersionMismatch"],
+      "projections": [{"id": "AUDIT-ASYNC-CARRIER", "target_storage_class": "audit", "updates": [{"target": ["loc", "audit_counter", ["param", "node"], ["param", "shard"]], "value_ast": ["add", ["read", "audit_counter", ["param", "node"], ["param", "shard"]], ["int", 1]]}]}],
+      "retire_guard_ast": ["bool", true],
+      "reuse_guard_ast": ["eq", ["tag", ["read", "gc_state", ["param", "node"], ["param", "shard"], ["param", "tombstone"]]], ["string", "Authorized"]],
+      "rank_delta_ast": ["int", -1],
+      "blocker_ids": ["R10-ASYNC-AUTH-01", "R10-ASYNC-ACTIVATION-01", "R10-BUDGET-ARM-01", "R10-LEDGER-01"]
+    },
+    {
+      "id": "TXN-ATTEMPT-PREPARE",
+      "parameters": [
+        {"name": "node", "type": "NodeID"}, {"name": "shard", "type": "ShardID"}, {"name": "slot", "type": "TxnSlotID"}, {"name": "txn", "type": "TxnID"}, {"name": "outcome", "type": "OutcomeID"}, {"name": "tombstone", "type": "TombstoneID"},
+        {"name": "opportunity", "type": "OpportunityID"}, {"name": "attempt", "type": "AttemptID"}, {"name": "ready", "type": "ReadyID"}, {"name": "snapshot_object", "type": "ObjectSlotID"}, {"name": "activation_object", "type": "ObjectSlotID"}, {"name": "escrow", "type": "EscrowID"}, {"name": "aggregate", "type": "AggregateID"}, {"name": "subject", "type": "SubjectID"}, {"name": "run_authority", "type": "AuthorityID"}, {"name": "target_cpu", "type": "CpuID"}, {"name": "entry_binding", "type": "EntryBindingID"}
+      ],
+      "instance_scope": {"mode": "catalog", "catalog_rows": [{"node": "N0", "shard": "S0", "slot": "TS3", "txn": "TX3", "outcome": "OUT3", "tombstone": "TOMB3", "opportunity": "OPP0", "attempt": "ATT0", "ready": "READY0", "snapshot_object": "OBJ5", "activation_object": "OBJ4", "escrow": "ESC1", "aggregate": "AGG0", "subject": "MGMT", "run_authority": "AUTH2", "target_cpu": "CPU0", "entry_binding": "ENTRY0"}], "scope_nonclaim": "Only the first bounded dispatch attempt is modeled; retry and no-reissue rows remain required."},
+      "slot_variable": "txn_slots",
+      "slot_keys_ast": [["param", "node"], ["param", "shard"], ["param", "slot"]],
+      "expected_slot_generation_ast": ["int", 0],
+      "txn_id_ast": ["param", "txn"], "outcome_id_ast": ["param", "outcome"], "tombstone_id_ast": ["param", "tombstone"],
+      "plan_ast": ["record", "TxnPlan", {"plan_slot": ["param", "snapshot_object"], "expected_digest": ["string", "attempt-prepare-v1"]}],
+      "prepare_guard_ast": ["and", ["eq", ["tag", ["read", "opportunity_state", ["param", "node"], ["param", "shard"], ["param", "opportunity"]]], ["string", "Open"]], ["eq", ["tag", ["read", "attempt_state", ["param", "node"], ["param", "shard"], ["param", "attempt"]]], ["string", "Vacant"]], ["eq", ["tag", ["read", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]]], ["string", "Available"]], ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "snapshot_object"]]], ["string", "Vacant"]], ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "activation_object"]]], ["string", "Published"]], ["eq", ["tag", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]]], ["string", "Reserved"]], ["eq", ["tag", ["read", "aggregate_state", ["param", "node"], ["param", "shard"], ["param", "aggregate"]]], ["string", "Current"]], ["eq", ["tag", ["read", "subject_state", ["param", "node"], ["param", "shard"], ["param", "subject"]]], ["string", "Live"]], ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "run_authority"]]], ["string", "Live"]]],
+      "decision_ast": ["and", ["eq", ["tag", ["read", "opportunity_state", ["param", "node"], ["param", "shard"], ["param", "opportunity"]]], ["string", "Open"]], ["eq", ["tag", ["read", "attempt_state", ["param", "node"], ["param", "shard"], ["param", "attempt"]]], ["string", "Vacant"]], ["eq", ["tag", ["read", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]]], ["string", "Available"]], ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "snapshot_object"]]], ["string", "Vacant"]], ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "activation_object"]]], ["string", "Published"]], ["eq", ["tag", ["read", "escrow_state", ["param", "node"], ["param", "shard"], ["param", "escrow"]]], ["string", "Reserved"]], ["eq", ["tag", ["read", "aggregate_state", ["param", "node"], ["param", "shard"], ["param", "aggregate"]]], ["string", "Current"]], ["eq", ["tag", ["read", "subject_state", ["param", "node"], ["param", "shard"], ["param", "subject"]]], ["string", "Live"]], ["eq", ["tag", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "run_authority"]]], ["string", "Live"]]],
+      "commit_updates": [
+        {"target": ["loc", "opportunity_state", ["param", "node"], ["param", "shard"], ["param", "opportunity"]], "value_ast": ["variant", "OpportunityState", "Active", {"generation": ["field", ["read", "opportunity_state", ["param", "node"], ["param", "shard"], ["param", "opportunity"]], "generation"], "attempt": ["param", "attempt"]}]},
+        {"target": ["loc", "attempt_state", ["param", "node"], ["param", "shard"], ["param", "attempt"]], "value_ast": ["variant", "AttemptState", "Allocated", {"generation": ["int", 0], "opportunity": ["param", "opportunity"], "attempt_ordinal": ["field", ["read", "opportunity_state", ["param", "node"], ["param", "shard"], ["param", "opportunity"]], "next_attempt_ordinal"], "ready": ["param", "ready"], "snapshot": ["param", "snapshot_object"], "entry_binding": ["param", "entry_binding"]}]},
+        {"target": ["loc", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]], "value_ast": ["variant", "ReadyState", "Preparing", {"generation": ["field", ["read", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]], "generation"], "attempt": ["param", "attempt"]}]},
+        {"target": ["loc", "object_store", ["param", "node"], ["param", "shard"], ["param", "snapshot_object"]], "value_ast": ["variant", "ObjectSlotState", "Published", {"generation": ["field", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "snapshot_object"]], "generation"], "payload": ["variant", "ObjectPayload", "DispatchSnapshot", {"snapshot": ["record", "DispatchAuthoritySnapshot", {"id": ["param", "snapshot_object"], "opportunity": ["param", "opportunity"], "attempt": ["param", "attempt"], "ready": ["param", "ready"], "activation_request": ["param", "activation_object"], "subject": ["param", "subject"], "subject_generation": ["field", ["read", "subject_state", ["param", "node"], ["param", "shard"], ["param", "subject"]], "generation"], "program": ["field", ["read", "subject_state", ["param", "node"], ["param", "shard"], ["param", "subject"]], "program"], "program_generation": ["field", ["read", "subject_state", ["param", "node"], ["param", "shard"], ["param", "subject"]], "program_generation"], "aggregate": ["param", "aggregate"], "aggregate_generation": ["field", ["read", "aggregate_state", ["param", "node"], ["param", "shard"], ["param", "aggregate"]], "generation"], "run_authority": ["param", "run_authority"], "run_generation": ["field", ["read", "authority_account", ["param", "node"], ["param", "shard"], ["param", "run_authority"]], "generation"], "sched_authority": ["param", "run_authority"], "charge_authority": ["id", "AuthorityID", "AUTH1"], "escrow": ["param", "escrow"], "context": ["id", "ContextID", "CTX0"], "target_cpu": ["param", "target_cpu"], "cpu_incarnation": ["int", 0], "revocation_path": ["vector", "RevocationPath", [["record", "RevScopeRef", {"active": ["bool", true], "scope": ["id", "RevScopeID", "REV0"], "generation": ["int", 0]}], ["record", "RevScopeRef", {"active": ["bool", true], "scope": ["id", "RevScopeID", "REV2"], "generation": ["int", 0]}]]], "horizon_end": ["int", 3]}]}], "digest": ["string", "dispatch-snapshot-v1"], "txn_id": ["param", "txn"]}]},
+        {"target": ["loc", "object_allocator", ["param", "node"], ["param", "shard"]], "value_ast": ["record", "ObjectAllocatorState", {"next_ordinal": ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 1]], "exhausted": ["ge", ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 1]], ["bound", "ObjectSlotCapacity"]]}]}
+      ],
+      "abort_reason_ast": ["enum", "AbortReason", "VersionMismatch"],
+      "projections": [{"id": "AUDIT-ATTEMPT-PREPARE", "target_storage_class": "audit", "updates": [{"target": ["loc", "audit_counter", ["param", "node"], ["param", "shard"]], "value_ast": ["add", ["read", "audit_counter", ["param", "node"], ["param", "shard"]], ["int", 1]]}]}],
+      "retire_guard_ast": ["bool", true], "reuse_guard_ast": ["eq", ["tag", ["read", "gc_state", ["param", "node"], ["param", "shard"], ["param", "tombstone"]]], ["string", "Authorized"]], "rank_delta_ast": ["int", -1],
+      "blocker_ids": ["R10-DISPATCH-CAUSALITY-01", "R10-ATTEMPT-ALLOC-01", "R10-READY-PROJECTION-01"]
+    },
+    {
+      "id": "TXN-PUBLISH-ELIGIBLE",
+      "parameters": [
+        {"name": "node", "type": "NodeID"}, {"name": "shard", "type": "ShardID"}, {"name": "slot", "type": "TxnSlotID"}, {"name": "txn", "type": "TxnID"}, {"name": "outcome", "type": "OutcomeID"}, {"name": "tombstone", "type": "TombstoneID"},
+        {"name": "attempt", "type": "AttemptID"}, {"name": "ready", "type": "ReadyID"}, {"name": "snapshot_object", "type": "ObjectSlotID"}, {"name": "eligibility_object", "type": "ObjectSlotID"}, {"name": "cpu", "type": "CpuID"}, {"name": "context_receipt", "type": "ReceiptID"}
+      ],
+      "instance_scope": {"mode": "catalog", "catalog_rows": [{"node": "N0", "shard": "S0", "slot": "TS4", "txn": "TX4", "outcome": "OUT4", "tombstone": "TOMB4", "attempt": "ATT0", "ready": "READY0", "snapshot_object": "OBJ5", "eligibility_object": "OBJ6", "cpu": "CPU0", "context_receipt": "RECEIPT0"}], "scope_nonclaim": "Only one bounded prepared-binding publication row is modeled."},
+      "slot_variable": "txn_slots", "slot_keys_ast": [["param", "node"], ["param", "shard"], ["param", "slot"]], "expected_slot_generation_ast": ["int", 0], "txn_id_ast": ["param", "txn"], "outcome_id_ast": ["param", "outcome"], "tombstone_id_ast": ["param", "tombstone"],
+      "plan_ast": ["record", "TxnPlan", {"plan_slot": ["param", "eligibility_object"], "expected_digest": ["string", "eligibility-v1"]}],
+      "prepare_guard_ast": ["and", ["eq", ["tag", ["read", "attempt_state", ["param", "node"], ["param", "shard"], ["param", "attempt"]]], ["string", "Allocated"]], ["eq", ["tag", ["read", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]]], ["string", "Preparing"]], ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "snapshot_object"]]], ["string", "Published"]], ["eq", ["tag", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "eligibility_object"]]], ["string", "Vacant"]], ["eq", ["tag", ["read", "cpu_receipt", ["param", "node"], ["param", "shard"], ["param", "cpu"], ["param", "context_receipt"]]], ["string", "ContextInstalled"]]],
+      "decision_ast": ["and", ["eq", ["tag", ["read", "attempt_state", ["param", "node"], ["param", "shard"], ["param", "attempt"]]], ["string", "Allocated"]], ["eq", ["tag", ["read", "cpu_receipt", ["param", "node"], ["param", "shard"], ["param", "cpu"], ["param", "context_receipt"]]], ["string", "ContextInstalled"]]],
+      "commit_updates": [
+        {"target": ["loc", "attempt_state", ["param", "node"], ["param", "shard"], ["param", "attempt"]], "value_ast": ["variant", "AttemptState", "Prepared", {"generation": ["field", ["read", "attempt_state", ["param", "node"], ["param", "shard"], ["param", "attempt"]], "generation"], "eligibility": ["param", "eligibility_object"]}]},
+        {"target": ["loc", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]], "value_ast": ["variant", "ReadyState", "Eligible", {"generation": ["field", ["read", "ready_state", ["param", "node"], ["param", "shard"], ["param", "ready"]], "generation"], "attempt": ["param", "attempt"], "eligibility": ["param", "eligibility_object"]}]},
+        {"target": ["loc", "object_store", ["param", "node"], ["param", "shard"], ["param", "eligibility_object"]], "value_ast": ["variant", "ObjectSlotState", "Published", {"generation": ["field", ["read", "object_store", ["param", "node"], ["param", "shard"], ["param", "eligibility_object"]], "generation"], "payload": ["variant", "ObjectPayload", "EligibilitySeal", {"eligibility": ["record", "EligibilitySealCore", {"id": ["param", "eligibility_object"], "snapshot": ["param", "snapshot_object"], "context_receipt": ["param", "context_receipt"], "eligibility_generation": ["int", 0], "not_after": ["int", 3]}]}], "digest": ["string", "eligibility-seal-v1"], "txn_id": ["param", "txn"]}]},
+        {"target": ["loc", "object_allocator", ["param", "node"], ["param", "shard"]], "value_ast": ["record", "ObjectAllocatorState", {"next_ordinal": ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 1]], "exhausted": ["ge", ["add", ["field", ["read", "object_allocator", ["param", "node"], ["param", "shard"]], "next_ordinal"], ["int", 1]], ["bound", "ObjectSlotCapacity"]]}]}
+      ],
+      "abort_reason_ast": ["enum", "AbortReason", "VersionMismatch"],
+      "projections": [{"id": "AUDIT-PUBLISH-ELIGIBLE", "target_storage_class": "audit", "updates": [{"target": ["loc", "audit_counter", ["param", "node"], ["param", "shard"]], "value_ast": ["add", ["read", "audit_counter", ["param", "node"], ["param", "shard"]], ["int", 1]]}]}],
+      "retire_guard_ast": ["bool", true], "reuse_guard_ast": ["eq", ["tag", ["read", "gc_state", ["param", "node"], ["param", "shard"], ["param", "tombstone"]]], ["string", "Authorized"]], "rank_delta_ast": ["int", -1],
+      "blocker_ids": ["R10-DISPATCH-CAUSALITY-01", "R10-READY-PROJECTION-01", "R10-PROVIDER-AST-01"]
+    }
+  ],
+  "actions": [
+    {
+      "id": "ACT-MONITOR-CRASH",
+      "parameters": [
+        {"name": "node", "type": "NodeID"},
+        {"name": "shard", "type": "ShardID"}
+      ],
+      "instance_scope": {"mode": "full_product"},
+      "semantic_actor": "ACTOR-PROTECTED-STORE",
+      "writer_ast": ["writer", "WR-STORE", ["param", "node"], ["param", "shard"]],
+      "guard_ast": ["lt", ["read", "monitor_epoch", ["param", "node"], ["param", "shard"]], ["bound", "MaxGeneration"]],
+      "updates": [
+        {
+          "target": ["loc", "monitor_epoch", ["param", "node"], ["param", "shard"]],
+          "value_ast": ["add", ["read", "monitor_epoch", ["param", "node"], ["param", "shard"]], ["int", 1]]
+        }
+      ],
+      "linearization_ast": ["loc", "monitor_epoch", ["param", "node"], ["param", "shard"]],
+      "crash_class": "provider_atomic",
+      "recovery_ast": ["add", ["read", "monitor_epoch", ["param", "node"], ["param", "shard"]], ["int", 1]],
+      "refinement": "REF-LOCAL-STORE-CRASH",
+      "work_class": "WORK-PROVIDER-FAULT",
+      "rank_delta_ast": ["int", 0],
+      "blocker_ids": ["R10-PROVIDER-AST-01", "R10-RECOVERY-01"]
+    }
+  ],
+  "provider_formulas": [
+    {
+      "id": "PF-STORE-EPOCH",
+      "provider_writer": "WR-STORE",
+      "state_formula_ast": ["forall", [["node", "NodeID"], ["shard", "ShardID"]], ["ge", ["read", "monitor_epoch", ["param", "node"], ["param", "shard"]], ["int", 0]]],
+      "fault_formula_ast": ["forall", [["node", "NodeID"], ["shard", "ShardID"]], ["le", ["read", "monitor_epoch", ["param", "node"], ["param", "shard"]], ["bound", "MaxGeneration"]]],
+      "guarantee_ast": ["always", ["forall", [["node", "NodeID"], ["shard", "ShardID"]], ["ge", ["read", "monitor_epoch", ["param", "node"], ["param", "shard"]], ["int", 0]]]],
+      "progress_ast": ["always", ["bool", true]],
+      "fault_bound_ast": ["bool", true],
+      "consumers": ["PROOF-BASE-TYPING", "PROOF-TXN-AUTHORITY"]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-AUTHORITY-USE-CONSERVATION",
+      "scope": "state",
+      "formula_ast": ["forall", [["node", "NodeID"], ["shard", "ShardID"]], ["eq", ["call", "TotalAuthorityUses", ["param", "node"], ["param", "shard"]], ["bound", "InitialAuthorityUses"]]],
+      "preserved_by": [
+        "ACT-MONITOR-CRASH",
+        "TXN.TXN-AUTH-ISSUE.Begin",
+        "TXN.TXN-AUTH-ISSUE.Retire",
+        "TXN.TXN-AUTH-ISSUE.Reuse",
+        "TXN.TXN-AUTH-ISSUE.CommitDecision",
+        "TXN.TXN-AUTH-ISSUE.AbortDecision",
+        "TXN.TXN-AUTH-ISSUE.BeginApplyingCommit",
+        "TXN.TXN-AUTH-ISSUE.BeginApplyingAbort",
+        "TXN.TXN-AUTH-ISSUE.ApplyProjection000.AUDIT-AUTH-ISSUE",
+        "TXN.TXN-AUTH-ISSUE.Complete",
+        "TXN.TXN-ASYNC-CARRIER.Begin", "TXN.TXN-ASYNC-CARRIER.Retire", "TXN.TXN-ASYNC-CARRIER.Reuse", "TXN.TXN-ASYNC-CARRIER.CommitDecision", "TXN.TXN-ASYNC-CARRIER.AbortDecision", "TXN.TXN-ASYNC-CARRIER.BeginApplyingCommit", "TXN.TXN-ASYNC-CARRIER.BeginApplyingAbort", "TXN.TXN-ASYNC-CARRIER.ApplyProjection000.AUDIT-ASYNC-CARRIER", "TXN.TXN-ASYNC-CARRIER.Complete",
+        "TXN.TXN-ATTEMPT-PREPARE.Begin", "TXN.TXN-ATTEMPT-PREPARE.Retire", "TXN.TXN-ATTEMPT-PREPARE.Reuse", "TXN.TXN-ATTEMPT-PREPARE.CommitDecision", "TXN.TXN-ATTEMPT-PREPARE.AbortDecision", "TXN.TXN-ATTEMPT-PREPARE.BeginApplyingCommit", "TXN.TXN-ATTEMPT-PREPARE.BeginApplyingAbort", "TXN.TXN-ATTEMPT-PREPARE.ApplyProjection000.AUDIT-ATTEMPT-PREPARE", "TXN.TXN-ATTEMPT-PREPARE.Complete",
+        "TXN.TXN-PUBLISH-ELIGIBLE.Begin", "TXN.TXN-PUBLISH-ELIGIBLE.Retire", "TXN.TXN-PUBLISH-ELIGIBLE.Reuse", "TXN.TXN-PUBLISH-ELIGIBLE.CommitDecision", "TXN.TXN-PUBLISH-ELIGIBLE.AbortDecision", "TXN.TXN-PUBLISH-ELIGIBLE.BeginApplyingCommit", "TXN.TXN-PUBLISH-ELIGIBLE.BeginApplyingAbort", "TXN.TXN-PUBLISH-ELIGIBLE.ApplyProjection000.AUDIT-PUBLISH-ELIGIBLE", "TXN.TXN-PUBLISH-ELIGIBLE.Complete"
+      ]
+    },
+    {
+      "id": "INV-NONNEGATIVE-AUTHORITY",
+      "scope": "state",
+      "formula_ast": ["forall", [["node", "NodeID"], ["shard", "ShardID"], ["authority", "AuthorityID"]], ["ge", ["call", "AuthorityUseBalance", ["param", "node"], ["param", "shard"], ["param", "authority"]], ["int", 0]]],
+      "preserved_by": [
+        "ACT-MONITOR-CRASH",
+        "TXN.TXN-AUTH-ISSUE.Begin",
+        "TXN.TXN-AUTH-ISSUE.Retire",
+        "TXN.TXN-AUTH-ISSUE.Reuse",
+        "TXN.TXN-AUTH-ISSUE.CommitDecision",
+        "TXN.TXN-AUTH-ISSUE.AbortDecision",
+        "TXN.TXN-AUTH-ISSUE.BeginApplyingCommit",
+        "TXN.TXN-AUTH-ISSUE.BeginApplyingAbort",
+        "TXN.TXN-AUTH-ISSUE.ApplyProjection000.AUDIT-AUTH-ISSUE",
+        "TXN.TXN-AUTH-ISSUE.Complete",
+        "TXN.TXN-ASYNC-CARRIER.Begin", "TXN.TXN-ASYNC-CARRIER.Retire", "TXN.TXN-ASYNC-CARRIER.Reuse", "TXN.TXN-ASYNC-CARRIER.CommitDecision", "TXN.TXN-ASYNC-CARRIER.AbortDecision", "TXN.TXN-ASYNC-CARRIER.BeginApplyingCommit", "TXN.TXN-ASYNC-CARRIER.BeginApplyingAbort", "TXN.TXN-ASYNC-CARRIER.ApplyProjection000.AUDIT-ASYNC-CARRIER", "TXN.TXN-ASYNC-CARRIER.Complete",
+        "TXN.TXN-ATTEMPT-PREPARE.Begin", "TXN.TXN-ATTEMPT-PREPARE.Retire", "TXN.TXN-ATTEMPT-PREPARE.Reuse", "TXN.TXN-ATTEMPT-PREPARE.CommitDecision", "TXN.TXN-ATTEMPT-PREPARE.AbortDecision", "TXN.TXN-ATTEMPT-PREPARE.BeginApplyingCommit", "TXN.TXN-ATTEMPT-PREPARE.BeginApplyingAbort", "TXN.TXN-ATTEMPT-PREPARE.ApplyProjection000.AUDIT-ATTEMPT-PREPARE", "TXN.TXN-ATTEMPT-PREPARE.Complete",
+        "TXN.TXN-PUBLISH-ELIGIBLE.Begin", "TXN.TXN-PUBLISH-ELIGIBLE.Retire", "TXN.TXN-PUBLISH-ELIGIBLE.Reuse", "TXN.TXN-PUBLISH-ELIGIBLE.CommitDecision", "TXN.TXN-PUBLISH-ELIGIBLE.AbortDecision", "TXN.TXN-PUBLISH-ELIGIBLE.BeginApplyingCommit", "TXN.TXN-PUBLISH-ELIGIBLE.BeginApplyingAbort", "TXN.TXN-PUBLISH-ELIGIBLE.ApplyProjection000.AUDIT-PUBLISH-ELIGIBLE", "TXN.TXN-PUBLISH-ELIGIBLE.Complete"
+      ]
+    }
+  ],
+  "progress_properties": [
+    {
+      "id": "PROG-TXN-DECISION-RECOVERY",
+      "premise_ast": ["bool", true],
+      "temporal_formula_ast": [
+        "always",
+        [
+          "forall",
+          [["node", "NodeID"], ["shard", "ShardID"], ["slot", "TxnSlotID"]],
+          [
+            "implies",
+            ["gt", ["call", "TxnRank", ["param", "node"], ["param", "shard"], ["param", "slot"]], ["int", 0]],
+            ["eventually", ["le", ["call", "TxnRank", ["param", "node"], ["param", "shard"], ["param", "slot"]], ["int", 2]]]
+          ]
+        ]
+      ],
+      "fair_actions": [
+        "TXN.TXN-AUTH-ISSUE.CommitDecision",
+        "TXN.TXN-AUTH-ISSUE.AbortDecision",
+        "TXN.TXN-AUTH-ISSUE.BeginApplyingCommit",
+        "TXN.TXN-AUTH-ISSUE.BeginApplyingAbort",
+        "TXN.TXN-AUTH-ISSUE.ApplyProjection000.AUDIT-AUTH-ISSUE",
+        "TXN.TXN-AUTH-ISSUE.Complete"
+      ],
+      "rank_function": "TxnRank",
+      "nonclaim_on_failure": "No progress is claimed after protected-store fail-stop or generation exhaustion."
+    }
+  ],
+  "refinements": [],
+  "proof_nodes": [
+    {
+      "id": "PROOF-BASE-TYPING",
+      "predecessors": [],
+      "formula_ids": ["PF-STORE-EPOCH", "INV-NONNEGATIVE-AUTHORITY"],
+      "action_ids": ["ACT-MONITOR-CRASH", "TXN.TXN-AUTH-ISSUE.Begin"],
+      "claim_ids": ["R10-DRAFT-IR-STRUCTURE-EXISTS"]
+    },
+    {
+      "id": "PROOF-TXN-AUTHORITY",
+      "predecessors": ["PROOF-BASE-TYPING"],
+      "formula_ids": ["INV-AUTHORITY-USE-CONSERVATION", "PROG-TXN-DECISION-RECOVERY"],
+      "action_ids": [
+        "TXN.TXN-AUTH-ISSUE.CommitDecision",
+        "TXN.TXN-AUTH-ISSUE.AbortDecision",
+        "TXN.TXN-AUTH-ISSUE.BeginApplyingCommit",
+        "TXN.TXN-AUTH-ISSUE.BeginApplyingAbort",
+        "TXN.TXN-AUTH-ISSUE.ApplyProjection000.AUDIT-AUTH-ISSUE",
+        "TXN.TXN-AUTH-ISSUE.Complete",
+        "TXN.TXN-AUTH-ISSUE.Retire",
+        "TXN.TXN-AUTH-ISSUE.Reuse"
+      ],
+      "claim_ids": ["R10-DRAFT-AUTHORITY-TRANSFER-SLICE-ENCODED"]
+    }
+  ],
+  "mutation_obligations": [
+    {"id": "HOSTILE-STATUS-PROMOTION", "target_kind": "status", "target_id": "r10-schema.json", "mutation": "set source status to frozen", "expected_reject_ids": ["IR-SCHEMA"]},
+    {"id": "HOSTILE-FUNCTION-RECURSION", "target_kind": "function", "target_id": "AuthorityUseBalance", "mutation": "replace the function body with a self call", "expected_reject_ids": ["IR-FUNCTION-CYCLE"]},
+    {"id": "HOSTILE-HIDDEN-CROSS-SHARD-READ", "target_kind": "function", "target_id": "AuthorityUseBalance", "mutation": "hide an S1 authority read behind a function called by an S0 action", "expected_reject_ids": ["IR-CD"]},
+    {"id": "HOSTILE-TXN-IDENTITY-ALIAS", "target_kind": "transaction_identity", "target_id": "TXN-PUBLISH-ELIGIBLE", "mutation": "select a second slot while reusing transaction, outcome, and tombstone identities", "expected_reject_ids": ["IR-TXN-IDENTITY"]},
+    {"id": "HOSTILE-TEMPORAL-ACTION-GUARD", "target_kind": "action_guard", "target_id": "ACT-MONITOR-CRASH", "mutation": "put always in a direct action guard", "expected_reject_ids": ["IR-AST-CONTEXT"]},
+    {"id": "HOSTILE-STATEFUL-INIT", "target_kind": "init", "target_id": "monitor_epoch", "mutation": "make init read its own state", "expected_reject_ids": ["IR-AST-CONTEXT"]},
+    {"id": "HOSTILE-UNGUARDED-VARIANT-FIELD", "target_kind": "function", "target_id": "AuthorityUseBalance", "mutation": "project Live-only balance without a dominating tag guard", "expected_reject_ids": ["IR-VARIANT-FIELD"]},
+    {"id": "HOSTILE-CONCRETE-DUPLICATE-WRITE", "target_kind": "action_effect", "target_id": "ACT-MONITOR-CRASH", "mutation": "make syntactically distinct targets alias after parameter substitution", "expected_reject_ids": ["IR-DUPLICATE-WRITE"]},
+    {"id": "HOSTILE-LINEARIZATION-OUTSIDE-WRITE", "target_kind": "frame", "target_id": "ACT-MONITOR-CRASH", "mutation": "move linearization to an unwritten S1 location", "expected_reject_ids": ["IR-LINEARIZATION"]},
+    {"id": "HOSTILE-AUTHORITY-EXEMPTION", "target_kind": "schema", "target_id": "authority_account", "mutation": "clear authority_relevant on protected authority state", "expected_reject_ids": ["IR-AUTHORITY-CLASS"]},
+    {"id": "HOSTILE-STATEFUL-OWNER", "target_kind": "owner", "target_id": "authority_account", "mutation": "make owner metadata depend on mutable state", "expected_reject_ids": ["IR-AST-CONTEXT"]},
+    {"id": "HOSTILE-WRITER-CD-MISMATCH", "target_kind": "writer_cd", "target_id": "cpu_state", "mutation": "declare a CPU-local CD inconsistent with WR-CPU", "expected_reject_ids": ["IR-WRITER-CD"]},
+    {"id": "HOSTILE-BOOLEAN-SHARD", "target_kind": "shard", "target_id": "authority_account", "mutation": "replace ShardKey with Bool", "expected_reject_ids": ["IR-SHARD"]},
+    {"id": "HOSTILE-MISSING-EDGE-PATH", "target_kind": "edge", "target_id": "OBJDEF-AuthorityCore", "mutation": "point an edge at a nonexistent field", "expected_reject_ids": ["IR-EDGE"]},
+    {"id": "HOSTILE-EDGE-COVERAGE-HOLE", "target_kind": "edge", "target_id": "OBJDEF-AuthorityCore", "mutation": "remove one nominal reference edge", "expected_reject_ids": ["IR-EDGE-COVERAGE"]},
+    {"id": "HOSTILE-CONSTRUCTOR-NO-ALLOCATOR", "target_kind": "allocator", "target_id": "TXN-AUTH-ISSUE", "mutation": "publish AuthorityCore without updating its allocator", "expected_reject_ids": ["IR-OBJECT-ALLOCATOR"]},
+    {"id": "HOSTILE-INSTANCE-SCOPE-HOLE", "target_kind": "instance_scope", "target_id": "ACT-MONITOR-CRASH", "mutation": "replace required full-product fault coverage with a one-row catalog", "expected_reject_ids": ["IR-INSTANCE-POLICY"]},
+    {"id": "HOSTILE-RECOVERY-MISMATCH", "target_kind": "recovery", "target_id": "ACT-MONITOR-CRASH", "mutation": "make recovery differ from the atomic linearization successor", "expected_reject_ids": ["IR-RECOVERY"]},
+    {"id": "HOSTILE-PROVIDER-FACT-OVERWRITE", "target_kind": "provider_fact", "target_id": "monitor_epoch", "mutation": "reclassify mutable provider state as an immutable fact without a Vacant guard", "expected_reject_ids": ["IR-PROVIDER-WRITE-ONCE"]},
+    {"id": "HOSTILE-UNKNOWN-CLAIM", "target_kind": "claim", "target_id": "PROOF-BASE-TYPING", "mutation": "attach an undeclared claim to a proof", "expected_reject_ids": ["IR-PROOF"]},
+    {"id": "HOSTILE-INVARIANT-MATRIX-HOLE", "target_kind": "invariant", "target_id": "INV-NONNEGATIVE-AUTHORITY", "mutation": "remove one action from one invariant preservation row", "expected_reject_ids": ["IR-INVARIANT-COVERAGE"]},
+    {"id": "HOSTILE-UNKNOWN-WITNESS-STEP", "target_kind": "witness", "target_id": "WIT-AUTHORITY-TRANSFER", "mutation": "select a concrete action outside the generated instance scope", "expected_reject_ids": ["IR-WITNESS"]},
+    {"id": "HOSTILE-DISABLED-WITNESS-STEP", "target_kind": "witness", "target_id": "WIT-AUTHORITY-TRANSFER", "mutation": "run CommitDecision before Begin", "expected_reject_ids": ["IR-WITNESS-DISABLED"]},
+    {"id": "HOSTILE-FALSE-WITNESS-FINAL", "target_kind": "witness", "target_id": "WIT-AUTHORITY-TRANSFER", "mutation": "replace the final witness formula with FALSE", "expected_reject_ids": ["IR-WITNESS-FINAL"]},
+    {"id": "HOSTILE-ALLOCATOR-UNDERCOUNTS-PUBLICATIONS", "target_kind": "allocator", "target_id": "TXN-ASYNC-CARRIER", "mutation": "charge one object slot for a transaction that publishes two objects", "expected_reject_ids": ["IR-OBJECT-ALLOCATOR"]},
+    {"id": "HOSTILE-CONDITIONAL-OBJECT-CONSTRUCTOR", "target_kind": "action_effect", "target_id": "TXN-AUTH-ISSUE", "mutation": "hide an object publication in only one branch of a conditional update", "expected_reject_ids": ["IR-OBJECT-CONSTRUCTOR"]},
+    {"id": "HOSTILE-FAKE-EDGE-POLICY", "target_kind": "edge", "target_id": "OBJDEF-AuthorityCore", "mutation": "replace a registered reference edge class and strength with fabricated policy", "expected_reject_ids": ["IR-EDGE-POLICY"]},
+    {"id": "HOSTILE-WITNESS-SKIPS-INVARIANTS", "target_kind": "witness", "target_id": "WIT-AUTHORITY-TRANSFER", "mutation": "replace the mandatory all-state-invariants witness scope with an unregistered selection", "expected_reject_ids": ["IR-SCHEMA"]},
+    {"id": "HOSTILE-CROSS-NEXT-TAG-FACT", "target_kind": "provider_fact", "target_id": "PF-STORE-EPOCH", "mutation": "use a current-state variant tag fact to justify a next-state field projection", "expected_reject_ids": ["IR-VARIANT-FIELD"]}
+  ],
+  "imports": [],
+  "witnesses": [
+    {
+      "id": "WIT-AUTHORITY-TRANSFER",
+      "purpose": "One exact parent-to-child issue transaction reaches Complete without amplifying authority uses.",
+      "initial_overrides": [],
+      "steps": [
+        {"template_id": "TXN.TXN-AUTH-ISSUE.Begin", "parameters": {"node": "N0", "shard": "S0", "slot": "TS0", "txn": "TX0", "outcome": "OUT0", "tombstone": "TOMB0", "parent": "AUTH0", "child": "AUTH1", "child_scope": "REV1", "object": "OBJ1", "owner": "DOM0"}},
+        {"template_id": "TXN.TXN-AUTH-ISSUE.CommitDecision", "parameters": {"node": "N0", "shard": "S0", "slot": "TS0", "txn": "TX0", "outcome": "OUT0", "tombstone": "TOMB0", "parent": "AUTH0", "child": "AUTH1", "child_scope": "REV1", "object": "OBJ1", "owner": "DOM0"}},
+        {"template_id": "TXN.TXN-AUTH-ISSUE.BeginApplyingCommit", "parameters": {"node": "N0", "shard": "S0", "slot": "TS0", "txn": "TX0", "outcome": "OUT0", "tombstone": "TOMB0", "parent": "AUTH0", "child": "AUTH1", "child_scope": "REV1", "object": "OBJ1", "owner": "DOM0"}},
+        {"template_id": "TXN.TXN-AUTH-ISSUE.ApplyProjection000.AUDIT-AUTH-ISSUE", "parameters": {"node": "N0", "shard": "S0", "slot": "TS0", "txn": "TX0", "outcome": "OUT0", "tombstone": "TOMB0", "parent": "AUTH0", "child": "AUTH1", "child_scope": "REV1", "object": "OBJ1", "owner": "DOM0"}},
+        {"template_id": "TXN.TXN-AUTH-ISSUE.Complete", "parameters": {"node": "N0", "shard": "S0", "slot": "TS0", "txn": "TX0", "outcome": "OUT0", "tombstone": "TOMB0", "parent": "AUTH0", "child": "AUTH1", "child_scope": "REV1", "object": "OBJ1", "owner": "DOM0"}}
+      ],
+      "invariant_scope": "all_state_invariants",
+      "final_formula_ast": ["and", ["eq", ["call", "AuthorityUseBalance", ["id", "NodeID", "N0"], ["id", "ShardID", "S0"], ["id", "AuthorityID", "AUTH0"]], ["int", 1]], ["eq", ["call", "AuthorityUseBalance", ["id", "NodeID", "N0"], ["id", "ShardID", "S0"], ["id", "AuthorityID", "AUTH1"]], ["int", 1]], ["eq", ["tag", ["read", "txn_slots", ["id", "NodeID", "N0"], ["id", "ShardID", "S0"], ["id", "TxnSlotID", "TS0"]]], ["string", "Complete"]], ["eq", ["read", "audit_counter", ["id", "NodeID", "N0"], ["id", "ShardID", "S0"]], ["int", 1]]],
+      "nonclaims": ["This bounded trace does not prove invariant preservation for unexecuted actions or crash recovery."]
+    }
+  ],
+  "blocker_coverage": {
+    "R10-ARTIFACT-01": ["r10-schema.json", "r10-source.json", "materialize-r10.py"],
+    "R10-REGISTRY-01": ["r10-schema.json", "materialize-r10.py"],
+    "R10-INIT-01": ["authority_account", "txn_slots", "object_store", "monitor_epoch"],
+    "R10-OBJECT-STORE-01": ["ObjectSlotState", "object_store", "OBJDEF-AuthorityCore"],
+    "R10-SCHEMA-EDGE-01": ["AuthorityCore", "OBJDEF-AuthorityCore"],
+    "R10-ACTION-01": ["TXN-AUTH-ISSUE", "ACT-MONITOR-CRASH"],
+    "R10-WRITER-01": ["WR-MONITOR", "WR-STORE"],
+    "R10-TXN-FOOTPRINT-01": ["TXN-AUTH-ISSUE", "materialize-r10.py"],
+    "R10-TXN-LIFECYCLE-01": ["TxnState", "TXN-AUTH-ISSUE"],
+    "R10-RECOVERY-01": ["TXN-AUTH-ISSUE", "ACT-MONITOR-CRASH"],
+    "R10-IMPORT-AST-01": ["PENDING-IMPORT-MATERIALIZATION"],
+    "R10-PROVIDER-AST-01": ["PF-STORE-EPOCH"],
+    "R10-PROOF-FORMULA-01": ["INV-AUTHORITY-USE-CONSERVATION", "PROOF-TXN-AUTHORITY"],
+    "R10-LIVENESS-01": ["TxnRank", "PROG-TXN-DECISION-RECOVERY"],
+    "R10-AUTH-CONSERVATION-01": ["TXN-AUTH-ISSUE", "INV-AUTHORITY-USE-CONSERVATION"],
+    "R10-REVOCATION-01": ["AuthorityCore", "RevocationPath", "RevocationScopeState"],
+    "R10-ASYNC-AUTH-01": ["PENDING-ASYNC-AUTHORITY"],
+    "R10-ASYNC-ACTIVATION-01": ["PENDING-ACTIVATION-REQUEST"],
+    "R10-SPAWN-01": ["PENDING-SPAWN-PROTOCOL"],
+    "R10-EXEC-EXIT-01": ["PENDING-EXEC-EXIT-PROTOCOL"],
+    "R10-DISPATCH-CAUSALITY-01": ["PENDING-DISPATCH-OBJECT-SPLIT"],
+    "R10-ATTEMPT-ALLOC-01": ["PENDING-ATTEMPT-ALLOCATOR"],
+    "R10-RETRY-NOREISSUE-01": ["PENDING-RETRY-NOREISSUE"],
+    "R10-READY-PROJECTION-01": ["PENDING-READY-PROJECTION"],
+    "R10-ROOT-FRAME-01": ["PENDING-ROOT-FRAME"],
+    "R10-MGMT-NORMAL-DAG-01": ["PENDING-MANAGEMENT-DAG"],
+    "R10-BUDGET-ARM-01": ["PENDING-BUDGET-ARM"],
+    "R10-OVERHEAD-01": ["PENDING-OVERHEAD-RECEIPTS"],
+    "R10-LEDGER-01": ["PENDING-LEDGER-APPLICATION"],
+    "R10-CURRENT-EXEC-01": ["PENDING-CURRENT-EXECUTABLE"],
+    "R10-OFFLINE-01": ["PENDING-OFFLINE-RECONCILIATION"],
+    "R10-PUBLICATION-SEAL-01": ["PENDING-PUBLICATION-SEAL"],
+    "R10-ADMISSION-SEAL-01": ["PENDING-ADMISSION-SEAL"],
+    "R10-ACTIVE-USE-CUT-01": ["PENDING-ACTIVE-USE-CUT"],
+    "R10-DEPENDENCY-INVALIDATE-01": ["PENDING-DEPENDENCY-INVALIDATION"],
+    "R10-SUCCESSOR-ONEUSE-01": ["PENDING-SUCCESSOR-ONEUSE"],
+    "R10-CONTINUATION-CARRY-01": ["PENDING-CONTINUATION-CARRY"],
+    "R10-FAILURE-EPOCH-01": ["PENDING-FAILURE-EPOCH"],
+    "R10-MERGE-REBASE-01": ["PENDING-MERGE-REBASE"],
+    "R10-MERGE-RANK-01": ["PENDING-MERGE-RANK"],
+    "R10-TIME-PARTITION-01": ["PENDING-TIME-PARTITION"],
+    "R10-GC-01": ["GcState", "TXN-AUTH-ISSUE"]
+  }
+}

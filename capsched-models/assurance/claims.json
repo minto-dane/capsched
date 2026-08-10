@@ -1,7 +1,43 @@
 {
   "schema_version": 1,
-  "updated": "2026-08-09",
+  "updated": "2026-08-10",
   "scope": "DomainLease-H production assurance case with Linux-only prototype boundaries and reopened final-system composition requirements",
+  "gate_identifier_policy": {
+    "current_public_scheme": "K{n}-G{n}",
+    "current_public_alias_scheme": "G{n}",
+    "legacy_linux_prototype_prefix": "LINUX-L0-",
+    "bare_G0_semantics": "K0 foundation adoption only, as fixed by ADR-0018",
+    "historical_aliases_are_authority": false
+  },
+  "local_validation_claim_registries": [
+    {
+      "id": "F0-C4-CLAIM-REGISTRY-v1",
+      "path": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
+      "sha256": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
+      "status": "candidate_unfrozen",
+      "scope": "Local bounded C4 regression and explicit open-refinement claims only",
+      "claim_ids": [
+        "F0-C4-FAST-MUTATION-AND-STATIC-v1",
+        "F0-C4-REACH-CHILD-EXACT-FIXTURE-BOUNDED-v1",
+        "F0-C4-REACH-PARENT-EXACT-REPETITION-BOUNDED-v1",
+        "F0-C4-DECLARED-LOCAL-EFFECT-COMMUTATION-v1",
+        "F0-C4-INDEPENDENCE-RELATION-COMPLETE-v1",
+        "F0-C4-EXTERNAL-AUTHENTICATION-v1",
+        "F0-C4-ATTACK-CONTEXT-KEY-REFINEMENT-v1",
+        "F0-C4-UNBOUNDED-REPEATED-ATTACK-HISTORY-v1",
+        "F0-C4-DURABLE-STORE-LINEARIZATION-REFINEMENT-v1",
+        "F0-C4-PARENT-CHILD-INDEPENDENCE-REFINEMENT-v1",
+        "F0-LOCAL-ACCEPTANCE-v1"
+      ],
+      "authorization": {
+        "F0_local_acceptance": false,
+        "external_R11_review": false,
+        "G0_authorized": false,
+        "self_authorization": false,
+        "protection_claim": false
+      }
+    }
+  ],
   "status_legend": {
     "open": "Required for the final goal but not established.",
     "model_supported": "Supported by small or decomposed semantic models; this does not imply system composition.",
@@ -881,11 +917,11 @@
         "E-RESIDENCY-001"
       ],
       "gaps": [
-        "No dynamic Domain join, leave, class-change, feasibility-admission, or rejection transition model exists.",
-        "No recurring request identity, cancellation, coalescing, or service-bound model exists.",
-        "No attacker-amplification budget for best-effort churn, misses, drains, or malformed hints exists.",
-        "No generation-saturation quarantine or safe rekey protocol exists.",
-        "No production directory, cache hierarchy, replacement policy, or physical-shadow lifetime refinement is selected."
+        "No accepted dynamic Domain join, leave, class-change, feasibility-admission, or rejection transition model exists; Candidate-4 is pre-full local evidence only.",
+        "Candidate-4 full child/parent reachability and declared commutation are NOT_RUN, and its component receipts are not authority-disjoint observations.",
+        "Recurring request identity, cancellation, coalescing, and service-bound refinement remain unaccepted.",
+        "Attacker-amplification budgets for best-effort churn, misses, drains, and malformed hints remain unaccepted.",
+        "Generation-saturation quarantine, safe rekey, production directory/cache/replacement policy, and physical-shadow lifetime refinement remain open."
       ],
       "forbidden_l0": true
     },
@@ -2327,7 +2363,66 @@
   ],
   "gates": [
     {
-      "id": "G0",
+      "id": "K0-G0",
+      "public_name": "K0 / G0",
+      "aliases": [
+        "G0"
+      ],
+      "namespace": "foundation_candidate_freeze_proof",
+      "status": "open",
+      "title": "Foundation adoption",
+      "allowed_authorization": "Candidate construction only after an externally rooted decision over immutable foundation bytes.",
+      "current_authorization": false,
+      "missing_evidence": [
+        "Externally owned R11 policy and profile.",
+        "Externally authenticated foundation reviews.",
+        "Independent G0 decision bound to exact immutable foundation bytes."
+      ]
+    },
+    {
+      "id": "K1-G1",
+      "public_name": "K1 / G1",
+      "aliases": [
+        "G1"
+      ],
+      "namespace": "foundation_candidate_freeze_proof",
+      "status": "blocked",
+      "title": "Candidate construction readiness",
+      "blocked_by": [
+        "K0-G0"
+      ]
+    },
+    {
+      "id": "K2-G2",
+      "public_name": "K2 / G2",
+      "aliases": [
+        "G2"
+      ],
+      "namespace": "foundation_candidate_freeze_proof",
+      "status": "blocked",
+      "title": "Exact semantic review and architecture freeze",
+      "blocked_by": [
+        "K1-G1"
+      ]
+    },
+    {
+      "id": "K3-G3",
+      "public_name": "K3 / G3",
+      "aliases": [
+        "G3"
+      ],
+      "namespace": "foundation_candidate_freeze_proof",
+      "status": "blocked",
+      "title": "Proof and evidence decision",
+      "blocked_by": [
+        "K2-G2"
+      ]
+    },
+    {
+      "id": "LINUX-L0-G0",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G0",
+      "historical_alias_is_authority": false,
       "status": "completed",
       "title": "Vocabulary and build compatibility",
       "evidence": [
@@ -2337,7 +2432,10 @@
       "allowed_claim": "CONFIG_CAPSCHED scaffolding and type-only vocabulary build without changing Linux scheduler behavior."
     },
     {
-      "id": "G1",
+      "id": "LINUX-L0-G1",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G1",
+      "historical_alias_is_authority": false,
       "status": "active_reopened",
       "title": "Assurance case foundation",
       "exit_criteria": [
@@ -2353,7 +2451,10 @@
       ]
     },
     {
-      "id": "G2",
+      "id": "LINUX-L0-G2",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G2",
+      "historical_alias_is_authority": false,
       "status": "candidate",
       "title": "Trace-only Linux observation",
       "allowed": [
@@ -2364,27 +2465,42 @@
       ]
     },
     {
-      "id": "G3",
+      "id": "LINUX-L0-G3",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G3",
+      "historical_alias_is_authority": false,
       "status": "blocked",
       "title": "Runnable lease prototype"
     },
     {
-      "id": "G4",
+      "id": "LINUX-L0-G4",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G4",
+      "historical_alias_is_authority": false,
       "status": "blocked",
       "title": "Async and endpoint prototype"
     },
     {
-      "id": "G5",
+      "id": "LINUX-L0-G5",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G5",
+      "historical_alias_is_authority": false,
       "status": "blocked",
       "title": "Monitor and memory prototype"
     },
     {
-      "id": "G6",
+      "id": "LINUX-L0-G6",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G6",
+      "historical_alias_is_authority": false,
       "status": "blocked",
       "title": "Queue lease prototype"
     },
     {
-      "id": "G6A",
+      "id": "LINUX-L0-G6A",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G6A",
+      "historical_alias_is_authority": false,
       "status": "candidate",
       "title": "Modern NIC HyperTag readiness gate",
       "evidence": [
@@ -2451,7 +2567,10 @@
       ]
     },
     {
-      "id": "G7",
+      "id": "LINUX-L0-G7",
+      "namespace": "legacy_linux_prototype",
+      "historical_alias": "G7",
+      "historical_alias_is_authority": false,
       "status": "blocked",
       "title": "Hypervisor-replacement evaluation"
     }

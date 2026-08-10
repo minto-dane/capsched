@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-semantic-foundation-v3-rejection-v4-layering-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "semantic_foundation_v3_rejected_v4_layering_authorized",
+  "rejected_v3": {
+    "spec_path": "capsched-models/policy/r11/epoch2/semantic-foundation-v3.md",
+    "spec_sha256": "9fbb5fd5c5e2d4da8246114b2eb136b8795bb3c20a44801d5947cb8cf1fe1734",
+    "schema_path": "capsched-models/policy/r11/epoch2/semantic-foundation-schema-v3.json",
+    "schema_sha256": "4880f50071f4299bc0e88b9cf1072e551bd36a9a9894e17a33e8e945fa2585ae",
+    "contract_path": "capsched-models/policy/r11/epoch2/semantic-foundation-v3.json",
+    "contract_sha256": "d38891c32bd9449df60777f2e421c98549b01e56409d1bff92a6cef37fda93b4",
+    "validator_path": "capsched-models/validation/validate-semantic-foundation-v3.py",
+    "validator_sha256": "c64ce526c11ecf3beb2ea6061449e14d94045c03b30d68af535efccbf4e12615",
+    "validator_output_sha256": "4ee41dd00b62bc6e0121cd1978f171844d2d540433b72d7c06d04fdaa5913c12",
+    "structural_status": "passed_local_only",
+    "semantic_disposition": "rejected",
+    "external_authority": false
+  },
+  "local_reviews": [
+    {
+      "axis": "denotation_and_type_soundness",
+      "session_id": "019fe9df-bdd8-7e02-a487-be2e87714cb5",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "exact_hashes_confirmed": true,
+      "external_authority": false
+    },
+    {
+      "axis": "concurrency_liveness_durability_distribution",
+      "session_id": "019fe9df-ead0-77a0-a7d6-4e4222edfd3d",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "exact_hashes_confirmed": true,
+      "external_authority": false
+    },
+    {
+      "axis": "security_threat_closure_noninterference",
+      "session_id": "019fe9df-a3da-75d0-a608-7356439dd052",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "exact_hashes_confirmed": true,
+      "external_authority": false
+    },
+    {
+      "axis": "assurance_gate_backend_tcb",
+      "session_id": "019fe9df-d47a-7072-bace-9ba338a83d2c",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "exact_hashes_confirmed": true,
+      "external_authority": false
+    }
+  ],
+  "retained_strengths": [
+    "mathematical_definition_precedes_interpreter",
+    "total_state_maps_and_explicit_absence",
+    "checked_quantity_arithmetic",
+    "explicit_stutter",
+    "action_labels_distinct_from_events",
+    "phase_labelled_terms",
+    "instance_and_family_fairness_distinguished",
+    "nonvacuity_named",
+    "finite_profile_separate_from_general_claim",
+    "backend_untrusted_by_default"
+  ],
+  "normalized_blockers": [
+    {
+      "id": "V3-B00",
+      "class": "missing_well_formed_model_and_semantic_subject",
+      "successor_layer": "F0"
+    },
+    {
+      "id": "V3-B01",
+      "class": "missing_dependent_label_and_location_carriers",
+      "successor_layer": "F0"
+    },
+    {
+      "id": "V3-B02",
+      "class": "inconsistent_signature_and_incomplete_ast",
+      "successor_layer": "F0"
+    },
+    {
+      "id": "V3-B03",
+      "class": "phase_provenance_laundering",
+      "successor_layer": "F0"
+    },
+    {
+      "id": "V3-B04",
+      "class": "action_body_relation_and_frame_circularity",
+      "successor_layer": "F0"
+    },
+    {
+      "id": "V3-B05",
+      "class": "safety_trace_and_nonvacuity_not_connected",
+      "successor_layer": "F0"
+    },
+    {
+      "id": "V3-B06",
+      "class": "candidate_can_narrow_compromised_behavior",
+      "successor_layer": "F2_F3"
+    },
+    {
+      "id": "V3-B07",
+      "class": "abstract_state_omission_hides_physical_attacks",
+      "successor_layer": "F2"
+    },
+    {
+      "id": "V3-B08",
+      "class": "request_progress_fairness_feasibility_and_rank_undefined",
+      "successor_layer": "F1"
+    },
+    {
+      "id": "V3-B09",
+      "class": "timed_trace_clock_nonzeno_and_provider_semantics_undefined",
+      "successor_layer": "F1"
+    },
+    {
+      "id": "V3-B10",
+      "class": "durability_cut_crash_recovery_and_recrash_undefined",
+      "successor_layer": "F1"
+    },
+    {
+      "id": "V3-B11",
+      "class": "remote_oracle_transfer_refund_and_partition_boundary_undefined",
+      "successor_layer": "F1"
+    },
+    {
+      "id": "V3-B12",
+      "class": "parallel_lane_and_rely_guarantee_composition_absent",
+      "successor_layer": "F1"
+    },
+    {
+      "id": "V3-B13",
+      "class": "relational_confidentiality_and_robust_integrity_vacuous",
+      "successor_layer": "F1_F2_F3"
+    },
+    {
+      "id": "V3-B14",
+      "class": "multicore_weak_memory_interrupt_dma_raw_abi_crypto_open",
+      "successor_layer": "F2"
+    },
+    {
+      "id": "V3-B15",
+      "class": "finite_general_scope_widening_and_backend_proof_open",
+      "successor_layer": "F0_F1_F3"
+    },
+    {
+      "id": "V3-B16",
+      "class": "complete_external_k0_source_set_and_trust_closure_absent",
+      "successor_layer": "F3"
+    }
+  ],
+  "counterexamples": [
+    "hostile_linux_family_with_harmless_self_loop",
+    "post_value_laundered_through_effect_free_variable_into_state_predicate",
+    "empty_init_or_empty_assumption_filtered_trace_set",
+    "family_fair_serve_r0_forever_starve_r1",
+    "uncountable_instance_fairness_with_no_fair_trace",
+    "rank_decrease_increase_oscillation_without_terminal",
+    "remote_mutable_installed_oracle_then_late_install_after_refund",
+    "visible_effect_crash_before_durable_dedup_then_repeat",
+    "two_lanes_each_consume_replicated_root_credit",
+    "empty_initial_pair_or_coupling_and_constant_low_observation",
+    "omitted_dma_irq_translation_or_microarchitectural_state"
+  ],
+  "successor_layers": [
+    {
+      "id": "F0",
+      "name": "typed_transition_calculus_and_metatheory",
+      "output": "locally_reviewable_common_semantic_substrate_only"
+    },
+    {
+      "id": "F1",
+      "name": "claim_specific_semantic_modules_and_composition",
+      "output": "claim_denotations_projection_and_nonvacuity_only"
+    },
+    {
+      "id": "F2",
+      "name": "platform_refinement_and_threat_overapproximation",
+      "output": "abstract_physical_coverage_and_compromise_boundary_only"
+    },
+    {
+      "id": "F3",
+      "name": "external_policy_coverage_mutation_and_assurance_package",
+      "output": "complete_pre_candidate_foundation_source_set_only"
+    }
+  ],
+  "required_order": [
+    "F0_local_closure_and_hostile_review",
+    "F1_module_and_cross_module_review",
+    "F2_platform_refinement_and_threat_review",
+    "F3_source_set_and_assurance_review",
+    "external_K0_decision",
+    "K1_candidate_construction"
+  ],
+  "authorization": {
+    "retain_v3_as_rejected_evidence": true,
+    "F0_v4_design": true,
+    "F1_v4_design_before_F0_closure": false,
+    "F2_v4_design_before_F1_interface_freeze": false,
+    "F3_package_completion_before_F0_F2": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "semantic_freeze": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

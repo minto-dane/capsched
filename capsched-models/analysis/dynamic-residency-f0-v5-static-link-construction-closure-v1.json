@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-static-link-construction-closure-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "F0_v5_source_static_and_link_construction_locally_closed",
+  "exact_inputs": {
+    "grammar_raw_sha256": "6717164ade360574018ad04f3ef2cd1fd51b67ec2e33ea1055ab7ebfbc619445",
+    "grammar_surface_sha256": "02503654aae81c865cc1446fe707a49e9c50821603c41bb113dd017f79801039",
+    "static_rules_raw_sha256": "d020b64ed44b115940b4165a3aed5cdc152a72d14170dc86e48a1a3cb8fafee5",
+    "static_rules_canonical_sha256": "f01abcf53e359712819e34296de1dc6059bb238a17362fed171ebe38a7f51bbc",
+    "generated_manifest_sha256": "f689b99b6f251d3265157a4f1760b9c264f564599fc62eb876614ebaae76635e",
+    "normative_part_sha256": {
+      "f0-00-core-language-v5.md": "36170b57594bdb3f07990237712d5fb0ad464c71b74ba43684066948718cd0c5",
+      "f0-01-model-transition-claims-v5.md": "c2f2c4868e74adcd0d4dba6263564f5650d38f59773eb3322fdd9e0b155babb0",
+      "f0-02-morphisms-proof-boundary-v5.md": "c23e1553a3039bc80fc9df8d08bc30b3ecd5f0926d1d38c10900652b4939df76"
+    }
+  },
+  "local_regression": {
+    "grammar_mutations": {"total": 61, "rejected_at_expected_id": 61},
+    "static_rule_mutations": {"total": 83, "rejected_at_expected_id": 83},
+    "wire_mutations": {"total": 23, "rejected_at_expected_id": 23},
+    "core_mutations": {"total": 51, "rejected_at_expected_id": 51},
+    "link_rule_field_mutations": {"total": 56, "rejected": 56},
+    "local_cross_verifier_mutations": {"total": 21, "rejected_at_expected_id": 21}
+  },
+  "local_reviews": [
+    {
+      "session_id": "019feab2-ad52-75d1-b329-88ab4c9e2d46",
+      "axis": "source_link_mutability_rule_binding_direct_API_resource",
+      "external_authority": false,
+      "findings_closed_by_regression": 4
+    },
+    {
+      "session_id": "019feab2-e01a-7243-af45-d4f330738d95",
+      "axis": "typed_identity_preimage_invalidation_and_overclaim",
+      "external_authority": false,
+      "findings_closed_by_regression": 5
+    }
+  ],
+  "issued_construction_id_kinds": [
+    "BODY_ORIGIN",
+    "LINKED_MODEL_CONSTRUCTION",
+    "LINKED_SEMANTIC_PROJECTION_CONSTRUCTION",
+    "MODEL_ARTIFACT",
+    "MODULE_ARTIFACT",
+    "SOURCE_ACTION_ARTIFACT",
+    "SOURCE_DECLARATION_ARTIFACT"
+  ],
+  "authorization": {
+    "source_static_construction_locally_closed": true,
+    "immutable_link_construction_locally_closed": true,
+    "local_cross_implementation_reconstruction": true,
+    "linked_model_independently_validated": false,
+    "external_review": false,
+    "Eval": false,
+    "Reads": false,
+    "transition_semantics": false,
+    "InstanceWF": false,
+    "ClaimPackageWF": false,
+    "proof_validation": false,
+    "CoreSyntaxWF": false,
+    "F0_local_acceptance": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "semantic_freeze": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

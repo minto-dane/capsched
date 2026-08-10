@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v4-hostile-rejection-v5-closure-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "F0_v4_rejected_F0_v5_closure_authorized",
+  "exact_v4": {
+    "source_path": "capsched-models/policy/r11/epoch2/foundation-v4/f0-core-calculus-v4.md",
+    "source_sha256": "177ae3e0a860b808fd49a5bd93d03adc74d5b56f9950d1d257fa63e8fb6c7d9c",
+    "source_bytes": 24915,
+    "manifest_path": "capsched-models/policy/r11/epoch2/foundation-v4/f0-review-target-v4.json",
+    "manifest_sha256": "a2b56d0a2d1f80ac1d45ad4e6612d6005bf7191781d3a7cb5dbf084e6daaef12",
+    "checker_sha256": "06f3871b9f4744f5d811700e5d13060f5e1e1063f2ab168b93144ac36a43aa6c",
+    "checker_output_sha256": "058c0612362f9e20a789bf25b4b8e0f802e208b9a8504b0b5650c36c26559199",
+    "mutation_runner_sha256": "723ac1af83a7db89cc346d532837e8029d772982f228cca23a0e66fd029fd67d",
+    "mutation_output_sha256": "eff57e1bd77d3e2d9bd5aba670ca48ab1d07da2d8b9ed9ab05bf31356c56d09c",
+    "structural_mutations_total": 21,
+    "structural_mutations_rejected_at_expected_id": 21,
+    "semantic_disposition": "rejected"
+  },
+  "local_reviews": [
+    {
+      "axis": "type_theory_and_metatheory",
+      "session_id": "019fe9ef-b8e2-72e0-a807-923b3e9ecdf1",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    },
+    {
+      "axis": "action_frame_and_security_semantics",
+      "session_id": "019fe9ef-d8d8-7990-bd03-ecc2b1aed28b",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    },
+    {
+      "axis": "safety_nonvacuity_scope_and_backend",
+      "session_id": "019fe9f0-041f-7141-b872-e518f5f5e576",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    },
+    {
+      "axis": "extension_interface_and_expressive_adequacy",
+      "session_id": "019fe9f0-244b-7a82-83c2-e59032f5cda0",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    }
+  ],
+  "retained_results": [
+    "dependent_location_and_cell_carriers",
+    "dependent_action_branch_parameter_labels",
+    "finite_point_write_fold_frame_soundness_at_declared_granularity",
+    "assumption_free_base_execution_set",
+    "explicit_stutter",
+    "finite_and_general_claim_scope_separation",
+    "backend_agreement_is_not_proof"
+  ],
+  "normalized_blockers": [
+    "F0V4_B01_missing_event_constructor_and_match",
+    "F0V4_B02_unindexed_action_parameter_and_parameterized_state_invariant",
+    "F0V4_B03_incomplete_evaluator_macro_and_constructor_grammar",
+    "F0V4_B04_false_event_inversion",
+    "F0V4_B05_undefined_infinite_ordered_read_instrumentation",
+    "F0V4_B06_candidate_omittable_declared_actions_and_false_guards",
+    "F0V4_B07_nested_map_collapses_security_location_granularity",
+    "F0V4_B08_missing_dynamic_finite_atomic_patch",
+    "F0V4_B09_empty_admissible_and_finite_model_classes",
+    "F0V4_B10_nonvacuity_not_bound_to_exact_claim_scope_instance",
+    "F0V4_B11_circular_finite_prefix_and_search_bound_underapproximation",
+    "F0V4_B12_undefined_extension_and_platform_morphisms",
+    "F0V4_B13_single_event_not_module_compositional",
+    "F0V4_B14_machine_grammar_and_proof_identity_deferred_to_later_policy"
+  ],
+  "mandatory_v5_changes": [
+    "fully_expanded_qualified_core_grammar",
+    "explicit_action_parameter_binding",
+    "closed_PRE_only_StatePred",
+    "event_channel_constructor_and_exhaustive_match",
+    "finite_typed_event_bundle",
+    "recursive_set_valued_read_footprint_and_stability",
+    "all_declared_actions_have_bodies_and_are_in_Step",
+    "security_state_normal_form",
+    "point_and_finite_Patch_updates",
+    "CoreSyntaxWF_InstanceWF_ClaimPackageWF_separation",
+    "inhabited_admissible_and_finite_scope_witnesses",
+    "claim_scope_instance_bound_nonvacuity_and_mutants",
+    "independently_defined_FiniteRun_and_stutter_extension",
+    "PureExtension_morphism",
+    "PlatformRefinement_morphism",
+    "F0_fixed_metatheory_proof_object_checker_and_soundness_boundary"
+  ],
+  "authorization": {
+    "retain_v4_as_rejected_evidence": true,
+    "F0_v5_design": true,
+    "F0_local_acceptance": false,
+    "F1_design": false,
+    "F2_design": false,
+    "F3_completion": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "semantic_freeze": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

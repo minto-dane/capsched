@@ -1,0 +1,719 @@
+{
+  "schema_version": 1,
+  "language_id": "DL-F0-5",
+  "artifact_id": "domainlease-r11-epoch2-f0-eval-dependency-rules-v5-draft1",
+  "status": "construction_draft_not_review_target",
+  "bindings": {
+    "grammar_surface_sha256": "02503654aae81c865cc1446fe707a49e9c50821603c41bb113dd017f79801039",
+    "grammar_raw_sha256": "6717164ade360574018ad04f3ef2cd1fd51b67ec2e33ea1055ab7ebfbc619445",
+    "grammar_canonical_sha256": "59e03c51c6a31e8c9c26a046dccb3ff06f1bf2aa8445f43f1e006ecdd204c066",
+    "static_rules_raw_sha256": "d020b64ed44b115940b4165a3aed5cdc152a72d14170dc86e48a1a3cb8fafee5",
+    "static_rules_canonical_sha256": "f01abcf53e359712819e34296de1dc6059bb238a17362fed171ebe38a7f51bbc",
+    "normative_part_sha256": {
+      "F05-00": "b9725ea4144649bbb186912bff8962a57a868bc6ad628ffe3bfef8fd29edd308",
+      "F05-01": "db17921615081f79046dfe29efaca64ee3405fe4e349457665da411398164483",
+      "F05-02": "0781fd947bf297c16281c2787e8d613bc254d11bda2a53e02823321adf1ddf2f"
+    }
+  },
+  "semantic_domains": {
+    "observation": "PAIR_CARRIER_VALUE_AND_DYNDEPS",
+    "input_dependency_sum": [
+      "PARAM_SLOT",
+      "PRE_STATE_LOCATION",
+      "POST_STATE_LOCATION",
+      "EVENT_CHANNEL"
+    ],
+    "state_reads": "PHASE_PRESERVING_PRE_POST_PROJECTION_OF_DYNDEPS",
+    "reads_alias": "EXACT_ALIAS_OF_STATE_READS_NOT_AUTHORITY",
+    "may_dependencies": "DELTA_SEEDED_INPUT_INDEPENDENT_ALL_BRANCH_ALL_KEY_CARRIER_UPPER_BOUND",
+    "interpretation_refs": "TYPED_SELECTED_EVALUATION_AND_CARRIER_REFERENCE_SET_SEPARATE_FROM_RUNTIME_INPUT_DEPENDENCIES",
+    "denotational_cardinality": "MAY_BE_INFINITE",
+    "ordered_access": "FINITE_EXECUTOR_ONLY"
+  },
+  "environment_contract": {
+    "domain": "CHECKED_ROOT_CONTEXT_EXACT_GAMMA_RHO_DELTA_DOMAIN",
+    "root_contexts": "CLOSED_EMPTY_OR_EXACT_ONE_ACTION_PARAMETER_SLOT",
+    "binding": "TYPED_VALUE_EXACT_ORIGIN_DYNDEPS_AND_CHECKED_BODY_CONTEXT_SLOT",
+    "root_coherence": "NO_ARBITRARY_EXTERNAL_BINDING_ACTION_PARAMETER_VALUE_TIED_TO_EXACT_PARAM_SLOT",
+    "initial_parameter": "ONE_EXACT_PARAM_SLOT_DEPENDENCY_IN_RHO_AND_DELTA_NO_DUPLICATE_INPUT_FIELD",
+    "may_environment": "DELTA_DISTINCT_FROM_DYNAMIC_RHO_AND_DERIVED_ONLY_FROM_CHECKED_ROOT_OR_STRUCTURAL_BINDERS",
+    "let_binder": "BOUND_VALUE_AND_BOUND_DYNDEPS",
+    "variant_payload_binder": "PAYLOAD_VALUE_AND_SCRUTINEE_DYNDEPS",
+    "option_payload_binder": "PAYLOAD_VALUE_AND_SCRUTINEE_DYNDEPS",
+    "quantifier_binder": "ENUMERATED_VALUE_AND_EMPTY_DYNDEPS",
+    "binder_lookup_trace": "DERIVED_BINDERS_DO_NOT_REPLAY_ORIGIN_ACCESS"
+  },
+  "denotational_contract": {
+    "function": "OBSD_TOTAL_ON_WELL_TYPED_WELL_FORMED_INPUT",
+    "eval_projection": "FIRST_OBSD",
+    "dyndeps_projection": "SECOND_OBSD",
+    "strict_boolean": true,
+    "strict_quantifiers": true,
+    "selected_only": [
+      "TERM_IF_BRANCH",
+      "TERM_MATCH_VARIANT_BRANCH",
+      "TERM_MATCH_OPTION_BRANCH"
+    ],
+    "total_map_equality": "SAME_SORT_EXTENSIONAL_EQUALITY",
+    "finite_set_equality": "SAME_SORT_SET_EQUALITY",
+    "state_phase_erasure": false,
+    "dynamic_dependencies_authorize_access": false,
+    "authorization_refinement": "PREAUTHORIZE_MAYDEPS_OR_MEDIATE_EACH_PRIMITIVE_ACCESS_BEFORE_OCCURRENCE"
+  },
+  "carrier_rules": [
+    {
+      "sort_tag": "SORT_BOOL",
+      "denotation_rule": "CARRIER_BOOL_TWO_VALUES",
+      "equality_rule": "EQUALITY_BOOL",
+      "finite_enumeration_rule": "ENUM_BOOL_FALSE_THEN_TRUE"
+    },
+    {
+      "sort_tag": "SORT_ONE",
+      "denotation_rule": "CARRIER_ONE_SINGLETON",
+      "equality_rule": "EQUALITY_ONE",
+      "finite_enumeration_rule": "ENUM_ONE_SINGLETON"
+    },
+    {
+      "sort_tag": "SORT_ATOM",
+      "denotation_rule": "CARRIER_INTERPRETED_NONEMPTY_ATOM",
+      "equality_rule": "EQUALITY_NOMINAL_ATOM_AND_LOCAL_VALUE",
+      "finite_enumeration_rule": "ENUM_PROFILE_ATOM_ASCENDING_LOCAL_NAME"
+    },
+    {
+      "sort_tag": "SORT_ENUM",
+      "denotation_rule": "CARRIER_DECLARED_CLOSED_ENUM",
+      "equality_rule": "EQUALITY_NOMINAL_ENUM_AND_MEMBER",
+      "finite_enumeration_rule": "ENUM_DECLARED_MEMBERS_ASCENDING_LOCAL_NAME"
+    },
+    {
+      "sort_tag": "SORT_QTY",
+      "denotation_rule": "CARRIER_NOMINAL_UNIT_NAT_LE_INTERPRETED_LIMIT",
+      "equality_rule": "EQUALITY_NOMINAL_QTY_AND_NAT",
+      "finite_enumeration_rule": "ENUM_QTY_NAT_ASCENDING_ZERO_THROUGH_LIMIT"
+    },
+    {
+      "sort_tag": "SORT_RECORD",
+      "denotation_rule": "CARRIER_NAMED_CARTESIAN_PRODUCT",
+      "equality_rule": "EQUALITY_NOMINAL_RECORD_FIELDWISE",
+      "finite_enumeration_rule": "ENUM_RECORD_LEXICOGRAPHIC_CANONICAL_FIELDS"
+    },
+    {
+      "sort_tag": "SORT_VARIANT",
+      "denotation_rule": "CARRIER_NAMED_DISJOINT_TAGGED_SUM",
+      "equality_rule": "EQUALITY_NOMINAL_VARIANT_TAG_AND_PAYLOAD",
+      "finite_enumeration_rule": "ENUM_VARIANT_ASCENDING_TAG_THEN_PAYLOAD"
+    },
+    {
+      "sort_tag": "SORT_OPTION",
+      "denotation_rule": "CARRIER_TYPED_NONE_PLUS_SOME",
+      "equality_rule": "EQUALITY_OPTION_TAG_AND_PAYLOAD",
+      "finite_enumeration_rule": "ENUM_OPTION_NONE_THEN_SOME_PAYLOAD"
+    },
+    {
+      "sort_tag": "SORT_FINSET",
+      "denotation_rule": "CARRIER_ALL_FINITE_SUBSETS",
+      "equality_rule": "EQUALITY_FINSET_EXTENSIONAL",
+      "finite_enumeration_rule": "ENUM_FINSET_CARDINALITY_THEN_LEXICOGRAPHIC_SUBSET"
+    },
+    {
+      "sort_tag": "SORT_TOTALMAP",
+      "denotation_rule": "CARRIER_ALL_TOTAL_FUNCTIONS",
+      "equality_rule": "EQUALITY_TOTALMAP_EXTENSIONAL_ALL_KEYS",
+      "finite_enumeration_rule": "ENUM_TOTALMAP_LEXICOGRAPHIC_KEY_ORDER_FUNCTION_TABLE"
+    }
+  ],
+  "carrier_reference_rules": {
+    "SORT_BOOL": "EMPTY",
+    "SORT_ONE": "EMPTY",
+    "SORT_ATOM": "DECL_ATOM_AND_ATOM_CARRIER",
+    "SORT_ENUM": "DECL_ENUM",
+    "SORT_QTY": "DECL_UNIT_DECL_LIMIT_AND_LIMIT_VALUE",
+    "SORT_RECORD": "DECL_RECORD_AND_RECURSE_ALL_FIELD_SORTS",
+    "SORT_VARIANT": "DECL_VARIANT_AND_RECURSE_ALL_PAYLOAD_SORTS",
+    "SORT_OPTION": "RECURSE_ELEMENT_SORT",
+    "SORT_FINSET": "RECURSE_ELEMENT_SORT",
+    "SORT_TOTALMAP": "RECURSE_KEY_AND_VALUE_SORTS"
+  },
+  "ground_value_rules": [
+    {
+      "value_tag": "VALUE_BOOL",
+      "sort_rule": "EXACT_SORT_BOOL",
+      "decode_rule": "DECODE_EXACT_JSON_BOOL_NOT_INTEGER",
+      "canonical_rule": "CANONICAL_BOOL"
+    },
+    {
+      "value_tag": "VALUE_ONE",
+      "sort_rule": "EXACT_SORT_ONE",
+      "decode_rule": "DECODE_ONE_SINGLETON",
+      "canonical_rule": "CANONICAL_ONE"
+    },
+    {
+      "value_tag": "VALUE_ATOM",
+      "sort_rule": "EXACT_NOMINAL_SORT_ATOM",
+      "decode_rule": "DECODE_MEMBER_OF_EXACT_PROFILE_ATOM_CARRIER",
+      "canonical_rule": "CANONICAL_NOMINAL_ATOM"
+    },
+    {
+      "value_tag": "VALUE_ENUM",
+      "sort_rule": "EXACT_NOMINAL_SORT_ENUM",
+      "decode_rule": "DECODE_DECLARED_ENUM_MEMBER",
+      "canonical_rule": "CANONICAL_NOMINAL_ENUM"
+    },
+    {
+      "value_tag": "VALUE_QTY",
+      "sort_rule": "EXACT_NOMINAL_SORT_QTY",
+      "decode_rule": "DECODE_NAT_AT_MOST_EXACT_INTERPRETED_LIMIT",
+      "canonical_rule": "CANONICAL_NOMINAL_QTY"
+    },
+    {
+      "value_tag": "VALUE_RECORD",
+      "sort_rule": "EXACT_NOMINAL_SORT_RECORD",
+      "decode_rule": "DECODE_EXACT_FIELD_DOMAIN_RECURSIVELY",
+      "canonical_rule": "CANONICAL_RECORD_ASCENDING_FIELD"
+    },
+    {
+      "value_tag": "VALUE_VARIANT",
+      "sort_rule": "EXACT_NOMINAL_SORT_VARIANT",
+      "decode_rule": "DECODE_DECLARED_TAG_AND_EXACT_PAYLOAD_SORT",
+      "canonical_rule": "CANONICAL_VARIANT"
+    },
+    {
+      "value_tag": "VALUE_NONE",
+      "sort_rule": "EXACT_SORT_OPTION_DECLARED_ELEMENT",
+      "decode_rule": "DECODE_TYPED_NONE",
+      "canonical_rule": "CANONICAL_TYPED_NONE"
+    },
+    {
+      "value_tag": "VALUE_SOME",
+      "sort_rule": "EXACT_SORT_OPTION_DECLARED_ELEMENT",
+      "decode_rule": "DECODE_TYPED_SOME_RECURSIVELY",
+      "canonical_rule": "CANONICAL_TYPED_SOME"
+    },
+    {
+      "value_tag": "VALUE_FINSET",
+      "sort_rule": "EXACT_SORT_FINSET_DECLARED_ELEMENT",
+      "decode_rule": "DECODE_DUPLICATE_FREE_TYPED_FINITE_SUBSET",
+      "canonical_rule": "CANONICAL_ELEMENTS_BY_EXACT_GROUND_VALUE_WIRE_BYTES"
+    },
+    {
+      "value_tag": "VALUE_TOTALMAP",
+      "sort_rule": "EXACT_SORT_TOTALMAP_DECLARED_KEY_VALUE",
+      "decode_rule": "DECODE_EXACTLY_ONE_ENTRY_FOR_EVERY_FINITE_KEY_CARRIER_VALUE",
+      "canonical_rule": "CANONICAL_ENTRIES_BY_EXACT_GROUND_KEY_WIRE_BYTES"
+    }
+  ],
+  "evaluation_rules": [
+    {
+      "tag": "TERM_BOOL",
+      "eval_rule": "EVAL_BOOL_LITERAL",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "EMPTY",
+      "trace_rule": "EMPTY"
+    },
+    {
+      "tag": "TERM_ONE",
+      "eval_rule": "EVAL_ONE_LITERAL",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "EMPTY",
+      "trace_rule": "EMPTY"
+    },
+    {
+      "tag": "TERM_ENUM",
+      "eval_rule": "EVAL_DECLARED_ENUM_MEMBER",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "EMPTY",
+      "trace_rule": "EMPTY"
+    },
+    {
+      "tag": "TERM_QTY_ZERO",
+      "eval_rule": "EVAL_NOMINAL_QTY_ZERO",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "EMPTY",
+      "trace_rule": "EMPTY"
+    },
+    {
+      "tag": "TERM_QTY_CHECKED",
+      "eval_rule": "EVAL_QTY_CHECKED_OK_OR_OVERFLOW",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "EMPTY",
+      "trace_rule": "EMPTY"
+    },
+    {
+      "tag": "TERM_CONSTANT",
+      "eval_rule": "EVAL_INTERPRETED_CONSTANT",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "EMPTY_INTERPRETATION_REF_SEPARATE",
+      "trace_rule": "EMPTY_INTERPRETATION_REF_SEPARATE"
+    },
+    {
+      "tag": "TERM_VARIABLE",
+      "eval_rule": "EVAL_EXACT_RHO_BINDING",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "RHO_BINDING_ORIGIN_DYNDEPS",
+      "trace_rule": "INITIAL_EXTERNAL_SLOT_ON_LOOKUP_DERIVED_BINDER_EMPTY"
+    },
+    {
+      "tag": "TERM_LET",
+      "eval_rule": "EVAL_LET_EXTEND_WITH_BOUND_VALUE_AND_DYNDEPS",
+      "eval_operands": ["bound", "body@rho[variable:=bound_observation]"],
+      "may_operands": ["bound", "body@gamma[variable:=bound_maydeps]"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_BOUND_THEN_BODY"
+    },
+    {
+      "tag": "TERM_RECORD",
+      "eval_rule": "EVAL_NAMED_RECORD_ALL_FIELDS",
+      "eval_operands": ["values[*].value@ascending_field"],
+      "may_operands": ["values[*].value@ascending_field"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_CANONICAL_FIELD_ORDER"
+    },
+    {
+      "tag": "TERM_FIELD",
+      "eval_rule": "EVAL_NAMED_RECORD_FIELD_PROJECTION",
+      "eval_operands": ["record_term"],
+      "may_operands": ["record_term"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_EVALUATED_OPERANDS"
+    },
+    {
+      "tag": "TERM_VARIANT",
+      "eval_rule": "EVAL_NAMED_VARIANT_INJECTION",
+      "eval_operands": ["payload"],
+      "may_operands": ["payload"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_EVALUATED_OPERANDS"
+    },
+    {
+      "tag": "TERM_MATCH_VARIANT",
+      "eval_rule": "EVAL_VARIANT_SCRUTINEE_THEN_SELECTED_TAG_BODY",
+      "eval_operands": ["scrutinee", "branches[variant_tag=tag(scrutinee)].body@rho[payload_variable:=payload_and_scrutinee_deps]"],
+      "may_operands": ["scrutinee", "branches[*].body@gamma[payload_variable:=scrutinee_maydeps]"],
+      "dependency_rule": "SCRUTINEE_UNION_SELECTED_BODY",
+      "trace_rule": "CONCAT_SCRUTINEE_THEN_SELECTED_BODY"
+    },
+    {
+      "tag": "TERM_NONE",
+      "eval_rule": "EVAL_TYPED_OPTION_NONE",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "EMPTY",
+      "trace_rule": "EMPTY"
+    },
+    {
+      "tag": "TERM_SOME",
+      "eval_rule": "EVAL_TYPED_OPTION_SOME",
+      "eval_operands": ["value"],
+      "may_operands": ["value"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_EVALUATED_OPERANDS"
+    },
+    {
+      "tag": "TERM_MATCH_OPTION",
+      "eval_rule": "EVAL_OPTION_SCRUTINEE_THEN_SELECTED_BODY",
+      "eval_operands": ["scrutinee", "none_body@if_none", "some_body@rho[some_variable:=payload_and_scrutinee_deps]@if_some"],
+      "may_operands": ["scrutinee", "none_body", "some_body@gamma[some_variable:=scrutinee_maydeps]"],
+      "dependency_rule": "SCRUTINEE_UNION_SELECTED_BODY",
+      "trace_rule": "CONCAT_SCRUTINEE_THEN_SELECTED_BODY"
+    },
+    {
+      "tag": "TERM_SET_EMPTY",
+      "eval_rule": "EVAL_TYPED_FINSET_EMPTY",
+      "eval_operands": [],
+      "may_operands": [],
+      "dependency_rule": "EMPTY",
+      "trace_rule": "EMPTY"
+    },
+    {
+      "tag": "TERM_SET_INSERT",
+      "eval_rule": "EVAL_FINSET_INSERT",
+      "eval_operands": ["set", "element"],
+      "may_operands": ["set", "element"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_SET_REMOVE",
+      "eval_rule": "EVAL_FINSET_REMOVE",
+      "eval_operands": ["set", "element"],
+      "may_operands": ["set", "element"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_SET_MEMBER",
+      "eval_rule": "EVAL_FINSET_MEMBER",
+      "eval_operands": ["set", "element"],
+      "may_operands": ["set", "element"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_SET_SUBSET",
+      "eval_rule": "EVAL_FINSET_SUBSET",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_SET_UNION",
+      "eval_rule": "EVAL_FINSET_UNION",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_SET_DIFFERENCE",
+      "eval_rule": "EVAL_FINSET_DIFFERENCE",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_MAP_GET",
+      "eval_rule": "EVAL_TOTALMAP_APPLICATION",
+      "eval_operands": ["map", "key"],
+      "may_operands": ["map", "key"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_MAP_SET",
+      "eval_rule": "EVAL_TOTALMAP_FUNCTIONAL_UPDATE",
+      "eval_operands": ["map", "key", "value"],
+      "may_operands": ["map", "key", "value"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_AND",
+      "eval_rule": "EVAL_BOOL_AND_CLASSICAL_STRICT",
+      "eval_operands": ["operands[*]@declared_order"],
+      "may_operands": ["operands[*]@declared_order"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS_NO_SHORT_CIRCUIT",
+      "trace_rule": "CONCAT_DECLARED_OPERAND_ORDER_NO_SHORT_CIRCUIT"
+    },
+    {
+      "tag": "TERM_OR",
+      "eval_rule": "EVAL_BOOL_OR_CLASSICAL_STRICT",
+      "eval_operands": ["operands[*]@declared_order"],
+      "may_operands": ["operands[*]@declared_order"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS_NO_SHORT_CIRCUIT",
+      "trace_rule": "CONCAT_DECLARED_OPERAND_ORDER_NO_SHORT_CIRCUIT"
+    },
+    {
+      "tag": "TERM_NOT",
+      "eval_rule": "EVAL_BOOL_NOT",
+      "eval_operands": ["operand"],
+      "may_operands": ["operand"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_EVALUATED_OPERANDS"
+    },
+    {
+      "tag": "TERM_IMPLIES",
+      "eval_rule": "EVAL_BOOL_IMPLIES_CLASSICAL_STRICT",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS_NO_SHORT_CIRCUIT",
+      "trace_rule": "CONCAT_LISTED_OPERANDS_NO_SHORT_CIRCUIT"
+    },
+    {
+      "tag": "TERM_IFF",
+      "eval_rule": "EVAL_BOOL_IFF_CLASSICAL_STRICT",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS_NO_SHORT_CIRCUIT",
+      "trace_rule": "CONCAT_LISTED_OPERANDS_NO_SHORT_CIRCUIT"
+    },
+    {
+      "tag": "TERM_EQ",
+      "eval_rule": "EVAL_SAME_SORT_EXTENSIONAL_EQUALITY",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_QTY_LT",
+      "eval_rule": "EVAL_SAME_NOMINAL_QTY_NAT_LT",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_QTY_LE",
+      "eval_rule": "EVAL_SAME_NOMINAL_QTY_NAT_LE",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_QTY_GT",
+      "eval_rule": "EVAL_SAME_NOMINAL_QTY_NAT_GT",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_QTY_GE",
+      "eval_rule": "EVAL_SAME_NOMINAL_QTY_NAT_GE",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_QTY_ADD",
+      "eval_rule": "EVAL_QTY_ADD_OK_OR_OVERFLOW",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_QTY_SUB",
+      "eval_rule": "EVAL_QTY_SUB_OK_OR_UNDERFLOW",
+      "eval_operands": ["left", "right"],
+      "may_operands": ["left", "right"],
+      "dependency_rule": "UNION_EVALUATED_OPERANDS",
+      "trace_rule": "CONCAT_LISTED_OPERANDS"
+    },
+    {
+      "tag": "TERM_IF",
+      "eval_rule": "EVAL_CONDITION_THEN_SELECTED_BRANCH",
+      "eval_operands": ["condition", "then@if_true", "else@if_false"],
+      "may_operands": ["condition", "then", "else"],
+      "dependency_rule": "CONDITION_UNION_SELECTED_BRANCH",
+      "trace_rule": "CONCAT_CONDITION_THEN_SELECTED_BRANCH"
+    },
+    {
+      "tag": "TERM_FORALL",
+      "eval_rule": "EVAL_SET_THEORETIC_FORALL_ALL_QUANT_CARRIER_VALUES",
+      "eval_operands": ["body@rho[variable:=each_canonical_carrier_value_and_empty_deps]"],
+      "may_operands": ["body@gamma[variable:=empty_deps]"],
+      "dependency_rule": "UNION_BODY_FOR_EVERY_CARRIER_VALUE_NO_SHORT_CIRCUIT",
+      "trace_rule": "CONCAT_BODY_IN_CANONICAL_CARRIER_ORDER_NO_SHORT_CIRCUIT"
+    },
+    {
+      "tag": "TERM_EXISTS",
+      "eval_rule": "EVAL_SET_THEORETIC_EXISTS_ALL_QUANT_CARRIER_VALUES",
+      "eval_operands": ["body@rho[variable:=each_canonical_carrier_value_and_empty_deps]"],
+      "may_operands": ["body@gamma[variable:=empty_deps]"],
+      "dependency_rule": "UNION_BODY_FOR_EVERY_CARRIER_VALUE_NO_SHORT_CIRCUIT",
+      "trace_rule": "CONCAT_BODY_IN_CANONICAL_CARRIER_ORDER_NO_SHORT_CIRCUIT"
+    },
+    {
+      "tag": "TERM_PRE_GET",
+      "eval_rule": "EVAL_KEY_THEN_TOTAL_PRE_STATE_PRODUCT_LOOKUP",
+      "eval_operands": ["key"],
+      "may_operands": ["key", "PRE_ALL_KEYS(state_product)"],
+      "dependency_rule": "KEY_DYNDEPS_UNION_EXACT_PRE_LOCATION",
+      "trace_rule": "CONCAT_KEY_THEN_PRE_LOCATION_ACCESS"
+    },
+    {
+      "tag": "TERM_POST_GET",
+      "eval_rule": "EVAL_KEY_THEN_TOTAL_POST_STATE_PRODUCT_LOOKUP",
+      "eval_operands": ["key"],
+      "may_operands": ["key", "POST_ALL_KEYS(state_product)"],
+      "dependency_rule": "KEY_DYNDEPS_UNION_EXACT_POST_LOCATION",
+      "trace_rule": "CONCAT_KEY_THEN_POST_LOCATION_ACCESS"
+    },
+    {
+      "tag": "TERM_EVENT_GET",
+      "eval_rule": "EVAL_TOTALIZED_EVENT_CHANNEL_LOOKUP",
+      "eval_operands": [],
+      "may_operands": ["EVENT_EXACT_CHANNEL(event_channel)"],
+      "dependency_rule": "EXACT_EVENT_CHANNEL_EVEN_WHEN_VALUE_NONE",
+      "trace_rule": "EVENT_CHANNEL_ACCESS"
+    }
+  ],
+  "may_dependency_rules": {
+    "TERM_BOOL": "EMPTY",
+    "TERM_ONE": "EMPTY",
+    "TERM_ENUM": "EMPTY",
+    "TERM_QTY_ZERO": "EMPTY",
+    "TERM_QTY_CHECKED": "EMPTY",
+    "TERM_CONSTANT": "EMPTY_INTERPRETATION_REF_SEPARATE",
+    "TERM_VARIABLE": "DELTA_BINDING_MAYDEPS",
+    "TERM_LET": "UNION_BOUND_AND_BODY_WITH_BOUND_MAYDEPS_BINDING",
+    "TERM_RECORD": "UNION_ALL_MAY_OPERANDS",
+    "TERM_FIELD": "UNION_ALL_MAY_OPERANDS",
+    "TERM_VARIANT": "UNION_ALL_MAY_OPERANDS",
+    "TERM_MATCH_VARIANT": "UNION_SCRUTINEE_AND_ALL_BRANCHES_WITH_SCRUTINEE_MAYDEPS_BINDING",
+    "TERM_NONE": "EMPTY",
+    "TERM_SOME": "UNION_ALL_MAY_OPERANDS",
+    "TERM_MATCH_OPTION": "UNION_SCRUTINEE_AND_BOTH_BRANCHES_WITH_SCRUTINEE_MAYDEPS_BINDING",
+    "TERM_SET_EMPTY": "EMPTY",
+    "TERM_SET_INSERT": "UNION_ALL_MAY_OPERANDS",
+    "TERM_SET_REMOVE": "UNION_ALL_MAY_OPERANDS",
+    "TERM_SET_MEMBER": "UNION_ALL_MAY_OPERANDS",
+    "TERM_SET_SUBSET": "UNION_ALL_MAY_OPERANDS",
+    "TERM_SET_UNION": "UNION_ALL_MAY_OPERANDS",
+    "TERM_SET_DIFFERENCE": "UNION_ALL_MAY_OPERANDS",
+    "TERM_MAP_GET": "UNION_ALL_MAY_OPERANDS",
+    "TERM_MAP_SET": "UNION_ALL_MAY_OPERANDS",
+    "TERM_AND": "UNION_ALL_MAY_OPERANDS",
+    "TERM_OR": "UNION_ALL_MAY_OPERANDS",
+    "TERM_NOT": "UNION_ALL_MAY_OPERANDS",
+    "TERM_IMPLIES": "UNION_ALL_MAY_OPERANDS",
+    "TERM_IFF": "UNION_ALL_MAY_OPERANDS",
+    "TERM_EQ": "UNION_ALL_MAY_OPERANDS",
+    "TERM_QTY_LT": "UNION_ALL_MAY_OPERANDS",
+    "TERM_QTY_LE": "UNION_ALL_MAY_OPERANDS",
+    "TERM_QTY_GT": "UNION_ALL_MAY_OPERANDS",
+    "TERM_QTY_GE": "UNION_ALL_MAY_OPERANDS",
+    "TERM_QTY_ADD": "UNION_ALL_MAY_OPERANDS",
+    "TERM_QTY_SUB": "UNION_ALL_MAY_OPERANDS",
+    "TERM_IF": "UNION_CONDITION_AND_BOTH_BRANCHES",
+    "TERM_FORALL": "BODY_MAYDEPS_WITH_EMPTY_INTERNAL_BINDER",
+    "TERM_EXISTS": "BODY_MAYDEPS_WITH_EMPTY_INTERNAL_BINDER",
+    "TERM_PRE_GET": "KEY_MAYDEPS_UNION_PRE_ALL_KEYS",
+    "TERM_POST_GET": "KEY_MAYDEPS_UNION_POST_ALL_KEYS",
+    "TERM_EVENT_GET": "EXACT_EVENT_CHANNEL"
+  },
+  "evaluation_reference_rules": {
+    "TERM_BOOL": "EMPTY",
+    "TERM_ONE": "EMPTY",
+    "TERM_ENUM": "DECL_ENUM",
+    "TERM_QTY_ZERO": "CARRIER_REFS_RESULT_QTY_SORT",
+    "TERM_QTY_CHECKED": "CARRIER_REFS_QTY_ARITHMETIC_BINDING_AND_RESULT_VARIANT",
+    "TERM_CONSTANT": "DECL_CONSTANT_AND_CONSTANT_VALUE",
+    "TERM_VARIABLE": "EMPTY_LOOKUP_VALUE_ALREADY_INTERPRETATION_BOUND",
+    "TERM_LET": "UNION_EVALUATED_BOUND_AND_BODY",
+    "TERM_RECORD": "DECL_RECORD_AND_UNION_EVALUATED_FIELDS",
+    "TERM_FIELD": "EVALUATED_RECORD_ONLY",
+    "TERM_VARIANT": "DECL_VARIANT_AND_EVALUATED_PAYLOAD",
+    "TERM_MATCH_VARIANT": "UNION_EVALUATED_SCRUTINEE_AND_SELECTED_BODY",
+    "TERM_NONE": "EMPTY",
+    "TERM_SOME": "EVALUATED_VALUE_ONLY",
+    "TERM_MATCH_OPTION": "UNION_EVALUATED_SCRUTINEE_AND_SELECTED_BODY",
+    "TERM_SET_EMPTY": "EMPTY",
+    "TERM_SET_INSERT": "UNION_EVALUATED_OPERANDS",
+    "TERM_SET_REMOVE": "UNION_EVALUATED_OPERANDS",
+    "TERM_SET_MEMBER": "UNION_EVALUATED_OPERANDS",
+    "TERM_SET_SUBSET": "UNION_EVALUATED_OPERANDS",
+    "TERM_SET_UNION": "UNION_EVALUATED_OPERANDS",
+    "TERM_SET_DIFFERENCE": "UNION_EVALUATED_OPERANDS",
+    "TERM_MAP_GET": "UNION_EVALUATED_OPERANDS",
+    "TERM_MAP_SET": "UNION_EVALUATED_OPERANDS",
+    "TERM_AND": "UNION_EVALUATED_OPERANDS",
+    "TERM_OR": "UNION_EVALUATED_OPERANDS",
+    "TERM_NOT": "EVALUATED_OPERAND_ONLY",
+    "TERM_IMPLIES": "UNION_EVALUATED_OPERANDS",
+    "TERM_IFF": "UNION_EVALUATED_OPERANDS",
+    "TERM_EQ": "UNION_EVALUATED_OPERANDS",
+    "TERM_QTY_LT": "UNION_EVALUATED_OPERANDS",
+    "TERM_QTY_LE": "UNION_EVALUATED_OPERANDS",
+    "TERM_QTY_GT": "UNION_EVALUATED_OPERANDS",
+    "TERM_QTY_GE": "UNION_EVALUATED_OPERANDS",
+    "TERM_QTY_ADD": "UNION_EVALUATED_OPERANDS_CARRIER_REFS_ARITHMETIC_BINDING_AND_RESULT_VARIANT",
+    "TERM_QTY_SUB": "UNION_EVALUATED_OPERANDS_CARRIER_REFS_ARITHMETIC_BINDING_AND_RESULT_VARIANT",
+    "TERM_IF": "UNION_EVALUATED_CONDITION_AND_SELECTED_BRANCH",
+    "TERM_FORALL": "CARRIER_REFS_QUANTIFIED_SORT_AND_UNION_ALL_BODY_EVALUATIONS",
+    "TERM_EXISTS": "CARRIER_REFS_QUANTIFIED_SORT_AND_UNION_ALL_BODY_EVALUATIONS",
+    "TERM_PRE_GET": "EVALUATED_KEY_AND_DECL_STATE_PRODUCT",
+    "TERM_POST_GET": "EVALUATED_KEY_AND_DECL_STATE_PRODUCT",
+    "TERM_EVENT_GET": "DECL_EVENT_CHANNEL"
+  },
+  "finite_profile_contract": {
+    "model_binding": "EXACT_CANONICAL_SOURCE_MODEL_SHA256",
+    "atom_domain": "EXACT_ALL_DECLARED_ATOMS_ONCE_NONEMPTY",
+    "limit_domain": "EXACT_ALL_DECLARED_LIMITS_ONCE",
+    "constant_domain": "EXACT_ALL_DECLARED_CONSTANTS_ONCE",
+    "ground_values": "SORT_DIRECTED_DECODE_WITHOUT_HOST_JSON_EQUALITY",
+    "total_maps": "EXACT_TYPED_KEY_CARRIER_COVERAGE_NO_DUPLICATE_SEMANTIC_KEYS",
+    "constant_constraints": "ALL_DEPENDENCY_CONSTRAINTS_SATISFIED",
+    "profile_order": "CANONICAL_WIRE_ORDER_NOT_SEMANTIC_DECLARATION_ORDER",
+    "establishes": "FINITE_SIGNATURE_INTERPRETATION_ONLY",
+    "does_not_establish": [
+      "ACTIVE_CLASS_PREMISES",
+      "INVOKE_GUARD_PARTITION",
+      "INIT_NONEMPTY",
+      "INSTANCE_WF",
+      "CLAIM_PACKAGE_WF"
+    ]
+  },
+  "finite_execution_contract": {
+    "domain": "VALIDATED_FINITE_PROFILE_AND_COMPLETE_TYPED_ROOT_CONTEXT_ONLY",
+    "complete_request_snapshot": "SOURCE_LINKED_OCCURRENCE_PROFILE_PARAMETER_PRE_POST_EVENT_REQUESTED_RESOURCE_AND_VALIDATION_CONTEXT_BYTES",
+    "derived_request_fields": "TERM_GAMMA_DELTA_PROVENANCE_AND_INPUT_PRESENCE_ARE_SOURCE_DERIVED_NOT_CALLER_SUPPLIED",
+    "carrier_order": "EXACT_PER_CARRIER_FINITE_ENUMERATION_RULE",
+    "carrier_enumeration_cache": "PER_REQUEST_EXACT_SORT_MEMOIZED_IMMUTABLE_CACHE_HITS_ADD_NO_GENERATED_VALUES",
+    "trace_projection": "SET_OF_ACCESS_TRACE_EQUALS_DYNDEPS_FOR_COMPLETE_ROOT",
+    "state_reads_projection": "PHASE_PRESERVING_STATE_ACCESS_SUBSET",
+    "strict_order": "EXACT_EVALUATION_RULE_TRACE_ORDER",
+    "resource_profile": [
+      "MAX_TERM_VISITS",
+      "MAX_MAY_TERM_VISITS",
+      "MAX_RECURSION_DEPTH",
+      "MAX_CARRIER_VALUES",
+      "MAX_QUANTIFIER_ITERATIONS",
+      "MAX_GROUND_VALUE_NODES",
+      "MAX_TOTALMAP_ENTRIES",
+      "MAX_ACCESS_TRACE_ENTRIES",
+      "MAX_MAY_DEPENDENCIES",
+      "MAX_INTERPRETATION_REF_VISITS",
+      "MAX_INTERPRETATION_REFS"
+    ],
+    "resource_profile_binding": "EXPLICIT_INPUT_AND_OUTPUT_DIGEST_NOT_SEMANTIC_CONTEXT",
+    "requester_resource_profile": "SEMANTIC_EXPLORATION_BOUND_IN_REQUEST_ID",
+    "operator_hard_envelope": "SEPARATELY_OWNED_NON_RELAXABLE_VALIDATION_CONTEXT_INPUT",
+    "effective_resource_limit": "COORDINATEWISE_MIN_REQUESTED_AND_OPERATOR",
+    "preallocation_product_rule": "SATURATING_CHARGE_BEFORE_PRODUCT_ALLOCATION",
+    "whole_pipeline_coordinates": "INGRESS_PARSE_WIRE_STATIC_LINK_OCCURRENCE_PROFILE_INPUT_EVAL_RESULT_SERIALIZATION",
+    "external_supervisor": "CPU_WALL_MEMORY_PROCESS_FD_AND_RESULT_FRAME_LIMITS_REQUIRED",
+    "success_commit": "BOUNDED_CANONICAL_RESULT_VALIDATED_AND_WORKER_NORMAL_EXIT",
+    "resource_exhaustion": "INCONCLUSIVE_RESOURCE_NEVER_REJECT_OR_SUCCESS",
+    "infinite_interpretation": "OUTSIDE_EVALF_DOMAIN_HANDLED_BY_DENOTATION_OR_PROOF",
+    "refinement_obligation": "F05-THM-013_AND_F05-THM-021_NOT_ESTABLISHED_BY_TEST_PASS"
+  },
+  "result_taxonomy": {
+    "SUCCESS": "ALL_PHASES_COMPLETE_BOUNDED_CANONICAL_RESULT_PARENT_VALIDATED_AND_WORKER_NORMAL_EXIT",
+    "REJECT": "DETERMINISTIC_MALFORMED_OR_SEMANTICALLY_ILL_FORMED_INPUT_ONLY",
+    "INCONCLUSIVE_RESOURCE": "NAMED_REQUESTER_OPERATOR_METER_OR_SUPERVISOR_QUOTA_ONLY",
+    "INCONCLUSIVE_UNSUPPORTED": "WELL_FORMED_CHECKPOINT_THEN_VERSIONED_SUPPORT_MATRIX_MISS_ONLY",
+    "INTERNAL_FAILURE": "ALL_OTHER_EXCEPTIONS_CRASHES_MODULE_DRIFT_CORRUPT_FRAMES_AND_UNATTRIBUTED_HOST_FAILURES_NEVER_EVIDENCE",
+    "quantity_overflow_underflow": "ORDINARY_SUCCESS_VARIANT_VALUES"
+  },
+  "metatheory_obligations": [
+    "F05-THM-005_OBSD_EVALUATION_TOTALITY",
+    "F05-THM-006_PHASE_NONINTERFERENCE",
+    "F05-THM-007_ONE_SIDED_DYNAMIC_DEPENDENCY_STABILITY",
+    "F05-THM-013_FINITE_EVALUATOR_REFINES_OBSD_EVAL_DYNDEPS",
+    "F05-THM-019_DYNDEPS_SOURCE_AND_MAYDEPS_CONTAINMENT",
+    "F05-THM-020_STATE_READS_EXACT_PROJECTION",
+    "F05-THM-021_ACCESS_TRACE_EXACT_PROJECTION"
+  ],
+  "nonclaims": [
+    "This construction rule table is not a proof of any listed metatheorem.",
+    "A reference evaluator, parity test, or hostile mutation pass is not an independent checker or F0 acceptance.",
+    "DynDeps, StateReads, Reads, MayDeps, and AccessTrace do not themselves grant authority.",
+    "Raw construction calls are not authoritative until an immutable CheckedTermOccurrence and complete request snapshot bind term, Gamma, Delta, provenance, inputs, interpretation, and resource profile.",
+    "FiniteProfile coverage does not enumerate or redefine FiniteClass or Admissible interpretations.",
+    "POST and EVENT source-level end-to-end coverage remains blocked until a checked relation or observer body root exists.",
+    "Transition, InstanceWF, claim, morphism, proof, F1, F2, F3, K0/G0, candidate IR, TLA, Linux behavior, and protection remain incomplete."
+  ],
+  "authorization": {
+    "F0_local_acceptance": false,
+    "F1_design": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

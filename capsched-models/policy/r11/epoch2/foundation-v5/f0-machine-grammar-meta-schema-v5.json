@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://domainlease.invalid/schema/f0-machine-grammar-meta-schema-v5.json",
+  "title": "DL-F0-5 machine grammar construction-2 meta-schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "language_id",
+    "artifact_id",
+    "status",
+    "surface_digest",
+    "normative_parts",
+    "encoding",
+    "primitive_kinds",
+    "primitive_wire_types",
+    "collection_kinds",
+    "collection_field_policies",
+    "kind_unions",
+    "kind_bindings",
+    "root_kinds",
+    "sort_nodes",
+    "term_nodes",
+    "support_nodes",
+    "premise_nodes",
+    "declaration_nodes",
+    "model_nodes",
+    "profile_nodes",
+    "ground_value_nodes",
+    "scope_nodes",
+    "runtime_nodes",
+    "semantic_checker_obligations",
+    "completion_gaps",
+    "forbidden_nodes",
+    "authorization"
+  ],
+  "properties": {
+    "$schema": false,
+    "schema_version": {"const": 1},
+    "language_id": {"const": "DL-F0-5"},
+    "artifact_id": {"const": "domainlease-r11-epoch2-f0-machine-grammar-v5-construction-2"},
+    "status": {"const": "construction_draft_not_review_target"},
+    "surface_digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "projection", "sha256"],
+      "properties": {
+        "algorithm": {"const": "sha256"},
+        "projection": {"const": "DL-F0-5-language-surface-v1"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "normative_parts": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^f0-0[0-2]-[a-z0-9-]+-v5\\.md$"}
+    },
+    "encoding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "object_unknown_fields", "duplicate_keys", "null", "float", "integer", "dynamic_name_maps", "canonicalization"],
+      "properties": {
+        "text": {"const": "ASCII"},
+        "object_unknown_fields": {"const": "reject"},
+        "duplicate_keys": {"const": "reject_before_schema"},
+        "null": {"const": "forbidden"},
+        "float": {"const": "forbidden"},
+        "integer": {"const": "nonnegative_canonical_decimal_only"},
+        "dynamic_name_maps": {"const": "forbidden_use_ordered_entry_arrays"},
+        "canonicalization": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "applies_to", "object_member_order", "array_order", "integer", "string", "whitespace", "trailing_newline"],
+          "properties": {
+            "id": {"const": "DL-F0-CJSON-1"},
+            "applies_to": {"const": "generated_machine_instances_and_evidence"},
+            "object_member_order": {"const": "ascending_ASCII_key"},
+            "array_order": {"const": "per_collection_field_policy"},
+            "integer": {"const": "base10_no_sign_no_leading_zero_except_zero"},
+            "string": {"const": "ASCII_JSON_minimal_escape"},
+            "whitespace": {"const": "none"},
+            "trailing_newline": {"const": false}
+          }
+        }
+      }
+    },
+    "primitive_kinds": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*$"}
+    },
+    "primitive_wire_types": {
+      "type": "object",
+      "minProperties": 9,
+      "maxProperties": 9,
+      "propertyNames": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*$"},
+      "additionalProperties": {"$ref": "#/$defs/primitiveWire"}
+    },
+    "collection_kinds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["suffixes", "cardinality", "field_policy_required"],
+      "properties": {
+        "suffixes": {"const": ["[]", "[1+]", "[2+]"]},
+        "cardinality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["[]", "[1+]", "[2+]"],
+          "properties": {
+            "[]": {"const": "finite_zero_or_more"},
+            "[1+]": {"const": "finite_one_or_more"},
+            "[2+]": {"const": "finite_two_or_more"}
+          }
+        },
+        "field_policy_required": {"const": true}
+      }
+    },
+    "collection_field_policies": {
+      "type": "array",
+      "minItems": 26,
+      "maxItems": 26,
+      "items": {"$ref": "#/$defs/collectionPolicy"}
+    },
+    "kind_unions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["Sort", "TermNode", "Premise", "Declaration", "Update", "GroundValue", "Scope", "Label"],
+      "properties": {
+        "Sort": {"$ref": "#/$defs/uniqueTagArray"},
+        "TermNode": {"$ref": "#/$defs/uniqueTagArray"},
+        "Premise": {"$ref": "#/$defs/uniqueTagArray"},
+        "Declaration": {"$ref": "#/$defs/uniqueTagArray"},
+        "Update": {"$ref": "#/$defs/uniqueTagArray"},
+        "GroundValue": {"$ref": "#/$defs/uniqueTagArray"},
+        "Scope": {"$ref": "#/$defs/uniqueTagArray"},
+        "Label": {"$ref": "#/$defs/uniqueTagArray"}
+      }
+    },
+    "kind_bindings": {
+      "type": "object",
+      "minProperties": 22,
+      "maxProperties": 22,
+      "propertyNames": {"type": "string", "pattern": "^[A-Z][A-Za-z0-9_]*$"},
+      "additionalProperties": {"$ref": "#/$defs/tag"}
+    },
+    "root_kinds": {
+      "type": "object",
+      "minProperties": 3,
+      "maxProperties": 3,
+      "propertyNames": {"type": "string", "pattern": "^[A-Z][A-Za-z0-9_]*$"},
+      "additionalProperties": {"$ref": "#/$defs/tag"}
+    },
+    "sort_nodes": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"$ref": "#/$defs/node"}},
+    "term_nodes": {"type": "array", "minItems": 42, "maxItems": 42, "items": {"$ref": "#/$defs/node"}},
+    "support_nodes": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"$ref": "#/$defs/node"}},
+    "premise_nodes": {"type": "array", "minItems": 11, "maxItems": 11, "items": {"$ref": "#/$defs/node"}},
+    "declaration_nodes": {"type": "array", "minItems": 14, "maxItems": 14, "items": {"$ref": "#/$defs/node"}},
+    "model_nodes": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/node"}},
+    "profile_nodes": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/node"}},
+    "ground_value_nodes": {"type": "array", "minItems": 13, "maxItems": 13, "items": {"$ref": "#/$defs/node"}},
+    "scope_nodes": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/node"}},
+    "runtime_nodes": {"type": "array", "minItems": 9, "maxItems": 9, "items": {"$ref": "#/$defs/node"}},
+    "semantic_checker_obligations": {"$ref": "#/$defs/uniqueIdentifierArray"},
+    "completion_gaps": {"$ref": "#/$defs/uniqueIdentifierArray"},
+    "forbidden_nodes": {"$ref": "#/$defs/uniqueTagArray"},
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["construction_draft", "grammar_complete", "semantic_checker_complete", "proof_boundary_complete", "F0_local_acceptance", "F1_design", "K0_G0_complete", "candidate_IR", "TLA_translation", "model_supported", "linux_behavior_change", "protection_claim"],
+      "properties": {
+        "construction_draft": {"const": true},
+        "grammar_complete": {"const": false},
+        "semantic_checker_complete": {"const": false},
+        "proof_boundary_complete": {"const": false},
+        "F0_local_acceptance": {"const": false},
+        "F1_design": {"const": false},
+        "K0_G0_complete": {"const": false},
+        "candidate_IR": {"const": false},
+        "TLA_translation": {"const": false},
+        "model_supported": {"const": false},
+        "linux_behavior_change": {"const": false},
+        "protection_claim": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "tag": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"},
+    "kind": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\[\\]|\\[1\\+\\]|\\[2\\+\\])?$"},
+    "fieldName": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "field": {
+      "type": "array",
+      "prefixItems": [{"$ref": "#/$defs/fieldName"}, {"$ref": "#/$defs/kind"}],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "fields"],
+      "properties": {
+        "tag": {"$ref": "#/$defs/tag"},
+        "fields": {"type": "array", "items": {"$ref": "#/$defs/field"}}
+      }
+    },
+    "primitiveWire": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["form"],
+          "properties": {"form": {"const": "JSON_BOOLEAN"}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["form", "minimum"],
+          "properties": {"form": {"const": "JSON_INTEGER"}, "minimum": {"const": 0}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["form", "pattern"],
+          "properties": {"form": {"const": "ASCII_FULLMATCH"}, "pattern": {"type": "string", "minLength": 1}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["form", "components"],
+          "properties": {
+            "form": {"const": "PAIR"},
+            "components": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "string", "minLength": 1}}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["form", "values"],
+          "properties": {
+            "form": {"const": "CLOSED_ENUM"},
+            "values": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+          }
+        }
+      ]
+    },
+    "collectionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner_tag", "field", "mode", "key"],
+      "properties": {
+        "owner_tag": {"$ref": "#/$defs/tag"},
+        "field": {"$ref": "#/$defs/fieldName"},
+        "mode": {"enum": ["ordered_sequence", "canonical_set", "canonical_map"]},
+        "key": {"type": "string", "pattern": "^(NONE|SELF_CANONICAL|TAG_THEN_CANONICAL|[a-z][a-z0-9_]*)$"}
+      }
+    },
+    "uniqueTagArray": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/tag"}},
+    "uniqueIdentifierArray": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*$"}}
+  }
+}

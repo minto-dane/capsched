@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-r10-assurance-trust-boundary-audit-v1",
+  "model": "DynamicResidencyR10",
+  "review_mode": "concurrent-read-only-negative-evidence",
+  "exact_snapshot_review": false,
+  "verdict": {
+    "independent_assurance_ready": false,
+    "semantic_closure": false,
+    "architecture_freeze": false,
+    "tla_authorized": false
+  },
+  "findings": [
+    {
+      "id": "R10-ASSURE-001",
+      "severity": "critical",
+      "summary": "hostile evidence hashes may name bytes different from the bytes tested",
+      "disposition": "OPEN",
+      "required": "single-read snapshot bundle, immutable execution copy, and changed-input rejection"
+    },
+    {
+      "id": "R10-ASSURE-002",
+      "severity": "critical",
+      "summary": "validator, hostile harness, and evidence verifier form a circular self-certification chain",
+      "disposition": "OPEN",
+      "required": "out-of-tree harness using subprocess isolation, independent parsing and hashing, and external policy pins"
+    },
+    {
+      "id": "R10-ASSURE-003",
+      "severity": "critical",
+      "summary": "structural rejection coverage does not prevent semantically vacuous formulas, proofs, progress, metadata, bounds, or blocker coverage",
+      "disposition": "OPEN",
+      "required": "external semantic-vacuity kill catalog and derived obligation coverage"
+    },
+    {
+      "id": "R10-ASSURE-004",
+      "severity": "high",
+      "summary": "imports and refinement maps are not derived from independently parsed pinned source syntax",
+      "disposition": "OPEN",
+      "required": "pinned parser/toolchain and source-derived symbol, action, and refinement correspondence"
+    },
+    {
+      "id": "R10-ASSURE-005",
+      "severity": "high",
+      "summary": "candidate-controlled mutation obligations can define their own expected evidence",
+      "disposition": "OPEN",
+      "required": "external exact case catalog with preconditions, allowed diffs, expected stage, and expected reject IDs"
+    },
+    {
+      "id": "R10-ASSURE-006",
+      "severity": "high",
+      "summary": "the hostile harness has no fail-closed meta-validation against skipped checks, constant hashes, forged evidence, stale substitution, or nondeterminism",
+      "disposition": "OPEN",
+      "required": "meta-mutants, repeated shuffled subprocess campaigns, and harness-level HM reject taxonomy"
+    },
+    {
+      "id": "R10-ASSURE-007",
+      "severity": "high",
+      "summary": "candidate status is draft-only but no external promotion manifest and verifier currently derive publication status",
+      "disposition": "OPEN",
+      "required": "external content-addressed promotion manifest, policy, complete result set, and independent review attestations"
+    }
+  ],
+  "bounded_positive_evidence": {
+    "local_structural_mutants_killed": 29,
+    "meaning": "regression evidence only",
+    "authorizes_promotion": false
+  },
+  "authorization": {
+    "semantic_freeze": false,
+    "tla_translation": false,
+    "model_supported_claim": false,
+    "next_gate": "independent snapshot-once subprocess harness and external kill catalog, followed by semantic-vacuity closure and fresh exact review"
+  }
+}

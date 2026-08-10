@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-epoch2-kernel-v2-rejection-v3-denotation-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "kernel_v2_rejected_v3_denotational_design_authorized",
+  "rejected_v2": {
+    "schema_path": "capsched-models/policy/r11/epoch2/semantic-kernel-contract-schema-v2.json",
+    "schema_sha256": "f30bf42e28a527904d0663feec7e34dc3494c7708169d0f3741fa2d0b4ae13ad",
+    "contract_path": "capsched-models/policy/r11/epoch2/semantic-kernel-contract-v2.json",
+    "contract_sha256": "a70489bf816569f382268d69e23e147a0319b7c0370717cc1367f3b1834f8c8a",
+    "schema_valid": true,
+    "reference_interpreter_built": false,
+    "disposition": "rejected_before_implementation"
+  },
+  "local_reviews": [
+    {
+      "axis": "language_and_formal_semantics",
+      "session_id": "019fe9ca-12fc-73f0-97b2-2f84fe9277d3",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    },
+    {
+      "axis": "assurance_and_external_authority",
+      "session_id": "019fe9ca-2cc1-78d0-a88a-4fc1ec37a681",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    },
+    {
+      "axis": "scenario_and_composition",
+      "session_id": "019fe9ca-43a8-7b20-9dc8-52a6582614ab",
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    }
+  ],
+  "normalized_blocker_classes": [
+    "missing_mathematical_denotation",
+    "circular_pre_candidate_and_candidate_gate",
+    "non_phase_safe_term_and_temporal_contexts",
+    "partial_operations_and_undefined_arithmetic",
+    "typed_but_semantically_degenerate_bindings",
+    "candidate_omittable_adversary_action_basis",
+    "finite_instance_confused_with_parametric_architecture",
+    "product_level_failure_instead_of_transaction_durability",
+    "undefined_enabledness_fairness_and_real_time",
+    "single_trace_noninterference_placeholder",
+    "backend_tests_confused_with_translation_preservation",
+    "external_signature_confused_with_semantic_correctness",
+    "gate_selected_authenticating_registry_cycle",
+    "input_accept_bits_not_verifier_derived",
+    "missing_external_checkpoint_and_persistent_high_water",
+    "undefined_signed_payload_and_assignment_tuple",
+    "union_of_labels_instead_of_reachable_interaction_coverage",
+    "missing_hostile_actor_and_process_container_lifecycle_actions",
+    "missing_network_protocol_and_generated_recrash_cuts"
+  ],
+  "gate_ladder": [
+    {
+      "id": "K0",
+      "alias": "G0",
+      "meaning": "externally adopt denotational language policy threat scenario and assurance foundation",
+      "allowed_output": "candidate_construction_only"
+    },
+    {
+      "id": "K1",
+      "alias": "G1",
+      "meaning": "construct and locally validate exact candidate IR bindings traces cuts and mutations",
+      "allowed_output": "exact_semantic_review_only"
+    },
+    {
+      "id": "K2",
+      "alias": "G2",
+      "meaning": "externally review final candidate semantics and derive architecture freeze",
+      "allowed_output": "backend_translation_and_proof_attempt_only"
+    },
+    {
+      "id": "K3",
+      "alias": "G3",
+      "meaning": "validate translation proofs hostile results and claim-specific evidence",
+      "allowed_output": "exact_allowlisted_model_claim_transition_only"
+    }
+  ],
+  "denotation": {
+    "signature_members": ["Sort", "Unit", "Limit", "Product", "Constant", "Function", "Event", "Action"],
+    "parametric_carriers": true,
+    "finite_profile_separate": true,
+    "state": "product_of_total_maps_from_product_key_carrier_to_value_carrier",
+    "event": "declared_disjoint_sum_including_explicit_stutter",
+    "action": "relation_over_pre_state_parameters_post_state_and_event",
+    "next": "union_of_explicit_stutter_and_all_policy_required_candidate_environment_fault_and_adversary_actions",
+    "enabled": "existence_of_post_state_and_event_for_an_action_parameter",
+    "trace": "infinite_alternating_state_label_event_sequence_with_finite_prefixes_stutter_extendable",
+    "base_judgments": ["StaticTerm", "PreTerm", "PostTerm", "StatePred", "ActionRel"],
+    "general_temporal_AST": false,
+    "all_operations_total": true,
+    "checked_arithmetic_result": ["Ok", "Overflow", "Underflow"]
+  },
+  "extensions": [
+    "stutter_safe_progress_and_explicit_WF_SF_assumptions",
+    "timed_clock_timer_and_provider_bounds",
+    "transaction_crash_durability_recovery_and_recrash",
+    "distributed_network_clock_fence_transfer_and_refund",
+    "two_trace_termination_timing_and_declassification_aware_noninterference"
+  ],
+  "scenario_generators": [
+    "GEN-00-TYPED-CASE",
+    "GEN-01-BOOT-MGMT",
+    "GEN-02-GRANULARITY",
+    "GEN-03-LIFECYCLE",
+    "GEN-04-AUTH-ASYNC",
+    "GEN-05-ENTRY",
+    "GEN-06-SETTLEMENT",
+    "GEN-07-RESIDENCY",
+    "GEN-08-TWO-LANE",
+    "GEN-09-FAILURE-GC",
+    "GEN-10-TWO-NODE-XFER",
+    "GEN-11-MULTICLUSTER",
+    "GEN-12-ATTACK-NI",
+    "GEN-13-PROGRESS-COMPOSE"
+  ],
+  "assurance_v3_1": {
+    "baseline": "Analysis-0201-Protocol-v3",
+    "trust_root_out_of_band_before_candidate": true,
+    "TOFU": false,
+    "gate_selects_authenticating_registry": false,
+    "persistent_high_water_required": true,
+    "exact_assignment_key": ["review_role", "check_id"],
+    "accept_is_verifier_derived": true,
+    "real_runner_receipts": 2,
+    "external_log_inclusion_and_consistency": true,
+    "mechanically_unprovable": ["organizational_independence", "non_collusion", "review_quality", "key_custody", "global_checkpoint_latestness", "semantic_policy_completeness"]
+  },
+  "tcb": [
+    "strict_parser_and_canonicalizer",
+    "phase_and_type_checker",
+    "denotation_implementation_or_small_certificate_checker",
+    "translation_certificate_checker",
+    "root_key_checkpoint_and_high_water_policy_verifier"
+  ],
+  "untrusted_producers": [
+    "template_compiler",
+    "scenario_generator",
+    "materializer",
+    "backend_translator",
+    "solver",
+    "model_checker",
+    "mutation_runner"
+  ],
+  "authorization": {
+    "v3_design": true,
+    "v3_implementation": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "K2_semantic_freeze": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}
