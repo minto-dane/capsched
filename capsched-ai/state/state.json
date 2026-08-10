@@ -33,7 +33,7 @@
       "fetched_upstream_revision": "a7c7074b58d28c4206d666a12aa2e33447b3c581",
       "upstream_ref": "upstream/master",
       "upstream_remote": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
-      "status": "clean_historical_scaffold_and_experimental_prototypes_no_production_boundary"
+      "status": "clean_historical_scaffold_and_experimental_prototypes_no_production_boundary_exact_handoff_ref_published"
     },
     "linux_patch_queue": {
       "repository": "../linux-patches",

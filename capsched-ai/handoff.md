@@ -106,10 +106,12 @@ committed.
 Sibling Linux source:
 
 ```text
-branch: capsched-linux-l0
-HEAD:   74311ca1ac4937e0e62f1e0f6a3e5bfa4fc77d6f
-tree:   54f685aad94f28f0027cbba18cf5e29aadce234a
-base:   4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
+local branch:      capsched-linux-l0
+exact handoff ref: codex/linux-l0-handoff-20260810
+fork remote:       https://github.com/minto-dane/linux.git
+HEAD:              74311ca1ac4937e0e62f1e0f6a3e5bfa4fc77d6f
+tree:              54f685aad94f28f0027cbba18cf5e29aadce234a
+base:              4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
 fetched upstream/master:
         a7c7074b58d28c4206d666a12aa2e33447b3c581
 ```
@@ -126,9 +128,10 @@ replay endpoint:
 ```
 
 The replay endpoint is the historical L0 patch-series result. It is not the
-later local experimental Linux head `74311ca1...`. A fresh machine can recreate
-the historical queue exactly and may separately fetch or rebuild later
-experimental work. Neither is a production protection boundary.
+later experimental Linux head `74311ca1...`. That exact head is published at
+`codex/linux-l0-handoff-20260810`; a fresh machine can either replay the
+historical queue or fetch the later experimental checkpoint exactly. Neither
+is a production protection boundary.
 
 The patch-queue HEAD above adds only the intentional-public/secret-free README
 policy after `16bb080...`; the replay base, patch bytes, and replay endpoint are
@@ -327,6 +330,20 @@ git clone --recurse-submodules https://github.com/minto-dane/linux-cap.git
 cd linux-cap/capsched
 ./capsched-ai/state/check-current-state.sh
 python3 -I -S -B capsched-models/validation/validate-f0-supervisor-lts-v3.py
+```
+
+The model-only recovery path above does not need a full Linux checkout. Fetch
+the exact experimental Linux checkpoint only when source analysis or prototype
+work resumes:
+
+```sh
+cd linux-cap
+git clone --branch codex/linux-l0-handoff-20260810 \
+  https://github.com/minto-dane/linux.git linux
+test "$(git -C linux rev-parse HEAD)" = \
+  "74311ca1ac4937e0e62f1e0f6a3e5bfa4fc77d6f"
+test "$(git -C linux rev-parse 'HEAD^{tree}')" = \
+  "54f685aad94f28f0027cbba18cf5e29aadce234a"
 ```
 
 Required host tools are Git, Bash, jq, awk, `sha256sum`, Python 3, and the
