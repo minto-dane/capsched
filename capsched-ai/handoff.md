@@ -81,7 +81,7 @@ latest durable G6 disposition by `check-current-state.sh`.
       "installed_manifest_sha256": "fe1c2b0d33dd75c3945f637e33dd872c2bf431a02c434bc82ca6aaa1b03a493e",
       "current_inputs_installed": true,
       "readiness_record": "capsched-models/validation/f0-c4-g6-retry-readiness-v1.json",
-      "readiness_sha256": "6dff367448e692a956819616f910bf937e97a2b21ea5a255b7cdfc0ddc96e0fd"
+      "readiness_sha256": "fe5f633e8aeac70b5c48d97ce6fa589ccdd7f1b7ba01426dbfb01a9f0901c22b"
     },
     "g6": {
       "gate_status": "OPEN",
@@ -153,6 +153,9 @@ successor environment: clean source commit `29d53f6c...`, installed manifest
 `fe1c2b0d...`, read-only EROFS image `b3ed1553...`, EROFS manifest
 `0db6f68c...`, one reuse regression, and three reducer boundary cases. This
 makes a new G6 attempt eligible; it does not complete G6 or enable G7.
+The machine keeps `home-mount=none`; startup streams only the eight tracked
+candidate inputs from a clean commit into root-owned, read-only VM-native
+staging, separate from raw evidence.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -452,22 +455,23 @@ Use `design/compact.md` only for historical detail.
 Preferred public recovery path:
 
 ```sh
-/bin/mkdir -p "$HOME/Library/Caches/domainlease-linux-cap-vm"
-cd "$HOME/Library/Caches/domainlease-linux-cap-vm"
-git clone --recurse-submodules \
-  https://github.com/minto-dane/linux-cap.git recovery
-cd recovery/capsched
-container machine run -n domainlease-dev --workdir "$PWD" \
+container machine run --root -n domainlease-dev --workdir / -- \
+  git clone --recurse-submodules \
+  --branch codex/reasoning-first-model-completion \
+  https://github.com/minto-dane/linux-cap.git /opt/domainlease-recovery
+container machine run --root -n domainlease-dev \
+  --workdir /opt/domainlease-recovery/capsched -- \
   ./capsched-ai/state/check-current-state.sh
-container machine run -n domainlease-dev --workdir "$PWD" \
+container machine run --root -n domainlease-dev \
+  --workdir /opt/domainlease-recovery/capsched -- \
   python3 -I -S -B capsched-models/validation/validate-f0-supervisor-lts-v3.py
 ```
 
 On a native Linux host with procfs, run the two inner commands directly.
 macOS is not a valid runner-lifecycle test platform even when its Python and
-shell syntax happen to accept the files. Apple Container shares the physical
-home directory only: never use an external-volume symlink as `--workdir`.
-The home-cache clone is source-only; raw evidence stays on VM-native storage.
+shell syntax happen to accept the files. The Apple Container machine keeps
+`home-mount=none`; recovery source and raw evidence stay on separate VM-native
+roots.
 
 The model-only recovery path above does not need a full Linux checkout. Fetch
 the exact experimental Linux checkpoint only when source analysis or prototype

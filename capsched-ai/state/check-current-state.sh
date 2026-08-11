@@ -84,6 +84,8 @@ assurance_head_rels=(
 	capsched-models/validation/f0-c4-capture/run-reduction-systemd.sh
 	capsched-models/validation/f0-c4-capture/seal-toolchain-image.sh
 	capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
+	capsched-models/validation/f0-c4-capture/sync-candidate-inputs-to-apple-container-machine.sh
+	capsched-models/validation/f0-c4-capture/start-toolchain-seal.sh
 	capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh
 	capsched-models/validation/f0-c4-capture/test-toolchain-reuse.sh
 )

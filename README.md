@@ -42,11 +42,10 @@ intentionally exercises Linux-only process semantics):
 ./capsched-ai/state/check-current-state.sh
 ```
 
-Apple Container shares the physical macOS home directory, not a symlink target
-on an external volume.  Never pass an SSD-resident checkout through
-`--workdir`; use the home-cache recovery clone below.  Capture scripts mirror
-only source into that home share, while all evidence remains on the VM-native
-filesystem.
+The Apple Container machine uses `home-mount=none`. Never pass an SSD-resident
+checkout through `--workdir`. Capture startup archives only the eight exact
+tracked inputs from a clean commit into root-owned, read-only VM-native
+staging; raw evidence stays in a separate VM-native root.
 
 Volatile campaign status is intentionally not duplicated here. The structured
 projection in `capsched-ai/handoff.md` is mechanically derived from
@@ -56,21 +55,21 @@ claim register, gate contract, current exact inputs, and durable G6 result.
 For a clean public recovery including the patch queue:
 
 ```sh
-/bin/mkdir -p "$HOME/Library/Caches/domainlease-linux-cap-vm"
-cd "$HOME/Library/Caches/domainlease-linux-cap-vm"
-git clone --recurse-submodules \
-  https://github.com/minto-dane/linux-cap.git recovery
-cd recovery/capsched
-container machine run -n domainlease-dev --workdir "$PWD" \
+container machine run --root -n domainlease-dev --workdir / -- \
+  git clone --recurse-submodules \
+  --branch codex/reasoning-first-model-completion \
+  https://github.com/minto-dane/linux-cap.git /opt/domainlease-recovery
+container machine run --root -n domainlease-dev \
+  --workdir /opt/domainlease-recovery/capsched -- \
   ./capsched-ai/state/check-current-state.sh
-container machine run -n domainlease-dev --workdir "$PWD" \
+container machine run --root -n domainlease-dev \
+  --workdir /opt/domainlease-recovery/capsched -- \
   python3 -I -S -B capsched-models/validation/validate-f0-supervisor-lts-v3.py
 ```
 
 The Linux environment requires Git, Bash, jq, awk, `sha256sum`, Python 3, and
-Python `jsonschema` with Draft 2020-12 support. The Apple Container machine
-must use `home-mount=rw` for this source-only recovery clone. Launch a full
-retry only when the structured projection marks it eligible.
+Python `jsonschema` with Draft 2020-12 support. Launch a full retry only when
+the structured projection marks it eligible.
 
 ## Git Plan
 

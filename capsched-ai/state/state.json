@@ -277,7 +277,7 @@
         "installed_manifest_sha256": "fe1c2b0d33dd75c3945f637e33dd872c2bf431a02c434bc82ca6aaa1b03a493e",
         "current_inputs_installed": true,
         "readiness_record": "capsched-models/validation/f0-c4-g6-retry-readiness-v1.json",
-        "readiness_sha256": "6dff367448e692a956819616f910bf937e97a2b21ea5a255b7cdfc0ddc96e0fd"
+        "readiness_sha256": "fe5f633e8aeac70b5c48d97ce6fa589ccdd7f1b7ba01426dbfb01a9f0901c22b"
       },
       "g6": {
         "gate_status": "OPEN",
@@ -520,6 +520,7 @@
     "f0_c4_capture_validation": "capsched-models/validation/0314-dynamic-residency-f0-c4-authority-disjoint-capture-contract.md",
     "f0_c4_capture_mechanism_validation": "capsched-models/validation/0315-dynamic-residency-f0-c4-authority-disjoint-capture-mechanism.md",
     "f0_c4_capture_start": "capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh",
+    "f0_c4_capture_source_sync": "capsched-models/validation/f0-c4-capture/sync-candidate-inputs-to-apple-container-machine.sh",
     "f0_c4_capture_monitor": "capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh",
     "f0_c4_capture_validator": "capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py",
     "f0_c4_capture_hostile_test": "capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py",

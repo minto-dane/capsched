@@ -2,9 +2,7 @@
 set -euo pipefail
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
-sync_script=$script_dir/sync-to-apple-container-home.sh
-readonly vm_cache=/Users/niania/Library/Caches/domainlease-linux-cap-vm/capsched
-readonly source_dir=$vm_cache/capsched-models/validation
+sync_script=$script_dir/sync-candidate-inputs-to-apple-container-machine.sh
 readonly runner=/usr/local/libexec/domainlease-f0-c4/run-capture-systemd.sh
 readonly evidence_root=/var/lib/domainlease-f0-c4/evidence
 
@@ -17,7 +15,8 @@ readonly run_id
 readonly launcher_unit=domainlease-f0-c4-host-launch-$run_id
 readonly capture_unit=domainlease-f0-c4-$run_id
 
-"$sync_script"
+source_dir=$("$sync_script")
+readonly source_dir
 container machine run --root -n domainlease-dev -- \
 	/usr/bin/test -x "$runner"
 

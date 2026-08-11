@@ -38,6 +38,11 @@ manifest `0db6f68c...bcd51`, one reuse regression, and all three reducer
 boundary cases pass.  The exact machine record is
 `f0-c4-g6-retry-readiness-v1.json`.
 
+The Apple Container machine keeps `home-mount=none`.  Capture startup now
+requires a clean Git commit and transfers only the eight tracked candidate
+inputs into a root-owned, read-only VM-native directory named by commit and
+archive digest.  Source staging and raw evidence use separate fixed roots.
+
 ```text
 F0_C4_G6_RETRY_READINESS_PASS
 ```

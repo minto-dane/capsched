@@ -34,6 +34,13 @@
     "reducer_boundary_status": "PASS",
     "reducer_boundary_cases": 3
   },
+  "source_transfer": {
+    "policy": "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging",
+    "macos_home_mount": "none",
+    "vm_source_root": "/var/lib/domainlease-f0-c4/sources",
+    "raw_evidence_root": "/var/lib/domainlease-f0-c4/evidence",
+    "separate_from_raw_evidence": true
+  },
   "disposition": {
     "g6_gate_status": "OPEN",
     "g6_retry_eligible": true,
