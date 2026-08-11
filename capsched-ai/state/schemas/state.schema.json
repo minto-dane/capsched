@@ -51,7 +51,7 @@
         },
         "current_phase": {
           "enum": [
-            "f0_v5_supervisor_v3_candidate4_pre_full_checkpoint"
+            "f0_v5_c4_authority_capture_g1_g5_closed"
           ]
         },
         "publication": {
@@ -293,7 +293,8 @@
         "exact_git_objects",
         "codex_security_scan_required",
         "claim_specific_results",
-        "local_candidate_checkpoint"
+        "local_candidate_checkpoint",
+        "authority_capture_contract"
       ],
       "properties": {
         "policy": {
@@ -431,6 +432,113 @@
                 "protection_claim": {"const": false}
               },
               "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "authority_capture_contract": {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "canonical_sha256",
+            "evidence_level",
+            "status",
+            "hostile_mutation_cases",
+            "derived_semantic_cases",
+            "closed_gates",
+            "remaining_gates",
+            "root_supervisor_implemented",
+            "target_platform_probe_passed",
+            "hostile_fault_fixtures_passed",
+            "reduction_boundary_implemented",
+            "immutable_toolchain",
+            "short_regression",
+            "full_capture_run",
+            "real_reduction_run"
+          ],
+          "properties": {
+            "artifact_id": {
+              "const": "f0-c4-authority-disjoint-capture-contract-v1"
+            },
+            "canonical_sha256": {
+              "const": "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075"
+            },
+            "evidence_level": {
+              "const": "EC0"
+            },
+            "status": {
+              "const": "local_mechanism_g1_g5_closed_g6_g7_pending"
+            },
+            "hostile_mutation_cases": {
+              "const": 153
+            },
+            "derived_semantic_cases": {
+              "const": 13
+            },
+            "closed_gates": {
+              "const": [
+                "C4CAP-G1-CONTRACT",
+                "C4CAP-G2-HOSTILE",
+                "C4CAP-G3-SUPERVISOR",
+                "C4CAP-G4-PLATFORM",
+                "C4CAP-G5-FAULTS"
+              ]
+            },
+            "remaining_gates": {
+              "const": [
+                "C4CAP-G6-CAPTURE",
+                "C4CAP-G7-REDUCTION"
+              ]
+            },
+            "root_supervisor_implemented": {
+              "const": true
+            },
+            "target_platform_probe_passed": {
+              "const": true
+            },
+            "hostile_fault_fixtures_passed": {
+              "const": true
+            },
+            "reduction_boundary_implemented": {
+              "const": true
+            },
+            "immutable_toolchain": {
+              "type": "object",
+              "required": ["format", "sha256", "mounted_read_only"],
+              "properties": {
+                "format": {"const": "erofs"},
+                "sha256": {
+                  "const": "4fadeb77fe5019e0a9ea22ea43b79f07923f587fa90b9636164ab9e396de34ac"
+                },
+                "mounted_read_only": {"const": true}
+              },
+              "additionalProperties": false
+            },
+            "short_regression": {
+              "type": "object",
+              "required": [
+                "launcher_basic_cases",
+                "launcher_hostile_cases",
+                "snapshot_hostile_cases",
+                "supervisor_components",
+                "guardian_cases",
+                "reducer_cases"
+              ],
+              "properties": {
+                "launcher_basic_cases": {"const": 1},
+                "launcher_hostile_cases": {"const": 10},
+                "snapshot_hostile_cases": {"const": 5},
+                "supervisor_components": {"const": 5},
+                "guardian_cases": {"const": 3},
+                "reducer_cases": {"const": 3}
+              },
+              "additionalProperties": false
+            },
+            "full_capture_run": {
+              "const": false
+            },
+            "real_reduction_run": {
+              "const": false
             }
           },
           "additionalProperties": false

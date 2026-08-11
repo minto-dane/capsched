@@ -1,6 +1,6 @@
 # Decision Index
 
-Updated: 2026-08-10
+Updated: 2026-08-11
 
 | ID | Status | Title |
 | --- | --- | --- |
@@ -27,3 +27,4 @@ Updated: 2026-08-10
 | ADR-0021 | Accepted; refines ADR-0020 | Separate typed core denotation and finite evidence wire |
 | ADR-0022 | Accepted; refines ADR-0021 | Separate denotation, dependencies, access trace, and authority |
 | ADR-0023 | Accepted; supersedes ADR-0010 visibility only | Intentionally public repositories and secret-free checkpoints |
+| ADR-0024 | Accepted; refines ADR-0015 | Reasoning-first semantic construction and terminal TLA+ validation |

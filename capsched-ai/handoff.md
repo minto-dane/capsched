@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-08-10
+Updated: 2026-08-11
 
 This file is current-state context only. Detailed chronology is in
 `state/events.jsonl`, `design/compact.md`, focused model notes, and Git history.
@@ -33,9 +33,15 @@ RESIDENCY-001:
   model-supported at EC1 only for a fixed pre-admitted finite one-shot reference
 
 RESIDENCY-DYN-001:
-  open; Candidate-4 is a pre-full local checkpoint only. Child 274, parent
-  715, and runner 44 hostile regressions plus the fast validator pass. Full
-  child/parent reachability and declared commutation have not run
+  open; Candidate-4 is a pre-full local checkpoint only. Its authority-disjoint
+  capture boundary closes G1-G5 locally at EC0 after 153 hostile mutations,
+  13 derived checks, and bounded Linux mechanism regressions; G6/G7 and full
+  child/parent reachability plus commutation have not run
+
+model-construction method:
+  GPT-5.6 Sol maximum-effort architecture synthesis, hostile contradiction
+  search, and minimality first; machine-readable checks next; TLA+ only after
+  externally rooted K0 and semantic freeze
 
 R11 machine IR / Formal 0150 / TLA+:
   unauthorized until complete F0-F3 and an executable externally rooted K0
@@ -63,17 +69,56 @@ rejection. Rejected bytes remain negative regression evidence and are not
 repaired in place. Analysis 0219 through 0225 then record the source-static,
 linked-model, checked-evaluation, supervisor, and hostile-redesign sequence.
 
-Analysis 0226 and Validation 0313 are the current boundary. Candidate-4 binds
+ADR-0024 is now the active construction decision. GPT-5.6 Sol maximum-effort
+reasoning is the primary architecture engine, but has no approval, evidence,
+promotion, or claim authority. Design conclusions must be materialized as typed
+contracts, state/action/lifecycle semantics, failure cover, invariants,
+counterexamples, assume/guarantee boundaries, and explicit nonclaims. TLA+ is a
+terminal post-freeze validator: it may reject frozen semantics with a
+counterexample, but cannot invent or weaken them.
+
+Analysis 0226 and Validation 0313 retain the pre-full Candidate-4 boundary.
+Analysis 0227 and Validation 0314 add the current authority-disjoint capture
+boundary. The exact contract digest is
+`14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075`;
+its strict validator passes 153 hostile mutations and 13 derived semantic
+checks. The contract
+requires a dedicated candidate UID, root-owned snapshot/plan/pipes/evidence,
+pre-exec `clone3(CLONE_INTO_CGROUP | CLONE_PIDFD)`, nondelegated cgroup v2,
+`cgroup.kill`, `populated 0`, guardian-owned supervisor failure cleanup, atomic
+fsynced publication, and finalized-byte-only reduction.
+
+Validation 0315 records the bounded implementation result. The strict C build,
+launcher basic case, 10 launcher hostile cases, five hostile snapshot objects,
+five-component supervisor smoke run, three guardian recovery cases, and three
+authority-separated reducer cases all pass on `domainlease-dev`. A deterministic
+read-only EROFS toolchain image exists at digest
+`4fadeb77fe5019e0a9ea22ea43b79f07923f587fa90b9636164ab9e396de34ac`.
+This closes G3-G5 locally without granting semantic or external credit. A clean
+reviewed-commit install is next; the exact long capture G6 and reduction of its
+real finalized bytes G7 remain absent.
+
+Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
 reachable-action commutation membership, exact witness-count equality and
 nonterminal-state bounds, raw component receipt bytes, claim predicates,
-timeout classification, and bounded
-process-group cleanup. Its component receipts are still captured by the
-candidate validator and checked by the same-UID outer runner; they are not
-authority-disjoint observations. The full campaign is `NOT_RUN`, so all three
+timeout classification, and bounded process-group cleanup. The historical fast
+component receipts are still candidate-validator observations checked by the
+same-UID outer runner; the new root mechanism fixtures do not retroactively make
+them authority-disjoint evidence. The full campaign is `NOT_RUN`, so all three
 full-only local claims remain `NOT_RUN`, seven refinement claims remain
 `OPEN_REFINEMENT`, and F0, R11, K0/G0, protection, and model completion remain
 false.
+
+After the clean install, start and monitor the exact detached campaign with:
+
+```sh
+./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
+./capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh RUN_ID 30
+```
+
+The monitor refreshes the percentage, units, evidence, and journal every 30
+seconds. Stopping the monitor does not stop the VM capture.
 
 ## Current Git State
 
@@ -81,10 +126,10 @@ Project-control work is isolated on:
 
 ```text
 branch:
-  codex/goal-conformance-and-assurance-repair
+  codex/reasoning-first-model-completion
 
 semantic baseline before this state update:
-  f15ca0af4bfff5ff624af2931d8aeeeebc145516
+  dd20d07bccab4366d85802fb5ae0e03de720cae2
 
 reviewed prior lineage:
   75e34749b94af52338085caced75c44c70f0a1b4
@@ -261,21 +306,25 @@ open.
 
 ## Next Order
 
-1. Specify and hostile-review a root-owned, dedicated-UID, nondelegated cgroup
-   v2 launcher that directly observes component execution and retains output
-   outside candidate authority.
-2. Capture exact Candidate-4 inputs, launch the full bounded child/parent
+1. Implement the accepted v1 root-owned, dedicated-UID, nondelegated cgroup v2
+   supervisor plus its service-manager guardian. Keep the implementation small,
+   descriptor-relative, fail-closed, and unable to decide claims.
+2. Run the root-owned feature/authority probe and hostile escape, daemonize,
+   fork-bomb, timeout, output-flood, supervisor-crash, and storage-mutation
+   fixtures. G3-G5 must all pass before full execution.
+3. Capture exact Candidate-4 inputs, launch the full bounded child/parent
    reachability and declared-commutation campaign detached, then independently
    reduce retained raw evidence in a later session.
-3. Disposition the three full-only local claims without changing any external
+4. Disposition the three full-only local claims without changing any external
    claim. A local pass still does not authorize F0 or external R11 review.
-4. Complete F1 claim semantics, F2 platform/threat refinement, and F3 external
-   policy/generators/mutations/proof/trust, then obtain an independently rooted
+5. Continue GPT-primary synthesis, contradiction search, and minimality through
+   F1 claim semantics, F2 platform/threat refinement, and F3 external
+   policy/generators/mutations/proof/trust; then obtain an independently rooted
    K0/G0 decision over one immutable F0-F3 source set.
-5. Only then construct Formal 0150, materialize D0-D17, execute W0-W12, freeze
-   semantics, translate to TLA+/other backends, and build claim-specific
-   evidence.
-6. Compose `ENTRY-001 + CODE-001`, then state/service/management, cluster
+6. Only after semantic freeze, materialize Formal 0150/D0-D17/W0-W12 and
+   translate the frozen semantics to TLA+/other backends for final
+   counterexample/proof validation and claim-specific evidence.
+7. Compose `ENTRY-001 + CODE-001`, then state/service/management, cluster
    partitions, composition, and the complete-path cost contract.
 
 ## Do Not Do Yet

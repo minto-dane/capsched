@@ -3,7 +3,7 @@
 Status: Active; supersedes model-complete scheduling optimization as the
 critical path
 
-Date: 2026-08-10
+Date: 2026-08-11
 
 ## Objective
 
@@ -57,6 +57,16 @@ not the initial architecture generator. A counterexample reopens the semantic
 contract; it is forbidden to obtain a passing model by weakening the target or
 granting fairness to adversarial Linux. Provers and validators serve the
 security objective and do not replace it.
+
+ADR-0024 fixes the working method for the current completion campaign. GPT-5.6
+Sol at maximum reasoning effort is the primary architecture-synthesis,
+contradiction-search, and minimality-analysis engine. It has no approval
+authority. Its reasoning must be materialized as backend-neutral typed state,
+complete actions, lifecycle and failure semantics, impossibility boundaries,
+hostile traces, an acyclic assume/guarantee ledger, machine-readable contracts,
+and executable consistency checks. TLA+ remains a terminal translation and
+falsification backend after semantic freeze; it may discover a counterexample
+but may not invent or weaken architecture semantics.
 
 ADR-0018 and ADR-0019 refine this order for R11. Before candidate architecture
 construction, the pre-candidate K0 foundation closes in four layers:
@@ -540,18 +550,19 @@ polling a healthy long-running job.
 
 ## Immediate Next Artifact
 
-The immediate target is an authority-disjoint Candidate-4 capture and launcher
-contract, not another candidate-controlled result and not a full run from the
-same-UID shell. It must specify root-owned immutable input capture, a dedicated
-unprivileged execution UID, nondelegated cgroup-v2 descendant containment,
-direct component lifecycle observation, kill-and-drain behavior, authenticated
-tool/input identity, and output retention outside candidate authority.
+The authority-disjoint Candidate-4 contract and bounded Linux mechanism are now
+implemented and locally regression-tested through G5. They provide root-owned
+immutable input capture, dedicated unprivileged execution identities,
+nondelegated cgroup-v2 descendant containment, direct component lifecycle
+observation, kill-and-drain behavior, immutable EROFS tool identity, guardian
+recovery, finalized-byte-only reduction, and output retention outside candidate
+authority.
 
-After hostile review of that launcher contract, capture exact inputs and launch
-the long full bounded campaign detached. A later independent session reduces
-the retained child, parent, and commutation receipts. Even a local full pass can
-only disposition the three registered local claims; it cannot authorize F0,
-external R11 review, or K0/G0.
+The immediate target is a clean reviewed-commit install followed by the exact
+long bounded campaign launched detached as G6. A later independent session
+reduces only its durably finalized child, parent, and commutation bytes as G7.
+Even a local full pass can only disposition the registered local claims; it
+cannot authorize F0, external R11 review, or K0/G0.
 
 The earlier R11 G0 v1 predecessor remains fixed as:
 

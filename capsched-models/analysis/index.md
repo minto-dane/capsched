@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-08-10
+Updated: 2026-08-11
 
 ## Current Analysis Notes
 
@@ -232,6 +232,7 @@ Updated: 2026-08-10
 | 0224 | Three fresh local reviews reject supervisor v2 as an LTS or semantic-verdict boundary: its 82,944 products are an unconstrained truth table, trace order is erased, quiescence and receipts are oracles, candidate frames become Success, quota laundering and seal contradictions remain, and external ownership/publication replay are open | Dynamic Residency F0 v5 Supervisor v2 Hostile Rejection |
 | 0225 | Exact executable v3 draft-0 is locally rejected after 10,648 reachable states per role expose 273 nonterminal deadlocks and 686 prefixes with no terminal path; three reviews also reject scope closure, receipt authenticity, winner stability, external ownership, child composition, crash recovery, publication durability, and an action registry with zero exact matches | Dynamic Residency F0 v5 Supervisor v3 Draft-0 Hostile Rejection |
 | 0226 | Candidate-4 reaches a restartable pre-full local checkpoint after child 274, parent 715, and runner 44 hostile cases plus the fast validator pass; raw component receipts, exact nested schemas, role agreement, reachable commutation membership, realizable cardinality and edge bounds, claim predicates, and lifecycle cleanup are locally bound, while full reachability/commutation are not run and external containment, R11, G0, F0, and protection remain false | Dynamic Residency F0 v5 Supervisor v3 Candidate-4 Pre-Full Local Closure |
+| 0227 | GPT-5.6 Sol maximum-effort synthesis, contradiction, and minimality are fixed as non-authoritative primary construction passes while TLA+ is terminal-only; exact contract `14ca4b...fd075` fixes eight roles, 13 typed object classes, 17 fail-closed platform requirements, split capture/guardian/reduction lifecycles, 30 invariants, seven gates, and the four-claim local ceiling; G1-G5 now pass locally while G6/G7 remain open | Dynamic Residency F0 Candidate-4 Authority-Disjoint Capture Contract |
 
 ## Planned Analysis Notes
 
@@ -325,6 +326,7 @@ Updated: 2026-08-10
 | `monitor-owned-root-scheduling-reference-contract-v1.json` | Accepted model-supported reference contract | Machine-readable N-175 Monitor/Linux ownership split, fairness assumptions, safety/liveness obligations, counterexamples, and non-claims |
 | `global-domain-identity-bounded-residency-reference-contract-v1.json` | EC1 model-supported finite reference contract | Machine-readable N-176 fixed pre-admitted global identity, bounded per-CPU projection, version algebra, ownership, one-shot progress assumptions, counterexamples, evidence identity, and non-claims |
 | `dynamic-admission-recurring-residency-architecture-contract-v1.json` | Architecture candidate pending externally attested hostile freeze | Machine-readable N-177 NodeConfig/hierarchy, typed lease/placement import, parent-conserved physical execution/control/target service, total failure cover and charged cleanup, joint activation receipt, management bootstrap, nonblocking sharded apply, 93-space namespace/restart algebra, scale, and formal-decomposition contract |
+| `f0-c4-authority-disjoint-capture-contract-v1.json` | Architecture contract; G1-G5 locally closed, exact capture/reduction pending | Machine-readable GPT-primary/TLA-terminal reasoning profile, exact Candidate-4 claim ceiling, eight authority-disjoint roles, 13 typed object classes, root-owned snapshot/plan/evidence boundary, cgroup-v2/pidfd containment, split capture/guardian/reduction lifecycles, failures, finite resources, 30 invariants, seven gates, authorization, and nonclaims |
 | `dynamic-admission-recurring-residency-pre-freeze-review-disposition-v1.json` | Candidate responses recorded; independent re-review required | Machine-readable 32 first-round plus 12 self-audit finding disposition ledger with candidate resolutions, mechanical gates, residual model obligations, and strict non-claims |
 | `dynamic-admission-recurring-residency-second-hostile-review-disposition-v1.json` | Second-round blockers redesigned; fresh third-round review required | Machine-readable provenance-preserving ledger for 8 security, 11 formal, 5 scale, 12 integration, and 8 self-audit findings with exact pending status and non-claims |
 | `dynamic-residency-preformal-two-lane-witness-v1.json` | Non-executable architecture witness; review pending | Machine-readable two-lane topology, typed sole-writer map, exact 20 executable architecture traces, typed external/internal rely boundary, R2/R3/datacenter/R4/R5 finding partition, and proof/freeze non-claims |

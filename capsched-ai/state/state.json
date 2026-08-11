@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "updated": "2026-08-10",
+  "updated": "2026-08-11",
   "project": {
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_supervisor_v3_candidate4_pre_full_checkpoint",
+    "current_phase": "f0_v5_c4_authority_capture_g1_g5_closed",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -13,8 +13,8 @@
       "scope": "The superproject, project-control/models, and Linux patch-queue repositories are intentionally public; no credentials, private keys, tokens, or private operational data may be committed."
     },
     "control_repository": {
-      "branch": "codex/goal-conformance-and-assurance-repair",
-      "semantic_baseline_revision": "f15ca0af4bfff5ff624af2931d8aeeeebc145516",
+      "branch": "codex/reasoning-first-model-completion",
+      "semantic_baseline_revision": "dd20d07bccab4366d85802fb5ae0e03de720cae2",
       "reviewed_lineage_revision": "75e34749b94af52338085caced75c44c70f0a1b4",
       "stable_main_revision": "4aa3f5427e1d3649d4de1cadcbcb8f268fb932a9",
       "remote": "https://github.com/minto-dane/capsched"
@@ -139,9 +139,12 @@
     "Seven issued F0 v5 construction ID kinds have machine-readable preimage and invalidation policies; future semantic IDs remain forbidden until alpha normalization and semantic context are frozen.",
     "ADR-0020 requires F0 v5 to close normative denotation, machine grammar, proof identity, total action closure, finite batches, claim-bound nonvacuity, and extension/platform morphisms before F1.",
     "No F1, F2, F3 completion, R11 machine IR, or TLA+ translation is authorized before an executable externally rooted epoch-2 K0 decision.",
+    "ADR-0024 fixes GPT-5.6 Sol maximum-effort architecture synthesis, hostile contradiction search, and minimality analysis as non-authoritative primary construction passes; conclusions must be materialized and mechanically checked.",
+    "TLA+ is a terminal post-freeze validation backend and may discover counterexamples but may not invent, weaken, or approve semantics.",
     "Candidate-4 currently has only fast/static local credit: child 274, parent 715, and runner 44 hostile cases pass, while full child/parent reachability and declared commutation are not run.",
     "Candidate-4 component receipts are captured by the candidate validator and checked for internal consistency by the outer runner; they are not authority-disjoint execution observations or externally attested evidence.",
     "The same-UID runner does not prove runtime input immutability, escaped-descendant containment, post-finalization storage immutability, or external toolchain authentication; full promotion requires a root-owned dedicated-UID containment service.",
+    "The Candidate-4 authority-disjoint capture contract digest is 14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075; 153 hostile mutations, 13 derived checks, and the bounded supervisor/platform/fault/reducer mechanism suites pass, closing G1-G5 locally at EC0 while the exact full capture G6 and real-byte reduction G7 remain open.",
     "Long-running builds, model checks, and matrices are detached after immutable input capture and reviewed in a later session."
   ],
   "completion": {
@@ -203,6 +206,44 @@
         "self_authorization": false,
         "protection_claim": false
       }
+    },
+    "authority_capture_contract": {
+      "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
+      "canonical_sha256": "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075",
+      "evidence_level": "EC0",
+      "status": "local_mechanism_g1_g5_closed_g6_g7_pending",
+      "hostile_mutation_cases": 153,
+      "derived_semantic_cases": 13,
+      "closed_gates": [
+        "C4CAP-G1-CONTRACT",
+        "C4CAP-G2-HOSTILE",
+        "C4CAP-G3-SUPERVISOR",
+        "C4CAP-G4-PLATFORM",
+        "C4CAP-G5-FAULTS"
+      ],
+      "remaining_gates": [
+        "C4CAP-G6-CAPTURE",
+        "C4CAP-G7-REDUCTION"
+      ],
+      "root_supervisor_implemented": true,
+      "target_platform_probe_passed": true,
+      "hostile_fault_fixtures_passed": true,
+      "reduction_boundary_implemented": true,
+      "immutable_toolchain": {
+        "format": "erofs",
+        "sha256": "4fadeb77fe5019e0a9ea22ea43b79f07923f587fa90b9636164ab9e396de34ac",
+        "mounted_read_only": true
+      },
+      "short_regression": {
+        "launcher_basic_cases": 1,
+        "launcher_hostile_cases": 10,
+        "snapshot_hostile_cases": 5,
+        "supervisor_components": 5,
+        "guardian_cases": 3,
+        "reducer_cases": 3
+      },
+      "full_capture_run": false,
+      "real_reduction_run": false
     }
   },
   "planned_tracks": [
@@ -227,8 +268,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_fast_local_pass_full_not_run",
-      "next_artifact": "Authority-disjoint Candidate-4 capture followed by detached full bounded reachability and declared-commutation evaluation"
+      "status": "open_candidate4_capture_contract_g1_g2_closed_g3_g7_open",
+      "next_artifact": "Root supervisor, platform probe, hostile fault fixtures, then authority-disjoint detached Candidate-4 capture and later reduction"
     },
     {
       "order": 5,
@@ -332,20 +373,20 @@
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "next",
-      "text": "Specify and review a root-owned dedicated-UID cgroup-v2 launcher that directly captures component execution and retains immutable output without promoting self-attested receipts."
+      "status": "g1_g5_closed_clean_install_next",
+      "text": "Install the regression-tested root-owned dedicated-UID capture, guardian, EROFS, and reduction tools from a clean reviewed commit; verify the installed artifact manifest without promoting mechanism fixtures as semantic evidence."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "blocked_until_authority_disjoint_capture",
+      "status": "ready_after_clean_install",
       "text": "Capture exact inputs and launch the long full child/parent reachability and declared-commutation campaign detached; independently reduce retained receipts later."
     },
     {
       "order": 8,
       "id": "R11-MACHINE-IR",
       "status": "blocked_until_external_epoch2_K0_accept",
-      "text": "Only after F0-F3 close and a valid externally rooted K0 decision, construct Formal 0150, materialize D0-D17, and execute W0-W12 before semantic freeze and TLA+."
+      "text": "Continue GPT-primary architecture synthesis, contradiction search, and minimality through F0-F3; only after a valid externally rooted K0 decision and semantic freeze, materialize Formal 0150/D0-D17/W0-W12 and translate the frozen semantics to TLA+ for terminal verification."
     },
     {
       "order": 9,
@@ -361,7 +402,7 @@
     "handoff": "capsched-ai/handoff.md",
     "event_log": "capsched-ai/state/events.jsonl",
     "historical_chronology": "capsched-ai/design/compact.md",
-    "current_decision": "capsched-ai/decisions/ADR-0020-close-f0-before-policy-with-total-actions-batches-and-morphisms.md",
+    "current_decision": "capsched-ai/decisions/ADR-0024-reasoning-first-semantic-construction-and-terminal-tla-validation.md",
     "publication_decision": "capsched-ai/decisions/ADR-0023-intentionally-public-repositories-and-secret-free-checkpoints.md",
     "model_reopen_decision": "capsched-ai/decisions/ADR-0012-distinguish-local-model-coverage-from-system-completion.md",
     "evidence_decision": "capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md",
@@ -407,6 +448,15 @@
     "f0_c4_parent_model": "capsched-models/validation/f0_supervisor_orchestrator_v3.py",
     "f0_c4_validator": "capsched-models/validation/validate-f0-supervisor-lts-v3.py",
     "f0_c4_runner": "capsched-models/validation/run-f0-supervisor-v3-full.sh",
+    "reasoning_first_decision": "capsched-ai/decisions/ADR-0024-reasoning-first-semantic-construction-and-terminal-tla-validation.md",
+    "f0_c4_capture_analysis": "capsched-models/analysis/0227-dynamic-residency-f0-c4-authority-disjoint-capture-contract.md",
+    "f0_c4_capture_contract": "capsched-models/analysis/f0-c4-authority-disjoint-capture-contract-v1.json",
+    "f0_c4_capture_validation": "capsched-models/validation/0314-dynamic-residency-f0-c4-authority-disjoint-capture-contract.md",
+    "f0_c4_capture_mechanism_validation": "capsched-models/validation/0315-dynamic-residency-f0-c4-authority-disjoint-capture-mechanism.md",
+    "f0_c4_capture_start": "capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh",
+    "f0_c4_capture_monitor": "capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh",
+    "f0_c4_capture_validator": "capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py",
+    "f0_c4_capture_hostile_test": "capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py",
     "active_plan": "capsched-models/plans/0006-final-compositional-model-completion-plan.md",
     "assurance_case": "capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md",
     "assurance_register": "capsched-models/assurance/claims.json"
