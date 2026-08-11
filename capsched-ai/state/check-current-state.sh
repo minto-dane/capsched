@@ -63,8 +63,21 @@ assurance_head_rels=(
 	capsched-models/validation/validate-f0-supervisor-lts-v3.py
 	capsched-models/validation/run-f0-supervisor-v3-full.sh
 	capsched-models/validation/0314-dynamic-residency-f0-c4-authority-disjoint-capture-contract.md
+	capsched-models/validation/0315-dynamic-residency-f0-c4-authority-disjoint-capture-mechanism.md
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
+	capsched-models/validation/f0-c4-capture/build-install.sh
+	capsched-models/validation/f0-c4-capture/f0_c4_capture_launcher.c
+	capsched-models/validation/f0-c4-capture/f0_c4_capture_supervisor.py
+	capsched-models/validation/f0-c4-capture/f0_c4_guardian_finalize.py
+	capsched-models/validation/f0-c4-capture/f0_c4_post_run_reducer.py
+	capsched-models/validation/f0-c4-capture/f0_c4_reduction_supervisor.py
+	capsched-models/validation/f0-c4-capture/run-capture-systemd.sh
+	capsched-models/validation/f0-c4-capture/run-reduction-systemd.sh
+	capsched-models/validation/f0-c4-capture/seal-toolchain-image.sh
+	capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
+	capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh
+	capsched-models/validation/f0-c4-capture/test-toolchain-reuse.sh
 )
 
 state="$repo_root/$state_rel"

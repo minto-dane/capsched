@@ -238,6 +238,7 @@
         "launcher_basic_cases": 1,
         "launcher_hostile_cases": 10,
         "snapshot_hostile_cases": 5,
+        "toolchain_reuse_cases": 1,
         "supervisor_components": 5,
         "guardian_cases": 3,
         "reducer_cases": 3

@@ -520,6 +520,7 @@
                 "launcher_basic_cases",
                 "launcher_hostile_cases",
                 "snapshot_hostile_cases",
+                "toolchain_reuse_cases",
                 "supervisor_components",
                 "guardian_cases",
                 "reducer_cases"
@@ -528,6 +529,7 @@
                 "launcher_basic_cases": {"const": 1},
                 "launcher_hostile_cases": {"const": 10},
                 "snapshot_hostile_cases": {"const": 5},
+                "toolchain_reuse_cases": {"const": 1},
                 "supervisor_components": {"const": 5},
                 "guardian_cases": {"const": 3},
                 "reducer_cases": {"const": 3}

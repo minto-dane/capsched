@@ -13,6 +13,7 @@ F0_C4_CAPTURE_BUILD_PASS launcher_sha256=63db0523f7d688761632be61be431898dfa5c4e
 F0_C4_CAPTURE_LAUNCHER_BASIC_PASS
 F0_C4_CAPTURE_LAUNCHER_HOSTILE_PASS hostile_cases=10
 F0_C4_CAPTURE_SNAPSHOT_HOSTILE_PASS hostile_cases=5
+F0_C4_TOOLCHAIN_REUSE_PASS cases=1 sha256=4fadeb77fe5019e0a9ea22ea43b79f07923f587fa90b9636164ab9e396de34ac
 F0_C4_CAPTURE_SUPERVISOR_SMOKE_PASS components=5
 F0_C4_GUARDIAN_RECOVERY_PASS cases=3
 F0_C4_REDUCTION_BOUNDARY_PASS cases=3
@@ -63,7 +64,9 @@ directory, device symlink, and hardlink inputs without blocking. Guardian
 fixtures cover supervisor death, successful commit preservation, and prior-boot
 reconciliation. Reducer fixtures cover a bounded semantic pass, semantic
 rejection, and duplicate-key JSON rejection while proving that malformed or
-incomplete data cannot become positive.
+incomplete data cannot become positive. The toolchain reuse fixture proves that
+an already mounted read-only EROFS image is verified without attempting metadata
+mutation and that its image digest remains unchanged.
 
 ## Reproduction
 

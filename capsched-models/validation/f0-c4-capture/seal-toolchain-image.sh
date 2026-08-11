@@ -30,7 +30,10 @@ for command in "$mkfs_erofs" "$fsck_erofs" "$tar" /usr/bin/flock \
 done
 
 /usr/bin/install -d -o root -g root -m 0700 \
-	"$state_root" "$toolchain_root" "$mount_root"
+	"$state_root" "$toolchain_root"
+if ! /usr/bin/mountpoint -q "$mount_root"; then
+	/usr/bin/install -d -o root -g root -m 0700 "$mount_root"
+fi
 
 write_progress()
 {

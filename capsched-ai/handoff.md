@@ -120,6 +120,14 @@ After the clean install, start and monitor the exact detached campaign with:
 The monitor refreshes the percentage, units, evidence, and journal every 30
 seconds. Stopping the monitor does not stop the VM capture.
 
+The first G6 start attempt `candidate4-full-20260811T203907Z` stopped before the
+first progress receipt and before candidate launch because the toolchain sealer
+tried to reapply directory metadata to an already mounted read-only EROFS root.
+No evidence or commit marker was created. The reuse path now skips mountpoint
+metadata mutation, `F0_C4_TOOLCHAIN_REUSE_PASS` binds the unchanged image digest,
+and the detached starter waits for a real progress receipt before reporting
+success.
+
 ## Current Git State
 
 Project-control work is isolated on:

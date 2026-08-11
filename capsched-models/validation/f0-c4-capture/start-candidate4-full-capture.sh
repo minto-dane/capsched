@@ -37,7 +37,7 @@ fi
 
 container machine run --root -n domainlease-dev -- \
 	/usr/bin/systemd-run \
-	--quiet --no-block --collect \
+	--quiet --no-block \
 	--unit "$launcher_unit" \
 	--service-type exec \
 	--property StandardInput=null \
@@ -46,6 +46,35 @@ container machine run --root -n domainlease-dev -- \
 	--property TimeoutStopSec=40s \
 	--property OOMPolicy=kill \
 	-- "$runner" "$run_id" "$source_dir"
+
+ready=false
+for _ in {1..20}; do
+	capture_active=$(container machine run --root -n domainlease-dev -- \
+		/usr/bin/systemctl is-active "$capture_unit" 2>/dev/null || true)
+	if [[ $capture_active == active || $capture_active == activating ]] || \
+		container machine run --root -n domainlease-dev -- \
+		/usr/bin/test -f "/run/domainlease-f0-c4/progress/$run_id"; then
+		ready=true
+		break
+	fi
+	launcher_failed=$(container machine run --root -n domainlease-dev -- \
+		/usr/bin/systemctl is-failed "$launcher_unit" 2>/dev/null || true)
+	if [[ $launcher_failed == failed ]]; then
+		break
+	fi
+	sleep 1
+done
+if [[ $ready != true ]]; then
+	printf 'error: detached capture did not reach its first durable progress receipt\n' >&2
+	container machine run --root -n domainlease-dev -- \
+		/usr/bin/systemctl show "$launcher_unit" \
+		--property ActiveState --property SubState --property Result \
+		--property ExecMainStatus --no-pager >&2 || true
+	container machine run --root -n domainlease-dev -- \
+		/usr/bin/journalctl -u "$launcher_unit" -u "$capture_unit" \
+		-n 24 --no-pager >&2 || true
+	exit 1
+fi
 
 printf 'F0_C4_FULL_CAPTURE_STARTED run_id=%s unit=%s\n' \
 	"$run_id" "$capture_unit"
