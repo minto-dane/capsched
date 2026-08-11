@@ -71,6 +71,7 @@ assurance_head_rels=(
 	capsched-models/validation/0316-dynamic-residency-f0-c4-g6-incomplete-disposition.md
 	capsched-models/validation/0317-dynamic-residency-f0-c4-g6-counterexample-repair.md
 	capsched-models/validation/f0-c4-g6-incomplete-observation-v1.json
+	capsched-models/validation/f0-c4-g6-retry-readiness-v1.json
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh

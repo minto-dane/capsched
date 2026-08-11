@@ -15,6 +15,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 from typing import Any
 
@@ -132,6 +133,7 @@ def validate_semantics(
     contract: dict[str, Any],
     current_input: dict[str, Any],
     observation: dict[str, Any],
+    readiness: dict[str, Any],
 ) -> None:
     completion = state["completion"]
     for key in (
@@ -247,6 +249,7 @@ def validate_semantics(
     if install["status"] == "REINSTALL_REQUIRED_AFTER_INPUT_REPAIR":
         require(install["current_inputs_installed"] is False, "pending reinstall marked installed")
         require(g6["retry_eligible"] is False, "G6 retry enabled before clean reinstall")
+        require(readiness["status"] == "REINSTALL_REQUIRED", "pending install has positive readiness")
         expected_input_status = "counterexample_repaired_locally_g6_retry_requires_clean_install"
         expected_phase = "f0_v5_c4_g6_open_reinstall_required"
         expected_capture_status = "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked"
@@ -256,6 +259,7 @@ def validate_semantics(
     elif install["status"] == "PASSED_FOR_REPAIRED_INPUTS":
         require(install["current_inputs_installed"] is True, "passed reinstall not marked installed")
         require(g6["retry_eligible"] is True, "G6 retry not enabled after clean reinstall")
+        require(readiness["status"] == "G6_RETRY_ELIGIBLE", "passed install lacks readiness")
         expected_input_status = "counterexample_repaired_clean_installed_g6_retry_eligible"
         expected_phase = "f0_v5_c4_g6_open_retry_eligible"
         expected_capture_status = "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
@@ -264,6 +268,31 @@ def validate_semantics(
         expected_full_action = "g6_retry_eligible"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
+
+    require(install["readiness_record"] == state["canonical_files"]["f0_c4_g6_retry_readiness"], "readiness path drift")
+    require(install["readiness_sha256"] == readiness["artifact_sha256"], "readiness digest drift")
+    require(readiness["current_inputs"]["artifact_id"] == current["artifact_id"], "readiness input id drift")
+    require(readiness["current_inputs"]["artifact_sha256"] == current["artifact_sha256"], "readiness input digest drift")
+    require(readiness["current_inputs"]["hostile_case_counts"] == current["hostile_case_counts"], "readiness hostile counts drift")
+    require(readiness["current_inputs"]["fast_validator_status"] == current["fast_validator_status"], "readiness fast status drift")
+    require(readiness["clean_install"]["source_commit"] == install["installed_source_commit"], "readiness install commit drift")
+    require(readiness["clean_install"]["installed_manifest_sha256"] == install["installed_manifest_sha256"], "readiness install manifest drift")
+    require(readiness["clean_install"]["source_worktree_clean"] is True, "readiness source was dirty")
+    require(readiness["clean_install"]["committed_state_check"] == "PASS", "readiness committed state check absent")
+    require(readiness["toolchain"]["format"] == capture["immutable_toolchain"]["format"], "readiness toolchain format drift")
+    require(readiness["toolchain"]["image_sha256"] == capture["immutable_toolchain"]["sha256"], "readiness toolchain digest drift")
+    require(readiness["toolchain"]["mounted_read_only"] is True, "readiness toolchain is writable")
+    require(readiness["toolchain"]["reuse_regression_cases"] == capture["short_regression"]["toolchain_reuse_cases"], "readiness reuse regression drift")
+    require(readiness["mechanism_recheck"]["capture_contract_sha256"] == capture["canonical_sha256"], "readiness contract drift")
+    require(readiness["mechanism_recheck"]["reducer_boundary_status"] == "PASS", "readiness reducer boundary absent")
+    require(readiness["mechanism_recheck"]["reducer_boundary_cases"] == capture["short_regression"]["reducer_cases"], "readiness reducer cases drift")
+    require(readiness["disposition"]["g6_gate_status"] == g6["gate_status"], "readiness G6 status drift")
+    require(readiness["disposition"]["g6_retry_eligible"] == g6["retry_eligible"], "readiness G6 eligibility drift")
+    require(readiness["disposition"]["g6_complete_capture_available"] == g6["complete_capture_available"], "readiness G6 completion drift")
+    require(readiness["disposition"]["g7_gate_status"] == g7["gate_status"], "readiness G7 status drift")
+    require(readiness["disposition"]["g7_blocked_reason"] == g7["blocked_reason"], "readiness G7 reason drift")
+    for key, value in readiness["authorization"].items():
+        require(value is False, f"readiness granted unsupported authority: {key}")
 
     require(current["status"] == expected_input_status, "current input/install status drift")
     require(state["project"]["current_phase"] == expected_phase, "project phase drift")
@@ -322,8 +351,10 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
     contract_path, contract = canonical_json("f0_c4_capture_contract")
     current_path, current_input = canonical_json("f0_c4_current_input_contract")
     observation_path, observation = canonical_json("f0_c4_g6_incomplete_record")
+    readiness_path, readiness = canonical_json("f0_c4_g6_retry_readiness")
     current_input["artifact_sha256"] = sha256_file(current_path)
     observation["artifact_sha256"] = sha256_file(observation_path)
+    readiness["artifact_sha256"] = sha256_file(readiness_path)
 
     require(
         state["evidence"]["current_candidate_inputs"]["artifact_sha256"]
@@ -340,7 +371,31 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
         require(path.is_file(), f"current Candidate-4 input missing: {name}")
         require(sha256_file(path) == expected, f"current Candidate-4 input digest mismatch: {name}")
 
-    validate_semantics(state, claims, contract, current_input, observation)
+    installed_commit = state["evidence"]["authority_capture_contract"]["clean_install"][
+        "installed_source_commit"
+    ]
+    ancestry = subprocess.run(
+        ["git", "-C", str(repo_root), "merge-base", "--is-ancestor", installed_commit, "HEAD"],
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    require(ancestry.returncode == 0, "installed source commit is not in current lineage")
+    for name, expected in current_input["exact_inputs"].items():
+        relative = f"capsched-models/validation/{name}"
+        blob = subprocess.run(
+            ["git", "-C", str(repo_root), "show", f"{installed_commit}:{relative}"],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+        require(blob.returncode == 0, f"installed commit lacks current input: {name}")
+        require(
+            hashlib.sha256(blob.stdout).hexdigest() == expected,
+            f"installed commit input digest mismatch: {name}",
+        )
+
+    validate_semantics(state, claims, contract, current_input, observation, readiness)
 
     handoff_path = repo_root / canonical["handoff"]
     projection = extract_handoff_projection(handoff_path.read_text(encoding="utf-8"))
@@ -360,12 +415,24 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
 
     hostile_cases = 0
     if self_test:
-        mutations: list[tuple[str, dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]] = []
+        mutations: list[
+            tuple[
+                str,
+                dict[str, Any],
+                dict[str, Any],
+                dict[str, Any],
+                dict[str, Any],
+                dict[str, Any],
+                dict[str, Any],
+            ]
+        ] = []
 
         def add_state_mutation(label: str, mutate) -> None:
             changed = copy.deepcopy(state)
             mutate(changed)
-            mutations.append((label, changed, claims, contract, current_input, observation))
+            mutations.append(
+                (label, changed, claims, contract, current_input, observation, readiness)
+            )
 
         add_state_mutation(
             "stale planned-track status",
@@ -404,12 +471,53 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
         )
         changed_claims = copy.deepcopy(claims)
         next(item for item in changed_claims["claims"] if item["id"] == "COMPOSE-001")["status"] = "model_supported"
-        mutations.append(("claim status drift", state, changed_claims, contract, current_input, observation))
+        mutations.append(
+            (
+                "claim status drift",
+                state,
+                changed_claims,
+                contract,
+                current_input,
+                observation,
+                readiness,
+            )
+        )
         changed_observation = copy.deepcopy(observation)
         changed_observation["raw_commit"]["candidate_bytes_positive_eligible"] = True
-        mutations.append(("incomplete bytes promoted", state, claims, contract, current_input, changed_observation))
+        mutations.append(
+            (
+                "incomplete bytes promoted",
+                state,
+                claims,
+                contract,
+                current_input,
+                changed_observation,
+                readiness,
+            )
+        )
+        changed_readiness = copy.deepcopy(readiness)
+        changed_readiness["clean_install"]["installed_manifest_sha256"] = "0" * 64
+        mutations.append(
+            (
+                "readiness install identity drift",
+                state,
+                claims,
+                contract,
+                current_input,
+                observation,
+                changed_readiness,
+            )
+        )
 
-        for label, mutated_state, mutated_claims, mutated_contract, mutated_input, mutated_observation in mutations:
+        for (
+            label,
+            mutated_state,
+            mutated_claims,
+            mutated_contract,
+            mutated_input,
+            mutated_observation,
+            mutated_readiness,
+        ) in mutations:
             try:
                 validate_semantics(
                     mutated_state,
@@ -417,6 +525,7 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
                     mutated_contract,
                     mutated_input,
                     mutated_observation,
+                    mutated_readiness,
                 )
             except ConsistencyError:
                 hostile_cases += 1
@@ -430,6 +539,7 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
         "contract": str(contract_path.relative_to(repo_root)),
         "current_input": str(current_path.relative_to(repo_root)),
         "g6_observation": str(observation_path.relative_to(repo_root)),
+        "g6_retry_readiness": str(readiness_path.relative_to(repo_root)),
         "handoff_projection": "exact",
         "hostile_self_test_cases": hostile_cases,
     }

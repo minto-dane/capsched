@@ -619,7 +619,9 @@
                 "status",
                 "installed_source_commit",
                 "installed_manifest_sha256",
-                "current_inputs_installed"
+                "current_inputs_installed",
+                "readiness_record",
+                "readiness_sha256"
               ],
               "properties": {
                 "status": {
@@ -630,7 +632,9 @@
                 },
                 "installed_source_commit": {"$ref": "#/$defs/gitObject"},
                 "installed_manifest_sha256": {"$ref": "#/$defs/sha256"},
-                "current_inputs_installed": {"type": "boolean"}
+                "current_inputs_installed": {"type": "boolean"},
+                "readiness_record": {"type": "string", "minLength": 1},
+                "readiness_sha256": {"$ref": "#/$defs/sha256"}
               },
               "additionalProperties": false
             },

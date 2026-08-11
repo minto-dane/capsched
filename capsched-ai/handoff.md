@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-11",
-  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -76,14 +76,16 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "REINSTALL_REQUIRED_AFTER_INPUT_REPAIR",
-      "installed_source_commit": "7895631bcc778b53102486d1767bcccdb2d327af",
-      "installed_manifest_sha256": "3365ef80c5fad74eeb5b4df45167004bc0cb27467a49a0626b9b798dbb3785f2",
-      "current_inputs_installed": false
+      "status": "PASSED_FOR_REPAIRED_INPUTS",
+      "installed_source_commit": "29d53f6c20516e35551ca588882196bced6c6383",
+      "installed_manifest_sha256": "fe1c2b0d33dd75c3945f637e33dd872c2bf431a02c434bc82ca6aaa1b03a493e",
+      "current_inputs_installed": true,
+      "readiness_record": "capsched-models/validation/f0-c4-g6-retry-readiness-v1.json",
+      "readiness_sha256": "6dff367448e692a956819616f910bf937e97a2b21ea5a255b7cdfc0ddc96e0fd"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": false,
+      "retry_eligible": true,
       "complete_capture_available": false,
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260811T210659Z",
@@ -140,11 +142,17 @@ Validation 0315 records the bounded implementation result. The strict C build,
 launcher basic case, 10 launcher hostile cases, five hostile snapshot objects,
 five-component supervisor smoke run, three guardian recovery cases, and three
 authority-separated reducer cases all pass on `domainlease-dev`. A deterministic
-read-only EROFS toolchain image exists at digest
+read-only EROFS toolchain image existed at digest
 `4fadeb77fe5019e0a9ea22ea43b79f07923f587fa90b9636164ab9e396de34ac`.
 This closes G3-G5 locally without granting semantic or external credit. The
 clean install from commit `7895631...` succeeded and was used by the first
 candidate-executing G6 attempt.
+
+Validation 0317 and `f0-c4-g6-retry-readiness-v1.json` bind the repaired
+successor environment: clean source commit `29d53f6c...`, installed manifest
+`fe1c2b0d...`, read-only EROFS image `b3ed1553...`, EROFS manifest
+`0db6f68c...`, one reuse regression, and three reducer boundary cases. This
+makes a new G6 attempt eligible; it does not complete G6 or enable G7.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -186,8 +194,8 @@ success.
 
 The second attempt `candidate4-full-20260811T210659Z` did execute candidate
 bytes and finalized incomplete. It must never be resumed, combined with a new
-run, reduced as positive evidence, or described as `NOT_RUN`. A clean reviewed
-install of the repaired exact inputs is the current prerequisite.
+run, reduced as positive evidence, or described as `NOT_RUN`. Its clean
+repaired successor install is complete; the next action is a fresh G6 run.
 
 ## Current Git State
 

@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
+    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -213,7 +213,7 @@
     "current_candidate_inputs": {
       "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-effect-repair-v1",
       "artifact_sha256": "7abf3dcf7a8d5899f8773f12d792e61995bbb24a3dd591745bda9a1d9537e407",
-      "status": "counterexample_repaired_locally_g6_retry_requires_clean_install",
+      "status": "counterexample_repaired_clean_installed_g6_retry_eligible",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
       "full_validator_status": "NOT_RUN_FOR_REPAIRED_INPUTS",
       "hostile_case_counts": {
@@ -239,7 +239,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
       "hostile_mutation_cases": 153,
       "derived_semantic_cases": 13,
       "closed_gates": [
@@ -259,7 +259,7 @@
       "reduction_boundary_implemented": true,
       "immutable_toolchain": {
         "format": "erofs",
-        "sha256": "4fadeb77fe5019e0a9ea22ea43b79f07923f587fa90b9636164ab9e396de34ac",
+        "sha256": "b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce",
         "mounted_read_only": true
       },
       "short_regression": {
@@ -272,14 +272,16 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "REINSTALL_REQUIRED_AFTER_INPUT_REPAIR",
-        "installed_source_commit": "7895631bcc778b53102486d1767bcccdb2d327af",
-        "installed_manifest_sha256": "3365ef80c5fad74eeb5b4df45167004bc0cb27467a49a0626b9b798dbb3785f2",
-        "current_inputs_installed": false
+        "status": "PASSED_FOR_REPAIRED_INPUTS",
+        "installed_source_commit": "29d53f6c20516e35551ca588882196bced6c6383",
+        "installed_manifest_sha256": "fe1c2b0d33dd75c3945f637e33dd872c2bf431a02c434bc82ca6aaa1b03a493e",
+        "current_inputs_installed": true,
+        "readiness_record": "capsched-models/validation/f0-c4-g6-retry-readiness-v1.json",
+        "readiness_sha256": "6dff367448e692a956819616f910bf937e97a2b21ea5a255b7cdfc0ddc96e0fd"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": false,
+        "retry_eligible": true,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
         "attempt_count": 2,
@@ -330,8 +332,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_reinstall_required_g7_blocked",
-      "next_artifact": "Clean-install the OBS-032 counterexample repair, retry authority-disjoint G6, then reduce only a complete committed capture in G7"
+      "status": "open_candidate4_g1_g5_closed_g6_retry_eligible_g7_blocked",
+      "next_artifact": "Retry authority-disjoint G6 with the clean-installed OBS-032 repair, then reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -430,14 +432,14 @@
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "counterexample_repaired_clean_install_pending",
-      "text": "G1-G5 remain locally closed and the G6 counterexample repair passes locally; install the repaired exact inputs and trusted tools from a clean reviewed commit before retry."
+      "status": "completed_clean_reviewed_install_for_repaired_inputs",
+      "text": "G1-G5 remain locally closed; clean commit 29d53f6 installs the repaired exact inputs and trusted tools, seals the immutable toolchain, and passes the reducer boundary recheck."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "blocked_until_repaired_clean_install",
-      "text": "The latest completed attempt is RAW_CAPTURE_INCOMPLETE and positive-ineligible; retry G6 only after the repaired clean install, then independently reduce a complete committed result later."
+      "status": "g6_retry_eligible",
+      "text": "The prior completed attempt remains RAW_CAPTURE_INCOMPLETE and positive-ineligible; the repaired clean install now permits a fresh G6 run, with G7 still blocked until a complete committed result exists."
     },
     {
       "order": 8,
@@ -505,6 +507,7 @@
     "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-effect-repair-v1.json",
     "f0_c4_g6_incomplete_validation": "capsched-models/validation/0316-dynamic-residency-f0-c4-g6-incomplete-disposition.md",
     "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-incomplete-observation-v1.json",
+    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-retry-readiness-v1.json",
     "f0_c4_effect_repair_validation": "capsched-models/validation/0317-dynamic-residency-f0-c4-g6-counterexample-repair.md",
     "f0_c4_claim_registry": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
     "f0_c4_child_model": "capsched-models/validation/f0_supervisor_lts_v3.py",

@@ -15,7 +15,7 @@ LOCAL_C4_RUNNER_REGRESSION_PASS hostile_cases=44
 COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY
 F0_C4_AUTHORITY_CAPTURE_CONTRACT_PASS platform_requirements=17 invariants=30 gates=7
 F0_C4_AUTHORITY_CAPTURE_CONTRACT_MUTATIONS_PASS hostile_cases=153 derived_cases=13
-CURRENT_STATE_CONSISTENCY_PASS hostile_self_test_cases=8 mode=draft
+CURRENT_STATE_CONSISTENCY_PASS hostile_self_test_cases=9
 ```
 
 The dedicated regression recreates post-leader-exit hidden-work reacquisition
@@ -27,22 +27,24 @@ immediate `ProtocolReject`; the timeout is not full-run credit.
 The child, parent, runner, fast validator, contract validator, hostile contract
 mutations, JSON schema, exact-input hashes, durable G6 observation, handoff
 projection, and semantic state consistency all pass against the same repaired
-bytes in a fresh Linux VM.  The integrated checker rejects eight independent
+bytes in a fresh Linux VM.  The integrated checker rejects nine independent
 state-drift mutations in addition to the capture contract's 153 hostile and 13
 derived mutations.
 
-The fresh VM intentionally has no installed toolchain yet.  The reducer
-boundary recheck therefore fails closed before reduction with
-`cannot stat toolchain root`; it must pass after the reviewed clean install and
-cannot be replaced by a synthetic toolchain fixture.
+Clean commit `29d53f6c20516e35551ca588882196bced6c6383` passes the committed
+state check and was installed as the capture TCB.  Installed manifest
+`fe1c2b0d...a493e`, read-only EROFS image `b3ed1553...78cce`, EROFS
+manifest `0db6f68c...bcd51`, one reuse regression, and all three reducer
+boundary cases pass.  The exact machine record is
+`f0-c4-g6-retry-readiness-v1.json`.
 
 ```text
-PENDING_CLEAN_INSTALL_AND_REDUCER_BOUNDARY_RECHECK
+F0_C4_G6_RETRY_READINESS_PASS
 ```
 
 ## Claim Boundary
 
-This validation can make a clean G6 retry eligible after a reviewed install.
+This validation makes a fresh G6 retry eligible after the reviewed install.
 It does not close G6 or G7, decide any full-only local claim, accept F0, enable
 R11/K0/G0, authorize TLA+, change Linux/Monitor behavior, or support protection,
 performance, cost, cluster, or deployment claims.
