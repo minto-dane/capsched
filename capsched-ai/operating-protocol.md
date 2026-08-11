@@ -45,6 +45,14 @@ After a semantic state change, update `state.json`, `handoff.md`, and
 
 Use `--allow-draft` only before the state commit exists.
 
+Do not copy volatile campaign status into README, model indexes, or plans.
+Record durable attempts as typed outcomes in `state.json`; retain historical
+results in numbered analysis/validation records. The structured projection in
+`handoff.md` is the only duplicated current view, and
+`check-current-state.sh` compares it exactly while deriving gate, claim,
+install, G6/G7, and digest relationships through the integrated semantic
+consistency checker.
+
 ## Decision Discipline
 
 Use ADRs for durable choices, especially:

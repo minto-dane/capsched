@@ -1,6 +1,6 @@
 # DomainLease Models and Engineering Work
 
-Updated: 2026-08-10
+Updated: 2026-08-11
 
 This directory contains the modeling and engineering work products for
 DomainLease-Linux, formerly CapSched-Linux during the private modeling phase.
@@ -17,11 +17,12 @@ retains the first F0 v5 machine draft as a parity rejection. Analysis 0219 and
 Validation 0308 locally close only canonical source static checking and
 immutable link construction. Analysis 0220 through 0225 then advance checked
 evaluation and supervisor semantics through several locally rejected designs.
-Analysis 0226 and Validation 0313 are the current Candidate-4 pre-full
-checkpoint: 274 child, 715 parent, and 43 runner hostile regressions plus the
-fast validator pass, but full reachability/commutation is `NOT_RUN` and the
-same-UID receipt path is not authority-disjoint. External assurance, F0, R11,
-K0/G0, protection, and final-model completion remain open.
+Analysis 0226 and Validation 0313 preserve the historical Candidate-4 pre-full
+checkpoint at 274 child, 715 parent, and 44 runner hostile regressions.
+Analysis 0228 and Validations 0316-0317 record the first durable G6
+counterexample and its successor repair. Volatile campaign status is
+intentionally not duplicated in this index; read the mechanically checked
+projection in `../capsched-ai/handoff.md`.
 
 ## Subdirectories
 

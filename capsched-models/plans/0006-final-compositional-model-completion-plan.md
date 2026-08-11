@@ -548,21 +548,20 @@ input capture complete the interactive task; result acceptance is a later,
 independent task. An interactive agent must not spend context repeatedly
 polling a healthy long-running job.
 
-## Immediate Next Artifact
+## Current Execution Pointer
 
-The authority-disjoint Candidate-4 contract and bounded Linux mechanism are now
-implemented and locally regression-tested through G5. They provide root-owned
-immutable input capture, dedicated unprivileged execution identities,
-nondelegated cgroup-v2 descendant containment, direct component lifecycle
-observation, kill-and-drain behavior, immutable EROFS tool identity, guardian
-recovery, finalized-byte-only reduction, and output retention outside candidate
-authority.
+Volatile execution status is intentionally not duplicated in this plan. The
+machine-readable pointer is
+`capsched-ai/state/state.json#/evidence/authority_capture_contract`; the exact
+human projection is in `capsched-ai/handoff.md` and is checked against the
+state, assurance register, capture contract, current inputs, and latest durable
+attempt.
 
-The immediate target is a clean reviewed-commit install followed by the exact
-long bounded campaign launched detached as G6. A later independent session
-reduces only its durably finalized child, parent, and commutation bytes as G7.
-Even a local full pass can only disposition the registered local claims; it
-cannot authorize F0, external R11 review, or K0/G0.
+The binding order remains: locally validated exact inputs, clean reviewed
+install, authority-disjoint detached G6 capture, and later independent G7
+reduction of only a durably committed complete capture. An incomplete attempt
+never enables G7. Even a local full pass can only disposition the registered
+local claims; it cannot authorize F0, external R11 review, or K0/G0.
 
 The earlier R11 G0 v1 predecessor remains fixed as:
 

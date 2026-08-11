@@ -8,7 +8,7 @@ TEST_ROOT=$(mktemp -d)
 HOSTILE_CASES=0
 
 cleanup() {
-    chmod -R u+w -- "${TEST_ROOT}" 2>/dev/null || true
+    chmod -R u+w "${TEST_ROOT}" 2>/dev/null || true
     rm -rf -- "${TEST_ROOT}"
 }
 trap cleanup EXIT
@@ -18,10 +18,16 @@ die() {
     exit 1
 }
 
+[[ $(uname -s) == Linux && -r /proc/self/cmdline ]] ||
+    die 'Linux with procfs is required for runner lifecycle regression'
+
 prepare_fixture() {
     local scenario=$1
     local root=${TEST_ROOT}/${scenario}
     local source=${root}/source
+    local scenario_json
+    local parent_pid_file_json
+    local child_pid_file_json
 
     FIXTURE_ROOT=${root}
     FIXTURE_SOURCE=${source}
@@ -30,12 +36,20 @@ prepare_fixture() {
     FIXTURE_EXPECTED=${root}/expected.sha256
     SIGNAL_PARENT_PID_FILE=${root}/validator.pid
     SIGNAL_CHILD_PID_FILE=${root}/validator-child.pid
+    scenario_json=$("${PYTHON_BIN}" -c \
+        'import json,sys; print(json.dumps(sys.argv[1]))' "${scenario}")
+    parent_pid_file_json=$("${PYTHON_BIN}" -c \
+        'import json,sys; print(json.dumps(sys.argv[1]))' \
+        "${SIGNAL_PARENT_PID_FILE}")
+    child_pid_file_json=$("${PYTHON_BIN}" -c \
+        'import json,sys; print(json.dumps(sys.argv[1]))' \
+        "${SIGNAL_CHILD_PID_FILE}")
 
     mkdir -p -- "${source}"
     cp -- "${RUNNER}" "${source}/run-f0-supervisor-v3-full.sh"
     cp -- "${SCRIPT_DIR}/f0-supervisor-c4-claim-registry-v1.json" \
         "${source}/f0-supervisor-c4-claim-registry-v1.json"
-    chmod 0755 -- "${source}/run-f0-supervisor-v3-full.sh"
+    chmod 0755 "${source}/run-f0-supervisor-v3-full.sh"
 
     for name in \
         f0_supervisor_lts_v3.py \
@@ -58,9 +72,9 @@ import subprocess
 import sys
 import time
 
-SCENARIO = ${scenario@Q}
-PARENT_PID_FILE = Path(${SIGNAL_PARENT_PID_FILE@Q})
-CHILD_PID_FILE = Path(${SIGNAL_CHILD_PID_FILE@Q})
+SCENARIO = ${scenario_json}
+PARENT_PID_FILE = Path(${parent_pid_file_json})
+CHILD_PID_FILE = Path(${child_pid_file_json})
 
 arguments = sys.argv[1:]
 if "--output" not in arguments:
@@ -1088,11 +1102,10 @@ HOSTILE_CASES=$((HOSTILE_CASES + 1))
 
 prepare_fixture bash-mapfile-bypass
 BASH_ENV_MARKER=${FIXTURE_ROOT}/bash-mapfile-env-executed
-printf '%s\n' \
-    "printf injected > ${BASH_ENV_MARKER@Q}" \
-    'set -p' \
-    'mapfile() { CAPSCHED_LAUNCH_ARGV=(-p); }' \
-    > "${FIXTURE_ROOT}/bash-env"
+{
+    printf 'printf injected > %q\n' "${BASH_ENV_MARKER}"
+    printf '%s\n' 'set -p' 'mapfile() { CAPSCHED_LAUNCH_ARGV=(-p); }'
+} > "${FIXTURE_ROOT}/bash-env"
 set +e
 {
     env \
@@ -1142,11 +1155,10 @@ HOSTILE_CASES=$((HOSTILE_CASES + 1))
 
 prepare_fixture bash-exit-override
 BASH_ENV_MARKER=${FIXTURE_ROOT}/bash-exit-env-executed
-printf '%s\n' \
-    "printf injected > ${BASH_ENV_MARKER@Q}" \
-    'set -p' \
-    'exit() { return 0; }' \
-    > "${FIXTURE_ROOT}/bash-env"
+{
+    printf 'printf injected > %q\n' "${BASH_ENV_MARKER}"
+    printf '%s\n' 'set -p' 'exit() { return 0; }'
+} > "${FIXTURE_ROOT}/bash-env"
 set +e
 {
     env \

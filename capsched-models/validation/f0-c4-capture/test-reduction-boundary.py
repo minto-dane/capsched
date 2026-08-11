@@ -29,12 +29,12 @@ STAGED_CONTRACT = TRUSTED_STAGE / "f0-c4-capture-contract-v1.json"
 CONTRACT_SHA256 = "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075"
 INPUT_DIGESTS = {
     "f0-supervisor-c4-claim-registry-v1.json": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
-    "f0_supervisor_lts_v3.py": "55b577c4c0af8f433707d305a802d001a7685b43d2598d79937413f2730b6958",
+    "f0_supervisor_lts_v3.py": "0af68395e37958fd5f75a2f06d886c7a5c0bc77ad1cd6546234b645273303278",
     "f0_supervisor_orchestrator_v3.py": "cb75d720ae8f36b5a440e3480f5053fc75b47a2a7b652b679ea53257f57eeff6",
-    "run-f0-supervisor-v3-full.sh": "3c4a3001683970a6652622bced756d78e87bda6e6ac243b0fd6619a39258cf30",
-    "test-f0-supervisor-lts-v3-mutations.py": "9513a985e6708a5d071dfd9605eff760e5128c107bd622d55563458d93a9d0bd",
-    "test-f0-supervisor-orchestrator-v3-mutations.py": "84abc2882dd05e9a47231bb3b29ccc18c7f006c90bd2899ab752fc9173767d05",
-    "test-run-f0-supervisor-v3-full.sh": "e8b1ec7f934d6c2a53a817631bd4101ae531f5655ed72b1c73b488b88a78fcdf",
+    "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba",
+    "test-f0-supervisor-lts-v3-mutations.py": "354cd28449490ab3740afec8c258877090f2251ae217c74366d69e98aff76a8c",
+    "test-f0-supervisor-orchestrator-v3-mutations.py": "bdd7b736603f670cee18296c73cd89fb58151159405a37d219cbf86ac0a57a0f",
+    "test-run-f0-supervisor-v3-full.sh": "124947b2622811b60a20f753e6cfa6eae0a704afb11c95bb0fe1b80a11e78ec9",
     "validate-f0-supervisor-lts-v3.py": "f8c724cece29031b49744e4322671b6bd9fd204e4e53c1982e132816ba592f3b",
 }
 INPUT_ROOT_SHA256 = hashlib.sha256(
@@ -169,7 +169,7 @@ def tests_result(passed: bool) -> dict[str, Any]:
     markers = (
         (
             "test-f0-supervisor-lts-v3-mutations.py",
-            "LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=274",
+            "LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=275",
         ),
         (
             "test-f0-supervisor-orchestrator-v3-mutations.py",

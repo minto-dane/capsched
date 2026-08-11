@@ -8,8 +8,10 @@ corpus pass. The root capture supervisor, target-host authority probe, guardian,
 fault fixtures, immutable EROFS toolchain, and authority-separated post-run
 reducer now pass their bounded mechanism regressions. Gates
 `C4CAP-G1-CONTRACT` through `C4CAP-G5-FAULTS` are locally closed at EC0.
-The exact long Candidate-4 capture (`G6`) and reduction of those real finalized
-bytes (`G7`) have not run and remain required.
+At this contract record's publication point, the exact long Candidate-4
+capture (`G6`) and reduction of those real finalized bytes (`G7`) had not run.
+Validation 0316 records the later incomplete attempt; Analysis 0228 records its
+counterexample repair. G6 and G7 remain required.
 
 The machine-readable companion is
 `f0-c4-authority-disjoint-capture-contract-v1.json`. Its canonical JSON digest
@@ -159,7 +161,7 @@ multi-cluster, and deployment claims remain false or open.
 
 ## Implementation Order
 
-The remaining order is binding:
+The gate order is binding; live status is owned by `capsched-ai/state/state.json`:
 
 1. From a clean reviewed commit, install the already regression-tested trusted
    tools into the dedicated VM and verify the installed artifact manifest.

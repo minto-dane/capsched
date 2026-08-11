@@ -1904,10 +1904,10 @@ def main() -> None:
         "store-head projection",
         "durable commitment projection",
     )
+    assert len(forged_context_labels) == len(forged_context_states)
     for label, forged_context_state in zip(
         forged_context_labels,
         forged_context_states,
-        strict=True,
     ):
         context = forged_context_state.pending_attack_context
         assert context is not None

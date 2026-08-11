@@ -307,6 +307,29 @@ def main() -> None:
     )
     assert async_cleanup.async_refs == "DRAINED"
     assert async_cleanup.async_drained_generation == 2
+
+    # A surviving descendant may acquire new hidden async work after the
+    # leader exits.  Draining that descendant must move hidden work back to
+    # PENDING, and the declared effect policy must permit that exact write.
+    post_exit_hidden_work = run(
+        "PRODUCER",
+        SETUP
+        + (
+            "ADV-016-FORK-DESCENDANT",
+            "OBS-029-NORMAL-EXIT",
+            "ADV-017-OPEN-ASYNC-REF",
+        ),
+    )
+    assert post_exit_hidden_work.hidden_work == "ACTIVE"
+    post_exit_descendant_drain = model.apply_trace(
+        post_exit_hidden_work,
+        ("OBS-032-DESCENDANTS-EXIT",),
+    )
+    assert post_exit_descendant_drain.descendants == "EXITED"
+    assert post_exit_descendant_drain.hidden_work == "PENDING"
+    assert "hidden_work" in model.ACTION_WRITE_FIELDS["OBS-032-DESCENDANTS-EXIT"]
+    cases += 1
+
     receipts = list(redrained.evidence_receipts)
     first_descendant = next(
         index for index, receipt in enumerate(receipts)

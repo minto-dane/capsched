@@ -43,15 +43,19 @@ handoff_rel=capsched-ai/handoff.md
 events_rel=capsched-ai/state/events.jsonl
 claims_rel=capsched-models/assurance/claims.json
 ledger_rel=capsched-models/analysis/final-model-completeness-ledger-v1.json
+consistency_checker_rel=capsched-ai/state/check-state-consistency.py
 assurance_head_rels=(
 	capsched-ai/decisions/ADR-0018-split-foundation-candidate-freeze-and-proof-gates.md
 	capsched-ai/decisions/ADR-0024-reasoning-first-semantic-construction-and-terminal-tla-validation.md
 	capsched-ai/state/schemas/state.schema.json
 	capsched-ai/state/check-current-state.sh
+	capsched-ai/state/check-state-consistency.py
 	capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure-v1.json
 	capsched-models/analysis/0227-dynamic-residency-f0-c4-authority-disjoint-capture-contract.md
 	capsched-models/analysis/f0-c4-authority-disjoint-capture-contract-v1.json
+	capsched-models/analysis/0228-dynamic-residency-f0-v5-candidate4-g6-counterexample-repair.md
+	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-effect-repair-v1.json
 	capsched-models/assurance/claims.json
 	capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
 	capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json
@@ -64,6 +68,9 @@ assurance_head_rels=(
 	capsched-models/validation/run-f0-supervisor-v3-full.sh
 	capsched-models/validation/0314-dynamic-residency-f0-c4-authority-disjoint-capture-contract.md
 	capsched-models/validation/0315-dynamic-residency-f0-c4-authority-disjoint-capture-mechanism.md
+	capsched-models/validation/0316-dynamic-residency-f0-c4-g6-incomplete-disposition.md
+	capsched-models/validation/0317-dynamic-residency-f0-c4-g6-counterexample-repair.md
+	capsched-models/validation/f0-c4-g6-incomplete-observation-v1.json
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh
@@ -86,8 +93,10 @@ handoff="$repo_root/$handoff_rel"
 events="$repo_root/$events_rel"
 claims="$repo_root/$claims_rel"
 ledger="$repo_root/$ledger_rel"
+consistency_checker="$repo_root/$consistency_checker_rel"
 
-for required in "$state" "$schema" "$handoff" "$events" "$claims" "$ledger"; do
+for required in "$state" "$schema" "$handoff" "$events" "$claims" "$ledger" \
+	"$consistency_checker"; do
 	[[ -f $required ]] || {
 		printf 'error: required state artifact missing: %s\n' "$required" >&2
 		exit 1
@@ -125,8 +134,6 @@ PY
 jq -e '
 	.schema_version == 2 and
 	.project.name == "DomainLease-Linux" and
-	.project.current_phase ==
-	 "f0_v5_c4_authority_capture_g1_g5_closed" and
 	.project.publication.github_visibility == "public_intentional" and
 	.project.publication.secrets_allowed == false and
 	.completion.v1_claim_inventory_complete == true and
@@ -139,28 +146,6 @@ jq -e '
 	.evidence.contract_status == "defined" and
 	.evidence.reviewed_positive_promotion_credit == "needs_revalidation" and
 	.evidence.codex_security_scan_required == false and
-	.evidence.local_candidate_checkpoint.full_validator_status == "NOT_RUN" and
-	.evidence.local_candidate_checkpoint.authority_disjoint_capture == false and
-	.evidence.authority_capture_contract.canonical_sha256 ==
-	 "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075" and
-	.evidence.authority_capture_contract.closed_gates ==
-	 ["C4CAP-G1-CONTRACT", "C4CAP-G2-HOSTILE",
-	  "C4CAP-G3-SUPERVISOR", "C4CAP-G4-PLATFORM",
-	  "C4CAP-G5-FAULTS"] and
-	.evidence.authority_capture_contract.remaining_gates ==
-	 ["C4CAP-G6-CAPTURE", "C4CAP-G7-REDUCTION"] and
-	.evidence.authority_capture_contract.hostile_mutation_cases == 153 and
-	.evidence.authority_capture_contract.derived_semantic_cases == 13 and
-	.evidence.authority_capture_contract.root_supervisor_implemented == true and
-	.evidence.authority_capture_contract.target_platform_probe_passed == true and
-	.evidence.authority_capture_contract.hostile_fault_fixtures_passed == true and
-	.evidence.authority_capture_contract.reduction_boundary_implemented == true and
-	.evidence.authority_capture_contract.immutable_toolchain.format == "erofs" and
-	.evidence.authority_capture_contract.immutable_toolchain.mounted_read_only == true and
-	.evidence.authority_capture_contract.full_capture_run == false and
-	.evidence.authority_capture_contract.real_reduction_run == false and
-	(.evidence.local_candidate_checkpoint.hostile_case_counts |
-	 .total == (.child + .parent + .runner)) and
 	([.accepted_invariants[].id] | length == (unique | length)) and
 	([.planned_tracks[].order] == ([.planned_tracks[].order] | sort)) and
 	([.next_actions[].order] == ([.next_actions[].order] | sort))
@@ -257,7 +242,7 @@ jq -e --slurpfile registry "$registry" '
 	$link.authorization.protection_claim == false
 ' "$claims" >/dev/null
 
-c4_contract_rel=$(jq -er '.canonical_files.f0_c4_pre_full_contract' "$state")
+c4_contract_rel=$(jq -er '.canonical_files.f0_c4_current_input_contract' "$state")
 c4_contract="$repo_root/$c4_contract_rel"
 [[ -f $c4_contract ]] || {
 	printf 'error: F0 C4 pre-full contract missing: %s\n' "$c4_contract" >&2
@@ -278,25 +263,6 @@ while IFS=$'\t' read -r input_name expected_digest; do
 	}
 done < <(jq -r '.exact_inputs | to_entries[] | [.key, .value] | @tsv' \
 	"$c4_contract")
-
-jq -e --slurpfile state "$state" '
-	.local_regression.full_validator_status == "NOT_RUN" and
-	.local_regression.fast_validator_status ==
-	 "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY" and
-	.local_regression.child_hostile_cases ==
-	 $state[0].evidence.local_candidate_checkpoint.hostile_case_counts.child and
-	.local_regression.parent_hostile_cases ==
-	 $state[0].evidence.local_candidate_checkpoint.hostile_case_counts.parent and
-	.local_regression.runner_hostile_cases ==
-	 $state[0].evidence.local_candidate_checkpoint.hostile_case_counts.runner and
-	.local_regression.total_hostile_cases ==
-	 $state[0].evidence.local_candidate_checkpoint.hostile_case_counts.total and
-	.authorization.F0_local_acceptance == false and
-	.authorization.external_R11_review == false and
-	.authorization.G0_authorized == false and
-	.authorization.self_authorization == false and
-	.authorization.protection_claim == false
-' "$c4_contract" >/dev/null
 
 capture_contract_rel=$(jq -er '.canonical_files.f0_c4_capture_contract' "$state")
 capture_validator_rel=$(jq -er '.canonical_files.f0_c4_capture_validator' "$state")
@@ -323,6 +289,9 @@ capture_hostile_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
 	printf 'error: F0 C4 authority-disjoint hostile regression failed\n' >&2
 	exit 1
 }
+
+PYTHONDONTWRITEBYTECODE=1 python3 "$consistency_checker" \
+	--repo-root "$repo_root" --self-test >/dev/null
 
 jq -e '
 	.status == "historical_v1_inventory_complete_final_composition_reopened" and

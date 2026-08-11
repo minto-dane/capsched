@@ -51,7 +51,8 @@
         },
         "current_phase": {
           "enum": [
-            "f0_v5_c4_authority_capture_g1_g5_closed"
+            "f0_v5_c4_g6_open_reinstall_required",
+            "f0_v5_c4_g6_open_retry_eligible"
           ]
         },
         "publication": {
@@ -294,6 +295,7 @@
         "codex_security_scan_required",
         "claim_specific_results",
         "local_candidate_checkpoint",
+        "current_candidate_inputs",
         "authority_capture_contract"
       ],
       "properties": {
@@ -377,11 +379,11 @@
           "required": [
             "artifact_id",
             "status",
-            "fast_validator_status",
-            "full_validator_status",
-            "hostile_case_counts",
+            "fast_validator_status_at_checkpoint",
+            "full_validator_status_at_checkpoint",
+            "hostile_case_counts_at_checkpoint",
             "component_receipt_capture_authority",
-            "authority_disjoint_capture",
+            "authority_disjoint_capture_at_checkpoint",
             "authorization"
           ],
           "properties": {
@@ -392,13 +394,13 @@
             "status": {
               "const": "pre_full_local_checkpoint"
             },
-            "fast_validator_status": {
+            "fast_validator_status_at_checkpoint": {
               "const": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY"
             },
-            "full_validator_status": {
+            "full_validator_status_at_checkpoint": {
               "const": "NOT_RUN"
             },
-            "hostile_case_counts": {
+            "hostile_case_counts_at_checkpoint": {
               "type": "object",
               "required": ["child", "parent", "runner", "total"],
               "properties": {
@@ -412,8 +414,82 @@
             "component_receipt_capture_authority": {
               "const": "candidate_validator_local_process"
             },
-            "authority_disjoint_capture": {
+            "authority_disjoint_capture_at_checkpoint": {
               "const": false
+            },
+            "authorization": {
+              "type": "object",
+              "required": [
+                "F0_local_acceptance",
+                "external_R11_review",
+                "G0_authorized",
+                "self_authorization",
+                "protection_claim"
+              ],
+              "properties": {
+                "F0_local_acceptance": {"const": false},
+                "external_R11_review": {"const": false},
+                "G0_authorized": {"const": false},
+                "self_authorization": {"const": false},
+                "protection_claim": {"const": false}
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "current_candidate_inputs": {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "artifact_sha256",
+            "status",
+            "fast_validator_status",
+            "full_validator_status",
+            "hostile_case_counts",
+            "counterexample_regression",
+            "authorization"
+          ],
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "status": {
+              "enum": [
+                "counterexample_repaired_locally_g6_retry_requires_clean_install",
+                "counterexample_repaired_clean_installed_g6_retry_eligible"
+              ]
+            },
+            "fast_validator_status": {
+              "const": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY"
+            },
+            "full_validator_status": {
+              "const": "NOT_RUN_FOR_REPAIRED_INPUTS"
+            },
+            "hostile_case_counts": {
+              "type": "object",
+              "required": ["child", "parent", "runner", "total"],
+              "properties": {
+                "child": {"type": "integer", "minimum": 1},
+                "parent": {"type": "integer", "minimum": 1},
+                "runner": {"type": "integer", "minimum": 1},
+                "total": {"type": "integer", "minimum": 1}
+              },
+              "additionalProperties": false
+            },
+            "counterexample_regression": {
+              "type": "object",
+              "required": ["action_id", "field", "status"],
+              "properties": {
+                "action_id": {"const": "OBS-032-DESCENDANTS-EXIT"},
+                "field": {"const": "hidden_work"},
+                "status": {"const": "PASS"}
+              },
+              "additionalProperties": false
             },
             "authorization": {
               "type": "object",
@@ -453,42 +529,43 @@
             "reduction_boundary_implemented",
             "immutable_toolchain",
             "short_regression",
-            "full_capture_run",
-            "real_reduction_run"
+            "clean_install",
+            "g6",
+            "g7"
           ],
           "properties": {
             "artifact_id": {
               "const": "f0-c4-authority-disjoint-capture-contract-v1"
             },
             "canonical_sha256": {
-              "const": "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075"
+              "$ref": "#/$defs/sha256"
             },
             "evidence_level": {
               "const": "EC0"
             },
             "status": {
-              "const": "local_mechanism_g1_g5_closed_g6_g7_pending"
+              "enum": [
+                "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
+                "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+              ]
             },
             "hostile_mutation_cases": {
-              "const": 153
+              "type": "integer",
+              "minimum": 1
             },
             "derived_semantic_cases": {
-              "const": 13
+              "type": "integer",
+              "minimum": 1
             },
             "closed_gates": {
-              "const": [
-                "C4CAP-G1-CONTRACT",
-                "C4CAP-G2-HOSTILE",
-                "C4CAP-G3-SUPERVISOR",
-                "C4CAP-G4-PLATFORM",
-                "C4CAP-G5-FAULTS"
-              ]
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"type": "string", "minLength": 1}
             },
             "remaining_gates": {
-              "const": [
-                "C4CAP-G6-CAPTURE",
-                "C4CAP-G7-REDUCTION"
-              ]
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"type": "string", "minLength": 1}
             },
             "root_supervisor_implemented": {
               "const": true
@@ -508,7 +585,7 @@
               "properties": {
                 "format": {"const": "erofs"},
                 "sha256": {
-                  "const": "4fadeb77fe5019e0a9ea22ea43b79f07923f587fa90b9636164ab9e396de34ac"
+                  "$ref": "#/$defs/sha256"
                 },
                 "mounted_read_only": {"const": true}
               },
@@ -536,11 +613,84 @@
               },
               "additionalProperties": false
             },
-            "full_capture_run": {
-              "const": false
+            "clean_install": {
+              "type": "object",
+              "required": [
+                "status",
+                "installed_source_commit",
+                "installed_manifest_sha256",
+                "current_inputs_installed"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "REINSTALL_REQUIRED_AFTER_INPUT_REPAIR",
+                    "PASSED_FOR_REPAIRED_INPUTS"
+                  ]
+                },
+                "installed_source_commit": {"$ref": "#/$defs/gitObject"},
+                "installed_manifest_sha256": {"$ref": "#/$defs/sha256"},
+                "current_inputs_installed": {"type": "boolean"}
+              },
+              "additionalProperties": false
             },
-            "real_reduction_run": {
-              "const": false
+            "g6": {
+              "type": "object",
+              "required": [
+                "gate_status",
+                "retry_eligible",
+                "complete_capture_available",
+                "candidate_bytes_positive_eligible",
+                "attempt_count",
+                "latest_completed_attempt_run_id",
+                "attempt_history"
+              ],
+              "properties": {
+                "gate_status": {"const": "OPEN"},
+                "retry_eligible": {"type": "boolean"},
+                "complete_capture_available": {"const": false},
+                "candidate_bytes_positive_eligible": {"const": false},
+                "attempt_count": {"type": "integer", "minimum": 1},
+                "latest_completed_attempt_run_id": {"type": "string", "minLength": 1},
+                "attempt_history": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "run_id",
+                      "status",
+                      "candidate_bytes_executed",
+                      "evidence_commit_available"
+                    ],
+                    "properties": {
+                      "run_id": {"type": "string", "minLength": 1},
+                      "status": {
+                        "enum": [
+                          "START_FAILED_BEFORE_CANDIDATE_LAUNCH",
+                          "RAW_CAPTURE_INCOMPLETE"
+                        ]
+                      },
+                      "candidate_bytes_executed": {"type": "boolean"},
+                      "evidence_commit_available": {"type": "boolean"},
+                      "observation_record": {"type": "string", "minLength": 1},
+                      "observation_sha256": {"$ref": "#/$defs/sha256"}
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "g7": {
+              "type": "object",
+              "required": ["gate_status", "blocked_reason", "real_reduction_run"],
+              "properties": {
+                "gate_status": {"const": "BLOCKED"},
+                "blocked_reason": {"const": "NO_COMPLETE_G6_CAPTURE"},
+                "real_reduction_run": {"const": false}
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -591,6 +741,7 @@
         "state",
         "state_schema",
         "state_checker",
+        "state_consistency_checker",
         "handoff",
         "event_log",
         "current_decision",

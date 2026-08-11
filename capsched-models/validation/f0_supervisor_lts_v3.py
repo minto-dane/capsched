@@ -887,7 +887,7 @@ _allow_writes(
 )
 _allow_writes(
     ("OBS-032-DESCENDANTS-EXIT",),
-    "descendant_drained_generation", "descendants", "evidence_receipts",
+    "descendant_drained_generation", "descendants", "evidence_receipts", "hidden_work",
 )
 _allow_writes(
     ("OBS-033-ASYNC-REFS-DRAIN",),

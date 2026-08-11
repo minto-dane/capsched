@@ -19,42 +19,90 @@ for selected datacenter workloads.
 
 ## Current Verdict
 
-```text
-v1 claim inventory/local-contract coverage:
-  historically complete under N-155
+The following projection is mechanically compared with `state/state.json`, the
+assurance register, the capture gate contract, current exact inputs, and the
+latest durable G6 disposition by `check-current-state.sh`.
 
-final compositional model:
-  reopened and incomplete
-
-ROOTSCHED-001:
-  model-supported at EC1; production refinement and composition remain open
-
-RESIDENCY-001:
-  model-supported at EC1 only for a fixed pre-admitted finite one-shot reference
-
-RESIDENCY-DYN-001:
-  open; Candidate-4 is a pre-full local checkpoint only. Its authority-disjoint
-  capture boundary closes G1-G5 locally at EC0 after 153 hostile mutations,
-  13 derived checks, and bounded Linux mechanism regressions; G6/G7 and full
-  child/parent reachability plus commutation have not run
-
-model-construction method:
-  GPT-5.6 Sol maximum-effort architecture synthesis, hostile contradiction
-  search, and minimality first; machine-readable checks next; TLA+ only after
-  externally rooted K0 and semantic freeze
-
-R11 machine IR / Formal 0150 / TLA+:
-  unauthorized until complete F0-F3 and an executable externally rooted K0
-
-Linux implementation:
-  historical scaffold and experimental prototypes only
-
-Monitor implementation:
-  absent
-
-protection/cost/deployment claims:
-  false
+<!-- CURRENT-STATE-PROJECTION-BEGIN -->
+```json
+{
+  "schema_version": 1,
+  "updated": "2026-08-11",
+  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "completion": {
+    "v1_claim_inventory_complete": true,
+    "local_contract_coverage": "substantial_not_exhaustive",
+    "final_compositional_model_complete": false,
+    "linux_implementation_complete": false,
+    "monitor_implementation_complete": false,
+    "protection_evidenced": false,
+    "cost_efficiency_evidenced": false,
+    "deployment_ready": false
+  },
+  "claim_statuses": {
+    "ROOTSCHED-001": "model_supported",
+    "RESIDENCY-001": "model_supported",
+    "RESIDENCY-DYN-001": "open",
+    "ENTRY-001": "open",
+    "CODE-001": "open",
+    "STATE-001": "open",
+    "SVC-001": "open",
+    "MGMT-001": "open",
+    "CLUSTER-PART-001": "open",
+    "COMPOSE-001": "open",
+    "GRANULARITY-001": "open",
+    "EVIDENCE-001": "contract_defined"
+  },
+  "candidate4": {
+    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-effect-repair-v1",
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "full_validator_status": "NOT_RUN_FOR_REPAIRED_INPUTS",
+    "hostile_case_counts": {
+      "child": 275,
+      "parent": 715,
+      "runner": 44,
+      "total": 1034
+    },
+    "capture_contract_sha256": "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075",
+    "closed_gates": [
+      "C4CAP-G1-CONTRACT",
+      "C4CAP-G2-HOSTILE",
+      "C4CAP-G3-SUPERVISOR",
+      "C4CAP-G4-PLATFORM",
+      "C4CAP-G5-FAULTS"
+    ],
+    "remaining_gates": [
+      "C4CAP-G6-CAPTURE",
+      "C4CAP-G7-REDUCTION"
+    ],
+    "clean_install": {
+      "status": "REINSTALL_REQUIRED_AFTER_INPUT_REPAIR",
+      "installed_source_commit": "7895631bcc778b53102486d1767bcccdb2d327af",
+      "installed_manifest_sha256": "3365ef80c5fad74eeb5b4df45167004bc0cb27467a49a0626b9b798dbb3785f2",
+      "current_inputs_installed": false
+    },
+    "g6": {
+      "gate_status": "OPEN",
+      "retry_eligible": false,
+      "complete_capture_available": false,
+      "latest_completed_attempt": {
+        "run_id": "candidate4-full-20260811T210659Z",
+        "status": "RAW_CAPTURE_INCOMPLETE",
+        "candidate_bytes_executed": true,
+        "evidence_commit_available": true,
+        "observation_record": "capsched-models/validation/f0-c4-g6-incomplete-observation-v1.json",
+        "observation_sha256": "45d937f8922b08a7c6b54ac94a6bbd414313c1a7ff2c0f9b304e94f7b3df3d4f"
+      }
+    },
+    "g7": {
+      "gate_status": "BLOCKED",
+      "blocked_reason": "NO_COMPLETE_G6_CAPTURE",
+      "real_reduction_run": false
+    }
+  }
+}
 ```
+<!-- CURRENT-STATE-PROJECTION-END -->
 
 ADR-0012 and Analysis 0185 are authoritative. They preserve N-155 as a narrow
 historical result and add the missing system requirements. Analysis 0187,
@@ -94,9 +142,9 @@ five-component supervisor smoke run, three guardian recovery cases, and three
 authority-separated reducer cases all pass on `domainlease-dev`. A deterministic
 read-only EROFS toolchain image exists at digest
 `4fadeb77fe5019e0a9ea22ea43b79f07923f587fa90b9636164ab9e396de34ac`.
-This closes G3-G5 locally without granting semantic or external credit. A clean
-reviewed-commit install is next; the exact long capture G6 and reduction of its
-real finalized bytes G7 remain absent.
+This closes G3-G5 locally without granting semantic or external credit. The
+clean install from commit `7895631...` succeeded and was used by the first
+candidate-executing G6 attempt.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -105,12 +153,20 @@ nonterminal-state bounds, raw component receipt bytes, claim predicates,
 timeout classification, and bounded process-group cleanup. The historical fast
 component receipts are still candidate-validator observations checked by the
 same-UID outer runner; the new root mechanism fixtures do not retroactively make
-them authority-disjoint evidence. The full campaign is `NOT_RUN`, so all three
-full-only local claims remain `NOT_RUN`, seven refinement claims remain
-`OPEN_REFINEMENT`, and F0, R11, K0/G0, protection, and model completion remain
-false.
+them authority-disjoint evidence.
 
-After the clean install, start and monitor the exact detached campaign with:
+Validation 0316 records the durable incomplete G6 result. The capture mechanism
+completed two static components and then preserved a fail-closed
+`RAW_CAPTURE_INCOMPLETE` disposition when `child-bundle-producer` rejected
+`OBS-032-DESCENDANTS-EXIT:hidden_work`. Analysis 0228 and Validation 0317 retain
+the exact counterexample and add its post-exit descendant/async order to the
+fast child suite. The repaired current input passes 275 child cases; its full
+campaign has not run, so all three full-only local claims remain `NOT_RUN`,
+seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11, K0/G0,
+protection, and model completion remain false.
+
+Only after the structured projection reports `retry_eligible: true`, start and
+monitor the exact detached retry with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
@@ -127,6 +183,11 @@ No evidence or commit marker was created. The reuse path now skips mountpoint
 metadata mutation, `F0_C4_TOOLCHAIN_REUSE_PASS` binds the unchanged image digest,
 and the detached starter waits for a real progress receipt before reporting
 success.
+
+The second attempt `candidate4-full-20260811T210659Z` did execute candidate
+bytes and finalized incomplete. It must never be resumed, combined with a new
+run, reduced as positive evidence, or described as `NOT_RUN`. A clean reviewed
+install of the repaired exact inputs is the current prerequisite.
 
 ## Current Git State
 
@@ -383,11 +444,22 @@ Use `design/compact.md` only for historical detail.
 Preferred public recovery path:
 
 ```sh
-git clone --recurse-submodules https://github.com/minto-dane/linux-cap.git
-cd linux-cap/capsched
-./capsched-ai/state/check-current-state.sh
-python3 -I -S -B capsched-models/validation/validate-f0-supervisor-lts-v3.py
+/bin/mkdir -p "$HOME/Library/Caches/domainlease-linux-cap-vm"
+cd "$HOME/Library/Caches/domainlease-linux-cap-vm"
+git clone --recurse-submodules \
+  https://github.com/minto-dane/linux-cap.git recovery
+cd recovery/capsched
+container machine run -n domainlease-dev --workdir "$PWD" \
+  ./capsched-ai/state/check-current-state.sh
+container machine run -n domainlease-dev --workdir "$PWD" \
+  python3 -I -S -B capsched-models/validation/validate-f0-supervisor-lts-v3.py
 ```
+
+On a native Linux host with procfs, run the two inner commands directly.
+macOS is not a valid runner-lifecycle test platform even when its Python and
+shell syntax happen to accept the files. Apple Container shares the physical
+home directory only: never use an external-volume symlink as `--workdir`.
+The home-cache clone is source-only; raw evidence stays on VM-native storage.
 
 The model-only recovery path above does not need a full Linux checkout. Fetch
 the exact experimental Linux checkpoint only when source analysis or prototype
@@ -403,7 +475,8 @@ test "$(git -C linux rev-parse 'HEAD^{tree}')" = \
   "54f685aad94f28f0027cbba18cf5e29aadce234a"
 ```
 
-Required host tools are Git, Bash, jq, awk, `sha256sum`, Python 3, and the
-Python `jsonschema` package with Draft 2020-12 support. The fast validator is
-the restart smoke test. Do not launch `run-f0-supervisor-v3-full.sh` until the
-authority-disjoint launcher contract and immutable capture are ready.
+Required Linux-environment tools are Git, Bash, jq, awk, `sha256sum`, Python
+3, and the Python `jsonschema` package with Draft 2020-12 support. The fast
+validator is the restart smoke test. Do not launch
+`run-f0-supervisor-v3-full.sh` directly; use the authority-disjoint capture
+launcher only when the canonical projection marks G6 retry eligible.

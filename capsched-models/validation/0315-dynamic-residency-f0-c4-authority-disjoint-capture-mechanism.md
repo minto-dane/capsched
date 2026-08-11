@@ -2,6 +2,11 @@
 
 ## Result
 
+Historical scope note: this mechanism record predates the candidate-executing
+G6 attempt. Validation 0316 records its incomplete disposition and Validation
+0317 records the successor repair; the `NOT_RUN` statement below is true at
+this record's publication point, not a live-status source.
+
 The bounded Linux mechanism suite passes on the dedicated Apple Container VM
 (`arm64`, Linux `6.18.15`, cgroup v2, systemd, native ext4 evidence storage).
 This locally closes implementation gates `C4CAP-G3-SUPERVISOR`,
@@ -86,8 +91,9 @@ independent VM processes so one failure could not be hidden by shell sequencing.
 
 ## Disposition
 
-This is EC0 mechanism evidence, not Candidate-4 semantic evidence. The exact
-long campaign is still `NOT_RUN`; therefore G6 and G7 remain open. The three
+This is EC0 mechanism evidence, not Candidate-4 semantic evidence. At this
+record's publication point the exact long campaign was `NOT_RUN`; therefore G6
+and G7 were open. The three
 reducer fixtures prove the authority and parser boundary only and are not a
 substitute for reduction of real G6 bytes. F0, R11, K0/G0, semantic freeze,
 TLA+, Linux/Monitor refinement, protection, performance, cost, cluster, and

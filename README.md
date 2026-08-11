@@ -26,37 +26,51 @@ Read in this order:
 
 1. `capsched/capsched-ai/state/state.json`
 2. `capsched/capsched-ai/handoff.md`
-3. `capsched/capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
-4. `capsched/capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
-5. `capsched/capsched-models/plans/0006-final-compositional-model-completion-plan.md`
+3. `capsched/capsched-models/analysis/0228-dynamic-residency-f0-v5-candidate4-g6-counterexample-repair.md`
+4. `capsched/capsched-models/validation/0316-dynamic-residency-f0-c4-g6-incomplete-disposition.md`
+5. `capsched/capsched-models/validation/0317-dynamic-residency-f0-c4-g6-counterexample-repair.md`
+6. `capsched/capsched-models/plans/0006-final-compositional-model-completion-plan.md`
 
 When already inside this repository, omit the leading `capsched/` component.
 `capsched-ai/design/compact.md` is detailed historical chronology and is not in
 the default AI recovery path.
 
-Validate recovery state with:
+Validate recovery state in Linux with procfs (the runner lifecycle regression
+intentionally exercises Linux-only process semantics):
 
 ```sh
 ./capsched-ai/state/check-current-state.sh
 ```
 
-The current checkpoint is Candidate-4 pre-full: child 274, parent 715, and
-runner 44 hostile regressions pass, as does the fast validator. The full
-bounded reachability/commutation campaign has not run. F0, R11, K0/G0,
-protection, cost, deployment, and final-model completion remain false.
+Apple Container shares the physical macOS home directory, not a symlink target
+on an external volume.  Never pass an SSD-resident checkout through
+`--workdir`; use the home-cache recovery clone below.  Capture scripts mirror
+only source into that home share, while all evidence remains on the VM-native
+filesystem.
+
+Volatile campaign status is intentionally not duplicated here. The structured
+projection in `capsched-ai/handoff.md` is mechanically derived from
+`capsched-ai/state/state.json`; the state checker rejects drift across the
+claim register, gate contract, current exact inputs, and durable G6 result.
 
 For a clean public recovery including the patch queue:
 
 ```sh
-git clone --recurse-submodules https://github.com/minto-dane/linux-cap.git
-cd linux-cap/capsched
-./capsched-ai/state/check-current-state.sh
-python3 -I -S -B capsched-models/validation/validate-f0-supervisor-lts-v3.py
+/bin/mkdir -p "$HOME/Library/Caches/domainlease-linux-cap-vm"
+cd "$HOME/Library/Caches/domainlease-linux-cap-vm"
+git clone --recurse-submodules \
+  https://github.com/minto-dane/linux-cap.git recovery
+cd recovery/capsched
+container machine run -n domainlease-dev --workdir "$PWD" \
+  ./capsched-ai/state/check-current-state.sh
+container machine run -n domainlease-dev --workdir "$PWD" \
+  python3 -I -S -B capsched-models/validation/validate-f0-supervisor-lts-v3.py
 ```
 
-This requires Git, Bash, jq, awk, `sha256sum`, Python 3, and Python
-`jsonschema` with Draft 2020-12 support. Do not launch the full runner until an
-authority-disjoint capture service is approved.
+The Linux environment requires Git, Bash, jq, awk, `sha256sum`, Python 3, and
+Python `jsonschema` with Draft 2020-12 support. The Apple Container machine
+must use `home-mount=rw` for this source-only recovery clone. Launch a full
+retry only when the structured projection marks it eligible.
 
 ## Git Plan
 

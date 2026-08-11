@@ -630,10 +630,10 @@ if ! cmp --silent \
     "${RUN_DIR}/input-manifest.before.sha256"; then
     reject_precondition 'caller expected manifest does not match input snapshot'
 fi
-if ! chmod 0444 -- "${SNAPSHOT_DIR}"/* \
+if ! chmod 0444 "${SNAPSHOT_DIR}"/* \
     "${RUN_DIR}/input-manifest.expected.sha256" \
     "${RUN_DIR}/input-manifest.before.sha256" ||
-   ! chmod 0555 -- "${SNAPSHOT_DIR}"; then
+   ! chmod 0555 "${SNAPSHOT_DIR}"; then
     reject_precondition 'failed to make captured inputs read-only'
 fi
 

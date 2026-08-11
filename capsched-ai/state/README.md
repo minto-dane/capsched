@@ -27,7 +27,13 @@ historical chronology.
 
 `check-current-state.sh`
 : Checks the compact state, assurance reopen, canonical file set, branch and
-  commit ancestry, and strict same-commit freshness of state/handoff/events.
+  commit ancestry, strict same-commit freshness of state/handoff/events, and
+  invokes the semantic cross-artifact consistency layer.
+
+`check-state-consistency.py`
+: Derives claim, gate, install, G6/G7, exact-input, durable-attempt, and handoff
+  relationships. It also runs hostile drift mutations. Invoke it through
+  `check-current-state.sh`; it is not a competing checkpoint command.
 
 `schemas/`
 : JSON schemas for state files.
@@ -45,6 +51,11 @@ Before major work:
 4. Read focused artifacts only for the next requirement.
 5. Add an event to `events.jsonl` when the project state changes.
 6. Run `./capsched-ai/state/check-current-state.sh` after committing.
+
+Volatile campaign facts belong only in `state.json` and the mechanically
+checked projection in `../handoff.md`. README, index, plan, analysis, and
+validation files may describe durable or historical facts but must not act as
+parallel live-status ledgers.
 
 When a decision is made:
 
@@ -74,3 +85,8 @@ events.jsonl
 in that commit. The strict checker rejects a stale state commit. During editing,
 `check-current-state.sh --allow-draft` performs structural checks without the
 same-commit requirement.
+
+The same checker also rejects semantic agreement-by-staleness: gate partitions
+are derived from the contract, claim statuses from the assurance register,
+current inputs and G6 observations are digest-bound, and the handoff projection
+must equal the state-derived projection exactly.
