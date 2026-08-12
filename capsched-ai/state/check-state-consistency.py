@@ -232,6 +232,10 @@ def validate_semantics(
     latest_id = g6["latest_completed_attempt_run_id"]
     require(latest_id in attempts, "latest G6 attempt is absent from history")
     latest = attempts[latest_id]
+    frontier_repair_observation = (
+        observation.get("artifact_id")
+        == "f0-c4-g6-second-oom-incomplete-observation-v1"
+    )
     require(
         latest["status"] in {"RAW_CAPTURE_INCOMPLETE", "GUARDIAN_INCOMPLETE_PUBLISHED"},
         "latest G6 result drift",
@@ -239,11 +243,20 @@ def validate_semantics(
     require(latest["observation_record"] == state["canonical_files"]["f0_c4_g6_incomplete_record"], "G6 observation path drift")
     require(latest["observation_sha256"] == observation["artifact_sha256"], "G6 observation digest drift")
     require(observation["run_id"] == latest_id, "G6 observation run-id drift")
-    require(observation["raw_commit"]["capture_status"] == latest["status"], "G6 capture status drift")
-    require(observation["raw_commit"]["candidate_bytes_positive_eligible"] is False, "incomplete G6 became positive-eligible")
-    require(observation["raw_commit"]["reduction_performed"] is False, "incomplete G6 was reduced")
-    require(observation["disposition"]["g6_closed"] is False, "incomplete G6 closed its gate")
-    require(observation["disposition"]["g7_eligible"] is False, "incomplete G6 enabled G7")
+    if frontier_repair_observation:
+        durable = observation["durable_evidence"]
+        conclusion = observation["conclusion"]
+        require(durable["capture_status"] == latest["status"], "G6 capture status drift")
+        require(durable["candidate_bytes_positive_eligible"] is False, "incomplete G6 became positive-eligible")
+        require(durable["reduction_performed"] is False, "incomplete G6 was reduced")
+        require(conclusion["g6_complete"] is False, "incomplete G6 closed its gate")
+        require(conclusion["g7_allowed"] is False, "incomplete G6 enabled G7")
+    else:
+        require(observation["raw_commit"]["capture_status"] == latest["status"], "G6 capture status drift")
+        require(observation["raw_commit"]["candidate_bytes_positive_eligible"] is False, "incomplete G6 became positive-eligible")
+        require(observation["raw_commit"]["reduction_performed"] is False, "incomplete G6 was reduced")
+        require(observation["disposition"]["g6_closed"] is False, "incomplete G6 closed its gate")
+        require(observation["disposition"]["g7_eligible"] is False, "incomplete G6 enabled G7")
     if latest["status"] == "GUARDIAN_INCOMPLETE_PUBLISHED":
         require(
             observation["guardian_disposition"]["service_result"] == "oom-kill",
@@ -288,6 +301,65 @@ def validate_semantics(
             ]
             is True,
             "capture contract does not isolate component OOM",
+        )
+    elif frontier_repair_observation:
+        require(
+            observation["failed_component"]["component_id"]
+            == "child-bundle-producer"
+            and observation["failed_component"]["memory_peak_bytes"]
+            == contract["resource_policy"]["memory_max_bytes_per_component"],
+            "persistent-frontier failure observation drift",
+        )
+        require(
+            observation["systemd_disposition"][
+                "trusted_supervisor_survived_component_oom"
+            ]
+            is True
+            and observation["systemd_disposition"][
+                "incomplete_lifecycle_receipt_committed"
+            ]
+            is True,
+            "second OOM did not preserve trusted fail-closed finalization",
+        )
+        require(
+            contract["resource_policy"][
+                "candidate_component_oom_isolated_from_supervisor"
+            ]
+            is True,
+            "capture contract does not isolate component OOM",
+        )
+        require(
+            current_input["failed_capture_observation"]["run_id"] == latest_id,
+            "frontier repair does not bind the failed run",
+        )
+        repair = current_input["repair"]
+        require(
+            repair["exact_state_identity_changed"] is False
+            and repair["transition_relation_changed"] is False
+            and repair["reachable_state_set_intentionally_changed"] is False
+            and repair["ordered_evidence_history_quotiented"] is False,
+            "frontier repair changed Candidate-4 semantics",
+        )
+        require(
+            repair["persistent_child_receipt_history"] is True
+            and repair["persistent_parent_receipt_history"] is True
+            and repair["shared_child_parent_persistent_sequence_implementation"]
+            is True
+            and repair["persistent_history_collision_uses_full_sequence_equality"]
+            is True
+            and repair["compact_exact_state_index"] is True
+            and repair["state_index_hash_width_bits"] == 64
+            and repair["state_index_value_width_bits"] == 32
+            and repair["state_index_collision_uses_full_state_equality"] is True
+            and repair["python_dict_frontier_index_removed"] is True
+            and repair["fixed_width_csr_retained"] is True
+            and repair["post_run_reducer_current_input_binding_repaired"] is True
+            and repair[
+                "future_reducer_input_and_semantic_registry_drift_mechanically_rejected"
+            ]
+            is True
+            and repair["zero_swap_policy_retained"] is True,
+            "persistent exact frontier repair is incomplete",
         )
     else:
         require(
@@ -348,6 +420,28 @@ def validate_semantics(
         expected_track_status = "open_candidate4_g1_g5_closed_g6_resource_retry_eligible_g7_blocked"
         expected_install_action = "completed_clean_reviewed_install_for_resource_repaired_inputs"
         expected_full_action = "g6_resource_retry_eligible"
+        expected_reducer_status = "PASS"
+    elif install["status"] == "REINSTALL_REQUIRED_AFTER_FRONTIER_REPAIR":
+        require(install["current_inputs_installed"] is False, "pending frontier reinstall marked installed")
+        require(g6["retry_eligible"] is False, "G6 retry enabled before frontier clean reinstall")
+        require(readiness["status"] == "REINSTALL_REQUIRED", "pending frontier install has positive readiness")
+        expected_input_status = "persistent_frontier_repaired_g6_retry_requires_clean_install"
+        expected_phase = "f0_v5_c4_g6_open_reinstall_required"
+        expected_capture_status = "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked"
+        expected_track_status = "open_candidate4_g1_g5_closed_g6_frontier_reinstall_required_g7_blocked"
+        expected_install_action = "frontier_repair_clean_install_pending"
+        expected_full_action = "blocked_until_frontier_repair_clean_install"
+        expected_reducer_status = "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE"
+    elif install["status"] == "PASSED_FOR_FRONTIER_REPAIRED_INPUTS":
+        require(install["current_inputs_installed"] is True, "passed frontier reinstall not marked installed")
+        require(g6["retry_eligible"] is True, "G6 retry not enabled after frontier clean reinstall")
+        require(readiness["status"] == "G6_RETRY_ELIGIBLE", "passed frontier install lacks readiness")
+        expected_input_status = "persistent_frontier_repaired_clean_installed_g6_retry_eligible"
+        expected_phase = "f0_v5_c4_g6_open_retry_eligible"
+        expected_capture_status = "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+        expected_track_status = "open_candidate4_g1_g5_closed_g6_frontier_retry_eligible_g7_blocked"
+        expected_install_action = "completed_clean_reviewed_install_for_frontier_repaired_inputs"
+        expected_full_action = "g6_frontier_retry_eligible"
         expected_reducer_status = "PASS"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
@@ -589,7 +683,12 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             )
         )
         changed_observation = copy.deepcopy(observation)
-        changed_observation["raw_commit"]["candidate_bytes_positive_eligible"] = True
+        if "raw_commit" in changed_observation:
+            changed_observation["raw_commit"]["candidate_bytes_positive_eligible"] = True
+        else:
+            changed_observation["durable_evidence"][
+                "candidate_bytes_positive_eligible"
+            ] = True
         mutations.append(
             (
                 "incomplete bytes promoted",

@@ -33,8 +33,8 @@ COMPONENTS = (
 COMPONENT_ORDER = tuple(row[0] for row in COMPONENTS)
 INPUT_DIGESTS = {
     "f0-supervisor-c4-claim-registry-v1.json": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
-    "f0_supervisor_lts_v3.py": "ba44ff0250318baad8f7476d9a1a1c7fb619f4cfb035fdb762aa5def851d387a",
-    "f0_supervisor_orchestrator_v3.py": "2bb8a285fe96db084c76ca58fbe405dcf4b89ea0b82593d4dfe2d43c277bdba5",
+    "f0_supervisor_lts_v3.py": "f11e93c2094bd272f257df031fcdbbc6f52b16ae2097b7bad811aaed83ebf812",
+    "f0_supervisor_orchestrator_v3.py": "798364f42dcf8d073d7be13ca2ebd788f25cea6625ffbf49f4486366c0d98779",
     "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba",
     "test-f0-supervisor-lts-v3-mutations.py": "354cd28449490ab3740afec8c258877090f2251ae217c74366d69e98aff76a8c",
     "test-f0-supervisor-orchestrator-v3-mutations.py": "bdd7b736603f670cee18296c73cd89fb58151159405a37d219cbf86ac0a57a0f",

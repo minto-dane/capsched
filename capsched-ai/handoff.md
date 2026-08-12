@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-12",
-  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
+  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -54,9 +54,9 @@ latest durable G6 disposition by `check-current-state.sh`.
     "EVIDENCE-001": "contract_defined"
   },
   "candidate4": {
-    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-resource-repair-v1",
+    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-frontier-repair-v1",
     "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
-    "full_validator_status": "NOT_RUN_FOR_RESOURCE_REPAIRED_INPUTS",
+    "full_validator_status": "NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS",
     "hostile_case_counts": {
       "child": 275,
       "parent": 715,
@@ -76,24 +76,24 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "PASSED_FOR_RESOURCE_REPAIRED_INPUTS",
+      "status": "REINSTALL_REQUIRED_AFTER_FRONTIER_REPAIR",
       "installed_source_commit": "a956de28e9d07d84b9e9f8ab2c31bb988a1d70e9",
       "installed_manifest_sha256": "dc3a7b23ed3de978dfae5e17bb943a31afe04694c202613ec24f72b62345c6df",
-      "current_inputs_installed": true,
-      "readiness_record": "capsched-models/validation/f0-c4-g6-resource-retry-readiness-v1.json",
-      "readiness_sha256": "b941f38ca458c05149534dd98880e6c3bfbe55a9d0f5c83ab55304f1369cb913"
+      "current_inputs_installed": false,
+      "readiness_record": "capsched-models/validation/f0-c4-g6-frontier-retry-readiness-v1.json",
+      "readiness_sha256": "61cafd61c7bbecc298171b284a9d962aa9d2249120c506bfb6f51710404076c4"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": true,
+      "retry_eligible": false,
       "complete_capture_available": false,
       "latest_completed_attempt": {
-        "run_id": "candidate4-full-20260811T223707Z",
-        "status": "GUARDIAN_INCOMPLETE_PUBLISHED",
+        "run_id": "candidate4-full-20260812T134610Z",
+        "status": "RAW_CAPTURE_INCOMPLETE",
         "candidate_bytes_executed": true,
         "evidence_commit_available": true,
-        "observation_record": "capsched-models/validation/f0-c4-g6-oom-incomplete-observation-v1.json",
-        "observation_sha256": "7bd51958a3b363bdb97a56308beb818a6e42377612c934f7c81d4eadac7a2749"
+        "observation_record": "capsched-models/validation/f0-c4-g6-second-oom-incomplete-observation-v1.json",
+        "observation_sha256": "2985c4ec870b156c075b9c8d3b273264067a17d3c376aacfa93990d76be6a76e"
       }
     },
     "g7": {
@@ -159,20 +159,24 @@ The machine keeps `home-mount=none`; startup streams only the eight tracked
 candidate inputs from a clean commit into root-owned, read-only VM-native
 staging, separate from raw evidence.
 
-Analysis 0229 and Validation 0318 record the OOM attempt and its resource
-repair. Exact semantics are unchanged: state identity remains exact and every
-transition is preserved. Reachability retains slot-backed states, uses
-fixed-width CSR edges, and bounds all pure caches; it no longer retains a
-Python object graph for every edge or an unbounded transition cache. The
-capture wrapper now uses `OOMPolicy=continue`, while each hostile component
-remains constrained and killable in its own cgroup. The 12-case model-memory
-and seven-case capture-resource regressions make drift in either side fail
-closed. The first reducer recheck also found three predecessor input digests and
-one stale semantic-registry digest; the reducer is now sealed to the current
-eight-object input root, and a three-case independent binding test derives both
-identities from current canonical bytes. Clean commit `a956de2...` is installed
-under manifest `dc3a7b23...`; all short mechanism regressions pass and a fresh
-G6 attempt is now eligible.
+Analysis 0229 and Validation 0318 record the first OOM attempt and its resource
+isolation repair. Exact semantics remained unchanged: slot-backed states,
+fixed-width CSR edges, finite caches, `OOMPolicy=continue`, and component-local
+cgroups removed unit-wide OOM propagation. Clean commit `a956de2...` installed
+that predecessor under manifest `dc3a7b23...` and made the now-completed fourth
+attempt eligible.
+
+Analysis 0230 and Validation 0319 record that fourth attempt. The trusted
+supervisor survived the child component's second 7.5-GiB boundary and durably
+committed `RAW_CAPTURE_INCOMPLETE`, proving the containment repair effective,
+but the exact frontier still retained too much resident metadata. The successor
+uses immutable persistent child/parent receipt histories and a fixed-width
+open-addressed state index. Hash matches always invoke full ordered-sequence or
+full-state equality; no quotient, pruning, digest-only identity, swap, semantic
+change, or production hot-path work was introduced. Linux fast regression
+passes 275/715/44 and the expanded memory policy passes 19 cases. The installed
+TCB predates these bytes, so a clean reviewed reinstall is mandatory before
+another G6 retry.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -188,13 +192,14 @@ completed two static components and then preserved a fail-closed
 `RAW_CAPTURE_INCOMPLETE` disposition when `child-bundle-producer` rejected
 `OBS-032-DESCENDANTS-EXIT:hidden_work`. Analysis 0228 and Validation 0317 retain
 the exact counterexample and add its post-exit descendant/async order to the
-fast child suite. The resource-repaired current input passes 275 child cases;
+fast child suite. The persistent-frontier current input passes 275 child cases;
 its full campaign has not run, so all three full-only local claims remain `NOT_RUN`,
 seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11, K0/G0,
 protection, and model completion remain false.
 
-The structured projection now reports `retry_eligible: true`. Start and monitor
-the exact detached retry with:
+The structured projection reports `retry_eligible: false` until the clean
+persistent-frontier install completes. After readiness is mechanically updated,
+start and monitor the exact detached retry with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
@@ -217,13 +222,19 @@ bytes and finalized incomplete. It must never be resumed, combined with a new
 run, reduced as positive evidence, or described as `NOT_RUN`. Its clean
 repaired successor install enabled only the third attempt.
 
-The third attempt `candidate4-full-20260811T223707Z` reached the child
+The third candidate-running attempt `candidate4-full-20260811T223707Z` reached the child
 component's 7.5-GiB cgroup limit. The installed unit's `OOMPolicy=kill` then
 terminated the trusted supervisor along with the candidate. The separate root
 guardian proved the component subtree empty and durably published
 `GUARDIAN_INCOMPLETE_PUBLISHED`; candidate bytes are not positive-eligible and
-G7 remains blocked. The clean resource-repaired install and short mechanism
-regression are complete; the next action is a fresh G6 run.
+G7 remains blocked. Its resource-repaired install enabled only the next attempt.
+
+The fourth attempt `candidate4-full-20260812T134610Z` used that isolated TCB.
+`child-bundle-producer` again reached 7.5 GiB, but the supervisor remained alive,
+drained the component, and committed `RAW_CAPTURE_INCOMPLETE`. The successor
+persistent frontier is fast-regression complete but not installed. The next
+action is a clean commit, clean TCB install, full short-mechanism recheck, and
+only then a new detached G6 run.
 
 ## Current Git State
 

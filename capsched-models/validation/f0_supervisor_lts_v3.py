@@ -32,8 +32,14 @@ DIGEST_CACHE_MAX_ENTRIES = 32768
 STATE_CACHE_MAX_ENTRIES = 16384
 PREFIX_CACHE_MAX_ENTRIES = 8192
 
-if array("I").itemsize != 4 or array("B").itemsize != 1:
-    raise RuntimeError("candidate-4 requires 32-bit and 8-bit compact array items")
+if (
+    array("I").itemsize != 4
+    or array("Q").itemsize != 8
+    or array("B").itemsize != 1
+):
+    raise RuntimeError(
+        "candidate-4 requires 32-bit, 64-bit, and 8-bit compact array items"
+    )
 
 ROLES = {"PRODUCER", "CHECKER"}
 PHASES = {
@@ -387,6 +393,143 @@ class Receipt:
     auth_tag: str
 
 
+class PersistentSequence:
+    """Shared immutable exact sequence used by child and parent evidence.
+
+    A tuple copy for every append retains O(history length) pointers per state.
+    Each node instead stores one value and its exact predecessor.  Hashes are
+    cached at construction, but equality still walks and compares every value
+    when hashes match, so no digest or probabilistic quotient enters reachability.
+    Subclasses provide their typed ``append`` operation.
+    """
+
+    __slots__ = ("_previous", "_value", "_length", "_hash")
+
+    def __init__(
+        self,
+        previous: PersistentSequence | None = None,
+        value: object | None = None,
+    ) -> None:
+        if (previous is None) != (value is None):
+            raise ValueError("persistent sequence requires predecessor and value")
+        if previous is not None and type(previous) is not type(self):
+            raise TypeError("persistent sequence predecessor type changed")
+        object.__setattr__(self, "_previous", previous)
+        object.__setattr__(self, "_value", value)
+        if previous is None:
+            object.__setattr__(self, "_length", 0)
+            object.__setattr__(
+                self,
+                "_hash",
+                hash(("F0-C4-EMPTY-PERSISTENT-SEQUENCE", type(self).__qualname__)),
+            )
+        else:
+            object.__setattr__(self, "_length", previous._length + 1)
+            object.__setattr__(self, "_hash", hash((previous._hash, value)))
+
+    def __setattr__(self, name: str, value: object) -> None:
+        raise AttributeError(f"{type(self).__name__} is immutable")
+
+    def prefix(self, length: int) -> PersistentSequence:
+        if length < 0 or length > self._length:
+            raise IndexError("persistent sequence prefix length out of range")
+        cursor = self
+        while len(cursor) > length:
+            previous = cursor._previous
+            if previous is None:
+                raise RuntimeError("malformed persistent sequence")
+            cursor = previous
+        return cursor
+
+    def __len__(self) -> int:
+        return self._length
+
+    def __iter__(self):
+        values: list[object] = []
+        cursor = self
+        while cursor._previous is not None:
+            value = cursor._value
+            if value is None:
+                raise RuntimeError("malformed persistent sequence")
+            values.append(value)
+            cursor = cursor._previous
+        yield from reversed(values)
+
+    def __getitem__(self, index: int | slice) -> object:
+        if isinstance(index, slice):
+            start, stop, step = index.indices(self._length)
+            if step == 1 and start == 0:
+                return self.prefix(stop)
+            return tuple(self)[index]
+        if index < 0:
+            index += self._length
+        if index < 0 or index >= self._length:
+            raise IndexError("persistent sequence index out of range")
+        cursor = self
+        for _ in range(self._length - index - 1):
+            previous = cursor._previous
+            if previous is None:
+                raise RuntimeError("malformed persistent sequence")
+            cursor = previous
+        value = cursor._value
+        if value is None:
+            raise RuntimeError("malformed persistent sequence")
+        return value
+
+    def index(self, value: object) -> int:
+        for index, item in enumerate(self):
+            if item == value:
+                return index
+        raise ValueError(f"{value!r} is not in persistent sequence")
+
+    def __add__(self, values: tuple[object, ...]) -> PersistentSequence:
+        if not isinstance(values, tuple):
+            return NotImplemented
+        result = self
+        for value in values:
+            result = result.append(value)
+        return result
+
+    def append(self, value: object) -> PersistentSequence:
+        raise NotImplementedError("typed persistent sequence must define append")
+
+    def __hash__(self) -> int:
+        return self._hash
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}({tuple(self)!r})"
+
+    def __eq__(self, other: object) -> bool:
+        if self is other:
+            return True
+        if type(self) is not type(other):
+            return NotImplemented
+        if not isinstance(other, PersistentSequence):
+            return NotImplemented
+        if self._length != other._length or self._hash != other._hash:
+            return False
+        left = self
+        right = other
+        while left._previous is not None and right._previous is not None:
+            if left._value != right._value:
+                return False
+            left = left._previous
+            right = right._previous
+        return left._previous is None and right._previous is None
+
+
+class ReceiptHistory(PersistentSequence):
+    __slots__ = ()
+
+    def append(self, value: object) -> ReceiptHistory:
+        if not isinstance(value, Receipt):
+            raise TypeError("receipt history accepts Receipt values only")
+        return ReceiptHistory(self, value)
+
+
+EMPTY_RECEIPT_HISTORY = ReceiptHistory()
+
+
 def _receipt_body(receipt: Receipt) -> tuple[object, ...]:
     return (
         receipt.schema,
@@ -675,7 +818,7 @@ class EnvelopeState:
     attack_rejections: tuple[str, ...] = ()
     breach_kind: str = "NONE"
     evidence_ledger: str = "OPEN"
-    evidence_receipts: tuple[Receipt, ...] = ()
+    evidence_receipts: ReceiptHistory | tuple[Receipt, ...] = EMPTY_RECEIPT_HISTORY
     evidence_root: str = ""
     local_decision: str = "NONE"
     decision_receipt: DecisionReceipt | None = None
@@ -1131,6 +1274,104 @@ class ReachabilityGraph:
         return len(self.target_indices)
 
 
+class ExactStateIndex:
+    """Open-addressed exact state index with fixed-width storage.
+
+    Python's dict stores a hash-table entry for every full state object in
+    addition to the canonical state vector.  This index stores only a cached
+    64-bit Python hash and a 32-bit vector index.  Hash matches are always
+    resolved with full EnvelopeState equality, including ordered receipts, so
+    collisions cannot merge unequal states.
+    """
+
+    __slots__ = ("_states", "_indices", "_hashes", "_size", "_mask")
+    EMPTY_INDEX = (1 << 32) - 1
+    HASH_MASK = (1 << 64) - 1
+
+    def __init__(
+        self,
+        states: list[EnvelopeState],
+        initial_capacity: int = 1 << 16,
+    ) -> None:
+        if (
+            initial_capacity < 8
+            or initial_capacity & (initial_capacity - 1)
+        ):
+            raise ValueError("exact state index capacity must be a power of two >= 8")
+        self._states = states
+        self._indices = array("I", [self.EMPTY_INDEX]) * initial_capacity
+        self._hashes = array("Q", [0]) * initial_capacity
+        self._size = 0
+        self._mask = initial_capacity - 1
+
+    @property
+    def capacity(self) -> int:
+        return self._mask + 1
+
+    def __len__(self) -> int:
+        return self._size
+
+    @staticmethod
+    def _next_slot(slot: int, perturb: int, mask: int) -> tuple[int, int]:
+        return (slot * 5 + 1 + perturb) & mask, perturb >> 5
+
+    def _find(self, state: EnvelopeState, state_hash: int) -> tuple[int | None, int]:
+        slot = state_hash & self._mask
+        perturb = state_hash
+        while True:
+            state_index = self._indices[slot]
+            if state_index == self.EMPTY_INDEX:
+                return None, slot
+            if (
+                self._hashes[slot] == state_hash
+                and self._states[state_index] == state
+            ):
+                return state_index, slot
+            slot, perturb = self._next_slot(slot, perturb, self._mask)
+
+    def _resize(self) -> None:
+        old_indices = self._indices
+        old_hashes = self._hashes
+        new_capacity = len(old_indices) * 2
+        if new_capacity > 1 << 32:
+            raise ProtocolReject("F05-SPV3-GRAPH-STATE-BOUND", str(self._size))
+        self._indices = array("I", [self.EMPTY_INDEX]) * new_capacity
+        self._hashes = array("Q", [0]) * new_capacity
+        self._mask = new_capacity - 1
+        for old_slot, state_index in enumerate(old_indices):
+            if state_index == self.EMPTY_INDEX:
+                continue
+            state_hash = old_hashes[old_slot]
+            slot = state_hash & self._mask
+            perturb = state_hash
+            while self._indices[slot] != self.EMPTY_INDEX:
+                slot, perturb = self._next_slot(slot, perturb, self._mask)
+            self._indices[slot] = state_index
+            self._hashes[slot] = state_hash
+
+    def intern(self, state: EnvelopeState) -> tuple[int, bool]:
+        state_hash = hash(state) & self.HASH_MASK
+        state_index, slot = self._find(state, state_hash)
+        if state_index is not None:
+            return state_index, False
+        if (self._size + 1) * 3 >= self.capacity * 2:
+            self._resize()
+            state_index, slot = self._find(state, state_hash)
+            if state_index is not None:
+                raise RuntimeError("exact state appeared only after index resize")
+        if len(self._states) >= self.EMPTY_INDEX:
+            raise ProtocolReject(
+                "F05-SPV3-GRAPH-STATE-BOUND",
+                str(len(self._states)),
+            )
+        state_index = len(self._states)
+        self._states.append(state)
+        self._indices[slot] = state_index
+        self._hashes[slot] = state_hash
+        self._size += 1
+        return state_index, True
+
+
 def initial_state(grant: RunGrant) -> EnvelopeState:
     if not grant_wf(grant):
         raise ProtocolReject("F05-SPV3-GRANT-WF", grant.child_run_id)
@@ -1141,6 +1382,32 @@ def _last_evidence_hash(state: EnvelopeState) -> str:
     if not state.evidence_receipts:
         return genesis_hash(state.grant)
     return receipt_hash(state.evidence_receipts[-1])
+
+
+def _history_prefix(
+    receipts: ReceiptHistory | tuple[Receipt, ...],
+    length: int,
+) -> ReceiptHistory | tuple[Receipt, ...]:
+    if length < 0 or length > len(receipts):
+        raise IndexError("receipt history prefix length out of range")
+    if not isinstance(receipts, ReceiptHistory):
+        return receipts[:length]
+    cursor = receipts
+    while len(cursor) > length:
+        previous = cursor._previous
+        if previous is None:
+            raise RuntimeError("malformed persistent receipt history")
+        cursor = previous
+    return cursor
+
+
+def _history_has_prefix(
+    receipts: ReceiptHistory | tuple[Receipt, ...],
+    prefix: ReceiptHistory | tuple[Receipt, ...],
+) -> bool:
+    return len(prefix) <= len(receipts) and _history_prefix(
+        receipts, len(prefix)
+    ) == prefix
 
 
 def _append_receipt(state: EnvelopeState, issuer: str, kind: str, payload: str) -> EnvelopeState:
@@ -3199,7 +3466,7 @@ def _edge(action_id: str, actor: str, before: EnvelopeState, after: EnvelopeStat
         raise ProtocolReject("F05-SPV3-SUPERVISOR-MINTED-GRANT", action_id)
     before_receipts = before.evidence_receipts
     after_receipts = after.evidence_receipts
-    if after_receipts[: len(before_receipts)] != before_receipts:
+    if not _history_has_prefix(after_receipts, before_receipts):
         raise ProtocolReject("F05-SPV3-EVIDENCE-NONAPPEND", action_id)
     if any(receipt.issuer != actor for receipt in after_receipts[len(before_receipts) :]):
         raise ProtocolReject("F05-SPV3-EVIDENCE-ACTOR-MISMATCH", action_id)
@@ -4134,14 +4401,17 @@ def apply_trace(state: EnvelopeState, actions: Iterable[str]) -> EnvelopeState:
 
 
 def reachable_states(grant: RunGrant) -> ReachabilityGraph:
-    """Enumerate the exact graph without retaining per-edge Python objects."""
+    """Enumerate the exact graph without per-edge or dict-entry object retention."""
 
     maximum_index = (1 << 32) - 1
     start = initial_state(grant)
     start_key = semantic_projection(start)
-    states = [start]
-    representatives: dict[EnvelopeState, int] = {start_key: 0}
-    queue: deque[int] = deque([0])
+    states: list[EnvelopeState] = []
+    representatives = ExactStateIndex(states)
+    start_index, start_is_new = representatives.intern(start_key)
+    if start_index != 0 or not start_is_new:
+        raise RuntimeError("initial exact state was not uniquely interned")
+    queue: deque[int] = deque([start_index])
     edge_offsets = array("I", [0])
     target_indices = array("I")
     action_indices = array("B")
@@ -4150,16 +4420,8 @@ def reachable_states(grant: RunGrant) -> ReachabilityGraph:
         state = states[source_index]
         for edge in next_states(state):
             target_key = semantic_projection(edge.state)
-            target_index = representatives.get(target_key)
-            if target_index is None:
-                if len(states) >= maximum_index:
-                    raise ProtocolReject(
-                        "F05-SPV3-GRAPH-STATE-BOUND",
-                        str(len(states)),
-                    )
-                target_index = len(states)
-                representatives[target_key] = target_index
-                states.append(edge.state)
+            target_index, target_is_new = representatives.intern(target_key)
+            if target_is_new:
                 queue.append(target_index)
             if len(target_indices) >= maximum_index:
                 raise ProtocolReject(
@@ -4169,8 +4431,12 @@ def reachable_states(grant: RunGrant) -> ReachabilityGraph:
             target_indices.append(target_index)
             action_indices.append(ACTION_INDEX[edge.action_id])
         edge_offsets.append(len(target_indices))
+    state_vector = tuple(states)
+    if len(state_vector) != len(representatives):
+        raise RuntimeError("exact state vector and compact index diverged")
+    del representatives, states, queue
     return ReachabilityGraph(
-        states=tuple(states),
+        states=state_vector,
         edge_offsets=edge_offsets,
         target_indices=target_indices,
         action_indices=action_indices,
@@ -4483,9 +4749,9 @@ def check_outcome_commutation(
             right_final = right_then[0].state
             prefix_length = len(state.evidence_receipts)
             prefix_preserved = (
-                left_final.evidence_receipts[:prefix_length]
+                _history_prefix(left_final.evidence_receipts, prefix_length)
                 == state.evidence_receipts
-                and right_final.evidence_receipts[:prefix_length]
+                and _history_prefix(right_final.evidence_receipts, prefix_length)
                 == state.evidence_receipts
             )
             if not prefix_preserved:

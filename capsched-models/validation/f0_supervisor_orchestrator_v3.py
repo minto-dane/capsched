@@ -752,6 +752,20 @@ class ParentReceipt:
     auth_tag: str
 
 
+class ParentReceiptHistory(child.PersistentSequence):
+    """Typed parent evidence view over the shared persistent mechanism."""
+
+    __slots__ = ()
+
+    def append(self, value: object) -> ParentReceiptHistory:
+        if not isinstance(value, ParentReceipt):
+            raise TypeError("parent history accepts ParentReceipt values only")
+        return ParentReceiptHistory(self, value)
+
+
+EMPTY_PARENT_RECEIPT_HISTORY = ParentReceiptHistory()
+
+
 def _parent_receipt_body(receipt: ParentReceipt) -> tuple[object, ...]:
     return (
         receipt.schema,
@@ -1340,7 +1354,9 @@ class OrchestratorState:
     checker_retirement: ChildGrantRetirement | None = None
     active_child: str = "NONE"
     parent_ledger: str = "OPEN"
-    parent_receipts: tuple[ParentReceipt, ...] = ()
+    parent_receipts: ParentReceiptHistory | tuple[ParentReceipt, ...] = (
+        EMPTY_PARENT_RECEIPT_HISTORY
+    )
     parent_evidence_root: str = ""
     local_disposition: str = "NONE"
     local_capsule: LocalDispositionCapsule | None = None
@@ -6037,14 +6053,17 @@ def apply_trace(state: OrchestratorState, actions: tuple[str, ...]) -> Orchestra
 
 
 def reachable_states() -> OrchestratorReachabilityGraph:
-    """Enumerate exact reachability without retaining per-edge objects."""
+    """Enumerate exact reachability without per-edge or dict-entry objects."""
 
     maximum_index = (1 << 32) - 1
     start = initial_state()
     key = semantic_projection(start)
-    states = [start]
-    representatives: dict[OrchestratorState, int] = {key: 0}
-    queue: deque[int] = deque([0])
+    states: list[OrchestratorState] = []
+    representatives = child.ExactStateIndex(states)
+    start_index, start_is_new = representatives.intern(key)
+    if start_index != 0 or not start_is_new:
+        raise RuntimeError("initial parent exact state was not uniquely interned")
+    queue: deque[int] = deque([start_index])
     edge_offsets = array("I", [0])
     target_indices = array("I")
     action_indices = array("B")
@@ -6053,16 +6072,8 @@ def reachable_states() -> OrchestratorReachabilityGraph:
         state = states[source_index]
         for edge in next_states(state):
             target_key = semantic_projection(edge.state)
-            target_index = representatives.get(target_key)
-            if target_index is None:
-                if len(states) >= maximum_index:
-                    raise OrchestratorReject(
-                        "F05-ORCH-GRAPH-STATE-BOUND",
-                        str(len(states)),
-                    )
-                target_index = len(states)
-                representatives[target_key] = target_index
-                states.append(edge.state)
+            target_index, target_is_new = representatives.intern(target_key)
+            if target_is_new:
                 queue.append(target_index)
             if len(target_indices) >= maximum_index:
                 raise OrchestratorReject(
@@ -6072,8 +6083,12 @@ def reachable_states() -> OrchestratorReachabilityGraph:
             target_indices.append(target_index)
             action_indices.append(ACTION_INDEX[edge.action_id])
         edge_offsets.append(len(target_indices))
+    state_vector = tuple(states)
+    if len(state_vector) != len(representatives):
+        raise RuntimeError("parent state vector and compact index diverged")
+    del representatives, states, queue
     return OrchestratorReachabilityGraph(
-        states=tuple(states),
+        states=state_vector,
         edge_offsets=edge_offsets,
         target_indices=target_indices,
         action_indices=action_indices,

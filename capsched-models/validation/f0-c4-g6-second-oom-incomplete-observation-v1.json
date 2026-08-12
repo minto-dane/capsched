@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-second-oom-incomplete-observation-v1",
+  "date": "2026-08-12",
+  "run_id": "candidate4-full-20260812T134610Z",
+  "status": "RAW_CAPTURE_INCOMPLETE_COMPONENT_OOM",
+  "source": {
+    "capsched_commit": "28e70b21a8d9d7b3f2b328fa9c8e3ac5ee74c8c2",
+    "installed_tcb_source_commit": "a956de28e9d07d84b9e9f8ab2c31bb988a1d70e9",
+    "installed_manifest_sha256": "dc3a7b23ed3de978dfae5e17bb943a31afe04694c202613ec24f72b62345c6df",
+    "capture_contract_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d"
+  },
+  "durable_evidence": {
+    "raw_commit_sha256": "c10c7a5a1a58523f766484970173bb9391a1d68380289978543f6b796714e0fd",
+    "capture_manifest_sha256": "9b0e13f03e00d700368004b2e74d5906b6547ef9ea53bd012fc346fff19239b2",
+    "sealed_plan_sha256": "def77f7560deb6d0326115ce1a263b1b86644e6cf7d6c3ecd970c7ed230bb2f0",
+    "failed_component_receipt_sha256": "25b4d256601c7a44144f0d9b05f1d9632b8922ac31ef5ec7b11e6e8290b81030",
+    "capture_status": "RAW_CAPTURE_INCOMPLETE",
+    "candidate_bytes_positive_eligible": false,
+    "reduction_performed": false
+  },
+  "systemd_disposition": {
+    "capture_unit_result": "success",
+    "capture_unit_exec_main_status": 0,
+    "launcher_unit_result": "exit-code",
+    "launcher_unit_exec_main_status": 1,
+    "trusted_supervisor_survived_component_oom": true,
+    "incomplete_lifecycle_receipt_committed": true
+  },
+  "failed_component": {
+    "component_id": "child-bundle-producer",
+    "role": "FULL_CHILD_PRODUCER",
+    "termination": "EXITED_SIGNAL",
+    "signal": 9,
+    "launcher_returncode": 1,
+    "elapsed_monotonic_ns": 1086809373085,
+    "memory_peak_bytes": 8053063680,
+    "memory_events": {
+      "low": 0,
+      "high": 0,
+      "max": 35,
+      "oom": 1,
+      "oom_kill": 2,
+      "oom_group_kill": 1
+    },
+    "stdout_bytes": 0,
+    "stderr_bytes": 0,
+    "populated_zero_observed": true,
+    "cgroup_kill_used": true
+  },
+  "conclusion": {
+    "prior_oom_isolation_repair_effective": true,
+    "prior_exact_graph_memory_repair_sufficient": false,
+    "failure_class": "retained_exact_frontier_exceeds_resident_component_bound",
+    "semantic_counterexample": false,
+    "g6_complete": false,
+    "g7_allowed": false,
+    "replay_same_bytes_without_repair_allowed": false
+  }
+}

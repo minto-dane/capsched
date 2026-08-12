@@ -105,6 +105,98 @@ def main() -> None:
         raise AssertionError("reachable state dataclasses must use slots")
     cases += 2
 
+    if (
+        not isinstance(child_start.evidence_receipts, child.ReceiptHistory)
+        or child_start.evidence_receipts
+        or hasattr(child_start.evidence_receipts, "__dict__")
+    ):
+        raise AssertionError("child state does not use the empty persistent history")
+    cases += 1
+
+    if (
+        not isinstance(parent_start.parent_receipts, parent.ParentReceiptHistory)
+        or parent_start.parent_receipts
+        or hasattr(parent_start.parent_receipts, "__dict__")
+    ):
+        raise AssertionError("parent state does not use the empty persistent history")
+    cases += 1
+
+    left = child_start
+    right = child.initial_state(child.fixture_external_grant("PRODUCER"))
+    left_receipts = []
+    for _ in range(10):
+        left = child.next_states(left)[0].state
+        right = child.next_states(right)[0].state
+        left_receipts.append(left.evidence_receipts[-1])
+    if (
+        tuple(left.evidence_receipts) != tuple(left_receipts)
+        or left.evidence_receipts != right.evidence_receipts
+        or hash(left.evidence_receipts) != hash(right.evidence_receipts)
+        or left.evidence_receipts[:-1] != right.evidence_receipts[:-1]
+        or left.evidence_receipts[1:] != tuple(left_receipts[1:])
+    ):
+        raise AssertionError("persistent history changed exact ordered sequence semantics")
+    cases += 1
+
+    try:
+        left.evidence_receipts._length = 0
+    except AttributeError:
+        pass
+    else:
+        raise AssertionError("persistent receipt history is mutable")
+    cases += 1
+
+    parent_left = parent_start
+    parent_right = parent.initial_state()
+    parent_receipts = []
+    for _ in range(8):
+        left_edges = parent.next_states(parent_left)
+        right_edges = parent.next_states(parent_right)
+        if not left_edges or not right_edges:
+            break
+        parent_left = left_edges[0].state
+        parent_right = right_edges[0].state
+        if parent_left.parent_receipts:
+            parent_receipts = list(parent_left.parent_receipts)
+    if (
+        tuple(parent_left.parent_receipts) != tuple(parent_receipts)
+        or parent_left.parent_receipts != parent_right.parent_receipts
+        or hash(parent_left.parent_receipts) != hash(parent_right.parent_receipts)
+    ):
+        raise AssertionError("persistent parent history changed exact sequence semantics")
+    cases += 1
+
+    class CollisionState:
+        __slots__ = ("value",)
+
+        def __init__(self, value: int) -> None:
+            self.value = value
+
+        def __hash__(self) -> int:
+            return 7
+
+        def __eq__(self, other: object) -> bool:
+            return isinstance(other, CollisionState) and self.value == other.value
+
+    collision_states = []
+    exact_index = child.ExactStateIndex(collision_states, initial_capacity=8)
+    for value in range(40):
+        state_index, is_new = exact_index.intern(CollisionState(value))
+        if state_index != value or not is_new:
+            raise AssertionError("exact state index insertion drifted")
+    for value in reversed(range(40)):
+        state_index, is_new = exact_index.intern(CollisionState(value))
+        if state_index != value or is_new:
+            raise AssertionError("hash collision merged or duplicated an exact state")
+    if (
+        len(exact_index) != 40
+        or exact_index.capacity < 64
+        or exact_index._indices.typecode != "I"
+        or exact_index._hashes.typecode != "Q"
+    ):
+        raise AssertionError("exact state index is not fixed-width and resize-safe")
+    cases += 1
+
     if child.semantic_projection(child_start) is not child_start:
         raise AssertionError("exact child projection allocated a wrapper identity")
     if parent.semantic_projection(parent_start) is not parent_start:
@@ -150,6 +242,19 @@ def main() -> None:
     for source in (child.__file__, parent.__file__):
         if "@lru_cache(maxsize=None)" in Path(source).read_text(encoding="utf-8"):
             raise AssertionError(f"unbounded cache returned: {source}")
+    cases += 1
+
+    child_source = Path(child.__file__).read_text(encoding="utf-8")
+    parent_source = Path(parent.__file__).read_text(encoding="utf-8")
+    if (
+        "class PersistentSequence:" not in child_source
+        or "class ReceiptHistory(PersistentSequence):" not in child_source
+        or "class ExactStateIndex:" not in child_source
+        or "representatives: dict[EnvelopeState, int]" in child_source
+        or "class ParentReceiptHistory(child.PersistentSequence):" not in parent_source
+        or "representatives: dict[OrchestratorState, int]" in parent_source
+    ):
+        raise AssertionError("compact persistent exact frontier policy drifted")
     cases += 1
 
     print(f"F0_C4_MODEL_MEMORY_POLICY_PASS cases={cases}")
