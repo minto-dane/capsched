@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
+    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -215,8 +215,8 @@
     },
     "current_candidate_inputs": {
       "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-frontier-repair-v1",
-      "artifact_sha256": "8fe3df826ce63b098cefa1dabf74570576781d76f7fda10d0ca7ff4b2edf027e",
-      "status": "persistent_frontier_repaired_g6_retry_requires_clean_install",
+      "artifact_sha256": "4a9b506c5a74087336c6af5b61f9c9ac2cb778d3025826764d1fddd8d946e209",
+      "status": "persistent_frontier_repaired_clean_installed_g6_retry_eligible",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
       "full_validator_status": "NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS",
       "hostile_case_counts": {
@@ -242,7 +242,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -278,16 +278,16 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "REINSTALL_REQUIRED_AFTER_FRONTIER_REPAIR",
-        "installed_source_commit": "a956de28e9d07d84b9e9f8ab2c31bb988a1d70e9",
-        "installed_manifest_sha256": "dc3a7b23ed3de978dfae5e17bb943a31afe04694c202613ec24f72b62345c6df",
-        "current_inputs_installed": false,
+        "status": "PASSED_FOR_FRONTIER_REPAIRED_INPUTS",
+        "installed_source_commit": "1fccacab7a94248fba443adc6b2de746a3565701",
+        "installed_manifest_sha256": "bd86819aa15de7f40540c63ae7fbc2fd32777a2d799438ed22e06c32988aa911",
+        "current_inputs_installed": true,
         "readiness_record": "capsched-models/validation/f0-c4-g6-frontier-retry-readiness-v1.json",
-        "readiness_sha256": "61cafd61c7bbecc298171b284a9d962aa9d2249120c506bfb6f51710404076c4"
+        "readiness_sha256": "1568ea35e39c2024499cbe00bf0b068a1784cb8b99a5188a9666dcfe192fa124"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": false,
+        "retry_eligible": true,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
         "attempt_count": 4,
@@ -354,8 +354,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_frontier_reinstall_required_g7_blocked",
-      "next_artifact": "Clean-install the persistent exact frontier and current-input-bound reducer, then retry authority-disjoint G6 and reduce only a complete committed capture in G7"
+      "status": "open_candidate4_g1_g5_closed_g6_frontier_retry_eligible_g7_blocked",
+      "next_artifact": "Run the authority-disjoint G6 retry from the clean-installed persistent exact frontier, then reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -454,14 +454,14 @@
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "frontier_repair_clean_install_pending",
-      "text": "G1-G5 remain locally closed; the persistent exact frontier passes fast regression, but the installed TCB predates these exact inputs and must be replaced from a clean reviewed commit."
+      "status": "completed_clean_reviewed_install_for_frontier_repaired_inputs",
+      "text": "G1-G5 remain locally closed; clean source commit 1fccacab7a94248fba443adc6b2de746a3565701 is installed under manifest bd86819aa15de7f40540c63ae7fbc2fd32777a2d799438ed22e06c32988aa911 and the full short post-install suite passes."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "blocked_until_frontier_repair_clean_install",
-      "text": "The second OOM attempt is durably RAW_CAPTURE_INCOMPLETE and positive-ineligible; G6 retry waits for the persistent-frontier clean install, and G7 remains blocked until a complete committed result exists."
+      "status": "g6_frontier_retry_eligible",
+      "text": "The second OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible; the clean-installed persistent frontier is eligible for a fresh G6 retry, while G7 remains blocked until a complete committed result exists."
     },
     {
       "order": 8,

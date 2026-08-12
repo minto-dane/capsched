@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-frontier-repair-v1",
   "date": "2026-08-12",
-  "status": "persistent_exact_frontier_repaired_g6_reinstall_required",
+  "status": "persistent_frontier_repaired_clean_installed_g6_retry_eligible",
   "scope": "offline_finite_model_and_authority_disjoint_capture_control_plane_only",
   "predecessor": {
     "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-resource-repair-v1",
@@ -85,5 +85,5 @@
     "protection_claim": false,
     "cost_efficiency_claim": false
   },
-  "next_gate": "complete_linux_regression_clean_install_then_repeat_authority_disjoint_full_run_capture"
+  "next_gate": "repeat_authority_disjoint_full_run_capture_then_reduce_only_complete_committed_bytes"
 }

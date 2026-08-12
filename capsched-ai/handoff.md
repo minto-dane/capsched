@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-12",
-  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -76,16 +76,16 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "REINSTALL_REQUIRED_AFTER_FRONTIER_REPAIR",
-      "installed_source_commit": "a956de28e9d07d84b9e9f8ab2c31bb988a1d70e9",
-      "installed_manifest_sha256": "dc3a7b23ed3de978dfae5e17bb943a31afe04694c202613ec24f72b62345c6df",
-      "current_inputs_installed": false,
+      "status": "PASSED_FOR_FRONTIER_REPAIRED_INPUTS",
+      "installed_source_commit": "1fccacab7a94248fba443adc6b2de746a3565701",
+      "installed_manifest_sha256": "bd86819aa15de7f40540c63ae7fbc2fd32777a2d799438ed22e06c32988aa911",
+      "current_inputs_installed": true,
       "readiness_record": "capsched-models/validation/f0-c4-g6-frontier-retry-readiness-v1.json",
-      "readiness_sha256": "61cafd61c7bbecc298171b284a9d962aa9d2249120c506bfb6f51710404076c4"
+      "readiness_sha256": "1568ea35e39c2024499cbe00bf0b068a1784cb8b99a5188a9666dcfe192fa124"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": false,
+      "retry_eligible": true,
       "complete_capture_available": false,
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260812T134610Z",
@@ -174,9 +174,10 @@ uses immutable persistent child/parent receipt histories and a fixed-width
 open-addressed state index. Hash matches always invoke full ordered-sequence or
 full-state equality; no quotient, pruning, digest-only identity, swap, semantic
 change, or production hot-path work was introduced. Linux fast regression
-passes 275/715/44 and the expanded memory policy passes 19 cases. The installed
-TCB predates these bytes, so a clean reviewed reinstall is mandatory before
-another G6 retry.
+passes 275/715/44 and the expanded memory policy passes 19 cases. Clean reviewed
+commit `1fccaca...` is now installed under manifest `bd86819a...`; launcher,
+snapshot, resource, memory, reducer-binding, toolchain-reuse, supervisor,
+guardian, and reducer boundary regressions all pass against the installed TCB.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -197,9 +198,8 @@ its full campaign has not run, so all three full-only local claims remain `NOT_R
 seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11, K0/G0,
 protection, and model completion remain false.
 
-The structured projection reports `retry_eligible: false` until the clean
-persistent-frontier install completes. After readiness is mechanically updated,
-start and monitor the exact detached retry with:
+The structured projection now reports `retry_eligible: true` for the clean
+persistent-frontier install. Start and monitor the exact detached retry with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
@@ -232,9 +232,9 @@ G7 remains blocked. Its resource-repaired install enabled only the next attempt.
 The fourth attempt `candidate4-full-20260812T134610Z` used that isolated TCB.
 `child-bundle-producer` again reached 7.5 GiB, but the supervisor remained alive,
 drained the component, and committed `RAW_CAPTURE_INCOMPLETE`. The successor
-persistent frontier is fast-regression complete but not installed. The next
-action is a clean commit, clean TCB install, full short-mechanism recheck, and
-only then a new detached G6 run.
+persistent frontier is clean-installed and its full short mechanism recheck
+passes. The next action is a new detached G6 run; G7 remains blocked unless
+that run publishes a complete committed capture.
 
 ## Current Git State
 

@@ -43,12 +43,29 @@ model hashes.  The independent current-input binding test must continue to
 derive those hashes from the canonical current-input artifact and the live
 static validator.
 
+## Clean-install qualification
+
+Clean reviewed commit
+`1fccacab7a94248fba443adc6b2de746a3565701` was transferred as a digest-checked
+Git bundle into VM-native root-owned storage and installed under artifact
+manifest SHA-256
+`bd86819aa15de7f40540c63ae7fbc2fd32777a2d799438ed22e06c32988aa911`.
+The installed launcher SHA-256 is
+`7d83e68f8781d5fc6c9051b8d65a94aeb909b88485ce7e500c3acc16edf6a6e6`.
+
+Post-install checks pass: launcher basic 1, launcher hostile 10, snapshot
+hostile 5, capture-resource 7, model-memory 19, current reducer binding 3,
+immutable-toolchain reuse 1, supervisor smoke 5 components, guardian recovery
+3, and reduction boundary 3.  The EROFS toolchain image remains read-only at
+SHA-256 `b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce`.
+
 ## Gate result
 
-G1-G5 remain locally closed at EC0.  Before clean installation, G6 retry is not
-eligible.  G6 remains open, G7 remains blocked by `NO_COMPLETE_G6_CAPTURE`,
-and the full child/parent reachability and declared-commutation run remains
-`NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS`.
+G1-G5 remain locally closed at EC0.  The exact persistent-frontier TCB is now
+clean-installed and a fresh G6 retry is eligible.  This does not close G6:
+G7 remains blocked by `NO_COMPLETE_G6_CAPTURE`, and the full child/parent
+reachability and declared-commutation run remains
+`NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS` until that new run completes.
 
 No F0/R11/G0, Linux behavior, Monitor implementation, protection,
 performance/cost, cluster, datacenter, or deployment claim is granted.
