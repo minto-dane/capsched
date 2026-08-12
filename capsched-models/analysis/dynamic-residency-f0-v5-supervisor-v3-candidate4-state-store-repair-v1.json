@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-state-store-repair-v1",
   "date": "2026-08-12",
-  "status": "compact_state_store_and_owner_failure_snapshot_repaired_g6_retry_requires_clean_install",
+  "status": "compact_state_store_and_owner_failure_snapshot_repaired_clean_installed_g6_retry_eligible",
   "scope": "offline_finite_model_and_authority_disjoint_capture_control_plane_only",
   "predecessor": {
     "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-frontier-repair-v1",
@@ -119,5 +119,5 @@
     "protection_claim": false,
     "cost_efficiency_claim": false
   },
-  "next_gate": "clean_install_reviewed_successor_then_repeat_authority_disjoint_full_run_capture"
+  "next_gate": "repeat_authority_disjoint_full_run_capture_from_clean_installed_successor"
 }

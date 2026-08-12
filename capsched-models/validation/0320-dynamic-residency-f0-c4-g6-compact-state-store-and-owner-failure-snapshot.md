@@ -62,13 +62,30 @@ parent prefix passed 250,000 expansions, 545,925 exact states, and 814,132 edges
 with maximum RSS 519,569,408 bytes. Neither bounded prefix grants full-run
 credit.
 
+## Clean-install qualification
+
+Clean reviewed commit
+`1c076a94988ae4385212230e6c19acf905bb63ea` passed the committed-state checker.
+Its complete-history Git bundle has SHA-256
+`b18352db1dc74dc743289f520eff2d02bbfc1af003a296612f11da46ccaeae76`
+and was reconstructed under the VM-native root-owned reviewed-source root. The
+installed artifact manifest SHA-256 is
+`75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85`;
+the installed launcher SHA-256 is
+`d231c12e8ad243ec74577b89d99bb19b9ddf112e950739efebe3c28e2b0903c9`.
+
+Post-install checks pass: launcher basic 1, launcher hostile 10, snapshot
+hostile 5, capture-resource 7, model-memory 24, current reducer binding 3,
+immutable-toolchain reuse 1, supervisor smoke 5 components, guardian recovery
+3, and reduction boundary 3. The EROFS toolchain remains read-only at SHA-256
+`b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce`.
+
 ## Gate result
 
 G1-G5 remain locally closed at EC0. G6 remains open and G7 remains blocked by
-`NO_COMPLETE_G6_CAPTURE`. The current status is `REINSTALL_REQUIRED`: the
-installed TCB commit `1fccacab7a94248fba443adc6b2de746a3565701` contains the
-predecessor input bytes, so another G6 launch is forbidden until the successor
-is clean-installed and the short post-install suite passes.
+`NO_COMPLETE_G6_CAPTURE`. The exact successor TCB is now clean-installed and a
+fresh G6 retry is eligible. This does not close G6 or make any incomplete bytes
+eligible for reduction.
 
 No F0/R11/G0, external attestation, Linux/Monitor behavior, protection,
 performance/cost, cluster, datacenter, or deployment claim is granted.

@@ -85,8 +85,11 @@ states, and 814,132 edges with maximum RSS 519,569,408 bytes. This exceeds the
 earlier contradiction point at 31,822 expansions but is only a bounded prefix,
 not full parent reachability.
 
-The installed TCB predates these bytes. A clean reviewed commit, digest-checked
-VM-native transfer, reinstall, and the complete short mechanism suite are
-required before another G6 attempt. No F0, R11, K0/G0, full reachability,
-protection, Linux/Monitor implementation, performance/cost, cluster, or
-deployment claim is granted.
+Clean reviewed commit
+`1c076a94988ae4385212230e6c19acf905bb63ea` was transferred by SHA-256-checked
+Git bundle into VM-native root-owned storage, passed committed-state
+validation, and was installed under manifest
+`75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85`.
+The complete short post-install mechanism suite passes, so a fresh G6 attempt
+is eligible. No F0, R11, K0/G0, full reachability, protection, Linux/Monitor
+implementation, performance/cost, cluster, or deployment claim is granted.

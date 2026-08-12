@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
+    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -150,10 +150,11 @@
     "G6 run candidate4-full-20260811T210659Z finalized RAW_CAPTURE_INCOMPLETE after the child model exposed OBS-032-DESCENDANTS-EXIT:hidden_work; no raw bytes became positive-eligible and G7 remains blocked.",
     "G6 run candidate4-full-20260811T223707Z reached the child component's 7.5-GiB memory.max and the installed systemd OOMPolicy=kill terminated the supervisor; the guardian durably published a non-positive incomplete record and G7 remains blocked.",
     "G6 run candidate4-full-20260812T134610Z verified that OOMPolicy=continue preserves the trusted supervisor and commits RAW_CAPTURE_INCOMPLETE, but child-bundle-producer again reached 7.5 GiB; no bytes are positive-eligible and G7 remains blocked.",
-    "Exact reachability now adds immutable persistent ordered receipt histories and a fixed-width exact state index with full collision equality to slot-backed states, finite pure caches, and fixed-width CSR edges; state identity, transitions, zero-swap policy, and production hot paths are unchanged, and a clean install is required before retry.",
+    "Exact reachability now adds immutable persistent ordered receipt histories and a fixed-width exact state index with full collision equality to slot-backed states, finite pure caches, and fixed-width CSR edges; state identity, transitions, zero-swap policy, and production hot paths are unchanged.",
     "G6 run candidate4-full-20260812T170823Z again finalized RAW_CAPTURE_INCOMPLETE after child-bundle-producer reached 7.5 GiB with one PID and zero output; the trusted supervisor survived and G7 remains blocked.",
     "The successor replaces the canonical Python state vector, deque frontier, and unique-history set with frozen field-column exact storage and collision-safe fixed-width indexes; the matched child prefix retains identical state/edge counters with 34.5123% lower maximum RSS.",
     "Deeper parent exploration exposed two latent semantic contradictions: recovery publication could precede the durable-store controller fence, and sealed owner-failure phase reconstruction used post-failure artifacts. The repaired parent notice signs the exact failure-time capsule/publication/generation/commitment/ack snapshot, so this successor is explicitly a parent semantic repair rather than an unchanged-semantics representation patch.",
+    "Clean reviewed commit 1c076a94988ae4385212230e6c19acf905bb63ea was reconstructed in VM-native root-owned storage from SHA-256-verified Git bundle b18352db1dc74dc743289f520eff2d02bbfc1af003a296612f11da46ccaeae76, passed committed-state validation, and was installed under artifact manifest 75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85; the complete short post-install suite passes and a fresh G6 run is eligible.",
     "Long-running builds, model checks, and matrices are detached after immutable input capture and reviewed in a later session."
   ],
   "completion": {
@@ -218,8 +219,8 @@
     },
     "current_candidate_inputs": {
       "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-state-store-repair-v1",
-      "artifact_sha256": "398d5db3bae35c4c1426a7b987b8afbb72e6a227940a6cdab8fac0ba3303be32",
-      "status": "compact_state_store_and_owner_failure_snapshot_repaired_g6_retry_requires_clean_install",
+      "artifact_sha256": "238bf89894db371d0505364af242e8a546a7e879ccd2f259322ee634626d4ae7",
+      "status": "compact_state_store_and_owner_failure_snapshot_repaired_clean_installed_g6_retry_eligible",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
       "full_validator_status": "NOT_RUN_FOR_STATE_STORE_REPAIRED_INPUTS",
       "hostile_case_counts": {
@@ -245,7 +246,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -281,16 +282,16 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "REINSTALL_REQUIRED_AFTER_STATE_STORE_REPAIR",
-        "installed_source_commit": "1fccacab7a94248fba443adc6b2de746a3565701",
-        "installed_manifest_sha256": "bd86819aa15de7f40540c63ae7fbc2fd32777a2d799438ed22e06c32988aa911",
-        "current_inputs_installed": false,
+        "status": "PASSED_FOR_STATE_STORE_REPAIRED_INPUTS",
+        "installed_source_commit": "1c076a94988ae4385212230e6c19acf905bb63ea",
+        "installed_manifest_sha256": "75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85",
+        "current_inputs_installed": true,
         "readiness_record": "capsched-models/validation/f0-c4-g6-state-store-retry-readiness-v1.json",
-        "readiness_sha256": "d68e49e9a9ade107a286a1c3966f6614d08f94b945121e38dad59100930d1baa"
+        "readiness_sha256": "15ffce487f991f73bd2bfe7e2cde63f91671512c022e5c1b0d065b75dc11c83a"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": false,
+        "retry_eligible": true,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
         "attempt_count": 5,
@@ -365,8 +366,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_state_store_reinstall_required_g7_blocked",
-      "next_artifact": "Clean-install the compact exact state-store and owner-failure snapshot successor, rerun the short suite, then launch a fresh authority-disjoint G6 capture"
+      "status": "open_candidate4_g1_g5_closed_g6_state_store_retry_eligible_g7_blocked",
+      "next_artifact": "Run the authority-disjoint G6 retry from the clean-installed compact exact state store, then reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -465,14 +466,14 @@
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "state_store_repair_clean_install_pending",
-      "text": "G1-G5 remain locally closed, but installed commit 1fccacab7a94248fba443adc6b2de746a3565701 predates the compact state store and owner-failure snapshot bytes; clean review/install is mandatory before another G6 run."
+      "status": "completed_clean_reviewed_install_for_state_store_repaired_inputs",
+      "text": "G1-G5 remain locally closed; clean source commit 1c076a94988ae4385212230e6c19acf905bb63ea is installed under manifest 75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85 and the complete short post-install suite passes."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "blocked_until_state_store_repair_clean_install",
-      "text": "The third OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible; G6 launch is blocked until the state-store and owner-failure snapshot successor is clean-installed, and G7 remains blocked until a complete committed result exists."
+      "status": "g6_state_store_retry_eligible",
+      "text": "The third OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible; the clean-installed compact exact state-store successor is eligible for a fresh G6 retry, while G7 remains blocked until a complete committed result exists."
     },
     {
       "order": 8,

@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-12",
-  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -76,16 +76,16 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "REINSTALL_REQUIRED_AFTER_STATE_STORE_REPAIR",
-      "installed_source_commit": "1fccacab7a94248fba443adc6b2de746a3565701",
-      "installed_manifest_sha256": "bd86819aa15de7f40540c63ae7fbc2fd32777a2d799438ed22e06c32988aa911",
-      "current_inputs_installed": false,
+      "status": "PASSED_FOR_STATE_STORE_REPAIRED_INPUTS",
+      "installed_source_commit": "1c076a94988ae4385212230e6c19acf905bb63ea",
+      "installed_manifest_sha256": "75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85",
+      "current_inputs_installed": true,
       "readiness_record": "capsched-models/validation/f0-c4-g6-state-store-retry-readiness-v1.json",
-      "readiness_sha256": "d68e49e9a9ade107a286a1c3966f6614d08f94b945121e38dad59100930d1baa"
+      "readiness_sha256": "15ffce487f991f73bd2bfe7e2cde63f91671512c022e5c1b0d065b75dc11c83a"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": false,
+      "retry_eligible": true,
       "complete_capture_available": false,
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260812T170823Z",
@@ -191,7 +191,12 @@ from artifacts that could change later. The parent now requires the fence and
 signs a typed failure-time capsule/publication/generation/commitment/ack
 snapshot. This parent change is explicitly semantic; it is not hidden under the
 representation-only memory repair. Fast regression passes 275/730/44 and the
-memory policy passes 24 cases.
+memory policy passes 24 cases. Clean reviewed commit `1c076a9...` was
+reconstructed from SHA-256-verified bundle `b18352d...` in VM-native
+root-owned storage, passed committed-state validation, and was installed under
+manifest `75d17ee...`; launcher, snapshot, resource, memory, reducer-binding,
+toolchain-reuse, supervisor, guardian, and reduction-boundary regressions all
+pass against that installed TCB.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -207,16 +212,15 @@ completed two static components and then preserved a fail-closed
 `RAW_CAPTURE_INCOMPLETE` disposition when `child-bundle-producer` rejected
 `OBS-032-DESCENDANTS-EXIT:hidden_work`. Analysis 0228 and Validation 0317 retain
 the exact counterexample and add its post-exit descendant/async order to the
-fast child suite. The persistent-frontier current input passes 275 child cases;
-its full campaign has not run, so all three full-only local claims remain `NOT_RUN`,
-seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11, K0/G0,
-protection, and model completion remain false.
+fast child suite. The compact-state-store current input passes 275 child cases;
+its full campaign has not run, so all three full-only local claims remain
+`NOT_RUN`, seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11,
+K0/G0, protection, and model completion remain false.
 
-The structured projection reports `retry_eligible: false`: the installed TCB
-still contains the predecessor frontier bytes. Do not start another G6 run
-until the compact state-store successor is committed, transferred into
-VM-native reviewed storage, installed, and passes the complete short suite.
-After that qualification, start and monitor the exact detached retry with:
+The structured projection reports `retry_eligible: true`: the exact compact
+state-store successor is committed, installed from reviewed VM-native storage,
+and has passed the complete short suite. Start and monitor the exact detached
+retry with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh

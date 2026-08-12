@@ -2,11 +2,11 @@
   "schema_version": 1,
   "artifact_id": "f0-c4-g6-state-store-retry-readiness-v1",
   "date": "2026-08-12",
-  "status": "REINSTALL_REQUIRED",
+  "status": "G6_RETRY_ELIGIBLE",
   "scope": "candidate4_compact_exact_state_store_and_owner_failure_snapshot_repaired_capture",
   "current_inputs": {
     "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-state-store-repair-v1",
-    "artifact_sha256": "398d5db3bae35c4c1426a7b987b8afbb72e6a227940a6cdab8fac0ba3303be32",
+    "artifact_sha256": "238bf89894db371d0505364af242e8a546a7e879ccd2f259322ee634626d4ae7",
     "hostile_case_counts": {
       "child": 275,
       "parent": 730,
@@ -18,13 +18,13 @@
     "reducer_current_input_binding_cases": 3
   },
   "clean_install": {
-    "source_commit": "1fccacab7a94248fba443adc6b2de746a3565701",
+    "source_commit": "1c076a94988ae4385212230e6c19acf905bb63ea",
     "source_worktree_clean": true,
     "committed_state_check": "PASS",
-    "installed_manifest_sha256": "bd86819aa15de7f40540c63ae7fbc2fd32777a2d799438ed22e06c32988aa911",
-    "capture_launcher_sha256": "7d83e68f8781d5fc6c9051b8d65a94aeb909b88485ce7e500c3acc16edf6a6e6",
-    "current_inputs_installed": false,
-    "reason": "The installed TCB predates the compact exact state store, fixed-width BFS frontier, exact unique-history index, controller-fence guard, signed owner-failure snapshot, and successor reducer input binding."
+    "installed_manifest_sha256": "75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85",
+    "capture_launcher_sha256": "d231c12e8ad243ec74577b89d99bb19b9ddf112e950739efebe3c28e2b0903c9",
+    "current_inputs_installed": true,
+    "reason": "The compact exact state store, fixed-width BFS frontier, exact unique-history index, controller-fence guard, signed owner-failure snapshot, and successor-bound reducer were installed from the clean reviewed commit and passed the complete short post-install suite."
   },
   "toolchain": {
     "format": "erofs",
@@ -39,21 +39,22 @@
     "capture_contract_derived_cases": 14,
     "capture_resource_policy_cases": 7,
     "reducer_current_input_binding_cases": 3,
-    "reducer_boundary_status": "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE",
+    "reducer_boundary_status": "PASS",
     "reducer_boundary_cases": 3
   },
   "source_transfer": {
     "policy": "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging",
     "macos_home_mount": "none",
     "tcb_install_transfer_policy": "sha256_verified_clean_reviewed_git_bundle_to_vm_native_root_owned_repository",
-    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/1fccacab7a94248fba443adc6b2de746a3565701",
+    "tcb_install_git_bundle_sha256": "b18352db1dc74dc743289f520eff2d02bbfc1af003a296612f11da46ccaeae76",
+    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/1c076a94988ae4385212230e6c19acf905bb63ea",
     "vm_source_root": "/var/lib/domainlease-f0-c4/sources",
     "raw_evidence_root": "/var/lib/domainlease-f0-c4/evidence",
     "separate_from_raw_evidence": true
   },
   "disposition": {
     "g6_gate_status": "OPEN",
-    "g6_retry_eligible": false,
+    "g6_retry_eligible": true,
     "g6_complete_capture_available": false,
     "g7_gate_status": "BLOCKED",
     "g7_blocked_reason": "NO_COMPLETE_G6_CAPTURE"
