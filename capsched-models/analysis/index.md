@@ -1,6 +1,6 @@
 # Analysis Index
 
-Updated: 2026-08-11
+Updated: 2026-08-12
 
 ## Current Analysis Notes
 
@@ -234,6 +234,7 @@ Updated: 2026-08-11
 | 0226 | Candidate-4 reaches a restartable pre-full local checkpoint after child 274, parent 715, and runner 44 hostile cases plus the fast validator pass; raw component receipts, exact nested schemas, role agreement, reachable commutation membership, realizable cardinality and edge bounds, claim predicates, and lifecycle cleanup are locally bound, while full reachability/commutation are not run and external containment, R11, G0, F0, and protection remain false | Dynamic Residency F0 v5 Supervisor v3 Candidate-4 Pre-Full Local Closure |
 | 0227 | GPT-5.6 Sol maximum-effort synthesis, contradiction, and minimality are fixed as non-authoritative primary construction passes while TLA+ is terminal-only; exact contract `14ca4b...fd075` fixes eight roles, 13 typed object classes, 17 fail-closed platform requirements, split capture/guardian/reduction lifecycles, 30 invariants, seven gates, and the four-claim local ceiling; G1-G5 now pass locally while G6/G7 remain open | Dynamic Residency F0 Candidate-4 Authority-Disjoint Capture Contract |
 | 0228 | The first candidate-executing G6 attempt exposed `OBS-032-DESCENDANTS-EXIT:hidden_work`; the existing semantics are preserved, the missing effect declaration is repaired, the reachable post-exit descendant/async interleaving becomes child regression 275, historical 274-case evidence stays immutable, and semantic state consistency is integrated into the existing checker | Dynamic Residency F0 Candidate-4 G6 Counterexample Repair |
+| 0229 | The next G6 attempt reached the child component memory boundary and exposed unit-wide OOM propagation; exact state identity and transitions are preserved while slot-backed states, bounded pure caches, fixed-width CSR edges, and `OOMPolicy=continue` isolate hostile resource exhaustion from the trusted supervisor; 12 model-memory, seven capture-resource, and three reducer-current-input cases prevent representation, containment, and capture/reduction drift | Dynamic Residency F0 Candidate-4 G6 OOM Isolation and Memory-Bounded Enumeration |
 
 ## Planned Analysis Notes
 

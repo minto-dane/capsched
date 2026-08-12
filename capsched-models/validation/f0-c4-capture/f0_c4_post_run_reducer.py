@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-CONTRACT_SHA256 = "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075"
+CONTRACT_SHA256 = "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d"
 REDUCER_UID = 200011
 REDUCER_GID = 200011
 CAPTURE_ROOT = Path("/INPUT")
@@ -33,18 +33,18 @@ COMPONENTS = (
 COMPONENT_ORDER = tuple(row[0] for row in COMPONENTS)
 INPUT_DIGESTS = {
     "f0-supervisor-c4-claim-registry-v1.json": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
-    "f0_supervisor_lts_v3.py": "0af68395e37958fd5f75a2f06d886c7a5c0bc77ad1cd6546234b645273303278",
-    "f0_supervisor_orchestrator_v3.py": "cb75d720ae8f36b5a440e3480f5053fc75b47a2a7b652b679ea53257f57eeff6",
+    "f0_supervisor_lts_v3.py": "ba44ff0250318baad8f7476d9a1a1c7fb619f4cfb035fdb762aa5def851d387a",
+    "f0_supervisor_orchestrator_v3.py": "2bb8a285fe96db084c76ca58fbe405dcf4b89ea0b82593d4dfe2d43c277bdba5",
     "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba",
     "test-f0-supervisor-lts-v3-mutations.py": "354cd28449490ab3740afec8c258877090f2251ae217c74366d69e98aff76a8c",
     "test-f0-supervisor-orchestrator-v3-mutations.py": "bdd7b736603f670cee18296c73cd89fb58151159405a37d219cbf86ac0a57a0f",
     "test-run-f0-supervisor-v3-full.sh": "124947b2622811b60a20f753e6cfa6eae0a704afb11c95bb0fe1b80a11e78ec9",
-    "validate-f0-supervisor-lts-v3.py": "f8c724cece29031b49744e4322671b6bd9fd204e4e53c1982e132816ba592f3b",
+    "validate-f0-supervisor-lts-v3.py": "83408bbcc7e1bf3abcf7165e7e32d2c34a1be55a8ddd78d212c77d6d95452e5c",
 }
 INPUT_ROOT_SHA256 = hashlib.sha256(
     json.dumps(INPUT_DIGESTS, sort_keys=True, separators=(",", ":")).encode()
 ).hexdigest()
-SEMANTIC_REGISTRY_SHA256 = "cd1ee68cb2843ae66da34302147acd7d5b029cd40e0819fe59f3401d13fcb9f9"
+SEMANTIC_REGISTRY_SHA256 = "be5e95640d31ad19ff81f4fe313a7ab29d44fae18c0fff56cfdb99bd86d8b789"
 INDEPENDENCE_IDS = [
     "IND-001-PRODUCER-A-NORMAL-EXIT",
     "IND-002-PRODUCER-B-NORMAL-EXIT",

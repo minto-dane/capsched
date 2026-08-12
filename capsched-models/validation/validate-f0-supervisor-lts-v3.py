@@ -578,7 +578,7 @@ def component_result(component: str) -> dict[str, object]:
             "component": component,
             "role": role,
             "exploration": asdict(child.explore(role, graph)),
-            "commutation": child.check_outcome_commutation(role, graph[0]),
+            "commutation": child.check_outcome_commutation(role, graph.states),
             "single_graph_reused": True,
         }
     if component == "orchestrator":

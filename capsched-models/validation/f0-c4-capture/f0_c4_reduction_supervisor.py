@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-CONTRACT_SHA256 = "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075"
+CONTRACT_SHA256 = "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d"
 RUN_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}")
 STATE_ROOT = Path("/var/lib/domainlease-f0-c4")
 EVIDENCE_ROOT = STATE_ROOT / "evidence"

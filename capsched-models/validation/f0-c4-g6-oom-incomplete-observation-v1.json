@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-oom-incomplete-observation-v1",
+  "date": "2026-08-12",
+  "record_class": "non_authoritative_public_safe_observation_of_root_owned_evidence",
+  "run_id": "candidate4-full-20260811T223707Z",
+  "candidate_source_commit": "77af0a0e5085a98670bd0c5d8eb4c3b40fa4567c",
+  "candidate_source_archive_sha256": "2a66ee4a80489c039f67f7df52405bc267bbeb20023ec9b4018adf7400d364b5",
+  "installed_tcb_source_commit": "29d53f6c20516e35551ca588882196bced6c6383",
+  "installed_artifact_manifest_sha256": "fe1c2b0d33dd75c3945f637e33dd872c2bf431a02c434bc82ca6aaa1b03a493e",
+  "contract_sha256": "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075",
+  "toolchain_image_sha256": "b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce",
+  "toolchain_manifest_sha256": "0db6f68c5e19fba7acd2cab5c536aa8bd17d0d4d5707ca6bbbeb9362527bcd51",
+  "raw_commit": {
+    "sha256": "49ab8585ce760fc7e95e58a0b176e850869d2d7f7707e9afdcd6cd6a4fcfa7af",
+    "capture_status": "GUARDIAN_INCOMPLETE_PUBLISHED",
+    "failure_class": "SUPERVISOR_DIED",
+    "commit_authority": "ROOT_GUARDIAN",
+    "candidate_bytes_positive_eligible": false,
+    "reduction_performed": false,
+    "disposition_sha256": "fde29de961690c53fabe0ad046ef1551b5b6650153473791d4b4d45d108823d5"
+  },
+  "guardian_disposition": {
+    "sha256": "fde29de961690c53fabe0ad046ef1551b5b6650153473791d4b4d45d108823d5",
+    "service_result": "oom-kill",
+    "exit_code": "killed",
+    "exit_status": "KILL",
+    "abandoned_staging_file_count": 22,
+    "abandoned_staging_byte_count": 752774,
+    "uncommitted_published_path_present": false,
+    "populated_zero_observed": true,
+    "authorization_changed": false
+  },
+  "resource_observation": {
+    "failed_component": "child-bundle-producer",
+    "last_progress": "40% capturing child-bundle-producer",
+    "unit_cpu_time_seconds": 567.176,
+    "unit_memory_peak_bytes": 8053063680,
+    "unit_swap_peak_bytes": 0,
+    "candidate_component_memory_max_bytes": 8053063680,
+    "capture_unit_oom_policy": "kill",
+    "causal_inference": "The nested candidate reached its component memory maximum and systemd OOMPolicy=kill then killed the trusted capture unit before normal supervisor finalization.",
+    "semantic_counterexample_observed": false
+  },
+  "disposition": {
+    "g6_closed": false,
+    "g7_eligible": false,
+    "f0_local_acceptance": false,
+    "external_review_credit": false,
+    "protection_claim": false,
+    "failure_was_fail_closed": true,
+    "resource_repair_and_clean_reinstall_required": true
+  },
+  "retention": {
+    "root_evidence_location": "domainlease-dev:/var/lib/domainlease-f0-c4/evidence/candidate4-full-20260811T223707Z",
+    "raw_evidence_copied_to_public_repository": false,
+    "reason": "Preserve the root-owned authority boundary; publish only content identities, bounded resource facts, and the non-positive disposition."
+  }
+}

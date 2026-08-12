@@ -100,7 +100,7 @@ exec systemd-run \
 	--property SendSIGKILL=yes \
 	--property StandardInput=null \
 	--property MemoryLow=536870912 \
-	--property OOMPolicy=kill \
+	--property OOMPolicy=continue \
 	--property NoNewPrivileges=no \
 	--property ProtectSystem=strict \
 	--property ProtectHome=read-only \

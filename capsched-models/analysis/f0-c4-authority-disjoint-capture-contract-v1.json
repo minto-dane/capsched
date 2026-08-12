@@ -142,8 +142,8 @@
     },
     {
       "id": "PLAT-SUPERVISOR-GUARDIAN",
-      "requirement": "A root service manager owns the supervisor lifecycle and kills the complete delegated supervisor subtree if the supervisor exits unexpectedly.",
-      "evidence": "unit properties, cgroup path, guardian identity, and fault-injection receipt",
+      "requirement": "A root service manager owns the supervisor lifecycle and kills the complete delegated supervisor subtree if the supervisor exits unexpectedly; a component-local cgroup OOM terminates that candidate component without automatically killing the trusted supervisor.",
+      "evidence": "unit properties including OOMPolicy=continue, component memory.oom.group, cgroup path, guardian identity, and fault-injection receipt",
       "fail_closed": true
     },
     {
@@ -461,6 +461,7 @@
     "guardian_and_host_reserve_min_bytes": 2147483648,
     "required_vm_memory_min_bytes": 10200547328,
     "memory_swap_max_bytes_per_component": 0,
+    "candidate_component_oom_isolated_from_supervisor": true,
     "stdout_max_bytes_per_component": 268435456,
     "stderr_max_bytes_per_component": 16777216,
     "preexec_observation_max_bytes_per_component": 1048576,
@@ -498,7 +499,7 @@
     {"id": "CAP-INV-024", "statement": "The guardian disarms only after observing a valid durable raw commit marker; supervisor failure cannot leave a candidate descendant executing without a separately authorized guardian-owned incomplete record after populated-zero drain.", "enforced_by": ["PLAT-SUPERVISOR-GUARDIAN", "roles", "state_machines", "containment", "finalization"]},
     {"id": "CAP-INV-025", "statement": "A local capture never claims safety against a malicious capture-host kernel or root service.", "enforced_by": ["trust_boundary", "authorization"]},
     {"id": "CAP-INV-026", "statement": "The run deadline is at least the sum of component deadlines, all per-component drain bounds, and sealed supervisor overhead, and systemd enforces that same bound.", "enforced_by": ["resource_policy", "PLAT-MONOTONIC-DEADLINE"]},
-    {"id": "CAP-INV-027", "statement": "Component memory.max plus the guardian/host reserve never exceeds probed VM memory; supervisor memory.low is contained within that reserve.", "enforced_by": ["resource_policy", "PLAT-CAPACITY-RESERVE"]},
+    {"id": "CAP-INV-027", "statement": "Component memory.max plus the guardian/host reserve never exceeds probed VM memory; supervisor memory.low is contained within that reserve; a component-local OOM cannot make systemd kill the trusted supervisor before it commits the incomplete lifecycle receipt.", "enforced_by": ["resource_policy", "PLAT-CAPACITY-RESERVE", "PLAT-SUPERVISOR-GUARDIAN"]},
     {"id": "CAP-INV-028", "statement": "Every candidate component uses one immutable toolchain image digest for the entire run; live host /usr is not an admissible production capture input.", "enforced_by": ["PLAT-IMMUTABLE-TOOLCHAIN", "input_snapshot"]},
     {"id": "CAP-INV-029", "statement": "A prior-boot durable run intent without a valid commit marker can produce only BOOT_INTERRUPTED and a guardian incomplete disposition.", "enforced_by": ["PLAT-BOOT-RECONCILIATION", "finalization", "state_machines"]},
     {"id": "CAP-INV-030", "statement": "Offline capture controls add no instruction, field, allocation, lock, hash, JSON parse, global scan, or synchronous trace to the production Linux scheduler or Monitor hot path.", "enforced_by": ["performance_boundary", "authorization"]}

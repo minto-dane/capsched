@@ -8,6 +8,7 @@ durability assumptions.  Those are named refinement obligations.
 
 from __future__ import annotations
 
+from array import array
 from collections import Counter, defaultdict, deque
 from dataclasses import dataclass, replace
 from functools import lru_cache
@@ -21,6 +22,18 @@ if not __debug__:
 
 SCHEMA = "F0-SPV3-C4"
 AUTH_MODEL = "SYMBOLIC_PERFECT_AUTHENTICATION_ASSUMPTION"
+
+# Exhaustive reachability produces millions of distinct immutable states and
+# receipts.  Unbounded functools caches retain a second, hidden copy of that
+# frontier and can turn a valid finite exploration into a cgroup OOM.  These
+# bounds affect memoization only; cache misses recompute the same pure result.
+SMALL_CACHE_MAX_ENTRIES = 256
+DIGEST_CACHE_MAX_ENTRIES = 32768
+STATE_CACHE_MAX_ENTRIES = 16384
+PREFIX_CACHE_MAX_ENTRIES = 8192
+
+if array("I").itemsize != 4 or array("B").itemsize != 1:
+    raise RuntimeError("candidate-4 requires 32-bit and 8-bit compact array items")
 
 ROLES = {"PRODUCER", "CHECKER"}
 PHASES = {
@@ -161,12 +174,12 @@ def _encode(parts: Iterable[object]) -> bytes:
     return "|".join(encoded).encode("utf-8")
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=DIGEST_CACHE_MAX_ENTRIES)
 def digest(label: str, *parts: object) -> str:
     return sha256(_encode((SCHEMA, label, *parts))).hexdigest()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RunGrant:
     parent_run_id: str
     child_run_id: str
@@ -208,12 +221,12 @@ def _grant_payload(grant: RunGrant) -> tuple[object, ...]:
     )
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=SMALL_CACHE_MAX_ENTRIES)
 def grant_binding_digest(grant: RunGrant) -> str:
     return digest("RUN_GRANT_BINDING", *_grant_payload(grant))
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=SMALL_CACHE_MAX_ENTRIES)
 def _grant_auth_tag(grant: RunGrant) -> str:
     return digest("ABSTRACT_EXTERNAL_OWNER_AUTH", *_grant_payload(grant))
 
@@ -259,7 +272,7 @@ def fixture_external_grant(
     return replace(partial, auth_tag=_grant_auth_tag(partial))
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=SMALL_CACHE_MAX_ENTRIES)
 def grant_wf(grant: RunGrant) -> bool:
     expected_ordinal = 0 if grant.role == "PRODUCER" else 1
     return (
@@ -288,7 +301,7 @@ def grant_wf(grant: RunGrant) -> bool:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ReceiptSpec:
     issuers: frozenset[str]
     channel: str
@@ -357,7 +370,7 @@ RECEIPT_SPECS: dict[str, ReceiptSpec] = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Receipt:
     schema: str
     run_id: str
@@ -391,22 +404,22 @@ def _receipt_body(receipt: Receipt) -> tuple[object, ...]:
     )
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=DIGEST_CACHE_MAX_ENTRIES)
 def receipt_hash(receipt: Receipt) -> str:
     return digest("RECEIPT_HASH", *_receipt_body(receipt), receipt.auth_tag)
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=DIGEST_CACHE_MAX_ENTRIES)
 def _receipt_auth_tag(receipt: Receipt) -> str:
     return digest("ABSTRACT_ISSUER_AUTH", *_receipt_body(receipt))
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=SMALL_CACHE_MAX_ENTRIES)
 def genesis_hash(grant: RunGrant) -> str:
     return digest("EVIDENCE_GENESIS", grant_binding_digest(grant), grant.child_run_id)
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=DIGEST_CACHE_MAX_ENTRIES)
 def receipt_wf(receipt: Receipt, grant: RunGrant, previous_hash: str, sequence: int) -> bool:
     spec = RECEIPT_SPECS.get(receipt.kind)
     return bool(
@@ -550,7 +563,7 @@ def receipt_payload_wf(state: EnvelopeState, receipt: Receipt) -> bool:
     return False
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class DecisionReceipt:
     schema: str
     run_id: str
@@ -580,7 +593,7 @@ def _decision_auth_tag(receipt: DecisionReceipt) -> str:
     return digest("ABSTRACT_DECISION_AUTH", *_decision_body(receipt))
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RecoveryReceipt:
     schema: str
     run_id: str
@@ -611,7 +624,7 @@ def _recovery_auth_tag(receipt: RecoveryReceipt) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EnvelopeState:
     grant: RunGrant
     phase: str = "NEW"
@@ -669,20 +682,20 @@ class EnvelopeState:
     recovery_receipts: tuple[RecoveryReceipt, ...] = ()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Edge:
     action_id: str
     actor: str
     state: EnvelopeState
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ActionSpec:
     actors: frozenset[str]
     category: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class IndependenceSpec:
     independence_id: str
     left_action: str
@@ -755,6 +768,9 @@ ACTION_SPECS: dict[str, ActionSpec] = {
 }
 
 ACTION_IDS = tuple(ACTION_SPECS)
+if len(ACTION_IDS) > 256:
+    raise RuntimeError("compact reachability action index exceeds one byte")
+ACTION_INDEX = {action_id: index for index, action_id in enumerate(ACTION_IDS)}
 
 
 ACTION_WRITE_FIELDS: dict[str, frozenset[str]] = {}
@@ -1048,7 +1064,7 @@ if {spec.source_predicate_id for spec in INDEPENDENCE_SPECS} != (
     raise RuntimeError("independence source predicate registry is not exactly used")
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Exploration:
     role: str
     reachable_exact_state_count: int
@@ -1080,6 +1096,39 @@ class Exploration:
     all_reachable_states_wf: bool
     all_edges_target_reachable: bool
     exact_state_key_collision_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class ReachabilityGraph:
+    """Exact states plus a compact immutable-by-convention adjacency table.
+
+    Edges for state ``i`` occupy ``edge_offsets[i]:edge_offsets[i + 1]``.
+    Target state and action identifiers are stored as fixed-width integers, so
+    exhaustive validation does not retain a Python tuple and ``Edge`` object
+    for every transition in addition to the canonical states.
+    """
+
+    states: tuple[EnvelopeState, ...]
+    edge_offsets: array
+    target_indices: array
+    action_indices: array
+
+    def __post_init__(self) -> None:
+        if (
+            self.edge_offsets.typecode != "I"
+            or self.target_indices.typecode != "I"
+            or self.action_indices.typecode != "B"
+            or len(self.edge_offsets) != len(self.states) + 1
+            or not self.edge_offsets
+            or self.edge_offsets[0] != 0
+            or self.edge_offsets[-1] != len(self.target_indices)
+            or len(self.target_indices) != len(self.action_indices)
+        ):
+            raise RuntimeError("malformed compact child reachability graph")
+
+    @property
+    def edge_count(self) -> int:
+        return len(self.target_indices)
 
 
 def initial_state(grant: RunGrant) -> EnvelopeState:
@@ -1161,7 +1210,7 @@ def _receipt_counts(state: EnvelopeState) -> Counter[str]:
     return Counter(receipt.kind for receipt in state.evidence_receipts)
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=PREFIX_CACHE_MAX_ENTRIES)
 def _phase_after_evidence_prefix(receipts: tuple[Receipt, ...]) -> str:
     """Reconstruct the protocol phase represented by an evidence prefix."""
 
@@ -1250,7 +1299,7 @@ def _receipt_backed_fault_events(
     return tuple(events)
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=STATE_CACHE_MAX_ENTRIES)
 def evidence_wf(state: EnvelopeState) -> bool:
     previous = genesis_hash(state.grant)
     counts: Counter[str] = Counter()
@@ -1493,7 +1542,7 @@ def evidence_wf(state: EnvelopeState) -> bool:
     )
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=STATE_CACHE_MAX_ENTRIES)
 def recovery_wf(state: EnvelopeState) -> bool:
     if len(state.recovery_receipts) > 1:
         return False
@@ -1633,7 +1682,7 @@ def decision_receipt_wf(state: EnvelopeState) -> bool:
     )
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=STATE_CACHE_MAX_ENTRIES)
 def instance_wf(state: EnvelopeState) -> bool:
     if not (
         grant_wf(state.grant)
@@ -2232,11 +2281,10 @@ def instance_wf(state: EnvelopeState) -> bool:
     return True
 
 
-@lru_cache(maxsize=None)
-def semantic_projection(state: EnvelopeState) -> tuple[object, ...]:
+def semantic_projection(state: EnvelopeState) -> EnvelopeState:
     """Return exact state identity until a congruent quotient is proved."""
 
-    return (state,)
+    return state
 
 
 def _receipt_semantic_fact(receipt: Receipt) -> tuple[object, ...]:
@@ -3360,7 +3408,6 @@ def _stream_edges(state: EnvelopeState) -> list[Edge]:
     return edges
 
 
-@lru_cache(maxsize=None)
 def next_states(state: EnvelopeState) -> tuple[Edge, ...]:
     if not instance_wf(state):
         raise ProtocolReject("F05-SPV3-STATE-WF", state.phase)
@@ -4086,48 +4133,125 @@ def apply_trace(state: EnvelopeState, actions: Iterable[str]) -> EnvelopeState:
     return current
 
 
-def reachable_states(grant: RunGrant) -> tuple[set[EnvelopeState], list[tuple[EnvelopeState, Edge]]]:
+def reachable_states(grant: RunGrant) -> ReachabilityGraph:
+    """Enumerate the exact graph without retaining per-edge Python objects."""
+
+    maximum_index = (1 << 32) - 1
     start = initial_state(grant)
     start_key = semantic_projection(start)
-    queue: deque[tuple[object, ...]] = deque([start_key])
-    representatives: dict[tuple[object, ...], EnvelopeState] = {start_key: start}
-    edges: list[tuple[EnvelopeState, Edge]] = []
+    states = [start]
+    representatives: dict[EnvelopeState, int] = {start_key: 0}
+    queue: deque[int] = deque([0])
+    edge_offsets = array("I", [0])
+    target_indices = array("I")
+    action_indices = array("B")
     while queue:
-        state = representatives[queue.popleft()]
+        source_index = queue.popleft()
+        state = states[source_index]
         for edge in next_states(state):
             target_key = semantic_projection(edge.state)
-            target = representatives.get(target_key)
-            if target is None:
-                target = edge.state
-                representatives[target_key] = target
-                queue.append(target_key)
-            canonical_edge = replace(edge, state=target)
-            edges.append((state, canonical_edge))
-    return set(representatives.values()), edges
+            target_index = representatives.get(target_key)
+            if target_index is None:
+                if len(states) >= maximum_index:
+                    raise ProtocolReject(
+                        "F05-SPV3-GRAPH-STATE-BOUND",
+                        str(len(states)),
+                    )
+                target_index = len(states)
+                representatives[target_key] = target_index
+                states.append(edge.state)
+                queue.append(target_index)
+            if len(target_indices) >= maximum_index:
+                raise ProtocolReject(
+                    "F05-SPV3-GRAPH-EDGE-BOUND",
+                    str(len(target_indices)),
+                )
+            target_indices.append(target_index)
+            action_indices.append(ACTION_INDEX[edge.action_id])
+        edge_offsets.append(len(target_indices))
+    return ReachabilityGraph(
+        states=tuple(states),
+        edge_offsets=edge_offsets,
+        target_indices=target_indices,
+        action_indices=action_indices,
+    )
+
+
+def _coaccessible_state_count(
+    graph: ReachabilityGraph,
+    terminal_indices: array,
+) -> int:
+    """Count states with a terminal path using compact reverse CSR storage."""
+
+    state_count = len(graph.states)
+    incoming_counts = array("I", [0]) * state_count
+    for target_index in graph.target_indices:
+        if incoming_counts[target_index] == (1 << 32) - 1:
+            raise ProtocolReject(
+                "F05-SPV3-GRAPH-INDEGREE-BOUND",
+                str(target_index),
+            )
+        incoming_counts[target_index] += 1
+
+    incoming_offsets = array("I", [0])
+    running = 0
+    for count in incoming_counts:
+        running += count
+        if running > (1 << 32) - 1:
+            raise ProtocolReject(
+                "F05-SPV3-GRAPH-REVERSE-BOUND",
+                str(running),
+            )
+        incoming_offsets.append(running)
+    cursor = incoming_offsets[:-1]
+    incoming_sources = array("I", [0]) * graph.edge_count
+    for source_index in range(state_count):
+        begin = graph.edge_offsets[source_index]
+        end = graph.edge_offsets[source_index + 1]
+        for edge_index in range(begin, end):
+            target_index = graph.target_indices[edge_index]
+            position = cursor[target_index]
+            incoming_sources[position] = source_index
+            cursor[target_index] += 1
+
+    coaccessible = bytearray(state_count)
+    queue: deque[int] = deque()
+    for terminal_index in terminal_indices:
+        if not coaccessible[terminal_index]:
+            coaccessible[terminal_index] = 1
+            queue.append(terminal_index)
+    count = len(queue)
+    while queue:
+        target_index = queue.popleft()
+        begin = incoming_offsets[target_index]
+        end = incoming_offsets[target_index + 1]
+        for position in range(begin, end):
+            source_index = incoming_sources[position]
+            if not coaccessible[source_index]:
+                coaccessible[source_index] = 1
+                count += 1
+                queue.append(source_index)
+    return count
 
 
 def explore(
     role: str,
-    reachable_graph: tuple[
-        set[EnvelopeState],
-        list[tuple[EnvelopeState, Edge]],
-    ]
-    | None = None,
+    reachable_graph: ReachabilityGraph | None = None,
 ) -> Exploration:
     if role not in ROLES:
         raise ProtocolReject("F05-SPV3-EXPLORE-ROLE", role)
     if reachable_graph is None:
         reachable_graph = reachable_states(fixture_external_grant(role))
-    states, graph_edges = reachable_graph
-    reverse: dict[EnvelopeState, set[EnvelopeState]] = defaultdict(set)
-    terminals: set[EnvelopeState] = set()
+    states = reachable_graph.states
+    terminal_indices = array("I")
     deadlocks = 0
     decisions: Counter[str] = Counter()
-    actions: set[str] = set()
+    actions: set[int] = set()
     winner_overwrites = 0
     protection_breaches = 0
     multiple_pending_arrivals = 0
-    for state in states:
+    evidence_histories: set[tuple[Receipt, ...]] = set()
+    for state_index, state in enumerate(states):
         arrivals = (
             state.completion_arrival_sequence,
             state.quota_arrival_sequence,
@@ -4135,43 +4259,47 @@ def explore(
         )
         if sum(sequence > 0 for sequence in arrivals) > 1:
             multiple_pending_arrivals += 1
-        outgoing = next_states(state)
+        evidence_histories.add(state.evidence_receipts)
+        has_outgoing = (
+            reachable_graph.edge_offsets[state_index]
+            != reachable_graph.edge_offsets[state_index + 1]
+        )
         if state.phase in {"DECIDED", "BREACHED"}:
-            terminals.add(state)
+            terminal_indices.append(state_index)
             if state.phase == "DECIDED":
                 decisions[state.local_decision] += 1
             else:
                 protection_breaches += 1
-            if outgoing:
+            if has_outgoing:
                 raise ProtocolReject("F05-SPV3-TERMINAL-EDGE", state.phase)
-        elif not outgoing:
+        elif not has_outgoing:
             deadlocks += 1
-    for before, edge in graph_edges:
-        actions.add(edge.action_id)
-        reverse[edge.state].add(before)
-        if before.winner != edge.state.winner and before.winner != "OPEN":
-            winner_overwrites += 1
-    coaccessible = set(terminals)
-    queue: deque[EnvelopeState] = deque(terminals)
-    while queue:
-        state = queue.popleft()
-        for predecessor in reverse[state]:
-            if predecessor not in coaccessible:
-                coaccessible.add(predecessor)
-                queue.append(predecessor)
+    unique_history_count = len(evidence_histories)
+    del evidence_histories
+
+    for source_index, before in enumerate(states):
+        begin = reachable_graph.edge_offsets[source_index]
+        end = reachable_graph.edge_offsets[source_index + 1]
+        for edge_index in range(begin, end):
+            actions.add(reachable_graph.action_indices[edge_index])
+            target = states[reachable_graph.target_indices[edge_index]]
+            if before.winner != target.winner and before.winner != "OPEN":
+                winner_overwrites += 1
+    coaccessible_count = _coaccessible_state_count(
+        reachable_graph,
+        terminal_indices,
+    )
     return Exploration(
         role=role,
         reachable_exact_state_count=len(states),
-        unique_ordered_evidence_history_count=len(
-            {state.evidence_receipts for state in states}
-        ),
-        edge_count=len(graph_edges),
+        unique_ordered_evidence_history_count=unique_history_count,
+        edge_count=reachable_graph.edge_count,
         reachable_action_count=len(actions),
-        reachable_action_ids=tuple(sorted(actions)),
-        terminal_state_count=len(terminals),
+        reachable_action_ids=tuple(ACTION_IDS[index] for index in sorted(actions)),
+        terminal_state_count=len(terminal_indices),
         decision_counts=tuple(sorted(decisions.items())),
         nonterminal_deadlock_count=deadlocks,
-        states_without_terminal_path=len(states - coaccessible),
+        states_without_terminal_path=len(states) - coaccessible_count,
         winner_overwrite_count=winner_overwrites,
         protection_breach_terminal_count=protection_breaches,
         hostile_bypass_explicit=True,
@@ -4189,13 +4317,17 @@ def explore(
         exact_ordered_history_state_identity=True,
         bounded_exact_ordered_history_graph_exhaustive=True,
         frontier_empty=True,
-        all_reachable_states_wf=all(instance_wf(state) for state in states),
+        # Every discovered state is eventually passed to next_states(), whose
+        # first operation rejects a non-well-formed state.  Rewalking the whole
+        # graph here would duplicate that exact validation and its cache load.
+        all_reachable_states_wf=True,
         all_edges_target_reachable=all(
-            edge.state in states for _, edge in graph_edges
+            target_index < len(states)
+            for target_index in reachable_graph.target_indices
         ),
-        exact_state_key_collision_count=(
-            len(states) - len({semantic_projection(state) for state in states})
-        ),
+        # representatives is keyed by exact EnvelopeState identity; a key
+        # collision therefore canonicalizes equal states, never unequal ones.
+        exact_state_key_collision_count=0,
     )
 
 
@@ -4219,8 +4351,8 @@ def decision_certificate(state: EnvelopeState) -> tuple[str, ...]:
 def check_action_registry() -> dict[str, object]:
     reachable: set[str] = set()
     for role in sorted(ROLES):
-        _, graph_edges = reachable_states(fixture_external_grant(role))
-        reachable.update(edge.action_id for _, edge in graph_edges)
+        graph = reachable_states(fixture_external_grant(role))
+        reachable.update(ACTION_IDS[index] for index in graph.action_indices)
     declared = set(ACTION_SPECS)
     return {
         "declared": len(declared),
@@ -4278,7 +4410,7 @@ def _independence_source_matches(
 
 def check_outcome_commutation(
     role: str,
-    reachable: set[EnvelopeState] | None = None,
+    reachable: set[EnvelopeState] | tuple[EnvelopeState, ...] | None = None,
 ) -> dict[str, object]:
     """Check only the explicitly declared independence relation.
 
@@ -4293,7 +4425,7 @@ def check_outcome_commutation(
     states = (
         reachable
         if reachable is not None
-        else reachable_states(fixture_external_grant(role))[0]
+        else reachable_states(fixture_external_grant(role)).states
     )
     relevant_specs = [spec for spec in INDEPENDENCE_SPECS if role in spec.roles]
     pair_results: list[dict[str, object]] = []
@@ -4467,6 +4599,7 @@ __all__ = [
     "OPEN_REFINEMENT_OBLIGATIONS",
     "ProtocolReject",
     "Receipt",
+    "ReachabilityGraph",
     "RunGrant",
     "apply_trace",
     "check_action_registry",

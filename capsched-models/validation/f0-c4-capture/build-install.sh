@@ -3,7 +3,7 @@ set -euo pipefail
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 contract=$script_dir/../../analysis/f0-c4-authority-disjoint-capture-contract-v1.json
-readonly contract_sha256=14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075
+readonly contract_sha256=0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d
 readonly state_root=/var/lib/domainlease-f0-c4
 readonly install_root=/usr/local
 readonly reducer_user=domainlease-reducer

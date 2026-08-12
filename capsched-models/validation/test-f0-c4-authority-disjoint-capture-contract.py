@@ -192,6 +192,7 @@ def mutation_cases() -> list[tuple[str, Mutator]]:
         ("component-memory-consumes-vm", set_value(("resource_policy", "memory_max_bytes_per_component"), 10737418240)),
         ("vm-minimum-below-reserve", set_value(("resource_policy", "required_vm_memory_min_bytes"), 8589934592)),
         ("supervisor-low-exceeds-reserve", set_value(("resource_policy", "supervisor_memory_low_bytes"), 3221225472)),
+        ("component-oom-kills-supervisor", set_value(("resource_policy", "candidate_component_oom_isolated_from_supervisor"), False)),
         ("raw-total-cannot-cover-streams", set_value(("resource_policy", "raw_total_max_bytes"), 1073741824)),
         ("resource-exhaustion-positive", set_value(("resource_policy", "resource_exhaustion_is_positive"), True)),
         ("audit-allocation-unbounded", set_value(("resource_policy", "audit_allocation_unbounded"), True)),
@@ -318,6 +319,11 @@ def derived_mutation_cases() -> list[tuple[str, Mutator, PolicyAligner]]:
         (
             "derived-supervisor-memory-reserve",
             set_value(("resource_policy", "supervisor_memory_low_bytes"), 3221225472),
+            align_resource,
+        ),
+        (
+            "derived-component-oom-isolation",
+            set_value(("resource_policy", "candidate_component_oom_isolated_from_supervisor"), False),
             align_resource,
         ),
         (

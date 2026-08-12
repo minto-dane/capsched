@@ -201,6 +201,16 @@ def validate_semantics(
     )
 
     capture = evidence["authority_capture_contract"]
+    short = capture["short_regression"]
+    for key in (
+        "model_memory_policy_cases",
+        "capture_resource_policy_cases",
+        "reducer_current_input_binding_cases",
+    ):
+        require(
+            current_input["local_regression"][key] == short[key],
+            f"current input/short-regression count drift: {key}",
+        )
     contract_gates = [item["id"] for item in contract["implementation_gates"]]
     closed = capture["closed_gates"]
     remaining = capture["remaining_gates"]
@@ -222,7 +232,10 @@ def validate_semantics(
     latest_id = g6["latest_completed_attempt_run_id"]
     require(latest_id in attempts, "latest G6 attempt is absent from history")
     latest = attempts[latest_id]
-    require(latest["status"] == "RAW_CAPTURE_INCOMPLETE", "latest G6 result drift")
+    require(
+        latest["status"] in {"RAW_CAPTURE_INCOMPLETE", "GUARDIAN_INCOMPLETE_PUBLISHED"},
+        "latest G6 result drift",
+    )
     require(latest["observation_record"] == state["canonical_files"]["f0_c4_g6_incomplete_record"], "G6 observation path drift")
     require(latest["observation_sha256"] == observation["artifact_sha256"], "G6 observation digest drift")
     require(observation["run_id"] == latest_id, "G6 observation run-id drift")
@@ -231,11 +244,57 @@ def validate_semantics(
     require(observation["raw_commit"]["reduction_performed"] is False, "incomplete G6 was reduced")
     require(observation["disposition"]["g6_closed"] is False, "incomplete G6 closed its gate")
     require(observation["disposition"]["g7_eligible"] is False, "incomplete G6 enabled G7")
-    require(
-        observation["captured_child_model_sha256"]
-        != current_input["exact_inputs"]["f0_supervisor_lts_v3.py"],
-        "repaired input did not change the rejected child-model bytes",
-    )
+    if latest["status"] == "GUARDIAN_INCOMPLETE_PUBLISHED":
+        require(
+            observation["guardian_disposition"]["service_result"] == "oom-kill",
+            "guardian OOM result drift",
+        )
+        require(
+            observation["resource_observation"]["failed_component"]
+            == "child-bundle-producer",
+            "OOM component drift",
+        )
+        require(
+            current_input["failed_capture"]["run_id"] == latest_id,
+            "resource repair does not bind the failed run",
+        )
+        repair = current_input["repair"]
+        require(
+            repair["exact_state_identity_changed"] is False
+            and repair["transition_relation_changed"] is False
+            and repair["reachable_state_set_intentionally_changed"] is False,
+            "resource repair changed Candidate-4 semantics",
+        )
+        require(
+            repair["enumeration_representation_changed"] is True
+            and repair["reachable_state_dataclasses_use_slots"] is True
+            and repair["unbounded_transition_and_well_formedness_caches_removed"] is True
+            and repair["remaining_pure_caches_have_positive_finite_bounds"] is True
+            and repair["per_edge_python_object_retention_replaced_by_fixed_width_csr"] is True
+            and repair["candidate_component_oom_isolated_from_trusted_supervisor"] is True,
+            "resource-retention repair is incomplete",
+        )
+        require(
+            repair["post_run_reducer_current_input_binding_repaired"] is True
+            and repair[
+                "future_reducer_input_and_semantic_registry_drift_mechanically_rejected"
+            ]
+            is True,
+            "reducer current-input repair is incomplete",
+        )
+        require(
+            contract["resource_policy"][
+                "candidate_component_oom_isolated_from_supervisor"
+            ]
+            is True,
+            "capture contract does not isolate component OOM",
+        )
+    else:
+        require(
+            observation["captured_child_model_sha256"]
+            != current_input["exact_inputs"]["f0_supervisor_lts_v3.py"],
+            "repaired input did not change the rejected child-model bytes",
+        )
     require(current_input["repair"]["counterexample_trace_added_to_fast_regression"] is True, "counterexample regression absent")
     require(current_input["repair"]["semantic_change"] is False, "repair unexpectedly changed semantics")
 
@@ -256,6 +315,7 @@ def validate_semantics(
         expected_track_status = "open_candidate4_g1_g5_closed_g6_reinstall_required_g7_blocked"
         expected_install_action = "counterexample_repaired_clean_install_pending"
         expected_full_action = "blocked_until_repaired_clean_install"
+        expected_reducer_status = "PASS_PREDECESSOR_TCB_ONLY"
     elif install["status"] == "PASSED_FOR_REPAIRED_INPUTS":
         require(install["current_inputs_installed"] is True, "passed reinstall not marked installed")
         require(g6["retry_eligible"] is True, "G6 retry not enabled after clean reinstall")
@@ -266,6 +326,29 @@ def validate_semantics(
         expected_track_status = "open_candidate4_g1_g5_closed_g6_retry_eligible_g7_blocked"
         expected_install_action = "completed_clean_reviewed_install_for_repaired_inputs"
         expected_full_action = "g6_retry_eligible"
+        expected_reducer_status = "PASS"
+    elif install["status"] == "REINSTALL_REQUIRED_AFTER_RESOURCE_REPAIR":
+        require(install["current_inputs_installed"] is False, "pending resource reinstall marked installed")
+        require(g6["retry_eligible"] is False, "G6 retry enabled before resource clean reinstall")
+        require(readiness["status"] == "REINSTALL_REQUIRED", "pending resource install has positive readiness")
+        expected_input_status = "resource_retention_repaired_g6_retry_requires_clean_install"
+        expected_phase = "f0_v5_c4_g6_open_reinstall_required"
+        expected_capture_status = "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked"
+        expected_track_status = "open_candidate4_g1_g5_closed_g6_resource_reinstall_required_g7_blocked"
+        expected_install_action = "resource_repair_clean_install_pending"
+        expected_full_action = "blocked_until_resource_repair_clean_install"
+        expected_reducer_status = "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE"
+    elif install["status"] == "PASSED_FOR_RESOURCE_REPAIRED_INPUTS":
+        require(install["current_inputs_installed"] is True, "passed resource reinstall not marked installed")
+        require(g6["retry_eligible"] is True, "G6 retry not enabled after resource clean reinstall")
+        require(readiness["status"] == "G6_RETRY_ELIGIBLE", "passed resource install lacks readiness")
+        expected_input_status = "resource_retention_repaired_clean_installed_g6_retry_eligible"
+        expected_phase = "f0_v5_c4_g6_open_retry_eligible"
+        expected_capture_status = "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+        expected_track_status = "open_candidate4_g1_g5_closed_g6_resource_retry_eligible_g7_blocked"
+        expected_install_action = "completed_clean_reviewed_install_for_resource_repaired_inputs"
+        expected_full_action = "g6_resource_retry_eligible"
+        expected_reducer_status = "PASS"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
 
@@ -279,12 +362,19 @@ def validate_semantics(
     require(readiness["clean_install"]["installed_manifest_sha256"] == install["installed_manifest_sha256"], "readiness install manifest drift")
     require(readiness["clean_install"]["source_worktree_clean"] is True, "readiness source was dirty")
     require(readiness["clean_install"]["committed_state_check"] == "PASS", "readiness committed state check absent")
+    require(readiness["clean_install"]["current_inputs_installed"] == install["current_inputs_installed"], "readiness current-install flag drift")
     require(readiness["toolchain"]["format"] == capture["immutable_toolchain"]["format"], "readiness toolchain format drift")
     require(readiness["toolchain"]["image_sha256"] == capture["immutable_toolchain"]["sha256"], "readiness toolchain digest drift")
     require(readiness["toolchain"]["mounted_read_only"] is True, "readiness toolchain is writable")
     require(readiness["toolchain"]["reuse_regression_cases"] == capture["short_regression"]["toolchain_reuse_cases"], "readiness reuse regression drift")
     require(readiness["mechanism_recheck"]["capture_contract_sha256"] == capture["canonical_sha256"], "readiness contract drift")
-    require(readiness["mechanism_recheck"]["reducer_boundary_status"] == "PASS", "readiness reducer boundary absent")
+    require(readiness["mechanism_recheck"]["capture_contract_hostile_cases"] == capture["hostile_mutation_cases"], "readiness hostile contract count drift")
+    require(readiness["mechanism_recheck"]["capture_contract_derived_cases"] == capture["derived_semantic_cases"], "readiness derived contract count drift")
+    require(readiness["mechanism_recheck"]["capture_resource_policy_cases"] == capture["short_regression"]["capture_resource_policy_cases"], "readiness resource-policy count drift")
+    require(readiness["current_inputs"]["model_memory_policy_cases"] == capture["short_regression"]["model_memory_policy_cases"], "readiness model-memory count drift")
+    require(readiness["current_inputs"]["reducer_current_input_binding_cases"] == capture["short_regression"]["reducer_current_input_binding_cases"], "readiness reducer-input count drift")
+    require(readiness["mechanism_recheck"]["reducer_current_input_binding_cases"] == capture["short_regression"]["reducer_current_input_binding_cases"], "readiness reducer-binding mechanism count drift")
+    require(readiness["mechanism_recheck"]["reducer_boundary_status"] == expected_reducer_status, "readiness reducer boundary status drift")
     require(readiness["mechanism_recheck"]["reducer_boundary_cases"] == capture["short_regression"]["reducer_cases"], "readiness reducer cases drift")
     require(readiness["source_transfer"]["policy"] == "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging", "readiness source-transfer policy drift")
     require(readiness["source_transfer"]["macos_home_mount"] == "none", "readiness grants macOS home access")
@@ -386,6 +476,7 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
         stderr=subprocess.DEVNULL,
     )
     require(ancestry.returncode == 0, "installed source commit is not in current lineage")
+    installed_input_mismatches = 0
     for name, expected in current_input["exact_inputs"].items():
         relative = f"capsched-models/validation/{name}"
         blob = subprocess.run(
@@ -394,10 +485,20 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
         )
-        require(blob.returncode == 0, f"installed commit lacks current input: {name}")
+        if blob.returncode != 0 or hashlib.sha256(blob.stdout).hexdigest() != expected:
+            installed_input_mismatches += 1
+    current_inputs_installed = state["evidence"]["authority_capture_contract"][
+        "clean_install"
+    ]["current_inputs_installed"]
+    if current_inputs_installed:
         require(
-            hashlib.sha256(blob.stdout).hexdigest() == expected,
-            f"installed commit input digest mismatch: {name}",
+            installed_input_mismatches == 0,
+            "installed commit does not contain every current exact input",
+        )
+    else:
+        require(
+            installed_input_mismatches > 0,
+            "reinstall is required even though installed inputs already match",
         )
 
     validate_semantics(state, claims, contract, current_input, observation, readiness)
@@ -511,6 +612,49 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
                 current_input,
                 observation,
                 changed_readiness,
+            )
+        )
+        changed_input = copy.deepcopy(current_input)
+        changed_input["repair"]["exact_state_identity_changed"] = True
+        mutations.append(
+            (
+                "resource repair changes exact identity",
+                state,
+                claims,
+                contract,
+                changed_input,
+                observation,
+                readiness,
+            )
+        )
+        changed_contract = copy.deepcopy(contract)
+        changed_contract["resource_policy"][
+            "candidate_component_oom_isolated_from_supervisor"
+        ] = False
+        mutations.append(
+            (
+                "component OOM isolation removed",
+                state,
+                claims,
+                changed_contract,
+                current_input,
+                observation,
+                readiness,
+            )
+        )
+        changed_input = copy.deepcopy(current_input)
+        changed_input["repair"][
+            "future_reducer_input_and_semantic_registry_drift_mechanically_rejected"
+        ] = False
+        mutations.append(
+            (
+                "reducer binding drift prevention removed",
+                state,
+                claims,
+                contract,
+                changed_input,
+                observation,
+                readiness,
             )
         )
 

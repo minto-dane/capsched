@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-CONTRACT_SHA256 = "14ca4b5424f448462ff0868689f278f412ee43fe2d32d8372a8cacc78d4fd075"
+CONTRACT_SHA256 = "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d"
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 CANDIDATE_UID = 200010
 CANDIDATE_GID = 200010
@@ -119,6 +119,7 @@ RESOURCE_POLICY = {
     "guardian_and_host_reserve_min_bytes": 2147483648,
     "required_vm_memory_min_bytes": 10200547328,
     "memory_swap_max_bytes_per_component": 0,
+    "candidate_component_oom_isolated_from_supervisor": True,
     "stdout_max_bytes_per_component": 268435456,
     "stderr_max_bytes_per_component": 16777216,
     "preexec_observation_max_bytes_per_component": 1048576,

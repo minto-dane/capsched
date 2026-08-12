@@ -3,7 +3,8 @@
 
 from __future__ import annotations
 
-from collections import Counter, defaultdict, deque
+from array import array
+from collections import Counter, deque
 from dataclasses import dataclass, replace
 from functools import lru_cache
 
@@ -15,6 +16,11 @@ if not __debug__:
 
 
 SCHEMA = "F0-SPV3-ORCH-C4"
+SMALL_CACHE_MAX_ENTRIES = 256
+STATE_CACHE_MAX_ENTRIES = 16384
+
+if array("I").itemsize != 4 or array("B").itemsize != 1:
+    raise RuntimeError("candidate-4 requires 32-bit and 8-bit compact array items")
 
 ACTORS = {
     "EXTERNAL_OWNER",
@@ -116,7 +122,7 @@ OPEN_REFINEMENT_OBLIGATIONS = (
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StoreAttackSpec:
     action_id: str
     breach: str
@@ -154,7 +160,7 @@ class OrchestratorReject(RuntimeError):
         self.detail = detail
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ParentGrant:
     parent_run_id: str
     epoch: int
@@ -229,7 +235,7 @@ def parent_grant_wf(grant: ParentGrant) -> bool:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class GrantConsumptionAck:
     schema: str
     parent_run_id: str
@@ -336,7 +342,7 @@ def child_grant_matches_parent(
     return child.grant_wf(grant) and grant == expected
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ChildCertificate:
     grant: child.RunGrant
     trace_actions: tuple[str, ...]
@@ -350,7 +356,7 @@ class ChildCertificate:
     certificate_digest: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ChildStartBinding:
     schema: str
     parent_run_id: str
@@ -392,7 +398,7 @@ def _child_start_auth(binding: ChildStartBinding) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ChildAttachment:
     schema: str
     parent_run_id: str
@@ -443,7 +449,7 @@ def _child_attachment_auth(attachment: ChildAttachment) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ChildGrantRetirement:
     schema: str
     parent_run_id: str
@@ -513,7 +519,7 @@ def _child_trace_digest(trace_actions: tuple[str, ...]) -> str:
     return child.digest("CHILD_TERMINAL_TRACE", *trace_actions)
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=SMALL_CACHE_MAX_ENTRIES)
 def _replay_child_terminal(
     grant: child.RunGrant,
     trace_actions: tuple[str, ...],
@@ -637,7 +643,7 @@ CHILD_CLEANUP = (
 )
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=SMALL_CACHE_MAX_ENTRIES)
 def fixture_child_certificate(grant: child.RunGrant, scenario: str) -> ChildCertificate:
     candidate = (
         "OBS-009A-PRODUCER-CANDIDATE-A"
@@ -709,7 +715,7 @@ def expected_checker_input(producer: ChildCertificate) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ParentReceiptSpec:
     issuers: frozenset[str]
 
@@ -732,7 +738,7 @@ PARENT_RECEIPT_SPECS = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ParentReceipt:
     schema: str
     parent_run_id: str
@@ -768,7 +774,7 @@ def _parent_receipt_auth(receipt: ParentReceipt) -> str:
     return child.digest("ABSTRACT_PARENT_RECEIPT_AUTH", *_parent_receipt_body(receipt))
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class LocalDispositionCapsule:
     schema: str
     parent_run_id: str
@@ -805,7 +811,7 @@ def _capsule_auth(capsule: LocalDispositionCapsule) -> str:
     return child.digest("ABSTRACT_LOCAL_CAPSULE_AUTH", *_capsule_body(capsule), capsule.capsule_digest)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SemanticVerdict:
     """A distinct external type; no transition in this module constructs one."""
 
@@ -814,7 +820,7 @@ class SemanticVerdict:
     external_issuer: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class PublicationCommitment:
     parent_run_id: str
     artifact_type: str
@@ -837,7 +843,7 @@ def _commitment_digest(commitment: PublicationCommitment) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class DurableAck:
     commitment_digest: str
     generation: int
@@ -866,7 +872,7 @@ STORE_HEAD_KINDS = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StoreHead:
     generation: int
     content_kind: str
@@ -951,7 +957,7 @@ def _foreign_store_head(state: OrchestratorState) -> StoreHead:
     return replace(partial, auth_tag=_store_head_auth(partial))
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StoreFenceAck:
     schema: str
     parent_run_id: str
@@ -984,7 +990,7 @@ def _store_fence_auth(ack: StoreFenceAck) -> str:
     return child.digest("ABSTRACT_STORE_FENCE_AUTH", *_store_fence_body(ack))
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SupersededPublicationAttempt:
     commitment: PublicationCommitment
     durable_ack: DurableAck | None
@@ -1011,7 +1017,7 @@ def _supersession_auth(attempt: SupersededPublicationAttempt) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class PublicationAck:
     commitment_digest: str
     old_generation: int
@@ -1032,7 +1038,7 @@ def _publication_ack_auth(ack: PublicationAck) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AbandonmentCommitment:
     parent_run_id: str
     binding_digest: str
@@ -1059,7 +1065,7 @@ def _abandonment_commitment_digest(
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AbandonmentAck:
     commitment_digest: str
     old_generation: int
@@ -1080,7 +1086,7 @@ def _abandonment_ack_auth(ack: AbandonmentAck) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AbandonmentConflictNotice:
     schema: str
     parent_run_id: str
@@ -1114,7 +1120,7 @@ def _abandonment_conflict_auth(notice: AbandonmentConflictNotice) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RecoveryReceipt:
     schema: str
     parent_run_id: str
@@ -1145,7 +1151,7 @@ def _recovery_auth(receipt: RecoveryReceipt) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OwnerFailureNotice:
     schema: str
     parent_run_id: str
@@ -1178,7 +1184,7 @@ def _owner_failure_digest(notice: OwnerFailureNotice) -> str:
 MAX_STORE_ATTACK_ATTEMPTS_PER_TYPED_CONTEXT = 1
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StoreAttackContext:
     schema: str
     parent_run_id: str
@@ -1254,13 +1260,13 @@ def _store_attack_context_digest(context: StoreAttackContext) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StoreAttackKey:
     attack: str
     context_digest: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StoreSecurityEvent:
     schema: str
     parent_run_id: str
@@ -1305,7 +1311,7 @@ def store_security_hash(event: StoreSecurityEvent) -> str:
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OrchestratorState:
     phase: str = "WAIT_GRANT"
     parent_grant: ParentGrant | None = None
@@ -1364,14 +1370,14 @@ class OrchestratorState:
         return self.store_head.generation if self.store_head is not None else 0
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OrchEdge:
     action_id: str
     actor: str
     state: OrchestratorState
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ActionSpec:
     actors: frozenset[str]
     relation: str
@@ -1448,6 +1454,36 @@ ACTION_SPECS = {
     "ADV-031-FAIL-GUARDIAN": ActionSpec(frozenset({"ADVERSARY"}), "AdversaryNext"),
 }
 ACTION_IDS = tuple(ACTION_SPECS)
+if len(ACTION_IDS) > 256:
+    raise RuntimeError("compact orchestrator action index exceeds one byte")
+ACTION_INDEX = {action_id: index for index, action_id in enumerate(ACTION_IDS)}
+
+
+@dataclass(frozen=True, slots=True)
+class OrchestratorReachabilityGraph:
+    """Exact orchestrator states with fixed-width adjacency indexes."""
+
+    states: tuple[OrchestratorState, ...]
+    edge_offsets: array
+    target_indices: array
+    action_indices: array
+
+    def __post_init__(self) -> None:
+        if (
+            self.edge_offsets.typecode != "I"
+            or self.target_indices.typecode != "I"
+            or self.action_indices.typecode != "B"
+            or len(self.edge_offsets) != len(self.states) + 1
+            or not self.edge_offsets
+            or self.edge_offsets[0] != 0
+            or self.edge_offsets[-1] != len(self.target_indices)
+            or len(self.target_indices) != len(self.action_indices)
+        ):
+            raise RuntimeError("malformed compact orchestrator reachability graph")
+
+    @property
+    def edge_count(self) -> int:
+        return len(self.target_indices)
 
 _registered_attack_actions = {
     spec.action_id for spec in STORE_ATTACK_SPECS.values()
@@ -4106,7 +4142,7 @@ def child_lifecycle_wf(state: OrchestratorState) -> bool:
     return True
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=STATE_CACHE_MAX_ENTRIES)
 def orchestrator_wf(state: OrchestratorState) -> bool:
     if not (
         state.phase in PHASES
@@ -4302,10 +4338,10 @@ def orchestrator_wf(state: OrchestratorState) -> bool:
     return True
 
 
-def semantic_projection(state: OrchestratorState) -> tuple[object, ...]:
+def semantic_projection(state: OrchestratorState) -> OrchestratorState:
     # Exact identity is deliberate: evidence and recovery histories affect future
     # roots and therefore cannot be quotient-elided without a congruence proof.
-    return (state,)
+    return state
 
 
 def _action_semantics_wf(
@@ -5972,7 +6008,6 @@ def hostile_store_bypass_next(state: OrchestratorState) -> tuple[OrchEdge, ...]:
     )
 
 
-@lru_cache(maxsize=None)
 def next_states(state: OrchestratorState) -> tuple[OrchEdge, ...]:
     if not orchestrator_wf(state):
         raise OrchestratorReject("F05-ORCH-STATE-WF", state.phase)
@@ -6001,37 +6036,116 @@ def apply_trace(state: OrchestratorState, actions: tuple[str, ...]) -> Orchestra
     return current
 
 
-def reachable_states() -> tuple[set[OrchestratorState], list[tuple[OrchestratorState, OrchEdge]]]:
+def reachable_states() -> OrchestratorReachabilityGraph:
+    """Enumerate exact reachability without retaining per-edge objects."""
+
+    maximum_index = (1 << 32) - 1
     start = initial_state()
     key = semantic_projection(start)
-    representatives = {key: start}
-    queue: deque[tuple[object, ...]] = deque([key])
-    graph: list[tuple[OrchestratorState, OrchEdge]] = []
+    states = [start]
+    representatives: dict[OrchestratorState, int] = {key: 0}
+    queue: deque[int] = deque([0])
+    edge_offsets = array("I", [0])
+    target_indices = array("I")
+    action_indices = array("B")
     while queue:
-        state = representatives[queue.popleft()]
+        source_index = queue.popleft()
+        state = states[source_index]
         for edge in next_states(state):
             target_key = semantic_projection(edge.state)
-            target = representatives.get(target_key)
-            if target is None:
-                target = edge.state
-                representatives[target_key] = target
-                queue.append(target_key)
-            graph.append((state, replace(edge, state=target)))
-    return set(representatives.values()), graph
+            target_index = representatives.get(target_key)
+            if target_index is None:
+                if len(states) >= maximum_index:
+                    raise OrchestratorReject(
+                        "F05-ORCH-GRAPH-STATE-BOUND",
+                        str(len(states)),
+                    )
+                target_index = len(states)
+                representatives[target_key] = target_index
+                states.append(edge.state)
+                queue.append(target_index)
+            if len(target_indices) >= maximum_index:
+                raise OrchestratorReject(
+                    "F05-ORCH-GRAPH-EDGE-BOUND",
+                    str(len(target_indices)),
+                )
+            target_indices.append(target_index)
+            action_indices.append(ACTION_INDEX[edge.action_id])
+        edge_offsets.append(len(target_indices))
+    return OrchestratorReachabilityGraph(
+        states=tuple(states),
+        edge_offsets=edge_offsets,
+        target_indices=target_indices,
+        action_indices=action_indices,
+    )
+
+
+def _coaccessible_state_count(
+    graph: OrchestratorReachabilityGraph,
+    terminal_indices: array,
+) -> int:
+    state_count = len(graph.states)
+    incoming_counts = array("I", [0]) * state_count
+    for target_index in graph.target_indices:
+        if incoming_counts[target_index] == (1 << 32) - 1:
+            raise OrchestratorReject(
+                "F05-ORCH-GRAPH-INDEGREE-BOUND",
+                str(target_index),
+            )
+        incoming_counts[target_index] += 1
+    incoming_offsets = array("I", [0])
+    running = 0
+    for count in incoming_counts:
+        running += count
+        if running > (1 << 32) - 1:
+            raise OrchestratorReject(
+                "F05-ORCH-GRAPH-REVERSE-BOUND",
+                str(running),
+            )
+        incoming_offsets.append(running)
+    cursor = incoming_offsets[:-1]
+    incoming_sources = array("I", [0]) * graph.edge_count
+    for source_index in range(state_count):
+        begin = graph.edge_offsets[source_index]
+        end = graph.edge_offsets[source_index + 1]
+        for edge_index in range(begin, end):
+            target_index = graph.target_indices[edge_index]
+            position = cursor[target_index]
+            incoming_sources[position] = source_index
+            cursor[target_index] += 1
+
+    coaccessible = bytearray(state_count)
+    queue: deque[int] = deque()
+    for terminal_index in terminal_indices:
+        if not coaccessible[terminal_index]:
+            coaccessible[terminal_index] = 1
+            queue.append(terminal_index)
+    count = len(queue)
+    while queue:
+        target_index = queue.popleft()
+        begin = incoming_offsets[target_index]
+        end = incoming_offsets[target_index + 1]
+        for position in range(begin, end):
+            source_index = incoming_sources[position]
+            if not coaccessible[source_index]:
+                coaccessible[source_index] = 1
+                count += 1
+                queue.append(source_index)
+    return count
 
 
 def explore() -> dict[str, object]:
-    states, graph = reachable_states()
-    reverse: dict[OrchestratorState, set[OrchestratorState]] = defaultdict(set)
-    terminals: set[OrchestratorState] = set()
+    graph = reachable_states()
+    states = graph.states
+    terminal_indices = array("I")
     terminal_counts: Counter[str] = Counter()
-    actions: set[str] = set()
+    actions: set[int] = set()
     deadlocks = 0
     multiple_store_attack_contexts = 0
     owner_failure_with_pending_attack = 0
     post_owner_publish_attacks = 0
     guardian_generation_capsules = 0
-    for state in states:
+    for state_index, state in enumerate(states):
         if len(state.store_attack_attempts) >= 2:
             multiple_store_attack_contexts += 1
         if state.owner_state == "FAILED" and state.pending_attack != "NONE":
@@ -6044,40 +6158,41 @@ def explore() -> dict[str, object]:
             and state.local_capsule.issuer == "RECOVERY_GUARDIAN"
         ):
             guardian_generation_capsules += 1
-        outgoing = next_states(state)
+        has_outgoing = (
+            graph.edge_offsets[state_index]
+            != graph.edge_offsets[state_index + 1]
+        )
         if state.publication in TERMINAL_PUBLICATIONS:
-            terminals.add(state)
+            terminal_indices.append(state_index)
             terminal_counts[state.publication] += 1
-            if outgoing:
+            if has_outgoing:
                 raise OrchestratorReject("F05-ORCH-TERMINAL-EDGE", state.publication)
-        elif not outgoing:
+        elif not has_outgoing:
             deadlocks += 1
-    for before, edge in graph:
-        reverse[edge.state].add(before)
-        actions.add(edge.action_id)
-        if edge.state.semantic_verdict is not None:
-            raise OrchestratorReject("F05-ORCH-SEMANTIC-SELF-ISSUE", edge.action_id)
-    coaccessible = set(terminals)
-    queue: deque[OrchestratorState] = deque(terminals)
-    while queue:
-        state = queue.popleft()
-        for predecessor in reverse[state]:
-            if predecessor not in coaccessible:
-                coaccessible.add(predecessor)
-                queue.append(predecessor)
+    for edge_index, target_index in enumerate(graph.target_indices):
+        action_index = graph.action_indices[edge_index]
+        actions.add(action_index)
+        if states[target_index].semantic_verdict is not None:
+            raise OrchestratorReject(
+                "F05-ORCH-SEMANTIC-SELF-ISSUE",
+                ACTION_IDS[action_index],
+            )
+    coaccessible_count = _coaccessible_state_count(graph, terminal_indices)
     return {
         "exploration_semantics": (
             "EXACT_REACHABILITY_OF_REPETITION_BOUNDED_MODEL"
         ),
         "reachable_repetition_bounded_state_count": len(states),
-        "edge_count": len(graph),
+        "edge_count": graph.edge_count,
         "terminal_counts": dict(sorted(terminal_counts.items())),
         "nonterminal_deadlock_count": deadlocks,
-        "states_without_terminal_path": len(states - coaccessible),
+        "states_without_terminal_path": len(states) - coaccessible_count,
         "declared_action_count": len(ACTION_SPECS),
         "reachable_action_count": len(actions),
-        "missing_actions": sorted(set(ACTION_SPECS) - actions),
-        "undeclared_actions": sorted(actions - set(ACTION_SPECS)),
+        "missing_actions": sorted(
+            set(ACTION_SPECS) - {ACTION_IDS[index] for index in actions}
+        ),
+        "undeclared_actions": [],
         "semantic_verdict_always_absent": True,
         "published_artifact_type": "LOCAL_DISPOSITION_CAPSULE",
         "external_assumptions_discharged": False,
@@ -6121,7 +6236,8 @@ def explore() -> dict[str, object]:
         "typed_abandonment_conflict_withholds_assurance": True,
         "abandonment_conflict_breach_terminal_count": sum(
             1
-            for state in terminals
+            for terminal_index in terminal_indices
+            for state in (states[terminal_index],)
             if state.assurance_breach
             == "ABANDONMENT_HEAD_CONFLICT"
         ),

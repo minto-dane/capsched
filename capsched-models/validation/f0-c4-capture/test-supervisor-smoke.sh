@@ -66,6 +66,7 @@ output=$(
 		--property TimeoutStopSec=35s \
 		--property StandardInput=null \
 		--property MemoryLow=536870912 \
+		--property OOMPolicy=continue \
 		--property SendSIGKILL=yes \
 		--property NoNewPrivileges=no \
 		--property ProtectSystem=strict \

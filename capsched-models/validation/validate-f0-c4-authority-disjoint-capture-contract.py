@@ -386,6 +386,7 @@ RESOURCE_POLICY = {
     "guardian_and_host_reserve_min_bytes": 2147483648,
     "required_vm_memory_min_bytes": 10200547328,
     "memory_swap_max_bytes_per_component": 0,
+    "candidate_component_oom_isolated_from_supervisor": True,
     "stdout_max_bytes_per_component": 268435456,
     "stderr_max_bytes_per_component": 16777216,
     "preexec_observation_max_bytes_per_component": 1048576,
@@ -1084,6 +1085,10 @@ def _validate_failures_resources_and_invariants(contract: dict[str, Any]) -> Non
                 require(type(value) is int and value > 0, f"resource bound {key} must be finite and positive")
     require_exact(
         resources["memory_swap_max_bytes_per_component"], 0, "candidate swap maximum"
+    )
+    require(
+        resources["candidate_component_oom_isolated_from_supervisor"] is True,
+        "component-local OOM must not terminate the trusted supervisor",
     )
 
     components = contract["component_plan"]["components"]
