@@ -77,12 +77,30 @@ are 72/17/54 bytes.
 These are bounded prefixes, not full reachability results. A linear capacity
 projection is favorable but is explicitly non-authoritative.
 
+## Clean-install qualification
+
+Clean reviewed commit
+`14f6deecca06ce2f23b5faeb335100af952100ea` passed the committed-state checker.
+Its complete-history Git bundle has SHA-256
+`3249567c86ab8e7bffc0cb74b1f3c29b9b58ca29df3b922a36df0f43752241cc`
+and was reconstructed under the VM-native root-owned reviewed-source root. The
+installed artifact manifest SHA-256 is
+`f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029`;
+the installed launcher SHA-256 is
+`6c85d7822db8012c870e0c6f1940f509bb38b183dd4257ddecf1c96dc1a21f80`.
+
+Post-install checks pass: launcher basic 1, launcher hostile 10, snapshot
+hostile 5, capture-resource 7, model-memory 30, current reducer binding 3,
+immutable-toolchain reuse 1, supervisor smoke 5 components, guardian recovery
+3, and reduction boundary 3. The EROFS toolchain remains read-only at SHA-256
+`b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce`.
+
 ## Gate result
 
-G1-G5 remain locally closed at EC0. The source repair is not installed yet, so
-G6 retry eligibility is false until a clean reviewed VM-native install and the
-complete short mechanism recheck pass. G6 remains open and G7 remains blocked
-by `NO_COMPLETE_G6_CAPTURE`.
+G1-G5 remain locally closed at EC0. The exact successor TCB is now
+clean-installed and a fresh G6 retry is eligible. G6 remains open and G7
+remains blocked by `NO_COMPLETE_G6_CAPTURE`; no incomplete bytes become
+eligible for reduction.
 
 No F0/R11/G0, external attestation, Linux/Monitor behavior, protection,
 performance/cost, cluster, datacenter, or deployment claim is granted.

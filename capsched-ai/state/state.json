@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
+    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -157,7 +157,7 @@
     "Clean reviewed commit 1c076a94988ae4385212230e6c19acf905bb63ea was reconstructed in VM-native root-owned storage from SHA-256-verified Git bundle b18352db1dc74dc743289f520eff2d02bbfc1af003a296612f11da46ccaeae76, passed committed-state validation, and was installed under artifact manifest 75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85; the complete short post-install suite passes and a fresh G6 run is eligible.",
     "G6 run candidate4-full-20260812T184826Z again finalized RAW_CAPTURE_INCOMPLETE after child-bundle-producer reached 7.5 GiB with one PID and zero output; the supervisor survived and no bytes are positive-eligible.",
     "The successor packs exact receipt records and predecessor histories into reversible C-backed arenas, uses adaptive exact references, bounded exact caches, and an 80%-load collision-safe state index, and changes no child or parent transition semantics relative to its predecessor.",
-    "Matched child and parent prefixes retain identical states, hashes, frontiers, edges, actions, and ordered receipts while reducing maximum RSS by 53.0919% and 56.7672%; clean VM-native install remains mandatory before G6 can retry and G7 remains blocked.",
+    "Matched child and parent prefixes retain identical states, hashes, frontiers, edges, actions, and ordered receipts while reducing maximum RSS by 53.0919% and 56.7672%; clean reviewed commit 14f6deecca06ce2f23b5faeb335100af952100ea is installed under manifest f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029 and passed the complete short suite, so G6 may retry while G7 remains blocked.",
     "Long-running builds, model checks, and matrices are detached after immutable input capture and reviewed in a later session."
   ],
   "completion": {
@@ -222,8 +222,8 @@
     },
     "current_candidate_inputs": {
       "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1",
-      "artifact_sha256": "54e655d4b023a1885881395e68cbc9367e202a77940ead6bd06e902e4db3ee00",
-      "status": "packed_exact_history_repaired_g6_retry_requires_clean_install",
+      "artifact_sha256": "90a224a18bf791cbd053502403ac20d8ec9e36a56420cc7eb860018aeaeb3972",
+      "status": "packed_exact_history_repaired_clean_installed_g6_retry_eligible",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
       "full_validator_status": "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
       "hostile_case_counts": {
@@ -249,7 +249,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -285,16 +285,16 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "REINSTALL_REQUIRED_AFTER_PACKED_HISTORY_REPAIR",
-        "installed_source_commit": "1c076a94988ae4385212230e6c19acf905bb63ea",
-        "installed_manifest_sha256": "75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85",
-        "current_inputs_installed": false,
+        "status": "PASSED_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+        "installed_source_commit": "14f6deecca06ce2f23b5faeb335100af952100ea",
+        "installed_manifest_sha256": "f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029",
+        "current_inputs_installed": true,
         "readiness_record": "capsched-models/validation/f0-c4-g6-packed-history-retry-readiness-v1.json",
-        "readiness_sha256": "66e1792adfed1f66ff9dc99c89ffc2c2c5730950472a77ec40d8a2df0b3e55b4"
+        "readiness_sha256": "d9066f01b06f541a95498fdc84c99a536bcd2666824169a010ab6a7dfb9a99a4"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": false,
+        "retry_eligible": true,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
         "attempt_count": 6,
@@ -377,8 +377,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_packed_history_reinstall_required_g7_blocked",
-      "next_artifact": "Clean-install the packed exact history successor, recheck the mechanism suite, run a fresh authority-disjoint G6 capture, then reduce only a complete committed capture in G7"
+      "status": "open_candidate4_g1_g5_closed_g6_packed_history_retry_eligible_g7_blocked",
+      "next_artifact": "Run a fresh authority-disjoint G6 capture from the clean-installed packed exact history successor, then reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -477,14 +477,14 @@
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "packed_history_repair_clean_install_pending",
-      "text": "G1-G5 remain locally closed, but the VM still contains predecessor commit 1c076a94988ae4385212230e6c19acf905bb63ea. The packed exact history successor and rebound reducer require a clean reviewed install plus the complete short post-install suite."
+      "status": "completed_clean_reviewed_install_for_packed_history_repaired_inputs",
+      "text": "G1-G5 remain locally closed; clean source commit 14f6deecca06ce2f23b5faeb335100af952100ea is installed under manifest f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029 and the complete short post-install suite passes."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "blocked_until_packed_history_repair_clean_install",
-      "text": "The fourth OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible. The packed exact history successor reduces matched child/parent prefix RSS by 53.0919%/56.7672%, but G6 cannot retry until clean install; G7 remains blocked until a complete committed result exists."
+      "status": "g6_packed_history_retry_eligible",
+      "text": "The fourth OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible. The clean-installed packed exact history successor reduces matched child/parent prefix RSS by 53.0919%/56.7672% and is eligible for a fresh G6 retry; G7 remains blocked until a complete committed result exists."
     },
     {
       "order": 8,

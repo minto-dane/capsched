@@ -87,8 +87,16 @@ The static semantic registry remains
 The trusted reducer and its independent fixture are rebound to these exact
 inputs and the 284/739/44 markers.
 
-A clean reviewed commit, VM-native source transfer, TCB reinstall, and the full
-short post-install mechanism suite are mandatory before retry. G6 remains
-open, G7 remains blocked, and no F0, R11, K0/G0, Linux/Monitor implementation,
-protection, performance/cost, cluster, datacenter, or deployment claim is
-granted.
+Clean reviewed commit
+`14f6deecca06ce2f23b5faeb335100af952100ea` passed committed-state validation.
+Its complete-history Git bundle has SHA-256
+`3249567c86ab8e7bffc0cb74b1f3c29b9b58ca29df3b922a36df0f43752241cc`
+and was reconstructed in VM-native root-owned storage. Installation produced
+artifact manifest
+`f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029`
+and launcher
+`6c85d7822db8012c870e0c6f1940f509bb38b183dd4257ddecf1c96dc1a21f80`.
+The complete short post-install suite passes, so a fresh G6 retry is eligible.
+G6 remains open, G7 remains blocked, and no F0, R11, K0/G0, Linux/Monitor
+implementation, protection, performance/cost, cluster, datacenter, or
+deployment claim is granted.

@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-12",
-  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -76,16 +76,16 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "REINSTALL_REQUIRED_AFTER_PACKED_HISTORY_REPAIR",
-      "installed_source_commit": "1c076a94988ae4385212230e6c19acf905bb63ea",
-      "installed_manifest_sha256": "75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85",
-      "current_inputs_installed": false,
+      "status": "PASSED_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+      "installed_source_commit": "14f6deecca06ce2f23b5faeb335100af952100ea",
+      "installed_manifest_sha256": "f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029",
+      "current_inputs_installed": true,
       "readiness_record": "capsched-models/validation/f0-c4-g6-packed-history-retry-readiness-v1.json",
-      "readiness_sha256": "66e1792adfed1f66ff9dc99c89ffc2c2c5730950472a77ec40d8a2df0b3e55b4"
+      "readiness_sha256": "d9066f01b06f541a95498fdc84c99a536bcd2666824169a010ab6a7dfb9a99a4"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": false,
+      "retry_eligible": true,
       "complete_capture_available": false,
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260812T184826Z",
@@ -210,8 +210,11 @@ identical child/parent prefix states, hashes, frontiers, targets, actions, and
 ordered receipts. The historical 750,007-state child prefix falls from
 539,049,984 to 252,858,368 bytes RSS; the 545,925-state parent prefix falls
 from 519,569,408 to 224,624,640 bytes. Fast regression passes 284/739/44 and
-the memory policy passes 30 cases. The source is not yet clean-installed, so
-G6 retry eligibility is false.
+the memory policy passes 30 cases. Clean reviewed commit `14f6dee...` was
+reconstructed from SHA-256-verified bundle `3249567...` in VM-native root-owned
+storage, passed committed-state validation, and was installed under manifest
+`f434c7d...`; the complete short post-install suite passes and G6 retry is
+eligible.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -232,11 +235,8 @@ its full campaign has not run, so all three full-only local claims remain
 `NOT_RUN`, seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11,
 K0/G0, protection, and model completion remain false.
 
-The structured projection reports `retry_eligible: false`: commit and push the
-exact packed-history successor, reconstruct and install that clean reviewed
-commit in VM-native storage, then run the complete short post-install suite.
-Only after the projection becomes retry-eligible may the detached capture be
-started and monitored with:
+The structured projection reports `retry_eligible: true`. Start and monitor the
+exact detached packed-history retry with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
@@ -280,8 +280,8 @@ clean-installed and enabled the sixth attempt.
 
 The sixth attempt `candidate4-full-20260812T184826Z` used that compact-state
 TCB and again finalized `RAW_CAPTURE_INCOMPLETE` at 7.5 GiB. The exact packed
-history successor is locally validated but not yet installed; G6 retry is
-therefore blocked and G7 remains blocked.
+history successor is now clean-installed and has passed the complete short
+suite; a fresh G6 retry is eligible, while G7 remains blocked.
 
 ## Current Git State
 
