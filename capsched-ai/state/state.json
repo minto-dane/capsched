@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
+    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -155,6 +155,9 @@
     "The successor replaces the canonical Python state vector, deque frontier, and unique-history set with frozen field-column exact storage and collision-safe fixed-width indexes; the matched child prefix retains identical state/edge counters with 34.5123% lower maximum RSS.",
     "Deeper parent exploration exposed two latent semantic contradictions: recovery publication could precede the durable-store controller fence, and sealed owner-failure phase reconstruction used post-failure artifacts. The repaired parent notice signs the exact failure-time capsule/publication/generation/commitment/ack snapshot, so this successor is explicitly a parent semantic repair rather than an unchanged-semantics representation patch.",
     "Clean reviewed commit 1c076a94988ae4385212230e6c19acf905bb63ea was reconstructed in VM-native root-owned storage from SHA-256-verified Git bundle b18352db1dc74dc743289f520eff2d02bbfc1af003a296612f11da46ccaeae76, passed committed-state validation, and was installed under artifact manifest 75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85; the complete short post-install suite passes and a fresh G6 run is eligible.",
+    "G6 run candidate4-full-20260812T184826Z again finalized RAW_CAPTURE_INCOMPLETE after child-bundle-producer reached 7.5 GiB with one PID and zero output; the supervisor survived and no bytes are positive-eligible.",
+    "The successor packs exact receipt records and predecessor histories into reversible C-backed arenas, uses adaptive exact references, bounded exact caches, and an 80%-load collision-safe state index, and changes no child or parent transition semantics relative to its predecessor.",
+    "Matched child and parent prefixes retain identical states, hashes, frontiers, edges, actions, and ordered receipts while reducing maximum RSS by 53.0919% and 56.7672%; clean VM-native install remains mandatory before G6 can retry and G7 remains blocked.",
     "Long-running builds, model checks, and matrices are detached after immutable input capture and reviewed in a later session."
   ],
   "completion": {
@@ -218,16 +221,16 @@
       }
     },
     "current_candidate_inputs": {
-      "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-state-store-repair-v1",
-      "artifact_sha256": "238bf89894db371d0505364af242e8a546a7e879ccd2f259322ee634626d4ae7",
-      "status": "compact_state_store_and_owner_failure_snapshot_repaired_clean_installed_g6_retry_eligible",
+      "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1",
+      "artifact_sha256": "54e655d4b023a1885881395e68cbc9367e202a77940ead6bd06e902e4db3ee00",
+      "status": "packed_exact_history_repaired_g6_retry_requires_clean_install",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
-      "full_validator_status": "NOT_RUN_FOR_STATE_STORE_REPAIRED_INPUTS",
+      "full_validator_status": "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
       "hostile_case_counts": {
-        "child": 275,
-        "parent": 730,
+        "child": 284,
+        "parent": 739,
         "runner": 44,
-        "total": 1049
+        "total": 1067
       },
       "counterexample_regression": {
         "action_id": "OBS-032-DESCENDANTS-EXIT",
@@ -246,7 +249,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -273,7 +276,7 @@
         "launcher_basic_cases": 1,
         "launcher_hostile_cases": 10,
         "snapshot_hostile_cases": 5,
-        "model_memory_policy_cases": 24,
+        "model_memory_policy_cases": 30,
         "capture_resource_policy_cases": 7,
         "reducer_current_input_binding_cases": 3,
         "toolchain_reuse_cases": 1,
@@ -282,20 +285,20 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "PASSED_FOR_STATE_STORE_REPAIRED_INPUTS",
+        "status": "REINSTALL_REQUIRED_AFTER_PACKED_HISTORY_REPAIR",
         "installed_source_commit": "1c076a94988ae4385212230e6c19acf905bb63ea",
         "installed_manifest_sha256": "75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85",
-        "current_inputs_installed": true,
-        "readiness_record": "capsched-models/validation/f0-c4-g6-state-store-retry-readiness-v1.json",
-        "readiness_sha256": "15ffce487f991f73bd2bfe7e2cde63f91671512c022e5c1b0d065b75dc11c83a"
+        "current_inputs_installed": false,
+        "readiness_record": "capsched-models/validation/f0-c4-g6-packed-history-retry-readiness-v1.json",
+        "readiness_sha256": "66e1792adfed1f66ff9dc99c89ffc2c2c5730950472a77ec40d8a2df0b3e55b4"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": true,
+        "retry_eligible": false,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
-        "attempt_count": 5,
-        "latest_completed_attempt_run_id": "candidate4-full-20260812T170823Z",
+        "attempt_count": 6,
+        "latest_completed_attempt_run_id": "candidate4-full-20260812T184826Z",
         "attempt_history": [
           {
             "run_id": "candidate4-full-20260811T203907Z",
@@ -334,6 +337,14 @@
             "evidence_commit_available": true,
             "observation_record": "capsched-models/validation/f0-c4-g6-third-oom-incomplete-observation-v1.json",
             "observation_sha256": "c25c4b1372ed889202f94daee071eebc7861536780c58700033efbdaefcce70c"
+          },
+          {
+            "run_id": "candidate4-full-20260812T184826Z",
+            "status": "RAW_CAPTURE_INCOMPLETE",
+            "candidate_bytes_executed": true,
+            "evidence_commit_available": true,
+            "observation_record": "capsched-models/validation/f0-c4-g6-fourth-oom-incomplete-observation-v1.json",
+            "observation_sha256": "9956feff9988d7cf1de4fb8bdfe1f92b770c6556e42f8aa2490feaee52a252b5"
           }
         ]
       },
@@ -366,8 +377,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_state_store_retry_eligible_g7_blocked",
-      "next_artifact": "Run the authority-disjoint G6 retry from the clean-installed compact exact state store, then reduce only a complete committed capture in G7"
+      "status": "open_candidate4_g1_g5_closed_g6_packed_history_reinstall_required_g7_blocked",
+      "next_artifact": "Clean-install the packed exact history successor, recheck the mechanism suite, run a fresh authority-disjoint G6 capture, then reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -460,20 +471,20 @@
     {
       "order": 5,
       "id": "F0-C4-PRE-FULL-CHECKPOINT",
-      "status": "historical_274_case_checkpoint_preserved_successor_275_730_44_fast_pass",
-      "text": "Preserve the historical 274/715/44 checkpoint; the current successor passes 275/730/44 plus the fast validator without inheriting full-run credit."
+      "status": "historical_274_case_checkpoint_preserved_successor_284_739_44_fast_pass",
+      "text": "Preserve the historical 274/715/44 checkpoint; the current successor passes 284/739/44 plus the fast validator without inheriting full-run credit."
     },
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "completed_clean_reviewed_install_for_state_store_repaired_inputs",
-      "text": "G1-G5 remain locally closed; clean source commit 1c076a94988ae4385212230e6c19acf905bb63ea is installed under manifest 75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85 and the complete short post-install suite passes."
+      "status": "packed_history_repair_clean_install_pending",
+      "text": "G1-G5 remain locally closed, but the VM still contains predecessor commit 1c076a94988ae4385212230e6c19acf905bb63ea. The packed exact history successor and rebound reducer require a clean reviewed install plus the complete short post-install suite."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "g6_state_store_retry_eligible",
-      "text": "The third OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible; the clean-installed compact exact state-store successor is eligible for a fresh G6 retry, while G7 remains blocked until a complete committed result exists."
+      "status": "blocked_until_packed_history_repair_clean_install",
+      "text": "The fourth OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible. The packed exact history successor reduces matched child/parent prefix RSS by 53.0919%/56.7672%, but G6 cannot retry until clean install; G7 remains blocked until a complete committed result exists."
     },
     {
       "order": 8,
@@ -541,14 +552,16 @@
     "f0_c4_resource_repair_analysis": "capsched-models/analysis/0229-dynamic-residency-f0-c4-g6-oom-isolation-and-memory-bounded-enumeration.md",
     "f0_c4_frontier_repair_analysis": "capsched-models/analysis/0230-dynamic-residency-f0-c4-g6-persistent-exact-frontier.md",
     "f0_c4_state_store_repair_analysis": "capsched-models/analysis/0231-dynamic-residency-f0-c4-g6-compact-exact-state-store-and-owner-failure-snapshot.md",
-    "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-state-store-repair-v1.json",
+    "f0_c4_packed_history_repair_analysis": "capsched-models/analysis/0232-dynamic-residency-f0-c4-g6-packed-exact-history-arena.md",
+    "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1.json",
     "f0_c4_g6_incomplete_validation": "capsched-models/validation/0316-dynamic-residency-f0-c4-g6-incomplete-disposition.md",
-    "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-third-oom-incomplete-observation-v1.json",
-    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-state-store-retry-readiness-v1.json",
+    "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-fourth-oom-incomplete-observation-v1.json",
+    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-packed-history-retry-readiness-v1.json",
     "f0_c4_effect_repair_validation": "capsched-models/validation/0317-dynamic-residency-f0-c4-g6-counterexample-repair.md",
     "f0_c4_resource_repair_validation": "capsched-models/validation/0318-dynamic-residency-f0-c4-g6-resource-repair.md",
     "f0_c4_frontier_repair_validation": "capsched-models/validation/0319-dynamic-residency-f0-c4-g6-persistent-exact-frontier.md",
     "f0_c4_state_store_repair_validation": "capsched-models/validation/0320-dynamic-residency-f0-c4-g6-compact-state-store-and-owner-failure-snapshot.md",
+    "f0_c4_packed_history_repair_validation": "capsched-models/validation/0321-dynamic-residency-f0-c4-g6-packed-exact-history-arena.md",
     "f0_c4_claim_registry": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
     "f0_c4_child_model": "capsched-models/validation/f0_supervisor_lts_v3.py",
     "f0_c4_parent_model": "capsched-models/validation/f0_supervisor_orchestrator_v3.py",

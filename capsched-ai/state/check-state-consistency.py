@@ -240,6 +240,10 @@ def validate_semantics(
         observation.get("artifact_id")
         == "f0-c4-g6-third-oom-incomplete-observation-v1"
     )
+    packed_history_repair_observation = (
+        observation.get("artifact_id")
+        == "f0-c4-g6-fourth-oom-incomplete-observation-v1"
+    )
     require(
         latest["status"] in {"RAW_CAPTURE_INCOMPLETE", "GUARDIAN_INCOMPLETE_PUBLISHED"},
         "latest G6 result drift",
@@ -247,7 +251,11 @@ def validate_semantics(
     require(latest["observation_record"] == state["canonical_files"]["f0_c4_g6_incomplete_record"], "G6 observation path drift")
     require(latest["observation_sha256"] == observation["artifact_sha256"], "G6 observation digest drift")
     require(observation["run_id"] == latest_id, "G6 observation run-id drift")
-    if frontier_repair_observation or state_store_repair_observation:
+    if (
+        frontier_repair_observation
+        or state_store_repair_observation
+        or packed_history_repair_observation
+    ):
         durable = observation["durable_evidence"]
         conclusion = observation["conclusion"]
         require(durable["capture_status"] == latest["status"], "G6 capture status drift")
@@ -298,6 +306,105 @@ def validate_semantics(
             ]
             is True,
             "reducer current-input repair is incomplete",
+        )
+        require(
+            contract["resource_policy"][
+                "candidate_component_oom_isolated_from_supervisor"
+            ]
+            is True,
+            "capture contract does not isolate component OOM",
+        )
+    elif packed_history_repair_observation:
+        require(
+            observation["failed_component"]["component_id"]
+            == "child-bundle-producer"
+            and observation["failed_component"]["memory_peak_bytes"]
+            == contract["resource_policy"]["memory_max_bytes_per_component"],
+            "packed-history failure observation drift",
+        )
+        require(
+            observation["systemd_disposition"][
+                "trusted_supervisor_survived_component_oom"
+            ]
+            is True
+            and observation["systemd_disposition"][
+                "incomplete_lifecycle_receipt_committed"
+            ]
+            is True,
+            "fourth OOM did not preserve trusted fail-closed finalization",
+        )
+        require(
+            current_input["failed_capture_observation"]["run_id"] == latest_id,
+            "packed-history repair does not bind the failed run",
+        )
+        repair = current_input["representation_repair"]
+        require(
+            repair["child_transition_relation_changed"] is False
+            and repair["parent_transition_relation_changed_from_predecessor"]
+            is False
+            and repair["reachable_state_sets_intentionally_changed"] is False
+            and repair["ordered_evidence_history_quotiented"] is False
+            and repair["python_transition_semantics_retained"] is True
+            and repair["packed_exact_receipt_record_arena"] is True
+            and repair["packed_exact_predecessor_history_arena"] is True
+            and repair["history_hash_collision_uses_full_value_equality"] is True
+            and repair["state_hash_collision_uses_full_field_equality"] is True
+            and repair["bounded_direct_mapped_decode_cache_entries"] == 8192
+            and repair["bounded_direct_mapped_exact_intern_cache_entries"]
+            == 8192
+            and repair["intern_cache_collision_or_eviction_changes_only_deduplication"]
+            is True
+            and repair["exact_state_index_max_load_fraction"] == "4/5"
+            and repair["zero_swap_policy_retained"] is True,
+            "packed exact history representation repair is incomplete",
+        )
+        equivalence = current_input["mechanical_equivalence"]
+        require(
+            equivalence["child_bfs_prefix_expanded_states"] == 2000
+            and equivalence["parent_bfs_prefix_expanded_states"] == 1500
+            and all(
+                equivalence[key] is True
+                for key in (
+                    "state_order_equal",
+                    "state_hashes_equal",
+                    "frontier_indices_equal",
+                    "target_indices_equal",
+                    "action_indices_equal",
+                    "ordered_receipt_values_equal",
+                    "forced_hash_collision_values_remain_distinct",
+                )
+            ),
+            "packed/list exact-prefix equivalence drift",
+        )
+        profiles = current_input["bounded_profiles"]
+        require(
+            profiles["child"]["retained_exact_states"] == 750007
+            and profiles["child"]["edges"] == 920973
+            and profiles["child"]["successor_max_rss_bytes"]
+            < profiles["child"]["predecessor_max_rss_bytes"]
+            and profiles["child"][
+                "reachable_counters_equal_to_predecessor_profile"
+            ]
+            is True
+            and profiles["parent"]["expanded_states"] == 250000
+            and profiles["parent"]["retained_exact_states"] == 545925
+            and profiles["parent"]["edges"] == 814132
+            and profiles["parent"]["successor_max_rss_bytes"]
+            < profiles["parent"]["predecessor_max_rss_bytes"]
+            and profiles["parent"][
+                "reachable_counters_equal_to_predecessor_profile"
+            ]
+            is True,
+            "bounded packed-history profile drift",
+        )
+        require(
+            current_input["capacity_projection_non_authoritative"]["guarantee"]
+            is False
+            and current_input["capacity_projection_non_authoritative"][
+                "fresh_full_capture_required"
+            ]
+            is True,
+            "capacity projection became authoritative",
         )
         require(
             contract["resource_policy"][
@@ -495,7 +602,9 @@ def validate_semantics(
             != current_input["exact_inputs"]["f0_supervisor_lts_v3.py"],
             "repaired input did not change the rejected child-model bytes",
         )
-    if not state_store_repair_observation:
+    if not (
+        state_store_repair_observation or packed_history_repair_observation
+    ):
         require(
             current_input["repair"][
                 "counterexample_trace_added_to_fast_regression"
@@ -638,6 +747,62 @@ def validate_semantics(
             "completed_clean_reviewed_install_for_state_store_repaired_inputs"
         )
         expected_full_action = "g6_state_store_retry_eligible"
+        expected_reducer_status = "PASS"
+    elif install["status"] == "REINSTALL_REQUIRED_AFTER_PACKED_HISTORY_REPAIR":
+        require(
+            install["current_inputs_installed"] is False,
+            "pending packed-history reinstall marked installed",
+        )
+        require(
+            g6["retry_eligible"] is False,
+            "G6 retry enabled before packed-history clean reinstall",
+        )
+        require(
+            readiness["status"] == "REINSTALL_REQUIRED",
+            "pending packed-history install has positive readiness",
+        )
+        expected_input_status = (
+            "packed_exact_history_repaired_g6_retry_requires_clean_install"
+        )
+        expected_phase = "f0_v5_c4_g6_open_reinstall_required"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_packed_history_reinstall_"
+            "required_g7_blocked"
+        )
+        expected_install_action = "packed_history_repair_clean_install_pending"
+        expected_full_action = "blocked_until_packed_history_repair_clean_install"
+        expected_reducer_status = "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE"
+    elif install["status"] == "PASSED_FOR_PACKED_HISTORY_REPAIRED_INPUTS":
+        require(
+            install["current_inputs_installed"] is True,
+            "passed packed-history reinstall not marked installed",
+        )
+        require(
+            g6["retry_eligible"] is True,
+            "G6 retry not enabled after packed-history clean reinstall",
+        )
+        require(
+            readiness["status"] == "G6_RETRY_ELIGIBLE",
+            "passed packed-history install lacks readiness",
+        )
+        expected_input_status = (
+            "packed_exact_history_repaired_clean_installed_g6_retry_eligible"
+        )
+        expected_phase = "f0_v5_c4_g6_open_retry_eligible"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_packed_history_retry_eligible_"
+            "g7_blocked"
+        )
+        expected_install_action = (
+            "completed_clean_reviewed_install_for_packed_history_repaired_inputs"
+        )
+        expected_full_action = "g6_packed_history_retry_eligible"
         expected_reducer_status = "PASS"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
@@ -947,9 +1112,13 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             changed_input["repair"][
                 "future_reducer_input_and_semantic_registry_drift_mechanically_rejected"
             ] = False
-        else:
+        elif "parent_semantic_repair" in changed_input:
             changed_input["parent_semantic_repair"][
                 "sealed_owner_failure_phase_uses_authenticated_snapshot"
+            ] = False
+        else:
+            changed_input["representation_repair"][
+                "python_transition_semantics_retained"
             ] = False
         mutations.append(
             (

@@ -757,6 +757,9 @@ class ParentReceiptHistory(child.PersistentSequence):
 
     __slots__ = ()
 
+    _record_type = ParentReceipt
+    _digest_field_names = frozenset({"auth_tag"})
+
     def append(self, value: object) -> ParentReceiptHistory:
         if not isinstance(value, ParentReceipt):
             raise TypeError("parent history accepts ParentReceipt values only")

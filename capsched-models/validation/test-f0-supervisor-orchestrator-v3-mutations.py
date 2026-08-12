@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from array import array
 from dataclasses import replace
 
 if not __debug__:
@@ -100,6 +101,43 @@ def rechain_open_parent_receipts(
         rebuilt.append(current)
         previous = model.parent_receipt_hash(current)
     return replace(state, parent_receipts=tuple(rebuilt))
+
+
+def exact_prefix(
+    source_limit: int,
+    *,
+    compact: bool,
+) -> tuple[object, array, array, array, int]:
+    """Enumerate one bounded parent BFS prefix through both exact stores."""
+
+    initial = model.initial_state()
+    states: object
+    if compact:
+        states = model.child.CompactExactStateStore(
+            model.OrchestratorState,
+            model.PARENT_STATE_REFERENCE_FIELDS,
+        )
+    else:
+        states = []
+    index = model.child.ExactStateIndex(states)
+    initial_index, is_new = index.intern(model.semantic_projection(initial))
+    assert initial_index == 0 and is_new
+    frontier = array("I", [initial_index])
+    targets = array("I")
+    actions = array("B")
+    cursor = 0
+    while cursor < len(frontier) and cursor < source_limit:
+        source = states[frontier[cursor]]
+        cursor += 1
+        for edge in model.next_states(source):
+            target, target_is_new = index.intern(model.semantic_projection(edge.state))
+            targets.append(target)
+            actions.append(model.ACTION_INDEX[edge.action_id])
+            if target_is_new:
+                frontier.append(target)
+    if compact:
+        states.freeze()
+    return states, frontier, targets, actions, cursor
 
 
 def rebind_parent_receipt_payloads(
@@ -2431,6 +2469,40 @@ def main() -> None:
     assert abandonment_conflict.semantic_verdict is None
     assert guardian_breached.semantic_verdict is None
     cases += 7
+
+    packed_prefix = exact_prefix(1_500, compact=True)
+    reference_prefix = exact_prefix(1_500, compact=False)
+    packed_states, packed_frontier, packed_targets, packed_actions, packed_cursor = (
+        packed_prefix
+    )
+    (
+        reference_states,
+        reference_frontier,
+        reference_targets,
+        reference_actions,
+        reference_cursor,
+    ) = reference_prefix
+    assert packed_cursor == reference_cursor == 1_500
+    assert packed_frontier == reference_frontier
+    assert packed_targets == reference_targets
+    assert packed_actions == reference_actions
+    assert len(packed_states) == len(reference_states)
+    for packed_state, reference_state in zip(
+        packed_states,
+        reference_states,
+        strict=True,
+    ):
+        assert packed_state == reference_state
+        assert hash(packed_state) == hash(reference_state)
+        assert tuple(packed_state.parent_receipts) == tuple(
+            reference_state.parent_receipts
+        )
+    receipt_index = packed_states._field_names.index("parent_receipts")
+    receipt_column = packed_states._columns[receipt_index].implementation
+    assert isinstance(receipt_column, model.child._PackedPersistentSequenceColumn)
+    assert receipt_column.arena.fixed_column_bytes_per_node_upper_bound == 17
+    assert receipt_column.arena.fixed_column_bytes_per_record_upper_bound <= 64
+    cases += 9
 
     print(f"LOCAL_C4_PARENT_REGRESSION_PASS hostile_cases={cases}")
 

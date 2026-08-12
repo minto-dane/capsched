@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-12",
-  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
+  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -54,14 +54,14 @@ latest durable G6 disposition by `check-current-state.sh`.
     "EVIDENCE-001": "contract_defined"
   },
   "candidate4": {
-    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-state-store-repair-v1",
+    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1",
     "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
-    "full_validator_status": "NOT_RUN_FOR_STATE_STORE_REPAIRED_INPUTS",
+    "full_validator_status": "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
     "hostile_case_counts": {
-      "child": 275,
-      "parent": 730,
+      "child": 284,
+      "parent": 739,
       "runner": 44,
-      "total": 1049
+      "total": 1067
     },
     "capture_contract_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
     "closed_gates": [
@@ -76,24 +76,24 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "PASSED_FOR_STATE_STORE_REPAIRED_INPUTS",
+      "status": "REINSTALL_REQUIRED_AFTER_PACKED_HISTORY_REPAIR",
       "installed_source_commit": "1c076a94988ae4385212230e6c19acf905bb63ea",
       "installed_manifest_sha256": "75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85",
-      "current_inputs_installed": true,
-      "readiness_record": "capsched-models/validation/f0-c4-g6-state-store-retry-readiness-v1.json",
-      "readiness_sha256": "15ffce487f991f73bd2bfe7e2cde63f91671512c022e5c1b0d065b75dc11c83a"
+      "current_inputs_installed": false,
+      "readiness_record": "capsched-models/validation/f0-c4-g6-packed-history-retry-readiness-v1.json",
+      "readiness_sha256": "66e1792adfed1f66ff9dc99c89ffc2c2c5730950472a77ec40d8a2df0b3e55b4"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": true,
+      "retry_eligible": false,
       "complete_capture_available": false,
       "latest_completed_attempt": {
-        "run_id": "candidate4-full-20260812T170823Z",
+        "run_id": "candidate4-full-20260812T184826Z",
         "status": "RAW_CAPTURE_INCOMPLETE",
         "candidate_bytes_executed": true,
         "evidence_commit_available": true,
-        "observation_record": "capsched-models/validation/f0-c4-g6-third-oom-incomplete-observation-v1.json",
-        "observation_sha256": "c25c4b1372ed889202f94daee071eebc7861536780c58700033efbdaefcce70c"
+        "observation_record": "capsched-models/validation/f0-c4-g6-fourth-oom-incomplete-observation-v1.json",
+        "observation_sha256": "9956feff9988d7cf1de4fb8bdfe1f92b770c6556e42f8aa2490feaee52a252b5"
       }
     },
     "g7": {
@@ -179,7 +179,7 @@ commit `1fccaca...` is now installed under manifest `bd86819a...`; launcher,
 snapshot, resource, memory, reducer-binding, toolchain-reuse, supervisor,
 guardian, and reducer boundary regressions all pass against the installed TCB.
 
-Analysis 0231 and Validation 0320 record the fifth attempt and current
+Analysis 0231 and Validation 0320 record the fifth attempt and its
 successor. The child producer again reached 7.5 GiB with one PID and no output,
 so the retained canonical state vector—not process or log fan-out—was the
 remaining pressure. A frozen field-column exact store, fixed-width cursor
@@ -198,6 +198,21 @@ manifest `75d17ee...`; launcher, snapshot, resource, memory, reducer-binding,
 toolchain-reuse, supervisor, guardian, and reduction-boundary regressions all
 pass against that installed TCB.
 
+Analysis 0232 and Validation 0321 record the sixth attempt and current
+successor. Run `candidate4-full-20260812T184826Z` again reached the isolated
+7.5-GiB bound with one PID and zero output; the supervisor survived and
+durably committed `RAW_CAPTURE_INCOMPLETE`. Profiling localized the retained
+heap to Python receipt, string, and predecessor graphs rather than transition
+semantics. The successor serializes only accepted histories into reversible
+C-backed exact arenas, uses adaptive exact references, two bounded 8,192-entry
+caches, and an 80%-load collision-safe state index. Old and new stores produce
+identical child/parent prefix states, hashes, frontiers, targets, actions, and
+ordered receipts. The historical 750,007-state child prefix falls from
+539,049,984 to 252,858,368 bytes RSS; the 545,925-state parent prefix falls
+from 519,569,408 to 224,624,640 bytes. Fast regression passes 284/739/44 and
+the memory policy passes 30 cases. The source is not yet clean-installed, so
+G6 retry eligibility is false.
+
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
 reachable-action commutation membership, exact witness-count equality and
@@ -212,15 +227,16 @@ completed two static components and then preserved a fail-closed
 `RAW_CAPTURE_INCOMPLETE` disposition when `child-bundle-producer` rejected
 `OBS-032-DESCENDANTS-EXIT:hidden_work`. Analysis 0228 and Validation 0317 retain
 the exact counterexample and add its post-exit descendant/async order to the
-fast child suite. The compact-state-store current input passes 275 child cases;
+fast child suite. The packed-history current input passes 284 child cases;
 its full campaign has not run, so all three full-only local claims remain
 `NOT_RUN`, seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11,
 K0/G0, protection, and model completion remain false.
 
-The structured projection reports `retry_eligible: true`: the exact compact
-state-store successor is committed, installed from reviewed VM-native storage,
-and has passed the complete short suite. Start and monitor the exact detached
-retry with:
+The structured projection reports `retry_eligible: false`: commit and push the
+exact packed-history successor, reconstruct and install that clean reviewed
+commit in VM-native storage, then run the complete short post-install suite.
+Only after the projection becomes retry-eligible may the detached capture be
+started and monitored with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
@@ -258,10 +274,14 @@ passes. The next action is a new detached G6 run; G7 remains blocked unless
 that run publishes a complete committed capture.
 
 The fifth attempt `candidate4-full-20260812T170823Z` used the persistent
-frontier TCB. It again finalized `RAW_CAPTURE_INCOMPLETE` at the child memory
-limit while preserving the supervisor. Its compact-state successor is locally
-validated but not yet installed; G6 retry is therefore blocked and G7 remains
-blocked.
+frontier TCB. It finalized `RAW_CAPTURE_INCOMPLETE` at the child memory limit
+while preserving the supervisor. Its compact-state successor was then
+clean-installed and enabled the sixth attempt.
+
+The sixth attempt `candidate4-full-20260812T184826Z` used that compact-state
+TCB and again finalized `RAW_CAPTURE_INCOMPLETE` at 7.5 GiB. The exact packed
+history successor is locally validated but not yet installed; G6 retry is
+therefore blocked and G7 remains blocked.
 
 ## Current Git State
 

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-packed-history-retry-readiness-v1",
+  "date": "2026-08-12",
+  "status": "REINSTALL_REQUIRED",
+  "scope": "candidate4_packed_exact_history_repaired_capture",
+  "current_inputs": {
+    "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1",
+    "artifact_sha256": "54e655d4b023a1885881395e68cbc9367e202a77940ead6bd06e902e4db3ee00",
+    "hostile_case_counts": {
+      "child": 284,
+      "parent": 739,
+      "runner": 44,
+      "total": 1067
+    },
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "model_memory_policy_cases": 30,
+    "reducer_current_input_binding_cases": 3
+  },
+  "clean_install": {
+    "source_commit": "1c076a94988ae4385212230e6c19acf905bb63ea",
+    "source_worktree_clean": true,
+    "committed_state_check": "PASS",
+    "installed_manifest_sha256": "75d17ee9b9cd24237d953b768e36559bab5eba8ce40f8bdc7526a9b359dcda85",
+    "capture_launcher_sha256": "d231c12e8ad243ec74577b89d99bb19b9ddf112e950739efebe3c28e2b0903c9",
+    "current_inputs_installed": false,
+    "reason": "The VM still contains the predecessor compact-state TCB. The packed exact receipt/history arena and successor-bound reducer require a clean reviewed commit, VM-native install, and complete short post-install recheck."
+  },
+  "toolchain": {
+    "format": "erofs",
+    "image_sha256": "b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce",
+    "manifest_sha256": "0db6f68c5e19fba7acd2cab5c536aa8bd17d0d4d5707ca6bbbeb9362527bcd51",
+    "mounted_read_only": true,
+    "reuse_regression_cases": 1
+  },
+  "mechanism_recheck": {
+    "capture_contract_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
+    "capture_contract_hostile_cases": 155,
+    "capture_contract_derived_cases": 14,
+    "capture_resource_policy_cases": 7,
+    "reducer_current_input_binding_cases": 3,
+    "reducer_boundary_status": "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE",
+    "reducer_boundary_cases": 3
+  },
+  "source_transfer": {
+    "policy": "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging",
+    "macos_home_mount": "none",
+    "tcb_install_transfer_policy": "sha256_verified_clean_reviewed_git_bundle_to_vm_native_root_owned_repository",
+    "tcb_install_git_bundle_sha256": "b18352db1dc74dc743289f520eff2d02bbfc1af003a296612f11da46ccaeae76",
+    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/1c076a94988ae4385212230e6c19acf905bb63ea",
+    "vm_source_root": "/var/lib/domainlease-f0-c4/sources",
+    "raw_evidence_root": "/var/lib/domainlease-f0-c4/evidence",
+    "separate_from_raw_evidence": true
+  },
+  "disposition": {
+    "g6_gate_status": "OPEN",
+    "g6_retry_eligible": false,
+    "g6_complete_capture_available": false,
+    "g7_gate_status": "BLOCKED",
+    "g7_blocked_reason": "NO_COMPLETE_G6_CAPTURE"
+  },
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "protection_claim": false,
+    "performance_or_cost_claim": false,
+    "deployment_claim": false
+  }
+}

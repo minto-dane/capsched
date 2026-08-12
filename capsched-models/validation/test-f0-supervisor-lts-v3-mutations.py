@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from array import array
 from dataclasses import replace
 
 if not __debug__:
@@ -136,6 +137,43 @@ def rechain_open_receipts(
         rebuilt.append(current)
         previous = model.receipt_hash(current)
     return replace(state, evidence_receipts=tuple(rebuilt))
+
+
+def exact_prefix(
+    source_limit: int,
+    *,
+    compact: bool,
+) -> tuple[object, array, array, array, int]:
+    """Enumerate one bounded BFS prefix with or without packed state storage."""
+
+    initial = start()
+    states: object
+    if compact:
+        states = model.CompactExactStateStore(
+            model.EnvelopeState,
+            model.CHILD_STATE_REFERENCE_FIELDS,
+        )
+    else:
+        states = []
+    index = model.ExactStateIndex(states)
+    initial_index, is_new = index.intern(model.semantic_projection(initial))
+    assert initial_index == 0 and is_new
+    frontier = array("I", [initial_index])
+    targets = array("I")
+    actions = array("B")
+    cursor = 0
+    while cursor < len(frontier) and cursor < source_limit:
+        source = states[frontier[cursor]]
+        cursor += 1
+        for edge in model.next_states(source):
+            target, target_is_new = index.intern(model.semantic_projection(edge.state))
+            targets.append(target)
+            actions.append(model.ACTION_INDEX[edge.action_id])
+            if target_is_new:
+                frontier.append(target)
+    if compact:
+        states.freeze()
+    return states, frontier, targets, actions, cursor
 
 
 def main() -> None:
@@ -1267,6 +1305,40 @@ def main() -> None:
     )
     assert "SUP-045-SEAL-EVIDENCE" not in {edge.action_id for edge in model.next_states(early)}
     cases += 3
+
+    packed_prefix = exact_prefix(2_000, compact=True)
+    reference_prefix = exact_prefix(2_000, compact=False)
+    packed_states, packed_frontier, packed_targets, packed_actions, packed_cursor = (
+        packed_prefix
+    )
+    (
+        reference_states,
+        reference_frontier,
+        reference_targets,
+        reference_actions,
+        reference_cursor,
+    ) = reference_prefix
+    assert packed_cursor == reference_cursor == 2_000
+    assert packed_frontier == reference_frontier
+    assert packed_targets == reference_targets
+    assert packed_actions == reference_actions
+    assert len(packed_states) == len(reference_states)
+    for packed_state, reference_state in zip(
+        packed_states,
+        reference_states,
+        strict=True,
+    ):
+        assert packed_state == reference_state
+        assert hash(packed_state) == hash(reference_state)
+        assert tuple(packed_state.evidence_receipts) == tuple(
+            reference_state.evidence_receipts
+        )
+    evidence_index = packed_states._field_names.index("evidence_receipts")
+    evidence_column = packed_states._columns[evidence_index].implementation
+    assert isinstance(evidence_column, model._PackedPersistentSequenceColumn)
+    assert evidence_column.arena.fixed_column_bytes_per_node_upper_bound == 17
+    assert evidence_column.arena.fixed_column_bytes_per_record_upper_bound <= 64
+    cases += 9
 
     print(f"LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases={cases}")
 

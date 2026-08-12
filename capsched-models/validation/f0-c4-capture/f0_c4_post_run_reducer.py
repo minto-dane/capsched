@@ -33,11 +33,11 @@ COMPONENTS = (
 COMPONENT_ORDER = tuple(row[0] for row in COMPONENTS)
 INPUT_DIGESTS = {
     "f0-supervisor-c4-claim-registry-v1.json": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
-    "f0_supervisor_lts_v3.py": "acc00e684fbf1034fdceb8024f0eb78ad0649d0b8fdbab25970bd9ef05617141",
-    "f0_supervisor_orchestrator_v3.py": "2a015251fbb4b33353f7dafb791860c50004f3f12d5c58695640375b401d3e64",
+    "f0_supervisor_lts_v3.py": "514c247b335012203081ff5503bca924698de1bc102603c23012bb22441bda7e",
+    "f0_supervisor_orchestrator_v3.py": "1cc6e3b227df40d104b3151a20124b025d22a259b5f0a882213f45c5728aae0a",
     "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba",
-    "test-f0-supervisor-lts-v3-mutations.py": "354cd28449490ab3740afec8c258877090f2251ae217c74366d69e98aff76a8c",
-    "test-f0-supervisor-orchestrator-v3-mutations.py": "eef3921b806b024bcc2b31bc49d048a7cf181646cb8cb6f6b7ccef4a9b12d95b",
+    "test-f0-supervisor-lts-v3-mutations.py": "e473f571f40b67caa0632299dc32568393282ab540db78650e93d2e34b8cd6f3",
+    "test-f0-supervisor-orchestrator-v3-mutations.py": "a16f5392b963bbc37cd2c3b40d4bf8b4ad652f4b7073f74dbaa5af7ca61bf9cb",
     "test-run-f0-supervisor-v3-full.sh": "124947b2622811b60a20f753e6cfa6eae0a704afb11c95bb0fe1b80a11e78ec9",
     "validate-f0-supervisor-lts-v3.py": "83408bbcc7e1bf3abcf7165e7e32d2c34a1be55a8ddd78d212c77d6d95452e5c",
 }
@@ -55,10 +55,10 @@ INDEPENDENCE_IDS = [
 ]
 TEST_MARKERS = {
     "test-f0-supervisor-lts-v3-mutations.py": (
-        "LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=275"
+        "LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=284"
     ),
     "test-f0-supervisor-orchestrator-v3-mutations.py": (
-        "LOCAL_C4_PARENT_REGRESSION_PASS hostile_cases=730"
+        "LOCAL_C4_PARENT_REGRESSION_PASS hostile_cases=739"
     ),
     "test-run-f0-supervisor-v3-full.sh": (
         "LOCAL_C4_RUNNER_REGRESSION_PASS hostile_cases=44"

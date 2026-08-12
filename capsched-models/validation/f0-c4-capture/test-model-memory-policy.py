@@ -26,6 +26,12 @@ EXPECTED_CACHE_CONSTANTS = {
         "DIGEST_CACHE_MAX_ENTRIES": 32768,
         "STATE_CACHE_MAX_ENTRIES": 16384,
         "PREFIX_CACHE_MAX_ENTRIES": 8192,
+        "PACKED_RECORD_DECODE_CACHE_ENTRIES": 8192,
+        "PACKED_EXACT_INTERN_CACHE_ENTRIES": 8192,
+        "ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE": 4096,
+        "ADAPTIVE_REFERENCE_DIRECT_RATIO_DENOMINATOR": 4,
+        "EXACT_INDEX_MAX_LOAD_NUMERATOR": 4,
+        "EXACT_INDEX_MAX_LOAD_DENOMINATOR": 5,
     },
     parent: {
         "SMALL_CACHE_MAX_ENTRIES": 256,
@@ -197,6 +203,14 @@ def main() -> None:
         raise AssertionError("exact state index is not fixed-width and resize-safe")
     cases += 1
 
+    dense_states = []
+    dense_index = child.ExactStateIndex(dense_states, initial_capacity=64)
+    for value in range(51):
+        dense_index.intern(CollisionState(10_000 + value))
+    if dense_index.capacity != 64 or len(dense_index) != 51:
+        raise AssertionError("exact state index regressed from its sealed 80% load bound")
+    cases += 1
+
     if child.semantic_projection(child_start) is not child_start:
         raise AssertionError("exact child projection allocated a wrapper identity")
     if parent.semantic_projection(parent_start) is not parent_start:
@@ -254,6 +268,107 @@ def main() -> None:
         raise AssertionError("compact child state reconstruction or equality drifted")
     cases += 1
 
+    packed_child = child_store[0]
+    packed_receipts = []
+    for _ in range(10):
+        packed_child = child.next_states(packed_child)[0].state
+        packed_receipts.append(packed_child.evidence_receipts[-1])
+        child_store.append(packed_child)
+        packed_child = child_store[-1]
+    evidence_index = child_store._field_names.index("evidence_receipts")
+    evidence_column = child_store._columns[evidence_index].implementation
+    if (
+        not isinstance(evidence_column, child._PackedPersistentSequenceColumn)
+        or len(evidence_column.arena) != 11
+        or len(evidence_column.arena._records) != 10
+        or evidence_column.arena.fixed_column_bytes_per_node_upper_bound != 17
+        or evidence_column.arena.fixed_column_bytes_per_record_upper_bound > 64
+        or len(evidence_column.arena._records._cache_ids)
+        != child.PACKED_RECORD_DECODE_CACHE_ENTRIES
+        or len(evidence_column.arena._records._cache_values)
+        != child.PACKED_RECORD_DECODE_CACHE_ENTRIES
+        or tuple(packed_child.evidence_receipts) != tuple(packed_receipts)
+        or packed_child.evidence_receipts != left.evidence_receipts
+        or hash(packed_child.evidence_receipts) != hash(left.evidence_receipts)
+    ):
+        raise AssertionError("accepted child histories are not exact packed arena values")
+    cases += 1
+
+    hostile_receipt = child.Receipt(
+        schema="hostile-schema",
+        run_id="hostile-run",
+        binding_digest="A" * 64,
+        scope_id="hostile-scope",
+        subject_id="hostile-subject",
+        sequence=1,
+        kind="hostile-kind",
+        payload="hostile-\ud800-payload",
+        payload_digest="not-a-digest",
+        issuer="hostile-issuer",
+        channel="hostile-channel",
+        previous_hash="",
+        auth_tag="F" * 64,
+    )
+    hostile_history = child.ReceiptHistory().append(hostile_receipt)
+    hostile_column = child._PackedPersistentSequenceColumn(child.ReceiptHistory)
+    hostile_column.append(hostile_history)
+    hostile_rebuilt = hostile_column.value(0)
+    if (
+        hostile_rebuilt != hostile_history
+        or hostile_rebuilt[0] != hostile_receipt
+        or hostile_rebuilt[0].payload != hostile_receipt.payload
+        or not hostile_column.arena._records._columns[2].matches(
+            0, hostile_receipt.binding_digest
+        )
+        or not hostile_column.arena._records._columns[7].matches(
+            0, hostile_receipt.payload
+        )
+        or hostile_column.arena._records._columns[12]._tags[0] != 1
+    ):
+        raise AssertionError("noncanonical exact receipt values changed while packing")
+    cases += 1
+
+    @dataclass(frozen=True, slots=True)
+    class CollisionRecord:
+        value: int
+
+        def __hash__(self) -> int:
+            return 17
+
+    class CollisionHistory(child.PersistentSequence):
+        __slots__ = ()
+        _record_type = CollisionRecord
+
+        def append(self, value: object):
+            if not isinstance(value, CollisionRecord):
+                raise TypeError("collision history accepts CollisionRecord only")
+            return CollisionHistory(self, value)
+
+    collision_left = CollisionHistory().append(CollisionRecord(1))
+    collision_right = CollisionHistory().append(CollisionRecord(2))
+    if hash(collision_left) != hash(collision_right):
+        raise AssertionError("collision fixture did not collide")
+    collision_column = child._PackedPersistentSequenceColumn(CollisionHistory)
+    collision_column.append(collision_left)
+    collision_column.append(collision_left)
+    collision_column.append(collision_right)
+    if (
+        collision_column.matches(0, collision_right)
+        or collision_column.matches(2, collision_left)
+        or collision_column.value(0) == collision_column.value(2)
+        or collision_column._row_codes[0] != collision_column._row_codes[1]
+        or len(collision_column.arena) != 3
+        or len(collision_column.arena._records) != 2
+        or len(collision_column.arena._index_ids)
+        != child.PACKED_EXACT_INTERN_CACHE_ENTRIES
+        or len(collision_column.arena._records._index_ids)
+        != child.PACKED_EXACT_INTERN_CACHE_ENTRIES
+    ):
+        raise AssertionError(
+            "packed history merged collisions or duplicated an exact history"
+        )
+    cases += 1
+
     child_store.freeze()
     try:
         child_store.append(child_start)
@@ -289,6 +404,41 @@ def main() -> None:
         or adaptive_column.matches(256, 255)
     ):
         raise AssertionError("adaptive exact code column failed width promotion")
+    cases += 1
+
+    reused_reference_column = child._AdaptiveExactReferenceColumn()
+    for _ in range(child.ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE + 1):
+        reused_reference_column.append(("shared",))
+    if (
+        not isinstance(
+            reused_reference_column.implementation,
+            child._CompactCodeColumn,
+        )
+        or reused_reference_column.itemsize != 1
+        or not reused_reference_column.matches(0, ("shared",))
+    ):
+        raise AssertionError("reused exact references abandoned compact interning")
+    cases += 1
+
+    unique_reference_column = child._AdaptiveExactReferenceColumn()
+    for value in range(child.ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE + 2):
+        unique_reference_column.append(("unique", value))
+    if (
+        not isinstance(
+            unique_reference_column.implementation,
+            child._DirectExactReferenceColumn,
+        )
+        or unique_reference_column.itemsize != child.calcsize("P")
+        or unique_reference_column.value(-1) != (
+            "unique",
+            child.ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE + 1,
+        )
+        or not unique_reference_column.matches(
+            child.ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE,
+            ("unique", child.ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE),
+        )
+    ):
+        raise AssertionError("mostly unique exact references did not become direct")
     cases += 1
 
     @dataclass(frozen=True, slots=True)
@@ -335,6 +485,9 @@ def main() -> None:
     if (
         "class PersistentSequence:" not in child_source
         or "class ReceiptHistory(PersistentSequence):" not in child_source
+        or "class _PackedRecordArena:" not in child_source
+        or "class _PackedPersistentSequenceArena:" not in child_source
+        or "class _PackedPersistentSequenceColumn:" not in child_source
         or "class ExactStateIndex:" not in child_source
         or "class CompactExactStateStore:" not in child_source
         or 'frontier_indices = array("I"' not in child_source

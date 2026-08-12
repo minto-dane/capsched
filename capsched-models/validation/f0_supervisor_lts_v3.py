@@ -32,15 +32,43 @@ SMALL_CACHE_MAX_ENTRIES = 256
 DIGEST_CACHE_MAX_ENTRIES = 32768
 STATE_CACHE_MAX_ENTRIES = 16384
 PREFIX_CACHE_MAX_ENTRIES = 8192
+PACKED_RECORD_DECODE_CACHE_ENTRIES = 8192
+PACKED_EXACT_INTERN_CACHE_ENTRIES = 8192
+ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE = 4096
+ADAPTIVE_REFERENCE_DIRECT_RATIO_DENOMINATOR = 4
+EXACT_INDEX_MAX_LOAD_NUMERATOR = 4
+EXACT_INDEX_MAX_LOAD_DENOMINATOR = 5
 
 if (
     array("I").itemsize != 4
     or array("Q").itemsize != 8
     or array("B").itemsize != 1
+    or array("q").itemsize != 8
+    or calcsize("P") != 8
 ):
     raise RuntimeError(
-        "candidate-4 requires 32-bit, 64-bit, and 8-bit compact array items"
+        "candidate-4 requires a 64-bit process and 8/32/64-bit compact array items"
     )
+if (
+    PACKED_RECORD_DECODE_CACHE_ENTRIES <= 0
+    or PACKED_RECORD_DECODE_CACHE_ENTRIES
+    & (PACKED_RECORD_DECODE_CACHE_ENTRIES - 1)
+    or PACKED_EXACT_INTERN_CACHE_ENTRIES <= 0
+    or PACKED_EXACT_INTERN_CACHE_ENTRIES
+    & (PACKED_EXACT_INTERN_CACHE_ENTRIES - 1)
+):
+    raise RuntimeError("packed receipt cache sizes must be powers of two")
+if (
+    ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE <= 0
+    or ADAPTIVE_REFERENCE_DIRECT_RATIO_DENOMINATOR <= 1
+):
+    raise RuntimeError("adaptive exact reference policy is invalid")
+if not (
+    0
+    < EXACT_INDEX_MAX_LOAD_NUMERATOR
+    < EXACT_INDEX_MAX_LOAD_DENOMINATOR
+):
+    raise RuntimeError("exact state index load policy is invalid")
 
 ROLES = {"PRODUCER", "CHECKER"}
 PHASES = {
@@ -397,14 +425,29 @@ class Receipt:
 class PersistentSequence:
     """Shared immutable exact sequence used by child and parent evidence.
 
-    A tuple copy for every append retains O(history length) pointers per state.
-    Each node instead stores one value and its exact predecessor.  Hashes are
-    cached at construction, but equality still walks and compares every value
-    when hashes match, so no digest or probabilistic quotient enters reachability.
-    Subclasses provide their typed ``append`` operation.
+    Transition expansion uses small predecessor nodes.  Once an exact state is
+    accepted by ``CompactExactStateStore``, its sequence is serialized into the
+    store-owned packed arena and reconstructed as a lightweight view.  This
+    keeps rejected/duplicate transition candidates out of the arena while
+    removing retained Python receipt, string, and predecessor object graphs.
+
+    Hashes are only a rejection fast path.  Equality still compares every exact
+    value after a hash match, so packing introduces no digest or probabilistic
+    quotient into reachability.  Subclasses provide their typed ``append``
+    operation and packed-record field policy.
     """
 
-    __slots__ = ("_previous", "_value", "_length", "_hash")
+    __slots__ = (
+        "_packed_arena",
+        "_packed_node_id",
+        "_transient_previous",
+        "_transient_value",
+        "_cached_length",
+        "_cached_hash",
+    )
+
+    _record_type: type | None = None
+    _digest_field_names: frozenset[str] = frozenset()
 
     def __init__(
         self,
@@ -415,18 +458,62 @@ class PersistentSequence:
             raise ValueError("persistent sequence requires predecessor and value")
         if previous is not None and type(previous) is not type(self):
             raise TypeError("persistent sequence predecessor type changed")
-        object.__setattr__(self, "_previous", previous)
-        object.__setattr__(self, "_value", value)
+        object.__setattr__(self, "_packed_arena", None)
+        object.__setattr__(self, "_packed_node_id", -1)
+        object.__setattr__(self, "_transient_previous", previous)
+        object.__setattr__(self, "_transient_value", value)
         if previous is None:
-            object.__setattr__(self, "_length", 0)
+            object.__setattr__(self, "_cached_length", 0)
             object.__setattr__(
                 self,
-                "_hash",
+                "_cached_hash",
                 hash(("F0-C4-EMPTY-PERSISTENT-SEQUENCE", type(self).__qualname__)),
             )
         else:
-            object.__setattr__(self, "_length", previous._length + 1)
-            object.__setattr__(self, "_hash", hash((previous._hash, value)))
+            object.__setattr__(self, "_cached_length", previous._length + 1)
+            object.__setattr__(self, "_cached_hash", hash((previous._hash, value)))
+
+    @classmethod
+    def _from_packed(
+        cls,
+        arena: _PackedPersistentSequenceArena,
+        node_id: int,
+    ) -> PersistentSequence:
+        if arena.sequence_type is not cls:
+            raise TypeError("packed persistent sequence type changed")
+        instance = object.__new__(cls)
+        object.__setattr__(instance, "_packed_arena", arena)
+        object.__setattr__(instance, "_packed_node_id", node_id)
+        object.__setattr__(instance, "_transient_previous", None)
+        object.__setattr__(instance, "_transient_value", None)
+        object.__setattr__(instance, "_cached_length", arena.length(node_id))
+        object.__setattr__(instance, "_cached_hash", arena.hash_value(node_id))
+        return instance
+
+    @property
+    def _previous(self) -> PersistentSequence | None:
+        if self._packed_arena is None:
+            return self._transient_previous
+        parent_id = self._packed_arena.parent(self._packed_node_id)
+        if parent_id is None:
+            return None
+        return type(self)._from_packed(self._packed_arena, parent_id)
+
+    @property
+    def _value(self) -> object | None:
+        if self._packed_arena is None:
+            return self._transient_value
+        if self._packed_node_id == 0:
+            return None
+        return self._packed_arena.value(self._packed_node_id)
+
+    @property
+    def _length(self) -> int:
+        return self._cached_length
+
+    @property
+    def _hash(self) -> int:
+        return self._cached_hash
 
     def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError(f"{type(self).__name__} is immutable")
@@ -512,6 +599,12 @@ class PersistentSequence:
         left = self
         right = other
         while left._previous is not None and right._previous is not None:
+            if (
+                left._packed_arena is not None
+                and left._packed_arena is right._packed_arena
+                and left._packed_node_id == right._packed_node_id
+            ):
+                return True
             if left._value != right._value:
                 return False
             left = left._previous
@@ -521,6 +614,12 @@ class PersistentSequence:
 
 class ReceiptHistory(PersistentSequence):
     __slots__ = ()
+
+    _record_type = Receipt
+    # The finite model reuses binding/payload/previous digests and payload text
+    # heavily.  Exact interning is smaller for those fields; only the
+    # high-cardinality authentication tag uses fixed 32-byte digest packing.
+    _digest_field_names = frozenset({"auth_tag"})
 
     def append(self, value: object) -> ReceiptHistory:
         if not isinstance(value, Receipt):
@@ -1310,8 +1409,363 @@ class _CompactCodeColumn:
         return len(self._codes)
 
 
-class _ExactReferenceColumn:
-    """Retain high-cardinality persistent values directly, one ref per state."""
+class _ExactDigestColumn:
+    """Pack canonical lowercase SHA-256 text while preserving hostile values."""
+
+    __slots__ = ("_fallback", "_raw", "_tags")
+    _LOWER_HEX = frozenset("0123456789abcdef")
+
+    def __init__(self) -> None:
+        self._fallback = _CompactCodeColumn()
+        self._raw = bytearray()
+        self._tags = array("B")
+
+    @property
+    def itemsize(self) -> int:
+        return 1 + 32 + self._fallback.itemsize
+
+    @classmethod
+    def _canonical_raw(cls, value: object) -> bytes | None:
+        if (
+            type(value) is not str
+            or len(value) != 64
+            or any(character not in cls._LOWER_HEX for character in value)
+        ):
+            return None
+        return bytes.fromhex(value)
+
+    def append(self, value: object) -> None:
+        raw = self._canonical_raw(value)
+        if raw is None:
+            self._tags.append(1)
+            self._raw.extend(bytes(32))
+            self._fallback.append(value)
+        else:
+            self._tags.append(0)
+            self._raw.extend(raw)
+            self._fallback.append(None)
+
+    def _decoded(self, index: int) -> str:
+        start = index * 32
+        return self._raw[start : start + 32].hex()
+
+    def value(self, index: int) -> object:
+        if self._tags[index] == 0:
+            return self._decoded(index)
+        return self._fallback.value(index)
+
+    def matches(self, index: int, value: object) -> bool:
+        raw = self._canonical_raw(value)
+        if self._tags[index] == 0 and raw is not None:
+            start = index * 32
+            return self._raw[start : start + 32] == raw
+        return self.value(index) == value
+
+    def __len__(self) -> int:
+        return len(self._tags)
+
+
+class _PackedRecordArena:
+    """Exact field-column storage for one typed receipt record class."""
+
+    __slots__ = (
+        "_cache_ids",
+        "_cache_values",
+        "_columns",
+        "_fallback_records",
+        "_field_names",
+        "_index_hashes",
+        "_index_ids",
+        "_index_mask",
+        "_record_type",
+        "_row_codes",
+    )
+    _NO_RECORD = (1 << 32) - 1
+    _HASH_MASK = (1 << 64) - 1
+
+    def __init__(
+        self,
+        record_type: type,
+        digest_field_names: frozenset[str],
+    ) -> None:
+        record_fields = tuple(field.name for field in fields(record_type))
+        unknown = digest_field_names - set(record_fields)
+        if unknown:
+            raise ValueError(f"invalid packed record policy unknown={sorted(unknown)}")
+        self._record_type = record_type
+        self._field_names = record_fields
+        self._columns = tuple(
+            _ExactDigestColumn()
+            if name in digest_field_names
+            else _CompactCodeColumn()
+            for name in record_fields
+        )
+        self._row_codes = array("q")
+        self._fallback_records: list[object] = []
+        self._cache_ids = array(
+            "I",
+            [(1 << 32) - 1],
+        ) * PACKED_RECORD_DECODE_CACHE_ENTRIES
+        self._cache_values: list[object | None] = [
+            None
+        ] * PACKED_RECORD_DECODE_CACHE_ENTRIES
+        self._index_ids = array(
+            "I", [self._NO_RECORD]
+        ) * PACKED_EXACT_INTERN_CACHE_ENTRIES
+        self._index_hashes = array(
+            "Q", [0]
+        ) * PACKED_EXACT_INTERN_CACHE_ENTRIES
+        self._index_mask = PACKED_EXACT_INTERN_CACHE_ENTRIES - 1
+
+    @property
+    def fixed_column_bytes_per_record_upper_bound(self) -> int:
+        return self._row_codes.itemsize + sum(
+            column.itemsize for column in self._columns
+        )
+
+    def _find(self, record: object, record_hash: int) -> tuple[int | None, int]:
+        slot = record_hash & self._index_mask
+        record_id = self._index_ids[slot]
+        if (
+            record_id != self._NO_RECORD
+            and self._index_hashes[slot] == record_hash
+            and self.matches(record_id, record)
+        ):
+            return record_id, slot
+        return None, slot
+
+    def append(self, record: object) -> int:
+        record_hash = hash(record) & self._HASH_MASK
+        record_id, slot = self._find(record, record_hash)
+        if record_id is not None:
+            return record_id
+        record_id = len(self._row_codes)
+        if record_id >= self._NO_RECORD:
+            raise ProtocolReject("F05-SPV3-RECEIPT-ARENA-BOUND", str(record_id))
+        if type(record) is self._record_type:
+            packed_row = len(self._columns[0])
+            for name, column in zip(self._field_names, self._columns, strict=True):
+                column.append(getattr(record, name))
+            self._row_codes.append(packed_row)
+        else:
+            fallback_index = len(self._fallback_records)
+            self._fallback_records.append(record)
+            self._row_codes.append(-fallback_index - 1)
+        self._index_ids[slot] = record_id
+        self._index_hashes[slot] = record_hash
+        return record_id
+
+    def value(self, record_id: int) -> object:
+        cache_slot = record_id & (PACKED_RECORD_DECODE_CACHE_ENTRIES - 1)
+        if self._cache_ids[cache_slot] == record_id:
+            cached = self._cache_values[cache_slot]
+            if cached is None:
+                raise RuntimeError("packed receipt decode cache lost its value")
+            return cached
+        row_code = self._row_codes[record_id]
+        if row_code < 0:
+            value = self._fallback_records[-row_code - 1]
+        else:
+            value = self._record_type(
+                *(column.value(row_code) for column in self._columns)
+            )
+        self._cache_values[cache_slot] = value
+        self._cache_ids[cache_slot] = record_id
+        return value
+
+    def matches(self, record_id: int, record: object) -> bool:
+        row_code = self._row_codes[record_id]
+        if row_code < 0 or type(record) is not self._record_type:
+            return self.value(record_id) == record
+        return all(
+            column.matches(row_code, getattr(record, name))
+            for name, column in zip(self._field_names, self._columns, strict=True)
+        )
+
+    def __len__(self) -> int:
+        return len(self._row_codes)
+
+
+class _PackedPersistentSequenceArena:
+    """Store accepted exact receipt histories without retained Python nodes."""
+
+    __slots__ = (
+        "_hashes",
+        "_index_hashes",
+        "_index_ids",
+        "_index_mask",
+        "_lengths",
+        "_parents",
+        "_record_ids",
+        "_records",
+        "sequence_type",
+    )
+    _EMPTY_NODE = 0
+    _NO_NODE = (1 << 32) - 1
+    _HASH_MASK = (1 << 64) - 1
+
+    def __init__(self, sequence_type: type[PersistentSequence]) -> None:
+        record_type = sequence_type._record_type
+        if record_type is None:
+            raise TypeError("packed persistent sequence has no record type")
+        self.sequence_type = sequence_type
+        self._records = _PackedRecordArena(
+            record_type,
+            sequence_type._digest_field_names,
+        )
+        self._parents = array("I", [self._NO_NODE])
+        self._record_ids = array("I", [self._NO_NODE])
+        self._lengths = _CompactCodeColumn()
+        self._lengths.append(0)
+        self._hashes = array(
+            "q",
+            [
+                hash(
+                    (
+                        "F0-C4-EMPTY-PERSISTENT-SEQUENCE",
+                        sequence_type.__qualname__,
+                    )
+                )
+            ],
+        )
+        self._index_ids = array(
+            "I", [self._NO_NODE]
+        ) * PACKED_EXACT_INTERN_CACHE_ENTRIES
+        self._index_hashes = array(
+            "Q", [0]
+        ) * PACKED_EXACT_INTERN_CACHE_ENTRIES
+        self._index_mask = PACKED_EXACT_INTERN_CACHE_ENTRIES - 1
+
+    @property
+    def fixed_column_bytes_per_node_upper_bound(self) -> int:
+        return (
+            self._parents.itemsize
+            + self._record_ids.itemsize
+            + self._lengths.itemsize
+            + self._hashes.itemsize
+        )
+
+    @property
+    def fixed_column_bytes_per_record_upper_bound(self) -> int:
+        return self._records.fixed_column_bytes_per_record_upper_bound
+
+    def parent(self, node_id: int) -> int | None:
+        parent_id = self._parents[node_id]
+        return None if parent_id == self._NO_NODE else parent_id
+
+    def value(self, node_id: int) -> object:
+        if node_id == self._EMPTY_NODE:
+            raise IndexError("empty packed persistent sequence has no value")
+        return self._records.value(self._record_ids[node_id])
+
+    def length(self, node_id: int) -> int:
+        return int(self._lengths.value(node_id))
+
+    def hash_value(self, node_id: int) -> int:
+        return self._hashes[node_id]
+
+    @staticmethod
+    def _key_hash(parent_id: int, record_id: int) -> int:
+        return hash((parent_id, record_id)) & _PackedPersistentSequenceArena._HASH_MASK
+
+    def _find(
+        self,
+        parent_id: int,
+        record_id: int,
+        key_hash: int,
+    ) -> tuple[int | None, int]:
+        slot = key_hash & self._index_mask
+        node_id = self._index_ids[slot]
+        if (
+            node_id != self._NO_NODE
+            and self._index_hashes[slot] == key_hash
+            and self._parents[node_id] == parent_id
+            and self._record_ids[node_id] == record_id
+        ):
+            return node_id, slot
+        return None, slot
+
+    def _append(self, parent_id: int, record: object) -> int:
+        record_id = self._records.append(record)
+        key_hash = self._key_hash(parent_id, record_id)
+        node_id, slot = self._find(parent_id, record_id, key_hash)
+        if node_id is not None:
+            return node_id
+        node_id = len(self._parents)
+        if node_id >= self._NO_NODE:
+            raise ProtocolReject("F05-SPV3-HISTORY-ARENA-BOUND", str(node_id))
+        length = self.length(parent_id) + 1
+        if length >= self._NO_NODE:
+            raise ProtocolReject("F05-SPV3-HISTORY-LENGTH-BOUND", str(length))
+        self._parents.append(parent_id)
+        self._record_ids.append(record_id)
+        self._lengths.append(length)
+        self._hashes.append(hash((self._hashes[parent_id], record)))
+        self._index_ids[slot] = node_id
+        self._index_hashes[slot] = key_hash
+        return node_id
+
+    def pack(self, sequence: PersistentSequence) -> int:
+        if type(sequence) is not self.sequence_type:
+            raise TypeError("packed persistent sequence received a different type")
+        suffix: list[object] = []
+        cursor = sequence
+        while cursor._length:
+            if cursor._packed_arena is self:
+                node_id = cursor._packed_node_id
+                break
+            value = cursor._value
+            previous = cursor._previous
+            if value is None or previous is None:
+                raise RuntimeError("malformed persistent sequence during packing")
+            suffix.append(value)
+            cursor = previous
+        else:
+            node_id = self._EMPTY_NODE
+        for record in reversed(suffix):
+            node_id = self._append(node_id, record)
+        if (
+            self.length(node_id) != sequence._length
+            or self._hashes[node_id] != sequence._hash
+        ):
+            raise RuntimeError("packed persistent sequence identity drifted")
+        return node_id
+
+    def matches(self, node_id: int, sequence: PersistentSequence) -> bool:
+        if type(sequence) is not self.sequence_type:
+            return False
+        if (
+            self.length(node_id) != sequence._length
+            or self._hashes[node_id] != sequence._hash
+        ):
+            return False
+        cursor = sequence
+        packed_cursor = node_id
+        while packed_cursor != self._EMPTY_NODE:
+            if (
+                cursor._packed_arena is self
+                and cursor._packed_node_id == packed_cursor
+            ):
+                return True
+            value = cursor._value
+            previous = cursor._previous
+            if value is None or previous is None:
+                return False
+            if not self._records.matches(self._record_ids[packed_cursor], value):
+                return False
+            packed_cursor = self._parents[packed_cursor]
+            cursor = previous
+        return cursor._previous is None
+
+    def view(self, node_id: int) -> PersistentSequence:
+        return self.sequence_type._from_packed(self, node_id)
+
+    def __len__(self) -> int:
+        return len(self._parents)
+
+
+class _DirectExactReferenceColumn:
+    """Retain a high-cardinality value directly when it has no packed policy."""
 
     __slots__ = ("_values",)
 
@@ -1336,13 +1790,149 @@ class _ExactReferenceColumn:
         return len(self._values)
 
 
+class _AdaptiveExactReferenceColumn:
+    """Intern reused exact references, then abandon the pool if mostly unique."""
+
+    __slots__ = ("_column",)
+
+    def __init__(self) -> None:
+        self._column: _CompactCodeColumn | _DirectExactReferenceColumn = (
+            _CompactCodeColumn()
+        )
+
+    @property
+    def itemsize(self) -> int:
+        return self._column.itemsize
+
+    @property
+    def implementation(self) -> object:
+        return self._column
+
+    def append(self, value: object) -> None:
+        self._column.append(value)
+        if not isinstance(self._column, _CompactCodeColumn):
+            return
+        row_count = len(self._column)
+        unique_count = len(self._column._pool._values)
+        if (
+            unique_count <= ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE
+            or unique_count * ADAPTIVE_REFERENCE_DIRECT_RATIO_DENOMINATOR
+            <= row_count
+        ):
+            return
+        compact = self._column
+        direct = _DirectExactReferenceColumn()
+        direct._values = [compact.value(index) for index in range(row_count)]
+        self._column = direct
+
+    def matches(self, index: int, value: object) -> bool:
+        return self._column.matches(index, value)
+
+    def value(self, index: int) -> object:
+        return self._column.value(index)
+
+    def __len__(self) -> int:
+        return len(self._column)
+
+
+class _PackedPersistentSequenceColumn:
+    """One exact arena node (or rare fallback object) per accepted state."""
+
+    __slots__ = ("_arena", "_fallback_values", "_row_codes", "_sequence_type")
+
+    def __init__(self, sequence_type: type[PersistentSequence]) -> None:
+        self._sequence_type = sequence_type
+        self._arena = _PackedPersistentSequenceArena(sequence_type)
+        self._row_codes = array("q")
+        self._fallback_values: list[object] = []
+
+    @property
+    def itemsize(self) -> int:
+        return self._row_codes.itemsize
+
+    @property
+    def arena(self) -> _PackedPersistentSequenceArena:
+        return self._arena
+
+    def append(self, value: object) -> None:
+        if type(value) is self._sequence_type:
+            self._row_codes.append(self._arena.pack(value))
+        else:
+            fallback_index = len(self._fallback_values)
+            self._fallback_values.append(value)
+            self._row_codes.append(-fallback_index - 1)
+
+    def matches(self, index: int, value: object) -> bool:
+        row_code = self._row_codes[index]
+        if row_code < 0:
+            return self._fallback_values[-row_code - 1] == value
+        return isinstance(value, PersistentSequence) and self._arena.matches(
+            row_code, value
+        )
+
+    def value(self, index: int) -> object:
+        row_code = self._row_codes[index]
+        if row_code < 0:
+            return self._fallback_values[-row_code - 1]
+        return self._arena.view(row_code)
+
+    def __len__(self) -> int:
+        return len(self._row_codes)
+
+
+class _ExactReferenceColumn:
+    """Select packed sequence storage from the first exact reference value."""
+
+    __slots__ = ("_column",)
+
+    def __init__(self) -> None:
+        self._column: (
+            _AdaptiveExactReferenceColumn
+            | _PackedPersistentSequenceColumn
+            | None
+        ) = None
+
+    @property
+    def itemsize(self) -> int:
+        if self._column is None:
+            return calcsize("P")
+        return self._column.itemsize
+
+    @property
+    def implementation(self) -> object | None:
+        return self._column
+
+    def append(self, value: object) -> None:
+        if self._column is None:
+            self._column = (
+                _PackedPersistentSequenceColumn(type(value))
+                if isinstance(value, PersistentSequence)
+                else _AdaptiveExactReferenceColumn()
+            )
+        self._column.append(value)
+
+    def matches(self, index: int, value: object) -> bool:
+        if self._column is None:
+            raise IndexError("empty exact reference column")
+        return self._column.matches(index, value)
+
+    def value(self, index: int) -> object:
+        if self._column is None:
+            raise IndexError("empty exact reference column")
+        return self._column.value(index)
+
+    def __len__(self) -> int:
+        return 0 if self._column is None else len(self._column)
+
+
 class CompactExactStateStore:
     """Field-column storage that reconstructs, but never quotients, exact states.
 
     Low-cardinality immutable fields use exact value pools and adaptive unsigned
-    integer columns.  High-cardinality histories and typed receipts retain one
-    direct reference per state.  ``equals_at`` checks every field, so neither a
-    cached state hash nor a pool code is accepted as state identity by itself.
+    integer columns.  Persistent receipt histories use reversible packed arenas;
+    other high-cardinality references promote to direct storage.  ``equals_at``
+    checks every field, so neither a cached hash nor a pool/arena code is
+    accepted as state identity by itself.
     """
 
     __slots__ = (
@@ -1562,7 +2152,10 @@ class ExactStateIndex:
         state_index, slot = self._find(state, state_hash)
         if state_index is not None:
             return state_index, False
-        if (self._size + 1) * 3 >= self.capacity * 2:
+        if (
+            (self._size + 1) * EXACT_INDEX_MAX_LOAD_DENOMINATOR
+            >= self.capacity * EXACT_INDEX_MAX_LOAD_NUMERATOR
+        ):
             self._resize()
             state_index, slot = self._find(state, state_hash)
             if state_index is not None:
