@@ -1172,6 +1172,12 @@ class OwnerFailureNotice:
     binding_digest: str
     observed_phase: str
     parent_prefix_hash: str
+    local_capsule_digest_at_failure: str
+    publication_at_failure: str
+    store_controller_generation_at_failure: int
+    publication_commitment_digest_at_failure: str
+    durable_ack_auth_at_failure: str
+    store_fence_ack_auth_at_failure: str
     issuer: str
     auth_tag: str
 
@@ -1191,6 +1197,12 @@ def _owner_failure_digest(notice: OwnerFailureNotice) -> str:
         notice.binding_digest,
         notice.observed_phase,
         notice.parent_prefix_hash,
+        notice.local_capsule_digest_at_failure,
+        notice.publication_at_failure,
+        notice.store_controller_generation_at_failure,
+        notice.publication_commitment_digest_at_failure,
+        notice.durable_ack_auth_at_failure,
+        notice.store_fence_ack_auth_at_failure,
         notice.issuer,
     )
 
@@ -1475,11 +1487,48 @@ if len(ACTION_IDS) > 256:
 ACTION_INDEX = {action_id: index for index, action_id in enumerate(ACTION_IDS)}
 
 
+PARENT_STATE_REFERENCE_FIELDS = frozenset(
+    {
+        "parent_grant",
+        "grant_consumption_ack",
+        "owner_failure_notice",
+        "producer_grant",
+        "producer_start_binding",
+        "producer_certificate",
+        "producer_attachment",
+        "producer_retirement",
+        "checker_grant",
+        "checker_start_binding",
+        "checker_certificate",
+        "checker_attachment",
+        "checker_retirement",
+        "parent_receipts",
+        "local_capsule",
+        "semantic_verdict",
+        "publication_commitment",
+        "durable_ack",
+        "superseded_publications",
+        "publication_ack",
+        "abandonment_commitment",
+        "abandonment_ack",
+        "abandonment_conflict_notice",
+        "store_head",
+        "store_fence_ack",
+        "pending_attack_context",
+        "store_attack_attempts",
+        "attempted_attack_contexts",
+        "store_attack_rejections",
+        "store_security_events",
+        "recovery_receipts",
+    }
+)
+
+
 @dataclass(frozen=True, slots=True)
 class OrchestratorReachabilityGraph:
     """Exact orchestrator states with fixed-width adjacency indexes."""
 
-    states: tuple[OrchestratorState, ...]
+    states: child.CompactExactStateStore
     edge_offsets: array
     target_indices: array
     action_indices: array
@@ -1494,6 +1543,7 @@ class OrchestratorReachabilityGraph:
             or self.edge_offsets[0] != 0
             or self.edge_offsets[-1] != len(self.target_indices)
             or len(self.target_indices) != len(self.action_indices)
+            or not self.states.frozen
         ):
             raise RuntimeError("malformed compact orchestrator reachability graph")
 
@@ -2039,37 +2089,18 @@ def _sealed_phase_at_controller_generation(
 
 
 def _sealed_owner_failure_phase(state: OrchestratorState) -> str | None:
-    if not state.recovery_receipts:
-        return _sealed_phase_at_controller_generation(state, 0)
-    recovery = state.recovery_receipts[0]
-    if recovery.reason == "OWNER_FAILURE":
-        return _sealed_phase_at_controller_generation(state, 0)
-    if any(
-        receipt.kind == "PRIMARY_FAILOVER"
-        for receipt in state.parent_receipts
-    ):
-        return _sealed_phase_at_controller_generation(state, 1)
-    if state.store_fence_ack is None:
-        return (
-            "PUBLICATION_FENCE_PENDING"
-            if recovery.observed_phase in {"PREPARED", "DURABLE"}
-            else recovery.observed_phase
-        )
-
-    current = state.publication_commitment
-    if current is not None and current.controller_generation == 1:
-        return "DURABLE" if state.durable_ack is not None else "PREPARED"
-    capsule = state.local_capsule
+    notice = state.owner_failure_notice
     if (
-        capsule is not None
-        and capsule.controller_generation <= 1
-        and capsule.local_disposition != "ABANDONED"
-        and recovery.observed_phase == "PARENT_SEALED"
+        state.parent_ledger != "SEALED"
+        or notice is None
+        or not _owner_failure_snapshot_wf(state, notice)
     ):
-        return "LOCAL_DECIDED"
-    if recovery.observed_phase in {"PREPARED", "DURABLE"}:
-        return "PUBLICATION_FENCED"
-    return recovery.observed_phase
+        return None
+    # A sealed parent ledger cannot append OWNER_FAILURE_OBSERVED.  The
+    # authenticated notice therefore carries the exact pre-failure snapshot;
+    # never infer that historical phase from artifacts changed by later
+    # recovery, store fencing, or abandonment.
+    return notice.observed_phase
 
 
 def _grant_registry_projection_at_prefix(
@@ -2976,6 +3007,119 @@ def parent_evidence_wf(state: OrchestratorState) -> bool:
     )
 
 
+def _owner_failure_snapshot_wf(
+    state: OrchestratorState,
+    notice: OwnerFailureNotice,
+) -> bool:
+    """Cross-check the signed pre-failure snapshot against retained evidence."""
+    expected_publication = {
+        "PREPARED": "PREPARED",
+        "DURABLE": "DURABLE",
+        "PUBLICATION_FENCE_PENDING": "FENCE_PENDING",
+        "PUBLICATION_FENCED": "FENCED",
+    }.get(notice.observed_phase, "NONE")
+    if notice.publication_at_failure != expected_publication:
+        return False
+
+    capsule_phases = {
+        "LOCAL_DECIDED",
+        "PREPARED",
+        "DURABLE",
+        "PUBLICATION_FENCE_PENDING",
+        "PUBLICATION_FENCED",
+    }
+    if bool(notice.local_capsule_digest_at_failure) != (
+        notice.observed_phase in capsule_phases
+    ):
+        return False
+    if notice.local_capsule_digest_at_failure and not (
+        state.local_capsule is not None
+        and notice.local_capsule_digest_at_failure
+        == state.local_capsule.capsule_digest
+    ):
+        return False
+
+    generation = notice.store_controller_generation_at_failure
+    if not (
+        generation in {0, 1}
+        and generation <= state.store_controller_generation
+        and generation <= len(state.recovery_receipts)
+    ):
+        return False
+    if notice.observed_phase == "PUBLICATION_FENCE_PENDING" and generation != 0:
+        return False
+    if notice.observed_phase == "PUBLICATION_FENCED" and generation != 1:
+        return False
+
+    fence_auth = notice.store_fence_ack_auth_at_failure
+    if bool(fence_auth) != (generation == 1):
+        return False
+    if fence_auth and not (
+        state.store_fence_ack is not None
+        and state.store_fence_ack.auth_tag == fence_auth
+        and state.store_fence_ack.new_controller_generation == generation
+    ):
+        return False
+
+    commitments = tuple(
+        value
+        for value in (
+            state.publication_commitment,
+            *(item.commitment for item in state.superseded_publications),
+        )
+        if value is not None
+    )
+    commitment_digest = notice.publication_commitment_digest_at_failure
+    commitment_required = notice.publication_at_failure in {
+        "PREPARED",
+        "DURABLE",
+        "FENCE_PENDING",
+    }
+    if bool(commitment_digest) != commitment_required:
+        return False
+    matching_commitment = next(
+        (
+            value
+            for value in commitments
+            if value.commitment_digest == commitment_digest
+        ),
+        None,
+    )
+    if commitment_digest and not (
+        matching_commitment is not None
+        and matching_commitment.controller_generation == generation
+    ):
+        return False
+
+    durable_acks = tuple(
+        value
+        for value in (
+            state.durable_ack,
+            *(item.durable_ack for item in state.superseded_publications),
+        )
+        if value is not None
+    )
+    durable_auth = notice.durable_ack_auth_at_failure
+    if notice.publication_at_failure == "DURABLE" and not durable_auth:
+        return False
+    if (
+        notice.publication_at_failure not in {"DURABLE", "FENCE_PENDING"}
+        and durable_auth
+    ):
+        return False
+    matching_durable_ack = next(
+        (value for value in durable_acks if value.auth_tag == durable_auth),
+        None,
+    )
+    if durable_auth and not (
+        matching_durable_ack is not None
+        and matching_durable_ack.commitment_digest == commitment_digest
+        and matching_durable_ack.controller_generation == generation
+    ):
+        return False
+    return True
+
+
 def owner_failure_wf(state: OrchestratorState) -> bool:
     notice = state.owner_failure_notice
     if state.owner_state == "ACTIVE":
@@ -2992,6 +3136,8 @@ def owner_failure_wf(state: OrchestratorState) -> bool:
         and notice.issuer == "EXTERNAL_OWNER"
         and notice.auth_tag == _owner_failure_auth(replace(notice, auth_tag=""))
     ):
+        return False
+    if not _owner_failure_snapshot_wf(state, notice):
         return False
     owner_receipts = [
         receipt
@@ -5071,6 +5217,30 @@ def external_next(state: OrchestratorState) -> tuple[OrchEdge, ...]:
             binding_digest=parent_binding_digest(state.parent_grant),
             observed_phase=state.phase,
             parent_prefix_hash=_last_parent_hash(state),
+            local_capsule_digest_at_failure=(
+                state.local_capsule.capsule_digest
+                if state.local_capsule is not None
+                else ""
+            ),
+            publication_at_failure=state.publication,
+            store_controller_generation_at_failure=(
+                state.store_controller_generation
+            ),
+            publication_commitment_digest_at_failure=(
+                state.publication_commitment.commitment_digest
+                if state.publication_commitment is not None
+                else ""
+            ),
+            durable_ack_auth_at_failure=(
+                state.durable_ack.auth_tag
+                if state.durable_ack is not None
+                else ""
+            ),
+            store_fence_ack_auth_at_failure=(
+                state.store_fence_ack.auth_tag
+                if state.store_fence_ack is not None
+                else ""
+            ),
             issuer=actor,
             auth_tag="",
         )
@@ -5265,7 +5435,10 @@ def supervisor_next(state: OrchestratorState) -> tuple[OrchEdge, ...]:
             local_capsule=capsule,
         )
         edges.append(_edge("SUP-017-DECIDE-LOCAL-DISPOSITION", actor, state, updated))
-    elif state.phase == "LOCAL_DECIDED":
+    elif (
+        state.phase == "LOCAL_DECIDED"
+        and state.store_controller_generation == len(state.recovery_receipts)
+    ):
         assert state.local_capsule is not None and state.parent_grant is not None
         commitment = PublicationCommitment(
             parent_run_id=state.parent_grant.parent_run_id,
@@ -6058,23 +6231,28 @@ def reachable_states() -> OrchestratorReachabilityGraph:
     maximum_index = (1 << 32) - 1
     start = initial_state()
     key = semantic_projection(start)
-    states: list[OrchestratorState] = []
+    states = child.CompactExactStateStore(
+        OrchestratorState,
+        PARENT_STATE_REFERENCE_FIELDS,
+    )
     representatives = child.ExactStateIndex(states)
     start_index, start_is_new = representatives.intern(key)
     if start_index != 0 or not start_is_new:
         raise RuntimeError("initial parent exact state was not uniquely interned")
-    queue: deque[int] = deque([start_index])
+    frontier_indices = array("I", [start_index])
+    frontier_cursor = 0
     edge_offsets = array("I", [0])
     target_indices = array("I")
     action_indices = array("B")
-    while queue:
-        source_index = queue.popleft()
+    while frontier_cursor < len(frontier_indices):
+        source_index = frontier_indices[frontier_cursor]
+        frontier_cursor += 1
         state = states[source_index]
         for edge in next_states(state):
             target_key = semantic_projection(edge.state)
             target_index, target_is_new = representatives.intern(target_key)
             if target_is_new:
-                queue.append(target_index)
+                frontier_indices.append(target_index)
             if len(target_indices) >= maximum_index:
                 raise OrchestratorReject(
                     "F05-ORCH-GRAPH-EDGE-BOUND",
@@ -6083,12 +6261,12 @@ def reachable_states() -> OrchestratorReachabilityGraph:
             target_indices.append(target_index)
             action_indices.append(ACTION_INDEX[edge.action_id])
         edge_offsets.append(len(target_indices))
-    state_vector = tuple(states)
-    if len(state_vector) != len(representatives):
+    states.freeze()
+    if len(states) != len(representatives):
         raise RuntimeError("parent state vector and compact index diverged")
-    del representatives, states, queue
+    del representatives, frontier_indices
     return OrchestratorReachabilityGraph(
-        states=state_vector,
+        states=states,
         edge_offsets=edge_offsets,
         target_indices=target_indices,
         action_indices=action_indices,

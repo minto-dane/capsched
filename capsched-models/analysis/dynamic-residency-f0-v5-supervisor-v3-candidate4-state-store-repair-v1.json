@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-state-store-repair-v1",
+  "date": "2026-08-12",
+  "status": "compact_state_store_and_owner_failure_snapshot_repaired_g6_retry_requires_clean_install",
+  "scope": "offline_finite_model_and_authority_disjoint_capture_control_plane_only",
+  "predecessor": {
+    "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-frontier-repair-v1",
+    "artifact_sha256": "4a9b506c5a74087336c6af5b61f9c9ac2cb778d3025826764d1fddd8d946e209",
+    "persistent_ordered_histories_retained": true,
+    "component_oom_isolation_retained": true
+  },
+  "failed_capture_observation": {
+    "artifact_id": "f0-c4-g6-third-oom-incomplete-observation-v1",
+    "artifact_sha256": "c25c4b1372ed889202f94daee071eebc7861536780c58700033efbdaefcce70c",
+    "run_id": "candidate4-full-20260812T170823Z",
+    "capture_status": "RAW_CAPTURE_INCOMPLETE",
+    "failed_component": "child-bundle-producer",
+    "memory_peak_bytes": 8053063680,
+    "candidate_bytes_positive_eligible": false,
+    "reduction_performed": false
+  },
+  "claim_registry": {
+    "path": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
+    "sha256": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
+    "claim_count": 11
+  },
+  "exact_inputs": {
+    "f0_supervisor_lts_v3.py": "acc00e684fbf1034fdceb8024f0eb78ad0649d0b8fdbab25970bd9ef05617141",
+    "f0_supervisor_orchestrator_v3.py": "2a015251fbb4b33353f7dafb791860c50004f3f12d5c58695640375b401d3e64",
+    "test-f0-supervisor-lts-v3-mutations.py": "354cd28449490ab3740afec8c258877090f2251ae217c74366d69e98aff76a8c",
+    "test-f0-supervisor-orchestrator-v3-mutations.py": "eef3921b806b024bcc2b31bc49d048a7cf181646cb8cb6f6b7ccef4a9b12d95b",
+    "test-run-f0-supervisor-v3-full.sh": "124947b2622811b60a20f753e6cfa6eae0a704afb11c95bb0fe1b80a11e78ec9",
+    "validate-f0-supervisor-lts-v3.py": "83408bbcc7e1bf3abcf7165e7e32d2c34a1be55a8ddd78d212c77d6d95452e5c",
+    "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba"
+  },
+  "representation_repair": {
+    "child_transition_relation_changed": false,
+    "child_reachable_state_set_intentionally_changed": false,
+    "ordered_evidence_history_quotiented": false,
+    "compact_exact_state_store": true,
+    "low_cardinality_fields_use_adaptive_exact_value_codes": true,
+    "high_cardinality_fields_retain_direct_references": true,
+    "state_store_equality_checks_every_field": true,
+    "state_index_hash_collision_uses_full_state_equality": true,
+    "fixed_width_frontier_indices": true,
+    "python_deque_frontier_removed": true,
+    "python_tuple_canonical_state_vector_removed": true,
+    "python_set_unique_history_counter_removed": true,
+    "fixed_width_csr_retained": true,
+    "finite_pure_cache_policy_retained": true,
+    "zero_swap_policy_retained": true,
+    "production_linux_scheduler_hot_path_changed": false,
+    "production_monitor_dispatch_hot_path_changed": false
+  },
+  "parent_semantic_repair": {
+    "semantic_change": true,
+    "exact_state_identity_schema_changed": true,
+    "parent_transition_relation_changed": true,
+    "parent_reachable_state_set_intentionally_changed": true,
+    "store_fence_required_before_recovery_controller_publication_prepare": true,
+    "owner_failure_notice_binds_local_capsule_at_failure": true,
+    "owner_failure_notice_binds_publication_at_failure": true,
+    "owner_failure_notice_binds_store_controller_generation_at_failure": true,
+    "owner_failure_notice_binds_publication_commitment_at_failure": true,
+    "owner_failure_notice_binds_durable_ack_at_failure": true,
+    "owner_failure_notice_binds_store_fence_ack_at_failure": true,
+    "sealed_owner_failure_phase_uses_authenticated_snapshot": true,
+    "later_failover_fence_or_abandonment_cannot_rewrite_failure_phase": true,
+    "external_semantic_verdict_authority_changed": false
+  },
+  "bounded_profiles": {
+    "child": {
+      "expanded_states": 86117,
+      "retained_exact_states": 750007,
+      "frontier_states": 663890,
+      "edges": 920973,
+      "predecessor_max_rss_bytes": 823132160,
+      "successor_max_rss_bytes": 539049984,
+      "max_rss_reduction_percent": 34.5123,
+      "fixed_column_bytes_per_state_upper_bound": 96,
+      "reachable_counters_equal_to_predecessor_profile": true
+    },
+    "parent": {
+      "expanded_states": 250000,
+      "retained_exact_states": 545925,
+      "frontier_states": 295925,
+      "edges": 814132,
+      "max_rss_bytes": 519569408,
+      "fixed_column_bytes_per_state_upper_bound": 269,
+      "previous_failure_expanded_state": 31822,
+      "previous_failure_boundary_exceeded": true,
+      "prefix_exhaustive_only": true
+    }
+  },
+  "local_regression": {
+    "child_hostile_cases": 275,
+    "parent_hostile_cases": 730,
+    "runner_hostile_cases": 44,
+    "total_hostile_cases": 1049,
+    "model_memory_policy_cases": 24,
+    "capture_resource_policy_cases": 7,
+    "reducer_current_input_binding_cases": 3,
+    "capture_contract_hostile_cases": 155,
+    "capture_contract_derived_cases": 14,
+    "input_root_sha256": "ab8bbed2cd376e2b24205c3bfe13adabf713ca1cc470e9546514ac53ff40a925",
+    "semantic_registry_sha256": "be5e95640d31ad19ff81f4fe313a7ab29d44fae18c0fff56cfdb99bd86d8b789",
+    "semantic_registry_unchanged": true,
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "full_validator_status": "NOT_RUN_FOR_STATE_STORE_REPAIRED_INPUTS"
+  },
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "model_complete": false,
+    "linux_behavior_change": false,
+    "protection_claim": false,
+    "cost_efficiency_claim": false
+  },
+  "next_gate": "clean_install_reviewed_successor_then_repeat_authority_disjoint_full_run_capture"
+}

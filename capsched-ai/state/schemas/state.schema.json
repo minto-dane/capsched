@@ -465,7 +465,9 @@
                 "resource_retention_repaired_g6_retry_requires_clean_install",
                 "resource_retention_repaired_clean_installed_g6_retry_eligible",
                 "persistent_frontier_repaired_g6_retry_requires_clean_install",
-                "persistent_frontier_repaired_clean_installed_g6_retry_eligible"
+                "persistent_frontier_repaired_clean_installed_g6_retry_eligible",
+                "compact_state_store_and_owner_failure_snapshot_repaired_g6_retry_requires_clean_install",
+                "compact_state_store_and_owner_failure_snapshot_repaired_clean_installed_g6_retry_eligible"
               ]
             },
             "fast_validator_status": {
@@ -475,7 +477,8 @@
               "enum": [
                 "NOT_RUN_FOR_REPAIRED_INPUTS",
                 "NOT_RUN_FOR_RESOURCE_REPAIRED_INPUTS",
-                "NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS"
+                "NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_STATE_STORE_REPAIRED_INPUTS"
               ]
             },
             "hostile_case_counts": {
@@ -617,7 +620,7 @@
                 "launcher_basic_cases": {"const": 1},
                 "launcher_hostile_cases": {"const": 10},
                 "snapshot_hostile_cases": {"const": 5},
-                "model_memory_policy_cases": {"const": 19},
+                "model_memory_policy_cases": {"const": 24},
                 "capture_resource_policy_cases": {"const": 7},
                 "reducer_current_input_binding_cases": {"const": 3},
                 "toolchain_reuse_cases": {"const": 1},
@@ -645,7 +648,9 @@
                     "REINSTALL_REQUIRED_AFTER_RESOURCE_REPAIR",
                     "PASSED_FOR_RESOURCE_REPAIRED_INPUTS",
                     "REINSTALL_REQUIRED_AFTER_FRONTIER_REPAIR",
-                    "PASSED_FOR_FRONTIER_REPAIRED_INPUTS"
+                    "PASSED_FOR_FRONTIER_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_STATE_STORE_REPAIR",
+                    "PASSED_FOR_STATE_STORE_REPAIRED_INPUTS"
                   ]
                 },
                 "installed_source_commit": {"$ref": "#/$defs/gitObject"},

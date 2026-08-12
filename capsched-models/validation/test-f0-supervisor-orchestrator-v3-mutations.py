@@ -74,6 +74,14 @@ def coherent_grant_ack_mutation(
     return replace(changed, auth_tag=model._grant_consumption_ack_auth(changed))
 
 
+def coherent_owner_failure_notice_mutation(
+    notice: model.OwnerFailureNotice,
+    **changes: object,
+) -> model.OwnerFailureNotice:
+    changed = replace(notice, **changes, auth_tag="")
+    return replace(changed, auth_tag=model._owner_failure_auth(changed))
+
+
 def rechain_open_parent_receipts(
     state: model.OrchestratorState,
     receipts: tuple[model.ParentReceipt, ...],
@@ -198,6 +206,12 @@ def forge_retirement_before_acceptance(
         binding_digest=model.parent_binding_digest(scratch.parent_grant),
         observed_phase=observed_phase,
         parent_prefix_hash=model._last_parent_hash(scratch),
+        local_capsule_digest_at_failure="",
+        publication_at_failure="NONE",
+        store_controller_generation_at_failure=0,
+        publication_commitment_digest_at_failure="",
+        durable_ack_auth_at_failure="",
+        store_fence_ack_auth_at_failure="",
         issuer="EXTERNAL_OWNER",
         auth_tag="",
     )
@@ -439,6 +453,87 @@ def main() -> None:
     decided = state_after(HAPPY[:11])
     prepared = state_after(HAPPY[:12])
     durable = state_after(HAPPY[:13])
+
+    owner_failed_after_local_decision = model.apply_trace(
+        decided,
+        ("EXT-023-OWNER-FAILURE",),
+    )
+    assert owner_failed_after_local_decision.owner_failure_notice is not None
+    assert decided.local_capsule is not None
+    assert (
+        owner_failed_after_local_decision.owner_failure_notice
+        .local_capsule_digest_at_failure
+        == decided.local_capsule.capsule_digest
+    )
+    local_decision_notice = owner_failed_after_local_decision.owner_failure_notice
+    assert local_decision_notice.publication_at_failure == "NONE"
+    assert local_decision_notice.store_controller_generation_at_failure == 0
+    assert not local_decision_notice.publication_commitment_digest_at_failure
+    assert not local_decision_notice.durable_ack_auth_at_failure
+    assert not local_decision_notice.store_fence_ack_auth_at_failure
+    stripped_capsule_binding = coherent_owner_failure_notice_mutation(
+        owner_failed_after_local_decision.owner_failure_notice,
+        local_capsule_digest_at_failure="",
+    )
+    assert_not_wf(
+        "sealed owner failure notice omitted its existing local capsule",
+        replace(
+            owner_failed_after_local_decision,
+            owner_failure_notice=stripped_capsule_binding,
+        ),
+    )
+    cases += 3
+
+    owner_failed_after_prepare = model.apply_trace(
+        prepared,
+        ("EXT-023-OWNER-FAILURE",),
+    )
+    prepared_notice = owner_failed_after_prepare.owner_failure_notice
+    assert prepared_notice is not None
+    assert prepared.publication_commitment is not None
+    assert prepared_notice.publication_at_failure == "PREPARED"
+    assert prepared_notice.store_controller_generation_at_failure == 0
+    assert (
+        prepared_notice.publication_commitment_digest_at_failure
+        == prepared.publication_commitment.commitment_digest
+    )
+    assert not prepared_notice.durable_ack_auth_at_failure
+    assert model.orchestrator_wf(owner_failed_after_prepare)
+    assert_not_wf(
+        "sealed prepared owner failure cannot strip its commitment snapshot",
+        replace(
+            owner_failed_after_prepare,
+            owner_failure_notice=coherent_owner_failure_notice_mutation(
+                prepared_notice,
+                publication_commitment_digest_at_failure="",
+            ),
+        ),
+    )
+    cases += 2
+
+    owner_failed_after_durable = model.apply_trace(
+        durable,
+        ("EXT-023-OWNER-FAILURE",),
+    )
+    durable_notice = owner_failed_after_durable.owner_failure_notice
+    assert durable_notice is not None and durable.durable_ack is not None
+    assert durable_notice.publication_at_failure == "DURABLE"
+    assert (
+        durable_notice.durable_ack_auth_at_failure
+        == durable.durable_ack.auth_tag
+    )
+    assert model.orchestrator_wf(owner_failed_after_durable)
+    assert_not_wf(
+        "sealed durable owner failure cannot strip its durable ack snapshot",
+        replace(
+            owner_failed_after_durable,
+            owner_failure_notice=coherent_owner_failure_notice_mutation(
+                durable_notice,
+                durable_ack_auth_at_failure="",
+            ),
+        ),
+    )
+    cases += 2
     published = state_after(HAPPY)
 
     normal_attach_edges = (
@@ -1235,6 +1330,175 @@ def main() -> None:
         assert takeover.semantic_verdict is None
         assert model.orchestrator_wf(takeover)
         cases += 4
+
+    guardian_decided_before_store_fence = state_after(
+        (
+            "EXT-001-DELIVER-PARENT-GRANT",
+            "SUP-002-CONSUME-PARENT-GRANT",
+            "GRD-022-TAKEOVER-AFTER-PRIMARY-CRASH",
+            "STORE-002B-COMMIT-GRANT-CONSUMPTION",
+            "EXT-003-DELIVER-PRODUCER-GRANT",
+            "SUP-004-START-PRODUCER",
+            "CHILD-006-ATTACH-PRODUCER-RESOURCE",
+            "SUP-016-SEAL-PARENT-EVIDENCE",
+            "SUP-017-DECIDE-LOCAL-DISPOSITION",
+        )
+    )
+    before_fence_actions = {
+        edge.action_id for edge in model.next_states(
+            guardian_decided_before_store_fence
+        )
+    }
+    assert "STORE-018A-FENCE-PUBLICATION-CONTROLLER" in before_fence_actions
+    assert "SUP-018-PREPARE-LOCAL-PUBLICATION" not in before_fence_actions
+    guardian_decided_after_store_fence = model.apply_trace(
+        guardian_decided_before_store_fence,
+        ("STORE-018A-FENCE-PUBLICATION-CONTROLLER",),
+    )
+    assert model.orchestrator_wf(guardian_decided_after_store_fence)
+    assert "SUP-018-PREPARE-LOCAL-PUBLICATION" in {
+        edge.action_id for edge in model.next_states(
+            guardian_decided_after_store_fence
+        )
+    }
+    guardian_prepared = model.apply_trace(
+        guardian_decided_after_store_fence,
+        ("SUP-018-PREPARE-LOCAL-PUBLICATION",),
+    )
+    assert model.orchestrator_wf(guardian_prepared)
+    assert guardian_prepared.publication_commitment is not None
+    assert guardian_prepared.publication_commitment.controller_generation == 1
+    assert guardian_prepared.publication_commitment.issuer == "RECOVERY_GUARDIAN"
+    cases += 1
+
+    owner_failed_after_guardian_prepare = model.apply_trace(
+        guardian_prepared,
+        ("EXT-023-OWNER-FAILURE",),
+    )
+    guardian_prepared_notice = (
+        owner_failed_after_guardian_prepare.owner_failure_notice
+    )
+    assert guardian_prepared_notice is not None
+    assert guardian_prepared_notice.publication_at_failure == "PREPARED"
+    assert guardian_prepared_notice.store_controller_generation_at_failure == 1
+    assert guardian_prepared_notice.publication_commitment_digest_at_failure
+    assert guardian_prepared_notice.store_fence_ack_auth_at_failure
+    assert model.orchestrator_wf(owner_failed_after_guardian_prepare)
+    cases += 1
+
+    primary_fence_pending = model.apply_trace(
+        prepared,
+        ("GRD-022-TAKEOVER-AFTER-PRIMARY-CRASH",),
+    )
+    owner_failed_during_fence = model.apply_trace(
+        primary_fence_pending,
+        ("EXT-023-OWNER-FAILURE",),
+    )
+    fence_pending_notice = owner_failed_during_fence.owner_failure_notice
+    assert fence_pending_notice is not None
+    assert fence_pending_notice.observed_phase == "PUBLICATION_FENCE_PENDING"
+    assert fence_pending_notice.publication_at_failure == "FENCE_PENDING"
+    assert fence_pending_notice.store_controller_generation_at_failure == 0
+    assert fence_pending_notice.publication_commitment_digest_at_failure
+    assert not fence_pending_notice.store_fence_ack_auth_at_failure
+    assert model.orchestrator_wf(owner_failed_during_fence)
+    owner_failed_after_store_fence = model.apply_trace(
+        owner_failed_during_fence,
+        ("STORE-018A-FENCE-PUBLICATION-CONTROLLER",),
+    )
+    assert model.orchestrator_wf(owner_failed_after_store_fence)
+    assert owner_failed_after_store_fence.store_controller_generation == 1
+    assert owner_failed_after_store_fence.store_fence_ack is not None
+    assert owner_failed_after_store_fence.publication_commitment is None
+    assert len(owner_failed_after_store_fence.superseded_publications) == 1
+    assert (
+        model._sealed_owner_failure_phase(owner_failed_after_store_fence)
+        == "PUBLICATION_FENCE_PENDING"
+    )
+    assert_not_wf(
+        "post-failure store fence cannot rewrite the signed failure generation",
+        replace(
+            owner_failed_after_store_fence,
+            owner_failure_notice=coherent_owner_failure_notice_mutation(
+                fence_pending_notice,
+                store_controller_generation_at_failure=1,
+                store_fence_ack_auth_at_failure=(
+                    owner_failed_after_store_fence.store_fence_ack.auth_tag
+                ),
+            ),
+        ),
+    )
+    cases += 3
+
+    primary_fenced = model.apply_trace(
+        primary_fence_pending,
+        ("STORE-018A-FENCE-PUBLICATION-CONTROLLER",),
+    )
+    owner_failed_after_completed_fence = model.apply_trace(
+        primary_fenced,
+        ("EXT-023-OWNER-FAILURE",),
+    )
+    completed_fence_notice = (
+        owner_failed_after_completed_fence.owner_failure_notice
+    )
+    assert completed_fence_notice is not None
+    assert completed_fence_notice.observed_phase == "PUBLICATION_FENCED"
+    assert completed_fence_notice.publication_at_failure == "FENCED"
+    assert completed_fence_notice.store_controller_generation_at_failure == 1
+    assert not completed_fence_notice.publication_commitment_digest_at_failure
+    assert completed_fence_notice.store_fence_ack_auth_at_failure
+    assert model.orchestrator_wf(owner_failed_after_completed_fence)
+    cases += 1
+
+    guardian_decided_after_sealed_failover = state_after(
+        HAPPY[:10]
+        + (
+            "GRD-022-TAKEOVER-AFTER-PRIMARY-CRASH",
+            "SUP-017-DECIDE-LOCAL-DISPOSITION",
+        )
+    )
+    owner_failed_after_guardian_decision = model.apply_trace(
+        guardian_decided_after_sealed_failover,
+        ("EXT-023-OWNER-FAILURE",),
+    )
+    assert model.orchestrator_wf(owner_failed_after_guardian_decision)
+    assert owner_failed_after_guardian_decision.owner_failure_notice is not None
+    assert (
+        owner_failed_after_guardian_decision.owner_failure_notice.observed_phase
+        == "LOCAL_DECIDED"
+    )
+    assert owner_failed_after_guardian_decision.publication == "ABANDONING"
+    cases += 1
+
+    guardian_abandoned_decision_after_sealed_failover = state_after(
+        (
+            "EXT-001-DELIVER-PARENT-GRANT",
+            "SUP-002-CONSUME-PARENT-GRANT",
+            "STORE-002B-COMMIT-GRANT-CONSUMPTION",
+            "EXT-003-DELIVER-PRODUCER-GRANT",
+            "SUP-004-START-PRODUCER",
+            "CHILD-008-ATTACH-PRODUCER-ABANDONED",
+            "SUP-016-SEAL-PARENT-EVIDENCE",
+            "GRD-022-TAKEOVER-AFTER-PRIMARY-CRASH",
+            "SUP-017-DECIDE-LOCAL-DISPOSITION",
+        )
+    )
+    owner_failed_after_guardian_abandoned_decision = model.apply_trace(
+        guardian_abandoned_decision_after_sealed_failover,
+        ("EXT-023-OWNER-FAILURE",),
+    )
+    assert model.orchestrator_wf(
+        owner_failed_after_guardian_abandoned_decision
+    )
+    assert (
+        owner_failed_after_guardian_abandoned_decision.owner_failure_phase
+        == "LOCAL_DECIDED"
+    )
+    assert (
+        owner_failed_after_guardian_abandoned_decision.abandonment_commitment
+        is None
+    )
+    cases += 1
 
     delivered_takeover = model.apply_trace(
         delivered,

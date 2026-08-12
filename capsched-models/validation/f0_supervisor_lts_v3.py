@@ -10,9 +10,10 @@ from __future__ import annotations
 
 from array import array
 from collections import Counter, defaultdict, deque
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, fields, replace
 from functools import lru_cache
 from hashlib import sha256
+from struct import calcsize
 from typing import Iterable
 
 
@@ -1241,6 +1242,200 @@ class Exploration:
     exact_state_key_collision_count: int
 
 
+class _ExactValuePool:
+    """Assign compact codes using Python's exact value equality semantics."""
+
+    __slots__ = ("_indices", "_values")
+    _MISSING = object()
+
+    def __init__(self) -> None:
+        self._indices: dict[object, int] = {}
+        self._values: list[object] = []
+
+    def lookup(self, value: object) -> int | None:
+        index = self._indices.get(value, self._MISSING)
+        return None if index is self._MISSING else int(index)
+
+    def intern(self, value: object) -> int:
+        existing = self.lookup(value)
+        if existing is not None:
+            return existing
+        index = len(self._values)
+        if index >= (1 << 32) - 1:
+            raise ProtocolReject("F05-SPV3-STATE-VALUE-BOUND", str(index))
+        self._indices[value] = index
+        self._values.append(value)
+        return index
+
+    def value(self, index: int) -> object:
+        return self._values[index]
+
+
+class _CompactCodeColumn:
+    """Exact interned values with the narrowest sufficient unsigned array."""
+
+    __slots__ = ("_codes", "_pool")
+    _WIDTH_LIMIT = {
+        "B": (1 << 8) - 1,
+        "H": (1 << 16) - 1,
+        "I": (1 << 32) - 1,
+    }
+    _NEXT_WIDTH = {"B": "H", "H": "I"}
+
+    def __init__(self) -> None:
+        self._codes = array("B")
+        self._pool = _ExactValuePool()
+
+    @property
+    def itemsize(self) -> int:
+        return self._codes.itemsize
+
+    def append(self, value: object) -> None:
+        code = self._pool.intern(value)
+        if code > self._WIDTH_LIMIT[self._codes.typecode]:
+            next_type = self._NEXT_WIDTH.get(self._codes.typecode)
+            if next_type is None:
+                raise ProtocolReject("F05-SPV3-STATE-VALUE-BOUND", str(code))
+            self._codes = array(next_type, self._codes)
+        self._codes.append(code)
+
+    def matches(self, index: int, value: object) -> bool:
+        code = self._pool.lookup(value)
+        return code is not None and self._codes[index] == code
+
+    def value(self, index: int) -> object:
+        return self._pool.value(self._codes[index])
+
+    def __len__(self) -> int:
+        return len(self._codes)
+
+
+class _ExactReferenceColumn:
+    """Retain high-cardinality persistent values directly, one ref per state."""
+
+    __slots__ = ("_values",)
+
+    def __init__(self) -> None:
+        self._values: list[object] = []
+
+    @property
+    def itemsize(self) -> int:
+        # CPython pointer width is reported instead of assumed by the policy.
+        return calcsize("P")
+
+    def append(self, value: object) -> None:
+        self._values.append(value)
+
+    def matches(self, index: int, value: object) -> bool:
+        return self._values[index] == value
+
+    def value(self, index: int) -> object:
+        return self._values[index]
+
+    def __len__(self) -> int:
+        return len(self._values)
+
+
+class CompactExactStateStore:
+    """Field-column storage that reconstructs, but never quotients, exact states.
+
+    Low-cardinality immutable fields use exact value pools and adaptive unsigned
+    integer columns.  High-cardinality histories and typed receipts retain one
+    direct reference per state.  ``equals_at`` checks every field, so neither a
+    cached state hash nor a pool code is accepted as state identity by itself.
+    """
+
+    __slots__ = (
+        "_columns",
+        "_field_names",
+        "_frozen",
+        "_length",
+        "_state_type",
+    )
+
+    def __init__(self, state_type: type, reference_fields: frozenset[str]) -> None:
+        field_names = tuple(field.name for field in fields(state_type))
+        unknown = reference_fields - set(field_names)
+        if unknown:
+            raise ValueError(f"unknown exact-state reference fields: {sorted(unknown)}")
+        self._state_type = state_type
+        self._field_names = field_names
+        self._columns = tuple(
+            _ExactReferenceColumn() if name in reference_fields else _CompactCodeColumn()
+            for name in field_names
+        )
+        self._length = 0
+        self._frozen = False
+
+    @property
+    def frozen(self) -> bool:
+        return self._frozen
+
+    @property
+    def fixed_column_bytes_per_state_upper_bound(self) -> int:
+        """Bound fixed array payload only; shared value-pool storage is separate."""
+        return sum(column.itemsize for column in self._columns)
+
+    def append(self, state: object) -> None:
+        if self._frozen:
+            raise RuntimeError("exact state store is frozen")
+        if type(state) is not self._state_type:
+            raise TypeError("exact state store received a different state type")
+        for name, column in zip(self._field_names, self._columns, strict=True):
+            column.append(getattr(state, name))
+        self._length += 1
+
+    def equals_at(self, index: int, state: object) -> bool:
+        if type(state) is not self._state_type:
+            return False
+        return all(
+            column.matches(index, getattr(state, name))
+            for name, column in zip(self._field_names, self._columns, strict=True)
+        )
+
+    def freeze(self) -> None:
+        self._frozen = True
+
+    def __len__(self) -> int:
+        return self._length
+
+    def __getitem__(self, index: int | slice) -> object:
+        if isinstance(index, slice):
+            return tuple(self[position] for position in range(*index.indices(self._length)))
+        if index < 0:
+            index += self._length
+        if index < 0 or index >= self._length:
+            raise IndexError("exact state index out of range")
+        return self._state_type(
+            *(column.value(index) for column in self._columns)
+        )
+
+    def __iter__(self):
+        for index in range(self._length):
+            yield self[index]
+
+    def __eq__(self, other: object) -> bool:
+        if self is other:
+            return True
+        if not hasattr(other, "__len__") or not hasattr(other, "__iter__"):
+            return NotImplemented
+        return len(self) == len(other) and all(
+            left == right for left, right in zip(self, other, strict=True)
+        )
+
+
+CHILD_STATE_REFERENCE_FIELDS = frozenset(
+    {
+        "grant",
+        "attack_attempts",
+        "attack_rejections",
+        "evidence_receipts",
+        "decision_receipt",
+        "recovery_receipts",
+    }
+)
+
+
 @dataclass(frozen=True, slots=True)
 class ReachabilityGraph:
     """Exact states plus a compact immutable-by-convention adjacency table.
@@ -1251,7 +1446,7 @@ class ReachabilityGraph:
     for every transition in addition to the canonical states.
     """
 
-    states: tuple[EnvelopeState, ...]
+    states: CompactExactStateStore
     edge_offsets: array
     target_indices: array
     action_indices: array
@@ -1266,6 +1461,7 @@ class ReachabilityGraph:
             or self.edge_offsets[0] != 0
             or self.edge_offsets[-1] != len(self.target_indices)
             or len(self.target_indices) != len(self.action_indices)
+            or not self.states.frozen
         ):
             raise RuntimeError("malformed compact child reachability graph")
 
@@ -1284,13 +1480,20 @@ class ExactStateIndex:
     collisions cannot merge unequal states.
     """
 
-    __slots__ = ("_states", "_indices", "_hashes", "_size", "_mask")
+    __slots__ = (
+        "_equals_at",
+        "_states",
+        "_indices",
+        "_hashes",
+        "_size",
+        "_mask",
+    )
     EMPTY_INDEX = (1 << 32) - 1
     HASH_MASK = (1 << 64) - 1
 
     def __init__(
         self,
-        states: list[EnvelopeState],
+        states: object,
         initial_capacity: int = 1 << 16,
     ) -> None:
         if (
@@ -1299,6 +1502,7 @@ class ExactStateIndex:
         ):
             raise ValueError("exact state index capacity must be a power of two >= 8")
         self._states = states
+        self._equals_at = getattr(states, "equals_at", None)
         self._indices = array("I", [self.EMPTY_INDEX]) * initial_capacity
         self._hashes = array("Q", [0]) * initial_capacity
         self._size = 0
@@ -1324,7 +1528,11 @@ class ExactStateIndex:
                 return None, slot
             if (
                 self._hashes[slot] == state_hash
-                and self._states[state_index] == state
+                and (
+                    self._equals_at(state_index, state)
+                    if self._equals_at is not None
+                    else self._states[state_index] == state
+                )
             ):
                 return state_index, slot
             slot, perturb = self._next_slot(slot, perturb, self._mask)
@@ -4406,23 +4614,25 @@ def reachable_states(grant: RunGrant) -> ReachabilityGraph:
     maximum_index = (1 << 32) - 1
     start = initial_state(grant)
     start_key = semantic_projection(start)
-    states: list[EnvelopeState] = []
+    states = CompactExactStateStore(EnvelopeState, CHILD_STATE_REFERENCE_FIELDS)
     representatives = ExactStateIndex(states)
     start_index, start_is_new = representatives.intern(start_key)
     if start_index != 0 or not start_is_new:
         raise RuntimeError("initial exact state was not uniquely interned")
-    queue: deque[int] = deque([start_index])
+    frontier_indices = array("I", [start_index])
+    frontier_cursor = 0
     edge_offsets = array("I", [0])
     target_indices = array("I")
     action_indices = array("B")
-    while queue:
-        source_index = queue.popleft()
+    while frontier_cursor < len(frontier_indices):
+        source_index = frontier_indices[frontier_cursor]
+        frontier_cursor += 1
         state = states[source_index]
         for edge in next_states(state):
             target_key = semantic_projection(edge.state)
             target_index, target_is_new = representatives.intern(target_key)
             if target_is_new:
-                queue.append(target_index)
+                frontier_indices.append(target_index)
             if len(target_indices) >= maximum_index:
                 raise ProtocolReject(
                     "F05-SPV3-GRAPH-EDGE-BOUND",
@@ -4431,12 +4641,12 @@ def reachable_states(grant: RunGrant) -> ReachabilityGraph:
             target_indices.append(target_index)
             action_indices.append(ACTION_INDEX[edge.action_id])
         edge_offsets.append(len(target_indices))
-    state_vector = tuple(states)
-    if len(state_vector) != len(representatives):
+    states.freeze()
+    if len(states) != len(representatives):
         raise RuntimeError("exact state vector and compact index diverged")
-    del representatives, states, queue
+    del representatives, frontier_indices
     return ReachabilityGraph(
-        states=state_vector,
+        states=states,
         edge_offsets=edge_offsets,
         target_indices=target_indices,
         action_indices=action_indices,
@@ -4516,7 +4726,8 @@ def explore(
     winner_overwrites = 0
     protection_breaches = 0
     multiple_pending_arrivals = 0
-    evidence_histories: set[tuple[Receipt, ...]] = set()
+    evidence_histories: list[ReceiptHistory | tuple[Receipt, ...]] = []
+    evidence_history_index = ExactStateIndex(evidence_histories)
     for state_index, state in enumerate(states):
         arrivals = (
             state.completion_arrival_sequence,
@@ -4525,7 +4736,7 @@ def explore(
         )
         if sum(sequence > 0 for sequence in arrivals) > 1:
             multiple_pending_arrivals += 1
-        evidence_histories.add(state.evidence_receipts)
+        evidence_history_index.intern(state.evidence_receipts)
         has_outgoing = (
             reachable_graph.edge_offsets[state_index]
             != reachable_graph.edge_offsets[state_index + 1]
@@ -4540,8 +4751,8 @@ def explore(
                 raise ProtocolReject("F05-SPV3-TERMINAL-EDGE", state.phase)
         elif not has_outgoing:
             deadlocks += 1
-    unique_history_count = len(evidence_histories)
-    del evidence_histories
+    unique_history_count = len(evidence_history_index)
+    del evidence_histories, evidence_history_index
 
     for source_index, before in enumerate(states):
         begin = reachable_graph.edge_offsets[source_index]
@@ -4676,7 +4887,12 @@ def _independence_source_matches(
 
 def check_outcome_commutation(
     role: str,
-    reachable: set[EnvelopeState] | tuple[EnvelopeState, ...] | None = None,
+    reachable: (
+        CompactExactStateStore
+        | set[EnvelopeState]
+        | tuple[EnvelopeState, ...]
+        | None
+    ) = None,
 ) -> dict[str, object]:
     """Check only the explicitly declared independence relation.
 

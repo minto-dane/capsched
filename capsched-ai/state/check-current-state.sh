@@ -60,6 +60,8 @@ assurance_head_rels=(
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-resource-repair-v1.json
 	capsched-models/analysis/0230-dynamic-residency-f0-c4-g6-persistent-exact-frontier.md
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-frontier-repair-v1.json
+	capsched-models/analysis/0231-dynamic-residency-f0-c4-g6-compact-exact-state-store-and-owner-failure-snapshot.md
+	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-state-store-repair-v1.json
 	capsched-models/assurance/claims.json
 	capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
 	capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json
@@ -82,6 +84,9 @@ assurance_head_rels=(
 	capsched-models/validation/0319-dynamic-residency-f0-c4-g6-persistent-exact-frontier.md
 	capsched-models/validation/f0-c4-g6-second-oom-incomplete-observation-v1.json
 	capsched-models/validation/f0-c4-g6-frontier-retry-readiness-v1.json
+	capsched-models/validation/0320-dynamic-residency-f0-c4-g6-compact-state-store-and-owner-failure-snapshot.md
+	capsched-models/validation/f0-c4-g6-third-oom-incomplete-observation-v1.json
+	capsched-models/validation/f0-c4-g6-state-store-retry-readiness-v1.json
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh
@@ -314,7 +319,7 @@ resource_policy_result=$(
 }
 model_memory_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
 	"$repo_root/capsched-models/validation/f0-c4-capture/test-model-memory-policy.py")
-[[ $model_memory_result == *"F0_C4_MODEL_MEMORY_POLICY_PASS cases=19"* ]] || {
+[[ $model_memory_result == *"F0_C4_MODEL_MEMORY_POLICY_PASS cases=24"* ]] || {
 	printf 'error: F0 C4 model memory-policy regression failed\n' >&2
 	exit 1
 }

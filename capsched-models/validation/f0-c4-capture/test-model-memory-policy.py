@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from array import array
-from dataclasses import is_dataclass
+from dataclasses import dataclass, is_dataclass
 from pathlib import Path
 import sys
 from types import ModuleType
@@ -215,6 +215,9 @@ def main() -> None:
         child_graph = child.reachable_states(child.fixture_external_grant("PRODUCER"))
     if (
         not isinstance(child_graph, child.ReachabilityGraph)
+        or not isinstance(child_graph.states, child.CompactExactStateStore)
+        or not child_graph.states.frozen
+        or child_graph.states.fixed_column_bytes_per_state_upper_bound > 112
         or child_graph.states != (child_start,)
         or child_graph.edge_offsets != array("I", (0, 0))
         or child_graph.target_indices.typecode != "I"
@@ -227,12 +230,95 @@ def main() -> None:
         parent_graph = parent.reachable_states()
     if (
         not isinstance(parent_graph, parent.OrchestratorReachabilityGraph)
+        or not isinstance(parent_graph.states, child.CompactExactStateStore)
+        or not parent_graph.states.frozen
+        or parent_graph.states.fixed_column_bytes_per_state_upper_bound > 320
         or parent_graph.states != (parent_start,)
         or parent_graph.edge_offsets != array("I", (0, 0))
         or parent_graph.target_indices.typecode != "I"
         or parent_graph.action_indices.typecode != "B"
     ):
         raise AssertionError("parent reachable_states did not return compact exact CSR")
+    cases += 1
+
+    child_store = child.CompactExactStateStore(
+        child.EnvelopeState,
+        child.CHILD_STATE_REFERENCE_FIELDS,
+    )
+    child_store.append(child_start)
+    if (
+        child_store[0] != child_start
+        or not child_store.equals_at(0, child_start)
+        or child_store.equals_at(0, child.replace(child_start, phase="READY"))
+    ):
+        raise AssertionError("compact child state reconstruction or equality drifted")
+    cases += 1
+
+    child_store.freeze()
+    try:
+        child_store.append(child_start)
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("frozen compact state store accepted an append")
+    cases += 1
+
+    parent_store = child.CompactExactStateStore(
+        parent.OrchestratorState,
+        parent.PARENT_STATE_REFERENCE_FIELDS,
+    )
+    parent_store.append(parent_start)
+    if (
+        parent_store[0] != parent_start
+        or not parent_store.equals_at(0, parent_start)
+        or parent_store.equals_at(
+            0,
+            parent.replace(parent_start, phase="GRANT_AVAILABLE"),
+        )
+    ):
+        raise AssertionError("compact parent state reconstruction or equality drifted")
+    cases += 1
+
+    adaptive_column = child._CompactCodeColumn()
+    for value in range(257):
+        adaptive_column.append(value)
+    if (
+        adaptive_column.itemsize != 2
+        or adaptive_column.value(256) != 256
+        or not adaptive_column.matches(256, 256)
+        or adaptive_column.matches(256, 255)
+    ):
+        raise AssertionError("adaptive exact code column failed width promotion")
+    cases += 1
+
+    @dataclass(frozen=True, slots=True)
+    class CompactCollisionState:
+        value: int
+        label: str
+
+        def __hash__(self) -> int:
+            return 11
+
+    compact_collision_store = child.CompactExactStateStore(
+        CompactCollisionState,
+        frozenset(),
+    )
+    compact_collision_index = child.ExactStateIndex(
+        compact_collision_store,
+        initial_capacity=8,
+    )
+    for value in range(40):
+        index, is_new = compact_collision_index.intern(
+            CompactCollisionState(value, f"state-{value}")
+        )
+        if index != value or not is_new:
+            raise AssertionError("compact collision insertion drifted")
+    for value in reversed(range(40)):
+        index, is_new = compact_collision_index.intern(
+            CompactCollisionState(value, f"state-{value}")
+        )
+        if index != value or is_new:
+            raise AssertionError("compact collision merged or duplicated a state")
     cases += 1
 
     for module in (child, parent):
@@ -250,9 +336,16 @@ def main() -> None:
         "class PersistentSequence:" not in child_source
         or "class ReceiptHistory(PersistentSequence):" not in child_source
         or "class ExactStateIndex:" not in child_source
+        or "class CompactExactStateStore:" not in child_source
+        or 'frontier_indices = array("I"' not in child_source
         or "representatives: dict[EnvelopeState, int]" in child_source
+        or "state_vector = tuple(states)" in child_source
+        or "evidence_histories: set[tuple[Receipt, ...]]" in child_source
+        or "evidence_history_index = ExactStateIndex" not in child_source
         or "class ParentReceiptHistory(child.PersistentSequence):" not in parent_source
+        or 'frontier_indices = array("I"' not in parent_source
         or "representatives: dict[OrchestratorState, int]" in parent_source
+        or "state_vector = tuple(states)" in parent_source
     ):
         raise AssertionError("compact persistent exact frontier policy drifted")
     cases += 1

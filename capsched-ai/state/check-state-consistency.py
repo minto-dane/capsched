@@ -236,6 +236,10 @@ def validate_semantics(
         observation.get("artifact_id")
         == "f0-c4-g6-second-oom-incomplete-observation-v1"
     )
+    state_store_repair_observation = (
+        observation.get("artifact_id")
+        == "f0-c4-g6-third-oom-incomplete-observation-v1"
+    )
     require(
         latest["status"] in {"RAW_CAPTURE_INCOMPLETE", "GUARDIAN_INCOMPLETE_PUBLISHED"},
         "latest G6 result drift",
@@ -243,7 +247,7 @@ def validate_semantics(
     require(latest["observation_record"] == state["canonical_files"]["f0_c4_g6_incomplete_record"], "G6 observation path drift")
     require(latest["observation_sha256"] == observation["artifact_sha256"], "G6 observation digest drift")
     require(observation["run_id"] == latest_id, "G6 observation run-id drift")
-    if frontier_repair_observation:
+    if frontier_repair_observation or state_store_repair_observation:
         durable = observation["durable_evidence"]
         conclusion = observation["conclusion"]
         require(durable["capture_status"] == latest["status"], "G6 capture status drift")
@@ -294,6 +298,130 @@ def validate_semantics(
             ]
             is True,
             "reducer current-input repair is incomplete",
+        )
+        require(
+            contract["resource_policy"][
+                "candidate_component_oom_isolated_from_supervisor"
+            ]
+            is True,
+            "capture contract does not isolate component OOM",
+        )
+    elif state_store_repair_observation:
+        require(
+            observation["failed_component"]["component_id"]
+            == "child-bundle-producer"
+            and observation["failed_component"]["memory_peak_bytes"]
+            == contract["resource_policy"]["memory_max_bytes_per_component"],
+            "compact-state-store failure observation drift",
+        )
+        require(
+            observation["systemd_disposition"][
+                "trusted_supervisor_survived_component_oom"
+            ]
+            is True
+            and observation["systemd_disposition"][
+                "incomplete_lifecycle_receipt_committed"
+            ]
+            is True,
+            "third OOM did not preserve trusted fail-closed finalization",
+        )
+        require(
+            current_input["failed_capture_observation"]["run_id"] == latest_id,
+            "state-store repair does not bind the failed run",
+        )
+        representation = current_input["representation_repair"]
+        require(
+            representation["child_transition_relation_changed"] is False
+            and representation[
+                "child_reachable_state_set_intentionally_changed"
+            ]
+            is False
+            and representation["ordered_evidence_history_quotiented"] is False
+            and representation["compact_exact_state_store"] is True
+            and representation[
+                "low_cardinality_fields_use_adaptive_exact_value_codes"
+            ]
+            is True
+            and representation[
+                "high_cardinality_fields_retain_direct_references"
+            ]
+            is True
+            and representation["state_store_equality_checks_every_field"] is True
+            and representation[
+                "state_index_hash_collision_uses_full_state_equality"
+            ]
+            is True
+            and representation["fixed_width_frontier_indices"] is True
+            and representation["python_deque_frontier_removed"] is True
+            and representation["python_tuple_canonical_state_vector_removed"]
+            is True
+            and representation["python_set_unique_history_counter_removed"]
+            is True
+            and representation["fixed_width_csr_retained"] is True
+            and representation["zero_swap_policy_retained"] is True,
+            "compact exact state-store repair is incomplete",
+        )
+        parent_repair = current_input["parent_semantic_repair"]
+        require(
+            parent_repair["semantic_change"] is True
+            and parent_repair["exact_state_identity_schema_changed"] is True
+            and parent_repair["parent_transition_relation_changed"] is True
+            and parent_repair["parent_reachable_state_set_intentionally_changed"]
+            is True
+            and parent_repair[
+                "store_fence_required_before_recovery_controller_publication_prepare"
+            ]
+            is True
+            and parent_repair[
+                "owner_failure_notice_binds_local_capsule_at_failure"
+            ]
+            is True
+            and parent_repair[
+                "owner_failure_notice_binds_publication_at_failure"
+            ]
+            is True
+            and parent_repair[
+                "owner_failure_notice_binds_store_controller_generation_at_failure"
+            ]
+            is True
+            and parent_repair[
+                "owner_failure_notice_binds_publication_commitment_at_failure"
+            ]
+            is True
+            and parent_repair[
+                "owner_failure_notice_binds_durable_ack_at_failure"
+            ]
+            is True
+            and parent_repair[
+                "owner_failure_notice_binds_store_fence_ack_at_failure"
+            ]
+            is True
+            and parent_repair[
+                "sealed_owner_failure_phase_uses_authenticated_snapshot"
+            ]
+            is True
+            and parent_repair[
+                "later_failover_fence_or_abandonment_cannot_rewrite_failure_phase"
+            ]
+            is True
+            and parent_repair["external_semantic_verdict_authority_changed"]
+            is False,
+            "owner-failure snapshot semantic repair is incomplete",
+        )
+        profiles = current_input["bounded_profiles"]
+        require(
+            profiles["child"]["retained_exact_states"] == 750007
+            and profiles["child"]["edges"] == 920973
+            and profiles["child"]["successor_max_rss_bytes"]
+            < profiles["child"]["predecessor_max_rss_bytes"]
+            and profiles["child"][
+                "reachable_counters_equal_to_predecessor_profile"
+            ]
+            is True
+            and profiles["parent"]["expanded_states"] == 250000
+            and profiles["parent"]["previous_failure_boundary_exceeded"] is True
+            and profiles["parent"]["prefix_exhaustive_only"] is True,
+            "bounded compact-state profile drift",
         )
         require(
             contract["resource_policy"][
@@ -367,8 +495,18 @@ def validate_semantics(
             != current_input["exact_inputs"]["f0_supervisor_lts_v3.py"],
             "repaired input did not change the rejected child-model bytes",
         )
-    require(current_input["repair"]["counterexample_trace_added_to_fast_regression"] is True, "counterexample regression absent")
-    require(current_input["repair"]["semantic_change"] is False, "repair unexpectedly changed semantics")
+    if not state_store_repair_observation:
+        require(
+            current_input["repair"][
+                "counterexample_trace_added_to_fast_regression"
+            ]
+            is True,
+            "counterexample regression absent",
+        )
+        require(
+            current_input["repair"]["semantic_change"] is False,
+            "repair unexpectedly changed semantics",
+        )
 
     require(g6["gate_status"] == "OPEN", "G6 closed without a complete capture")
     require(g6["complete_capture_available"] is False, "complete G6 bytes claimed absent evidence")
@@ -442,6 +580,64 @@ def validate_semantics(
         expected_track_status = "open_candidate4_g1_g5_closed_g6_frontier_retry_eligible_g7_blocked"
         expected_install_action = "completed_clean_reviewed_install_for_frontier_repaired_inputs"
         expected_full_action = "g6_frontier_retry_eligible"
+        expected_reducer_status = "PASS"
+    elif install["status"] == "REINSTALL_REQUIRED_AFTER_STATE_STORE_REPAIR":
+        require(
+            install["current_inputs_installed"] is False,
+            "pending state-store reinstall marked installed",
+        )
+        require(
+            g6["retry_eligible"] is False,
+            "G6 retry enabled before state-store clean reinstall",
+        )
+        require(
+            readiness["status"] == "REINSTALL_REQUIRED",
+            "pending state-store install has positive readiness",
+        )
+        expected_input_status = (
+            "compact_state_store_and_owner_failure_snapshot_repaired_"
+            "g6_retry_requires_clean_install"
+        )
+        expected_phase = "f0_v5_c4_g6_open_reinstall_required"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_state_store_reinstall_required_"
+            "g7_blocked"
+        )
+        expected_install_action = "state_store_repair_clean_install_pending"
+        expected_full_action = "blocked_until_state_store_repair_clean_install"
+        expected_reducer_status = "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE"
+    elif install["status"] == "PASSED_FOR_STATE_STORE_REPAIRED_INPUTS":
+        require(
+            install["current_inputs_installed"] is True,
+            "passed state-store reinstall not marked installed",
+        )
+        require(
+            g6["retry_eligible"] is True,
+            "G6 retry not enabled after state-store clean reinstall",
+        )
+        require(
+            readiness["status"] == "G6_RETRY_ELIGIBLE",
+            "passed state-store install lacks readiness",
+        )
+        expected_input_status = (
+            "compact_state_store_and_owner_failure_snapshot_repaired_clean_"
+            "installed_g6_retry_eligible"
+        )
+        expected_phase = "f0_v5_c4_g6_open_retry_eligible"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_state_store_retry_eligible_"
+            "g7_blocked"
+        )
+        expected_install_action = (
+            "completed_clean_reviewed_install_for_state_store_repaired_inputs"
+        )
+        expected_full_action = "g6_state_store_retry_eligible"
         expected_reducer_status = "PASS"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
@@ -714,10 +910,15 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             )
         )
         changed_input = copy.deepcopy(current_input)
-        changed_input["repair"]["exact_state_identity_changed"] = True
+        if "repair" in changed_input:
+            changed_input["repair"]["exact_state_identity_changed"] = True
+        else:
+            changed_input["representation_repair"][
+                "ordered_evidence_history_quotiented"
+            ] = True
         mutations.append(
             (
-                "resource repair changes exact identity",
+                "exact representation repair is weakened",
                 state,
                 claims,
                 contract,
@@ -742,12 +943,17 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             )
         )
         changed_input = copy.deepcopy(current_input)
-        changed_input["repair"][
-            "future_reducer_input_and_semantic_registry_drift_mechanically_rejected"
-        ] = False
+        if "repair" in changed_input:
+            changed_input["repair"][
+                "future_reducer_input_and_semantic_registry_drift_mechanically_rejected"
+            ] = False
+        else:
+            changed_input["parent_semantic_repair"][
+                "sealed_owner_failure_phase_uses_authenticated_snapshot"
+            ] = False
         mutations.append(
             (
-                "reducer binding drift prevention removed",
+                "successor semantic drift prevention removed",
                 state,
                 claims,
                 contract,
