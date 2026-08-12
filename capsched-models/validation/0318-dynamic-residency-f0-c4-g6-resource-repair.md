@@ -36,11 +36,16 @@ The initial reduction-boundary recheck rejected three stale predecessor input
 digests before any retry was enabled.  The reducer now seals the current input
 root and `be5e9564...b789` static semantic-registry digest, while the new
 three-case binding regression independently derives both from current canonical
-artifacts.  A clean reinstall remains mandatory because this reducer is TCB.
+artifacts.  Clean commit
+`a956de28e9d07d84b9e9f8ab2c31bb988a1d70e9` was then installed under
+artifact manifest
+`dc3a7b23ed3de978dfae5e17bb943a31afe04694c202613ec24f72b62345c6df`.
+Launcher basic, 10 hostile, five snapshot, five-component smoke, three
+guardian, one toolchain reuse, and three reducer cases all pass after install.
 
 ## Gate state
 
-G1-G5 remain locally closed for the successor contract.  G6 is open and cannot
-be retried until the resource-repaired TCB and exact inputs are installed from a
-clean reviewed commit.  G7 remains blocked by absence of a complete committed
-G6 capture.  All external and production claims remain false or open.
+G1-G5 remain locally closed for the successor contract.  G6 is open and a fresh
+retry is eligible; no complete capture exists yet.  G7 remains blocked by
+absence of a complete committed G6 capture.  All external and production claims
+remain false or open.

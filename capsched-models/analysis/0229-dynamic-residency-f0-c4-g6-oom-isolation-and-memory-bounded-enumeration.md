@@ -68,5 +68,6 @@ unless capture and reduction policy move together.
 The repair affects only offline finite-model validation.  It removes allocator
 and hash-table overhead rather than adding enforcement to Linux scheduling or
 Monitor dispatch.  No production hot path changes and no zero-overhead claim is
-made.  A clean reviewed install and a fresh authority-disjoint G6 run are still
-required before G7 can start.
+made.  Clean commit `a956de28...` is installed under manifest
+`dc3a7b23...`; a fresh authority-disjoint G6 run is still required before G7
+can start.

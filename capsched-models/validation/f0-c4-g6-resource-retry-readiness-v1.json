@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact_id": "f0-c4-g6-resource-retry-readiness-v1",
   "date": "2026-08-12",
-  "status": "REINSTALL_REQUIRED",
+  "status": "G6_RETRY_ELIGIBLE",
   "scope": "candidate4_resource_repaired_exact_inputs_authority_disjoint_capture",
   "current_inputs": {
     "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-resource-repair-v1",
@@ -18,13 +18,13 @@
     "reducer_current_input_binding_cases": 3
   },
   "clean_install": {
-    "source_commit": "29d53f6c20516e35551ca588882196bced6c6383",
+    "source_commit": "a956de28e9d07d84b9e9f8ab2c31bb988a1d70e9",
     "source_worktree_clean": true,
     "committed_state_check": "PASS",
-    "installed_manifest_sha256": "fe1c2b0d33dd75c3945f637e33dd872c2bf431a02c434bc82ca6aaa1b03a493e",
-    "capture_launcher_sha256": "1a08521a44ad6d7b318f388e339ed1b1e94f5b8ada7dee7b6aa810e841f2c557",
-    "current_inputs_installed": false,
-    "reason": "The last eligible installed TCB predates the bounded graph representation, successor contract, OOMPolicy=continue, and current reducer input/semantic-registry binding."
+    "installed_manifest_sha256": "dc3a7b23ed3de978dfae5e17bb943a31afe04694c202613ec24f72b62345c6df",
+    "capture_launcher_sha256": "04539dc5381c58bc48666c24810bbb5a2b22521b0d545423a4d87b912860b1ba",
+    "current_inputs_installed": true,
+    "reason": "Clean committed TCB includes the bounded exact graph, OOMPolicy=continue, and current reducer input/semantic-registry binding."
   },
   "toolchain": {
     "format": "erofs",
@@ -39,7 +39,7 @@
     "capture_contract_derived_cases": 14,
     "capture_resource_policy_cases": 7,
     "reducer_current_input_binding_cases": 3,
-    "reducer_boundary_status": "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE",
+    "reducer_boundary_status": "PASS",
     "reducer_boundary_cases": 3
   },
   "source_transfer": {
@@ -51,7 +51,7 @@
   },
   "disposition": {
     "g6_gate_status": "OPEN",
-    "g6_retry_eligible": false,
+    "g6_retry_eligible": true,
     "g6_complete_capture_available": false,
     "g7_gate_status": "BLOCKED",
     "g7_blocked_reason": "NO_COMPLETE_G6_CAPTURE"

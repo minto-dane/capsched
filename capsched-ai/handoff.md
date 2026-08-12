@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-12",
-  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -76,16 +76,16 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "REINSTALL_REQUIRED_AFTER_RESOURCE_REPAIR",
-      "installed_source_commit": "29d53f6c20516e35551ca588882196bced6c6383",
-      "installed_manifest_sha256": "fe1c2b0d33dd75c3945f637e33dd872c2bf431a02c434bc82ca6aaa1b03a493e",
-      "current_inputs_installed": false,
+      "status": "PASSED_FOR_RESOURCE_REPAIRED_INPUTS",
+      "installed_source_commit": "a956de28e9d07d84b9e9f8ab2c31bb988a1d70e9",
+      "installed_manifest_sha256": "dc3a7b23ed3de978dfae5e17bb943a31afe04694c202613ec24f72b62345c6df",
+      "current_inputs_installed": true,
       "readiness_record": "capsched-models/validation/f0-c4-g6-resource-retry-readiness-v1.json",
-      "readiness_sha256": "760e06bb89aedaf28f25c2da21803dc61a22a9e706d898361e6ea6e8aa0b5bc5"
+      "readiness_sha256": "b941f38ca458c05149534dd98880e6c3bfbe55a9d0f5c83ab55304f1369cb913"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": false,
+      "retry_eligible": true,
       "complete_capture_available": false,
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260811T223707Z",
@@ -170,8 +170,9 @@ and seven-case capture-resource regressions make drift in either side fail
 closed. The first reducer recheck also found three predecessor input digests and
 one stale semantic-registry digest; the reducer is now sealed to the current
 eight-object input root, and a three-case independent binding test derives both
-identities from current canonical bytes. A clean install from the repaired
-checkpoint is still required before another G6 attempt becomes eligible.
+identities from current canonical bytes. Clean commit `a956de2...` is installed
+under manifest `dc3a7b23...`; all short mechanism regressions pass and a fresh
+G6 attempt is now eligible.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -192,8 +193,8 @@ its full campaign has not run, so all three full-only local claims remain `NOT_R
 seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11, K0/G0,
 protection, and model completion remain false.
 
-Only after the structured projection again reports `retry_eligible: true`,
-start and monitor the exact detached retry with:
+The structured projection now reports `retry_eligible: true`. Start and monitor
+the exact detached retry with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
@@ -221,8 +222,8 @@ component's 7.5-GiB cgroup limit. The installed unit's `OOMPolicy=kill` then
 terminated the trusted supervisor along with the candidate. The separate root
 guardian proved the component subtree empty and durably published
 `GUARDIAN_INCOMPLETE_PUBLISHED`; candidate bytes are not positive-eligible and
-G7 remains blocked. The next action is the clean resource-repaired install,
-short mechanism regression, and only then a fresh G6 run.
+G7 remains blocked. The clean resource-repaired install and short mechanism
+regression are complete; the next action is a fresh G6 run.
 
 ## Current Git State
 
