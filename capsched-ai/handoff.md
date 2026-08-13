@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-08-12
+Updated: 2026-08-13
 
 This file is current-state context only. Detailed chronology is in
 `state/events.jsonl`, `design/compact.md`, focused model notes, and Git history.
@@ -87,6 +87,17 @@ latest durable G6 disposition by `check-current-state.sh`.
       "gate_status": "OPEN",
       "retry_eligible": true,
       "complete_capture_available": false,
+      "active_attempt": {
+        "run_id": "candidate4-full-20260813T071653Z",
+        "status": "CAPTURE_RUNNING",
+        "launched_at": "2026-08-13T07:16:53Z",
+        "candidate_input_commit": "1d562546fce0fe58d9701a08b75edf114f3e433c",
+        "installed_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
+        "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
+        "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+        "candidate_bytes_executed": true,
+        "evidence_commit_available": false
+      },
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260812T231441Z",
         "status": "RAW_CAPTURE_INCOMPLETE",
@@ -232,10 +243,28 @@ sequences, and full collision equality. The 6,000-state profile is bounded and
 non-authoritative: it does not grant a capacity, performance, or cost claim.
 Clean reviewed commit `65d9827...` was transferred by verified complete-history
 bundle `9dd9c1...`, installed under manifest `1c688a1...`, and passed the
-complete short post-install suite. A fresh G6 launch is eligible. The detached
-starter additionally refuses a dirty worktree, state/handoff/event checkpoints
-not fresh at HEAD, non-eligible G6 state, or any installed source, artifact
-manifest, or capture-contract digest drift.
+complete short post-install suite. That made a fresh G6 launch eligible. The
+detached starter additionally refuses a dirty worktree, state/handoff/event
+checkpoints not fresh at HEAD, non-eligible G6 state, or any installed source,
+artifact manifest, or capture-contract digest drift.
+
+That readiness launched active run `candidate4-full-20260813T071653Z` at
+`2026-08-13T07:16:53Z` from exact-input commit `1d56254...`. A read-only live
+observation after more than six hours showed `child-bundle-producer` still
+running with zero cgroup limit hits and zero OOM kills: 10.3 GB logical spill,
+about 6.7 GB allocated spill, about 1.5 GB anonymous memory, and the remaining
+component charge as reclaimable file-backed cache. This observation is
+operational liveness only; it is not raw evidence, does not close G6, and does
+not enable G7. The typed `active_attempt` ledger prevents a concurrent retry
+until this run receives a durable complete or incomplete disposition.
+
+Live diagnosis also found that the capture launcher retained the closed
+pre-exec status pipe in its poll set, causing a permanent `POLLHUP` wakeup and
+one wasted CPU core while the candidate ran. The successor developer build now
+consumes and closes that control fd, preserves explicit exec-failure metadata,
+and passes strict compilation, launcher basic, 10 launcher-hostile, and an idle
+regression with 0/100 CPU ticks. Those successor bytes are not installed and do
+not alter or retroactively strengthen the active run's sealed TCB identity.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -256,16 +285,19 @@ its full campaign has not run, so all three full-only local claims remain
 `NOT_RUN`, seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11,
 K0/G0, protection, and model completion remain false.
 
-The structured projection reports `retry_eligible: true`. Start and monitor the
-exact detached external-memory retry with:
+The structured projection reports structural `retry_eligible: true`, but its
+non-null `active_attempt` makes another launch fail closed. Monitor the active
+exact detached external-memory run with:
 
 ```sh
-./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh
-./capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh RUN_ID 30
+./capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh \
+  candidate4-full-20260813T071653Z 30
 ```
 
 The monitor refreshes the percentage, units, evidence, and journal every 30
-seconds. Stopping the monitor does not stop the VM capture.
+seconds. Stopping the monitor does not stop the VM capture. Do not clear the
+active ledger or start another G6 run until the guardian/capture commit is read
+and the completed disposition is recorded.
 
 The first G6 start attempt `candidate4-full-20260811T203907Z` stopped before the
 first progress receipt and before candidate launch because the toolchain sealer

@@ -101,6 +101,7 @@ assurance_head_rels=(
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh
 	capsched-models/validation/f0-c4-capture/f0_c4_capture_launcher.c
+	capsched-models/validation/f0-c4-capture/test-launcher-idle.sh
 	capsched-models/validation/f0-c4-capture/f0_c4_capture_supervisor.py
 	capsched-models/validation/f0-c4-capture/f0_c4_guardian_finalize.py
 	capsched-models/validation/f0-c4-capture/f0_c4_post_run_reducer.py

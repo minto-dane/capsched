@@ -120,6 +120,7 @@ def current_projection(state: dict[str, Any], claims: dict[str, Any]) -> dict[st
                 "gate_status": g6["gate_status"],
                 "retry_eligible": g6["retry_eligible"],
                 "complete_capture_available": g6["complete_capture_available"],
+                "active_attempt": g6["active_attempt"],
                 "latest_completed_attempt": latest,
             },
             "g7": capture["g7"],
@@ -234,6 +235,29 @@ def validate_semantics(
     latest_id = g6["latest_completed_attempt_run_id"]
     require(latest_id in attempts, "latest G6 attempt is absent from history")
     latest = attempts[latest_id]
+    active = g6["active_attempt"]
+    if active is not None:
+        require(
+            active["run_id"] not in attempts,
+            "active G6 attempt is already completed",
+        )
+        require(active["status"] == "CAPTURE_RUNNING", "active G6 status drift")
+        require(
+            active["installed_source_commit"] == install["installed_source_commit"],
+            "active G6 installed source drift",
+        )
+        require(
+            active["installed_manifest_sha256"] == install["installed_manifest_sha256"],
+            "active G6 installed manifest drift",
+        )
+        require(
+            active["capture_contract_sha256"] == capture["canonical_sha256"],
+            "active G6 capture contract drift",
+        )
+        require(
+            active["evidence_commit_available"] is False,
+            "running G6 attempt claims a finalized evidence commit",
+        )
     frontier_repair_observation = (
         observation.get("artifact_id")
         == "f0-c4-g6-second-oom-incomplete-observation-v1"
@@ -1150,11 +1174,57 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             "reinstall is required even though installed inputs already match",
         )
 
+    active = state["evidence"]["authority_capture_contract"]["g6"][
+        "active_attempt"
+    ]
+    if active is not None:
+        active_commit = active["candidate_input_commit"]
+        active_ancestry = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repo_root),
+                "merge-base",
+                "--is-ancestor",
+                active_commit,
+                "HEAD",
+            ],
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        require(
+            active_ancestry.returncode == 0,
+            "active G6 input commit is not in current lineage",
+        )
+        for name, expected in current_input["exact_inputs"].items():
+            relative = f"capsched-models/validation/{name}"
+            blob = subprocess.run(
+                ["git", "-C", str(repo_root), "show", f"{active_commit}:{relative}"],
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+            )
+            require(
+                blob.returncode == 0
+                and hashlib.sha256(blob.stdout).hexdigest() == expected,
+                f"active G6 input commit differs: {name}",
+            )
+
     validate_semantics(state, claims, contract, current_input, observation, readiness)
 
     handoff_path = repo_root / canonical["handoff"]
     projection = extract_handoff_projection(handoff_path.read_text(encoding="utf-8"))
     require(projection == current_projection(state, claims), "handoff/state projection drift")
+
+    starter = (
+        repo_root
+        / "capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh"
+    ).read_text(encoding="utf-8")
+    require(
+        ".evidence.authority_capture_contract.g6.active_attempt == null" in starter,
+        "G6 starter does not reject a concurrent active attempt",
+    )
 
     stable_pointer_requirements = {
         "capsched/README.md": "Volatile campaign status is intentionally not duplicated here",
@@ -1224,6 +1294,29 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
                 "observation_sha256", "0" * 64
             ),
         )
+        if (
+            state["evidence"]["authority_capture_contract"]["g6"][
+                "active_attempt"
+            ]
+            is not None
+        ):
+            add_state_mutation(
+                "active G6 aliases a completed run",
+                lambda value: value["evidence"]["authority_capture_contract"]["g6"][
+                    "active_attempt"
+                ].__setitem__(
+                    "run_id",
+                    value["evidence"]["authority_capture_contract"]["g6"][
+                        "latest_completed_attempt_run_id"
+                    ],
+                ),
+            )
+            add_state_mutation(
+                "active G6 claims finalized evidence",
+                lambda value: value["evidence"]["authority_capture_contract"]["g6"][
+                    "active_attempt"
+                ].__setitem__("evidence_commit_available", True),
+            )
         changed_claims = copy.deepcopy(claims)
         next(item for item in changed_claims["claims"] if item["id"] == "COMPOSE-001")["status"] = "model_supported"
         mutations.append(

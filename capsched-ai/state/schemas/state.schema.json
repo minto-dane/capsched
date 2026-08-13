@@ -684,6 +684,7 @@
                 "candidate_bytes_positive_eligible",
                 "attempt_count",
                 "latest_completed_attempt_run_id",
+                "active_attempt",
                 "attempt_history"
               ],
               "properties": {
@@ -693,6 +694,40 @@
                 "candidate_bytes_positive_eligible": {"const": false},
                 "attempt_count": {"type": "integer", "minimum": 1},
                 "latest_completed_attempt_run_id": {"type": "string", "minLength": 1},
+                "active_attempt": {
+                  "oneOf": [
+                    {"type": "null"},
+                    {
+                      "type": "object",
+                      "required": [
+                        "run_id",
+                        "status",
+                        "launched_at",
+                        "candidate_input_commit",
+                        "installed_source_commit",
+                        "installed_manifest_sha256",
+                        "capture_contract_sha256",
+                        "candidate_bytes_executed",
+                        "evidence_commit_available"
+                      ],
+                      "properties": {
+                        "run_id": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+                        },
+                        "status": {"const": "CAPTURE_RUNNING"},
+                        "launched_at": {"type": "string", "format": "date-time"},
+                        "candidate_input_commit": {"$ref": "#/$defs/gitObject"},
+                        "installed_source_commit": {"$ref": "#/$defs/gitObject"},
+                        "installed_manifest_sha256": {"$ref": "#/$defs/sha256"},
+                        "capture_contract_sha256": {"$ref": "#/$defs/sha256"},
+                        "candidate_bytes_executed": {"type": "boolean"},
+                        "evidence_commit_available": {"const": false}
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                },
                 "attempt_history": {
                   "type": "array",
                   "minItems": 1,

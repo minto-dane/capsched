@@ -301,6 +301,17 @@
         "candidate_bytes_positive_eligible": false,
         "attempt_count": 7,
         "latest_completed_attempt_run_id": "candidate4-full-20260812T231441Z",
+        "active_attempt": {
+          "run_id": "candidate4-full-20260813T071653Z",
+          "status": "CAPTURE_RUNNING",
+          "launched_at": "2026-08-13T07:16:53Z",
+          "candidate_input_commit": "1d562546fce0fe58d9701a08b75edf114f3e433c",
+          "installed_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
+          "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
+          "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+          "candidate_bytes_executed": true,
+          "evidence_commit_available": false
+        },
         "attempt_history": [
           {
             "run_id": "candidate4-full-20260811T203907Z",

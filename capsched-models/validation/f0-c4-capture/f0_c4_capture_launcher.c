@@ -1256,6 +1256,34 @@ int main(int argc, char **argv)
 			capture_error = true;
 		if (!stderr_capture.eof && stream_read_available(&stderr_capture) != 0)
 			capture_error = true;
+		if (status_pipe[0] >= 0 &&
+		    (poll_fds[4].revents & (POLLIN | POLLHUP | POLLERR | POLLNVAL))) {
+			if (poll_fds[4].revents & POLLIN) {
+				struct preexec_message exec_status;
+				ssize_t count;
+
+				do {
+					count = read(status_pipe[0], &exec_status,
+						     sizeof(exec_status));
+				} while (count < 0 && errno == EINTR);
+
+				if (count == (ssize_t)sizeof(exec_status)) {
+					if (exec_status.magic == PREEXEC_MAGIC &&
+					    exec_status.stage == PREEXEC_EXEC) {
+						preexec = exec_status;
+						setup_ok = false;
+					}
+					capture_error = true;
+				} else if (count != 0 && !(count < 0 && errno == EAGAIN)) {
+					capture_error = true;
+				}
+			}
+			if (poll_fds[4].revents & (POLLHUP | POLLERR | POLLNVAL)) {
+				if (close(status_pipe[0]) != 0)
+					capture_error = true;
+				status_pipe[0] = -1;
+			}
+		}
 		if (poll_fds[3].revents & POLLIN) {
 			uint64_t expirations;
 			ssize_t timer_count = read(timer_fd, &expirations,

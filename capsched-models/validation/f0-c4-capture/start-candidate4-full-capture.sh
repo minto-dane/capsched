@@ -53,6 +53,7 @@ $jq -e '
 	.evidence.authority_capture_contract.clean_install.current_inputs_installed == true and
 	.evidence.authority_capture_contract.g6.gate_status == "OPEN" and
 	.evidence.authority_capture_contract.g6.retry_eligible == true and
+	.evidence.authority_capture_contract.g6.active_attempt == null and
 	.evidence.authority_capture_contract.g6.complete_capture_available == false and
 	.evidence.authority_capture_contract.g7.gate_status == "BLOCKED"
 ' "$state" >/dev/null || {
