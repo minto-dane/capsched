@@ -232,7 +232,10 @@ sequences, and full collision equality. The 6,000-state profile is bounded and
 non-authoritative: it does not grant a capacity, performance, or cost claim.
 Clean reviewed commit `65d9827...` was transferred by verified complete-history
 bundle `9dd9c1...`, installed under manifest `1c688a1...`, and passed the
-complete short post-install suite. A fresh G6 launch is eligible.
+complete short post-install suite. A fresh G6 launch is eligible. The detached
+starter additionally refuses a dirty worktree, state/handoff/event checkpoints
+not fresh at HEAD, non-eligible G6 state, or any installed source, artifact
+manifest, or capture-contract digest drift.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,

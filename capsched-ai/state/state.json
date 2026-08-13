@@ -488,7 +488,7 @@
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
       "status": "completed_clean_reviewed_install_for_external_memory_repaired_inputs",
-      "text": "G1-G5 remain locally closed; clean source commit 65d9827916f669363f2a82118b90dee2a7ff664c is installed under manifest 1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d and the complete short post-install suite passes."
+      "text": "G1-G5 remain locally closed; clean source commit 65d9827916f669363f2a82118b90dee2a7ff664c is installed under manifest 1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d and the complete short post-install suite passes. The launcher refuses stale HEAD checkpoints, non-eligible state, or installed source/manifest/contract drift."
     },
     {
       "order": 7,
