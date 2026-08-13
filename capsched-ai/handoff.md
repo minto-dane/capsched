@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-13",
-  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -76,16 +76,16 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "REINSTALL_REQUIRED_AFTER_EXTERNAL_MEMORY_REPAIR",
-      "installed_source_commit": "14f6deecca06ce2f23b5faeb335100af952100ea",
-      "installed_manifest_sha256": "f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029",
-      "current_inputs_installed": false,
+      "status": "PASSED_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
+      "installed_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
+      "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
+      "current_inputs_installed": true,
       "readiness_record": "capsched-models/validation/f0-c4-g6-external-memory-retry-readiness-v1.json",
-      "readiness_sha256": "53d2f8f6d93b670f80a4b7900dfea251b9fc1a66376421f120ec7045f10f6a16"
+      "readiness_sha256": "84881deed2b0cd038fa5da5ec520a58aa97234e3af7f93cee1bb773893bb4019"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": false,
+      "retry_eligible": true,
       "complete_capture_available": false,
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260812T231441Z",
@@ -230,8 +230,9 @@ loop, and backing image. RAM and spill modes produce the same 2,000 expanded
 states, 20,510 retained states, 24,920 edges, state/frontier/depth/target
 sequences, and full collision equality. The 6,000-state profile is bounded and
 non-authoritative: it does not grant a capacity, performance, or cost claim.
-The installed TCB still predates this repair, so another G6 launch remains
-blocked until a clean reviewed install and complete short suite pass.
+Clean reviewed commit `65d9827...` was transferred by verified complete-history
+bundle `9dd9c1...`, installed under manifest `1c688a1...`, and passed the
+complete short post-install suite. A fresh G6 launch is eligible.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -252,10 +253,8 @@ its full campaign has not run, so all three full-only local claims remain
 `NOT_RUN`, seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11,
 K0/G0, protection, and model completion remain false.
 
-The structured projection currently reports `retry_eligible: false`. Do not
-start another full capture until the external-memory successor is clean-installed
-and the post-install suite changes that field to true. Once eligible, start and
-monitor the exact detached retry with:
+The structured projection reports `retry_eligible: true`. Start and monitor the
+exact detached external-memory retry with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh

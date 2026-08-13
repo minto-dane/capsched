@@ -42,7 +42,10 @@ depths.  A separate 6,000-source spill profile retained 60,763 states and
 performance improvement claim; the intended property is reclaimability once
 the exact graph exceeds RAM.
 
-The full G6 campaign remains unrun for these bytes.  Clean reviewed commit,
-VM-native install, source transfer, and the complete short post-install suite
-are prerequisites.  G6 remains open, G7 remains blocked, and F0/R11/G0,
-protection, performance, cost, and deployment authority remain false.
+The full G6 campaign remains unrun for these bytes.  Clean reviewed commit
+`65d9827916f669363f2a82118b90dee2a7ff664c` was transferred by verified Git
+bundle and installed under manifest
+`1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d`;
+the complete short post-install suite passes.  A fresh G6 run is eligible, but
+G6 remains open, G7 remains blocked, and F0/R11/G0, protection, performance,
+cost, and deployment authority remain false.

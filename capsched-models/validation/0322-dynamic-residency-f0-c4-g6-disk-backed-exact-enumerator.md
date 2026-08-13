@@ -36,8 +36,12 @@ The current exact-input root is
 
 ## Disposition
 
-These are local mechanism and bounded equivalence results only.  The installed
-TCB and installed exact inputs are stale until a clean successor commit is
-installed and the short suite is repeated against installed bytes.  A new G6
-run is therefore not yet eligible.  No complete G6 capture exists, G7 remains
-blocked, and no external or production claim changes.
+Clean reviewed commit `65d9827916f669363f2a82118b90dee2a7ff664c`
+passed committed-state validation, was transferred by complete-history Git
+bundle `9dd9c1d426251027a6e9b9890f5e70b4357d6bfc05d5bab8eed7fdd8fc91d252`,
+and was installed under artifact manifest
+`1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d`.
+The post-install suite repeated every result listed above, plus immutable
+toolchain reuse, against installed or byte-identical reviewed artifacts.  A
+fresh G6 run is eligible.  No complete G6 capture exists, G7 remains blocked,
+and no external or production claim changes.

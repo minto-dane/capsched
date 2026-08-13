@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
+    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -223,7 +223,7 @@
     "current_candidate_inputs": {
       "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-external-memory-repair-v1",
       "artifact_sha256": "d16c7b27cb756514c78f4597bfc85df77caf0c1b610033ab69cecdfd01724897",
-      "status": "disk_backed_exact_store_repaired_g6_retry_requires_clean_install",
+      "status": "disk_backed_exact_store_repaired_clean_installed_g6_retry_eligible",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
       "full_validator_status": "NOT_RUN_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
       "hostile_case_counts": {
@@ -249,7 +249,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -287,16 +287,16 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "REINSTALL_REQUIRED_AFTER_EXTERNAL_MEMORY_REPAIR",
-        "installed_source_commit": "14f6deecca06ce2f23b5faeb335100af952100ea",
-        "installed_manifest_sha256": "f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029",
-        "current_inputs_installed": false,
+        "status": "PASSED_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
+        "installed_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
+        "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
+        "current_inputs_installed": true,
         "readiness_record": "capsched-models/validation/f0-c4-g6-external-memory-retry-readiness-v1.json",
-        "readiness_sha256": "53d2f8f6d93b670f80a4b7900dfea251b9fc1a66376421f120ec7045f10f6a16"
+        "readiness_sha256": "84881deed2b0cd038fa5da5ec520a58aa97234e3af7f93cee1bb773893bb4019"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": false,
+        "retry_eligible": true,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
         "attempt_count": 7,
@@ -387,8 +387,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_external_memory_reinstall_required_g7_blocked",
-      "next_artifact": "Clean-install the disk-backed exact enumerator and per-component ext4 boundary, run the complete short suite, then start a fresh authority-disjoint G6 capture"
+      "status": "open_candidate4_g1_g5_closed_g6_external_memory_retry_eligible_g7_blocked",
+      "next_artifact": "Run a fresh authority-disjoint G6 capture from the clean-installed disk-backed exact enumerator, then reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -487,14 +487,14 @@
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "external_memory_repair_clean_install_pending",
-      "text": "G1-G5 remain locally closed, but the installed TCB predates the disk-backed exact store, bounded per-component loop ext4 mount, and same/prior-boot cleanup. A clean reviewed install and complete short post-install suite are required."
+      "status": "completed_clean_reviewed_install_for_external_memory_repaired_inputs",
+      "text": "G1-G5 remain locally closed; clean source commit 65d9827916f669363f2a82118b90dee2a7ff664c is installed under manifest 1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d and the complete short post-install suite passes."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "blocked_until_external_memory_repair_clean_install",
-      "text": "The fifth OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible. RAM/spill exact-prefix equivalence passes, but a fresh G6 run is blocked until the external-memory successor is clean-installed and its complete short suite passes; G7 remains blocked until a complete committed result exists."
+      "status": "g6_external_memory_retry_eligible",
+      "text": "The fifth OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible. The clean-installed external-memory successor preserves exact RAM/spill prefix behavior and is eligible for a fresh G6 retry; G7 remains blocked until a complete committed result exists."
     },
     {
       "order": 8,
