@@ -45,7 +45,12 @@ are unchanged.
 The child hostile suite now passes 285 cases, including the delayed-attempt
 trace.  Parent and runner baselines remain 739 and 44.  Current exact-input
 root `1edf170ad29edc8b450023f4d88acb160733471bcd69f29f81fa8b4ab18cc91d`
-has not completed a full campaign.  A clean reviewed TCB installation and the
-complete short suite are mandatory before a fresh G6 retry.  F0, R11, K0/G0,
-protection, performance, cost, deployment, and model-completion authority
-remain false.
+has not completed a full campaign.  Clean reviewed commit
+`27ba274c859d271861a373decc4ecd51c9e0c7ce` was reconstructed from verified
+Git bundle
+`4dc37363a0cafa2f02b06f595f854de81c30ac198955f9b3e7e31fb61cae15d5`,
+installed under manifest
+`c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d`,
+and passed the complete short suite.  A fresh G6 retry is eligible.  F0, R11,
+K0/G0, protection, performance, cost, deployment, and model-completion
+authority remain false.

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact_id": "f0-c4-g6-pending-attack-retry-readiness-v1",
   "date": "2026-08-13",
-  "status": "REINSTALL_REQUIRED",
+  "status": "G6_RETRY_ELIGIBLE",
   "scope": "candidate4_pending_attack_closure_repaired_capture",
   "current_inputs": {
     "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1",
@@ -19,14 +19,14 @@
     "reducer_current_input_binding_cases": 3
   },
   "clean_install": {
-    "source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
+    "source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
     "source_worktree_clean": true,
     "committed_state_check": "PASS",
-    "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
-    "capture_launcher_sha256": "ee941d1e11e877f229d7a7335c15b4045ce108bc00a8bd99f096dbe4ff1cde30",
+    "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
+    "capture_launcher_sha256": "7652adf9dce7a4ed6859582e1a8b3f5fa047644676cfeacd13927ca691cfde8d",
     "successor_launcher_source_sha256": "f90a91e1415e3a1885c5d5072a61780b072af0cd8d70c1dc0e307506401497d8",
-    "current_inputs_installed": false,
-    "reason": "The installed TCB predates both the pending-attack closure repair and the successor launcher's closed-status-pipe idle fix. A clean reviewed install and complete short post-install suite are mandatory before another G6 launch."
+    "current_inputs_installed": true,
+    "reason": "The pending-attack closure repair and closed-status-pipe idle fix were installed from the clean reviewed commit. Committed-state validation and the complete short post-install suite pass."
   },
   "toolchain": {
     "format": "erofs",
@@ -43,22 +43,22 @@
     "external_memory_recovery_cases": 1,
     "launcher_idle_cases": 1,
     "reducer_current_input_binding_cases": 3,
-    "reducer_boundary_status": "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE",
+    "reducer_boundary_status": "PASS",
     "reducer_boundary_cases": 3
   },
   "source_transfer": {
     "policy": "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging",
     "macos_home_mount": "none",
     "tcb_install_transfer_policy": "sha256_verified_clean_reviewed_git_bundle_to_vm_native_root_owned_repository",
-    "tcb_install_git_bundle_sha256": "9dd9c1d426251027a6e9b9890f5e70b4357d6bfc05d5bab8eed7fdd8fc91d252",
-    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/65d9827916f669363f2a82118b90dee2a7ff664c",
+    "tcb_install_git_bundle_sha256": "4dc37363a0cafa2f02b06f595f854de81c30ac198955f9b3e7e31fb61cae15d5",
+    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/27ba274c859d271861a373decc4ecd51c9e0c7ce",
     "vm_source_root": "/var/lib/domainlease-f0-c4/sources",
     "raw_evidence_root": "/var/lib/domainlease-f0-c4/evidence",
     "separate_from_raw_evidence": true
   },
   "disposition": {
     "g6_gate_status": "OPEN",
-    "g6_retry_eligible": false,
+    "g6_retry_eligible": true,
     "g6_complete_capture_available": false,
     "g7_gate_status": "BLOCKED",
     "g7_blocked_reason": "NO_COMPLETE_G6_CAPTURE"

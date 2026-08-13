@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-13",
-  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -76,16 +76,16 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "REINSTALL_REQUIRED_AFTER_PENDING_ATTACK_CLOSURE_REPAIR",
-      "installed_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
-      "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
-      "current_inputs_installed": false,
+      "status": "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+      "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
+      "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
+      "current_inputs_installed": true,
       "readiness_record": "capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json",
-      "readiness_sha256": "58b5eff8d775e3f5c8b12cd15b186db1e0df4d908624061a6feafa53a1d32ba6"
+      "readiness_sha256": "8f9367a40decb2c9acd39f1e09b9f460ffedca2fe3a1460dd8a54f51ebd2bc25"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": false,
+      "retry_eligible": true,
       "complete_capture_available": false,
       "active_attempt": null,
       "latest_completed_attempt": {
@@ -254,14 +254,14 @@ protection to `BREACHED`, conflicting with the premature closure receipt.
 Analysis 0234 and Validation 0323 bind the evidence hashes, no-OOM facts,
 trace, and fail-closed disposition.
 
-The earlier live diagnosis also found that the capture launcher retained the closed
-pre-exec status pipe in its poll set, causing a permanent `POLLHUP` wakeup and
-one wasted CPU core while the candidate ran. The successor developer build now
-consumes and closes that control fd, preserves explicit exec-failure metadata,
-and passes strict compilation, launcher basic, 10 launcher-hostile, and an idle
-regression with 0/100 CPU ticks. Those successor bytes are still not installed
-and do not alter or retroactively strengthen the completed run's sealed TCB
-identity.
+The earlier live diagnosis also found that the capture launcher retained the
+closed pre-exec status pipe in its poll set, causing a permanent `POLLHUP`
+wakeup and one wasted CPU core while the candidate ran. The successor consumes
+and closes that control fd, preserves explicit exec-failure metadata, and
+passes strict compilation, launcher basic, 10 launcher-hostile, and an idle
+regression with 0/100 CPU ticks. Clean reviewed commit `27ba274...` is
+installed under manifest `c919f59...`; these bytes do not retroactively
+strengthen the completed run's sealed TCB identity.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -287,9 +287,10 @@ three full-only local claims remain
 K0/G0, protection, and model completion remain false.
 
 The structured projection now records `active_attempt: null` and
-`retry_eligible: false`. A new run must not start until the repaired model and
-idle-fixed launcher are committed, clean-installed from reviewed VM-native
-source, and the complete short post-install suite updates the readiness record.
+`retry_eligible: true`. The repaired model and idle-fixed launcher were
+clean-installed from the SHA-256-verified VM-native Git bundle, and the full
+post-install suite passed. A new authority-disjoint G6 run may start; G7 still
+requires a complete committed capture.
 
 The first G6 start attempt `candidate4-full-20260811T203907Z` stopped before the
 first progress receipt and before candidate launch because the toolchain sealer
@@ -333,8 +334,9 @@ successor was clean-installed and enabled the eighth attempt.
 
 The eighth attempt `candidate4-full-20260813T071653Z` used disk-backed exact
 enumeration without OOM and exposed the pending-ATTACH closure counterexample.
-The semantic successor is locally repaired, but a clean reviewed reinstall and
-complete short suite are required before a ninth attempt; G7 remains blocked.
+The semantic successor and idle-fixed launcher are clean-installed and the
+complete short suite passes, making a ninth attempt eligible; G7 remains
+blocked.
 
 ## Current Git State
 

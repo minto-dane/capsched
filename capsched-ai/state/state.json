@@ -5,7 +5,7 @@
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
+    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -160,7 +160,8 @@
     "Matched child and parent prefixes retain identical states, hashes, frontiers, edges, actions, and ordered receipts while reducing maximum RSS by 53.0919% and 56.7672%; clean reviewed commit 14f6deecca06ce2f23b5faeb335100af952100ea is installed under manifest f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029 and passed the complete short suite.",
     "The disk-backed successor was clean-installed from 65d9827916f669363f2a82118b90dee2a7ff664c under manifest 1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d and passed its complete short suite.",
     "G6 run candidate4-full-20260813T071653Z used the external store without OOM, then durably finalized RAW_CAPTURE_INCOMPLETE after exposing a 17-action pending-ATTACH/protection-closure semantic contradiction; no bytes are positive-eligible and G7 remains blocked.",
-    "MON-039C protection closure now requires no pending hostile attempt and exact equality of the observed/rejected attack ledgers; explicit rejection and terminal breach remain available, child hostile regression is 285, and clean reviewed reinstall is required before retry.",
+    "MON-039C protection closure now requires no pending hostile attempt and exact equality of the observed/rejected attack ledgers; explicit rejection and terminal breach remain available and child hostile regression is 285.",
+    "Clean reviewed commit 27ba274c859d271861a373decc4ecd51c9e0c7ce passed committed-state validation, was reconstructed from verified Git bundle 4dc37363a0cafa2f02b06f595f854de81c30ac198955f9b3e7e31fb61cae15d5, installed under manifest c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d, and passed the complete short suite; a fresh G6 retry is eligible.",
     "Long-running builds, model checks, and matrices are detached after immutable input capture and reviewed in a later session."
   ],
   "completion": {
@@ -226,7 +227,7 @@
     "current_candidate_inputs": {
       "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1",
       "artifact_sha256": "11f7d3ee5b7387ddffc99ab39c6981e3486bd656cc55c652ff589f19916418ef",
-      "status": "pending_attack_closure_repaired_g6_retry_requires_clean_install",
+      "status": "pending_attack_closure_repaired_clean_installed_g6_retry_eligible",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
       "full_validator_status": "NOT_RUN_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
       "hostile_case_counts": {
@@ -252,7 +253,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -291,16 +292,16 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "REINSTALL_REQUIRED_AFTER_PENDING_ATTACK_CLOSURE_REPAIR",
-        "installed_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
-        "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
-        "current_inputs_installed": false,
+        "status": "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+        "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
+        "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
+        "current_inputs_installed": true,
         "readiness_record": "capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json",
-        "readiness_sha256": "58b5eff8d775e3f5c8b12cd15b186db1e0df4d908624061a6feafa53a1d32ba6"
+        "readiness_sha256": "8f9367a40decb2c9acd39f1e09b9f460ffedca2fe3a1460dd8a54f51ebd2bc25"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": false,
+        "retry_eligible": true,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
         "attempt_count": 8,
@@ -400,8 +401,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_pending_attack_closure_reinstall_required_g7_blocked",
-      "next_artifact": "Clean-install the pending-attack closure repair and idle-fixed launcher, repeat the complete short suite, then run a fresh authority-disjoint G6 capture"
+      "status": "open_candidate4_g1_g5_closed_g6_pending_attack_closure_retry_eligible_g7_blocked",
+      "next_artifact": "Run a fresh authority-disjoint G6 capture from the clean-installed pending-attack closure successor, then reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -500,14 +501,14 @@
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "pending_attack_closure_repair_clean_install_pending",
-      "text": "G1-G5 remain locally closed, but the installed TCB predates the pending-attack closure repair and the launcher's closed-status-pipe idle fix. A clean reviewed install and complete short post-install suite are required."
+      "status": "completed_clean_reviewed_install_for_pending_attack_closure_repaired_inputs",
+      "text": "G1-G5 remain locally closed; clean source commit 27ba274c859d271861a373decc4ecd51c9e0c7ce is installed under manifest c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d, and the complete short post-install suite including the zero-tick launcher idle regression passes."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "blocked_until_pending_attack_closure_repair_clean_install",
-      "text": "The no-OOM external-memory attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible after finding a real pending-ATTACH closure counterexample. A fresh G6 run is blocked until the semantic successor is clean-installed and its complete short suite passes; G7 remains blocked."
+      "status": "g6_pending_attack_closure_retry_eligible",
+      "text": "The no-OOM external-memory attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible after finding a real pending-ATTACH closure counterexample. The repaired successor is clean-installed and eligible for a fresh G6 retry; G7 remains blocked until a complete committed result exists."
     },
     {
       "order": 8,

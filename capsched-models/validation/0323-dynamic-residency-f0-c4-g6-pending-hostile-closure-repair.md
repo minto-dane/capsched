@@ -42,14 +42,21 @@ minimization reproduces it in 17 actions.  The regression now proves:
 - protection closure becomes available only after that disposition.
 
 The direct child test passes
-`LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=285`; the unchanged parent test
-passes 739 cases.  Linux-only runner and complete mechanism results must be
-repeated from the clean installed commit before retry eligibility.
+`LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=285`; the unchanged parent and
+runner tests pass 739 and 44 cases.  Committed-state validation passes for
+`27ba274c859d271861a373decc4ecd51c9e0c7ce`.  Installation produces manifest
+`c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d`
+and launcher
+`7652adf9dce7a4ed6859582e1a8b3f5fa047644676cfeacd13927ca691cfde8d`.
+The complete post-install suite passes 31 memory-policy, one storage
+equivalence, 17 resource-policy, launcher basic/10 hostile/one idle, five
+snapshot, five supervisor, three guardian, one external-recovery, three
+reducer-binding, one toolchain-reuse, and three reduction-boundary cases.
 
 ## Current disposition
 
 The observation record is
 `f0-c4-g6-pending-attack-incomplete-observation-v1.json`.  G6 remains open,
-the current installed TCB is stale for the repaired exact inputs, retry
-eligibility is false, and G7 remains blocked.  This record grants no external,
-protection, performance, deployment, or model-completion claim.
+the repaired exact inputs and capture TCB are clean-installed, retry eligibility
+is true, and G7 remains blocked.  This record grants no external, protection,
+performance, deployment, or model-completion claim.
