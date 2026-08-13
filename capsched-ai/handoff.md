@@ -87,7 +87,17 @@ latest durable G6 disposition by `check-current-state.sh`.
       "gate_status": "OPEN",
       "retry_eligible": true,
       "complete_capture_available": false,
-      "active_attempt": null,
+      "active_attempt": {
+        "run_id": "candidate4-full-20260813T223812Z",
+        "status": "CAPTURE_RUNNING",
+        "launched_at": "2026-08-13T22:38:28Z",
+        "candidate_input_commit": "a5438eae59ac5cf42a15a67bf831a64a5384988f",
+        "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
+        "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
+        "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+        "candidate_bytes_executed": true,
+        "evidence_commit_available": false
+      },
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260813T071653Z",
         "status": "RAW_CAPTURE_INCOMPLETE",
@@ -286,11 +296,11 @@ three full-only local claims remain
 `NOT_RUN`, seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11,
 K0/G0, protection, and model completion remain false.
 
-The structured projection now records `active_attempt: null` and
-`retry_eligible: true`. The repaired model and idle-fixed launcher were
-clean-installed from the SHA-256-verified VM-native Git bundle, and the full
-post-install suite passed. A new authority-disjoint G6 run may start; G7 still
-requires a complete committed capture.
+The repaired model and idle-fixed launcher were clean-installed from the
+SHA-256-verified VM-native Git bundle, and the full post-install suite passed.
+That readiness launched active run `candidate4-full-20260813T223812Z` from
+exact-input commit `a5438ea...`; the non-null active ledger prevents a
+concurrent retry. G7 still requires a complete committed capture.
 
 The first G6 start attempt `candidate4-full-20260811T203907Z` stopped before the
 first progress receipt and before candidate launch because the toolchain sealer
@@ -335,8 +345,8 @@ successor was clean-installed and enabled the eighth attempt.
 The eighth attempt `candidate4-full-20260813T071653Z` used disk-backed exact
 enumeration without OOM and exposed the pending-ATTACH closure counterexample.
 The semantic successor and idle-fixed launcher are clean-installed and the
-complete short suite passes, making a ninth attempt eligible; G7 remains
-blocked.
+complete short suite passes. The ninth attempt
+`candidate4-full-20260813T223812Z` is active; G7 remains blocked.
 
 ## Current Git State
 
