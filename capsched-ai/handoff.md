@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-13",
-  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
+  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -54,14 +54,14 @@ latest durable G6 disposition by `check-current-state.sh`.
     "EVIDENCE-001": "contract_defined"
   },
   "candidate4": {
-    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-external-memory-repair-v1",
+    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1",
     "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
-    "full_validator_status": "NOT_RUN_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
+    "full_validator_status": "NOT_RUN_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
     "hostile_case_counts": {
-      "child": 284,
+      "child": 285,
       "parent": 739,
       "runner": 44,
-      "total": 1067
+      "total": 1068
     },
     "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
     "closed_gates": [
@@ -76,35 +76,25 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "PASSED_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
+      "status": "REINSTALL_REQUIRED_AFTER_PENDING_ATTACK_CLOSURE_REPAIR",
       "installed_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
       "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
-      "current_inputs_installed": true,
-      "readiness_record": "capsched-models/validation/f0-c4-g6-external-memory-retry-readiness-v1.json",
-      "readiness_sha256": "84881deed2b0cd038fa5da5ec520a58aa97234e3af7f93cee1bb773893bb4019"
+      "current_inputs_installed": false,
+      "readiness_record": "capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json",
+      "readiness_sha256": "58b5eff8d775e3f5c8b12cd15b186db1e0df4d908624061a6feafa53a1d32ba6"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": true,
+      "retry_eligible": false,
       "complete_capture_available": false,
-      "active_attempt": {
-        "run_id": "candidate4-full-20260813T071653Z",
-        "status": "CAPTURE_RUNNING",
-        "launched_at": "2026-08-13T07:16:53Z",
-        "candidate_input_commit": "1d562546fce0fe58d9701a08b75edf114f3e433c",
-        "installed_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
-        "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
-        "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
-        "candidate_bytes_executed": true,
-        "evidence_commit_available": false
-      },
+      "active_attempt": null,
       "latest_completed_attempt": {
-        "run_id": "candidate4-full-20260812T231441Z",
+        "run_id": "candidate4-full-20260813T071653Z",
         "status": "RAW_CAPTURE_INCOMPLETE",
         "candidate_bytes_executed": true,
         "evidence_commit_available": true,
-        "observation_record": "capsched-models/validation/f0-c4-g6-fifth-oom-incomplete-observation-v1.json",
-        "observation_sha256": "ba2106aeaaee17189aee30f9047b6bd27a7886e3ae21b7733f154187a0861200"
+        "observation_record": "capsched-models/validation/f0-c4-g6-pending-attack-incomplete-observation-v1.json",
+        "observation_sha256": "d1dd26588a8e7fd3ca08c7ebb48c9af9db9014da48aea66ce20b9b8d186cc4a9"
       }
     },
     "g7": {
@@ -141,7 +131,7 @@ counterexample, but cannot invent or weaken them.
 Analysis 0226 and Validation 0313 retain the pre-full Candidate-4 boundary.
 Analysis 0227 and Validation 0314 add the current authority-disjoint capture
 boundary. The exact contract digest is
-`0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d`;
+`d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe`;
 its strict validator passes 155 hostile mutations and 14 derived semantic
 checks. The contract
 requires a dedicated candidate UID, root-owned snapshot/plan/pipes/evidence,
@@ -248,23 +238,30 @@ detached starter additionally refuses a dirty worktree, state/handoff/event
 checkpoints not fresh at HEAD, non-eligible G6 state, or any installed source,
 artifact manifest, or capture-contract digest drift.
 
-That readiness launched active run `candidate4-full-20260813T071653Z` at
-`2026-08-13T07:16:53Z` from exact-input commit `1d56254...`. A read-only live
-observation after more than six hours showed `child-bundle-producer` still
-running with zero cgroup limit hits and zero OOM kills: 10.3 GB logical spill,
-about 6.7 GB allocated spill, about 1.5 GB anonymous memory, and the remaining
-component charge as reclaimable file-backed cache. This observation is
-operational liveness only; it is not raw evidence, does not close G6, and does
-not enable G7. The typed `active_attempt` ledger prevents a concurrent retry
-until this run receives a durable complete or incomplete disposition.
+That readiness launched run `candidate4-full-20260813T071653Z` at
+`2026-08-13T07:16:53Z` from exact-input commit `1d56254...`. The child used
+the private external store for more than eleven hours, peaked at the sealed
+7.5-GiB RAM boundary, allocated 12,220,313,600 spill bytes, and exited with
+zero OOM and zero OOM-kill events. The supervisor drained the component,
+removed its spill mount, loop, and backing file, and durably committed
+`RAW_CAPTURE_INCOMPLETE`.
 
-Live diagnosis also found that the capture launcher retained the closed
+The failure is semantic, not capacity-related. A minimized 17-action trace
+observes an ATTACH attempt, completes ordinary exit, revocation, and attach
+closure, and publishes `MON-039C-PROTECTION-CLOSED` before the attempt has a
+rejection or breach disposition. The following explicit hostile bypass changes
+protection to `BREACHED`, conflicting with the premature closure receipt.
+Analysis 0234 and Validation 0323 bind the evidence hashes, no-OOM facts,
+trace, and fail-closed disposition.
+
+The earlier live diagnosis also found that the capture launcher retained the closed
 pre-exec status pipe in its poll set, causing a permanent `POLLHUP` wakeup and
 one wasted CPU core while the candidate ran. The successor developer build now
 consumes and closes that control fd, preserves explicit exec-failure metadata,
 and passes strict compilation, launcher basic, 10 launcher-hostile, and an idle
-regression with 0/100 CPU ticks. Those successor bytes are not installed and do
-not alter or retroactively strengthen the active run's sealed TCB identity.
+regression with 0/100 CPU ticks. Those successor bytes are still not installed
+and do not alter or retroactively strengthen the completed run's sealed TCB
+identity.
 
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
@@ -280,24 +277,19 @@ completed two static components and then preserved a fail-closed
 `RAW_CAPTURE_INCOMPLETE` disposition when `child-bundle-producer` rejected
 `OBS-032-DESCENDANTS-EXIT:hidden_work`. Analysis 0228 and Validation 0317 retain
 the exact counterexample and add its post-exit descendant/async order to the
-fast child suite. The external-memory current input passes 284 child cases;
-its full campaign has not run, so all three full-only local claims remain
+fast child suite. The pending-attack successor requires protection closure to
+observe `pending_attack == NONE` and exact equality of attack-attempt and
+rejection ledgers. It retains both explicit outcomes: rejection makes closure
+available, while bypass remains a well-formed terminal `BREACHED` state. The
+current input passes 285 child cases; its full campaign has not run, so all
+three full-only local claims remain
 `NOT_RUN`, seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11,
 K0/G0, protection, and model completion remain false.
 
-The structured projection reports structural `retry_eligible: true`, but its
-non-null `active_attempt` makes another launch fail closed. Monitor the active
-exact detached external-memory run with:
-
-```sh
-./capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh \
-  candidate4-full-20260813T071653Z 30
-```
-
-The monitor refreshes the percentage, units, evidence, and journal every 30
-seconds. Stopping the monitor does not stop the VM capture. Do not clear the
-active ledger or start another G6 run until the guardian/capture commit is read
-and the completed disposition is recorded.
+The structured projection now records `active_attempt: null` and
+`retry_eligible: false`. A new run must not start until the repaired model and
+idle-fixed launcher are committed, clean-installed from reviewed VM-native
+source, and the complete short post-install suite updates the readiness record.
 
 The first G6 start attempt `candidate4-full-20260811T203907Z` stopped before the
 first progress receipt and before candidate launch because the toolchain sealer
@@ -333,8 +325,16 @@ clean-installed and enabled the sixth attempt.
 
 The sixth attempt `candidate4-full-20260812T184826Z` used that compact-state
 TCB and again finalized `RAW_CAPTURE_INCOMPLETE` at 7.5 GiB. The exact packed
-history successor is now clean-installed and has passed the complete short
-suite; a fresh G6 retry is eligible, while G7 remains blocked.
+history successor was then clean-installed and passed the complete short suite.
+
+The seventh attempt `candidate4-full-20260812T231441Z` used the packed-history
+TCB and again finalized incomplete at the RAM boundary. Its disk-backed
+successor was clean-installed and enabled the eighth attempt.
+
+The eighth attempt `candidate4-full-20260813T071653Z` used disk-backed exact
+enumeration without OOM and exposed the pending-ATTACH closure counterexample.
+The semantic successor is locally repaired, but a clean reviewed reinstall and
+complete short suite are required before a ninth attempt; G7 remains blocked.
 
 ## Current Git State
 

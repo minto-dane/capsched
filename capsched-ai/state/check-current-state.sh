@@ -66,6 +66,8 @@ assurance_head_rels=(
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1.json
 	capsched-models/analysis/0233-dynamic-residency-f0-c4-g6-disk-backed-exact-enumerator.md
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-external-memory-repair-v1.json
+	capsched-models/analysis/0234-dynamic-residency-f0-c4-g6-pending-hostile-closure-race.md
+	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1.json
 	capsched-models/assurance/claims.json
 	capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
 	capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json
@@ -97,6 +99,9 @@ assurance_head_rels=(
 	capsched-models/validation/0322-dynamic-residency-f0-c4-g6-disk-backed-exact-enumerator.md
 	capsched-models/validation/f0-c4-g6-fifth-oom-incomplete-observation-v1.json
 	capsched-models/validation/f0-c4-g6-external-memory-retry-readiness-v1.json
+	capsched-models/validation/0323-dynamic-residency-f0-c4-g6-pending-hostile-closure-repair.md
+	capsched-models/validation/f0-c4-g6-pending-attack-incomplete-observation-v1.json
+	capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh

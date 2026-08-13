@@ -865,6 +865,43 @@ def main() -> None:
             moved_fault_pointer,
         ),
     )
+
+    delayed_attempt = model.apply_trace(
+        running,
+        (
+            "ADV-018-ATTACH-ATTEMPT",
+            "OBS-029-NORMAL-EXIT",
+            "MON-035B-REVOKE-EXECUTION",
+            "OBS-036-LEADER-REAPED",
+            "OBS-037-VISIBLE-EMPTY",
+            "OBS-039-RMDIR-ATTACH-CLOSED",
+            "SUP-039B-CLOSE-ASYNC-ADMISSION",
+        ),
+    )
+    assert delayed_attempt.pending_attack == "ATTACH"
+    assert delayed_attempt.protection_state == "EXECUTION_REVOKED"
+    delayed_actions = {edge.action_id for edge in model.next_states(delayed_attempt)}
+    assert "MON-039C-PROTECTION-CLOSED" not in delayed_actions
+    assert "OBS-023-REJECT-HOSTILE-ATTEMPT" in delayed_actions
+    assert "ADV-023B-SUCCEED-HOSTILE-BYPASS" in delayed_actions
+    delayed_breached = model.apply_trace(
+        delayed_attempt,
+        ("ADV-023B-SUCCEED-HOSTILE-BYPASS",),
+    )
+    assert delayed_breached.phase == "BREACHED"
+    assert delayed_breached.protection_state == "BREACHED"
+    assert model.instance_wf(delayed_breached)
+    delayed_rejected = model.apply_trace(
+        delayed_attempt,
+        ("OBS-023-REJECT-HOSTILE-ATTEMPT",),
+    )
+    assert delayed_rejected.pending_attack == "NONE"
+    assert delayed_rejected.attack_attempts == delayed_rejected.attack_rejections
+    assert "MON-039C-PROTECTION-CLOSED" in {
+        edge.action_id for edge in model.next_states(delayed_rejected)
+    }
+    cases += 1
+
     rejected_then_internal = model.apply_trace(
         first_attempt,
         ("OBS-012-INTERNAL-FRAME",),

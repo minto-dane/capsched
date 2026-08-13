@@ -204,6 +204,7 @@ def validate_semantics(
     capture = evidence["authority_capture_contract"]
     short = capture["short_regression"]
     for key in (
+        "launcher_idle_cases",
         "model_memory_policy_cases",
         "model_storage_equivalence_cases",
         "capture_resource_policy_cases",
@@ -274,6 +275,10 @@ def validate_semantics(
         observation.get("artifact_id")
         == "f0-c4-g6-fifth-oom-incomplete-observation-v1"
     )
+    pending_attack_closure_observation = (
+        observation.get("artifact_id")
+        == "f0-c4-g6-pending-attack-incomplete-observation-v1"
+    )
     require(
         latest["status"] in {"RAW_CAPTURE_INCOMPLETE", "GUARDIAN_INCOMPLETE_PUBLISHED"},
         "latest G6 result drift",
@@ -286,6 +291,7 @@ def validate_semantics(
         or state_store_repair_observation
         or packed_history_repair_observation
         or external_memory_repair_observation
+        or pending_attack_closure_observation
     ):
         durable = observation["durable_evidence"]
         conclusion = observation["conclusion"]
@@ -344,6 +350,106 @@ def validate_semantics(
             ]
             is True,
             "capture contract does not isolate component OOM",
+        )
+    elif pending_attack_closure_observation:
+        failed = observation["failed_component"]
+        require(
+            failed["component_id"] == "child-bundle-producer"
+            and failed["termination"] == "EXITED_NONZERO"
+            and failed["exit_code"] == 1
+            and failed["memory_peak_bytes"]
+            == contract["resource_policy"]["memory_max_bytes_per_component"],
+            "pending-attack failure observation drift",
+        )
+        require(
+            all(
+                failed["memory_events"][key] == 0
+                for key in ("oom", "oom_kill", "oom_group_kill")
+            )
+            and observation["conclusion"]["component_oom_observed"] is False
+            and observation["conclusion"]["capacity_failure"] is False
+            and observation["conclusion"]["semantic_counterexample"] is True,
+            "pending-attack counterexample was misclassified as OOM or capacity",
+        )
+        require(
+            failed["external_memory"]["mode"]
+            == contract["resource_policy"]["external_memory_backing_mode"]
+            and failed["external_memory"]["direct_io"] is True
+            and failed["external_memory"]["visible_entries_after_exit"] == 0
+            and failed["external_memory"]["unmounted"] is True
+            and failed["external_memory"]["loop_detached"] is True
+            and failed["external_memory"]["backing_removed"] is True,
+            "pending-attack run did not retain the external-memory boundary",
+        )
+        require(
+            observation["source"]["captured_child_model_sha256"]
+            != current_input["exact_inputs"]["f0_supervisor_lts_v3.py"],
+            "pending-attack repair did not change the rejected child bytes",
+        )
+        require(
+            current_input["failed_capture_observation"]["run_id"] == latest_id
+            and current_input["failed_capture_observation"][
+                "artifact_sha256"
+            ]
+            == observation["artifact_sha256"],
+            "pending-attack repair does not bind the failed run",
+        )
+        repair = current_input["semantic_repair"]
+        require(
+            repair["trigger_action_id"]
+            == "ADV-023B-SUCCEED-HOSTILE-BYPASS"
+            and repair["repaired_action_id"]
+            == "MON-039C-PROTECTION-CLOSED"
+            and repair["semantic_change"] is True
+            and repair["child_transition_relation_changed"] is True
+            and repair["parent_transition_relation_changed"] is False
+            and repair["reachable_state_sets_intentionally_changed"] is True
+            and repair["exact_state_identity_changed"] is False
+            and repair["ordered_evidence_history_quotiented"] is False
+            and repair["instance_wf_weakened"] is False
+            and repair["closure_requires_pending_attack_none"] is True
+            and repair["closure_requires_attack_attempts_equal_rejections"]
+            is True
+            and repair["explicit_hostile_rejection_retained"] is True
+            and repair["explicit_hostile_bypass_terminal_retained"] is True
+            and repair["unresolved_attempt_has_terminal_outcome"] is True
+            and repair["closure_after_rejection_available"] is True
+            and repair["counterexample_trace_added_to_fast_regression"] is True
+            and repair["minimized_counterexample_trace_length"] == 17
+            and repair["production_linux_scheduler_hot_path_changed"] is False
+            and repair["production_monitor_dispatch_hot_path_changed"] is False,
+            "pending-attack semantic repair is incomplete or over-broad",
+        )
+        require(
+            all(current_input["predecessor"][key] is True for key in (
+                "disk_backed_exact_store_retained",
+                "packed_exact_history_retained",
+                "compact_exact_state_store_retained",
+                "owner_failure_snapshot_repair_retained",
+                "component_oom_isolation_retained",
+            )),
+            "pending-attack successor dropped a predecessor repair",
+        )
+        retained = current_input["retained_storage_boundary"]
+        require(
+            contract["resource_policy"][
+                "candidate_component_oom_isolated_from_supervisor"
+            ]
+            is True
+            and retained["external_memory_sandbox_path"]
+            == contract["resource_policy"]["external_memory_directory"]
+            and retained["external_memory_host_root"]
+            == contract["resource_policy"]["external_memory_host_root"]
+            and retained["external_memory_backing_mode"]
+            == contract["resource_policy"]["external_memory_backing_mode"]
+            and retained["external_memory_limit_bytes_per_component"]
+            == contract["resource_policy"]["external_memory_max_bytes_per_component"]
+            and retained["host_free_space_reserve_bytes"]
+            == contract["resource_policy"]["external_memory_free_space_reserve_bytes"]
+            and retained["external_memory_direct_io_required"] is True
+            and retained["guardian_same_boot_cleanup_implemented"] is True
+            and retained["guardian_prior_boot_cleanup_implemented"] is True,
+            "pending-attack successor drifted from the retained storage boundary",
         )
     elif external_memory_repair_observation:
         require(
@@ -762,6 +868,7 @@ def validate_semantics(
         state_store_repair_observation
         or packed_history_repair_observation
         or external_memory_repair_observation
+        or pending_attack_closure_observation
     ):
         require(
             current_input["repair"][
@@ -1020,6 +1127,73 @@ def validate_semantics(
         )
         expected_full_action = "g6_external_memory_retry_eligible"
         expected_reducer_status = "PASS"
+    elif (
+        install["status"]
+        == "REINSTALL_REQUIRED_AFTER_PENDING_ATTACK_CLOSURE_REPAIR"
+    ):
+        require(
+            install["current_inputs_installed"] is False,
+            "pending attack-closure reinstall marked installed",
+        )
+        require(
+            g6["retry_eligible"] is False,
+            "G6 retry enabled before pending attack-closure clean reinstall",
+        )
+        require(
+            readiness["status"] == "REINSTALL_REQUIRED",
+            "pending attack-closure install has positive readiness",
+        )
+        expected_input_status = (
+            "pending_attack_closure_repaired_g6_retry_requires_clean_install"
+        )
+        expected_phase = "f0_v5_c4_g6_open_reinstall_required"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_pending_attack_closure_"
+            "reinstall_required_g7_blocked"
+        )
+        expected_install_action = (
+            "pending_attack_closure_repair_clean_install_pending"
+        )
+        expected_full_action = (
+            "blocked_until_pending_attack_closure_repair_clean_install"
+        )
+        expected_reducer_status = "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE"
+    elif (
+        install["status"]
+        == "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS"
+    ):
+        require(
+            install["current_inputs_installed"] is True,
+            "passed pending attack-closure reinstall not marked installed",
+        )
+        require(
+            g6["retry_eligible"] is True,
+            "G6 retry not enabled after pending attack-closure clean reinstall",
+        )
+        require(
+            readiness["status"] == "G6_RETRY_ELIGIBLE",
+            "passed pending attack-closure install lacks readiness",
+        )
+        expected_input_status = (
+            "pending_attack_closure_repaired_clean_installed_g6_retry_eligible"
+        )
+        expected_phase = "f0_v5_c4_g6_open_retry_eligible"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_pending_attack_closure_"
+            "retry_eligible_g7_blocked"
+        )
+        expected_install_action = (
+            "completed_clean_reviewed_install_for_pending_attack_closure_"
+            "repaired_inputs"
+        )
+        expected_full_action = "g6_pending_attack_closure_retry_eligible"
+        expected_reducer_status = "PASS"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
 
@@ -1042,6 +1216,7 @@ def validate_semantics(
     require(readiness["mechanism_recheck"]["capture_contract_hostile_cases"] == capture["hostile_mutation_cases"], "readiness hostile contract count drift")
     require(readiness["mechanism_recheck"]["capture_contract_derived_cases"] == capture["derived_semantic_cases"], "readiness derived contract count drift")
     require(readiness["mechanism_recheck"]["capture_resource_policy_cases"] == capture["short_regression"]["capture_resource_policy_cases"], "readiness resource-policy count drift")
+    require(readiness["mechanism_recheck"]["launcher_idle_cases"] == capture["short_regression"]["launcher_idle_cases"], "readiness launcher-idle count drift")
     require(readiness["current_inputs"]["model_memory_policy_cases"] == capture["short_regression"]["model_memory_policy_cases"], "readiness model-memory count drift")
     require(readiness["current_inputs"]["model_storage_equivalence_cases"] == capture["short_regression"]["model_storage_equivalence_cases"], "readiness model-storage-equivalence count drift")
     require(readiness["current_inputs"]["reducer_current_input_binding_cases"] == capture["short_regression"]["reducer_current_input_binding_cases"], "readiness reducer-input count drift")
@@ -1225,6 +1400,12 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
         ".evidence.authority_capture_contract.g6.active_attempt == null" in starter,
         "G6 starter does not reject a concurrent active attempt",
     )
+    require(
+        "pending_attack_closure_repaired_clean_installed_g6_retry_eligible"
+        in starter
+        and "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS" in starter,
+        "G6 starter is not bound to the pending-attack repaired readiness state",
+    )
 
     stable_pointer_requirements = {
         "capsched/README.md": "Volatile campaign status is intentionally not duplicated here",
@@ -1366,6 +1547,8 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             changed_input["storage_repair"]["exact_state_identity_changed"] = True
         elif "repair" in changed_input:
             changed_input["repair"]["exact_state_identity_changed"] = True
+        elif "semantic_repair" in changed_input:
+            changed_input["semantic_repair"]["exact_state_identity_changed"] = True
         else:
             changed_input["representation_repair"][
                 "ordered_evidence_history_quotiented"
@@ -1408,6 +1591,10 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
         elif "parent_semantic_repair" in changed_input:
             changed_input["parent_semantic_repair"][
                 "sealed_owner_failure_phase_uses_authenticated_snapshot"
+            ] = False
+        elif "semantic_repair" in changed_input:
+            changed_input["semantic_repair"][
+                "closure_requires_pending_attack_none"
             ] = False
         else:
             changed_input["representation_repair"][

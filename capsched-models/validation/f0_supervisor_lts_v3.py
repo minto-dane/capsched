@@ -4195,6 +4195,8 @@ def _action_semantics_wf(
             and before.execution_authority == "REVOKED"
             and before.attach_authority == "CLOSED"
             and before.async_admission == "CLOSED"
+            and before.pending_attack == "NONE"
+            and before.attack_attempts == before.attack_rejections
         ):
             return False
         expected = _append_receipt(
@@ -5369,6 +5371,8 @@ def next_states(state: EnvelopeState) -> tuple[Edge, ...]:
             and state.execution_authority == "REVOKED"
             and state.attach_authority == "CLOSED"
             and state.async_admission == "CLOSED"
+            and state.pending_attack == "NONE"
+            and state.attack_attempts == state.attack_rejections
         ):
             actor = "MONITOR_OBSERVER"
             updated = _append_receipt(

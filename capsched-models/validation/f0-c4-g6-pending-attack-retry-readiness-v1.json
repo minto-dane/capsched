@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-pending-attack-retry-readiness-v1",
+  "date": "2026-08-13",
+  "status": "REINSTALL_REQUIRED",
+  "scope": "candidate4_pending_attack_closure_repaired_capture",
+  "current_inputs": {
+    "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1",
+    "artifact_sha256": "11f7d3ee5b7387ddffc99ab39c6981e3486bd656cc55c652ff589f19916418ef",
+    "hostile_case_counts": {
+      "child": 285,
+      "parent": 739,
+      "runner": 44,
+      "total": 1068
+    },
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "model_memory_policy_cases": 31,
+    "model_storage_equivalence_cases": 1,
+    "reducer_current_input_binding_cases": 3
+  },
+  "clean_install": {
+    "source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
+    "source_worktree_clean": true,
+    "committed_state_check": "PASS",
+    "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
+    "capture_launcher_sha256": "ee941d1e11e877f229d7a7335c15b4045ce108bc00a8bd99f096dbe4ff1cde30",
+    "successor_launcher_source_sha256": "f90a91e1415e3a1885c5d5072a61780b072af0cd8d70c1dc0e307506401497d8",
+    "current_inputs_installed": false,
+    "reason": "The installed TCB predates both the pending-attack closure repair and the successor launcher's closed-status-pipe idle fix. A clean reviewed install and complete short post-install suite are mandatory before another G6 launch."
+  },
+  "toolchain": {
+    "format": "erofs",
+    "image_sha256": "b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce",
+    "manifest_sha256": "0db6f68c5e19fba7acd2cab5c536aa8bd17d0d4d5707ca6bbbeb9362527bcd51",
+    "mounted_read_only": true,
+    "reuse_regression_cases": 1
+  },
+  "mechanism_recheck": {
+    "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+    "capture_contract_hostile_cases": 155,
+    "capture_contract_derived_cases": 14,
+    "capture_resource_policy_cases": 17,
+    "external_memory_recovery_cases": 1,
+    "launcher_idle_cases": 1,
+    "reducer_current_input_binding_cases": 3,
+    "reducer_boundary_status": "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE",
+    "reducer_boundary_cases": 3
+  },
+  "source_transfer": {
+    "policy": "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging",
+    "macos_home_mount": "none",
+    "tcb_install_transfer_policy": "sha256_verified_clean_reviewed_git_bundle_to_vm_native_root_owned_repository",
+    "tcb_install_git_bundle_sha256": "9dd9c1d426251027a6e9b9890f5e70b4357d6bfc05d5bab8eed7fdd8fc91d252",
+    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/65d9827916f669363f2a82118b90dee2a7ff664c",
+    "vm_source_root": "/var/lib/domainlease-f0-c4/sources",
+    "raw_evidence_root": "/var/lib/domainlease-f0-c4/evidence",
+    "separate_from_raw_evidence": true
+  },
+  "disposition": {
+    "g6_gate_status": "OPEN",
+    "g6_retry_eligible": false,
+    "g6_complete_capture_available": false,
+    "g7_gate_status": "BLOCKED",
+    "g7_blocked_reason": "NO_COMPLETE_G6_CAPTURE"
+  },
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "protection_claim": false,
+    "performance_or_cost_claim": false,
+    "deployment_claim": false
+  }
+}
