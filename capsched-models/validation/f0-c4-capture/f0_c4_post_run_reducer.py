@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-CONTRACT_SHA256 = "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d"
+CONTRACT_SHA256 = "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe"
 REDUCER_UID = 200011
 REDUCER_GID = 200011
 CAPTURE_ROOT = Path("/INPUT")
@@ -33,8 +33,8 @@ COMPONENTS = (
 COMPONENT_ORDER = tuple(row[0] for row in COMPONENTS)
 INPUT_DIGESTS = {
     "f0-supervisor-c4-claim-registry-v1.json": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
-    "f0_supervisor_lts_v3.py": "514c247b335012203081ff5503bca924698de1bc102603c23012bb22441bda7e",
-    "f0_supervisor_orchestrator_v3.py": "1cc6e3b227df40d104b3151a20124b025d22a259b5f0a882213f45c5728aae0a",
+    "f0_supervisor_lts_v3.py": "387399ae11c7bdad635c4b0425888f3ae01b23070b54afdb06eaa795b9787452",
+    "f0_supervisor_orchestrator_v3.py": "46a2788e5bdac5d96ad83204e57dda35582b5d6fdd878f9ba4e30854ab870bfb",
     "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba",
     "test-f0-supervisor-lts-v3-mutations.py": "e473f571f40b67caa0632299dc32568393282ab540db78650e93d2e34b8cd6f3",
     "test-f0-supervisor-orchestrator-v3-mutations.py": "a16f5392b963bbc37cd2c3b40d4bf8b4ad652f4b7073f74dbaa5af7ca61bf9cb",
@@ -1051,6 +1051,7 @@ def validate_receipt(
         "result_protocol_framing_valid",
         "result_protocol_semantics_validated",
         "resource_counters",
+        "external_memory_boundary",
         "cgroup_kill_used",
         "populated_zero_observed",
         "toolchain_identity",
@@ -1071,6 +1072,7 @@ def validate_receipt(
     environment_sha = sha256_bytes(
         canonical_bytes(
             {
+                "F0_C4_EXACT_STORE_DIR": "/WORK",
                 "PATH": "/usr/bin:/bin",
                 "PYTHONPATH": "INPUT",
                 "PYTHONDONTWRITEBYTECODE": "1",
@@ -1101,6 +1103,77 @@ def validate_receipt(
         "candidate4_admissible": True,
     }:
         raise ReductionIncomplete(f"receipt toolchain differs: {component}")
+    external = require_object(
+        row["external_memory_boundary"],
+        {
+            "host_root",
+            "host_mount_identity",
+            "host_free_bytes_before_component",
+            "host_required_free_bytes",
+            "backing_mode",
+            "logical_limit_bytes",
+            "direct_io",
+            "filesystem_type",
+            "mount_options",
+            "candidate_path",
+            "tool_sha256",
+            "visible_entries_after_exit",
+            "unlinked_temporary_only_observed",
+            "filesystem_free_bytes_after_exit",
+            "backing_allocated_bytes_after_exit",
+            "cleanup",
+        },
+        f"external-memory receipt {component}",
+        ReductionIncomplete,
+    )
+    host_mount = require_object(
+        external["host_mount_identity"],
+        {"device", "mount_point", "mount_options", "filesystem_type", "source"},
+        f"external-memory host mount {component}",
+        ReductionIncomplete,
+    )
+    tool_hashes = require_object(
+        external["tool_sha256"],
+        {"mke2fs", "losetup", "mount", "umount"},
+        f"external-memory tool hashes {component}",
+        ReductionIncomplete,
+    )
+    cleanup = require_object(
+        external["cleanup"],
+        {"unmounted", "loop_detached", "backing_removed"},
+        f"external-memory cleanup {component}",
+        ReductionIncomplete,
+    )
+    if (
+        external["host_root"] != "/var/lib/domainlease-f0-c4/work"
+        or host_mount["filesystem_type"] != "ext4"
+        or external["host_required_free_bytes"] != 148176371712
+        or type(external["host_free_bytes_before_component"]) is not int
+        or external["host_free_bytes_before_component"]
+        < external["host_required_free_bytes"]
+        or external["backing_mode"] != "per_component_sparse_loop_ext4"
+        or external["logical_limit_bytes"] != 137438953472
+        or external["direct_io"] is not True
+        or external["filesystem_type"] != "ext4"
+        or external["candidate_path"] != "/WORK"
+        or not {"rw", "nosuid", "nodev", "noexec"}
+        <= set(external["mount_options"])
+        or external["visible_entries_after_exit"] != 0
+        or external["unlinked_temporary_only_observed"] is not True
+        or type(external["filesystem_free_bytes_after_exit"]) is not int
+        or external["filesystem_free_bytes_after_exit"] <= 0
+        or type(external["backing_allocated_bytes_after_exit"]) is not int
+        or not 0
+        <= external["backing_allocated_bytes_after_exit"]
+        <= external["logical_limit_bytes"]
+        or set(cleanup.values()) != {True}
+        or any(
+            not isinstance(value, str)
+            or re.fullmatch(r"[0-9a-f]{64}", value) is None
+            for value in tool_hashes.values()
+        )
+    ):
+        raise ReductionIncomplete(f"external-memory boundary differs: {component}")
     deadline_row = row["deadline_classification"]
     if deadline_row != {
         "deadline_seconds": deadline,

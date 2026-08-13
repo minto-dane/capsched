@@ -30,7 +30,15 @@ jq -e '
 	 .resource_policy.guardian_and_host_reserve_min_bytes <=
 	 .resource_policy.required_vm_memory_min_bytes) and
 	(.resource_policy.supervisor_memory_low_bytes <=
-	 .resource_policy.guardian_and_host_reserve_min_bytes)
+	 .resource_policy.guardian_and_host_reserve_min_bytes) and
+	.resource_policy.external_memory_directory == "/WORK" and
+	.resource_policy.external_memory_host_root == "/var/lib/domainlease-f0-c4/work" and
+	.resource_policy.external_memory_filesystem == "vm_native_ext4" and
+	.resource_policy.external_memory_backing_mode == "per_component_sparse_loop_ext4" and
+	.resource_policy.external_memory_direct_io_required == true and
+	.resource_policy.external_memory_unlinked_temporary_only == true and
+	(.resource_policy.external_memory_max_bytes_per_component >
+	 .resource_policy.memory_max_bytes_per_component)
 ' "$contract" >/dev/null
 
 PYTHONDONTWRITEBYTECODE=1 python3 -I -S -B - \
@@ -49,6 +57,16 @@ if 'write_cgroup(path / "memory.oom.group", "1")' not in supervisor:
     raise SystemExit("component OOM group isolation is absent")
 if '"candidate_component_oom_isolated_from_supervisor": True' not in supervisor:
     raise SystemExit("supervisor resource policy is not bound to OOM isolation")
+for required in (
+    '"F0_C4_EXACT_STORE_DIR": "/WORK"',
+    'FIXED_WORK_ROOT = Path("/var/lib/domainlease-f0-c4/work")',
+    '"external_memory_filesystem": "vm_native_ext4"',
+    '"--direct-io=on"',
+    'prepare_external_memory(run_work_path, component, uid, gid)',
+    'cleanup_external_memory(storage, remove_component_root=True)',
+):
+    if required not in supervisor:
+        raise SystemExit(f"external-memory capture policy is absent: {required}")
 PY
 
-printf 'F0_C4_CAPTURE_RESOURCE_POLICY_PASS cases=7\n'
+printf 'F0_C4_CAPTURE_RESOURCE_POLICY_PASS cases=17\n'

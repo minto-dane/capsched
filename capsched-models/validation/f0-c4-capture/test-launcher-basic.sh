@@ -35,12 +35,15 @@ printf '268435456' > "$component_cgroup/memory.max"
 printf '0' > "$component_cgroup/memory.swap.max"
 printf '1' > "$component_cgroup/memory.oom.group"
 mkdir -m 0755 -- "$run_root/sandbox"
+mkdir -m 0700 -- "$run_root/scratch"
+chown 200001:200001 "$run_root/scratch"
 
 set +e
 meta=$(
 	"$launcher" \
 		--cgroup "$component_cgroup" \
 		--sandbox-root "$run_root/sandbox" \
+		--scratch "$run_root/scratch" \
 		--input "$script_dir/fixtures" \
 		--toolchain-root /usr \
 		--stdout-file "$run_root/stdout.raw" \

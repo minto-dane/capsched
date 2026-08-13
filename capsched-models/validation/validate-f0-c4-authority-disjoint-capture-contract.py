@@ -270,6 +270,7 @@ RAW_RECEIPT_FIELDS = [
     "stderr_size_sha256_and_bytes",
     "result_payload_sha256",
     "resource_counters",
+    "external_memory_boundary",
     "cgroup_kill_used",
     "populated_zero_observed",
     "toolchain_identity",
@@ -387,6 +388,14 @@ RESOURCE_POLICY = {
     "required_vm_memory_min_bytes": 10200547328,
     "memory_swap_max_bytes_per_component": 0,
     "candidate_component_oom_isolated_from_supervisor": True,
+    "external_memory_directory": "/WORK",
+    "external_memory_host_root": "/var/lib/domainlease-f0-c4/work",
+    "external_memory_filesystem": "vm_native_ext4",
+    "external_memory_backing_mode": "per_component_sparse_loop_ext4",
+    "external_memory_max_bytes_per_component": 137438953472,
+    "external_memory_free_space_reserve_bytes": 10737418240,
+    "external_memory_direct_io_required": True,
+    "external_memory_unlinked_temporary_only": True,
     "stdout_max_bytes_per_component": 268435456,
     "stderr_max_bytes_per_component": 16777216,
     "preexec_observation_max_bytes_per_component": 1048576,
@@ -808,7 +817,7 @@ def _validate_inputs_and_plan(contract: dict[str, Any]) -> None:
     )
     require_exact(
         plan["environment"],
-        {"PATH": "/usr/bin:/bin", "PYTHONPATH": "INPUT", "PYTHONDONTWRITEBYTECODE": "1", "PYTHONHASHSEED": "0"},
+        {"F0_C4_EXACT_STORE_DIR": "/WORK", "PATH": "/usr/bin:/bin", "PYTHONPATH": "INPUT", "PYTHONDONTWRITEBYTECODE": "1", "PYTHONHASHSEED": "0"},
         "component environment",
     )
     require_exact(
@@ -1089,6 +1098,43 @@ def _validate_failures_resources_and_invariants(contract: dict[str, Any]) -> Non
     require(
         resources["candidate_component_oom_isolated_from_supervisor"] is True,
         "component-local OOM must not terminate the trusted supervisor",
+    )
+    require_exact(
+        resources["external_memory_directory"],
+        "/WORK",
+        "external-memory sandbox path",
+    )
+    require_exact(
+        resources["external_memory_host_root"],
+        "/var/lib/domainlease-f0-c4/work",
+        "external-memory fixed host root",
+    )
+    require_exact(
+        resources["external_memory_filesystem"],
+        "vm_native_ext4",
+        "external-memory filesystem",
+    )
+    require_exact(
+        resources["external_memory_backing_mode"],
+        "per_component_sparse_loop_ext4",
+        "external-memory backing mode",
+    )
+    require(
+        resources["external_memory_max_bytes_per_component"]
+        > resources["memory_max_bytes_per_component"],
+        "external-memory bound must exceed the RAM boundary",
+    )
+    require(
+        resources["external_memory_free_space_reserve_bytes"] > 0,
+        "external-memory host reserve must be positive",
+    )
+    require(
+        resources["external_memory_direct_io_required"] is True,
+        "external-memory loop must bypass duplicate host page cache",
+    )
+    require(
+        resources["external_memory_unlinked_temporary_only"] is True,
+        "external-memory objects must be unlinked temporary storage",
     )
 
     components = contract["component_plan"]["components"]

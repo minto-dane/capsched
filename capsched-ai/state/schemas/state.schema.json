@@ -469,7 +469,9 @@
                 "compact_state_store_and_owner_failure_snapshot_repaired_g6_retry_requires_clean_install",
                 "compact_state_store_and_owner_failure_snapshot_repaired_clean_installed_g6_retry_eligible",
                 "packed_exact_history_repaired_g6_retry_requires_clean_install",
-                "packed_exact_history_repaired_clean_installed_g6_retry_eligible"
+                "packed_exact_history_repaired_clean_installed_g6_retry_eligible",
+                "disk_backed_exact_store_repaired_g6_retry_requires_clean_install",
+                "disk_backed_exact_store_repaired_clean_installed_g6_retry_eligible"
               ]
             },
             "fast_validator_status": {
@@ -481,7 +483,8 @@
                 "NOT_RUN_FOR_RESOURCE_REPAIRED_INPUTS",
                 "NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS",
                 "NOT_RUN_FOR_STATE_STORE_REPAIRED_INPUTS",
-                "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS"
+                "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS"
               ]
             },
             "hostile_case_counts": {
@@ -612,7 +615,9 @@
                 "launcher_hostile_cases",
                 "snapshot_hostile_cases",
                 "model_memory_policy_cases",
+                "model_storage_equivalence_cases",
                 "capture_resource_policy_cases",
+                "external_memory_recovery_cases",
                 "reducer_current_input_binding_cases",
                 "toolchain_reuse_cases",
                 "supervisor_components",
@@ -623,8 +628,10 @@
                 "launcher_basic_cases": {"const": 1},
                 "launcher_hostile_cases": {"const": 10},
                 "snapshot_hostile_cases": {"const": 5},
-                "model_memory_policy_cases": {"const": 30},
-                "capture_resource_policy_cases": {"const": 7},
+                "model_memory_policy_cases": {"const": 31},
+                "model_storage_equivalence_cases": {"const": 1},
+                "capture_resource_policy_cases": {"const": 17},
+                "external_memory_recovery_cases": {"const": 1},
                 "reducer_current_input_binding_cases": {"const": 3},
                 "toolchain_reuse_cases": {"const": 1},
                 "supervisor_components": {"const": 5},
@@ -655,7 +662,9 @@
                     "REINSTALL_REQUIRED_AFTER_STATE_STORE_REPAIR",
                     "PASSED_FOR_STATE_STORE_REPAIRED_INPUTS",
                     "REINSTALL_REQUIRED_AFTER_PACKED_HISTORY_REPAIR",
-                    "PASSED_FOR_PACKED_HISTORY_REPAIRED_INPUTS"
+                    "PASSED_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_EXTERNAL_MEMORY_REPAIR",
+                    "PASSED_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS"
                   ]
                 },
                 "installed_source_commit": {"$ref": "#/$defs/gitObject"},

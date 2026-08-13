@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-fifth-oom-incomplete-observation-v1",
+  "date": "2026-08-13",
+  "run_id": "candidate4-full-20260812T231441Z",
+  "status": "RAW_CAPTURE_INCOMPLETE_COMPONENT_OOM",
+  "source": {
+    "capsched_commit_at_launch": "979bba2b16768f33ba131916e26de3730aa33057",
+    "installed_tcb_source_commit": "14f6deecca06ce2f23b5faeb335100af952100ea",
+    "installed_manifest_sha256": "f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029",
+    "capture_contract_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
+    "input_root_sha256": "da4cdb80b3688c7e0de93bdaaae60c773f2410e20b3316b8d3a452bcf32a9fbc",
+    "toolchain_identity_sha256": "dc9debd57b5763fb400771fbc22e997f0ba8c643b463ba985b1839da58755cf9"
+  },
+  "durable_evidence": {
+    "raw_commit_sha256": "d46cf14b365920f5a29155c7213a7a6ce91d4e982e4549b1b5ca3edba89e8652",
+    "capture_manifest_sha256": "c19fa2db7e0b96228f18190ff1bd23e83ca57a08672cb38853fa7403ceec85b3",
+    "sealed_plan_sha256": "5c08056a1f3a09759adf041b47dd06b0c17a100881969d378971f5ce0f5448fe",
+    "failed_component_receipt_sha256": "e4312343984edaacdbdbe4dd71b8e64816036f57249c706d3e33785f9842285d",
+    "capture_status": "RAW_CAPTURE_INCOMPLETE",
+    "candidate_bytes_positive_eligible": false,
+    "reduction_performed": false
+  },
+  "systemd_disposition": {
+    "capture_unit_result": "exit-code",
+    "capture_unit_exec_main_status": 1,
+    "oom_killer_observed": true,
+    "trusted_supervisor_survived_component_oom": true,
+    "incomplete_lifecycle_receipt_committed": true,
+    "guardian_preserved_final_commit": true
+  },
+  "failed_component": {
+    "component_id": "child-bundle-producer",
+    "role": "FULL_CHILD_PRODUCER",
+    "termination": "EXITED_SIGNAL",
+    "signal": 9,
+    "launcher_returncode": 1,
+    "elapsed_monotonic_ns": 17709614432074,
+    "cpu_usage_usec": 17708297875,
+    "user_cpu_usec": 17636092074,
+    "system_cpu_usec": 72205801,
+    "memory_peak_bytes": 8053063680,
+    "pids_peak": 1,
+    "memory_events": {
+      "low": 0,
+      "high": 0,
+      "max": 38,
+      "oom": 1,
+      "oom_kill": 2,
+      "oom_group_kill": 1
+    },
+    "stdout_bytes": 0,
+    "stderr_bytes": 0,
+    "populated_zero_observed": true,
+    "cgroup_kill_used": true
+  },
+  "conclusion": {
+    "component_oom_isolation_effective": true,
+    "packed_exact_history_repair_sufficient_for_full_enumeration": false,
+    "failure_class": "exact_enumerator_residency_exceeds_component_ram_boundary",
+    "state_space_width_not_semantic_counterexample": true,
+    "semantic_counterexample": false,
+    "g6_complete": false,
+    "g7_allowed": false,
+    "replay_same_bytes_without_storage_repair_allowed": false
+  }
+}

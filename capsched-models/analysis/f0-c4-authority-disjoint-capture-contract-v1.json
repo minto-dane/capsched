@@ -106,7 +106,7 @@
     },
     {
       "id": "PLAT-MOUNT-NAMESPACE",
-      "requirement": "Each component receives a private mount namespace with a read-only root view, read-only input snapshot, private tmpfs, and no candidate-writable evidence path.",
+      "requirement": "Each component receives a private mount namespace with a read-only root view, read-only input snapshot, private temporary storage, a direct-I/O sparse loop-backed ext4 work mount capped independently of the host filesystem, and no candidate-writable evidence path.",
       "evidence": "captured mountinfo from the pre-exec stub and supervisor path audit",
       "fail_closed": true
     },
@@ -284,6 +284,7 @@
       "INPUT/validate-f0-supervisor-lts-v3.py"
     ],
     "environment": {
+      "F0_C4_EXACT_STORE_DIR": "/WORK",
       "PATH": "/usr/bin:/bin",
       "PYTHONPATH": "INPUT",
       "PYTHONDONTWRITEBYTECODE": "1",
@@ -341,6 +342,7 @@
       "stderr_size_sha256_and_bytes",
       "result_payload_sha256",
       "resource_counters",
+      "external_memory_boundary",
       "cgroup_kill_used",
       "populated_zero_observed",
       "toolchain_identity"
@@ -462,6 +464,14 @@
     "required_vm_memory_min_bytes": 10200547328,
     "memory_swap_max_bytes_per_component": 0,
     "candidate_component_oom_isolated_from_supervisor": true,
+    "external_memory_directory": "/WORK",
+    "external_memory_host_root": "/var/lib/domainlease-f0-c4/work",
+    "external_memory_filesystem": "vm_native_ext4",
+    "external_memory_backing_mode": "per_component_sparse_loop_ext4",
+    "external_memory_max_bytes_per_component": 137438953472,
+    "external_memory_free_space_reserve_bytes": 10737418240,
+    "external_memory_direct_io_required": true,
+    "external_memory_unlinked_temporary_only": true,
     "stdout_max_bytes_per_component": 268435456,
     "stderr_max_bytes_per_component": 16777216,
     "preexec_observation_max_bytes_per_component": 1048576,
@@ -487,8 +497,8 @@
     {"id": "CAP-INV-012", "statement": "Every required source object is opened nonblocking and no-follow, rejected unless regular and single-link before read, captured once through that descriptor, and bound into one input-root digest before launch.", "enforced_by": ["input_snapshot"]},
     {"id": "CAP-INV-013", "statement": "Input write prevention is enforced by authority separation and read-only mounts, not inferred only from equal pre/post hashes.", "enforced_by": ["PLAT-DEDICATED-UID", "PLAT-MOUNT-NAMESPACE", "input_snapshot"]},
     {"id": "CAP-INV-014", "statement": "Network silence, process-group emptiness, or leader exit is never treated as cgroup drain or source quiescence.", "enforced_by": ["PLAT-CGROUP-EVENTS", "containment"]},
-    {"id": "CAP-INV-015", "statement": "Output limit, timeout, resource exhaustion, unknown termination, or missing raw bytes cannot produce a positive local disposition.", "enforced_by": ["failure_taxonomy", "resource_policy", "positive_eligibility"]},
-    {"id": "CAP-INV-016", "statement": "Every raw receipt binds component identity, plan, inputs, exact pre-exec observation, environment, lifecycle, bytes, resource counters, and drain evidence.", "enforced_by": ["observation", "finalization"]},
+    {"id": "CAP-INV-015", "statement": "Output limit, timeout, RAM exhaustion, bounded external-memory exhaustion, unknown termination, or missing raw bytes cannot produce a positive local disposition.", "enforced_by": ["failure_taxonomy", "resource_policy", "positive_eligibility"]},
+    {"id": "CAP-INV-016", "statement": "Every raw receipt binds component identity, plan, inputs, exact pre-exec observation, environment, lifecycle, bytes, RAM counters, bounded external-memory setup and cleanup, and drain evidence.", "enforced_by": ["observation", "finalization"]},
     {"id": "CAP-INV-017", "statement": "The post-run reducer reads only finalized root-captured bytes and never reopens the producer workspace.", "enforced_by": ["finalization"]},
     {"id": "CAP-INV-018", "statement": "Reducer output cannot mutate the capture manifest or raw receipts and receives a distinct digest and identity.", "enforced_by": ["finalization"]},
     {"id": "CAP-INV-019", "statement": "Publication is no-replace, file-and-directory-fsynced, content-addressed, inaccessible for candidate mutation, and incomplete until a later durable commit marker binds it.", "enforced_by": ["PLAT-ATOMIC-DURABILITY", "finalization"]},
@@ -499,7 +509,7 @@
     {"id": "CAP-INV-024", "statement": "The guardian disarms only after observing a valid durable raw commit marker; supervisor failure cannot leave a candidate descendant executing without a separately authorized guardian-owned incomplete record after populated-zero drain.", "enforced_by": ["PLAT-SUPERVISOR-GUARDIAN", "roles", "state_machines", "containment", "finalization"]},
     {"id": "CAP-INV-025", "statement": "A local capture never claims safety against a malicious capture-host kernel or root service.", "enforced_by": ["trust_boundary", "authorization"]},
     {"id": "CAP-INV-026", "statement": "The run deadline is at least the sum of component deadlines, all per-component drain bounds, and sealed supervisor overhead, and systemd enforces that same bound.", "enforced_by": ["resource_policy", "PLAT-MONOTONIC-DEADLINE"]},
-    {"id": "CAP-INV-027", "statement": "Component memory.max plus the guardian/host reserve never exceeds probed VM memory; supervisor memory.low is contained within that reserve; a component-local OOM cannot make systemd kill the trusted supervisor before it commits the incomplete lifecycle receipt.", "enforced_by": ["resource_policy", "PLAT-CAPACITY-RESERVE", "PLAT-SUPERVISOR-GUARDIAN"]},
+    {"id": "CAP-INV-027", "statement": "Component memory.max plus the guardian/host reserve never exceeds probed VM memory; supervisor memory.low is contained within that reserve; exact-state spill is capped by a per-component loop filesystem with a host free-space reserve; RAM or disk exhaustion cannot make the trusted supervisor commit a complete receipt.", "enforced_by": ["resource_policy", "PLAT-CAPACITY-RESERVE", "PLAT-SUPERVISOR-GUARDIAN", "PLAT-MOUNT-NAMESPACE"]},
     {"id": "CAP-INV-028", "statement": "Every candidate component uses one immutable toolchain image digest for the entire run; live host /usr is not an admissible production capture input.", "enforced_by": ["PLAT-IMMUTABLE-TOOLCHAIN", "input_snapshot"]},
     {"id": "CAP-INV-029", "statement": "A prior-boot durable run intent without a valid commit marker can produce only BOOT_INTERRUPTED and a guardian incomplete disposition.", "enforced_by": ["PLAT-BOOT-RECONCILIATION", "finalization", "state_machines"]},
     {"id": "CAP-INV-030", "statement": "Offline capture controls add no instruction, field, allocation, lock, hash, JSON parse, global scan, or synchronous trace to the production Linux scheduler or Monitor hot path.", "enforced_by": ["performance_boundary", "authorization"]}

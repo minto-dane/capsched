@@ -11,17 +11,21 @@ import os
 import re
 import shutil
 import stat
+import subprocess
 import sys
 import time
 from pathlib import Path
 from typing import Any, Iterable
 
 
-CONTRACT_SHA256 = "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d"
+CONTRACT_SHA256 = "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe"
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 STATE_ROOT = Path("/var/lib/domainlease-f0-c4")
 EVIDENCE_ROOT = STATE_ROOT / "evidence"
 GUARD_ROOT = STATE_ROOT / "intents"
+WORK_ROOT = STATE_ROOT / "work"
+LOSETUP = Path("/usr/sbin/losetup")
+UMOUNT = Path("/usr/bin/umount")
 RENAME_NOREPLACE = 1
 AT_FDCWD = -100
 
@@ -68,6 +72,111 @@ def ensure_root_directory(path: Path, create: bool = False) -> None:
         raise GuardianError(f"not a root-owned directory: {path}")
     if stat.S_IMODE(metadata.st_mode) & 0o077:
         raise GuardianError(f"directory grants group/world access: {path}")
+
+
+def run_cleanup_command(command: list[str], label: str) -> None:
+    completed = subprocess.run(
+        command,
+        check=False,
+        capture_output=True,
+        stdin=subprocess.DEVNULL,
+        env={"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C"},
+    )
+    if completed.returncode != 0:
+        stderr = completed.stderr[:4096].decode("utf-8", "backslashreplace")
+        raise GuardianError(
+            f"external-memory cleanup failed: {label}: "
+            f"rc={completed.returncode} stderr={stderr!r}"
+        )
+
+
+def exact_mount_at(path: Path) -> bool:
+    target = str(path)
+    for line in Path("/proc/self/mountinfo").read_text(encoding="utf-8").splitlines():
+        left, separator, _right = line.partition(" - ")
+        fields = left.split()
+        if separator and len(fields) >= 6 and fields[4] == target:
+            return True
+    return False
+
+
+def read_loop_record(path: Path) -> str | None:
+    try:
+        fd = os.open(
+            path,
+            os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK,
+        )
+    except FileNotFoundError:
+        return None
+    try:
+        metadata = os.fstat(fd)
+        if (
+            not stat.S_ISREG(metadata.st_mode)
+            or metadata.st_nlink != 1
+            or metadata.st_uid != 0
+            or metadata.st_gid != 0
+            or stat.S_IMODE(metadata.st_mode) & 0o377
+        ):
+            raise GuardianError("external-memory loop record is not private root data")
+        raw = os.read(fd, 65)
+    finally:
+        os.close(fd)
+    if len(raw) > 64:
+        raise GuardianError("external-memory loop record exceeds size policy")
+    try:
+        device = raw.decode("ascii").strip()
+    except UnicodeError as exc:
+        raise GuardianError("external-memory loop record is not ASCII") from exc
+    if re.fullmatch(r"/dev/loop[0-9]+", device) is None:
+        raise GuardianError("external-memory loop record is malformed")
+    return device
+
+
+def cleanup_external_memory_run(run_id: str) -> dict[str, Any]:
+    ensure_root_directory(WORK_ROOT, create=True)
+    run_path = WORK_ROOT / run_id
+    if not run_path.exists():
+        return {"run_root_present": False, "components_removed": 0, "complete": True}
+    ensure_root_directory(run_path)
+    allowed = {
+        "static-registries",
+        "tests",
+        "child-bundle-producer",
+        "child-bundle-checker",
+        "orchestrator",
+    }
+    removed = 0
+    for component_root in sorted(run_path.iterdir(), key=lambda path: path.name):
+        if component_root.name not in allowed:
+            raise GuardianError(
+                f"unexpected object in external-memory run root: {component_root.name}"
+            )
+        ensure_root_directory(component_root)
+        image = component_root / "external-memory.ext4"
+        mountpoint = component_root / "mount"
+        device = read_loop_record(component_root / "loop-device")
+        if exact_mount_at(mountpoint):
+            run_cleanup_command([str(UMOUNT), "--", str(mountpoint)], "umount")
+        if exact_mount_at(mountpoint):
+            raise GuardianError("external-memory mount remained attached")
+        if device is not None:
+            loop_name = Path(device).name
+            loop_metadata = Path("/sys/class/block") / loop_name / "loop"
+            if loop_metadata.exists():
+                backing = (loop_metadata / "backing_file").read_text(
+                    encoding="utf-8"
+                ).strip()
+                if backing != str(image):
+                    raise GuardianError(
+                        "external-memory loop was rebound; refusing unsafe detach"
+                    )
+                run_cleanup_command([str(LOSETUP), "--detach", device], "loop detach")
+            if loop_metadata.exists():
+                raise GuardianError("external-memory loop remained attached")
+        shutil.rmtree(component_root)
+        removed += 1
+    run_path.rmdir()
+    return {"run_root_present": True, "components_removed": removed, "complete": True}
 
 
 def fsync_directory(path: Path) -> None:
@@ -495,6 +604,7 @@ def finalize(run_id: str) -> int:
         raise GuardianError("registered evidence root is not the fixed native root")
     ensure_root_directory(evidence_root)
     drain = drain_capture_subtree()
+    drain["external_memory_cleanup"] = cleanup_external_memory_run(run_id)
     final_path = evidence_root / run_id
     if committed_run(final_path, run_id):
         fsync_directory(evidence_root)
@@ -547,6 +657,7 @@ def reconcile() -> int:
             "populated_zero_observed": True,
             "absence_meaning": "Linux processes cannot survive a VM reboot",
         }
+        drain["external_memory_cleanup"] = cleanup_external_memory_run(run_id)
         publish_incomplete(registration, "BOOT_INTERRUPTED", drain)
         remove_guard(registration_path)
         reconciled += 1

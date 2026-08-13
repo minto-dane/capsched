@@ -9,10 +9,13 @@ durability assumptions.  Those are named refinement obligations.
 from __future__ import annotations
 
 from array import array
-from collections import Counter, defaultdict, deque
+from collections import Counter, defaultdict
 from dataclasses import dataclass, fields, replace
 from functools import lru_cache
 from hashlib import sha256
+import mmap
+import os
+import stat
 from struct import calcsize
 from typing import Iterable
 
@@ -38,6 +41,8 @@ ADAPTIVE_REFERENCE_DIRECT_MIN_UNIQUE = 4096
 ADAPTIVE_REFERENCE_DIRECT_RATIO_DENOMINATOR = 4
 EXACT_INDEX_MAX_LOAD_NUMERATOR = 4
 EXACT_INDEX_MAX_LOAD_DENOMINATOR = 5
+EXACT_STORE_DIRECTORY_ENV = "F0_C4_EXACT_STORE_DIR"
+SPILL_MINIMUM_CAPACITY_BYTES = 65536
 
 if (
     array("I").itemsize != 4
@@ -69,6 +74,273 @@ if not (
     < EXACT_INDEX_MAX_LOAD_DENOMINATOR
 ):
     raise RuntimeError("exact state index load policy is invalid")
+
+
+_SPILL_TYPE_SIZES = {
+    "B": 1,
+    "H": 2,
+    "I": 4,
+    "q": 8,
+    "Q": 8,
+}
+_spill_file_counter = 0
+_spill_directory_fd: int | None = None
+_spill_directory_path: str | None = None
+
+
+def _configured_spill_directory() -> str | None:
+    value = os.environ.get(EXACT_STORE_DIRECTORY_ENV)
+    if value is None:
+        return None
+    if not value or not os.path.isabs(value):
+        raise RuntimeError(f"{EXACT_STORE_DIRECTORY_ENV} must be an absolute path")
+    return value
+
+
+def _open_spill_directory() -> int:
+    global _spill_directory_fd, _spill_directory_path
+
+    path = _configured_spill_directory()
+    if path is None:
+        raise RuntimeError("disk-backed exact storage is not configured")
+    if _spill_directory_fd is not None:
+        if path != _spill_directory_path:
+            raise RuntimeError("exact spill directory changed after first allocation")
+        return _spill_directory_fd
+    descriptor = os.open(
+        path,
+        os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
+    )
+    metadata = os.fstat(descriptor)
+    if (
+        not stat.S_ISDIR(metadata.st_mode)
+        or metadata.st_uid != os.geteuid()
+        or stat.S_IMODE(metadata.st_mode) & 0o077
+    ):
+        os.close(descriptor)
+        raise RuntimeError(
+            "exact spill directory must be real, private, and owned by the candidate UID"
+        )
+    _spill_directory_fd = descriptor
+    _spill_directory_path = path
+    return descriptor
+
+
+class _SpillArray:
+    """Appendable fixed-width values in an unlinked native-filesystem mapping.
+
+    The backing inode is removed from the directory immediately after opening.
+    It therefore cannot become capture evidence, cannot be reopened by path,
+    and is reclaimed by the kernel after the last mapping closes.  Exact values
+    remain byte-for-byte available for collision-resolving equality checks.
+    """
+
+    __slots__ = (
+        "_capacity",
+        "_descriptor",
+        "_length",
+        "_mapping",
+        "_view",
+        "itemsize",
+        "typecode",
+    )
+
+    def __init__(self, typecode: str, values: Iterable[int] = ()) -> None:
+        global _spill_file_counter
+
+        if typecode not in _SPILL_TYPE_SIZES:
+            raise ValueError(f"unsupported spill array typecode: {typecode}")
+        directory_fd = _open_spill_directory()
+        while True:
+            name = f"exact-{os.getpid()}-{_spill_file_counter:08x}.spill"
+            _spill_file_counter += 1
+            try:
+                descriptor = os.open(
+                    name,
+                    os.O_RDWR
+                    | os.O_CREAT
+                    | os.O_EXCL
+                    | os.O_CLOEXEC
+                    | os.O_NOFOLLOW,
+                    0o600,
+                    dir_fd=directory_fd,
+                )
+                break
+            except FileExistsError:
+                continue
+        metadata = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(metadata.st_mode)
+            or metadata.st_nlink != 1
+            or metadata.st_uid != os.geteuid()
+            or stat.S_IMODE(metadata.st_mode) != 0o600
+        ):
+            os.close(descriptor)
+            raise RuntimeError("new exact spill object failed identity checks")
+        os.unlink(name, dir_fd=directory_fd)
+        self.typecode = typecode
+        self.itemsize = _SPILL_TYPE_SIZES[typecode]
+        self._descriptor = descriptor
+        self._length = 0
+        self._capacity = max(1, SPILL_MINIMUM_CAPACITY_BYTES // self.itemsize)
+        try:
+            os.ftruncate(descriptor, self._capacity * self.itemsize)
+            self._mapping = mmap.mmap(
+                descriptor,
+                self._capacity * self.itemsize,
+                access=mmap.ACCESS_WRITE,
+            )
+            self._view = memoryview(self._mapping).cast(typecode)
+            self.extend(values)
+        except BaseException:
+            view = getattr(self, "_view", None)
+            if view is not None:
+                view.release()
+            mapping = getattr(self, "_mapping", None)
+            if mapping is not None:
+                mapping.close()
+            os.close(descriptor)
+            self._descriptor = -1
+            raise
+
+    def _ensure_capacity(self, required: int) -> None:
+        if required <= self._capacity:
+            return
+        capacity = self._capacity
+        while capacity < required:
+            capacity *= 2
+        self._mapping.flush()
+        self._view.release()
+        self._mapping.close()
+        old_capacity = self._capacity
+        try:
+            os.ftruncate(self._descriptor, capacity * self.itemsize)
+            self._mapping = mmap.mmap(
+                self._descriptor,
+                capacity * self.itemsize,
+                access=mmap.ACCESS_WRITE,
+            )
+        except BaseException:
+            try:
+                os.ftruncate(self._descriptor, old_capacity * self.itemsize)
+                self._mapping = mmap.mmap(
+                    self._descriptor,
+                    old_capacity * self.itemsize,
+                    access=mmap.ACCESS_WRITE,
+                )
+                self._view = memoryview(self._mapping).cast(self.typecode)
+            except BaseException:
+                os.close(self._descriptor)
+                self._descriptor = -1
+            raise
+        self._capacity = capacity
+        self._view = memoryview(self._mapping).cast(self.typecode)
+
+    def append(self, value: int) -> None:
+        self._ensure_capacity(self._length + 1)
+        self._view[self._length] = value
+        self._length += 1
+
+    def extend(self, values: Iterable[int]) -> None:
+        if isinstance(values, (array, bytes, bytearray)):
+            incoming = (
+                values
+                if isinstance(values, array) and values.typecode == self.typecode
+                else array(self.typecode, values)
+            )
+            if not incoming:
+                return
+            end = self._length + len(incoming)
+            self._ensure_capacity(end)
+            self._view[self._length : end] = incoming
+            self._length = end
+            return
+        chunk = array(self.typecode)
+        for value in values:
+            chunk.append(value)
+            if len(chunk) == 65536:
+                self.extend(chunk)
+                chunk = array(self.typecode)
+        if chunk:
+            self.extend(chunk)
+
+    def zeros(self, count: int) -> None:
+        if count < 0:
+            raise ValueError("negative spill array length")
+        self._ensure_capacity(self._length + count)
+        # New and enlarged file extents are zero-filled by the kernel.  Every
+        # current use of this method grows a fresh logical suffix only.
+        self._length += count
+
+    def __getitem__(self, index: int | slice):
+        if isinstance(index, slice):
+            positions = range(*index.indices(self._length))
+            return array(self.typecode, (self._view[position] for position in positions))
+        if index < 0:
+            index += self._length
+        if index < 0 or index >= self._length:
+            raise IndexError("spill array index out of range")
+        return self._view[index]
+
+    def __setitem__(self, index: int, value: int) -> None:
+        if index < 0:
+            index += self._length
+        if index < 0 or index >= self._length:
+            raise IndexError("spill array assignment index out of range")
+        self._view[index] = value
+
+    def __iter__(self):
+        for index in range(self._length):
+            yield self._view[index]
+
+    def __len__(self) -> int:
+        return self._length
+
+    def __bool__(self) -> bool:
+        return self._length != 0
+
+    def __eq__(self, other: object) -> bool:
+        if not hasattr(other, "__len__") or not hasattr(other, "__iter__"):
+            return NotImplemented
+        return len(self) == len(other) and all(
+            left == right for left, right in zip(self, other, strict=True)
+        )
+
+    def count(self, value: int) -> int:
+        return sum(item == value for item in self)
+
+    def close(self) -> None:
+        descriptor = getattr(self, "_descriptor", -1)
+        if descriptor < 0:
+            return
+        view = getattr(self, "_view", None)
+        if view is not None:
+            view.release()
+        mapping = getattr(self, "_mapping", None)
+        if mapping is not None:
+            mapping.close()
+        os.close(descriptor)
+        self._descriptor = -1
+
+    def __del__(self) -> None:
+        try:
+            self.close()
+        except Exception:
+            pass
+
+
+def _new_array(typecode: str, values: Iterable[int] = ()):
+    if _configured_spill_directory() is None:
+        return array(typecode, values)
+    return _SpillArray(typecode, values)
+
+
+def _new_zero_array(typecode: str, length: int):
+    if _configured_spill_directory() is None:
+        return array(typecode, [0]) * length
+    result = _SpillArray(typecode)
+    result.zeros(length)
+    return result
 
 ROLES = {"PRODUCER", "CHECKER"}
 PHASES = {
@@ -1370,10 +1642,10 @@ class _ExactValuePool:
         return self._values[index]
 
 
-class _CompactCodeColumn:
-    """Exact interned values with the narrowest sufficient unsigned array."""
+class _AdaptiveUnsignedArray:
+    """Append-only unsigned integers using the narrowest sufficient width."""
 
-    __slots__ = ("_codes", "_pool")
+    __slots__ = ("_values",)
     _WIDTH_LIMIT = {
         "B": (1 << 8) - 1,
         "H": (1 << 16) - 1,
@@ -1382,7 +1654,39 @@ class _CompactCodeColumn:
     _NEXT_WIDTH = {"B": "H", "H": "I"}
 
     def __init__(self) -> None:
-        self._codes = array("B")
+        self._values = _new_array("B")
+
+    @property
+    def itemsize(self) -> int:
+        return self._values.itemsize
+
+    @property
+    def typecode(self) -> str:
+        return self._values.typecode
+
+    def append(self, value: int) -> None:
+        if value < 0:
+            raise ValueError("adaptive unsigned array rejects negative values")
+        if value > self._WIDTH_LIMIT[self._values.typecode]:
+            next_type = self._NEXT_WIDTH.get(self._values.typecode)
+            if next_type is None or value > self._WIDTH_LIMIT[next_type]:
+                raise ProtocolReject("F05-SPV3-STATE-VALUE-BOUND", str(value))
+            self._values = _new_array(next_type, self._values)
+        self._values.append(value)
+
+    def __getitem__(self, index: int) -> int:
+        return self._values[index]
+
+    def __len__(self) -> int:
+        return len(self._values)
+
+
+class _CompactCodeColumn:
+    """Exact interned values with the narrowest sufficient unsigned array."""
+
+    __slots__ = ("_codes", "_pool")
+    def __init__(self) -> None:
+        self._codes = _AdaptiveUnsignedArray()
         self._pool = _ExactValuePool()
 
     @property
@@ -1391,11 +1695,6 @@ class _CompactCodeColumn:
 
     def append(self, value: object) -> None:
         code = self._pool.intern(value)
-        if code > self._WIDTH_LIMIT[self._codes.typecode]:
-            next_type = self._NEXT_WIDTH.get(self._codes.typecode)
-            if next_type is None:
-                raise ProtocolReject("F05-SPV3-STATE-VALUE-BOUND", str(code))
-            self._codes = array(next_type, self._codes)
         self._codes.append(code)
 
     def matches(self, index: int, value: object) -> bool:
@@ -1417,8 +1716,8 @@ class _ExactDigestColumn:
 
     def __init__(self) -> None:
         self._fallback = _CompactCodeColumn()
-        self._raw = bytearray()
-        self._tags = array("B")
+        self._raw = _new_array("B")
+        self._tags = _new_array("B")
 
     @property
     def itemsize(self) -> int:
@@ -1447,7 +1746,7 @@ class _ExactDigestColumn:
 
     def _decoded(self, index: int) -> str:
         start = index * 32
-        return self._raw[start : start + 32].hex()
+        return bytes(self._raw[start : start + 32]).hex()
 
     def value(self, index: int) -> object:
         if self._tags[index] == 0:
@@ -1458,7 +1757,7 @@ class _ExactDigestColumn:
         raw = self._canonical_raw(value)
         if self._tags[index] == 0 and raw is not None:
             start = index * 32
-            return self._raw[start : start + 32] == raw
+            return bytes(self._raw[start : start + 32]) == raw
         return self.value(index) == value
 
     def __len__(self) -> int:
@@ -1477,8 +1776,10 @@ class _PackedRecordArena:
         "_index_hashes",
         "_index_ids",
         "_index_mask",
+        "_packed_row_count",
         "_record_type",
         "_row_codes",
+        "_row_tags",
     )
     _NO_RECORD = (1 << 32) - 1
     _HASH_MASK = (1 << 64) - 1
@@ -1500,7 +1801,9 @@ class _PackedRecordArena:
             else _CompactCodeColumn()
             for name in record_fields
         )
-        self._row_codes = array("q")
+        self._packed_row_count = 0
+        self._row_codes = _AdaptiveUnsignedArray()
+        self._row_tags = _new_array("B")
         self._fallback_records: list[object] = []
         self._cache_ids = array(
             "I",
@@ -1519,7 +1822,7 @@ class _PackedRecordArena:
 
     @property
     def fixed_column_bytes_per_record_upper_bound(self) -> int:
-        return self._row_codes.itemsize + sum(
+        return self._row_tags.itemsize + self._row_codes.itemsize + sum(
             column.itemsize for column in self._columns
         )
 
@@ -1539,18 +1842,21 @@ class _PackedRecordArena:
         record_id, slot = self._find(record, record_hash)
         if record_id is not None:
             return record_id
-        record_id = len(self._row_codes)
+        record_id = len(self._row_tags)
         if record_id >= self._NO_RECORD:
             raise ProtocolReject("F05-SPV3-RECEIPT-ARENA-BOUND", str(record_id))
         if type(record) is self._record_type:
-            packed_row = len(self._columns[0])
+            packed_row = self._packed_row_count
             for name, column in zip(self._field_names, self._columns, strict=True):
                 column.append(getattr(record, name))
+            self._packed_row_count += 1
             self._row_codes.append(packed_row)
+            self._row_tags.append(0)
         else:
             fallback_index = len(self._fallback_records)
             self._fallback_records.append(record)
-            self._row_codes.append(-fallback_index - 1)
+            self._row_codes.append(fallback_index)
+            self._row_tags.append(1)
         self._index_ids[slot] = record_id
         self._index_hashes[slot] = record_hash
         return record_id
@@ -1563,8 +1869,8 @@ class _PackedRecordArena:
                 raise RuntimeError("packed receipt decode cache lost its value")
             return cached
         row_code = self._row_codes[record_id]
-        if row_code < 0:
-            value = self._fallback_records[-row_code - 1]
+        if self._row_tags[record_id] == 1:
+            value = self._fallback_records[row_code]
         else:
             value = self._record_type(
                 *(column.value(row_code) for column in self._columns)
@@ -1575,7 +1881,10 @@ class _PackedRecordArena:
 
     def matches(self, record_id: int, record: object) -> bool:
         row_code = self._row_codes[record_id]
-        if row_code < 0 or type(record) is not self._record_type:
+        if (
+            self._row_tags[record_id] == 1
+            or type(record) is not self._record_type
+        ):
             return self.value(record_id) == record
         return all(
             column.matches(row_code, getattr(record, name))
@@ -1583,7 +1892,7 @@ class _PackedRecordArena:
         )
 
     def __len__(self) -> int:
-        return len(self._row_codes)
+        return len(self._row_tags)
 
 
 class _PackedPersistentSequenceArena:
@@ -1613,11 +1922,11 @@ class _PackedPersistentSequenceArena:
             record_type,
             sequence_type._digest_field_names,
         )
-        self._parents = array("I", [self._NO_NODE])
-        self._record_ids = array("I", [self._NO_NODE])
+        self._parents = _new_array("I", [self._NO_NODE])
+        self._record_ids = _new_array("I", [self._NO_NODE])
         self._lengths = _CompactCodeColumn()
         self._lengths.append(0)
-        self._hashes = array(
+        self._hashes = _new_array(
             "q",
             [
                 hash(
@@ -1838,17 +2147,24 @@ class _AdaptiveExactReferenceColumn:
 class _PackedPersistentSequenceColumn:
     """One exact arena node (or rare fallback object) per accepted state."""
 
-    __slots__ = ("_arena", "_fallback_values", "_row_codes", "_sequence_type")
+    __slots__ = (
+        "_arena",
+        "_fallback_values",
+        "_row_codes",
+        "_row_tags",
+        "_sequence_type",
+    )
 
     def __init__(self, sequence_type: type[PersistentSequence]) -> None:
         self._sequence_type = sequence_type
         self._arena = _PackedPersistentSequenceArena(sequence_type)
-        self._row_codes = array("q")
+        self._row_codes = _AdaptiveUnsignedArray()
+        self._row_tags = _new_array("B")
         self._fallback_values: list[object] = []
 
     @property
     def itemsize(self) -> int:
-        return self._row_codes.itemsize
+        return self._row_tags.itemsize + self._row_codes.itemsize
 
     @property
     def arena(self) -> _PackedPersistentSequenceArena:
@@ -1857,27 +2173,29 @@ class _PackedPersistentSequenceColumn:
     def append(self, value: object) -> None:
         if type(value) is self._sequence_type:
             self._row_codes.append(self._arena.pack(value))
+            self._row_tags.append(0)
         else:
             fallback_index = len(self._fallback_values)
             self._fallback_values.append(value)
-            self._row_codes.append(-fallback_index - 1)
+            self._row_codes.append(fallback_index)
+            self._row_tags.append(1)
 
     def matches(self, index: int, value: object) -> bool:
         row_code = self._row_codes[index]
-        if row_code < 0:
-            return self._fallback_values[-row_code - 1] == value
+        if self._row_tags[index] == 1:
+            return self._fallback_values[row_code] == value
         return isinstance(value, PersistentSequence) and self._arena.matches(
             row_code, value
         )
 
     def value(self, index: int) -> object:
         row_code = self._row_codes[index]
-        if row_code < 0:
-            return self._fallback_values[-row_code - 1]
+        if self._row_tags[index] == 1:
+            return self._fallback_values[row_code]
         return self._arena.view(row_code)
 
     def __len__(self) -> int:
-        return len(self._row_codes)
+        return len(self._row_tags)
 
 
 class _ExactReferenceColumn:
@@ -2078,7 +2396,10 @@ class ExactStateIndex:
         "_size",
         "_mask",
     )
-    EMPTY_INDEX = (1 << 32) - 1
+    # Zero is the sparse-file-friendly empty marker.  Occupied slots store the
+    # exact state index plus one, preserving the full 0..2^32-2 index range.
+    EMPTY_INDEX = 0
+    MAX_STATE_INDEX = (1 << 32) - 2
     HASH_MASK = (1 << 64) - 1
 
     def __init__(
@@ -2093,8 +2414,8 @@ class ExactStateIndex:
             raise ValueError("exact state index capacity must be a power of two >= 8")
         self._states = states
         self._equals_at = getattr(states, "equals_at", None)
-        self._indices = array("I", [self.EMPTY_INDEX]) * initial_capacity
-        self._hashes = array("Q", [0]) * initial_capacity
+        self._indices = _new_zero_array("I", initial_capacity)
+        self._hashes = _new_zero_array("Q", initial_capacity)
         self._size = 0
         self._mask = initial_capacity - 1
 
@@ -2113,9 +2434,10 @@ class ExactStateIndex:
         slot = state_hash & self._mask
         perturb = state_hash
         while True:
-            state_index = self._indices[slot]
-            if state_index == self.EMPTY_INDEX:
+            encoded_index = self._indices[slot]
+            if encoded_index == self.EMPTY_INDEX:
                 return None, slot
+            state_index = encoded_index - 1
             if (
                 self._hashes[slot] == state_hash
                 and (
@@ -2133,18 +2455,19 @@ class ExactStateIndex:
         new_capacity = len(old_indices) * 2
         if new_capacity > 1 << 32:
             raise ProtocolReject("F05-SPV3-GRAPH-STATE-BOUND", str(self._size))
-        self._indices = array("I", [self.EMPTY_INDEX]) * new_capacity
-        self._hashes = array("Q", [0]) * new_capacity
+        self._indices = _new_zero_array("I", new_capacity)
+        self._hashes = _new_zero_array("Q", new_capacity)
         self._mask = new_capacity - 1
-        for old_slot, state_index in enumerate(old_indices):
-            if state_index == self.EMPTY_INDEX:
+        for old_slot, encoded_index in enumerate(old_indices):
+            if encoded_index == self.EMPTY_INDEX:
                 continue
+            state_index = encoded_index - 1
             state_hash = old_hashes[old_slot]
             slot = state_hash & self._mask
             perturb = state_hash
             while self._indices[slot] != self.EMPTY_INDEX:
                 slot, perturb = self._next_slot(slot, perturb, self._mask)
-            self._indices[slot] = state_index
+            self._indices[slot] = encoded_index
             self._hashes[slot] = state_hash
 
     def intern(self, state: EnvelopeState) -> tuple[int, bool]:
@@ -2160,14 +2483,14 @@ class ExactStateIndex:
             state_index, slot = self._find(state, state_hash)
             if state_index is not None:
                 raise RuntimeError("exact state appeared only after index resize")
-        if len(self._states) >= self.EMPTY_INDEX:
+        if len(self._states) > self.MAX_STATE_INDEX:
             raise ProtocolReject(
                 "F05-SPV3-GRAPH-STATE-BOUND",
                 str(len(self._states)),
             )
         state_index = len(self._states)
         self._states.append(state)
-        self._indices[slot] = state_index
+        self._indices[slot] = state_index + 1
         self._hashes[slot] = state_hash
         self._size += 1
         return state_index, True
@@ -5212,11 +5535,11 @@ def reachable_states(grant: RunGrant) -> ReachabilityGraph:
     start_index, start_is_new = representatives.intern(start_key)
     if start_index != 0 or not start_is_new:
         raise RuntimeError("initial exact state was not uniquely interned")
-    frontier_indices = array("I", [start_index])
+    frontier_indices = _new_array("I", [start_index])
     frontier_cursor = 0
-    edge_offsets = array("I", [0])
-    target_indices = array("I")
-    action_indices = array("B")
+    edge_offsets = _new_array("I", [0])
+    target_indices = _new_array("I")
+    action_indices = _new_array("B")
     while frontier_cursor < len(frontier_indices):
         source_index = frontier_indices[frontier_cursor]
         frontier_cursor += 1
@@ -5253,7 +5576,7 @@ def _coaccessible_state_count(
     """Count states with a terminal path using compact reverse CSR storage."""
 
     state_count = len(graph.states)
-    incoming_counts = array("I", [0]) * state_count
+    incoming_counts = _new_zero_array("I", state_count)
     for target_index in graph.target_indices:
         if incoming_counts[target_index] == (1 << 32) - 1:
             raise ProtocolReject(
@@ -5262,7 +5585,7 @@ def _coaccessible_state_count(
             )
         incoming_counts[target_index] += 1
 
-    incoming_offsets = array("I", [0])
+    incoming_offsets = _new_array("I", [0])
     running = 0
     for count in incoming_counts:
         running += count
@@ -5272,8 +5595,11 @@ def _coaccessible_state_count(
                 str(running),
             )
         incoming_offsets.append(running)
-    cursor = incoming_offsets[:-1]
-    incoming_sources = array("I", [0]) * graph.edge_count
+    cursor = _new_array(
+        "I",
+        (incoming_offsets[index] for index in range(state_count)),
+    )
+    incoming_sources = _new_zero_array("I", graph.edge_count)
     for source_index in range(state_count):
         begin = graph.edge_offsets[source_index]
         end = graph.edge_offsets[source_index + 1]
@@ -5283,15 +5609,17 @@ def _coaccessible_state_count(
             incoming_sources[position] = source_index
             cursor[target_index] += 1
 
-    coaccessible = bytearray(state_count)
-    queue: deque[int] = deque()
+    coaccessible = _new_zero_array("B", state_count)
+    queue = _new_array("I")
     for terminal_index in terminal_indices:
         if not coaccessible[terminal_index]:
             coaccessible[terminal_index] = 1
             queue.append(terminal_index)
     count = len(queue)
-    while queue:
-        target_index = queue.popleft()
+    queue_cursor = 0
+    while queue_cursor < len(queue):
+        target_index = queue[queue_cursor]
+        queue_cursor += 1
         begin = incoming_offsets[target_index]
         end = incoming_offsets[target_index + 1]
         for position in range(begin, end):
@@ -5312,7 +5640,7 @@ def explore(
     if reachable_graph is None:
         reachable_graph = reachable_states(fixture_external_grant(role))
     states = reachable_graph.states
-    terminal_indices = array("I")
+    terminal_indices = _new_array("I")
     deadlocks = 0
     decisions: Counter[str] = Counter()
     actions: set[int] = set()

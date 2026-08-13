@@ -3,7 +3,7 @@ set -euo pipefail
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 contract=$script_dir/../../analysis/f0-c4-authority-disjoint-capture-contract-v1.json
-readonly contract_sha256=0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d
+readonly contract_sha256=d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe
 readonly state_root=/var/lib/domainlease-f0-c4
 readonly install_root=/usr/local
 readonly reducer_user=domainlease-reducer
@@ -118,7 +118,7 @@ if [[ $mode == --install ]]; then
 	done
 	$install -d -o root -g root -m 0700 \
 		"$state_root" "$state_root/install-staging" "$state_root/evidence" \
-		"$state_root/intents" "$state_root/toolchain"
+		"$state_root/intents" "$state_root/toolchain" "$state_root/work"
 	build_dir=$($mktemp -d "$state_root/install-staging/build.XXXXXX")
 	chmod 0700 "$build_dir"
 	cleanup_build=true

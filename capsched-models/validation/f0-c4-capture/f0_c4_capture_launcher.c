@@ -66,6 +66,7 @@ struct preexec_message {
 struct options {
 	const char *cgroup_path;
 	const char *sandbox_root;
+	const char *scratch_path;
 	const char *input_path;
 	const char *toolchain_path;
 	const char *stdout_path;
@@ -96,6 +97,7 @@ static void usage(const char *program)
 {
 	fprintf(stderr,
 		"usage: %s --cgroup PATH --sandbox-root PATH --input PATH "
+		"--scratch PATH "
 		"--toolchain-root PATH --stdout-file PATH --stderr-file PATH "
 		"--preexec-file PATH --component ID "
 		"--candidate-uid UID --candidate-gid GID --deadline-seconds N "
@@ -176,6 +178,8 @@ static void parse_options(int argc, char **argv, struct options *options)
 			options->cgroup_path = value;
 		else if (strcmp(argument, "--sandbox-root") == 0)
 			options->sandbox_root = value;
+		else if (strcmp(argument, "--scratch") == 0)
+			options->scratch_path = value;
 		else if (strcmp(argument, "--input") == 0)
 			options->input_path = value;
 		else if (strcmp(argument, "--toolchain-root") == 0)
@@ -211,6 +215,7 @@ static void parse_options(int argc, char **argv, struct options *options)
 		options->command = &argv[index];
 	if (!safe_absolute_path(options->cgroup_path) ||
 	    !safe_absolute_path(options->sandbox_root) ||
+	    !safe_absolute_path(options->scratch_path) ||
 	    !safe_absolute_path(options->input_path) ||
 	    !safe_absolute_path(options->toolchain_path) ||
 	    !safe_absolute_path(options->stdout_path) ||
@@ -380,6 +385,29 @@ static int attach_read_only_tree(const char *source, const char *target)
 	return 0;
 }
 
+static int attach_external_memory_tree(const char *source, const char *target)
+{
+	struct mount_attr attributes = {
+		.attr_set = MOUNT_ATTR_NOSUID | MOUNT_ATTR_NODEV | MOUNT_ATTR_NOEXEC,
+	};
+	int tree = sys_open_tree(AT_FDCWD, source,
+				 OPEN_TREE_CLONE | OPEN_TREE_CLOEXEC | AT_RECURSIVE);
+
+	if (tree < 0)
+		return -1;
+	if (sys_mount_setattr(tree, "", AT_EMPTY_PATH | AT_RECURSIVE,
+			      &attributes, sizeof(attributes)) != 0 ||
+	    sys_move_mount(tree, "", AT_FDCWD, target,
+			   MOVE_MOUNT_F_EMPTY_PATH) != 0) {
+		int saved = errno;
+		close(tree);
+		errno = saved;
+		return -1;
+	}
+	close(tree);
+	return 0;
+}
+
 static int make_minimal_devices(const char *root)
 {
 	char path[4096];
@@ -407,7 +435,7 @@ static int prepare_sandbox(const struct options *options, int *detail)
 {
 	char path[4096];
 	const char *directories[] = {
-		"usr", "etc", "INPUT", "proc", "tmp", "run", "dev",
+		"usr", "etc", "INPUT", "WORK", "proc", "tmp", "run", "dev",
 	};
 
 	*detail = 101;
@@ -435,40 +463,44 @@ static int prepare_sandbox(const struct options *options, int *detail)
 	    attach_read_only_tree(options->input_path, path) != 0)
 		return -1;
 	*detail = 123;
+	if (join_path(path, sizeof(path), options->sandbox_root, "WORK") != 0 ||
+	    attach_external_memory_tree(options->scratch_path, path) != 0)
+		return -1;
+	*detail = 124;
 	if (join_path(path, sizeof(path), options->sandbox_root, "bin") != 0 ||
 	    symlink("usr/bin", path) != 0)
 		return -1;
-	*detail = 124;
+	*detail = 125;
 	if (join_path(path, sizeof(path), options->sandbox_root, "sbin") != 0 ||
 	    symlink("usr/sbin", path) != 0)
 		return -1;
-	*detail = 125;
+	*detail = 126;
 	if (join_path(path, sizeof(path), options->sandbox_root, "lib") != 0 ||
 	    symlink("usr/lib", path) != 0)
 		return -1;
-	*detail = 126;
+	*detail = 127;
 	if (join_path(path, sizeof(path), options->sandbox_root, "lib64") != 0 ||
 	    symlink("usr/lib64", path) != 0)
 		return -1;
-	*detail = 127;
+	*detail = 128;
 	if (join_path(path, sizeof(path), options->sandbox_root, "tmp") != 0 ||
 	    mount("tmpfs", path, "tmpfs", MS_NOSUID | MS_NODEV,
 		  "mode=1777,size=1G,nr_inodes=262144") != 0)
 		return -1;
-	*detail = 128;
+	*detail = 129;
 	if (join_path(path, sizeof(path), options->sandbox_root, "run") != 0 ||
 	    mount("tmpfs", path, "tmpfs", MS_NOSUID | MS_NODEV | MS_NOEXEC,
 		  "mode=0755,size=16M,nr_inodes=4096") != 0)
 		return -1;
-	*detail = 129;
+	*detail = 130;
 	if (make_minimal_devices(options->sandbox_root) != 0)
 		return -1;
-	*detail = 130;
+	*detail = 131;
 	if (join_path(path, sizeof(path), options->sandbox_root, "proc") != 0 ||
 	    mount("proc", path, "proc", MS_NOSUID | MS_NODEV | MS_NOEXEC,
 		  "hidepid=2") != 0)
 		return -1;
-	*detail = 131;
+	*detail = 132;
 	if (chroot(options->sandbox_root) != 0 || chdir("/") != 0)
 		return -1;
 	*detail = 0;
@@ -827,6 +859,7 @@ static void child_main(const struct options *options, int stdout_write,
 		       int attestation_write)
 {
 	char *environment[] = {
+		"F0_C4_EXACT_STORE_DIR=/WORK",
 		"PATH=/usr/bin:/bin",
 		"PYTHONPATH=INPUT",
 		"PYTHONDONTWRITEBYTECODE=1",

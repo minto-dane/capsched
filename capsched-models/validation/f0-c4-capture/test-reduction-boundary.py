@@ -23,11 +23,11 @@ TRUSTED_STAGE = Path(f"/run/f0-c4-reduction-test-{os.getpid()}")
 SUPERVISOR = TRUSTED_STAGE / "f0-c4-reduction-supervisor.py"
 REDUCER = TRUSTED_STAGE / "f0-c4-post-run-reducer.py"
 STAGED_CONTRACT = TRUSTED_STAGE / "f0-c4-capture-contract-v1.json"
-CONTRACT_SHA256 = "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d"
+CONTRACT_SHA256 = "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe"
 INPUT_DIGESTS = {
     "f0-supervisor-c4-claim-registry-v1.json": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
-    "f0_supervisor_lts_v3.py": "514c247b335012203081ff5503bca924698de1bc102603c23012bb22441bda7e",
-    "f0_supervisor_orchestrator_v3.py": "1cc6e3b227df40d104b3151a20124b025d22a259b5f0a882213f45c5728aae0a",
+    "f0_supervisor_lts_v3.py": "387399ae11c7bdad635c4b0425888f3ae01b23070b54afdb06eaa795b9787452",
+    "f0_supervisor_orchestrator_v3.py": "46a2788e5bdac5d96ad83204e57dda35582b5d6fdd878f9ba4e30854ab870bfb",
     "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba",
     "test-f0-supervisor-lts-v3-mutations.py": "e473f571f40b67caa0632299dc32568393282ab540db78650e93d2e34b8cd6f3",
     "test-f0-supervisor-orchestrator-v3-mutations.py": "a16f5392b963bbc37cd2c3b40d4bf8b4ad652f4b7073f74dbaa5af7ca61bf9cb",
@@ -60,6 +60,7 @@ AUTHORIZATION = {
     "deployment_claim": False,
 }
 ENVIRONMENT = {
+    "F0_C4_EXACT_STORE_DIR": "/WORK",
     "PATH": "/usr/bin:/bin",
     "PYTHONPATH": "INPUT",
     "PYTHONDONTWRITEBYTECODE": "1",
@@ -77,6 +78,14 @@ RESOURCE_POLICY = {
     "required_vm_memory_min_bytes": 10200547328,
     "memory_swap_max_bytes_per_component": 0,
     "candidate_component_oom_isolated_from_supervisor": True,
+    "external_memory_directory": "/WORK",
+    "external_memory_host_root": "/var/lib/domainlease-f0-c4/work",
+    "external_memory_filesystem": "vm_native_ext4",
+    "external_memory_backing_mode": "per_component_sparse_loop_ext4",
+    "external_memory_max_bytes_per_component": 137438953472,
+    "external_memory_free_space_reserve_bytes": 10737418240,
+    "external_memory_direct_io_required": True,
+    "external_memory_unlinked_temporary_only": True,
     "stdout_max_bytes_per_component": 268435456,
     "stderr_max_bytes_per_component": 16777216,
     "preexec_observation_max_bytes_per_component": 1048576,
@@ -505,6 +514,39 @@ def build_capture(run_id: str, mutation: str) -> Path:
             "result_protocol_framing_valid": True,
             "result_protocol_semantics_validated": False,
             "resource_counters": {},
+            "external_memory_boundary": {
+                "host_root": "/var/lib/domainlease-f0-c4/work",
+                "host_mount_identity": {
+                    "device": "254:16",
+                    "mount_point": "/",
+                    "mount_options": "rw,relatime",
+                    "filesystem_type": "ext4",
+                    "source": "/dev/vdb",
+                },
+                "host_free_bytes_before_component": 200000000000,
+                "host_required_free_bytes": 148176371712,
+                "backing_mode": "per_component_sparse_loop_ext4",
+                "logical_limit_bytes": 137438953472,
+                "direct_io": True,
+                "filesystem_type": "ext4",
+                "mount_options": ["nodev", "noexec", "nosuid", "rw"],
+                "candidate_path": "/WORK",
+                "tool_sha256": {
+                    "mke2fs": "0" * 64,
+                    "losetup": "1" * 64,
+                    "mount": "2" * 64,
+                    "umount": "3" * 64,
+                },
+                "visible_entries_after_exit": 0,
+                "unlinked_temporary_only_observed": True,
+                "filesystem_free_bytes_after_exit": 137000000000,
+                "backing_allocated_bytes_after_exit": 4096,
+                "cleanup": {
+                    "unmounted": True,
+                    "loop_detached": True,
+                    "backing_removed": True,
+                },
+            },
             "cgroup_kill_used": True,
             "populated_zero_observed": True,
             "toolchain_identity": {

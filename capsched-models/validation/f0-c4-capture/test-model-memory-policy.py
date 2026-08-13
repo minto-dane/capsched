@@ -5,8 +5,11 @@ from __future__ import annotations
 
 from array import array
 from dataclasses import dataclass, is_dataclass
+import errno
+import os
 from pathlib import Path
 import sys
+import tempfile
 from types import ModuleType
 from unittest.mock import patch
 
@@ -356,6 +359,8 @@ def main() -> None:
         collision_column.matches(0, collision_right)
         or collision_column.matches(2, collision_left)
         or collision_column.value(0) == collision_column.value(2)
+        or collision_column._row_tags[0] != 0
+        or collision_column._row_tags[1] != 0
         or collision_column._row_codes[0] != collision_column._row_codes[1]
         or len(collision_column.arena) != 3
         or len(collision_column.arena._records) != 2
@@ -480,6 +485,57 @@ def main() -> None:
             raise AssertionError(f"unbounded cache returned: {source}")
     cases += 1
 
+    with tempfile.TemporaryDirectory(prefix="f0-c4-exact-spill-") as raw_spill:
+        spill_path = Path(raw_spill)
+        os.chmod(spill_path, 0o700)
+        with patch.dict(
+            os.environ,
+            {child.EXACT_STORE_DIRECTORY_ENV: str(spill_path)},
+            clear=False,
+        ):
+            spilled = child._new_array("I", range(20_000))
+            zeros = child._new_zero_array("Q", 20_000)
+            if (
+                not isinstance(spilled, child._SpillArray)
+                or not isinstance(zeros, child._SpillArray)
+                or len(spilled) != 20_000
+                or spilled[0] != 0
+                or spilled[-1] != 19_999
+                or spilled[1024:1032] != array("I", range(1024, 1032))
+                or zeros.count(0) != 20_000
+                or list(spill_path.iterdir())
+            ):
+                raise AssertionError("disk-backed exact arrays changed fixed-width semantics")
+            zeros[-1] = 7
+            if zeros[-1] != 7 or zeros.count(0) != 19_999:
+                raise AssertionError("disk-backed zero array changed assignment semantics")
+            spilled.close()
+            zeros.close()
+
+            descriptors_before = len(os.listdir("/proc/self/fd"))
+            with patch.object(
+                child.os,
+                "ftruncate",
+                side_effect=OSError(errno.ENOSPC, "fixture disk full"),
+            ):
+                try:
+                    child._new_array("I")
+                except OSError as exc:
+                    if exc.errno != errno.ENOSPC:
+                        raise
+                else:
+                    raise AssertionError("spill allocation did not fail closed on ENOSPC")
+            if (
+                len(os.listdir("/proc/self/fd")) != descriptors_before
+                or list(spill_path.iterdir())
+            ):
+                raise AssertionError("failed spill allocation leaked a file or descriptor")
+        if child._spill_directory_fd is not None:
+            os.close(child._spill_directory_fd)
+        child._spill_directory_fd = None
+        child._spill_directory_path = None
+    cases += 1
+
     child_source = Path(child.__file__).read_text(encoding="utf-8")
     parent_source = Path(parent.__file__).read_text(encoding="utf-8")
     if (
@@ -490,13 +546,13 @@ def main() -> None:
         or "class _PackedPersistentSequenceColumn:" not in child_source
         or "class ExactStateIndex:" not in child_source
         or "class CompactExactStateStore:" not in child_source
-        or 'frontier_indices = array("I"' not in child_source
+        or 'frontier_indices = _new_array("I"' not in child_source
         or "representatives: dict[EnvelopeState, int]" in child_source
         or "state_vector = tuple(states)" in child_source
         or "evidence_histories: set[tuple[Receipt, ...]]" in child_source
         or "evidence_history_index = ExactStateIndex" not in child_source
         or "class ParentReceiptHistory(child.PersistentSequence):" not in parent_source
-        or 'frontier_indices = array("I"' not in parent_source
+        or 'frontier_indices = child._new_array("I"' not in parent_source
         or "representatives: dict[OrchestratorState, int]" in parent_source
         or "state_vector = tuple(states)" in parent_source
     ):

@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "updated": "2026-08-12",
+  "updated": "2026-08-13",
   "project": {
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
+    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -221,11 +221,11 @@
       }
     },
     "current_candidate_inputs": {
-      "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1",
-      "artifact_sha256": "90a224a18bf791cbd053502403ac20d8ec9e36a56420cc7eb860018aeaeb3972",
-      "status": "packed_exact_history_repaired_clean_installed_g6_retry_eligible",
+      "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-external-memory-repair-v1",
+      "artifact_sha256": "d16c7b27cb756514c78f4597bfc85df77caf0c1b610033ab69cecdfd01724897",
+      "status": "disk_backed_exact_store_repaired_g6_retry_requires_clean_install",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
-      "full_validator_status": "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+      "full_validator_status": "NOT_RUN_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
       "hostile_case_counts": {
         "child": 284,
         "parent": 739,
@@ -247,9 +247,9 @@
     },
     "authority_capture_contract": {
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
-      "canonical_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
+      "canonical_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -276,8 +276,10 @@
         "launcher_basic_cases": 1,
         "launcher_hostile_cases": 10,
         "snapshot_hostile_cases": 5,
-        "model_memory_policy_cases": 30,
-        "capture_resource_policy_cases": 7,
+        "model_memory_policy_cases": 31,
+        "model_storage_equivalence_cases": 1,
+        "capture_resource_policy_cases": 17,
+        "external_memory_recovery_cases": 1,
         "reducer_current_input_binding_cases": 3,
         "toolchain_reuse_cases": 1,
         "supervisor_components": 5,
@@ -285,20 +287,20 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "PASSED_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+        "status": "REINSTALL_REQUIRED_AFTER_EXTERNAL_MEMORY_REPAIR",
         "installed_source_commit": "14f6deecca06ce2f23b5faeb335100af952100ea",
         "installed_manifest_sha256": "f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029",
-        "current_inputs_installed": true,
-        "readiness_record": "capsched-models/validation/f0-c4-g6-packed-history-retry-readiness-v1.json",
-        "readiness_sha256": "d9066f01b06f541a95498fdc84c99a536bcd2666824169a010ab6a7dfb9a99a4"
+        "current_inputs_installed": false,
+        "readiness_record": "capsched-models/validation/f0-c4-g6-external-memory-retry-readiness-v1.json",
+        "readiness_sha256": "53d2f8f6d93b670f80a4b7900dfea251b9fc1a66376421f120ec7045f10f6a16"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": true,
+        "retry_eligible": false,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
-        "attempt_count": 6,
-        "latest_completed_attempt_run_id": "candidate4-full-20260812T184826Z",
+        "attempt_count": 7,
+        "latest_completed_attempt_run_id": "candidate4-full-20260812T231441Z",
         "attempt_history": [
           {
             "run_id": "candidate4-full-20260811T203907Z",
@@ -345,6 +347,14 @@
             "evidence_commit_available": true,
             "observation_record": "capsched-models/validation/f0-c4-g6-fourth-oom-incomplete-observation-v1.json",
             "observation_sha256": "9956feff9988d7cf1de4fb8bdfe1f92b770c6556e42f8aa2490feaee52a252b5"
+          },
+          {
+            "run_id": "candidate4-full-20260812T231441Z",
+            "status": "RAW_CAPTURE_INCOMPLETE",
+            "candidate_bytes_executed": true,
+            "evidence_commit_available": true,
+            "observation_record": "capsched-models/validation/f0-c4-g6-fifth-oom-incomplete-observation-v1.json",
+            "observation_sha256": "ba2106aeaaee17189aee30f9047b6bd27a7886e3ae21b7733f154187a0861200"
           }
         ]
       },
@@ -377,8 +387,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_packed_history_retry_eligible_g7_blocked",
-      "next_artifact": "Run a fresh authority-disjoint G6 capture from the clean-installed packed exact history successor, then reduce only a complete committed capture in G7"
+      "status": "open_candidate4_g1_g5_closed_g6_external_memory_reinstall_required_g7_blocked",
+      "next_artifact": "Clean-install the disk-backed exact enumerator and per-component ext4 boundary, run the complete short suite, then start a fresh authority-disjoint G6 capture"
     },
     {
       "order": 5,
@@ -477,14 +487,14 @@
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "completed_clean_reviewed_install_for_packed_history_repaired_inputs",
-      "text": "G1-G5 remain locally closed; clean source commit 14f6deecca06ce2f23b5faeb335100af952100ea is installed under manifest f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029 and the complete short post-install suite passes."
+      "status": "external_memory_repair_clean_install_pending",
+      "text": "G1-G5 remain locally closed, but the installed TCB predates the disk-backed exact store, bounded per-component loop ext4 mount, and same/prior-boot cleanup. A clean reviewed install and complete short post-install suite are required."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "g6_packed_history_retry_eligible",
-      "text": "The fourth OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible. The clean-installed packed exact history successor reduces matched child/parent prefix RSS by 53.0919%/56.7672% and is eligible for a fresh G6 retry; G7 remains blocked until a complete committed result exists."
+      "status": "blocked_until_external_memory_repair_clean_install",
+      "text": "The fifth OOM attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible. RAM/spill exact-prefix equivalence passes, but a fresh G6 run is blocked until the external-memory successor is clean-installed and its complete short suite passes; G7 remains blocked until a complete committed result exists."
     },
     {
       "order": 8,
@@ -553,15 +563,17 @@
     "f0_c4_frontier_repair_analysis": "capsched-models/analysis/0230-dynamic-residency-f0-c4-g6-persistent-exact-frontier.md",
     "f0_c4_state_store_repair_analysis": "capsched-models/analysis/0231-dynamic-residency-f0-c4-g6-compact-exact-state-store-and-owner-failure-snapshot.md",
     "f0_c4_packed_history_repair_analysis": "capsched-models/analysis/0232-dynamic-residency-f0-c4-g6-packed-exact-history-arena.md",
-    "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1.json",
+    "f0_c4_external_memory_repair_analysis": "capsched-models/analysis/0233-dynamic-residency-f0-c4-g6-disk-backed-exact-enumerator.md",
+    "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-external-memory-repair-v1.json",
     "f0_c4_g6_incomplete_validation": "capsched-models/validation/0316-dynamic-residency-f0-c4-g6-incomplete-disposition.md",
-    "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-fourth-oom-incomplete-observation-v1.json",
-    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-packed-history-retry-readiness-v1.json",
+    "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-fifth-oom-incomplete-observation-v1.json",
+    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-external-memory-retry-readiness-v1.json",
     "f0_c4_effect_repair_validation": "capsched-models/validation/0317-dynamic-residency-f0-c4-g6-counterexample-repair.md",
     "f0_c4_resource_repair_validation": "capsched-models/validation/0318-dynamic-residency-f0-c4-g6-resource-repair.md",
     "f0_c4_frontier_repair_validation": "capsched-models/validation/0319-dynamic-residency-f0-c4-g6-persistent-exact-frontier.md",
     "f0_c4_state_store_repair_validation": "capsched-models/validation/0320-dynamic-residency-f0-c4-g6-compact-state-store-and-owner-failure-snapshot.md",
     "f0_c4_packed_history_repair_validation": "capsched-models/validation/0321-dynamic-residency-f0-c4-g6-packed-exact-history-arena.md",
+    "f0_c4_external_memory_repair_validation": "capsched-models/validation/0322-dynamic-residency-f0-c4-g6-disk-backed-exact-enumerator.md",
     "f0_c4_claim_registry": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
     "f0_c4_child_model": "capsched-models/validation/f0_supervisor_lts_v3.py",
     "f0_c4_parent_model": "capsched-models/validation/f0_supervisor_orchestrator_v3.py",

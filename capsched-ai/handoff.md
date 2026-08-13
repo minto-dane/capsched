@@ -27,8 +27,8 @@ latest durable G6 disposition by `check-current-state.sh`.
 ```json
 {
   "schema_version": 1,
-  "updated": "2026-08-12",
-  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
+  "updated": "2026-08-13",
+  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -54,16 +54,16 @@ latest durable G6 disposition by `check-current-state.sh`.
     "EVIDENCE-001": "contract_defined"
   },
   "candidate4": {
-    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-packed-history-repair-v1",
+    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-external-memory-repair-v1",
     "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
-    "full_validator_status": "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+    "full_validator_status": "NOT_RUN_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
     "hostile_case_counts": {
       "child": 284,
       "parent": 739,
       "runner": 44,
       "total": 1067
     },
-    "capture_contract_sha256": "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d",
+    "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
     "closed_gates": [
       "C4CAP-G1-CONTRACT",
       "C4CAP-G2-HOSTILE",
@@ -76,24 +76,24 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "PASSED_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+      "status": "REINSTALL_REQUIRED_AFTER_EXTERNAL_MEMORY_REPAIR",
       "installed_source_commit": "14f6deecca06ce2f23b5faeb335100af952100ea",
       "installed_manifest_sha256": "f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029",
-      "current_inputs_installed": true,
-      "readiness_record": "capsched-models/validation/f0-c4-g6-packed-history-retry-readiness-v1.json",
-      "readiness_sha256": "d9066f01b06f541a95498fdc84c99a536bcd2666824169a010ab6a7dfb9a99a4"
+      "current_inputs_installed": false,
+      "readiness_record": "capsched-models/validation/f0-c4-g6-external-memory-retry-readiness-v1.json",
+      "readiness_sha256": "53d2f8f6d93b670f80a4b7900dfea251b9fc1a66376421f120ec7045f10f6a16"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": true,
+      "retry_eligible": false,
       "complete_capture_available": false,
       "latest_completed_attempt": {
-        "run_id": "candidate4-full-20260812T184826Z",
+        "run_id": "candidate4-full-20260812T231441Z",
         "status": "RAW_CAPTURE_INCOMPLETE",
         "candidate_bytes_executed": true,
         "evidence_commit_available": true,
-        "observation_record": "capsched-models/validation/f0-c4-g6-fourth-oom-incomplete-observation-v1.json",
-        "observation_sha256": "9956feff9988d7cf1de4fb8bdfe1f92b770c6556e42f8aa2490feaee52a252b5"
+        "observation_record": "capsched-models/validation/f0-c4-g6-fifth-oom-incomplete-observation-v1.json",
+        "observation_sha256": "ba2106aeaaee17189aee30f9047b6bd27a7886e3ae21b7733f154187a0861200"
       }
     },
     "g7": {
@@ -216,6 +216,23 @@ storage, passed committed-state validation, and was installed under manifest
 `f434c7d...`; the complete short post-install suite passes and G6 retry is
 eligible.
 
+Analysis 0233 and Validation 0322 record the seventh attempt and its exact
+external-memory successor. Run `candidate4-full-20260812T231441Z` retained the
+packed representation but still reached the isolated 7.5-GiB RAM boundary
+after 17,709,614,432,074 monotonic nanoseconds. The supervisor survived,
+drained the component, and durably committed `RAW_CAPTURE_INCOMPLETE`; no bytes
+are positive-eligible. The successor places the fixed-width state columns,
+collision-checked index, BFS frontier, CSR graphs, and reverse graph in
+immediately unlinked mmap files. Each component receives a private 128-GiB
+sparse loop-backed ext4 filesystem with direct I/O and a sealed 10-GiB host
+free-space reserve; same-boot and boot-reconciliation cleanup remove the mount,
+loop, and backing image. RAM and spill modes produce the same 2,000 expanded
+states, 20,510 retained states, 24,920 edges, state/frontier/depth/target
+sequences, and full collision equality. The 6,000-state profile is bounded and
+non-authoritative: it does not grant a capacity, performance, or cost claim.
+The installed TCB still predates this repair, so another G6 launch remains
+blocked until a clean reviewed install and complete short suite pass.
+
 Candidate-4 itself binds
 strict nested schemas, exact action registries, producer/checker agreement,
 reachable-action commutation membership, exact witness-count equality and
@@ -230,13 +247,15 @@ completed two static components and then preserved a fail-closed
 `RAW_CAPTURE_INCOMPLETE` disposition when `child-bundle-producer` rejected
 `OBS-032-DESCENDANTS-EXIT:hidden_work`. Analysis 0228 and Validation 0317 retain
 the exact counterexample and add its post-exit descendant/async order to the
-fast child suite. The packed-history current input passes 284 child cases;
+fast child suite. The external-memory current input passes 284 child cases;
 its full campaign has not run, so all three full-only local claims remain
 `NOT_RUN`, seven refinement claims remain `OPEN_REFINEMENT`, and F0, R11,
 K0/G0, protection, and model completion remain false.
 
-The structured projection reports `retry_eligible: true`. Start and monitor the
-exact detached packed-history retry with:
+The structured projection currently reports `retry_eligible: false`. Do not
+start another full capture until the external-memory successor is clean-installed
+and the post-install suite changes that field to true. Once eligible, start and
+monitor the exact detached retry with:
 
 ```sh
 ./capsched-models/validation/f0-c4-capture/start-candidate4-full-capture.sh

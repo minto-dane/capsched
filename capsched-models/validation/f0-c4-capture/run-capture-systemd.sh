@@ -19,6 +19,7 @@ run_id=$1
 source_dir=$2
 readonly state_root=/var/lib/domainlease-f0-c4
 readonly evidence_root=$state_root/evidence
+readonly work_root=$state_root/work
 readonly candidate_uid=200010
 readonly progress_root=/run/domainlease-f0-c4/progress
 readonly progress_file=$progress_root/$run_id
@@ -56,7 +57,7 @@ done
 	printf 'error: immutable toolchain root is not mounted: %s\n' "$toolchain_root" >&2
 	exit 1
 }
-for directory in "$state_root" "$evidence_root" "$state_root/intents" \
+for directory in "$state_root" "$evidence_root" "$state_root/intents" "$work_root" \
 	/run/domainlease-f0-c4 "$progress_root"; do
 	[[ ! -L $directory ]] || {
 		printf 'error: fixed state path is a symlink: %s\n' "$directory" >&2
@@ -117,7 +118,7 @@ exec systemd-run \
 	--property RestrictAddressFamilies='AF_UNIX AF_NETLINK AF_ALG' \
 	--property SystemCallArchitectures=native \
 	--property CapabilityBoundingSet='CAP_SYS_ADMIN CAP_SYS_CHROOT CAP_SETUID CAP_SETGID CAP_SETPCAP CAP_MKNOD CAP_DAC_READ_SEARCH CAP_DAC_OVERRIDE CAP_FOWNER CAP_CHOWN CAP_KILL' \
-	--property ReadWritePaths="$evidence_root $state_root/intents /run/domainlease-f0-c4" \
+	--property ReadWritePaths="$evidence_root $state_root/intents $work_root /run/domainlease-f0-c4" \
 	--property "ExecStartPre=/usr/bin/python3 -I -S -B $guardian register --run-id $run_id --evidence-root $evidence_root" \
 	--property "ExecStopPost=/usr/bin/python3 -I -S -B $guardian finalize --run-id $run_id" \
 	-- "${command[@]}"

@@ -50,11 +50,14 @@ run_case()
 	printf '1' > "$component_cgroup/memory.oom.group"
 	mkdir -m 0700 -- "$case_root"
 	mkdir -m 0755 -- "$case_root/sandbox"
+	mkdir -m 0700 -- "$case_root/scratch"
+	chown 200002:200002 "$case_root/scratch"
 	set +e
 	meta=$(
 		"$launcher" \
 			--cgroup "$component_cgroup" \
 			--sandbox-root "$case_root/sandbox" \
+			--scratch "$case_root/scratch" \
 			--input "$script_dir/fixtures" \
 			--toolchain-root /usr \
 			--stdout-file "$case_root/stdout.raw" \

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-external-memory-retry-readiness-v1",
+  "date": "2026-08-13",
+  "status": "REINSTALL_REQUIRED",
+  "scope": "candidate4_disk_backed_exact_store_capture",
+  "current_inputs": {
+    "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-external-memory-repair-v1",
+    "artifact_sha256": "d16c7b27cb756514c78f4597bfc85df77caf0c1b610033ab69cecdfd01724897",
+    "hostile_case_counts": {
+      "child": 284,
+      "parent": 739,
+      "runner": 44,
+      "total": 1067
+    },
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "model_memory_policy_cases": 31,
+    "model_storage_equivalence_cases": 1,
+    "reducer_current_input_binding_cases": 3
+  },
+  "clean_install": {
+    "source_commit": "14f6deecca06ce2f23b5faeb335100af952100ea",
+    "source_worktree_clean": true,
+    "committed_state_check": "PASS",
+    "installed_manifest_sha256": "f434c7d704e4d1c5ea6aac5024121436b70af8526b3280a7e596eb1bcebb4029",
+    "capture_launcher_sha256": "6c85d7822db8012c870e0c6f1940f509bb38b183dd4257ddecf1c96dc1a21f80",
+    "current_inputs_installed": false,
+    "reason": "The installed TCB predates the disk-backed exact store, per-component ext4 boundary, and guardian cleanup implementation. A clean reviewed installation and complete short post-install suite are mandatory before another G6 launch."
+  },
+  "toolchain": {
+    "format": "erofs",
+    "image_sha256": "b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce",
+    "manifest_sha256": "0db6f68c5e19fba7acd2cab5c536aa8bd17d0d4d5707ca6bbbeb9362527bcd51",
+    "mounted_read_only": true,
+    "reuse_regression_cases": 1
+  },
+  "mechanism_recheck": {
+    "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+    "capture_contract_hostile_cases": 155,
+    "capture_contract_derived_cases": 14,
+    "capture_resource_policy_cases": 17,
+    "external_memory_recovery_cases": 1,
+    "reducer_current_input_binding_cases": 3,
+    "reducer_boundary_status": "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE",
+    "reducer_boundary_cases": 3
+  },
+  "source_transfer": {
+    "policy": "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging",
+    "macos_home_mount": "none",
+    "tcb_install_transfer_policy": "sha256_verified_clean_reviewed_git_bundle_to_vm_native_root_owned_repository",
+    "tcb_install_git_bundle_sha256": "3249567c86ab8e7bffc0cb74b1f3c29b9b58ca29df3b922a36df0f43752241cc",
+    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/14f6deecca06ce2f23b5faeb335100af952100ea",
+    "vm_source_root": "/var/lib/domainlease-f0-c4/sources",
+    "raw_evidence_root": "/var/lib/domainlease-f0-c4/evidence",
+    "separate_from_raw_evidence": true
+  },
+  "disposition": {
+    "g6_gate_status": "OPEN",
+    "g6_retry_eligible": false,
+    "g6_complete_capture_available": false,
+    "g7_gate_status": "BLOCKED",
+    "g7_blocked_reason": "NO_COMPLETE_G6_CAPTURE"
+  },
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "protection_claim": false,
+    "performance_or_cost_claim": false,
+    "deployment_claim": false
+  }
+}

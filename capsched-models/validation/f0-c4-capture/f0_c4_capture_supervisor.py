@@ -26,11 +26,16 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-CONTRACT_SHA256 = "0a695417dcb6161d6f049431dea8755821e0c4600bf990f4822b274a1f924c6d"
+CONTRACT_SHA256 = "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe"
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 CANDIDATE_UID = 200010
 CANDIDATE_GID = 200010
 FIXED_EVIDENCE_ROOT = Path("/var/lib/domainlease-f0-c4/evidence")
+FIXED_WORK_ROOT = Path("/var/lib/domainlease-f0-c4/work")
+MKE2FS = Path("/sbin/mke2fs")
+LOSETUP = Path("/usr/sbin/losetup")
+MOUNT = Path("/usr/bin/mount")
+UMOUNT = Path("/usr/bin/umount")
 REQUIRED_INPUTS = (
     "f0-supervisor-c4-claim-registry-v1.json",
     "f0_supervisor_lts_v3.py",
@@ -49,6 +54,7 @@ COMPONENTS = (
     ("orchestrator", "FULL_PARENT_ORCHESTRATOR", 43200),
 )
 ENVIRONMENT = {
+    "F0_C4_EXACT_STORE_DIR": "/WORK",
     "PATH": "/usr/bin:/bin",
     "PYTHONPATH": "INPUT",
     "PYTHONDONTWRITEBYTECODE": "1",
@@ -120,6 +126,14 @@ RESOURCE_POLICY = {
     "required_vm_memory_min_bytes": 10200547328,
     "memory_swap_max_bytes_per_component": 0,
     "candidate_component_oom_isolated_from_supervisor": True,
+    "external_memory_directory": "/WORK",
+    "external_memory_host_root": "/var/lib/domainlease-f0-c4/work",
+    "external_memory_filesystem": "vm_native_ext4",
+    "external_memory_backing_mode": "per_component_sparse_loop_ext4",
+    "external_memory_max_bytes_per_component": 137438953472,
+    "external_memory_free_space_reserve_bytes": 10737418240,
+    "external_memory_direct_io_required": True,
+    "external_memory_unlinked_temporary_only": True,
     "stdout_max_bytes_per_component": 268435456,
     "stderr_max_bytes_per_component": 16777216,
     "preexec_observation_max_bytes_per_component": 1048576,
@@ -258,6 +272,325 @@ def require_fixed_native_evidence_root(path: Path) -> dict[str, Any]:
     identity["free_bytes_before_capture"] = free_bytes
     identity["required_free_bytes"] = required_free
     return identity
+
+
+def require_fixed_native_work_root(path: Path) -> dict[str, Any]:
+    if path != FIXED_WORK_ROOT:
+        raise CaptureError(f"external-memory root must be fixed at {FIXED_WORK_ROOT}")
+    current = Path("/")
+    for part in path.parts[1:]:
+        current /= part
+        try:
+            metadata = current.stat(follow_symlinks=False)
+        except FileNotFoundError:
+            if current == path:
+                current.mkdir(mode=0o700)
+                os.chown(current, 0, 0)
+                metadata = current.stat(follow_symlinks=False)
+            else:
+                raise CaptureError(
+                    f"fixed external-memory ancestry is absent: {current}"
+                )
+        if (
+            not stat.S_ISDIR(metadata.st_mode)
+            or metadata.st_uid != 0
+            or metadata.st_gid != 0
+        ):
+            raise CaptureError(
+                f"fixed external-memory ancestry is not a root directory: {current}"
+            )
+        if stat.S_IMODE(metadata.st_mode) & 0o022:
+            raise CaptureError(
+                f"fixed external-memory ancestry is group/world writable: {current}"
+            )
+    if stat.S_IMODE(path.stat(follow_symlinks=False).st_mode) != 0o700:
+        os.chmod(path, 0o700)
+    identity = mount_identity(path)
+    if identity["filesystem_type"] != "ext4":
+        raise CaptureError(
+            "external-memory host root is not on the VM-native ext4 filesystem"
+        )
+    stats = os.statvfs(path)
+    free_bytes = stats.f_bavail * stats.f_frsize
+    required_free = (
+        RESOURCE_POLICY["external_memory_max_bytes_per_component"]
+        + RESOURCE_POLICY["external_memory_free_space_reserve_bytes"]
+    )
+    if free_bytes < required_free:
+        raise CaptureError(
+            "external-memory free space is below one component bound plus reserve: "
+            f"{free_bytes} < {required_free}"
+        )
+    identity["free_bytes_before_capture"] = free_bytes
+    identity["required_free_bytes"] = required_free
+    return identity
+
+
+def run_trusted_command(command: list[str], label: str) -> bytes:
+    completed = subprocess.run(
+        command,
+        check=False,
+        capture_output=True,
+        stdin=subprocess.DEVNULL,
+        env={"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C"},
+    )
+    if completed.returncode != 0:
+        stderr = completed.stderr[:4096].decode("utf-8", "backslashreplace")
+        raise CaptureError(
+            f"trusted external-memory command failed: {label}: "
+            f"rc={completed.returncode} stderr={stderr!r}"
+        )
+    return completed.stdout
+
+
+def exact_mount_at(path: Path) -> bool:
+    target = str(path)
+    for line in Path("/proc/self/mountinfo").read_text(encoding="utf-8").splitlines():
+        left, separator, _right = line.partition(" - ")
+        fields = left.split()
+        if separator and len(fields) >= 6 and fields[4] == target:
+            return True
+    return False
+
+
+def prepare_external_memory(
+    run_work_path: Path,
+    component: str,
+    uid: int,
+    gid: int,
+) -> dict[str, Any]:
+    for tool, label in (
+        (MKE2FS, "mke2fs"),
+        (LOSETUP, "losetup"),
+        (MOUNT, "mount"),
+        (UMOUNT, "umount"),
+    ):
+        require_root_owned_regular(tool, label, executable=True)
+    host_identity = mount_identity(FIXED_WORK_ROOT)
+    host_stats = os.statvfs(FIXED_WORK_ROOT)
+    host_free = host_stats.f_bavail * host_stats.f_frsize
+    host_required = (
+        RESOURCE_POLICY["external_memory_max_bytes_per_component"]
+        + RESOURCE_POLICY["external_memory_free_space_reserve_bytes"]
+    )
+    if host_identity["filesystem_type"] != "ext4" or host_free < host_required:
+        raise CaptureError("external-memory host capacity changed before component setup")
+    component_root = run_work_path / component
+    component_root.mkdir(mode=0o700)
+    image = component_root / "external-memory.ext4"
+    mountpoint = component_root / "mount"
+    mountpoint.mkdir(mode=0o700)
+    image_fd = os.open(
+        image,
+        os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
+        0o600,
+    )
+    try:
+        os.ftruncate(
+            image_fd,
+            RESOURCE_POLICY["external_memory_max_bytes_per_component"],
+        )
+    finally:
+        os.close(image_fd)
+
+    storage: dict[str, Any] = {
+        "component_root": component_root,
+        "image": image,
+        "mountpoint": mountpoint,
+        "loop_device": None,
+    }
+    try:
+        run_trusted_command(
+            [
+                str(MKE2FS),
+                "-q",
+                "-F",
+                "-t",
+                "ext4",
+                "-b",
+                "4096",
+                "-m",
+                "0",
+                "-N",
+                "8192",
+                "-O",
+                "^has_journal",
+                "-E",
+                "lazy_itable_init=1,nodiscard",
+                str(image),
+            ],
+            f"mke2fs {component}",
+        )
+        loop_raw = run_trusted_command(
+            [
+                str(LOSETUP),
+                "--find",
+                "--show",
+                "--direct-io=on",
+                str(image),
+            ],
+            f"losetup {component}",
+        )
+        loop_device = loop_raw.decode("ascii").strip()
+        if re.fullmatch(r"/dev/loop[0-9]+", loop_device) is None:
+            raise CaptureError(f"losetup returned an unsafe device: {loop_device!r}")
+        storage["loop_device"] = loop_device
+        write_new_file(
+            component_root / "loop-device",
+            (loop_device + "\n").encode("ascii"),
+            mode=0o400,
+        )
+        loop_name = Path(loop_device).name
+        loop_metadata = Path("/sys/class/block") / loop_name / "loop"
+        if (loop_metadata / "dio").read_text(encoding="ascii").strip() != "1":
+            raise CaptureError("loop device did not enable direct I/O")
+        loop_size = (
+            int(
+                (Path("/sys/class/block") / loop_name / "size").read_text(
+                    encoding="ascii"
+                )
+            )
+            * 512
+        )
+        if loop_size != RESOURCE_POLICY["external_memory_max_bytes_per_component"]:
+            raise CaptureError("loop device size differs from the sealed disk bound")
+        run_trusted_command(
+            [
+                str(MOUNT),
+                "-t",
+                "ext4",
+                "-o",
+                "rw,nosuid,nodev,noexec,noatime,nodiratime",
+                loop_device,
+                str(mountpoint),
+            ],
+            f"mount {component}",
+        )
+        identity = mount_identity(mountpoint)
+        options = set(identity["mount_options"].split(","))
+        if (
+            identity["filesystem_type"] != "ext4"
+            or identity["source"] != loop_device
+            or not {"rw", "nosuid", "nodev", "noexec"} <= options
+        ):
+            raise CaptureError("external-memory loop mount identity differs")
+        lost_found = mountpoint / "lost+found"
+        lost_metadata = lost_found.stat(follow_symlinks=False)
+        if (
+            not stat.S_ISDIR(lost_metadata.st_mode)
+            or lost_metadata.st_uid != 0
+            or lost_metadata.st_gid != 0
+        ):
+            raise CaptureError("new ext4 lost+found identity differs")
+        lost_found.rmdir()
+        os.chown(mountpoint, uid, gid)
+        os.chmod(mountpoint, 0o700)
+        storage["receipt"] = {
+            "host_root": str(FIXED_WORK_ROOT),
+            "host_mount_identity": host_identity,
+            "host_free_bytes_before_component": host_free,
+            "host_required_free_bytes": host_required,
+            "backing_mode": "per_component_sparse_loop_ext4",
+            "logical_limit_bytes": loop_size,
+            "direct_io": True,
+            "filesystem_type": identity["filesystem_type"],
+            "mount_options": sorted(options),
+            "candidate_path": "/WORK",
+            "tool_sha256": {
+                "mke2fs": sha256_file(MKE2FS),
+                "losetup": sha256_file(LOSETUP),
+                "mount": sha256_file(MOUNT),
+                "umount": sha256_file(UMOUNT),
+            },
+        }
+        return storage
+    except BaseException:
+        cleanup_external_memory(storage, remove_component_root=True)
+        raise
+
+
+def external_memory_after_exit(storage: dict[str, Any]) -> dict[str, Any]:
+    mountpoint = storage["mountpoint"]
+    entries = sum(1 for _entry in os.scandir(mountpoint))
+    stats = os.statvfs(mountpoint)
+    image_metadata = storage["image"].stat(follow_symlinks=False)
+    return {
+        "visible_entries_after_exit": entries,
+        "unlinked_temporary_only_observed": entries == 0,
+        "filesystem_free_bytes_after_exit": stats.f_bavail * stats.f_frsize,
+        "backing_allocated_bytes_after_exit": image_metadata.st_blocks * 512,
+    }
+
+
+def cleanup_external_memory(
+    storage: dict[str, Any],
+    *,
+    remove_component_root: bool,
+) -> dict[str, bool]:
+    mountpoint = storage["mountpoint"]
+    loop_device = storage.get("loop_device")
+    unmounted = not exact_mount_at(mountpoint)
+    if not unmounted:
+        run_trusted_command([str(UMOUNT), "--", str(mountpoint)], "umount external memory")
+        unmounted = not exact_mount_at(mountpoint)
+    if not unmounted:
+        raise CaptureError("external-memory mount remained attached after umount")
+    loop_detached = loop_device is None
+    if loop_device is not None:
+        loop_name = Path(loop_device).name
+        loop_metadata = Path("/sys/class/block") / loop_name / "loop"
+        if loop_metadata.exists():
+            backing_file = (loop_metadata / "backing_file").read_text(
+                encoding="utf-8"
+            ).strip()
+            if backing_file != str(storage["image"]):
+                raise CaptureError(
+                    "external-memory loop was rebound; refusing unsafe detach"
+                )
+            run_trusted_command([str(LOSETUP), "--detach", loop_device], "detach loop")
+        loop_detached = not loop_metadata.exists()
+    if not loop_detached:
+        raise CaptureError("external-memory loop remained attached")
+    backing_removed = False
+    if remove_component_root:
+        shutil.rmtree(storage["component_root"])
+        backing_removed = not storage["component_root"].exists()
+    return {
+        "unmounted": unmounted,
+        "loop_detached": loop_detached,
+        "backing_removed": backing_removed,
+    }
+
+
+def cleanup_abandoned_work_path(run_work_path: Path) -> None:
+    if not run_work_path.exists():
+        return
+    ensure_secure_directory(run_work_path)
+    expected = {component for component, _role, _deadline in COMPONENTS}
+    for component_root in sorted(run_work_path.iterdir(), key=lambda path: path.name):
+        if component_root.name not in expected:
+            raise CaptureError(
+                f"unexpected object in external-memory run root: {component_root.name}"
+            )
+        ensure_secure_directory(component_root)
+        loop_record = component_root / "loop-device"
+        loop_device: str | None = None
+        if loop_record.exists():
+            require_root_owned_regular(loop_record, "external-memory loop record")
+            raw = loop_record.read_bytes()
+            if len(raw) > 64:
+                raise CaptureError("external-memory loop record exceeds size policy")
+            loop_device = raw.decode("ascii").strip()
+            if re.fullmatch(r"/dev/loop[0-9]+", loop_device) is None:
+                raise CaptureError("external-memory loop record is malformed")
+        storage = {
+            "component_root": component_root,
+            "image": component_root / "external-memory.ext4",
+            "mountpoint": component_root / "mount",
+            "loop_device": loop_device,
+        }
+        cleanup_external_memory(storage, remove_component_root=True)
+    run_work_path.rmdir()
 
 
 def memory_capacity_receipt() -> dict[str, Any]:
@@ -1053,18 +1386,32 @@ def validate_preexec_observation(
     if cgroup_rows != ["0::/"]:
         raise CaptureError(f"pre-exec cgroup namespace identity differs: {cgroup_rows}")
 
-    mount_rows: dict[str, set[str]] = {}
+    mount_rows: dict[str, dict[str, Any]] = {}
     for line in sections["mountinfo"].splitlines():
         if not line:
             continue
-        left, separator, _right = line.partition(" - ")
+        left, separator, right = line.partition(" - ")
         fields = left.split()
-        if not separator or len(fields) < 6:
+        right_fields = right.split()
+        if not separator or len(fields) < 6 or len(right_fields) < 3:
             raise CaptureError("pre-exec mountinfo row is malformed")
-        mount_rows[fields[4]] = set(fields[5].split(","))
+        mount_rows[fields[4]] = {
+            "options": set(fields[5].split(",")),
+            "filesystem_type": right_fields[0],
+            "source": right_fields[1],
+        }
     for mount_point in ("/usr", "/INPUT"):
-        if "ro" not in mount_rows.get(mount_point, set()):
+        if "ro" not in mount_rows.get(mount_point, {}).get("options", set()):
             raise CaptureError(f"pre-exec read-only mount is absent: {mount_point}")
+    work_mount = mount_rows.get("/WORK", {})
+    work_options = work_mount.get("options", set())
+    if (
+        work_mount.get("filesystem_type") != "ext4"
+        or re.fullmatch(r"/dev/loop[0-9]+", work_mount.get("source", "")) is None
+        or "rw" not in work_options
+        or not {"nosuid", "nodev", "noexec"} <= work_options
+    ):
+        raise CaptureError("pre-exec private external-memory mount is absent")
 
     interfaces = sections["interface_inventory"].splitlines()
     if len(interfaces) != 1 or re.fullmatch(
@@ -1098,6 +1445,7 @@ def invoke_component(
     toolchain_root: Path,
     raw_path: Path,
     runtime_path: Path,
+    run_work_path: Path,
     run_cgroup: Path,
     plan_sha256: str,
     input_root: str,
@@ -1117,6 +1465,8 @@ def invoke_component(
     component_runtime.mkdir(mode=0o700)
     sandbox = component_runtime / "sandbox"
     sandbox.mkdir(mode=0o755)
+    storage = prepare_external_memory(run_work_path, component, uid, gid)
+    scratch = storage["mountpoint"]
     stdout_path = raw_path / f"{component}.stdout.raw"
     stderr_path = raw_path / f"{component}.stderr.raw"
     preexec_path = raw_path / f"{component}.preexec.raw"
@@ -1134,6 +1484,8 @@ def invoke_component(
         str(component_cgroup),
         "--sandbox-root",
         str(sandbox),
+        "--scratch",
+        str(scratch),
         "--input",
         str(input_path),
         "--toolchain-root",
@@ -1185,6 +1537,12 @@ def invoke_component(
     )
     protocol_framing_valid, payload_sha256 = frame_result_payload(stdout_path)
     counters = resource_counters(component_cgroup_fd)
+    external_memory = {
+        **storage["receipt"],
+        **external_memory_after_exit(storage),
+    }
+    cleanup = cleanup_external_memory(storage, remove_component_root=True)
+    external_memory["cleanup"] = cleanup
     complete = bool(
         completed.returncode == 0
         and meta["termination"] == "EXITED_ZERO"
@@ -1195,6 +1553,8 @@ def invoke_component(
         and meta["capture_error"] is False
         and meta["preexec_limit_exceeded"] is False
         and protocol_framing_valid
+        and external_memory["unlinked_temporary_only_observed"] is True
+        and all(cleanup.values())
     )
     receipt = {
         "schema_version": 1,
@@ -1241,6 +1601,7 @@ def invoke_component(
         "result_protocol_framing_valid": protocol_framing_valid,
         "result_protocol_semantics_validated": False,
         "resource_counters": counters,
+        "external_memory_boundary": external_memory,
         "cgroup_kill_used": meta["cgroup_kill_used"],
         "populated_zero_observed": meta["populated_zero_observed"],
         "toolchain_identity": {
@@ -1282,6 +1643,7 @@ def capture(args: argparse.Namespace) -> int:
     uid_lock = lock_candidate_identity(args.candidate_uid)
     evidence_storage = require_fixed_native_evidence_root(args.evidence_root)
     ensure_secure_directory(args.evidence_root)
+    require_fixed_native_work_root(FIXED_WORK_ROOT)
     memory_capacity = memory_capacity_receipt()
     if args.progress is not None:
         ensure_secure_directory(args.progress.parent, create=True)
@@ -1297,6 +1659,10 @@ def capture(args: argparse.Namespace) -> int:
     runtime_path.mkdir(parents=True, mode=0o700)
     os.chown(runtime_path, 0, 0)
     os.chmod(runtime_path, 0o700)
+    run_work_path = FIXED_WORK_ROOT / args.run_id
+    run_work_path.mkdir(mode=0o700)
+    os.chown(run_work_path, 0, 0)
+    os.chmod(run_work_path, 0o700)
 
     write_progress(args.progress, 2, "strict contract and root authority preconditions")
     input_digests, input_root = copy_exact_snapshot(args.source_dir, input_path)
@@ -1333,6 +1699,7 @@ def capture(args: argparse.Namespace) -> int:
             args.toolchain_root,
             raw_path,
             runtime_path,
+            run_work_path,
             run_cgroup,
             plan_sha256,
             input_root,
@@ -1352,6 +1719,8 @@ def capture(args: argparse.Namespace) -> int:
         if not component_complete:
             complete = False
             break
+
+    run_work_path.rmdir()
 
     capture_status = (
         "RAW_CAPTURE_COMPLETE"
@@ -1461,11 +1830,37 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_parser().parse_args()
+    result = 1
     try:
-        return capture(args)
+        result = capture(args)
     except (CaptureError, OSError, KeyError, ValueError) as exc:
         print(f"F0_C4_CAPTURE_SUPERVISOR_REJECT {exc}", file=sys.stderr)
-        return 1
+        result = 1
+    finally:
+        cleanup_errors: list[str] = []
+        if RUN_ID_RE.fullmatch(args.run_id):
+            try:
+                cleanup_abandoned_work_path(FIXED_WORK_ROOT / args.run_id)
+            except (CaptureError, OSError, UnicodeError, ValueError) as exc:
+                cleanup_errors.append(f"external memory: {exc}")
+            runtime_path = (
+                Path("/run/domainlease-f0-c4")
+                / f"capture-{args.run_id}-{os.getpid()}"
+            )
+            try:
+                shutil.rmtree(runtime_path, ignore_errors=False)
+            except FileNotFoundError:
+                pass
+            except OSError as exc:
+                cleanup_errors.append(f"runtime tree: {exc}")
+        if cleanup_errors:
+            print(
+                "F0_C4_CAPTURE_SUPERVISOR_CLEANUP_REJECT "
+                + "; ".join(cleanup_errors),
+                file=sys.stderr,
+            )
+            result = 1
+    return result
 
 
 if __name__ == "__main__":

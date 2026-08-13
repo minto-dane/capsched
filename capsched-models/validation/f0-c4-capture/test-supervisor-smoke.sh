@@ -20,6 +20,7 @@ launcher=$trusted_stage/f0-c4-capture-launcher
 contract=$trusted_stage/f0-c4-capture-contract-v1.json
 guardian=$trusted_stage/f0-c4-guardian-finalize.py
 intent_root=/var/lib/domainlease-f0-c4/intents
+work_root=/var/lib/domainlease-f0-c4/work
 
 cleanup()
 {
@@ -44,10 +45,10 @@ install -o root -g root -m 0755 "$script_dir/f0_c4_guardian_finalize.py" \
 	"$guardian"
 install -o root -g root -m 0755 "$source_launcher" "$launcher"
 install -o root -g root -m 0444 "$source_contract" "$contract"
-mkdir -p -m 0700 -- "$evidence_root" "$intent_root" /run/domainlease-f0-c4
-chown root:root "$evidence_root" "$intent_root" /run/domainlease-f0-c4
+mkdir -p -m 0700 -- "$evidence_root" "$intent_root" "$work_root" /run/domainlease-f0-c4
+chown root:root "$evidence_root" "$intent_root" "$work_root" /run/domainlease-f0-c4
 chown root:root "$(dirname "$evidence_root")"
-chmod 0700 "$evidence_root" "$intent_root" "$(dirname "$evidence_root")" \
+chmod 0700 "$evidence_root" "$intent_root" "$work_root" "$(dirname "$evidence_root")" \
 	/run/domainlease-f0-c4
 
 set +e
@@ -84,7 +85,7 @@ output=$(
 		--property RestrictAddressFamilies='AF_UNIX AF_NETLINK AF_ALG' \
 		--property SystemCallArchitectures=native \
 		--property CapabilityBoundingSet='CAP_SYS_ADMIN CAP_SYS_CHROOT CAP_SETUID CAP_SETGID CAP_SETPCAP CAP_MKNOD CAP_DAC_READ_SEARCH CAP_DAC_OVERRIDE CAP_FOWNER CAP_CHOWN CAP_KILL' \
-		--property ReadWritePaths="$evidence_root $intent_root /run/domainlease-f0-c4" \
+		--property ReadWritePaths="$evidence_root $intent_root $work_root /run/domainlease-f0-c4" \
 		--property "ExecStartPre=/usr/bin/python3 -I -S -B $guardian register --run-id $run_id --evidence-root $evidence_root" \
 		--property "ExecStopPost=/usr/bin/python3 -I -S -B $guardian finalize --run-id $run_id" \
 		-- /usr/bin/python3 -I -S -B "$supervisor" \
@@ -139,11 +140,36 @@ jq -e --arg run_id "$run_id" '
 	.external_attestation == false and
 	([.authorization[]] | all(. == false))
 ' "$final_path/capture-manifest.json" >/dev/null
+for component in static-registries tests child-bundle-producer \
+	child-bundle-checker orchestrator; do
+	jq -e '
+		.external_memory_boundary.host_root ==
+			"/var/lib/domainlease-f0-c4/work" and
+		.external_memory_boundary.host_mount_identity.filesystem_type == "ext4" and
+		.external_memory_boundary.backing_mode ==
+			"per_component_sparse_loop_ext4" and
+		.external_memory_boundary.logical_limit_bytes == 137438953472 and
+		.external_memory_boundary.direct_io == true and
+		.external_memory_boundary.filesystem_type == "ext4" and
+		.external_memory_boundary.candidate_path == "/WORK" and
+		.external_memory_boundary.visible_entries_after_exit == 0 and
+		.external_memory_boundary.unlinked_temporary_only_observed == true and
+		([.external_memory_boundary.cleanup[]] | all(. == true)) and
+		([.external_memory_boundary.tool_sha256[]] |
+			all(test("^[0-9a-f]{64}$")))
+	' "$final_path/raw/$component.receipt.json" >/dev/null
+done
 [[ $(stat -c '%a:%u:%g' "$final_path") == 555:0:0 ]]
 [[ $(stat -c '%a:%u:%g' "$final_path/raw") == 555:0:0 ]]
 [[ $(find "$final_path/raw" -type f | wc -l) -eq 20 ]]
 [[ $(find "$final_path/raw" -type f ! -perm 0444 | wc -l) -eq 0 ]]
 [[ $(stat -c '%a:%u:%g' "$final_path/RAW_COMMIT.json") == 444:0:0 ]]
 [[ ! -e $intent_root/$run_id.json ]]
+[[ -z $(find "$work_root" -mindepth 1 -print -quit) ]]
+if /usr/sbin/losetup --list --noheadings --output BACK-FILE |
+	grep -Fq '/external-memory.ext4'; then
+	printf 'error: external-memory loop leaked after capture\n' >&2
+	exit 1
+fi
 
 printf 'F0_C4_CAPTURE_SUPERVISOR_SMOKE_PASS components=5\n'

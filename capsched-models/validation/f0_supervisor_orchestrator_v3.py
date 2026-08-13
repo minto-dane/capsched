@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from array import array
-from collections import Counter, deque
+from collections import Counter
 from dataclasses import dataclass, replace
 from functools import lru_cache
 
@@ -6242,11 +6242,11 @@ def reachable_states() -> OrchestratorReachabilityGraph:
     start_index, start_is_new = representatives.intern(key)
     if start_index != 0 or not start_is_new:
         raise RuntimeError("initial parent exact state was not uniquely interned")
-    frontier_indices = array("I", [start_index])
+    frontier_indices = child._new_array("I", [start_index])
     frontier_cursor = 0
-    edge_offsets = array("I", [0])
-    target_indices = array("I")
-    action_indices = array("B")
+    edge_offsets = child._new_array("I", [0])
+    target_indices = child._new_array("I")
+    action_indices = child._new_array("B")
     while frontier_cursor < len(frontier_indices):
         source_index = frontier_indices[frontier_cursor]
         frontier_cursor += 1
@@ -6281,7 +6281,7 @@ def _coaccessible_state_count(
     terminal_indices: array,
 ) -> int:
     state_count = len(graph.states)
-    incoming_counts = array("I", [0]) * state_count
+    incoming_counts = child._new_zero_array("I", state_count)
     for target_index in graph.target_indices:
         if incoming_counts[target_index] == (1 << 32) - 1:
             raise OrchestratorReject(
@@ -6289,7 +6289,7 @@ def _coaccessible_state_count(
                 str(target_index),
             )
         incoming_counts[target_index] += 1
-    incoming_offsets = array("I", [0])
+    incoming_offsets = child._new_array("I", [0])
     running = 0
     for count in incoming_counts:
         running += count
@@ -6299,8 +6299,11 @@ def _coaccessible_state_count(
                 str(running),
             )
         incoming_offsets.append(running)
-    cursor = incoming_offsets[:-1]
-    incoming_sources = array("I", [0]) * graph.edge_count
+    cursor = child._new_array(
+        "I",
+        (incoming_offsets[index] for index in range(state_count)),
+    )
+    incoming_sources = child._new_zero_array("I", graph.edge_count)
     for source_index in range(state_count):
         begin = graph.edge_offsets[source_index]
         end = graph.edge_offsets[source_index + 1]
@@ -6310,15 +6313,17 @@ def _coaccessible_state_count(
             incoming_sources[position] = source_index
             cursor[target_index] += 1
 
-    coaccessible = bytearray(state_count)
-    queue: deque[int] = deque()
+    coaccessible = child._new_zero_array("B", state_count)
+    queue = child._new_array("I")
     for terminal_index in terminal_indices:
         if not coaccessible[terminal_index]:
             coaccessible[terminal_index] = 1
             queue.append(terminal_index)
     count = len(queue)
-    while queue:
-        target_index = queue.popleft()
+    queue_cursor = 0
+    while queue_cursor < len(queue):
+        target_index = queue[queue_cursor]
+        queue_cursor += 1
         begin = incoming_offsets[target_index]
         end = incoming_offsets[target_index + 1]
         for position in range(begin, end):
@@ -6333,7 +6338,7 @@ def _coaccessible_state_count(
 def explore() -> dict[str, object]:
     graph = reachable_states()
     states = graph.states
-    terminal_indices = array("I")
+    terminal_indices = child._new_array("I")
     terminal_counts: Counter[str] = Counter()
     actions: set[int] = set()
     deadlocks = 0

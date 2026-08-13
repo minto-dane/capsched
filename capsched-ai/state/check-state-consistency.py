@@ -204,7 +204,9 @@ def validate_semantics(
     short = capture["short_regression"]
     for key in (
         "model_memory_policy_cases",
+        "model_storage_equivalence_cases",
         "capture_resource_policy_cases",
+        "external_memory_recovery_cases",
         "reducer_current_input_binding_cases",
     ):
         require(
@@ -244,6 +246,10 @@ def validate_semantics(
         observation.get("artifact_id")
         == "f0-c4-g6-fourth-oom-incomplete-observation-v1"
     )
+    external_memory_repair_observation = (
+        observation.get("artifact_id")
+        == "f0-c4-g6-fifth-oom-incomplete-observation-v1"
+    )
     require(
         latest["status"] in {"RAW_CAPTURE_INCOMPLETE", "GUARDIAN_INCOMPLETE_PUBLISHED"},
         "latest G6 result drift",
@@ -255,6 +261,7 @@ def validate_semantics(
         frontier_repair_observation
         or state_store_repair_observation
         or packed_history_repair_observation
+        or external_memory_repair_observation
     ):
         durable = observation["durable_evidence"]
         conclusion = observation["conclusion"]
@@ -313,6 +320,131 @@ def validate_semantics(
             ]
             is True,
             "capture contract does not isolate component OOM",
+        )
+    elif external_memory_repair_observation:
+        require(
+            observation["failed_component"]["component_id"]
+            == "child-bundle-producer"
+            and observation["failed_component"]["memory_peak_bytes"]
+            == contract["resource_policy"]["memory_max_bytes_per_component"],
+            "external-memory failure observation drift",
+        )
+        require(
+            observation["systemd_disposition"][
+                "trusted_supervisor_survived_component_oom"
+            ]
+            is True
+            and observation["systemd_disposition"][
+                "incomplete_lifecycle_receipt_committed"
+            ]
+            is True
+            and observation["systemd_disposition"][
+                "guardian_preserved_final_commit"
+            ]
+            is True,
+            "fifth OOM did not preserve trusted fail-closed finalization",
+        )
+        require(
+            current_input["failed_capture_observation"]["run_id"] == latest_id,
+            "external-memory repair does not bind the failed run",
+        )
+        repair = current_input["storage_repair"]
+        require(
+            repair["child_transition_relation_changed"] is False
+            and repair["parent_transition_relation_changed"] is False
+            and repair["reachable_state_sets_intentionally_changed"] is False
+            and repair["exact_state_identity_changed"] is False
+            and repair["ordered_evidence_history_quotiented"] is False
+            and repair["python_transition_semantics_retained"] is True
+            and repair["fixed_width_state_columns_disk_backed"] is True
+            and repair["exact_state_index_disk_backed"] is True
+            and repair["frontier_and_csr_disk_backed"] is True
+            and repair["coaccessibility_reverse_graph_disk_backed"] is True
+            and repair["spill_files_unlinked_immediately"] is True
+            and repair["spill_files_reopenable_by_path"] is False
+            and repair["state_hash_collision_uses_full_field_equality"] is True
+            and repair[
+                "state_index_zero_marker_encoded_without_sentinel_prefill"
+            ]
+            is True
+            and repair["disk_allocation_failure_is_positive_eligible"] is False
+            and repair["memory_swap_reenabled"] is False
+            and repair["candidate_can_fill_host_filesystem_beyond_loop_limit"]
+            is False
+            and repair["guardian_same_boot_cleanup_implemented"] is True
+            and repair["guardian_prior_boot_cleanup_implemented"] is True
+            and repair["production_linux_scheduler_hot_path_changed"] is False
+            and repair["production_monitor_dispatch_hot_path_changed"] is False,
+            "disk-backed exact-store repair is incomplete or semantic",
+        )
+        resource_policy = contract["resource_policy"]
+        require(
+            resource_policy["candidate_component_oom_isolated_from_supervisor"]
+            is True
+            and repair["external_memory_sandbox_path"]
+            == resource_policy["external_memory_directory"]
+            and repair["external_memory_host_root"]
+            == resource_policy["external_memory_host_root"]
+            and repair["external_memory_filesystem"] == "ext4"
+            and resource_policy["external_memory_filesystem"]
+            == "vm_native_ext4"
+            and repair["external_memory_backing_mode"]
+            == resource_policy["external_memory_backing_mode"]
+            and repair["external_memory_limit_bytes_per_component"]
+            == resource_policy["external_memory_max_bytes_per_component"]
+            and repair["host_free_space_reserve_bytes"]
+            == resource_policy["external_memory_free_space_reserve_bytes"]
+            and repair["external_memory_direct_io_required"]
+            == resource_policy["external_memory_direct_io_required"]
+            and resource_policy["external_memory_unlinked_temporary_only"]
+            is True,
+            "external-memory implementation/contract boundary drift",
+        )
+        equivalence = current_input["mechanical_equivalence"]
+        require(
+            equivalence["child_bfs_prefix_expanded_states"] == 2000
+            and equivalence["retained_exact_states"] == 20510
+            and equivalence["edge_count"] == 24920
+            and all(
+                equivalence[key] is True
+                for key in (
+                    "state_sequence_equal",
+                    "frontier_sequence_equal",
+                    "depth_sequence_equal",
+                    "target_sequence_equal",
+                    "full_collision_equality_retained",
+                )
+            )
+            and equivalence["spill_paths_visible_after_open"] is False,
+            "RAM/spill exact-prefix equivalence drift",
+        )
+        profile = current_input["bounded_storage_profile_non_authoritative"]
+        require(
+            profile["expanded_states"] == 6000
+            and profile["retained_exact_states"] == 60763
+            and profile["edges"] == 74443
+            and profile["small_working_set_expected_to_remain_cached"] is True
+            and profile["reclaimability_beyond_ram_requires_fresh_full_capture"]
+            is True
+            and profile["performance_claim"] is False
+            and profile["full_capacity_guarantee"] is False,
+            "bounded storage profile was promoted beyond its evidence",
+        )
+        require(
+            all(current_input["capture_boundary"].values()),
+            "external-memory capture boundary is incomplete",
+        )
+        require(
+            current_input["predecessor"]["packed_exact_history_retained"] is True
+            and current_input["predecessor"]["compact_exact_state_store_retained"]
+            is True
+            and current_input["predecessor"][
+                "owner_failure_snapshot_semantic_repair_retained"
+            ]
+            is True
+            and current_input["predecessor"]["component_oom_isolation_retained"]
+            is True,
+            "predecessor repairs were not retained",
         )
     elif packed_history_repair_observation:
         require(
@@ -603,7 +735,9 @@ def validate_semantics(
             "repaired input did not change the rejected child-model bytes",
         )
     if not (
-        state_store_repair_observation or packed_history_repair_observation
+        state_store_repair_observation
+        or packed_history_repair_observation
+        or external_memory_repair_observation
     ):
         require(
             current_input["repair"][
@@ -804,6 +938,64 @@ def validate_semantics(
         )
         expected_full_action = "g6_packed_history_retry_eligible"
         expected_reducer_status = "PASS"
+    elif install["status"] == "REINSTALL_REQUIRED_AFTER_EXTERNAL_MEMORY_REPAIR":
+        require(
+            install["current_inputs_installed"] is False,
+            "pending external-memory reinstall marked installed",
+        )
+        require(
+            g6["retry_eligible"] is False,
+            "G6 retry enabled before external-memory clean reinstall",
+        )
+        require(
+            readiness["status"] == "REINSTALL_REQUIRED",
+            "pending external-memory install has positive readiness",
+        )
+        expected_input_status = (
+            "disk_backed_exact_store_repaired_g6_retry_requires_clean_install"
+        )
+        expected_phase = "f0_v5_c4_g6_open_reinstall_required"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_external_memory_reinstall_"
+            "required_g7_blocked"
+        )
+        expected_install_action = "external_memory_repair_clean_install_pending"
+        expected_full_action = (
+            "blocked_until_external_memory_repair_clean_install"
+        )
+        expected_reducer_status = "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE"
+    elif install["status"] == "PASSED_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS":
+        require(
+            install["current_inputs_installed"] is True,
+            "passed external-memory reinstall not marked installed",
+        )
+        require(
+            g6["retry_eligible"] is True,
+            "G6 retry not enabled after external-memory clean reinstall",
+        )
+        require(
+            readiness["status"] == "G6_RETRY_ELIGIBLE",
+            "passed external-memory install lacks readiness",
+        )
+        expected_input_status = (
+            "disk_backed_exact_store_repaired_clean_installed_g6_retry_eligible"
+        )
+        expected_phase = "f0_v5_c4_g6_open_retry_eligible"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_external_memory_retry_eligible_"
+            "g7_blocked"
+        )
+        expected_install_action = (
+            "completed_clean_reviewed_install_for_external_memory_repaired_inputs"
+        )
+        expected_full_action = "g6_external_memory_retry_eligible"
+        expected_reducer_status = "PASS"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
 
@@ -827,7 +1019,9 @@ def validate_semantics(
     require(readiness["mechanism_recheck"]["capture_contract_derived_cases"] == capture["derived_semantic_cases"], "readiness derived contract count drift")
     require(readiness["mechanism_recheck"]["capture_resource_policy_cases"] == capture["short_regression"]["capture_resource_policy_cases"], "readiness resource-policy count drift")
     require(readiness["current_inputs"]["model_memory_policy_cases"] == capture["short_regression"]["model_memory_policy_cases"], "readiness model-memory count drift")
+    require(readiness["current_inputs"]["model_storage_equivalence_cases"] == capture["short_regression"]["model_storage_equivalence_cases"], "readiness model-storage-equivalence count drift")
     require(readiness["current_inputs"]["reducer_current_input_binding_cases"] == capture["short_regression"]["reducer_current_input_binding_cases"], "readiness reducer-input count drift")
+    require(readiness["mechanism_recheck"]["external_memory_recovery_cases"] == capture["short_regression"]["external_memory_recovery_cases"], "readiness external-memory-recovery count drift")
     require(readiness["mechanism_recheck"]["reducer_current_input_binding_cases"] == capture["short_regression"]["reducer_current_input_binding_cases"], "readiness reducer-binding mechanism count drift")
     require(readiness["mechanism_recheck"]["reducer_boundary_status"] == expected_reducer_status, "readiness reducer boundary status drift")
     require(readiness["mechanism_recheck"]["reducer_boundary_cases"] == capture["short_regression"]["reducer_cases"], "readiness reducer cases drift")
@@ -1075,7 +1269,9 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             )
         )
         changed_input = copy.deepcopy(current_input)
-        if "repair" in changed_input:
+        if "storage_repair" in changed_input:
+            changed_input["storage_repair"]["exact_state_identity_changed"] = True
+        elif "repair" in changed_input:
             changed_input["repair"]["exact_state_identity_changed"] = True
         else:
             changed_input["representation_repair"][
@@ -1108,7 +1304,11 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             )
         )
         changed_input = copy.deepcopy(current_input)
-        if "repair" in changed_input:
+        if "storage_repair" in changed_input:
+            changed_input["storage_repair"][
+                "python_transition_semantics_retained"
+            ] = False
+        elif "repair" in changed_input:
             changed_input["repair"][
                 "future_reducer_input_and_semantic_registry_drift_mechanically_rejected"
             ] = False
