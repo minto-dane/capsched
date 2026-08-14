@@ -87,7 +87,17 @@ latest durable G6 disposition by `check-current-state.sh`.
       "gate_status": "OPEN",
       "retry_eligible": true,
       "complete_capture_available": false,
-      "active_attempt": null,
+      "active_attempt": {
+        "run_id": "candidate4-full-20260814T130141Z",
+        "status": "CAPTURE_RUNNING",
+        "launched_at": "2026-08-14T13:01:49Z",
+        "candidate_input_commit": "217e3eab236cfbe47b2b13fe3c3cfe0476a7a708",
+        "installed_source_commit": "536e3e736f1540184616f8e4e87f6e8f57fe6d1a",
+        "installed_manifest_sha256": "1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e",
+        "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+        "candidate_bytes_executed": true,
+        "evidence_commit_available": false
+      },
       "latest_completed_attempt": {
         "run_id": "candidate4-full-20260813T223812Z",
         "status": "RAW_CAPTURE_INCOMPLETE",
