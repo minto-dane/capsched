@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact_id": "f0-c4-g6-behavioral-quotient-retry-readiness-v1",
   "date": "2026-08-14",
-  "status": "REINSTALL_REQUIRED",
+  "status": "G6_RETRY_ELIGIBLE",
   "scope": "candidate4_behavioral_audit_quotient_capture",
   "current_inputs": {
     "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1",
@@ -20,17 +20,17 @@
     "reducer_current_input_binding_cases": 3
   },
   "clean_install": {
-    "source_commit": "d0ddc00094b48289137d0e70ae35b820f6876a89",
+    "source_commit": "536e3e736f1540184616f8e4e87f6e8f57fe6d1a",
     "source_worktree_clean": true,
     "committed_state_check": "PASS",
-    "installed_manifest_sha256": "41fccf5a23b14028fc99510403eb6e5f64caaa04ab877b7fcaf112a9eff209bc",
-    "capture_launcher_sha256": "dd811af98a59025b3b1cf006f9f4ff366211bcedf2cdb0775d1872a8156ddfc2",
-    "installed_build_install_sha256": "d944f36d058516467d3c096e437a3c3bcf87a264fabf29d7ea4b508d6be4c3c3",
+    "installed_manifest_sha256": "1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e",
+    "capture_launcher_sha256": "339458c9573ceed04c460be15e80c41f6472c412ee1a31155c6da2390569db2f",
+    "installed_build_install_sha256": "89df19126e9f31dcdd1c400ba5008991af9b11294265e3fa572a95b13075f226",
     "current_build_install_sha256": "89df19126e9f31dcdd1c400ba5008991af9b11294265e3fa572a95b13075f226",
     "current_build_reproducibility_test_sha256": "99c543bc8215cdc30830a719ba37775f16d396b8b75db38dcfdcb8ef5b5f4f89",
-    "reproducible_build_repair_installed": false,
-    "current_inputs_installed": false,
-    "reason": "The behavioral-quotient model inputs are installed, but the reviewed commit exposed checkout-path-dependent launcher debug bytes. The reproducible-build repair passes a two-root source probe and requires a clean reviewed commit, bundle reconstruction, reinstall, and complete short suite."
+    "reproducible_build_repair_installed": true,
+    "current_inputs_installed": true,
+    "reason": "The exact behavioral-quotient inputs and reproducible-build repair were reconstructed from a verified complete-history Git bundle, installed from the clean root-owned VM-native checkout, and passed the complete short post-install suite."
   },
   "toolchain": {
     "format": "erofs",
@@ -47,24 +47,24 @@
     "external_memory_recovery_cases": 1,
     "launcher_idle_cases": 1,
     "reproducible_build_cases": 1,
-    "reproducible_build_status": "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE",
+    "reproducible_build_status": "PASS",
     "reducer_current_input_binding_cases": 3,
-    "reducer_boundary_status": "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE",
+    "reducer_boundary_status": "PASS",
     "reducer_boundary_cases": 3
   },
   "source_transfer": {
     "policy": "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging",
     "macos_home_mount": "none",
     "tcb_install_transfer_policy": "sha256_verified_clean_reviewed_git_bundle_to_vm_native_root_owned_repository",
-    "tcb_install_git_bundle_sha256": "a606d79a7ebd084e30a190b638a88725538adbe37ecedb1b13775dea93e947f5",
-    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/d0ddc00094b48289137d0e70ae35b820f6876a89-bundle",
+    "tcb_install_git_bundle_sha256": "6c6c436ae3005c52787ec581054dbf7c7af2cfb4bcc7475cf7a5af1cb88772e5",
+    "tcb_install_source_root": "/var/lib/domainlease-f0-c4/reviewed-sources/536e3e7",
     "vm_source_root": "/var/lib/domainlease-f0-c4/sources",
     "raw_evidence_root": "/var/lib/domainlease-f0-c4/evidence",
     "separate_from_raw_evidence": true
   },
   "disposition": {
     "g6_gate_status": "OPEN",
-    "g6_retry_eligible": false,
+    "g6_retry_eligible": true,
     "g6_complete_capture_available": false,
     "g7_gate_status": "BLOCKED",
     "g7_blocked_reason": "NO_COMPLETE_G6_CAPTURE"

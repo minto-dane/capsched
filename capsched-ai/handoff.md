@@ -28,7 +28,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 {
   "schema_version": 1,
   "updated": "2026-08-14",
-  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
+  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -76,16 +76,16 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "REINSTALL_REQUIRED_AFTER_BEHAVIORAL_AUDIT_QUOTIENT",
-      "installed_source_commit": "d0ddc00094b48289137d0e70ae35b820f6876a89",
-      "installed_manifest_sha256": "41fccf5a23b14028fc99510403eb6e5f64caaa04ab877b7fcaf112a9eff209bc",
-      "current_inputs_installed": false,
+      "status": "PASSED_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS",
+      "installed_source_commit": "536e3e736f1540184616f8e4e87f6e8f57fe6d1a",
+      "installed_manifest_sha256": "1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e",
+      "current_inputs_installed": true,
       "readiness_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
-      "readiness_sha256": "585e51faa23637052a80c1c0c76dceebb47e947f876006cbd7e4ec6f70376f71"
+      "readiness_sha256": "86e15508e776a75edb6b5578db6ac1069b51fb35d0d86ae458b82f6756b9e55a"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": false,
+      "retry_eligible": true,
       "complete_capture_available": false,
       "active_attempt": null,
       "latest_completed_attempt": {
@@ -313,11 +313,12 @@ problem: two root-owned checkout paths produced launcher hashes `8f9a0967...`
 and `dd811af9...` because `-g` retained the absolute build path. Validation
 0325 records the repair. File, macro, and debug paths now map to
 `/usr/src/domainlease-f0-c4`; compilation-time macros are rejected, and two
-distinct source/output roots produce the identical preliminary launcher digest
+distinct source/output roots produce the identical launcher digest
 `339458c9...`, even when invoked from different caller directories. The repair
-has not yet been clean-installed, so G6 remains
-ineligible until its reviewed commit, bundle reconstruction, reinstall, and
-complete post-install suite pass.
+was committed as `536e3e7...`, reconstructed from verified complete-history
+bundle `6c6c436...`, and clean-installed under manifest `1045d361...`. The
+complete post-install mechanism suite passes, so a fresh G6 capture is now
+eligible; G6 completion and G7 reduction remain open.
 
 The first G6 start attempt `candidate4-full-20260811T203907Z` stopped before the
 first progress receipt and before candidate launch because the toolchain sealer
@@ -365,8 +366,9 @@ The semantic successor and idle-fixed launcher are clean-installed and the
 complete short suite passes. The ninth attempt
 `candidate4-full-20260813T223812Z` used that successor without OOM but reached
 the exact ordered-audit representation deadline and durably finalized
-incomplete. Its behavioral-quotient successor is locally validated but not yet
-clean-installed; G6 retry is disabled and G7 remains blocked.
+incomplete. Its behavioral-quotient successor and reproducible TCB build
+repair are clean-installed, the complete short suite passes, G6 retry is
+enabled, and G7 remains blocked until a complete committed capture exists.
 
 ## Current Git State
 

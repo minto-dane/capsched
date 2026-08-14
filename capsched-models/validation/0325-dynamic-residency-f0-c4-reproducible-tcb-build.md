@@ -26,7 +26,23 @@ across all three path dimensions.
 
 ## Boundary
 
-This closes only build-path reproducibility for the capture launcher.  A clean
-reviewed commit, bundle reconstruction, reinstall, and complete post-install
-suite remain required before G6 retry.  It grants no F0, R11, K0/G0,
+The repair was committed as
+`536e3e736f1540184616f8e4e87f6e8f57fe6d1a`, reconstructed in the VM from
+complete-history Git bundle
+`6c6c436ae3005c52787ec581054dbf7c7af2cfb4bcc7475cf7a5af1cb88772e5`,
+and installed from the clean root-owned VM-native checkout.  The installed
+artifact manifest is
+`1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e`;
+the installed launcher is
+`339458c9573ceed04c460be15e80c41f6472c412ee1a31155c6da2390569db2f`.
+
+The post-install suite passes the launcher basic case, 10 hostile launcher
+cases, zero-tick idle case, five hostile snapshot cases, 17 resource-policy
+cases, one two-root reproducible-build case, five-component supervisor smoke
+run, three guardian cases, one external-memory recovery case, one immutable
+toolchain reuse case, and three reduction-boundary cases.  The installed
+inputs are therefore eligible for a fresh G6 capture.
+
+This closes only build-path reproducibility and the clean-install prerequisite
+for that retry.  It grants no G6 completion, G7 reduction, F0, R11, K0/G0,
 protection, performance, cost, deployment, or model-completion authority.
