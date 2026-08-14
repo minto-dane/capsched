@@ -122,7 +122,10 @@ authorization = {
     "external_R11_review": False,
     "G0_authorized": False,
     "self_authorization": SCENARIO == "invalid-authorization",
-    "standalone_child_bounded_exact_ordered_history_graph_exhaustive": True,
+    "standalone_child_bounded_behavioral_quotient_graph_exhaustive": True,
+    "ordered_audit_chain_implementation_refinement_proved": (
+        SCENARIO == "quotient-overclaims-audit-refinement"
+    ),
     "standalone_child_bounds": {
         "hostile_attempts": 2,
         "reacquisitions": 2,
@@ -197,8 +200,9 @@ child_exploration = {
     "role": "FIXTURE",
     "edge_count": 5,
     "terminal_state_count": 2,
-    "unique_ordered_evidence_history_count": 1,
-    "reachable_exact_state_count": 5,
+    "unique_ordered_evidence_history_count": 0,
+    "reachable_exact_state_count": 0,
+    "reachable_behavioral_quotient_state_count": 5,
     "reachable_action_count": 4,
     "reachable_action_ids": [
         "FIXTURE-ACTION",
@@ -223,8 +227,17 @@ child_exploration = {
     "hostile_attempt_bound": 2,
     "reacquisition_bound": 2,
     "multiple_pending_arrival_state_count": 1,
-    "exact_ordered_history_state_identity": True,
-    "bounded_exact_ordered_history_graph_exhaustive": True,
+    "exact_ordered_history_state_identity": False,
+    "bounded_exact_ordered_history_graph_exhaustive": False,
+    "behavioral_audit_representation_quotient_applied": True,
+    "behavioral_quotient_graph_exhaustive": True,
+    "receipt_semantic_facts_and_multiplicity_retained": True,
+    "operational_state_fields_retained": True,
+    "recovery_and_decision_semantics_retained": True,
+    "audit_sequence_hash_auth_root_representation_erased": True,
+    "audit_chain_implementation_refinement_proved": False,
+    "projection_hash_matches_resolved_by_full_equality": True,
+    "bounded_projection_congruence_regression_required": True,
     "frontier_empty": True,
     "all_reachable_states_wf": True,
     "all_edges_target_reachable": True,
@@ -232,7 +245,9 @@ child_exploration = {
 }
 commutation = {
     "role": "FIXTURE",
-    "reachable_exact_state_count": 5,
+    "reachable_exact_state_count": 0,
+    "reachable_behavioral_quotient_state_count": 5,
+    "reachability_state_identity": "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT",
     "passed": True,
     "declared_independence_pair_count": 1,
     "declared_pair_results": [
@@ -264,8 +279,11 @@ commutation = {
     "declared_pair_occurrences_exhaustive_over_reachable_states": True,
     "independence_relation_claimed_complete": False,
     "undeclared_pairs_assumed_independent": False,
-    "reachability_uses_exact_state_identity": True,
-    "ordered_history_quotiented_for_reachability": False,
+    "reachability_uses_exact_state_identity": False,
+    "ordered_history_quotiented_for_reachability": True,
+    "behavioral_projection_retains_receipt_semantics_and_multiplicity": True,
+    "behavioral_projection_retains_operational_recovery_and_decision_semantics": True,
+    "audit_chain_implementation_refinement_proved": False,
     "check_scope": "LOCAL_TWO_STEP_EFFECT_COMMUTATION_ONLY",
     "outcome_projection_scope": "RECEIPT_CHAIN_ORDERING_METADATA_ONLY",
     "outcome_projection_retains_receipt_semantics_and_multiplicity": True,
@@ -325,8 +343,8 @@ parent_exploration = {
 local_component_pass = SCENARIO != "rejected"
 if not local_component_pass:
     child_exploration["nonterminal_deadlock_count"] = 1
-    child_exploration["reachable_exact_state_count"] = 4
-    commutation["reachable_exact_state_count"] = 4
+    child_exploration["reachable_behavioral_quotient_state_count"] = 4
+    commutation["reachable_behavioral_quotient_state_count"] = 4
     commutation["passed"] = False
     parent_exploration["nonterminal_deadlock_count"] = 1
     parent_exploration["reachable_repetition_bounded_state_count"] = 4
@@ -360,7 +378,7 @@ for index, (path, prefix) in enumerate(test_specs):
         }
     )
 result = {
-    "schema_version": 4,
+    "schema_version": 5,
     "artifact_id": (
         "dynamic-residency-f0-v5-supervisor-v3-candidate4-full-local-result"
     ),
@@ -454,6 +472,7 @@ result = {
     "open_refinement_obligations": {
         "child": [
             "INDEP-001 fixture declared independence refinement",
+            "AUDIT-REP-001 fixture ordered audit implementation refinement",
             "EXT-AUTH-001 fixture external authentication refinement",
             "MONITOR-001 fixture monitor authentication refinement",
             "MGMT-001 fixture management isolation refinement",
@@ -515,8 +534,26 @@ if SCENARIO == "role-action-union-split":
 if SCENARIO == "commutation-negative-state-count":
     for role in ("child-bundle-producer", "child-bundle-checker"):
         result["components"][role]["commutation"][
-            "reachable_exact_state_count"
+            "reachable_behavioral_quotient_state_count"
         ] = -1
+if SCENARIO == "quotient-erases-receipt-semantics":
+    for role in ("child-bundle-producer", "child-bundle-checker"):
+        result["components"][role]["exploration"][
+            "receipt_semantic_facts_and_multiplicity_retained"
+        ] = False
+if SCENARIO == "quotient-exact-identity-conflict":
+    for role in ("child-bundle-producer", "child-bundle-checker"):
+        exploration = result["components"][role]["exploration"]
+        exploration["reachable_exact_state_count"] = 1
+        exploration["exact_ordered_history_state_identity"] = True
+if SCENARIO == "quotient-commutation-identity-conflict":
+    for role in ("child-bundle-producer", "child-bundle-checker"):
+        commutation_result = result["components"][role]["commutation"]
+        commutation_result["reachability_state_identity"] = (
+            "EXACT_ORDERED_AUDIT_STATE"
+        )
+        commutation_result["reachability_uses_exact_state_identity"] = True
+        commutation_result["ordered_history_quotiented_for_reachability"] = False
 if SCENARIO == "commutation-impossible-counts":
     for role in ("child-bundle-producer", "child-bundle-checker"):
         pair = result["components"][role]["commutation"][
@@ -663,7 +700,7 @@ encoded = json.dumps(result, indent=2, sort_keys=True) + "\n"
 if SCENARIO == "duplicate-result-key":
     encoded = '{"status":"COMPLETE_LOCAL_C4_REJECTED",' + encoded[1:]
 if SCENARIO == "nonfinite-json":
-    encoded = encoded.replace('"schema_version": 4', '"schema_version": NaN', 1)
+    encoded = encoded.replace('"schema_version": 5', '"schema_version": NaN', 1)
 output.write_text(encoded, encoding="utf-8")
 if SCENARIO == "result-post-parse-mutation":
     mutator = r'''
@@ -912,6 +949,22 @@ assert_rejection_contains 'validator child action registry values differ'
 run_fixture commutation-negative-state-count TOOL_ERROR 70
 assert_evidence TOOL_ERROR TOOL_ERROR true true
 assert_rejection_contains 'nested commutation reachability differs'
+
+run_fixture quotient-erases-receipt-semantics TOOL_ERROR 70
+assert_evidence TOOL_ERROR TOOL_ERROR true true
+assert_rejection_contains 'validator local candidate status differs from evidence'
+
+run_fixture quotient-exact-identity-conflict TOOL_ERROR 70
+assert_evidence TOOL_ERROR TOOL_ERROR true true
+assert_rejection_contains 'validator local candidate status differs from evidence'
+
+run_fixture quotient-commutation-identity-conflict TOOL_ERROR 70
+assert_evidence TOOL_ERROR TOOL_ERROR true true
+assert_rejection_contains 'validator local candidate status differs from evidence'
+
+run_fixture quotient-overclaims-audit-refinement TOOL_ERROR 70
+assert_evidence TOOL_ERROR TOOL_ERROR true true
+assert_rejection_contains 'authorization field is not false'
 
 run_fixture commutation-impossible-counts TOOL_ERROR 70
 assert_evidence TOOL_ERROR TOOL_ERROR true true

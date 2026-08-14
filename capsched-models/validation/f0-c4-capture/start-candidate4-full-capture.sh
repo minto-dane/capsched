@@ -47,9 +47,9 @@ done
 $jq -e '
 	.project.current_phase == "f0_v5_c4_g6_open_retry_eligible" and
 	.evidence.current_candidate_inputs.status ==
-		"pending_attack_closure_repaired_clean_installed_g6_retry_eligible" and
+		"behavioral_audit_quotient_clean_installed_g6_retry_eligible" and
 	.evidence.authority_capture_contract.clean_install.status ==
-		"PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS" and
+		"PASSED_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS" and
 	.evidence.authority_capture_contract.clean_install.current_inputs_installed == true and
 	.evidence.authority_capture_contract.g6.gate_status == "OPEN" and
 	.evidence.authority_capture_contract.g6.retry_eligible == true and

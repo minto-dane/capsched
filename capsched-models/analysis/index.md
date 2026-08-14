@@ -240,6 +240,7 @@ Updated: 2026-08-12
 | 0232 | The fourth OOM-isolated retry preserves fail-closed evidence but again reaches 7.5 GiB; reversible packed receipt/history arenas, adaptive exact references, bounded caches, and a denser collision-safe index preserve exact child/parent semantics while materially reducing matched-prefix RSS | Dynamic Residency F0 Candidate-4 G6 Packed Exact History Arena |
 | 0233 | The fifth OOM-isolated retry again reaches 7.5 GiB; exact state/index/frontier/graph data moves to immediately unlinked mmap files on a capped private direct-I/O ext4 boundary, retaining exact RAM/spill prefix equivalence and guardian cleanup without changing transition semantics | Dynamic Residency F0 Candidate-4 G6 Disk-Backed Exact Enumerator |
 | 0234 | The first disk-backed full retry avoids OOM and exposes a 17-action pending-ATTACH closure contradiction; protection closure now requires no pending attack and an exactly balanced attempt/rejection ledger, while explicit rejection and terminal bypass branches remain intact | Dynamic Residency F0 Candidate-4 G6 Pending-Hostile Closure Race |
+| 0235 | The ninth G6 attempt reaches its 43,200-second child deadline without OOM; a bounded behavioral audit-representation quotient preserves operational, receipt-semantic, issuer/channel, recovery, and decision identity while erasing only audit representation permutations, and leaves ordered audit-chain implementation refinement open | Dynamic Residency F0 Candidate-4 Behavioral Audit-Representation Quotient |
 
 ## Planned Analysis Notes
 

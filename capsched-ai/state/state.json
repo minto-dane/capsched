@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "updated": "2026-08-13",
+  "updated": "2026-08-14",
   "project": {
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
+    "current_phase": "f0_v5_c4_g6_open_reinstall_required",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -122,6 +122,14 @@
     {
       "id": "INV-EVIDENCE-001",
       "text": "Positive promotion decisions validate only validator-captured immutable bytes and recompute summaries from retained raw evidence."
+    },
+    {
+      "id": "INV-AUDIT-QUOTIENT-001",
+      "text": "Reachability may quotient only audit-representation differences while retaining all operational state, receipt semantic facts and multiplicity, issuer/channel authority, recovery semantics, and collision-resolved projected equality."
+    },
+    {
+      "id": "INV-AUDIT-REFINEMENT-OPEN-001",
+      "text": "The behavioral audit-representation quotient is bounded model evidence only; implementation refinement to an ordered authenticated production audit chain remains open and cannot receive promotion credit."
     }
   ],
   "design_boundaries": [
@@ -161,7 +169,10 @@
     "The disk-backed successor was clean-installed from 65d9827916f669363f2a82118b90dee2a7ff664c under manifest 1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d and passed its complete short suite.",
     "G6 run candidate4-full-20260813T071653Z used the external store without OOM, then durably finalized RAW_CAPTURE_INCOMPLETE after exposing a 17-action pending-ATTACH/protection-closure semantic contradiction; no bytes are positive-eligible and G7 remains blocked.",
     "MON-039C protection closure now requires no pending hostile attempt and exact equality of the observed/rejected attack ledgers; explicit rejection and terminal breach remain available and child hostile regression is 285.",
-    "Clean reviewed commit 27ba274c859d271861a373decc4ecd51c9e0c7ce passed committed-state validation, was reconstructed from verified Git bundle 4dc37363a0cafa2f02b06f595f854de81c30ac198955f9b3e7e31fb61cae15d5, installed under manifest c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d, and passed the complete short suite; a fresh G6 retry is eligible.",
+    "Clean reviewed commit 27ba274c859d271861a373decc4ecd51c9e0c7ce passed committed-state validation, was reconstructed from verified Git bundle 4dc37363a0cafa2f02b06f595f854de81c30ac198955f9b3e7e31fb61cae15d5, installed under manifest c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d, and passed the complete short suite.",
+    "G6 run candidate4-full-20260813T223812Z used disk-backed exact storage without OOM and durably committed RAW_CAPTURE_INCOMPLETE after the exact ordered-audit state identity reached its sealed 43200-second component deadline; no candidate bytes are positive-eligible and G7 remains blocked.",
+    "The behavioral audit-representation quotient retains every operational field, receipt semantic fact and multiplicity, issuer/channel, and recovery/decision semantic fact while erasing only audit representation order, sequence, hash/authentication, roots, and representation pointers; projection-hash matches are resolved by full projected equality.",
+    "A weaker projection that omitted receipt semantic multiplicity produced authority conflicts and is rejected; the ordered authenticated audit-chain implementation refinement remains an explicit open obligation, and no Linux scheduler or Monitor dispatch hot path changes.",
     "Long-running builds, model checks, and matrices are detached after immutable input capture and reviewed in a later session."
   ],
   "completion": {
@@ -225,16 +236,16 @@
       }
     },
     "current_candidate_inputs": {
-      "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1",
-      "artifact_sha256": "11f7d3ee5b7387ddffc99ab39c6981e3486bd656cc55c652ff589f19916418ef",
-      "status": "pending_attack_closure_repaired_clean_installed_g6_retry_eligible",
+      "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1",
+      "artifact_sha256": "7ff6130991dfc3d82b8ee9ca5a33a52dbdb7de6015cdb807b9a3e60b53100845",
+      "status": "behavioral_audit_quotient_validated_locally_g6_retry_requires_clean_install",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
-      "full_validator_status": "NOT_RUN_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+      "full_validator_status": "NOT_RUN_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS",
       "hostile_case_counts": {
-        "child": 285,
+        "child": 295,
         "parent": 739,
-        "runner": 44,
-        "total": 1068
+        "runner": 48,
+        "total": 1082
       },
       "counterexample_regression": {
         "action_id": "MON-039C-PROTECTION-CLOSED",
@@ -253,7 +264,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -281,8 +292,9 @@
         "launcher_hostile_cases": 10,
         "launcher_idle_cases": 1,
         "snapshot_hostile_cases": 5,
-        "model_memory_policy_cases": 31,
-        "model_storage_equivalence_cases": 1,
+        "behavioral_quotient_boundary_cases": 9,
+        "model_memory_policy_cases": 33,
+        "model_storage_equivalence_cases": 2,
         "capture_resource_policy_cases": 17,
         "external_memory_recovery_cases": 1,
         "reducer_current_input_binding_cases": 3,
@@ -292,31 +304,21 @@
         "reducer_cases": 3
       },
       "clean_install": {
-        "status": "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+        "status": "REINSTALL_REQUIRED_AFTER_BEHAVIORAL_AUDIT_QUOTIENT",
         "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
         "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
-        "current_inputs_installed": true,
-        "readiness_record": "capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json",
-        "readiness_sha256": "8f9367a40decb2c9acd39f1e09b9f460ffedca2fe3a1460dd8a54f51ebd2bc25"
+        "current_inputs_installed": false,
+        "readiness_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
+        "readiness_sha256": "042b72c5f04fcc7a3992c040cdd2f0fd57710cb6d0486174ee8f98c5e8349e1d"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": true,
+        "retry_eligible": false,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
-        "attempt_count": 8,
-        "latest_completed_attempt_run_id": "candidate4-full-20260813T071653Z",
-        "active_attempt": {
-          "run_id": "candidate4-full-20260813T223812Z",
-          "status": "CAPTURE_RUNNING",
-          "launched_at": "2026-08-13T22:38:28Z",
-          "candidate_input_commit": "a5438eae59ac5cf42a15a67bf831a64a5384988f",
-          "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
-          "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
-          "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
-          "candidate_bytes_executed": true,
-          "evidence_commit_available": false
-        },
+        "attempt_count": 9,
+        "latest_completed_attempt_run_id": "candidate4-full-20260813T223812Z",
+        "active_attempt": null,
         "attempt_history": [
           {
             "run_id": "candidate4-full-20260811T203907Z",
@@ -379,6 +381,14 @@
             "evidence_commit_available": true,
             "observation_record": "capsched-models/validation/f0-c4-g6-pending-attack-incomplete-observation-v1.json",
             "observation_sha256": "d1dd26588a8e7fd3ca08c7ebb48c9af9db9014da48aea66ce20b9b8d186cc4a9"
+          },
+          {
+            "run_id": "candidate4-full-20260813T223812Z",
+            "status": "RAW_CAPTURE_INCOMPLETE",
+            "candidate_bytes_executed": true,
+            "evidence_commit_available": true,
+            "observation_record": "capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json",
+            "observation_sha256": "0e26bf127292138a722dfdd6f91ba46b12bf968547d4880014a03431b1da201c"
           }
         ]
       },
@@ -411,8 +421,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_pending_attack_closure_retry_eligible_g7_blocked",
-      "next_artifact": "Run a fresh authority-disjoint G6 capture from the clean-installed pending-attack closure successor, then reduce only a complete committed capture in G7"
+      "status": "open_candidate4_g1_g5_closed_g6_behavioral_quotient_reinstall_required_g7_blocked",
+      "next_artifact": "Clean-install the reviewed behavioral audit-representation quotient, pass the complete short suite, then run a fresh authority-disjoint G6 capture and reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -505,20 +515,20 @@
     {
       "order": 5,
       "id": "F0-C4-PRE-FULL-CHECKPOINT",
-      "status": "historical_274_case_checkpoint_preserved_successor_285_739_44_fast_pass",
-      "text": "Preserve the historical 274/715/44 checkpoint; the current successor passes 285/739/44 plus the fast validator without inheriting full-run credit."
+      "status": "historical_274_case_checkpoint_preserved_successor_295_739_48_fast_pass_plus_quotient_boundary_9",
+      "text": "Preserve the historical 274/715/44 checkpoint; the current successor passes 295/739/48, the fast validator, and the nine-case behavioral-quotient boundary without inheriting full-run credit."
     },
     {
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
-      "status": "completed_clean_reviewed_install_for_pending_attack_closure_repaired_inputs",
-      "text": "G1-G5 remain locally closed; clean source commit 27ba274c859d271861a373decc4ecd51c9e0c7ce is installed under manifest c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d, and the complete short post-install suite including the zero-tick launcher idle regression passes."
+      "status": "behavioral_audit_quotient_clean_install_pending",
+      "text": "G1-G5 remain locally closed. The installed predecessor TCB is retained, but the locally validated schema-v5 behavioral audit-representation quotient must be committed, reconstructed from reviewed bytes, reinstalled, and rechecked before another G6 launch."
     },
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "g6_pending_attack_closure_retry_eligible",
-      "text": "The no-OOM external-memory attempt remains durably RAW_CAPTURE_INCOMPLETE and positive-ineligible after finding a real pending-ATTACH closure counterexample. The repaired successor is clean-installed and eligible for a fresh G6 retry; G7 remains blocked until a complete committed result exists."
+      "status": "blocked_until_behavioral_audit_quotient_clean_install",
+      "text": "The ninth G6 attempt is durably RAW_CAPTURE_INCOMPLETE and positive-ineligible after exact ordered-audit representation exhausted its 43200-second component deadline without OOM. The bounded behavioral quotient passes local hostile/congruence checks; G6 retry awaits clean install and G7 remains blocked."
     },
     {
       "order": 8,
@@ -589,10 +599,11 @@
     "f0_c4_packed_history_repair_analysis": "capsched-models/analysis/0232-dynamic-residency-f0-c4-g6-packed-exact-history-arena.md",
     "f0_c4_external_memory_repair_analysis": "capsched-models/analysis/0233-dynamic-residency-f0-c4-g6-disk-backed-exact-enumerator.md",
     "f0_c4_pending_attack_closure_repair_analysis": "capsched-models/analysis/0234-dynamic-residency-f0-c4-g6-pending-hostile-closure-race.md",
-    "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1.json",
-    "f0_c4_g6_incomplete_validation": "capsched-models/validation/0316-dynamic-residency-f0-c4-g6-incomplete-disposition.md",
-    "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-pending-attack-incomplete-observation-v1.json",
-    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json",
+    "f0_c4_behavioral_quotient_analysis": "capsched-models/analysis/0235-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md",
+    "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1.json",
+    "f0_c4_g6_incomplete_validation": "capsched-models/validation/0324-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md",
+    "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json",
+    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
     "f0_c4_effect_repair_validation": "capsched-models/validation/0317-dynamic-residency-f0-c4-g6-counterexample-repair.md",
     "f0_c4_resource_repair_validation": "capsched-models/validation/0318-dynamic-residency-f0-c4-g6-resource-repair.md",
     "f0_c4_frontier_repair_validation": "capsched-models/validation/0319-dynamic-residency-f0-c4-g6-persistent-exact-frontier.md",
@@ -600,6 +611,7 @@
     "f0_c4_packed_history_repair_validation": "capsched-models/validation/0321-dynamic-residency-f0-c4-g6-packed-exact-history-arena.md",
     "f0_c4_external_memory_repair_validation": "capsched-models/validation/0322-dynamic-residency-f0-c4-g6-disk-backed-exact-enumerator.md",
     "f0_c4_pending_attack_closure_repair_validation": "capsched-models/validation/0323-dynamic-residency-f0-c4-g6-pending-hostile-closure-repair.md",
+    "f0_c4_behavioral_quotient_validation": "capsched-models/validation/0324-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md",
     "f0_c4_claim_registry": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
     "f0_c4_child_model": "capsched-models/validation/f0_supervisor_lts_v3.py",
     "f0_c4_parent_model": "capsched-models/validation/f0_supervisor_orchestrator_v3.py",

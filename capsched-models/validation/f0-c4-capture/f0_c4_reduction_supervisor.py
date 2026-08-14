@@ -493,12 +493,12 @@ def validate_reducer_result(raw: bytes, run_id: str) -> tuple[dict[str, Any], by
         or set(result["predicates"])
         != {
             "FAST_MUTATION_STATIC",
-            "CHILD_EXACT_FIXTURE_BOUNDED",
+            "CHILD_BEHAVIORAL_AUDIT_QUOTIENT_BOUNDED",
             "PARENT_EXACT_REPETITION_BOUNDED",
             "DECLARED_LOCAL_EFFECT_COMMUTATION",
         }
         or any(value is not True for value in result["predicates"].values())
-        or len(result["claims"]) != 11
+        or len(result["claims"]) != 12
     ):
         raise ReductionSupervisorError("positive reducer result differs")
     authorization = result["authorization"]

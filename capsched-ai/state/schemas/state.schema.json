@@ -473,7 +473,9 @@
                 "disk_backed_exact_store_repaired_g6_retry_requires_clean_install",
                 "disk_backed_exact_store_repaired_clean_installed_g6_retry_eligible",
                 "pending_attack_closure_repaired_g6_retry_requires_clean_install",
-                "pending_attack_closure_repaired_clean_installed_g6_retry_eligible"
+                "pending_attack_closure_repaired_clean_installed_g6_retry_eligible",
+                "behavioral_audit_quotient_validated_locally_g6_retry_requires_clean_install",
+                "behavioral_audit_quotient_clean_installed_g6_retry_eligible"
               ]
             },
             "fast_validator_status": {
@@ -487,7 +489,8 @@
                 "NOT_RUN_FOR_STATE_STORE_REPAIRED_INPUTS",
                 "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
                 "NOT_RUN_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
-                "NOT_RUN_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS"
+                "NOT_RUN_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS"
               ]
             },
             "hostile_case_counts": {
@@ -632,6 +635,7 @@
                 "launcher_hostile_cases",
                 "launcher_idle_cases",
                 "snapshot_hostile_cases",
+                "behavioral_quotient_boundary_cases",
                 "model_memory_policy_cases",
                 "model_storage_equivalence_cases",
                 "capture_resource_policy_cases",
@@ -647,8 +651,9 @@
                 "launcher_hostile_cases": {"const": 10},
                 "launcher_idle_cases": {"const": 1},
                 "snapshot_hostile_cases": {"const": 5},
-                "model_memory_policy_cases": {"const": 31},
-                "model_storage_equivalence_cases": {"const": 1},
+                "behavioral_quotient_boundary_cases": {"const": 9},
+                "model_memory_policy_cases": {"const": 33},
+                "model_storage_equivalence_cases": {"const": 2},
                 "capture_resource_policy_cases": {"const": 17},
                 "external_memory_recovery_cases": {"const": 1},
                 "reducer_current_input_binding_cases": {"const": 3},
@@ -685,7 +690,9 @@
                     "REINSTALL_REQUIRED_AFTER_EXTERNAL_MEMORY_REPAIR",
                     "PASSED_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
                     "REINSTALL_REQUIRED_AFTER_PENDING_ATTACK_CLOSURE_REPAIR",
-                    "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS"
+                    "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_BEHAVIORAL_AUDIT_QUOTIENT",
+                    "PASSED_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS"
                   ]
                 },
                 "installed_source_commit": {"$ref": "#/$defs/gitObject"},

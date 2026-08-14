@@ -18,14 +18,20 @@
       }
     },
     {
-      "id": "F0-C4-REACH-CHILD-EXACT-FIXTURE-BOUNDED-v1",
-      "class": "local_bounded_reachability",
+      "id": "F0-C4-REACH-CHILD-BEHAVIORAL-AUDIT-QUOTIENT-BOUNDED-v1",
+      "class": "local_bounded_behavioral_quotient_reachability",
       "fast": {"allowed_statuses": ["NOT_RUN"], "evidence": [], "status_rule": {"kind": "fixed", "status": "NOT_RUN"}},
       "full": {
         "allowed_statuses": ["PASS", "FAIL"],
-        "evidence": ["components.child-bundle-producer", "components.child-bundle-checker", "component_execution_receipts.child-bundle-producer", "component_execution_receipts.child-bundle-checker"],
-        "status_rule": {"kind": "boolean", "predicate_id": "CHILD_EXACT_FIXTURE_BOUNDED", "true_status": "PASS", "false_status": "FAIL"}
+        "evidence": ["components.tests", "components.child-bundle-producer", "components.child-bundle-checker", "component_execution_receipts.tests", "component_execution_receipts.child-bundle-producer", "component_execution_receipts.child-bundle-checker"],
+        "status_rule": {"kind": "boolean", "predicate_id": "CHILD_BEHAVIORAL_AUDIT_QUOTIENT_BOUNDED", "true_status": "PASS", "false_status": "FAIL"}
       }
+    },
+    {
+      "id": "F0-C4-AUDIT-CHAIN-REPRESENTATION-REFINEMENT-v1",
+      "class": "external_refinement",
+      "fast": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.child#AUDIT-REP-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}},
+      "full": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.child#AUDIT-REP-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}}
     },
     {
       "id": "F0-C4-REACH-PARENT-EXACT-REPETITION-BOUNDED-v1",

@@ -13,12 +13,13 @@
     {
       "id": "F0-C4-CLAIM-REGISTRY-v1",
       "path": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
-      "sha256": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
+      "sha256": "2a0420ed570ee1ac4f618fea32a4237345dfdb8e3d3333fd565789000c1fd438",
       "status": "candidate_unfrozen",
       "scope": "Local bounded C4 regression and explicit open-refinement claims only",
       "claim_ids": [
         "F0-C4-FAST-MUTATION-AND-STATIC-v1",
-        "F0-C4-REACH-CHILD-EXACT-FIXTURE-BOUNDED-v1",
+        "F0-C4-REACH-CHILD-BEHAVIORAL-AUDIT-QUOTIENT-BOUNDED-v1",
+        "F0-C4-AUDIT-CHAIN-REPRESENTATION-REFINEMENT-v1",
         "F0-C4-REACH-PARENT-EXACT-REPETITION-BOUNDED-v1",
         "F0-C4-DECLARED-LOCAL-EFFECT-COMMUTATION-v1",
         "F0-C4-INDEPENDENCE-RELATION-COMPLETE-v1",

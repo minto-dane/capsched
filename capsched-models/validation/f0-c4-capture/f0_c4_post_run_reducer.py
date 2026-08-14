@@ -32,14 +32,14 @@ COMPONENTS = (
 )
 COMPONENT_ORDER = tuple(row[0] for row in COMPONENTS)
 INPUT_DIGESTS = {
-    "f0-supervisor-c4-claim-registry-v1.json": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
-    "f0_supervisor_lts_v3.py": "36493fe0ed88af4792111841492be31a37dd5c498c42e8dc86a2e8856fb6b192",
+    "f0-supervisor-c4-claim-registry-v1.json": "2a0420ed570ee1ac4f618fea32a4237345dfdb8e3d3333fd565789000c1fd438",
+    "f0_supervisor_lts_v3.py": "033170ef47e877890dfbb9f31f7bc32e0a3a0e0d0277499f81582d2f69c07888",
     "f0_supervisor_orchestrator_v3.py": "46a2788e5bdac5d96ad83204e57dda35582b5d6fdd878f9ba4e30854ab870bfb",
-    "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba",
-    "test-f0-supervisor-lts-v3-mutations.py": "d9d97c511eb5c5a1103180a3d953df3f2e59448e86fc9d5a9faa744effa6205a",
+    "run-f0-supervisor-v3-full.sh": "0142bf807bf1a46c2044804063014dfa3636d635fdf46d0ea7ab502dc71e2248",
+    "test-f0-supervisor-lts-v3-mutations.py": "2e617e056c71fd202cc090154731cf92aaf7116d3308a59de47d2d9c37b09d93",
     "test-f0-supervisor-orchestrator-v3-mutations.py": "a16f5392b963bbc37cd2c3b40d4bf8b4ad652f4b7073f74dbaa5af7ca61bf9cb",
-    "test-run-f0-supervisor-v3-full.sh": "124947b2622811b60a20f753e6cfa6eae0a704afb11c95bb0fe1b80a11e78ec9",
-    "validate-f0-supervisor-lts-v3.py": "83408bbcc7e1bf3abcf7165e7e32d2c34a1be55a8ddd78d212c77d6d95452e5c",
+    "test-run-f0-supervisor-v3-full.sh": "ca6eb6a48f41999c820019ff6573767afad05c66df12631096c462749df4fe27",
+    "validate-f0-supervisor-lts-v3.py": "61aa9c81eedc41ff655afb10507aa47c9d377a3160b2bcaf811710ce8e0d929c",
 }
 INPUT_ROOT_SHA256 = hashlib.sha256(
     json.dumps(INPUT_DIGESTS, sort_keys=True, separators=(",", ":")).encode()
@@ -55,18 +55,18 @@ INDEPENDENCE_IDS = [
 ]
 TEST_MARKERS = {
     "test-f0-supervisor-lts-v3-mutations.py": (
-        "LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=285"
+        "LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=295"
     ),
     "test-f0-supervisor-orchestrator-v3-mutations.py": (
         "LOCAL_C4_PARENT_REGRESSION_PASS hostile_cases=739"
     ),
     "test-run-f0-supervisor-v3-full.sh": (
-        "LOCAL_C4_RUNNER_REGRESSION_PASS hostile_cases=44"
+        "LOCAL_C4_RUNNER_REGRESSION_PASS hostile_cases=48"
     ),
 }
 LOCAL_PREDICATES = {
     "FAST_MUTATION_STATIC",
-    "CHILD_EXACT_FIXTURE_BOUNDED",
+    "CHILD_BEHAVIORAL_AUDIT_QUOTIENT_BOUNDED",
     "PARENT_EXACT_REPETITION_BOUNDED",
     "DECLARED_LOCAL_EFFECT_COMMUTATION",
 }
@@ -407,7 +407,7 @@ def validate_claim_registry(raw: bytes) -> dict[str, Any]:
         or any(value is not False for value in registry["authorization"].values())
     ):
         raise ReductionIncomplete("claim registry authorization differs")
-    if not isinstance(registry["claims"], list) or len(registry["claims"]) != 11:
+    if not isinstance(registry["claims"], list) or len(registry["claims"]) != 12:
         raise ReductionIncomplete("claim registry cardinality differs")
     identifiers: set[str] = set()
     predicates: set[str] = set()
@@ -508,7 +508,7 @@ def validate_static_result(result: Any) -> bool:
     )
     if claim != {
         "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-claim-registry",
-        "claim_count": 11,
+        "claim_count": 12,
         "sha256": INPUT_DIGESTS["f0-supervisor-c4-claim-registry-v1.json"],
         "candidate_authority_all_false": True,
     }:
@@ -593,6 +593,7 @@ def validate_tests_result(result: Any) -> bool:
 EXPLORATION_KEYS = {
     "role",
     "reachable_exact_state_count",
+    "reachable_behavioral_quotient_state_count",
     "unique_ordered_evidence_history_count",
     "edge_count",
     "reachable_action_count",
@@ -617,6 +618,15 @@ EXPLORATION_KEYS = {
     "multiple_pending_arrival_state_count",
     "exact_ordered_history_state_identity",
     "bounded_exact_ordered_history_graph_exhaustive",
+    "behavioral_audit_representation_quotient_applied",
+    "behavioral_quotient_graph_exhaustive",
+    "receipt_semantic_facts_and_multiplicity_retained",
+    "operational_state_fields_retained",
+    "recovery_and_decision_semantics_retained",
+    "audit_sequence_hash_auth_root_representation_erased",
+    "audit_chain_implementation_refinement_proved",
+    "projection_hash_matches_resolved_by_full_equality",
+    "bounded_projection_congruence_regression_required",
     "frontier_empty",
     "all_reachable_states_wf",
     "all_edges_target_reachable",
@@ -632,6 +642,7 @@ def validate_exploration(value: Any, role: str) -> tuple[bool, set[str]]:
         raise StrictResultInvalid(f"{role} exploration role differs")
     integer_fields = (
         "reachable_exact_state_count",
+        "reachable_behavioral_quotient_state_count",
         "unique_ordered_evidence_history_count",
         "edge_count",
         "reachable_action_count",
@@ -673,8 +684,14 @@ def validate_exploration(value: Any, role: str) -> tuple[bool, set[str]]:
         "hostile_bypass_explicit",
         "coaccessibility_only",
         "infinite_stutter_counterexample_present",
-        "exact_ordered_history_state_identity",
-        "bounded_exact_ordered_history_graph_exhaustive",
+        "behavioral_audit_representation_quotient_applied",
+        "behavioral_quotient_graph_exhaustive",
+        "receipt_semantic_facts_and_multiplicity_retained",
+        "operational_state_fields_retained",
+        "recovery_and_decision_semantics_retained",
+        "audit_sequence_hash_auth_root_representation_erased",
+        "projection_hash_matches_resolved_by_full_equality",
+        "bounded_projection_congruence_regression_required",
         "frontier_empty",
         "all_reachable_states_wf",
         "all_edges_target_reachable",
@@ -686,25 +703,35 @@ def validate_exploration(value: Any, role: str) -> tuple[bool, set[str]]:
         "external_assumptions_discharged",
         "linux_refinement_proved",
         "semantic_verdict_issued",
+        "exact_ordered_history_state_identity",
+        "bounded_exact_ordered_history_graph_exhaustive",
+        "audit_chain_implementation_refinement_proved",
     )
     for field in required_true + required_false:
         require_bool(row[field], f"{role} {field}", StrictResultInvalid)
+    reachable = row["reachable_behavioral_quotient_state_count"]
+    terminal = row["terminal_state_count"]
+    decision_total = sum(item[1] for item in decisions)
     passed = bool(
-        row["reachable_exact_state_count"] > 0
-        and 0
-        < row["unique_ordered_evidence_history_count"]
-        <= row["reachable_exact_state_count"]
-        and row["edge_count"] > 0
-        and row["terminal_state_count"] > 0
+        row["reachable_exact_state_count"] == 0
+        and reachable > 0
+        and row["unique_ordered_evidence_history_count"] == 0
+        and 0 < terminal < reachable
+        and row["edge_count"] >= reachable - 1
+        and row["edge_count"]
+        <= (reachable - terminal) * row["reachable_action_count"]
+        and row["reachable_action_count"] <= row["edge_count"]
         and row["nonterminal_deadlock_count"] == 0
         and row["states_without_terminal_path"] == 0
         and row["winner_overwrite_count"] == 0
-        and row["protection_breach_terminal_count"] > 0
+        and 0 < row["protection_breach_terminal_count"] <= terminal
+        and decision_total > 0
+        and decision_total + row["protection_breach_terminal_count"] == terminal
         and all(row[field] is True for field in required_true)
         and all(row[field] is False for field in required_false)
         and row["hostile_attempt_bound"] == 2
         and row["reacquisition_bound"] == 2
-        and row["multiple_pending_arrival_state_count"] > 0
+        and 0 < row["multiple_pending_arrival_state_count"] <= reachable
         and row["exact_state_key_collision_count"] == 0
     )
     return passed, set(actions)
@@ -736,12 +763,19 @@ PAIR_KEYS = {
 }
 
 
-def validate_commutation(value: Any, role: str, reachable_count: int) -> bool:
+def validate_commutation(
+    value: Any,
+    role: str,
+    reachable_count: int,
+    reachable_actions: set[str],
+) -> bool:
     row = require_object(
         value,
         {
             "role",
             "reachable_exact_state_count",
+            "reachable_behavioral_quotient_state_count",
+            "reachability_state_identity",
             "declared_independence_pair_count",
             "declared_pair_results",
             "declared_pair_occurrences_exhaustive_over_reachable_states",
@@ -749,6 +783,9 @@ def validate_commutation(value: Any, role: str, reachable_count: int) -> bool:
             "undeclared_pairs_assumed_independent",
             "reachability_uses_exact_state_identity",
             "ordered_history_quotiented_for_reachability",
+            "behavioral_projection_retains_receipt_semantics_and_multiplicity",
+            "behavioral_projection_retains_operational_recovery_and_decision_semantics",
+            "audit_chain_implementation_refinement_proved",
             "check_scope",
             "outcome_projection_scope",
             "outcome_projection_retains_receipt_semantics_and_multiplicity",
@@ -762,9 +799,25 @@ def validate_commutation(value: Any, role: str, reachable_count: int) -> bool:
         StrictResultInvalid,
     )
     pair_results = row["declared_pair_results"]
+    require_int(
+        row["reachable_exact_state_count"],
+        f"{role} commutation exact-state count",
+        StrictResultInvalid,
+    )
+    require_int(
+        row["reachable_behavioral_quotient_state_count"],
+        f"{role} commutation quotient-state count",
+        StrictResultInvalid,
+    )
+    require_int(
+        row["declared_independence_pair_count"],
+        f"{role} commutation pair count",
+        StrictResultInvalid,
+    )
     if (
         row["role"] != role
-        or row["reachable_exact_state_count"] != reachable_count
+        or row["reachable_exact_state_count"] != 0
+        or row["reachable_behavioral_quotient_state_count"] != reachable_count
         or not isinstance(pair_results, list)
         or not pair_results
         or row["declared_independence_pair_count"] != len(pair_results)
@@ -802,8 +855,10 @@ def validate_commutation(value: Any, role: str, reachable_count: int) -> bool:
             or len(pair["actions"]) != 2
             or len(set(pair["actions"])) != 2
             or not all(isinstance(action, str) and action for action in pair["actions"])
+            or not set(pair["actions"]) <= reachable_actions
             or pair["minimum_source_count"] <= 0
             or source < pair["minimum_source_count"]
+            or source > reachable_count
             or pair["coenabled_state_count"] != source
             or pair["both_orders_enabled_count"] != source
             or pair["outcome_equal_count"] != source
@@ -836,8 +891,12 @@ def validate_commutation(value: Any, role: str, reachable_count: int) -> bool:
         "declared_pair_occurrences_exhaustive_over_reachable_states": True,
         "independence_relation_claimed_complete": False,
         "undeclared_pairs_assumed_independent": False,
-        "reachability_uses_exact_state_identity": True,
-        "ordered_history_quotiented_for_reachability": False,
+        "reachability_state_identity": "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT",
+        "reachability_uses_exact_state_identity": False,
+        "ordered_history_quotiented_for_reachability": True,
+        "behavioral_projection_retains_receipt_semantics_and_multiplicity": True,
+        "behavioral_projection_retains_operational_recovery_and_decision_semantics": True,
+        "audit_chain_implementation_refinement_proved": False,
         "check_scope": "LOCAL_TWO_STEP_EFFECT_COMMUTATION_ONLY",
         "outcome_projection_scope": "RECEIPT_CHAIN_ORDERING_METADATA_ONLY",
         "outcome_projection_retains_receipt_semantics_and_multiplicity": True,
@@ -866,7 +925,10 @@ def validate_child_result(result: Any, component: str, role: str) -> tuple[bool,
     validate_worker_provenance(value["worker_provenance"], component)
     exploration_ok, actions = validate_exploration(value["exploration"], role)
     commutation_ok = validate_commutation(
-        value["commutation"], role, value["exploration"]["reachable_exact_state_count"]
+        value["commutation"],
+        role,
+        value["exploration"]["reachable_behavioral_quotient_state_count"],
+        actions,
     )
     if value["single_graph_reused"] is not True:
         raise StrictResultInvalid(f"{component} did not reuse one graph")
@@ -1583,7 +1645,9 @@ def reduce_capture(run_id: str) -> dict[str, Any]:
     child_registry_exact = len(producer_actions | checker_actions) == 56
     predicates = {
         "FAST_MUTATION_STATIC": static_ok and tests_ok,
-        "CHILD_EXACT_FIXTURE_BOUNDED": producer_ok and checker_ok and child_registry_exact,
+        "CHILD_BEHAVIORAL_AUDIT_QUOTIENT_BOUNDED": (
+            producer_ok and checker_ok and tests_ok and child_registry_exact
+        ),
         "PARENT_EXACT_REPETITION_BOUNDED": parent_ok,
         "DECLARED_LOCAL_EFFECT_COMMUTATION": (
             producer_commutation and checker_commutation

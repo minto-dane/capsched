@@ -25,14 +25,14 @@ REDUCER = TRUSTED_STAGE / "f0-c4-post-run-reducer.py"
 STAGED_CONTRACT = TRUSTED_STAGE / "f0-c4-capture-contract-v1.json"
 CONTRACT_SHA256 = "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe"
 INPUT_DIGESTS = {
-    "f0-supervisor-c4-claim-registry-v1.json": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
-    "f0_supervisor_lts_v3.py": "36493fe0ed88af4792111841492be31a37dd5c498c42e8dc86a2e8856fb6b192",
+    "f0-supervisor-c4-claim-registry-v1.json": "2a0420ed570ee1ac4f618fea32a4237345dfdb8e3d3333fd565789000c1fd438",
+    "f0_supervisor_lts_v3.py": "033170ef47e877890dfbb9f31f7bc32e0a3a0e0d0277499f81582d2f69c07888",
     "f0_supervisor_orchestrator_v3.py": "46a2788e5bdac5d96ad83204e57dda35582b5d6fdd878f9ba4e30854ab870bfb",
-    "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba",
-    "test-f0-supervisor-lts-v3-mutations.py": "d9d97c511eb5c5a1103180a3d953df3f2e59448e86fc9d5a9faa744effa6205a",
+    "run-f0-supervisor-v3-full.sh": "0142bf807bf1a46c2044804063014dfa3636d635fdf46d0ea7ab502dc71e2248",
+    "test-f0-supervisor-lts-v3-mutations.py": "2e617e056c71fd202cc090154731cf92aaf7116d3308a59de47d2d9c37b09d93",
     "test-f0-supervisor-orchestrator-v3-mutations.py": "a16f5392b963bbc37cd2c3b40d4bf8b4ad652f4b7073f74dbaa5af7ca61bf9cb",
-    "test-run-f0-supervisor-v3-full.sh": "124947b2622811b60a20f753e6cfa6eae0a704afb11c95bb0fe1b80a11e78ec9",
-    "validate-f0-supervisor-lts-v3.py": "83408bbcc7e1bf3abcf7165e7e32d2c34a1be55a8ddd78d212c77d6d95452e5c",
+    "test-run-f0-supervisor-v3-full.sh": "ca6eb6a48f41999c820019ff6573767afad05c66df12631096c462749df4fe27",
+    "validate-f0-supervisor-lts-v3.py": "61aa9c81eedc41ff655afb10507aa47c9d377a3160b2bcaf811710ce8e0d929c",
 }
 INPUT_ROOT_SHA256 = hashlib.sha256(
     json.dumps(INPUT_DIGESTS, sort_keys=True, separators=(",", ":")).encode()
@@ -149,7 +149,7 @@ def static_result() -> dict[str, Any]:
         "component": "static-registries",
         "claim_registry": {
             "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-claim-registry",
-            "claim_count": 11,
+            "claim_count": 12,
             "sha256": INPUT_DIGESTS["f0-supervisor-c4-claim-registry-v1.json"],
             "candidate_authority_all_false": True,
         },
@@ -176,7 +176,7 @@ def tests_result(passed: bool) -> dict[str, Any]:
     markers = (
         (
             "test-f0-supervisor-lts-v3-mutations.py",
-            "LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=285",
+            "LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases=295",
         ),
         (
             "test-f0-supervisor-orchestrator-v3-mutations.py",
@@ -184,7 +184,7 @@ def tests_result(passed: bool) -> dict[str, Any]:
         ),
         (
             "test-run-f0-supervisor-v3-full.sh",
-            "LOCAL_C4_RUNNER_REGRESSION_PASS hostile_cases=44",
+            "LOCAL_C4_RUNNER_REGRESSION_PASS hostile_cases=48",
         ),
     )
     return {
@@ -209,13 +209,14 @@ def tests_result(passed: bool) -> dict[str, Any]:
 def exploration(role: str, actions: list[str]) -> dict[str, Any]:
     return {
         "role": role,
-        "reachable_exact_state_count": 100,
-        "unique_ordered_evidence_history_count": 50,
+        "reachable_exact_state_count": 0,
+        "reachable_behavioral_quotient_state_count": 100,
+        "unique_ordered_evidence_history_count": 0,
         "edge_count": 200,
         "reachable_action_count": len(actions),
         "reachable_action_ids": actions,
         "terminal_state_count": 10,
-        "decision_counts": [["CANDIDATE", 5]],
+        "decision_counts": [["CANDIDATE", 9]],
         "nonterminal_deadlock_count": 0,
         "states_without_terminal_path": 0,
         "winner_overwrite_count": 0,
@@ -232,8 +233,17 @@ def exploration(role: str, actions: list[str]) -> dict[str, Any]:
         "hostile_attempt_bound": 2,
         "reacquisition_bound": 2,
         "multiple_pending_arrival_state_count": 1,
-        "exact_ordered_history_state_identity": True,
-        "bounded_exact_ordered_history_graph_exhaustive": True,
+        "exact_ordered_history_state_identity": False,
+        "bounded_exact_ordered_history_graph_exhaustive": False,
+        "behavioral_audit_representation_quotient_applied": True,
+        "behavioral_quotient_graph_exhaustive": True,
+        "receipt_semantic_facts_and_multiplicity_retained": True,
+        "operational_state_fields_retained": True,
+        "recovery_and_decision_semantics_retained": True,
+        "audit_sequence_hash_auth_root_representation_erased": True,
+        "audit_chain_implementation_refinement_proved": False,
+        "projection_hash_matches_resolved_by_full_equality": True,
+        "bounded_projection_congruence_regression_required": True,
         "frontier_empty": True,
         "all_reachable_states_wf": True,
         "all_edges_target_reachable": True,
@@ -241,10 +251,14 @@ def exploration(role: str, actions: list[str]) -> dict[str, Any]:
     }
 
 
-def commutation(role: str, independence_id: str) -> dict[str, Any]:
+def commutation(
+    role: str,
+    independence_id: str,
+    actions: list[str],
+) -> dict[str, Any]:
     pair = {
         "independence_id": independence_id,
-        "actions": ["ACTION-LEFT", "ACTION-RIGHT"],
+        "actions": actions[:2],
         "source_predicate_id": "SOURCE-FIXTURE",
         "minimum_source_count": 1,
         "expected_history_relation": "EXACT",
@@ -268,14 +282,19 @@ def commutation(role: str, independence_id: str) -> dict[str, Any]:
     }
     return {
         "role": role,
-        "reachable_exact_state_count": 100,
+        "reachable_exact_state_count": 0,
+        "reachable_behavioral_quotient_state_count": 100,
+        "reachability_state_identity": "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT",
         "declared_independence_pair_count": 1,
         "declared_pair_results": [pair],
         "declared_pair_occurrences_exhaustive_over_reachable_states": True,
         "independence_relation_claimed_complete": False,
         "undeclared_pairs_assumed_independent": False,
-        "reachability_uses_exact_state_identity": True,
-        "ordered_history_quotiented_for_reachability": False,
+        "reachability_uses_exact_state_identity": False,
+        "ordered_history_quotiented_for_reachability": True,
+        "behavioral_projection_retains_receipt_semantics_and_multiplicity": True,
+        "behavioral_projection_retains_operational_recovery_and_decision_semantics": True,
+        "audit_chain_implementation_refinement_proved": False,
         "check_scope": "LOCAL_TWO_STEP_EFFECT_COMMUTATION_ONLY",
         "outcome_projection_scope": "RECEIPT_CHAIN_ORDERING_METADATA_ONLY",
         "outcome_projection_retains_receipt_semantics_and_multiplicity": True,
@@ -292,7 +311,7 @@ def child_result(component: str, role: str, actions: list[str], independence: st
         "component": component,
         "role": role,
         "exploration": exploration(role, actions),
-        "commutation": commutation(role, independence),
+        "commutation": commutation(role, independence, actions),
         "single_graph_reused": True,
         "worker_provenance": provenance(),
     }
@@ -693,7 +712,10 @@ def run_case(case: str, expected_status: str, expected_failure: str | None) -> N
         or result["runtime_identity"]["status"]["Seccomp"] != "2"
         or result["runtime_identity"]["usr_mount"]["filesystem_type"] != "erofs"
     ):
-        raise RuntimeError(f"{case}: reduction semantics differ")
+        raise RuntimeError(
+            f"{case}: reduction semantics differ "
+            f"manifest={manifest!r} commit={commit!r} result={result!r}"
+        )
     remove_tree(EVIDENCE_ROOT / run_id)
     remove_tree(reduction)
 

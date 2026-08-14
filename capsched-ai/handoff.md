@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-08-13
+Updated: 2026-08-14
 
 This file is current-state context only. Detailed chronology is in
 `state/events.jsonl`, `design/compact.md`, focused model notes, and Git history.
@@ -27,8 +27,8 @@ latest durable G6 disposition by `check-current-state.sh`.
 ```json
 {
   "schema_version": 1,
-  "updated": "2026-08-13",
-  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
+  "updated": "2026-08-14",
+  "project_phase": "f0_v5_c4_g6_open_reinstall_required",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -54,14 +54,14 @@ latest durable G6 disposition by `check-current-state.sh`.
     "EVIDENCE-001": "contract_defined"
   },
   "candidate4": {
-    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1",
+    "current_input_artifact": "dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1",
     "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
-    "full_validator_status": "NOT_RUN_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+    "full_validator_status": "NOT_RUN_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS",
     "hostile_case_counts": {
-      "child": 285,
+      "child": 295,
       "parent": 739,
-      "runner": 44,
-      "total": 1068
+      "runner": 48,
+      "total": 1082
     },
     "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
     "closed_gates": [
@@ -76,35 +76,25 @@ latest durable G6 disposition by `check-current-state.sh`.
       "C4CAP-G7-REDUCTION"
     ],
     "clean_install": {
-      "status": "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+      "status": "REINSTALL_REQUIRED_AFTER_BEHAVIORAL_AUDIT_QUOTIENT",
       "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
       "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
-      "current_inputs_installed": true,
-      "readiness_record": "capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json",
-      "readiness_sha256": "8f9367a40decb2c9acd39f1e09b9f460ffedca2fe3a1460dd8a54f51ebd2bc25"
+      "current_inputs_installed": false,
+      "readiness_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
+      "readiness_sha256": "042b72c5f04fcc7a3992c040cdd2f0fd57710cb6d0486174ee8f98c5e8349e1d"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": true,
+      "retry_eligible": false,
       "complete_capture_available": false,
-      "active_attempt": {
-        "run_id": "candidate4-full-20260813T223812Z",
-        "status": "CAPTURE_RUNNING",
-        "launched_at": "2026-08-13T22:38:28Z",
-        "candidate_input_commit": "a5438eae59ac5cf42a15a67bf831a64a5384988f",
-        "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
-        "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
-        "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
-        "candidate_bytes_executed": true,
-        "evidence_commit_available": false
-      },
+      "active_attempt": null,
       "latest_completed_attempt": {
-        "run_id": "candidate4-full-20260813T071653Z",
+        "run_id": "candidate4-full-20260813T223812Z",
         "status": "RAW_CAPTURE_INCOMPLETE",
         "candidate_bytes_executed": true,
         "evidence_commit_available": true,
-        "observation_record": "capsched-models/validation/f0-c4-g6-pending-attack-incomplete-observation-v1.json",
-        "observation_sha256": "d1dd26588a8e7fd3ca08c7ebb48c9af9db9014da48aea66ce20b9b8d186cc4a9"
+        "observation_record": "capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json",
+        "observation_sha256": "0e26bf127292138a722dfdd6f91ba46b12bf968547d4880014a03431b1da201c"
       }
     },
     "g7": {
@@ -298,9 +288,26 @@ K0/G0, protection, and model completion remain false.
 
 The repaired model and idle-fixed launcher were clean-installed from the
 SHA-256-verified VM-native Git bundle, and the full post-install suite passed.
-That readiness launched active run `candidate4-full-20260813T223812Z` from
-exact-input commit `a5438ea...`; the non-null active ledger prevents a
-concurrent retry. G7 still requires a complete committed capture.
+That readiness launched run `candidate4-full-20260813T223812Z` from exact-input
+commit `a5438ea...`. It ran the child producer for the exact sealed 43,200-second
+deadline, used 43,191.793 CPU seconds, peaked at 7.5 GiB, recorded zero OOM and
+OOM-kill events, cleaned its private ext4 spill store, and durably committed
+`RAW_CAPTURE_INCOMPLETE`. The failure was capacity in the model representation,
+not memory isolation, storage, a semantic counterexample, or a capture failure.
+
+Analysis 0235 and Validation 0324 introduce the bounded behavioral
+audit-representation quotient. It preserves all operational fields; receipt
+semantic facts, multiplicity, issuer, and channel; recovery and decision
+semantics; and full equality on projection-hash matches. It erases only audit
+receipt order/sequence/hash/authentication and representation-only roots or
+pointers. Exact ordered identity remains callable for bounded regression. A
+weaker projection that dropped receipt semantic multiplicity produced 68
+authority conflicts and is rejected. The nine-case quotient boundary,
+295/739/48 hostile suites, 33-case memory policy, and exact-plus-quotient
+storage equivalence pass. The ordered authenticated audit-chain implementation
+refinement remains explicitly open, and these changes touch no production
+Linux or Monitor hot path. The reviewed bytes still require a clean commit,
+VM-native reinstall, and complete post-install short suite before G6 may retry.
 
 The first G6 start attempt `candidate4-full-20260811T203907Z` stopped before the
 first progress receipt and before candidate launch because the toolchain sealer
@@ -346,7 +353,10 @@ The eighth attempt `candidate4-full-20260813T071653Z` used disk-backed exact
 enumeration without OOM and exposed the pending-ATTACH closure counterexample.
 The semantic successor and idle-fixed launcher are clean-installed and the
 complete short suite passes. The ninth attempt
-`candidate4-full-20260813T223812Z` is active; G7 remains blocked.
+`candidate4-full-20260813T223812Z` used that successor without OOM but reached
+the exact ordered-audit representation deadline and durably finalized
+incomplete. Its behavioral-quotient successor is locally validated but not yet
+clean-installed; G6 retry is disabled and G7 remains blocked.
 
 ## Current Git State
 
@@ -534,16 +544,14 @@ open.
 
 ## Next Order
 
-1. Implement the accepted v1 root-owned, dedicated-UID, nondelegated cgroup v2
-   supervisor plus its service-manager guardian. Keep the implementation small,
-   descriptor-relative, fail-closed, and unable to decide claims.
-2. Run the root-owned feature/authority probe and hostile escape, daemonize,
-   fork-bomb, timeout, output-flood, supervisor-crash, and storage-mutation
-   fixtures. G3-G5 must all pass before full execution.
-3. Capture exact Candidate-4 inputs, launch the full bounded child/parent
-   reachability and declared-commutation campaign detached, then independently
-   reduce retained raw evidence in a later session.
-4. Disposition the three full-only local claims without changing any external
+1. Commit the locally validated behavioral audit-representation quotient and
+   its fail-closed ninth-attempt disposition from a clean reviewed tree.
+2. Reconstruct the reviewed commit inside VM-native root-owned storage, install
+   its TCB manifest, and rerun the complete short mechanism/model suite.
+3. Capture the exact installed Candidate-4 inputs, launch the full bounded
+   child/parent reachability and declared-commutation campaign detached, then
+   independently reduce only a complete committed capture in a later session.
+4. Disposition the full-only local claims without changing any external
    claim. A local pass still does not authorize F0 or external R11 review.
 5. Continue GPT-primary synthesis, contradiction search, and minimality through
    F1 claim semantics, F2 platform/threat refinement, and F3 external

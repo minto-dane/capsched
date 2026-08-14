@@ -794,7 +794,7 @@ expected_result_fields = {
 if set(result) != expected_result_fields:
     raise SystemExit("validator result top-level fields differ")
 
-if not is_plain_int(result.get("schema_version")) or result["schema_version"] != 4:
+if not is_plain_int(result.get("schema_version")) or result["schema_version"] != 5:
     raise SystemExit("unexpected result schema")
 if result.get("artifact_id") != (
     "dynamic-residency-f0-v5-supervisor-v3-candidate4-full-local-result"
@@ -812,7 +812,8 @@ expected_authorization_fields = {
     "external_R11_review",
     "G0_authorized",
     "self_authorization",
-    "standalone_child_bounded_exact_ordered_history_graph_exhaustive",
+    "standalone_child_bounded_behavioral_quotient_graph_exhaustive",
+    "ordered_audit_chain_implementation_refinement_proved",
     "standalone_child_bounds",
     "declared_local_effect_commutation_checked",
     "independence_relation_complete",
@@ -844,6 +845,7 @@ for field in (
     "external_R11_review",
     "G0_authorized",
     "self_authorization",
+    "ordered_audit_chain_implementation_refinement_proved",
     "independence_relation_complete",
     "commutation_projection_congruence",
     "global_semantic_confluence",
@@ -883,7 +885,7 @@ if not all(
 ):
     raise SystemExit("standalone child bounds have invalid types")
 for field in (
-    "standalone_child_bounded_exact_ordered_history_graph_exhaustive",
+    "standalone_child_bounded_behavioral_quotient_graph_exhaustive",
     "declared_local_effect_commutation_checked",
 ):
     if authorization.get(field) not in {True, False}:
@@ -1304,6 +1306,7 @@ child_bundle_fields = {
 child_exploration_fields = {
     "role",
     "reachable_exact_state_count",
+    "reachable_behavioral_quotient_state_count",
     "edge_count",
     "terminal_state_count",
     "nonterminal_deadlock_count",
@@ -1328,6 +1331,15 @@ child_exploration_fields = {
     "multiple_pending_arrival_state_count",
     "exact_ordered_history_state_identity",
     "bounded_exact_ordered_history_graph_exhaustive",
+    "behavioral_audit_representation_quotient_applied",
+    "behavioral_quotient_graph_exhaustive",
+    "receipt_semantic_facts_and_multiplicity_retained",
+    "operational_state_fields_retained",
+    "recovery_and_decision_semantics_retained",
+    "audit_sequence_hash_auth_root_representation_erased",
+    "audit_chain_implementation_refinement_proved",
+    "projection_hash_matches_resolved_by_full_equality",
+    "bounded_projection_congruence_regression_required",
     "frontier_empty",
     "all_reachable_states_wf",
     "all_edges_target_reachable",
@@ -1336,6 +1348,8 @@ child_exploration_fields = {
 commutation_fields = {
     "role",
     "reachable_exact_state_count",
+    "reachable_behavioral_quotient_state_count",
+    "reachability_state_identity",
     "declared_independence_pair_count",
     "declared_pair_results",
     "declared_pair_occurrences_exhaustive_over_reachable_states",
@@ -1343,6 +1357,9 @@ commutation_fields = {
     "undeclared_pairs_assumed_independent",
     "reachability_uses_exact_state_identity",
     "ordered_history_quotiented_for_reachability",
+    "behavioral_projection_retains_receipt_semantics_and_multiplicity",
+    "behavioral_projection_retains_operational_recovery_and_decision_semantics",
+    "audit_chain_implementation_refinement_proved",
     "check_scope",
     "outcome_projection_scope",
     "outcome_projection_retains_receipt_semantics_and_multiplicity",
@@ -1378,6 +1395,7 @@ pair_fields = {
 }
 child_count_fields = {
     "reachable_exact_state_count",
+    "reachable_behavioral_quotient_state_count",
     "edge_count",
     "terminal_state_count",
     "nonterminal_deadlock_count",
@@ -1403,6 +1421,15 @@ child_boolean_fields = {
     "semantic_verdict_issued",
     "exact_ordered_history_state_identity",
     "bounded_exact_ordered_history_graph_exhaustive",
+    "behavioral_audit_representation_quotient_applied",
+    "behavioral_quotient_graph_exhaustive",
+    "receipt_semantic_facts_and_multiplicity_retained",
+    "operational_state_fields_retained",
+    "recovery_and_decision_semantics_retained",
+    "audit_sequence_hash_auth_root_representation_erased",
+    "audit_chain_implementation_refinement_proved",
+    "projection_hash_matches_resolved_by_full_equality",
+    "bounded_projection_congruence_regression_required",
     "frontier_empty",
     "all_reachable_states_wf",
     "all_edges_target_reachable",
@@ -1425,12 +1452,12 @@ for role_name in ("child-bundle-producer", "child-bundle-checker"):
     if not isinstance(bundle["commutation"]["declared_pair_results"], list):
         raise SystemExit(f"nested commutation pairs differ: {role_name}")
     commutation_reachable_count = bundle["commutation"][
-        "reachable_exact_state_count"
+        "reachable_behavioral_quotient_state_count"
     ]
     if not is_plain_int(commutation_reachable_count) or commutation_reachable_count <= 0:
         raise SystemExit(f"nested commutation reachability differs: {role_name}")
     exploration_reachable_count = bundle["exploration"][
-        "reachable_exact_state_count"
+        "reachable_behavioral_quotient_state_count"
     ]
     exploration_terminal_count = bundle["exploration"]["terminal_state_count"]
     exploration_edge_count = bundle["exploration"]["edge_count"]
@@ -1593,11 +1620,11 @@ for role_name in ("child-bundle-producer", "child-bundle-checker"):
             {row[0] for row in bundle["exploration"]["decision_counts"]}
         )
         or not is_plain_int(
-            bundle["commutation"]["reachable_exact_state_count"]
+            bundle["commutation"]["reachable_behavioral_quotient_state_count"]
         )
-        or bundle["commutation"]["reachable_exact_state_count"] <= 0
-        or bundle["commutation"]["reachable_exact_state_count"]
-        != bundle["exploration"]["reachable_exact_state_count"]
+        or bundle["commutation"]["reachable_behavioral_quotient_state_count"] <= 0
+        or bundle["commutation"]["reachable_behavioral_quotient_state_count"]
+        != bundle["exploration"]["reachable_behavioral_quotient_state_count"]
         or not is_plain_int(
             bundle["commutation"]["declared_independence_pair_count"]
         )
@@ -1811,19 +1838,20 @@ for role in ("child", "orchestrator"):
 
 def child_result_ok(item):
     decision_total = sum(row[1] for row in item["decision_counts"])
+    reachable = item["reachable_behavioral_quotient_state_count"]
     return bool(
-        item["reachable_exact_state_count"] > 0
+        item["reachable_exact_state_count"] == 0
+        and reachable > 0
         and 0 < item["terminal_state_count"]
-        < item["reachable_exact_state_count"]
-        and item["edge_count"] >= item["reachable_exact_state_count"] - 1
+        < reachable
+        and item["edge_count"] >= reachable - 1
         and item["edge_count"]
         <= (
-            (item["reachable_exact_state_count"] - item["terminal_state_count"])
+            (reachable - item["terminal_state_count"])
             * item["reachable_action_count"]
         )
         and item["reachable_action_count"] <= item["edge_count"]
-        and 0 < item["unique_ordered_evidence_history_count"]
-        <= item["reachable_exact_state_count"]
+        and item["unique_ordered_evidence_history_count"] == 0
         and item["nonterminal_deadlock_count"] == 0
         and item["states_without_terminal_path"] == 0
         and item["winner_overwrite_count"] == 0
@@ -1844,9 +1872,18 @@ def child_result_ok(item):
         and item["hostile_attempt_bound"] == 2
         and item["reacquisition_bound"] == 2
         and 0 < item["multiple_pending_arrival_state_count"]
-        <= item["reachable_exact_state_count"]
-        and item["exact_ordered_history_state_identity"] is True
-        and item["bounded_exact_ordered_history_graph_exhaustive"] is True
+        <= reachable
+        and item["exact_ordered_history_state_identity"] is False
+        and item["bounded_exact_ordered_history_graph_exhaustive"] is False
+        and item["behavioral_audit_representation_quotient_applied"] is True
+        and item["behavioral_quotient_graph_exhaustive"] is True
+        and item["receipt_semantic_facts_and_multiplicity_retained"] is True
+        and item["operational_state_fields_retained"] is True
+        and item["recovery_and_decision_semantics_retained"] is True
+        and item["audit_sequence_hash_auth_root_representation_erased"] is True
+        and item["audit_chain_implementation_refinement_proved"] is False
+        and item["projection_hash_matches_resolved_by_full_equality"] is True
+        and item["bounded_projection_congruence_regression_required"] is True
         and item["frontier_empty"] is True
         and item["all_reachable_states_wf"] is True
         and item["all_edges_target_reachable"] is True
@@ -1864,8 +1901,21 @@ def commutation_result_ok(item):
         is True
         and item["independence_relation_claimed_complete"] is False
         and item["undeclared_pairs_assumed_independent"] is False
-        and item["reachability_uses_exact_state_identity"] is True
-        and item["ordered_history_quotiented_for_reachability"] is False
+        and item["reachable_exact_state_count"] == 0
+        and item["reachable_behavioral_quotient_state_count"] > 0
+        and item["reachability_state_identity"]
+        == "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT"
+        and item["reachability_uses_exact_state_identity"] is False
+        and item["ordered_history_quotiented_for_reachability"] is True
+        and item[
+            "behavioral_projection_retains_receipt_semantics_and_multiplicity"
+        ]
+        is True
+        and item[
+            "behavioral_projection_retains_operational_recovery_and_decision_semantics"
+        ]
+        is True
+        and item["audit_chain_implementation_refinement_proved"] is False
         and item["check_scope"] == "LOCAL_TWO_STEP_EFFECT_COMMUTATION_ONLY"
         and item[
             "outcome_projection_retains_receipt_semantics_and_multiplicity"
@@ -1938,9 +1988,10 @@ predicates = {
         and components["tests"].get("passed") is True
         and component_receipts_bound
     ),
-    "CHILD_EXACT_FIXTURE_BOUNDED": bool(
+    "CHILD_BEHAVIORAL_AUDIT_QUOTIENT_BOUNDED": bool(
         child_result_ok(producer_bundle["exploration"])
         and child_result_ok(checker_bundle["exploration"])
+        and components["tests"].get("passed") is True
         and component_receipts_bound
     ),
     "PARENT_EXACT_REPETITION_BOUNDED": bool(
@@ -1996,7 +2047,7 @@ if result.get("claim_registry") != {
 }:
     raise SystemExit("validator result claim registry identity mismatch")
 claim_rows = claim_registry.get("claims")
-if not isinstance(claim_rows, list) or len(claim_rows) != 11:
+if not isinstance(claim_rows, list) or len(claim_rows) != 12:
     raise SystemExit("claim registry cardinality mismatch")
 for row in claim_rows:
     if set(row) != {"id", "class", "fast", "full"}:

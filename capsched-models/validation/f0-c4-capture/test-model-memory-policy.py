@@ -271,6 +271,74 @@ def main() -> None:
         raise AssertionError("compact child state reconstruction or equality drifted")
     cases += 1
 
+    receipt_state = child.next_states(child_start)[0].state
+    receipt = receipt_state.evidence_receipts[-1]
+    representation_only = child.replace(
+        receipt_state,
+        evidence_receipts=child.ReceiptHistory().append(
+            child.replace(
+                receipt,
+                sequence=99,
+                previous_hash="representation-previous",
+                auth_tag="representation-auth",
+            )
+        ),
+        evidence_root="representation-root",
+        winner_sequence=99,
+        fault_cause_receipt_sequence=98,
+    )
+    semantic_change = child.replace(
+        receipt_state,
+        evidence_receipts=child.ReceiptHistory().append(
+            child.replace(receipt, payload=receipt.payload + "-changed")
+        ),
+    )
+    duplicate_receipt = child.replace(
+        receipt_state,
+        evidence_receipts=child.ReceiptHistory().append(receipt).append(receipt),
+    )
+    projected_store = child.CompactExactStateStore(
+        child.EnvelopeState,
+        child.CHILD_STATE_REFERENCE_FIELDS,
+    )
+    projected_index = child.ExactStateIndex(
+        projected_store,
+        initial_capacity=8,
+        projection=child.behavioral_projection,
+        projected_equals_at=projected_store.behavioral_identity_equals_at,
+    )
+    with patch.object(
+        child._ReceiptSemanticMultisetView,
+        "__hash__",
+        return_value=23,
+    ):
+        insertions = (
+            projected_index.intern(receipt_state),
+            projected_index.intern(representation_only),
+            projected_index.intern(semantic_change),
+            projected_index.intern(duplicate_receipt),
+            projected_index.intern(semantic_change),
+        )
+    if insertions != ((0, True), (0, False), (1, True), (2, True), (1, False)):
+        raise AssertionError(
+            "behavioral index merged receipt semantics, multiplicity, or a hash collision"
+        )
+    cases += 1
+
+    if (
+        not projected_store.behavioral_identity_equals_at(
+            0, child.behavioral_projection(representation_only)
+        )
+        or projected_store.behavioral_identity_equals_at(
+            0, child.behavioral_projection(semantic_change)
+        )
+        or projected_store.behavioral_identity_equals_at(
+            0, child.behavioral_projection(duplicate_receipt)
+        )
+    ):
+        raise AssertionError("compact behavioral identity resolver boundary drifted")
+    cases += 1
+
     packed_child = child_store[0]
     packed_receipts = []
     for _ in range(10):
@@ -546,11 +614,14 @@ def main() -> None:
         or "class _PackedPersistentSequenceColumn:" not in child_source
         or "class ExactStateIndex:" not in child_source
         or "class CompactExactStateStore:" not in child_source
+        or "def behavioral_identity_equals_at(" not in child_source
+        or "def behavioral_projection(" not in child_source
+        or "projection=behavioral_projection if behavioral_quotient else None" not in child_source
         or 'frontier_indices = _new_array("I"' not in child_source
         or "representatives: dict[EnvelopeState, int]" in child_source
         or "state_vector = tuple(states)" in child_source
         or "evidence_histories: set[tuple[Receipt, ...]]" in child_source
-        or "evidence_history_index = ExactStateIndex" not in child_source
+        or "else ExactStateIndex(evidence_histories)" not in child_source
         or "class ParentReceiptHistory(child.PersistentSequence):" not in parent_source
         or 'frontier_indices = child._new_array("I"' not in parent_source
         or "representatives: dict[OrchestratorState, int]" in parent_source

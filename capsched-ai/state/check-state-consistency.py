@@ -205,6 +205,7 @@ def validate_semantics(
     short = capture["short_regression"]
     for key in (
         "launcher_idle_cases",
+        "behavioral_quotient_boundary_cases",
         "model_memory_policy_cases",
         "model_storage_equivalence_cases",
         "capture_resource_policy_cases",
@@ -224,6 +225,13 @@ def validate_semantics(
     require(closed + remaining == contract_gates, "capture gate partition/order drift")
     require(closed == contract_gates[:5], "G1-G5 mechanism closure drift")
     require(remaining == contract_gates[5:], "G6/G7 remaining-gate drift")
+    require(
+        contract["resource_policy"][
+            "candidate_component_oom_isolated_from_supervisor"
+        ]
+        is True,
+        "capture contract does not isolate component OOM",
+    )
 
     install = capture["clean_install"]
     g6 = capture["g6"]
@@ -279,6 +287,10 @@ def validate_semantics(
         observation.get("artifact_id")
         == "f0-c4-g6-pending-attack-incomplete-observation-v1"
     )
+    behavioral_quotient_observation = (
+        observation.get("artifact_id")
+        == "f0-c4-g6-exact-history-timeout-observation-v1"
+    )
     require(
         latest["status"] in {"RAW_CAPTURE_INCOMPLETE", "GUARDIAN_INCOMPLETE_PUBLISHED"},
         "latest G6 result drift",
@@ -292,6 +304,7 @@ def validate_semantics(
         or packed_history_repair_observation
         or external_memory_repair_observation
         or pending_attack_closure_observation
+        or behavioral_quotient_observation
     ):
         durable = observation["durable_evidence"]
         conclusion = observation["conclusion"]
@@ -350,6 +363,91 @@ def validate_semantics(
             ]
             is True,
             "capture contract does not isolate component OOM",
+        )
+    elif behavioral_quotient_observation:
+        failed = observation["failed_component"]
+        diagnosis = observation["diagnosis"]
+        conclusion = observation["conclusion"]
+        require(
+            failed["component_id"] == "child-bundle-producer"
+            and failed["termination"] == "DEADLINE_EXCEEDED"
+            and failed["deadline_seconds"] == 43200
+            and failed["deadline_exceeded"] is True
+            and failed["elapsed_monotonic_ns"] >= 43200 * 1_000_000_000
+            and failed["memory_peak_bytes"]
+            == contract["resource_policy"]["memory_max_bytes_per_component"],
+            "behavioral-quotient timeout observation drift",
+        )
+        require(
+            all(
+                failed["memory_events"][key] == 0
+                for key in ("oom", "oom_kill", "oom_group_kill")
+            )
+            and diagnosis["component_oom_observed"] is False
+            and diagnosis["global_oom_observed"] is False
+            and diagnosis["configured_deadline_reached"] is True
+            and diagnosis["exact_ordered_audit_history_is_part_of_state_identity"]
+            is True
+            and conclusion["capacity_failure"] is True
+            and conclusion["capacity_failure_class"]
+            == "EXACT_AUDIT_REPRESENTATION_STATE_EXPLOSION",
+            "exact-history timeout was misclassified as OOM or semantics",
+        )
+        require(
+            failed["external_memory"]["mode"]
+            == contract["resource_policy"]["external_memory_backing_mode"]
+            and failed["external_memory"]["direct_io"] is True
+            and failed["external_memory"]["visible_entries_after_exit"] == 0
+            and failed["external_memory"]["unmounted"] is True
+            and failed["external_memory"]["loop_detached"] is True
+            and failed["external_memory"]["backing_removed"] is True,
+            "timeout run did not retain the external-memory boundary",
+        )
+        require(
+            observation["source"]["captured_child_model_sha256"]
+            != current_input["exact_inputs"]["f0_supervisor_lts_v3.py"],
+            "behavioral quotient did not change rejected child bytes",
+        )
+        require(
+            current_input["failed_capture_observation"]["run_id"] == latest_id
+            and current_input["failed_capture_observation"]["artifact_sha256"]
+            == observation["artifact_sha256"],
+            "behavioral quotient does not bind the timed-out run",
+        )
+        quotient = current_input["behavioral_quotient"]
+        require(
+            quotient["full_fixture_reachability_identity"]
+            == "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT"
+            and quotient["exact_ordered_identity_retained_for_bounded_regression"]
+            is True
+            and quotient["receipt_semantic_facts_and_multiplicity_retained"]
+            is True
+            and quotient["receipt_issuer_and_channel_retained"] is True
+            and quotient["all_operational_state_fields_retained"] is True
+            and quotient["recovery_and_decision_semantics_retained"] is True
+            and quotient["projection_hash_matches_resolved_by_full_equality"]
+            is True
+            and quotient["bounded_projection_congruence_regression_passed"]
+            is True
+            and quotient["audit_chain_implementation_refinement_proved"]
+            is False
+            and quotient["weaker_authority_projection_rejected"] is True
+            and quotient["weaker_projection_conflicts_observed"] > 0
+            and quotient["production_linux_scheduler_hot_path_changed"] is False
+            and quotient["production_monitor_dispatch_hot_path_changed"] is False,
+            "behavioral quotient is weakened, overclaimed, or over-broad",
+        )
+        require(
+            all(
+                current_input["predecessor"][key] is True
+                for key in (
+                    "semantic_pending_attack_repair_retained",
+                    "disk_backed_exact_store_retained",
+                    "packed_exact_history_retained",
+                    "component_oom_isolation_retained",
+                )
+            ),
+            "behavioral quotient dropped predecessor repairs",
         )
     elif pending_attack_closure_observation:
         failed = observation["failed_component"]
@@ -869,6 +967,7 @@ def validate_semantics(
         or packed_history_repair_observation
         or external_memory_repair_observation
         or pending_attack_closure_observation
+        or behavioral_quotient_observation
     ):
         require(
             current_input["repair"][
@@ -1194,6 +1293,68 @@ def validate_semantics(
         )
         expected_full_action = "g6_pending_attack_closure_retry_eligible"
         expected_reducer_status = "PASS"
+    elif (
+        install["status"]
+        == "REINSTALL_REQUIRED_AFTER_BEHAVIORAL_AUDIT_QUOTIENT"
+    ):
+        require(
+            install["current_inputs_installed"] is False,
+            "pending behavioral-quotient reinstall marked installed",
+        )
+        require(
+            g6["retry_eligible"] is False,
+            "G6 retry enabled before behavioral-quotient clean reinstall",
+        )
+        require(
+            readiness["status"] == "REINSTALL_REQUIRED",
+            "pending behavioral-quotient install has positive readiness",
+        )
+        expected_input_status = (
+            "behavioral_audit_quotient_validated_locally_"
+            "g6_retry_requires_clean_install"
+        )
+        expected_phase = "f0_v5_c4_g6_open_reinstall_required"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_behavioral_quotient_reinstall_"
+            "required_g7_blocked"
+        )
+        expected_install_action = "behavioral_audit_quotient_clean_install_pending"
+        expected_full_action = (
+            "blocked_until_behavioral_audit_quotient_clean_install"
+        )
+        expected_reducer_status = "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE"
+    elif install["status"] == "PASSED_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS":
+        require(
+            install["current_inputs_installed"] is True,
+            "passed behavioral-quotient reinstall not marked installed",
+        )
+        require(
+            g6["retry_eligible"] is True,
+            "G6 retry not enabled after behavioral-quotient clean reinstall",
+        )
+        require(
+            readiness["status"] == "G6_RETRY_ELIGIBLE",
+            "passed behavioral-quotient install lacks readiness",
+        )
+        expected_input_status = (
+            "behavioral_audit_quotient_clean_installed_g6_retry_eligible"
+        )
+        expected_phase = "f0_v5_c4_g6_open_retry_eligible"
+        expected_capture_status = (
+            "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+        )
+        expected_track_status = (
+            "open_candidate4_g1_g5_closed_g6_behavioral_quotient_retry_"
+            "eligible_g7_blocked"
+        )
+        expected_install_action = (
+            "completed_clean_reviewed_install_for_behavioral_audit_quotient_inputs"
+        )
+        expected_full_action = "g6_behavioral_audit_quotient_retry_eligible"
+        expected_reducer_status = "PASS"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
 
@@ -1219,6 +1380,7 @@ def validate_semantics(
     require(readiness["mechanism_recheck"]["launcher_idle_cases"] == capture["short_regression"]["launcher_idle_cases"], "readiness launcher-idle count drift")
     require(readiness["current_inputs"]["model_memory_policy_cases"] == capture["short_regression"]["model_memory_policy_cases"], "readiness model-memory count drift")
     require(readiness["current_inputs"]["model_storage_equivalence_cases"] == capture["short_regression"]["model_storage_equivalence_cases"], "readiness model-storage-equivalence count drift")
+    require(readiness["current_inputs"]["behavioral_quotient_boundary_cases"] == capture["short_regression"]["behavioral_quotient_boundary_cases"], "readiness behavioral-quotient count drift")
     require(readiness["current_inputs"]["reducer_current_input_binding_cases"] == capture["short_regression"]["reducer_current_input_binding_cases"], "readiness reducer-input count drift")
     require(readiness["mechanism_recheck"]["external_memory_recovery_cases"] == capture["short_regression"]["external_memory_recovery_cases"], "readiness external-memory-recovery count drift")
     require(readiness["mechanism_recheck"]["reducer_current_input_binding_cases"] == capture["short_regression"]["reducer_current_input_binding_cases"], "readiness reducer-binding mechanism count drift")
@@ -1401,10 +1563,10 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
         "G6 starter does not reject a concurrent active attempt",
     )
     require(
-        "pending_attack_closure_repaired_clean_installed_g6_retry_eligible"
+        "behavioral_audit_quotient_clean_installed_g6_retry_eligible"
         in starter
-        and "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS" in starter,
-        "G6 starter is not bound to the pending-attack repaired readiness state",
+        and "PASSED_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS" in starter,
+        "G6 starter is not bound to the behavioral-quotient readiness state",
     )
 
     stable_pointer_requirements = {
@@ -1543,7 +1705,11 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             )
         )
         changed_input = copy.deepcopy(current_input)
-        if "storage_repair" in changed_input:
+        if "behavioral_quotient" in changed_input:
+            changed_input["behavioral_quotient"][
+                "receipt_semantic_facts_and_multiplicity_retained"
+            ] = False
+        elif "storage_repair" in changed_input:
             changed_input["storage_repair"]["exact_state_identity_changed"] = True
         elif "repair" in changed_input:
             changed_input["repair"]["exact_state_identity_changed"] = True
@@ -1580,7 +1746,11 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
             )
         )
         changed_input = copy.deepcopy(current_input)
-        if "storage_repair" in changed_input:
+        if "behavioral_quotient" in changed_input:
+            changed_input["behavioral_quotient"][
+                "projection_hash_matches_resolved_by_full_equality"
+            ] = False
+        elif "storage_repair" in changed_input:
             changed_input["storage_repair"][
                 "python_transition_semantics_retained"
             ] = False

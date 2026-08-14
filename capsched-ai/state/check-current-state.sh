@@ -68,6 +68,8 @@ assurance_head_rels=(
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-external-memory-repair-v1.json
 	capsched-models/analysis/0234-dynamic-residency-f0-c4-g6-pending-hostile-closure-race.md
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1.json
+	capsched-models/analysis/0235-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md
+	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1.json
 	capsched-models/assurance/claims.json
 	capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
 	capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json
@@ -102,6 +104,9 @@ assurance_head_rels=(
 	capsched-models/validation/0323-dynamic-residency-f0-c4-g6-pending-hostile-closure-repair.md
 	capsched-models/validation/f0-c4-g6-pending-attack-incomplete-observation-v1.json
 	capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json
+	capsched-models/validation/0324-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md
+	capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json
+	capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh
@@ -122,6 +127,8 @@ assurance_head_rels=(
 	capsched-models/validation/f0-c4-capture/test-model-memory-policy.py
 	capsched-models/validation/f0-c4-capture/test-model-storage-equivalence.py
 	capsched-models/validation/f0-c4-capture/profile-model-storage.py
+	capsched-models/validation/f0-c4-capture/test-model-behavioral-quotient.py
+	capsched-models/validation/f0-c4-capture/profile-model-behavioral-quotient.py
 	capsched-models/validation/f0-c4-capture/test-external-memory-recovery.py
 	capsched-models/validation/f0-c4-capture/test-reducer-current-input-binding.py
 	capsched-models/validation/f0-c4-capture/test-toolchain-reuse.sh
@@ -265,7 +272,7 @@ recorded_registry_digest=$(jq -er '
 jq -e '
 	.artifact_id ==
 	 "dynamic-residency-f0-v5-supervisor-v3-candidate4-claim-registry" and
-	([.claims[].id] | length == 11 and length == (unique | length)) and
+	([.claims[].id] | length == 12 and length == (unique | length)) and
 	.authorization.F0_local_acceptance == false and
 	.authorization.external_R11_review == false and
 	.authorization.G0_authorized == false and
@@ -341,14 +348,20 @@ resource_policy_result=$(
 }
 model_memory_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
 	"$repo_root/capsched-models/validation/f0-c4-capture/test-model-memory-policy.py")
-[[ $model_memory_result == *"F0_C4_MODEL_MEMORY_POLICY_PASS cases=31"* ]] || {
+[[ $model_memory_result == *"F0_C4_MODEL_MEMORY_POLICY_PASS cases=33"* ]] || {
 	printf 'error: F0 C4 model memory-policy regression failed\n' >&2
 	exit 1
 }
 model_storage_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
 	"$repo_root/capsched-models/validation/f0-c4-capture/test-model-storage-equivalence.py")
-[[ $model_storage_result == *"F0_C4_MODEL_STORAGE_EQUIVALENCE_PASS expanded=2000 states=20510 edges=24920"* ]] || {
+[[ $model_storage_result == *"F0_C4_MODEL_STORAGE_EQUIVALENCE_PASS cases=2 exact_expanded=2000 exact_states=20510 exact_edges=24920 quotient_expanded=2000 quotient_states=12808 quotient_edges=25646"* ]] || {
 	printf 'error: F0 C4 model RAM/storage equivalence regression failed\n' >&2
+	exit 1
+}
+model_quotient_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
+	"$repo_root/capsched-models/validation/f0-c4-capture/test-model-behavioral-quotient.py")
+[[ $model_quotient_result == *"F0_C4_BEHAVIORAL_QUOTIENT_PASS cases=9 expanded=2000 exact_states=20510 edges=24920 equivalent_expanded_states=669"* ]] || {
+	printf 'error: F0 C4 behavioral-quotient regression failed\n' >&2
 	exit 1
 }
 reducer_binding_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \

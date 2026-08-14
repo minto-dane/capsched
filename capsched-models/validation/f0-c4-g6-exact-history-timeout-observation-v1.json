@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-exact-history-timeout-observation-v1",
+  "date": "2026-08-14",
+  "record_class": "public_safe_observation_of_root_owned_fail_closed_capture",
+  "run_id": "candidate4-full-20260813T223812Z",
+  "status": "RAW_CAPTURE_INCOMPLETE_COMPONENT_DEADLINE",
+  "source": {
+    "candidate_input_commit": "a5438eae59ac5cf42a15a67bf831a64a5384988f",
+    "installed_tcb_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
+    "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
+    "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+    "input_root_sha256": "1edf170ad29edc8b450023f4d88acb160733471bcd69f29f81fa8b4ab18cc91d",
+    "captured_child_model_sha256": "36493fe0ed88af4792111841492be31a37dd5c498c42e8dc86a2e8856fb6b192",
+    "toolchain_identity_sha256": "dc9debd57b5763fb400771fbc22e997f0ba8c643b463ba985b1839da58755cf9",
+    "toolchain_image_sha256": "b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce"
+  },
+  "durable_evidence": {
+    "root_evidence_location": "domainlease-dev:/var/lib/domainlease-f0-c4/evidence/candidate4-full-20260813T223812Z",
+    "raw_commit_sha256": "1f0ec4dc394a2860aec3a5da788a616c34c8da43ca99965a924cc8b8fed7ea8c",
+    "capture_manifest_sha256": "a6f0dca8d2aa1f26df3792500bac85d8a4006096d668b16ef13f5d93dbf21427",
+    "sealed_plan_sha256": "178b3d203a898c918b4ccd1c8753b7298cf46751586c346cf659cc646bc60d77",
+    "failed_component_receipt_sha256": "56ff5e3be9b046f6e9fb5afe47c32d1c3cd92dd629f36b6cd0711410501d37d3",
+    "failed_component_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "failed_component_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "capture_status": "RAW_CAPTURE_INCOMPLETE",
+    "candidate_bytes_positive_eligible": false,
+    "reduction_performed": false,
+    "component_count": 3,
+    "raw_total_bytes": 28379
+  },
+  "systemd_disposition": {
+    "capture_unit_result": "success",
+    "capture_unit_exec_main_status": 0,
+    "host_launcher_unit_result": "exit-code",
+    "host_launcher_exec_main_status": 1,
+    "service_exit_is_not_capture_success": true,
+    "capture_status_is_bound_by_raw_commit": true,
+    "trusted_supervisor_survived": true,
+    "incomplete_lifecycle_receipt_committed": true,
+    "guardian_preserved_final_commit": true
+  },
+  "failed_component": {
+    "component_id": "child-bundle-producer",
+    "role": "FULL_CHILD_PRODUCER",
+    "termination": "DEADLINE_EXCEEDED",
+    "deadline_seconds": 43200,
+    "deadline_exceeded": true,
+    "launcher_returncode": 1,
+    "waitid_code": 2,
+    "waitid_status": 9,
+    "elapsed_monotonic_ns": 43200554052465,
+    "cpu_usage_usec": 43191793050,
+    "user_cpu_usec": 43040147574,
+    "system_cpu_usec": 151645475,
+    "memory_peak_bytes": 8053063680,
+    "memory_current_after_drain_bytes": 69632,
+    "pids_peak": 1,
+    "memory_events": {
+      "low": 0,
+      "high": 0,
+      "max": 68215,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0
+    },
+    "stdout_bytes": 0,
+    "stderr_bytes": 0,
+    "result_protocol_framing_valid": false,
+    "result_protocol_semantics_validated": false,
+    "populated_zero_observed": true,
+    "cgroup_kill_used": true,
+    "external_memory": {
+      "mode": "per_component_sparse_loop_ext4",
+      "backing_allocated_bytes_after_exit": 13816688640,
+      "filesystem_free_bytes_after_exit": 137345626112,
+      "direct_io": true,
+      "visible_entries_after_exit": 0,
+      "unmounted": true,
+      "loop_detached": true,
+      "backing_removed": true
+    }
+  },
+  "diagnosis": {
+    "component_oom_observed": false,
+    "global_oom_observed": false,
+    "semantic_counterexample_observed": false,
+    "configured_deadline_reached": true,
+    "cpu_saturation_consistent_with_enumeration": true,
+    "stdout_or_stderr_progress_available": false,
+    "exact_ordered_audit_history_is_part_of_state_identity": true,
+    "root_cause": "Distinct permutations of semantically identical audit receipts remained distinct exact states, causing combinatorial state growth until the sealed 43200-second component deadline."
+  },
+  "conclusion": {
+    "external_memory_repair_effective": true,
+    "component_oom_isolation_effective": true,
+    "capacity_failure": true,
+    "capacity_failure_class": "EXACT_AUDIT_REPRESENTATION_STATE_EXPLOSION",
+    "fail_closed_capture_effective": true,
+    "g6_complete": false,
+    "g7_allowed": false,
+    "replay_same_exact_identity_without_capacity_repair_allowed": false
+  },
+  "retention": {
+    "raw_evidence_copied_to_public_repository": false,
+    "reason": "Retain root-owned operational evidence on VM-native ext4; publish only durable hashes, bounded resource facts, and fail-closed disposition."
+  }
+}

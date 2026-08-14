@@ -138,6 +138,7 @@ def main() -> int:
     parser.add_argument("--source-limit", type=int, required=True)
     parser.add_argument("--report-every", type=int, default=25_000)
     parser.add_argument("--trace-allocations", action="store_true")
+    parser.add_argument("--behavioral-quotient", action="store_true")
     arguments = parser.parse_args()
     if arguments.source_limit <= 0 or arguments.report_every <= 0:
         parser.error("limits must be positive")
@@ -151,7 +152,19 @@ def main() -> int:
         model.EnvelopeState,
         model.CHILD_STATE_REFERENCE_FIELDS,
     )
-    representatives = model.ExactStateIndex(states)
+    representatives = model.ExactStateIndex(
+        states,
+        projection=(
+            model.behavioral_projection
+            if arguments.behavioral_quotient
+            else None
+        ),
+        projected_equals_at=(
+            states.behavioral_identity_equals_at
+            if arguments.behavioral_quotient
+            else None
+        ),
+    )
     initial_index, is_new = representatives.intern(initial)
     if initial_index != 0 or not is_new:
         raise RuntimeError("initial state was not uniquely interned")
@@ -203,6 +216,11 @@ def main() -> int:
         final=True,
     )
     final["progress"] = "100%"
+    final["state_identity"] = (
+        "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT"
+        if arguments.behavioral_quotient
+        else "EXACT_ORDERED_AUDIT_STATE"
+    )
     if arguments.trace_allocations:
         final["traced_current_bytes"], final["traced_peak_bytes"] = (
             tracemalloc.get_traced_memory()

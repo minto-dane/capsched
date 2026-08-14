@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prove bounded RAM and ext4-spill exploration are exactly equivalent."""
+"""Prove RAM and ext4-spill exact/behavioral exploration are equivalent."""
 
 from __future__ import annotations
 
@@ -31,15 +31,21 @@ class BoundedGraph:
     expanded: int
 
 
-def enumerate_bounded() -> BoundedGraph:
-    initial = model.semantic_projection(
-        model.initial_state(model.fixture_external_grant("PRODUCER"))
-    )
+def enumerate_bounded(*, behavioral_quotient: bool) -> BoundedGraph:
+    initial = model.initial_state(model.fixture_external_grant("PRODUCER"))
     states = model.CompactExactStateStore(
         model.EnvelopeState,
         model.CHILD_STATE_REFERENCE_FIELDS,
     )
-    index = model.ExactStateIndex(states)
+    index = model.ExactStateIndex(
+        states,
+        projection=(
+            model.behavioral_projection if behavioral_quotient else None
+        ),
+        projected_equals_at=(
+            states.behavioral_identity_equals_at if behavioral_quotient else None
+        ),
+    )
     initial_index, is_new = index.intern(initial)
     if initial_index != 0 or not is_new:
         raise AssertionError("initial exact state was not uniquely interned")
@@ -52,9 +58,7 @@ def enumerate_bounded() -> BoundedGraph:
         source_depth = depths[cursor]
         cursor += 1
         for edge in model.next_states(source):
-            target, target_is_new = index.intern(
-                model.semantic_projection(edge.state)
-            )
+            target, target_is_new = index.intern(edge.state)
             targets.append(target)
             if target_is_new:
                 frontier.append(target)
@@ -89,26 +93,39 @@ def require_equal(left: BoundedGraph, right: BoundedGraph) -> None:
 def main() -> None:
     if os.environ.get(model.EXACT_STORE_DIRECTORY_ENV):
         raise AssertionError("equivalence test must start without a spill directory")
-    memory_graph = enumerate_bounded()
-    with tempfile.TemporaryDirectory(prefix="f0-c4-equivalence-") as raw:
-        spill = Path(raw)
-        os.chmod(spill, 0o700)
-        os.environ[model.EXACT_STORE_DIRECTORY_ENV] = str(spill)
-        try:
-            spill_graph = enumerate_bounded()
-            require_equal(memory_graph, spill_graph)
-            if list(spill.iterdir()):
-                raise AssertionError("spill mappings remained path-visible")
-        finally:
-            os.environ.pop(model.EXACT_STORE_DIRECTORY_ENV, None)
-            if model._spill_directory_fd is not None:
-                os.close(model._spill_directory_fd)
-            model._spill_directory_fd = None
-            model._spill_directory_path = None
+    results: dict[bool, BoundedGraph] = {}
+    for behavioral_quotient in (False, True):
+        memory_graph = enumerate_bounded(
+            behavioral_quotient=behavioral_quotient
+        )
+        with tempfile.TemporaryDirectory(prefix="f0-c4-equivalence-") as raw:
+            spill = Path(raw)
+            os.chmod(spill, 0o700)
+            os.environ[model.EXACT_STORE_DIRECTORY_ENV] = str(spill)
+            try:
+                spill_graph = enumerate_bounded(
+                    behavioral_quotient=behavioral_quotient
+                )
+                require_equal(memory_graph, spill_graph)
+                if list(spill.iterdir()):
+                    raise AssertionError("spill mappings remained path-visible")
+            finally:
+                os.environ.pop(model.EXACT_STORE_DIRECTORY_ENV, None)
+                if model._spill_directory_fd is not None:
+                    os.close(model._spill_directory_fd)
+                model._spill_directory_fd = None
+                model._spill_directory_path = None
+        results[behavioral_quotient] = memory_graph
+    exact_graph = results[False]
+    quotient_graph = results[True]
     print(
-        "F0_C4_MODEL_STORAGE_EQUIVALENCE_PASS "
-        f"expanded={memory_graph.expanded} states={len(memory_graph.states)} "
-        f"edges={len(memory_graph.targets)}"
+        "F0_C4_MODEL_STORAGE_EQUIVALENCE_PASS cases=2 "
+        f"exact_expanded={exact_graph.expanded} "
+        f"exact_states={len(exact_graph.states)} "
+        f"exact_edges={len(exact_graph.targets)} "
+        f"quotient_expanded={quotient_graph.expanded} "
+        f"quotient_states={len(quotient_graph.states)} "
+        f"quotient_edges={len(quotient_graph.targets)}"
     )
 
 

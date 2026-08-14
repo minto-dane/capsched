@@ -199,7 +199,7 @@ for row in CLAIM_REGISTRY["claims"]:
     CLAIM_REGISTRY_BY_ID[claim_id] = row
 
 CLAIM_IDS = frozenset(CLAIM_REGISTRY_BY_ID)
-if len(CLAIM_IDS) != 11:
+if len(CLAIM_IDS) != 12:
     raise RuntimeError("candidate-4 claim registry cardinality differs")
 CLAIM_PREDICATE_IDS = {
     mode_spec["status_rule"]["predicate_id"]
@@ -209,7 +209,7 @@ CLAIM_PREDICATE_IDS = {
 }
 if CLAIM_PREDICATE_IDS != {
     "FAST_MUTATION_STATIC",
-    "CHILD_EXACT_FIXTURE_BOUNDED",
+    "CHILD_BEHAVIORAL_AUDIT_QUOTIENT_BOUNDED",
     "PARENT_EXACT_REPETITION_BOUNDED",
     "DECLARED_LOCAL_EFFECT_COMMUTATION",
 }:
@@ -578,7 +578,7 @@ def component_result(component: str) -> dict[str, object]:
             "component": component,
             "role": role,
             "exploration": asdict(child.explore(role, graph)),
-            "commutation": child.check_outcome_commutation(role, graph.states),
+            "commutation": child.check_outcome_commutation(role, graph),
             "single_graph_reused": True,
         }
     if component == "orchestrator":
@@ -664,14 +664,25 @@ def invoke_component(
 
 
 def child_result_ok(result: dict[str, object]) -> bool:
+    reachable = result["reachable_behavioral_quotient_state_count"]
+    terminal = result["terminal_state_count"]
+    edge_count = result["edge_count"]
+    action_count = result["reachable_action_count"]
+    decision_total = sum(row[1] for row in result["decision_counts"])
     return bool(
-        result["terminal_state_count"] > 0
-        and 0 < result["unique_ordered_evidence_history_count"]
-        <= result["reachable_exact_state_count"]
+        result["reachable_exact_state_count"] == 0
+        and reachable > 0
+        and 0 < terminal < reachable
+        and edge_count >= reachable - 1
+        and edge_count <= (reachable - terminal) * action_count
+        and action_count <= edge_count
+        and result["unique_ordered_evidence_history_count"] == 0
         and result["nonterminal_deadlock_count"] == 0
         and result["states_without_terminal_path"] == 0
         and result["winner_overwrite_count"] == 0
-        and result["protection_breach_terminal_count"] > 0
+        and 0 < result["protection_breach_terminal_count"] <= terminal
+        and decision_total > 0
+        and decision_total + result["protection_breach_terminal_count"] == terminal
         and result["hostile_bypass_explicit"] is True
         and result["coaccessibility_only"] is True
         and result["universal_termination_proved"] is False
@@ -683,9 +694,18 @@ def child_result_ok(result: dict[str, object]) -> bool:
         and result["semantic_verdict_issued"] is False
         and result["hostile_attempt_bound"] == child.MAX_HOSTILE_ATTEMPTS
         and result["reacquisition_bound"] == child.MAX_REACQUISITIONS
-        and result["multiple_pending_arrival_state_count"] > 0
-        and result["exact_ordered_history_state_identity"] is True
-        and result["bounded_exact_ordered_history_graph_exhaustive"] is True
+        and 0 < result["multiple_pending_arrival_state_count"] <= reachable
+        and result["exact_ordered_history_state_identity"] is False
+        and result["bounded_exact_ordered_history_graph_exhaustive"] is False
+        and result["behavioral_audit_representation_quotient_applied"] is True
+        and result["behavioral_quotient_graph_exhaustive"] is True
+        and result["receipt_semantic_facts_and_multiplicity_retained"] is True
+        and result["operational_state_fields_retained"] is True
+        and result["recovery_and_decision_semantics_retained"] is True
+        and result["audit_sequence_hash_auth_root_representation_erased"] is True
+        and result["audit_chain_implementation_refinement_proved"] is False
+        and result["projection_hash_matches_resolved_by_full_equality"] is True
+        and result["bounded_projection_congruence_regression_required"] is True
         and result["frontier_empty"] is True
         and result["all_reachable_states_wf"] is True
         and result["all_edges_target_reachable"] is True
@@ -703,8 +723,21 @@ def commutation_result_ok(result: dict[str, object]) -> bool:
         is True
         and result["independence_relation_claimed_complete"] is False
         and result["undeclared_pairs_assumed_independent"] is False
-        and result["reachability_uses_exact_state_identity"] is True
-        and result["ordered_history_quotiented_for_reachability"] is False
+        and result["reachable_exact_state_count"] == 0
+        and result["reachable_behavioral_quotient_state_count"] > 0
+        and result["reachability_state_identity"]
+        == "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT"
+        and result["reachability_uses_exact_state_identity"] is False
+        and result["ordered_history_quotiented_for_reachability"] is True
+        and result[
+            "behavioral_projection_retains_receipt_semantics_and_multiplicity"
+        ]
+        is True
+        and result[
+            "behavioral_projection_retains_operational_recovery_and_decision_semantics"
+        ]
+        is True
+        and result["audit_chain_implementation_refinement_proved"] is False
         and result["check_scope"] == "LOCAL_TWO_STEP_EFFECT_COMMUTATION_ONLY"
         and result[
             "outcome_projection_retains_receipt_semantics_and_multiplicity"
@@ -827,7 +860,11 @@ def full_result() -> dict[str, object]:
         and components["tests"]["passed"]
     )
     fast_claim_ok = bool(fast_local_checks_ok and component_capture_ok)
-    child_claim_ok = bool(child_graph_ok and component_capture_ok)
+    child_claim_ok = bool(
+        child_graph_ok
+        and components["tests"]["passed"]
+        and component_capture_ok
+    )
     parent_claim_ok = bool(orch_ok and component_capture_ok)
     commutation_claim_ok = bool(
         declared_commutation_ok and component_capture_ok
@@ -843,7 +880,7 @@ def full_result() -> dict[str, object]:
         and component_capture_ok
     )
     result = {
-        "schema_version": 4,
+        "schema_version": 5,
         "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-full-local-result",
         "claim_registry": {
             "artifact_id": CLAIM_REGISTRY["artifact_id"],
@@ -885,14 +922,20 @@ def full_result() -> dict[str, object]:
                     "component_execution_receipts.static-registries",
                 ],
             ),
-            "F0-C4-REACH-CHILD-EXACT-FIXTURE-BOUNDED-v1": claim_status(
+            "F0-C4-REACH-CHILD-BEHAVIORAL-AUDIT-QUOTIENT-BOUNDED-v1": claim_status(
                 "PASS" if child_claim_ok else "FAIL",
                 [
+                    "components.tests",
                     "components.child-bundle-producer",
                     "components.child-bundle-checker",
+                    "component_execution_receipts.tests",
                     "component_execution_receipts.child-bundle-producer",
                     "component_execution_receipts.child-bundle-checker",
                 ],
+            ),
+            "F0-C4-AUDIT-CHAIN-REPRESENTATION-REFINEMENT-v1": claim_status(
+                "OPEN_REFINEMENT",
+                ["open_refinement_obligations.child#AUDIT-REP-001"],
             ),
             "F0-C4-REACH-PARENT-EXACT-REPETITION-BOUNDED-v1": claim_status(
                 "PASS" if parent_claim_ok else "FAIL",
@@ -957,10 +1000,11 @@ def full_result() -> dict[str, object]:
             "external_R11_review": False,
             "G0_authorized": False,
             "self_authorization": False,
-            "standalone_child_bounded_exact_ordered_history_graph_exhaustive": bool(
-                producer["bounded_exact_ordered_history_graph_exhaustive"]
-                and checker["bounded_exact_ordered_history_graph_exhaustive"]
+            "standalone_child_bounded_behavioral_quotient_graph_exhaustive": bool(
+                producer["behavioral_quotient_graph_exhaustive"]
+                and checker["behavioral_quotient_graph_exhaustive"]
             ),
+            "ordered_audit_chain_implementation_refinement_proved": False,
             "standalone_child_bounds": {
                 "hostile_attempts": child.MAX_HOSTILE_ATTEMPTS,
                 "reacquisitions": child.MAX_REACQUISITIONS,
@@ -1014,7 +1058,7 @@ def full_result() -> dict[str, object]:
         "full",
         {
             "FAST_MUTATION_STATIC": fast_claim_ok,
-            "CHILD_EXACT_FIXTURE_BOUNDED": child_claim_ok,
+            "CHILD_BEHAVIORAL_AUDIT_QUOTIENT_BOUNDED": child_claim_ok,
             "PARENT_EXACT_REPETITION_BOUNDED": parent_claim_ok,
             "DECLARED_LOCAL_EFFECT_COMMUTATION": commutation_claim_ok,
         },
@@ -1041,7 +1085,7 @@ def fast_result() -> dict[str, object]:
         and tests["passed"]
     )
     result = {
-        "schema_version": 4,
+        "schema_version": 5,
         "artifact_id": (
             "dynamic-residency-f0-v5-supervisor-v3-candidate4-fast-local-result"
         ),
@@ -1079,9 +1123,13 @@ def fast_result() -> dict[str, object]:
                     "static_registries",
                 ],
             ),
-            "F0-C4-REACH-CHILD-EXACT-FIXTURE-BOUNDED-v1": claim_status(
+            "F0-C4-REACH-CHILD-BEHAVIORAL-AUDIT-QUOTIENT-BOUNDED-v1": claim_status(
                 "NOT_RUN",
                 [],
+            ),
+            "F0-C4-AUDIT-CHAIN-REPRESENTATION-REFINEMENT-v1": claim_status(
+                "OPEN_REFINEMENT",
+                ["open_refinement_obligations.child#AUDIT-REP-001"],
             ),
             "F0-C4-REACH-PARENT-EXACT-REPETITION-BOUNDED-v1": claim_status(
                 "NOT_RUN",

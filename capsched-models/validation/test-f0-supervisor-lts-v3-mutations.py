@@ -176,6 +176,17 @@ def exact_prefix(
     return states, frontier, targets, actions, cursor
 
 
+def projected_successor_signature(
+    state: model.EnvelopeState,
+) -> tuple[tuple[str, tuple[object, ...]], ...]:
+    rows = [
+        (edge.action_id, model.behavioral_projection(edge.state))
+        for edge in model.next_states(state)
+    ]
+    assert len(rows) == len({row[0] for row in rows})
+    return tuple(sorted(rows, key=lambda row: row[0]))
+
+
 def main() -> None:
     cases = 0
 
@@ -1376,6 +1387,130 @@ def main() -> None:
     assert evidence_column.arena.fixed_column_bytes_per_node_upper_bound == 17
     assert evidence_column.arena.fixed_column_bytes_per_record_upper_bound <= 64
     cases += 9
+
+    assert model.BEHAVIORAL_PROJECTION_ERASED_STATE_FIELDS == {
+        "winner_sequence",
+        "fault_cause_receipt_sequence",
+        "evidence_receipts",
+        "evidence_root",
+        "decision_receipt",
+        "recovery_receipts",
+    }
+    first = run("PRODUCER", ("SUP-001-REQUEST-SCOPE",))
+    first_receipt = first.evidence_receipts[-1]
+    representation_only = replace(
+        first,
+        evidence_receipts=(
+            replace(
+                first_receipt,
+                sequence=99,
+                previous_hash="representation-only-previous",
+                auth_tag="representation-only-auth",
+            ),
+        ),
+        evidence_root="representation-only-root",
+        winner_sequence=99,
+        fault_cause_receipt_sequence=98,
+    )
+    assert model.behavioral_projection(first) == model.behavioral_projection(
+        representation_only
+    )
+    assert model.behavioral_projection(first) != model.behavioral_projection(
+        replace(
+            first,
+            evidence_receipts=(
+                replace(first_receipt, payload=first_receipt.payload + "-changed"),
+            ),
+        )
+    )
+    assert model.behavioral_projection(first) != model.behavioral_projection(
+        replace(first, evidence_receipts=(first_receipt, first_receipt))
+    )
+    assert model.behavioral_projection(first) != model.behavioral_projection(
+        replace(first, phase="RUNNING")
+    )
+
+    recovery = model.RecoveryReceipt(
+        schema=model.SCHEMA,
+        run_id=first.grant.child_run_id,
+        binding_digest=model.grant_binding_digest(first.grant),
+        sequence=1,
+        observed_phase="RUNNING",
+        evidence_prefix_hash="representation-a",
+        reason="PRIMARY_CRASH",
+        failed_controller="PRIMARY_SUPERVISOR",
+        fence_generation=1,
+        issuer="RECOVERY_GUARDIAN",
+        auth_tag="representation-b",
+    )
+    recovery_state = replace(first, recovery_receipts=(recovery,))
+    assert model.behavioral_projection(recovery_state) == model.behavioral_projection(
+        replace(
+            recovery_state,
+            recovery_receipts=(
+                replace(
+                    recovery,
+                    evidence_prefix_hash="representation-c",
+                    auth_tag="representation-d",
+                ),
+            ),
+        )
+    )
+    assert model.behavioral_projection(recovery_state) != model.behavioral_projection(
+        replace(
+            recovery_state,
+            recovery_receipts=(replace(recovery, observed_phase="STOPPING"),),
+        )
+    )
+
+    decision = model.DecisionReceipt(
+        schema=model.SCHEMA,
+        run_id=first.grant.child_run_id,
+        binding_digest=model.grant_binding_digest(first.grant),
+        evidence_root="representation-e",
+        decision="INTERNAL_FAILURE",
+        payload_kind="NONE",
+        payload_digest="",
+        issuer="PRIMARY_SUPERVISOR",
+        auth_tag="representation-f",
+    )
+    decision_state = replace(first, decision_receipt=decision)
+    assert model.behavioral_projection(decision_state) == model.behavioral_projection(
+        replace(
+            decision_state,
+            decision_receipt=replace(
+                decision,
+                evidence_root="representation-g",
+                auth_tag="representation-h",
+            ),
+        )
+    )
+    assert model.behavioral_projection(decision_state) != model.behavioral_projection(
+        replace(
+            decision_state,
+            decision_receipt=replace(decision, decision="ABANDONED"),
+        )
+    )
+
+    projection_classes: dict[tuple[object, ...], model.EnvelopeState] = {}
+    equivalent = 0
+    ordered_distinct = 0
+    for state in reference_states[:reference_cursor]:
+        projection = model.behavioral_projection(state)
+        representative = projection_classes.get(projection)
+        if representative is None:
+            projection_classes[projection] = state
+            continue
+        assert representative != state
+        equivalent += 1
+        ordered_distinct += (
+            representative.evidence_receipts != state.evidence_receipts
+        )
+        assert projected_successor_signature(
+            representative
+        ) == projected_successor_signature(state)
+    assert equivalent > 0 and ordered_distinct > 0
+    cases += 10
 
     print(f"LOCAL_C4_CHILD_REGRESSION_PASS hostile_cases={cases}")
 

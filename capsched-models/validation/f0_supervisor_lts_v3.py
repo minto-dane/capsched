@@ -449,6 +449,7 @@ ACTORS = {
 
 OPEN_REFINEMENT_OBLIGATIONS = (
     "INDEP-001 declared independence completeness and projection congruence",
+    "AUDIT-REP-001 ordered sequence, hash-chain, authentication-tag, and sealed-root implementation refinement from the behavioral receipt-fact multiset",
     "EXT-AUTH-001 external RunGrant issuer, freshness, nonce uniqueness, and revocation",
     "LINUX-SCOPE-001 exclusive hierarchy and attach/migration authority",
     "LINUX-BOOT-001 charged trusted bootstrap before hostile payload execution",
@@ -692,6 +693,21 @@ class Receipt:
     channel: str
     previous_hash: str
     auth_tag: str
+
+
+def _receipt_semantic_fact(receipt: Receipt) -> tuple[object, ...]:
+    return (
+        receipt.schema,
+        receipt.run_id,
+        receipt.binding_digest,
+        receipt.scope_id,
+        receipt.subject_id,
+        receipt.kind,
+        receipt.payload,
+        receipt.payload_digest,
+        receipt.issuer,
+        receipt.channel,
+    )
 
 
 class PersistentSequence:
@@ -1583,6 +1599,7 @@ if {spec.source_predicate_id for spec in INDEPENDENCE_SPECS} != (
 class Exploration:
     role: str
     reachable_exact_state_count: int
+    reachable_behavioral_quotient_state_count: int
     unique_ordered_evidence_history_count: int
     edge_count: int
     reachable_action_count: int
@@ -1607,6 +1624,15 @@ class Exploration:
     multiple_pending_arrival_state_count: int
     exact_ordered_history_state_identity: bool
     bounded_exact_ordered_history_graph_exhaustive: bool
+    behavioral_audit_representation_quotient_applied: bool
+    behavioral_quotient_graph_exhaustive: bool
+    receipt_semantic_facts_and_multiplicity_retained: bool
+    operational_state_fields_retained: bool
+    recovery_and_decision_semantics_retained: bool
+    audit_sequence_hash_auth_root_representation_erased: bool
+    audit_chain_implementation_refinement_proved: bool
+    projection_hash_matches_resolved_by_full_equality: bool
+    bounded_projection_congruence_regression_required: bool
     frontier_empty: bool
     all_reachable_states_wf: bool
     all_edges_target_reachable: bool
@@ -2301,6 +2327,47 @@ class CompactExactStateStore:
             for name, column in zip(self._field_names, self._columns, strict=True)
         )
 
+    def behavioral_identity_equals_at(
+        self,
+        index: int,
+        identity: object,
+    ) -> bool:
+        """Resolve a behavioral-index hash match without rebuilding a state."""
+
+        if (
+            not isinstance(identity, tuple)
+            or len(identity) != 4
+            or not isinstance(identity[0], tuple)
+        ):
+            return False
+        operational, receipt_semantics, decision_semantics, recovery_semantics = identity
+        operational_cursor = 0
+        receipts = None
+        decision = None
+        recovery = None
+        for name, column in zip(self._field_names, self._columns, strict=True):
+            if name == "evidence_receipts":
+                receipts = column.value(index)
+            elif name == "decision_receipt":
+                decision = column.value(index)
+            elif name == "recovery_receipts":
+                recovery = column.value(index)
+            elif name not in BEHAVIORAL_PROJECTION_ERASED_STATE_FIELDS:
+                if (
+                    operational_cursor >= len(operational)
+                    or not column.matches(index, operational[operational_cursor])
+                ):
+                    return False
+                operational_cursor += 1
+        if operational_cursor != len(operational) or receipts is None or recovery is None:
+            return False
+        return (
+            _ReceiptSemanticMultisetView(receipts) == receipt_semantics
+            and _decision_semantic_fact(decision) == decision_semantics
+            and tuple(_recovery_semantic_fact(item) for item in recovery)
+            == recovery_semantics
+        )
+
     def freeze(self) -> None:
         self._frozen = True
 
@@ -2358,6 +2425,7 @@ class ReachabilityGraph:
     edge_offsets: array
     target_indices: array
     action_indices: array
+    state_identity: str = "EXACT_ORDERED_AUDIT_STATE"
 
     def __post_init__(self) -> None:
         if (
@@ -2370,6 +2438,10 @@ class ReachabilityGraph:
             or self.edge_offsets[-1] != len(self.target_indices)
             or len(self.target_indices) != len(self.action_indices)
             or not self.states.frozen
+            or self.state_identity not in {
+                "EXACT_ORDERED_AUDIT_STATE",
+                "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT",
+            }
         ):
             raise RuntimeError("malformed compact child reachability graph")
 
@@ -2379,13 +2451,14 @@ class ReachabilityGraph:
 
 
 class ExactStateIndex:
-    """Open-addressed exact state index with fixed-width storage.
+    """Open-addressed exact or collision-resolved projected state index.
 
     Python's dict stores a hash-table entry for every full state object in
     addition to the canonical state vector.  This index stores only a cached
     64-bit Python hash and a 32-bit vector index.  Hash matches are always
-    resolved with full EnvelopeState equality, including ordered receipts, so
-    collisions cannot merge unequal states.
+    resolved with full exact equality.  A configured projection supplies its
+    own full equality resolver, so neither Python-hash nor projection-hash
+    collisions can merge unequal identities.
     """
 
     __slots__ = (
@@ -2395,6 +2468,8 @@ class ExactStateIndex:
         "_hashes",
         "_size",
         "_mask",
+        "_projection",
+        "_projected_equals_at",
     )
     # Zero is the sparse-file-friendly empty marker.  Occupied slots store the
     # exact state index plus one, preserving the full 0..2^32-2 index range.
@@ -2406,6 +2481,9 @@ class ExactStateIndex:
         self,
         states: object,
         initial_capacity: int = 1 << 16,
+        *,
+        projection=None,
+        projected_equals_at=None,
     ) -> None:
         if (
             initial_capacity < 8
@@ -2414,6 +2492,12 @@ class ExactStateIndex:
             raise ValueError("exact state index capacity must be a power of two >= 8")
         self._states = states
         self._equals_at = getattr(states, "equals_at", None)
+        self._projection = projection
+        self._projected_equals_at = projected_equals_at
+        if (projection is None) != (projected_equals_at is None):
+            raise ValueError(
+                "projected state index requires both projection and exact resolver"
+            )
         self._indices = _new_zero_array("I", initial_capacity)
         self._hashes = _new_zero_array("Q", initial_capacity)
         self._size = 0
@@ -2430,7 +2514,7 @@ class ExactStateIndex:
     def _next_slot(slot: int, perturb: int, mask: int) -> tuple[int, int]:
         return (slot * 5 + 1 + perturb) & mask, perturb >> 5
 
-    def _find(self, state: EnvelopeState, state_hash: int) -> tuple[int | None, int]:
+    def _find(self, identity: object, state_hash: int) -> tuple[int | None, int]:
         slot = state_hash & self._mask
         perturb = state_hash
         while True:
@@ -2441,9 +2525,13 @@ class ExactStateIndex:
             if (
                 self._hashes[slot] == state_hash
                 and (
-                    self._equals_at(state_index, state)
-                    if self._equals_at is not None
-                    else self._states[state_index] == state
+                    self._projected_equals_at(state_index, identity)
+                    if self._projection is not None
+                    else (
+                        self._equals_at(state_index, identity)
+                        if self._equals_at is not None
+                        else self._states[state_index] == identity
+                    )
                 )
             ):
                 return state_index, slot
@@ -2471,8 +2559,9 @@ class ExactStateIndex:
             self._hashes[slot] = state_hash
 
     def intern(self, state: EnvelopeState) -> tuple[int, bool]:
-        state_hash = hash(state) & self.HASH_MASK
-        state_index, slot = self._find(state, state_hash)
+        identity = self._projection(state) if self._projection is not None else state
+        state_hash = hash(identity) & self.HASH_MASK
+        state_index, slot = self._find(identity, state_hash)
         if state_index is not None:
             return state_index, False
         if (
@@ -2480,7 +2569,7 @@ class ExactStateIndex:
             >= self.capacity * EXACT_INDEX_MAX_LOAD_NUMERATOR
         ):
             self._resize()
-            state_index, slot = self._find(state, state_hash)
+            state_index, slot = self._find(identity, state_hash)
             if state_index is not None:
                 raise RuntimeError("exact state appeared only after index resize")
         if len(self._states) > self.MAX_STATE_INDEX:
@@ -3673,23 +3762,107 @@ def instance_wf(state: EnvelopeState) -> bool:
 
 
 def semantic_projection(state: EnvelopeState) -> EnvelopeState:
-    """Return exact state identity until a congruent quotient is proved."""
+    """Return the complete ordered-audit state for exact regressions."""
 
     return state
 
 
-def _receipt_semantic_fact(receipt: Receipt) -> tuple[object, ...]:
+BEHAVIORAL_PROJECTION_ERASED_STATE_FIELDS = frozenset(
+    {
+        "winner_sequence",
+        "fault_cause_receipt_sequence",
+        "evidence_receipts",
+        "evidence_root",
+        "decision_receipt",
+        "recovery_receipts",
+    }
+)
+
+
+class _ReceiptSemanticMultisetView:
+    """Hash-fast, collision-resolving view of receipt facts and multiplicity."""
+
+    __slots__ = ("_hash", "_receipts")
+
+    def __init__(self, receipts: ReceiptHistory | tuple[Receipt, ...]) -> None:
+        self._receipts = receipts
+        semantic_hash = sum(
+            hash(_receipt_semantic_fact(receipt)) for receipt in receipts
+        )
+        self._hash = hash((len(receipts), semantic_hash))
+
+    def __hash__(self) -> int:
+        return self._hash
+
+    def __eq__(self, other: object) -> bool:
+        if self is other:
+            return True
+        if not isinstance(other, _ReceiptSemanticMultisetView):
+            return NotImplemented
+        if len(self._receipts) != len(other._receipts) or self._hash != other._hash:
+            return False
+        return tuple(
+            sorted(_receipt_semantic_fact(receipt) for receipt in self._receipts)
+        ) == tuple(
+            sorted(_receipt_semantic_fact(receipt) for receipt in other._receipts)
+        )
+
+
+def _decision_semantic_fact(
+    receipt: DecisionReceipt | None,
+) -> tuple[object, ...] | None:
+    if receipt is None:
+        return None
     return (
         receipt.schema,
         receipt.run_id,
         receipt.binding_digest,
-        receipt.scope_id,
-        receipt.subject_id,
-        receipt.kind,
-        receipt.payload,
+        receipt.decision,
+        receipt.payload_kind,
         receipt.payload_digest,
         receipt.issuer,
-        receipt.channel,
+    )
+
+
+def _recovery_semantic_fact(receipt: RecoveryReceipt) -> tuple[object, ...]:
+    return (
+        receipt.schema,
+        receipt.run_id,
+        receipt.binding_digest,
+        receipt.sequence,
+        receipt.observed_phase,
+        receipt.reason,
+        receipt.failed_controller,
+        receipt.fence_generation,
+        receipt.issuer,
+    )
+
+
+def behavioral_projection(state: EnvelopeState) -> tuple[object, ...]:
+    """Erase only audit-chain representation while retaining semantic facts.
+
+    This is the full-fixture reachability identity.  Receipt ordering, sequence
+    positions, hash links, authentication tags, and roots are representation;
+    receipt semantic facts and multiplicity, recovery phase/fence semantics,
+    decision semantics, and every operational state field remain present.  The
+    bounded congruence regression is local evidence only; ordered audit-chain
+    implementation refinement remains an explicit external obligation.
+    """
+
+    operational = tuple(
+        getattr(state, field_name)
+        for field_name in EnvelopeState.__dataclass_fields__
+        if field_name not in BEHAVIORAL_PROJECTION_ERASED_STATE_FIELDS
+    )
+    receipt_semantics = _ReceiptSemanticMultisetView(state.evidence_receipts)
+    recovery_semantics = tuple(
+        _recovery_semantic_fact(receipt) for receipt in state.recovery_receipts
+    )
+    return (
+        operational,
+        receipt_semantics,
+        _decision_semantic_fact(state.decision_receipt),
+        recovery_semantics,
     )
 
 
@@ -5528,15 +5701,32 @@ def apply_trace(state: EnvelopeState, actions: Iterable[str]) -> EnvelopeState:
     return current
 
 
-def reachable_states(grant: RunGrant) -> ReachabilityGraph:
-    """Enumerate the exact graph without per-edge or dict-entry object retention."""
+def reachable_states(
+    grant: RunGrant,
+    *,
+    behavioral_quotient: bool = True,
+) -> ReachabilityGraph:
+    """Enumerate the behavioral graph with exact collision resolution.
+
+    The default identity merges only audit-chain representation while retaining
+    every receipt semantic fact and multiplicity plus all operational fields.
+    ``behavioral_quotient=False`` remains available for bounded congruence and
+    representation regressions; it is not capacity-safe for the full fixture.
+    """
 
     maximum_index = (1 << 32) - 1
     start = initial_state(grant)
-    start_key = semantic_projection(start)
     states = CompactExactStateStore(EnvelopeState, CHILD_STATE_REFERENCE_FIELDS)
-    representatives = ExactStateIndex(states)
-    start_index, start_is_new = representatives.intern(start_key)
+    representatives = ExactStateIndex(
+        states,
+        projection=behavioral_projection if behavioral_quotient else None,
+        projected_equals_at=(
+            states.behavioral_identity_equals_at
+            if behavioral_quotient
+            else None
+        ),
+    )
+    start_index, start_is_new = representatives.intern(start)
     if start_index != 0 or not start_is_new:
         raise RuntimeError("initial exact state was not uniquely interned")
     frontier_indices = _new_array("I", [start_index])
@@ -5549,8 +5739,7 @@ def reachable_states(grant: RunGrant) -> ReachabilityGraph:
         frontier_cursor += 1
         state = states[source_index]
         for edge in next_states(state):
-            target_key = semantic_projection(edge.state)
-            target_index, target_is_new = representatives.intern(target_key)
+            target_index, target_is_new = representatives.intern(edge.state)
             if target_is_new:
                 frontier_indices.append(target_index)
             if len(target_indices) >= maximum_index:
@@ -5570,6 +5759,11 @@ def reachable_states(grant: RunGrant) -> ReachabilityGraph:
         edge_offsets=edge_offsets,
         target_indices=target_indices,
         action_indices=action_indices,
+        state_identity=(
+            "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT"
+            if behavioral_quotient
+            else "EXACT_ORDERED_AUDIT_STATE"
+        ),
     )
 
 
@@ -5651,8 +5845,18 @@ def explore(
     winner_overwrites = 0
     protection_breaches = 0
     multiple_pending_arrivals = 0
-    evidence_histories: list[ReceiptHistory | tuple[Receipt, ...]] = []
-    evidence_history_index = ExactStateIndex(evidence_histories)
+    quotient_applied = (
+        reachable_graph.state_identity
+        == "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT"
+    )
+    evidence_histories: list[ReceiptHistory | tuple[Receipt, ...]] | None = (
+        None if quotient_applied else []
+    )
+    evidence_history_index = (
+        None
+        if evidence_histories is None
+        else ExactStateIndex(evidence_histories)
+    )
     for state_index, state in enumerate(states):
         arrivals = (
             state.completion_arrival_sequence,
@@ -5661,7 +5865,8 @@ def explore(
         )
         if sum(sequence > 0 for sequence in arrivals) > 1:
             multiple_pending_arrivals += 1
-        evidence_history_index.intern(state.evidence_receipts)
+        if evidence_history_index is not None:
+            evidence_history_index.intern(state.evidence_receipts)
         has_outgoing = (
             reachable_graph.edge_offsets[state_index]
             != reachable_graph.edge_offsets[state_index + 1]
@@ -5676,7 +5881,9 @@ def explore(
                 raise ProtocolReject("F05-SPV3-TERMINAL-EDGE", state.phase)
         elif not has_outgoing:
             deadlocks += 1
-    unique_history_count = len(evidence_history_index)
+    unique_history_count = (
+        0 if evidence_history_index is None else len(evidence_history_index)
+    )
     del evidence_histories, evidence_history_index
 
     for source_index, before in enumerate(states):
@@ -5693,7 +5900,10 @@ def explore(
     )
     return Exploration(
         role=role,
-        reachable_exact_state_count=len(states),
+        reachable_exact_state_count=0 if quotient_applied else len(states),
+        reachable_behavioral_quotient_state_count=(
+            len(states) if quotient_applied else 0
+        ),
         unique_ordered_evidence_history_count=unique_history_count,
         edge_count=reachable_graph.edge_count,
         reachable_action_count=len(actions),
@@ -5716,8 +5926,17 @@ def explore(
         hostile_attempt_bound=MAX_HOSTILE_ATTEMPTS,
         reacquisition_bound=MAX_REACQUISITIONS,
         multiple_pending_arrival_state_count=multiple_pending_arrivals,
-        exact_ordered_history_state_identity=True,
-        bounded_exact_ordered_history_graph_exhaustive=True,
+        exact_ordered_history_state_identity=not quotient_applied,
+        bounded_exact_ordered_history_graph_exhaustive=not quotient_applied,
+        behavioral_audit_representation_quotient_applied=quotient_applied,
+        behavioral_quotient_graph_exhaustive=quotient_applied,
+        receipt_semantic_facts_and_multiplicity_retained=quotient_applied,
+        operational_state_fields_retained=quotient_applied,
+        recovery_and_decision_semantics_retained=quotient_applied,
+        audit_sequence_hash_auth_root_representation_erased=quotient_applied,
+        audit_chain_implementation_refinement_proved=False,
+        projection_hash_matches_resolved_by_full_equality=quotient_applied,
+        bounded_projection_congruence_regression_required=quotient_applied,
         frontier_empty=True,
         # Every discovered state is eventually passed to next_states(), whose
         # first operation rejects a non-well-formed state.  Rewalking the whole
@@ -5727,8 +5946,8 @@ def explore(
             target_index < len(states)
             for target_index in reachable_graph.target_indices
         ),
-        # representatives is keyed by exact EnvelopeState identity; a key
-        # collision therefore canonicalizes equal states, never unequal ones.
+        # Exact mode compares complete EnvelopeState values; quotient mode
+        # resolves every cached-hash match with full projected equality.
         exact_state_key_collision_count=0,
     )
 
@@ -5813,6 +6032,8 @@ def _independence_source_matches(
 def check_outcome_commutation(
     role: str,
     reachable: (
+        ReachabilityGraph
+        |
         CompactExactStateStore
         | set[EnvelopeState]
         | tuple[EnvelopeState, ...]
@@ -5829,10 +6050,18 @@ def check_outcome_commutation(
 
     if role not in ROLES:
         raise ProtocolReject("F05-SPV3-COMMUTATION-ROLE", role)
-    states = (
-        reachable
-        if reachable is not None
-        else reachable_states(fixture_external_grant(role)).states
+    if reachable is None:
+        graph = reachable_states(fixture_external_grant(role))
+        states = graph.states
+        state_identity = graph.state_identity
+    elif isinstance(reachable, ReachabilityGraph):
+        states = reachable.states
+        state_identity = reachable.state_identity
+    else:
+        states = reachable
+        state_identity = "EXACT_ORDERED_AUDIT_STATE"
+    quotient_applied = (
+        state_identity == "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT"
     )
     relevant_specs = [spec for spec in INDEPENDENCE_SPECS if role in spec.roles]
     pair_results: list[dict[str, object]] = []
@@ -5973,14 +6202,25 @@ def check_outcome_commutation(
     passed = bool(pair_results) and all(result["passed"] for result in pair_results)
     return {
         "role": role,
-        "reachable_exact_state_count": len(states),
+        "reachable_exact_state_count": 0 if quotient_applied else len(states),
+        "reachable_behavioral_quotient_state_count": (
+            len(states) if quotient_applied else 0
+        ),
+        "reachability_state_identity": state_identity,
         "declared_independence_pair_count": len(relevant_specs),
         "declared_pair_results": pair_results,
         "declared_pair_occurrences_exhaustive_over_reachable_states": True,
         "independence_relation_claimed_complete": False,
         "undeclared_pairs_assumed_independent": False,
-        "reachability_uses_exact_state_identity": True,
-        "ordered_history_quotiented_for_reachability": False,
+        "reachability_uses_exact_state_identity": not quotient_applied,
+        "ordered_history_quotiented_for_reachability": quotient_applied,
+        "behavioral_projection_retains_receipt_semantics_and_multiplicity": (
+            quotient_applied
+        ),
+        "behavioral_projection_retains_operational_recovery_and_decision_semantics": (
+            quotient_applied
+        ),
+        "audit_chain_implementation_refinement_proved": False,
         "check_scope": "LOCAL_TWO_STEP_EFFECT_COMMUTATION_ONLY",
         "outcome_projection_scope": "RECEIPT_CHAIN_ORDERING_METADATA_ONLY",
         "outcome_projection_retains_receipt_semantics_and_multiplicity": True,
@@ -5998,17 +6238,23 @@ __all__ = [
     "ACTION_SPECS",
     "ACTION_WRITE_FIELDS",
     "AUTH_MODEL",
+    "BEHAVIORAL_PROJECTION_ERASED_STATE_FIELDS",
+    "CHILD_STATE_REFERENCE_FIELDS",
+    "CompactExactStateStore",
     "DecisionReceipt",
     "Edge",
     "EnvelopeState",
     "Exploration",
+    "ExactStateIndex",
     "INDEPENDENCE_SPECS",
     "OPEN_REFINEMENT_OBLIGATIONS",
     "ProtocolReject",
     "Receipt",
+    "RecoveryReceipt",
     "ReachabilityGraph",
     "RunGrant",
     "apply_trace",
+    "behavioral_projection",
     "check_action_registry",
     "check_outcome_commutation",
     "closure_ready",
