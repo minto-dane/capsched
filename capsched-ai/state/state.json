@@ -130,6 +130,10 @@
     {
       "id": "INV-AUDIT-REFINEMENT-OPEN-001",
       "text": "The behavioral audit-representation quotient is bounded model evidence only; implementation refinement to an ordered authenticated production audit chain remains open and cannot receive promotion credit."
+    },
+    {
+      "id": "INV-TCB-REPRODUCIBLE-BUILD-001",
+      "text": "Reviewed capture-launcher source built from different absolute checkout and output roots must produce byte-identical installed TCB bytes, with temporary build paths and compilation-time macros excluded."
     }
   ],
   "design_boundaries": [
@@ -292,6 +296,7 @@
         "launcher_hostile_cases": 10,
         "launcher_idle_cases": 1,
         "snapshot_hostile_cases": 5,
+        "reproducible_build_cases": 1,
         "behavioral_quotient_boundary_cases": 9,
         "model_memory_policy_cases": 33,
         "model_storage_equivalence_cases": 2,
@@ -305,11 +310,11 @@
       },
       "clean_install": {
         "status": "REINSTALL_REQUIRED_AFTER_BEHAVIORAL_AUDIT_QUOTIENT",
-        "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
-        "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
+        "installed_source_commit": "d0ddc00094b48289137d0e70ae35b820f6876a89",
+        "installed_manifest_sha256": "41fccf5a23b14028fc99510403eb6e5f64caaa04ab877b7fcaf112a9eff209bc",
         "current_inputs_installed": false,
         "readiness_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
-        "readiness_sha256": "042b72c5f04fcc7a3992c040cdd2f0fd57710cb6d0486174ee8f98c5e8349e1d"
+        "readiness_sha256": "585e51faa23637052a80c1c0c76dceebb47e947f876006cbd7e4ec6f70376f71"
       },
       "g6": {
         "gate_status": "OPEN",
@@ -422,7 +427,7 @@
       "order": 4,
       "id": "RESIDENCY-DYN-001",
       "status": "open_candidate4_g1_g5_closed_g6_behavioral_quotient_reinstall_required_g7_blocked",
-      "next_artifact": "Clean-install the reviewed behavioral audit-representation quotient, pass the complete short suite, then run a fresh authority-disjoint G6 capture and reduce only a complete committed capture in G7"
+      "next_artifact": "Clean-install the reviewed behavioral quotient plus reproducible TCB build repair, pass the complete short suite, then run a fresh authority-disjoint G6 capture and reduce only a complete committed capture in G7"
     },
     {
       "order": 5,
@@ -522,7 +527,7 @@
       "order": 6,
       "id": "F0-C4-AUTHORITY-DISJOINT-LAUNCHER",
       "status": "behavioral_audit_quotient_clean_install_pending",
-      "text": "G1-G5 remain locally closed. The installed predecessor TCB is retained, but the locally validated schema-v5 behavioral audit-representation quotient must be committed, reconstructed from reviewed bytes, reinstalled, and rechecked before another G6 launch."
+      "text": "G1-G5 remain locally closed. The behavioral quotient is committed and installed, but two source roots exposed absolute-path-dependent launcher bytes. The reproducible-build repair passes its source probe and must be committed, bundle-reconstructed, reinstalled, and rechecked before another G6 launch."
     },
     {
       "order": 7,
@@ -612,6 +617,7 @@
     "f0_c4_external_memory_repair_validation": "capsched-models/validation/0322-dynamic-residency-f0-c4-g6-disk-backed-exact-enumerator.md",
     "f0_c4_pending_attack_closure_repair_validation": "capsched-models/validation/0323-dynamic-residency-f0-c4-g6-pending-hostile-closure-repair.md",
     "f0_c4_behavioral_quotient_validation": "capsched-models/validation/0324-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md",
+    "f0_c4_reproducible_build_validation": "capsched-models/validation/0325-dynamic-residency-f0-c4-reproducible-tcb-build.md",
     "f0_c4_claim_registry": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
     "f0_c4_child_model": "capsched-models/validation/f0_supervisor_lts_v3.py",
     "f0_c4_parent_model": "capsched-models/validation/f0_supervisor_orchestrator_v3.py",
@@ -627,6 +633,7 @@
     "f0_c4_capture_monitor": "capsched-models/validation/f0-c4-capture/monitor-candidate4-full-capture.sh",
     "f0_c4_capture_validator": "capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py",
     "f0_c4_capture_hostile_test": "capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py",
+    "f0_c4_reproducible_build_test": "capsched-models/validation/f0-c4-capture/test-build-reproducibility.sh",
     "f0_c4_reducer_current_input_binding_test": "capsched-models/validation/f0-c4-capture/test-reducer-current-input-binding.py",
     "active_plan": "capsched-models/plans/0006-final-compositional-model-completion-plan.md",
     "assurance_case": "capsched-models/assurance/0001-hypervisor-grade-domain-separation-case.md",

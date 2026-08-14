@@ -1378,6 +1378,7 @@ def validate_semantics(
     require(readiness["mechanism_recheck"]["capture_contract_derived_cases"] == capture["derived_semantic_cases"], "readiness derived contract count drift")
     require(readiness["mechanism_recheck"]["capture_resource_policy_cases"] == capture["short_regression"]["capture_resource_policy_cases"], "readiness resource-policy count drift")
     require(readiness["mechanism_recheck"]["launcher_idle_cases"] == capture["short_regression"]["launcher_idle_cases"], "readiness launcher-idle count drift")
+    require(readiness["mechanism_recheck"]["reproducible_build_cases"] == capture["short_regression"]["reproducible_build_cases"], "readiness reproducible-build count drift")
     require(readiness["current_inputs"]["model_memory_policy_cases"] == capture["short_regression"]["model_memory_policy_cases"], "readiness model-memory count drift")
     require(readiness["current_inputs"]["model_storage_equivalence_cases"] == capture["short_regression"]["model_storage_equivalence_cases"], "readiness model-storage-equivalence count drift")
     require(readiness["current_inputs"]["behavioral_quotient_boundary_cases"] == capture["short_regression"]["behavioral_quotient_boundary_cases"], "readiness behavioral-quotient count drift")
@@ -1386,6 +1387,44 @@ def validate_semantics(
     require(readiness["mechanism_recheck"]["reducer_current_input_binding_cases"] == capture["short_regression"]["reducer_current_input_binding_cases"], "readiness reducer-binding mechanism count drift")
     require(readiness["mechanism_recheck"]["reducer_boundary_status"] == expected_reducer_status, "readiness reducer boundary status drift")
     require(readiness["mechanism_recheck"]["reducer_boundary_cases"] == capture["short_regression"]["reducer_cases"], "readiness reducer cases drift")
+    reproducible_install = readiness["clean_install"].get(
+        "reproducible_build_repair_installed"
+    )
+    if reproducible_install is not None:
+        require(
+            isinstance(reproducible_install, bool),
+            "reproducible-build install flag is not Boolean",
+        )
+        for key in (
+            "installed_build_install_sha256",
+            "current_build_install_sha256",
+            "current_build_reproducibility_test_sha256",
+        ):
+            value = readiness["clean_install"].get(key)
+            require(
+                isinstance(value, str)
+                and len(value) == 64
+                and all(character in "0123456789abcdef" for character in value),
+                f"reproducible-build digest malformed: {key}",
+            )
+        require(
+            (
+                readiness["clean_install"]["installed_build_install_sha256"]
+                == readiness["clean_install"]["current_build_install_sha256"]
+            )
+            is reproducible_install,
+            "reproducible-build install flag/source relation drift",
+        )
+        expected_reproducible_status = (
+            "PASS"
+            if reproducible_install
+            else "PASS_SOURCE_REPAIRED_INSTALLED_TCB_STALE"
+        )
+        require(
+            readiness["mechanism_recheck"]["reproducible_build_status"]
+            == expected_reproducible_status,
+            "reproducible-build mechanism status drift",
+        )
     require(readiness["source_transfer"]["policy"] == "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging", "readiness source-transfer policy drift")
     require(readiness["source_transfer"]["macos_home_mount"] == "none", "readiness grants macOS home access")
     require(readiness["source_transfer"]["vm_source_root"] == "/var/lib/domainlease-f0-c4/sources", "readiness source root drift")
@@ -1500,16 +1539,72 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
     current_inputs_installed = state["evidence"]["authority_capture_contract"][
         "clean_install"
     ]["current_inputs_installed"]
+    reproducible_build_repair_installed = readiness["clean_install"].get(
+        "reproducible_build_repair_installed"
+    )
     if current_inputs_installed:
         require(
             installed_input_mismatches == 0,
             "installed commit does not contain every current exact input",
         )
+        if reproducible_build_repair_installed is not None:
+            require(
+                reproducible_build_repair_installed is True,
+                "current install omits the reproducible-build repair",
+            )
     else:
         require(
-            installed_input_mismatches > 0,
+            installed_input_mismatches > 0
+            or reproducible_build_repair_installed is False,
             "reinstall is required even though installed inputs already match",
         )
+    if reproducible_build_repair_installed is not None:
+        build_paths = {
+            "current_build_install_sha256": (
+                "capsched-models/validation/f0-c4-capture/build-install.sh"
+            ),
+            "current_build_reproducibility_test_sha256": (
+                "capsched-models/validation/f0-c4-capture/"
+                "test-build-reproducibility.sh"
+            ),
+        }
+        for digest_key, relative in build_paths.items():
+            require(
+                hashlib.sha256((repo_root / relative).read_bytes()).hexdigest()
+                == readiness["clean_install"][digest_key],
+                f"reproducible-build source digest drift: {relative}",
+            )
+        installed_build = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repo_root),
+                "show",
+                f"{installed_commit}:capsched-models/validation/"
+                "f0-c4-capture/build-install.sh",
+            ],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+        require(
+            installed_build.returncode == 0
+            and hashlib.sha256(installed_build.stdout).hexdigest()
+            == readiness["clean_install"]["installed_build_install_sha256"],
+            "installed build script digest drift",
+        )
+        if reproducible_build_repair_installed:
+            require(
+                readiness["clean_install"]["installed_build_install_sha256"]
+                == readiness["clean_install"]["current_build_install_sha256"],
+                "installed reproducible-build source is stale",
+            )
+        else:
+            require(
+                readiness["clean_install"]["installed_build_install_sha256"]
+                != readiness["clean_install"]["current_build_install_sha256"],
+                "reproducible-build reinstall claimed pending without source drift",
+            )
 
     active = state["evidence"]["authority_capture_contract"]["g6"][
         "active_attempt"
@@ -1704,6 +1799,24 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
                 changed_readiness,
             )
         )
+        if "current_build_install_sha256" in readiness["clean_install"]:
+            changed_readiness = copy.deepcopy(readiness)
+            changed_readiness["clean_install"][
+                "reproducible_build_repair_installed"
+            ] = not changed_readiness["clean_install"][
+                "reproducible_build_repair_installed"
+            ]
+            mutations.append(
+                (
+                    "reproducible-build source identity drift",
+                    state,
+                    claims,
+                    contract,
+                    current_input,
+                    observation,
+                    changed_readiness,
+                )
+            )
         changed_input = copy.deepcopy(current_input)
         if "behavioral_quotient" in changed_input:
             changed_input["behavioral_quotient"][

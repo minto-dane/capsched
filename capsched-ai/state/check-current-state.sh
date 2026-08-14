@@ -105,11 +105,13 @@ assurance_head_rels=(
 	capsched-models/validation/f0-c4-g6-pending-attack-incomplete-observation-v1.json
 	capsched-models/validation/f0-c4-g6-pending-attack-retry-readiness-v1.json
 	capsched-models/validation/0324-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md
+	capsched-models/validation/0325-dynamic-residency-f0-c4-reproducible-tcb-build.md
 	capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json
 	capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh
+	capsched-models/validation/f0-c4-capture/test-build-reproducibility.sh
 	capsched-models/validation/f0-c4-capture/f0_c4_capture_launcher.c
 	capsched-models/validation/f0-c4-capture/test-launcher-idle.sh
 	capsched-models/validation/f0-c4-capture/f0_c4_capture_supervisor.py
@@ -368,6 +370,14 @@ reducer_binding_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
 	"$repo_root/capsched-models/validation/f0-c4-capture/test-reducer-current-input-binding.py")
 [[ $reducer_binding_result == *"F0_C4_REDUCER_CURRENT_INPUT_BINDING_PASS cases=3"* ]] || {
 	printf 'error: F0 C4 reducer current-input binding regression failed\n' >&2
+	exit 1
+}
+reproducible_build_result=$(
+	"$repo_root/capsched-models/validation/f0-c4-capture/test-build-reproducibility.sh"
+)
+[[ $reproducible_build_result == \
+	*"F0_C4_REPRODUCIBLE_BUILD_PASS cases=1 sha256="* ]] || {
+	printf 'error: F0 C4 reproducible-build regression failed\n' >&2
 	exit 1
 }
 

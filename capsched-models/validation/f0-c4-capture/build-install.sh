@@ -45,6 +45,17 @@ done
 	exit 1
 }
 
+# Keep the reviewed source tree useful for postmortem symbols without making
+# installed TCB bytes depend on the checkout location.  Developer build-only
+# archives have no .git directory, so their invocation root is the fallback.
+repository=$($git -C "$script_dir" rev-parse --show-toplevel 2>/dev/null || true)
+archive_root=$(CDPATH= cd -- "$script_dir/../../.." && pwd -P)
+source_prefix=${repository:-$archive_root}
+[[ $source_prefix == /* ]] || {
+	printf 'error: reproducible-build source prefix is not absolute\n' >&2
+	exit 1
+}
+
 cleanup_build=false
 source_commit=DEVELOPER_BUILD_ONLY
 if [[ $mode == --install ]]; then
@@ -52,7 +63,10 @@ if [[ $mode == --install ]]; then
 		printf 'error: build/install environment overrides are forbidden for root install\n' >&2
 		exit 1
 	fi
-	repository=$($git -C "$script_dir" rev-parse --show-toplevel)
+	[[ -n $repository ]] || {
+		printf 'error: root install source is not a Git working tree\n' >&2
+		exit 1
+	}
 	[[ -z $($git -C "$repository" status --porcelain=v1 --untracked-files=all) ]] || {
 		printf 'error: root install requires a clean reviewed commit\n' >&2
 		exit 1
@@ -136,13 +150,22 @@ cleanup()
 }
 trap cleanup EXIT HUP INT TERM
 
-$gcc \
-	-std=c17 -O2 -g \
-	-Wall -Wextra -Werror -Wconversion -Wshadow -Wformat=2 \
-	-fstack-protector-strong -D_FORTIFY_SOURCE=3 \
-	-fPIE -pie -Wl,-z,relro,-z,now \
-	-o "$binary" \
-	"$script_dir/f0_c4_capture_launcher.c"
+(
+	# DW_AT_comp_dir follows the compiler's current directory.  Normalize it
+	# here so callers cannot perturb installed bytes by invoking this script
+	# from /root, /, or another checkout-external directory.
+	cd "$source_prefix"
+	$gcc \
+		-std=c17 -O2 -g \
+		-Wall -Wextra -Werror -Wconversion -Wshadow -Wformat=2 -Wdate-time \
+		"-ffile-prefix-map=$source_prefix=/usr/src/domainlease-f0-c4" \
+		"-fdebug-prefix-map=$source_prefix=/usr/src/domainlease-f0-c4" \
+		"-fmacro-prefix-map=$source_prefix=/usr/src/domainlease-f0-c4" \
+		-fstack-protector-strong -D_FORTIFY_SOURCE=3 \
+		-fPIE -pie -Wl,-z,relro,-z,now \
+		-o "$binary" \
+		"$script_dir/f0_c4_capture_launcher.c"
+)
 
 if [[ $mode == --install ]]; then
 	libexec=$install_root/libexec/domainlease-f0-c4

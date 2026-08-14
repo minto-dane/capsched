@@ -77,11 +77,11 @@ latest durable G6 disposition by `check-current-state.sh`.
     ],
     "clean_install": {
       "status": "REINSTALL_REQUIRED_AFTER_BEHAVIORAL_AUDIT_QUOTIENT",
-      "installed_source_commit": "27ba274c859d271861a373decc4ecd51c9e0c7ce",
-      "installed_manifest_sha256": "c919f59195073205799806d6b75ce50a19f8a75d720ecbfc85d24a436d96943d",
+      "installed_source_commit": "d0ddc00094b48289137d0e70ae35b820f6876a89",
+      "installed_manifest_sha256": "41fccf5a23b14028fc99510403eb6e5f64caaa04ab877b7fcaf112a9eff209bc",
       "current_inputs_installed": false,
       "readiness_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
-      "readiness_sha256": "042b72c5f04fcc7a3992c040cdd2f0fd57710cb6d0486174ee8f98c5e8349e1d"
+      "readiness_sha256": "585e51faa23637052a80c1c0c76dceebb47e947f876006cbd7e4ec6f70376f71"
     },
     "g6": {
       "gate_status": "OPEN",
@@ -306,8 +306,18 @@ authority conflicts and is rejected. The nine-case quotient boundary,
 295/739/48 hostile suites, 33-case memory policy, and exact-plus-quotient
 storage equivalence pass. The ordered authenticated audit-chain implementation
 refinement remains explicitly open, and these changes touch no production
-Linux or Monitor hot path. The reviewed bytes still require a clean commit,
-VM-native reinstall, and complete post-install short suite before G6 may retry.
+Linux or Monitor hot path.
+
+The first clean installation of commit `d0ddc00...` then exposed a TCB identity
+problem: two root-owned checkout paths produced launcher hashes `8f9a0967...`
+and `dd811af9...` because `-g` retained the absolute build path. Validation
+0325 records the repair. File, macro, and debug paths now map to
+`/usr/src/domainlease-f0-c4`; compilation-time macros are rejected, and two
+distinct source/output roots produce the identical preliminary launcher digest
+`339458c9...`, even when invoked from different caller directories. The repair
+has not yet been clean-installed, so G6 remains
+ineligible until its reviewed commit, bundle reconstruction, reinstall, and
+complete post-install suite pass.
 
 The first G6 start attempt `candidate4-full-20260811T203907Z` stopped before the
 first progress receipt and before candidate launch because the toolchain sealer
@@ -544,10 +554,11 @@ open.
 
 ## Next Order
 
-1. Commit the locally validated behavioral audit-representation quotient and
-   its fail-closed ninth-attempt disposition from a clean reviewed tree.
-2. Reconstruct the reviewed commit inside VM-native root-owned storage, install
-   its TCB manifest, and rerun the complete short mechanism/model suite.
+1. Commit the reproducible launcher-build repair and its two-root regression
+   from a clean reviewed tree.
+2. Reconstruct that reviewed commit from the SHA-256-verified bundle inside
+   VM-native root-owned storage, install its TCB manifest, and rerun the
+   complete short mechanism/model suite.
 3. Capture the exact installed Candidate-4 inputs, launch the full bounded
    child/parent reachability and declared-commutation campaign detached, then
    independently reduce only a complete committed capture in a later session.
