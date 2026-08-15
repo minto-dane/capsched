@@ -19,6 +19,7 @@ EXPECTED_CLOSED = {
     "digest_collisions_resolved_by_full_equality",
     "no_third_party_rust_dependencies",
     "reproducible_rust_binary_from_distinct_roots",
+    "rust_instance_wf_and_evidence_wf_independent_checks",
     "shared_receipt_history_preserves_canonical_behavior",
 }
 EXPECTED_OPEN = {
@@ -28,7 +29,6 @@ EXPECTED_OPEN = {
     "full_295_child_hostile_fixture_parity",
     "parent_orchestrator_transition_and_hostile_refinement",
     "result_schema_and_capture_integration",
-    "rust_instance_wf_and_evidence_wf_independent_checks",
 }
 
 
@@ -99,7 +99,7 @@ def validate(repo_root: Path) -> dict[str, object]:
     require(record["schema_version"] == 1, "checkpoint schema version differs")
     require(
         record["status"]
-        == "child_transition_bounded_differential_pass_parent_and_exhaustive_gates_open",
+        == "child_transition_and_independent_wf_bounded_differential_pass_parent_and_exhaustive_gates_open",
         "checkpoint status differs",
     )
 
@@ -147,6 +147,7 @@ def validate(repo_root: Path) -> dict[str, object]:
     prefix = results.get("bounded_exact_prefix", {})
     traces = results.get("all_action_trace_corpus", {})
     wide = results.get("bounded_wide_stats", {})
+    independent_wf = results.get("independent_wf_prefix", {})
     require(
         setup.get("status") == "PASS_BYTE_EXACT"
         and setup.get("producer", {}).get("states") == 57
@@ -182,6 +183,19 @@ def validate(repo_root: Path) -> dict[str, object]:
         and wide.get("checker", {}).get("edges") == 118552,
         "wide diagnostic result differs",
     )
+    require(
+        independent_wf.get("status")
+        == "PASS_INDEPENDENT_RUST_INSTANCE_AND_EVIDENCE_WF"
+        and independent_wf.get("expanded_sources") == 1000
+        and independent_wf.get("rust_runs_per_role") == 2
+        and independent_wf.get("producer", {}).get("states") == 6410
+        and independent_wf.get("producer", {}).get("edges") == 12212
+        and independent_wf.get("producer", {}).get("wf_checks") == 12213
+        and independent_wf.get("checker", {}).get("states") == 6410
+        and independent_wf.get("checker", {}).get("edges") == 12212
+        and independent_wf.get("checker", {}).get("wf_checks") == 12213,
+        "independent Rust WF result differs",
+    )
 
     representation = record["representation"]
     require(
@@ -195,9 +209,9 @@ def validate(repo_root: Path) -> dict[str, object]:
     require(
         build.get("status") == "PASS_BYTE_IDENTICAL"
         and build.get("distinct_source_roots") == 2
-        and build.get("binary_bytes") == 461048
+        and build.get("binary_bytes") == 526584
         and build.get("binary_sha256")
-        == "d8065e5a3fa8a359e379fa2161ae1d08e866ab95a0d1992031fe0cdc0604c2e4",
+        == "d1b6c96c209573893cab7fcffd1f166dafd6dbf615af310683056317206e8123",
         "reproducible build record differs",
     )
     for key in ("binary_sha256", "cargo_sha256", "rustc_sha256"):

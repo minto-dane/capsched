@@ -1,7 +1,7 @@
 {
   "artifact_id": "f0-c4-rust-child-transition-refinement-checkpoint-v1",
   "schema_version": 1,
-  "status": "child_transition_bounded_differential_pass_parent_and_exhaustive_gates_open",
+  "status": "child_transition_and_independent_wf_bounded_differential_pass_parent_and_exhaustive_gates_open",
   "normative_model": {
     "authority": "PYTHON_ONLY",
     "path": "capsched-models/validation/f0_supervisor_lts_v3.py",
@@ -14,17 +14,19 @@
     "input_sha256": {
       "Cargo.lock": "bc9b7947b8da8d6a6f06f0edee0c329c94445faa0471c2eea00f31ae35643773",
       "Cargo.toml": "289b6dc80065e124785a5c693bfac7512b18173a4abcdfe13c65d4a7702d8d8f",
-      "README.md": "89f9fae0300ecf53fb69bee08f298bac2de642a3768bc679fa88ed8b4fc2cf7f",
-      "python_oracle.py": "7e7c333c2798d2d35c005d030da86342ea1b9162ba5022bb2140430648837a06",
+      "README.md": "988e4ced84f90783b6ea7183f24ebb278cfa8854deb0c9d9f962a5fe3f40c6ee",
+      "python_oracle.py": "5a5a17ff933566782b70a62bb38746d58829e2c68c818be917afc014fcb3c536",
       "src/canonical.rs": "c4319329aed87aa160bca9ba529ccc57eee860f22395429f0fcd68e94df20831",
-      "src/main.rs": "c64fcc893d59afbd11c07eb881895465ab740aa94a11d0d4bc666b3204480e6b",
-      "src/model.rs": "9119527a97f3972f8cbb1f6f0fcb9f282ce5527b1b074dc9979d7288c7755ea8",
+      "src/main.rs": "c6d49aa8a0509edfaa2d5a2f793d0794ac66ccf842be5bd074402a4b02a7e766",
+      "src/model.rs": "c87b3a1e7d48d4f0edf5e3634747e3d4d905478e8b6634416cb0da003e9d9e33",
+      "src/model/wf.rs": "894f57751b58d829d598c93e4caddd916bf9f480cd6e07804c3191fda52cabaf",
       "src/sha256.rs": "82f3db5ec229bb4ace9861c531b6942d2729c108e6a7f4bae28478227079d0a0",
       "test_bounded_differential.py": "f6eb9abb9635b8541dbad7eed29ca2ad56323e18bde05b505a6cc16362fca249",
       "test_bounded_stats_differential.py": "a280d566434659c7cdd952279c92f8cb0e9b679ba811a2bd1e6c368729db8577",
       "test_build_reproducibility.py": "5c7c490d6544b5f9dde012e31dd5a2a35eeab141bb012fb0c669faac0b8c8a23",
       "test_setup_differential.py": "a6ab984513b0cc0d6f70269f29e86e942dbe7409b216e748ef48ec9e07cfb064",
-      "test_trace_differential.py": "3f4f42ca7a739a0b3d9f61ec748e916670a2398e62554e5c982f1a3d6153beb4"
+      "test_trace_differential.py": "3f4f42ca7a739a0b3d9f61ec748e916670a2398e62554e5c982f1a3d6153beb4",
+      "test_wf_differential.py": "64f938fdf7346e48f9e26cfc7d3a488d1b60bf3f4a0a32e4297da3edd9cb08c2"
     }
   },
   "differential_results": {
@@ -83,6 +85,23 @@
         "states": 52764
       },
       "status": "PASS_EXACT_CARDINALITY_AND_ACTION_MULTIPLICITY_DIAGNOSTIC"
+    },
+    "independent_wf_prefix": {
+      "checker": {
+        "canonical_sha256": "6de6408a7aca02229687c8394f1d72f47ba7e95d15304e9c76e0500befea6903",
+        "edges": 12212,
+        "states": 6410,
+        "wf_checks": 12213
+      },
+      "expanded_sources": 1000,
+      "producer": {
+        "canonical_sha256": "d0931cf52edbcd20a972d58992496a29bd6d064378cc9075bb9c18698a7707bf",
+        "edges": 12212,
+        "states": 6410,
+        "wf_checks": 12213
+      },
+      "rust_runs_per_role": 2,
+      "status": "PASS_INDEPENDENT_RUST_INSTANCE_AND_EVIDENCE_WF"
     }
   },
   "representation": {
@@ -94,8 +113,8 @@
     "rejected_naive_rust_peak_rss_kib_at_10000_expanded_sources": 1271768
   },
   "reproducible_build": {
-    "binary_bytes": 461048,
-    "binary_sha256": "d8065e5a3fa8a359e379fa2161ae1d08e866ab95a0d1992031fe0cdc0604c2e4",
+    "binary_bytes": 526584,
+    "binary_sha256": "d1b6c96c209573893cab7fcffd1f166dafd6dbf615af310683056317206e8123",
     "cargo_sha256": "09a38284fe30daa241f07311f284ee74f8ca55010a6a59f821a22c1910588d71",
     "cargo_version": "cargo 1.75.0",
     "distinct_source_roots": 2,
@@ -110,6 +129,7 @@
     "digest_collisions_resolved_by_full_equality": true,
     "no_third_party_rust_dependencies": true,
     "reproducible_rust_binary_from_distinct_roots": true,
+    "rust_instance_wf_and_evidence_wf_independent_checks": true,
     "shared_receipt_history_preserves_canonical_behavior": true
   },
   "open_subgates": {
@@ -118,8 +138,7 @@
     "deterministic_multiworker_and_external_memory": true,
     "full_295_child_hostile_fixture_parity": true,
     "parent_orchestrator_transition_and_hostile_refinement": true,
-    "result_schema_and_capture_integration": true,
-    "rust_instance_wf_and_evidence_wf_independent_checks": true
+    "result_schema_and_capture_integration": true
   },
   "disposition": {
     "claim_credit": false,

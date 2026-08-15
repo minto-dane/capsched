@@ -7,6 +7,7 @@ fn usage() -> ! {
         "usage:\n  f0-c4-rust-engine setup-closure --role PRODUCER|CHECKER\n  \
          f0-c4-rust-engine bounded-prefix --role PRODUCER|CHECKER --source-limit N\n  \
          f0-c4-rust-engine bounded-stats --role PRODUCER|CHECKER --source-limit N\n  \
+         f0-c4-rust-engine wf-prefix --role PRODUCER|CHECKER --source-limit N\n  \
          f0-c4-rust-engine trace --role PRODUCER|CHECKER --actions ACTION[,ACTION...]"
     );
     std::process::exit(64);
@@ -19,16 +20,19 @@ fn main() {
             model::emit_setup_closure(parse_role(role));
         }
         [command, role_flag, role, limit_flag, source_limit]
-            if (command == "bounded-prefix" || command == "bounded-stats")
+            if (command == "bounded-prefix"
+                || command == "bounded-stats"
+                || command == "wf-prefix")
                 && role_flag == "--role"
                 && limit_flag == "--source-limit" =>
         {
             let role = parse_role(role);
             let source_limit = parse_source_limit(source_limit);
-            if command == "bounded-prefix" {
-                model::emit_bounded_prefix(role, source_limit);
-            } else {
-                model::emit_bounded_stats(role, source_limit);
+            match command.as_str() {
+                "bounded-prefix" => model::emit_bounded_prefix(role, source_limit),
+                "bounded-stats" => model::emit_bounded_stats(role, source_limit),
+                "wf-prefix" => model::emit_wf_prefix(role, source_limit),
+                _ => unreachable!(),
             }
         }
         [command, role_flag, role, actions_flag, actions]

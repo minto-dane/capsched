@@ -250,6 +250,59 @@ def emit_bounded_stats(role: str, source_limit: int) -> None:
         print(f"A\t{_hex(action_id)}\t{count}")
 
 
+def emit_wf_prefix(role: str, source_limit: int) -> None:
+    """Require normative InstanceWF/EvidenceWF across a bounded quotient."""
+
+    if source_limit <= 0:
+        raise ValueError("source_limit must be positive")
+    states = model.CompactExactStateStore(
+        model.EnvelopeState, model.CHILD_STATE_REFERENCE_FIELDS
+    )
+    representatives = model.ExactStateIndex(
+        states,
+        projection=model.behavioral_projection,
+        projected_equals_at=states.behavioral_identity_equals_at,
+    )
+    initial = model.initial_state(model.fixture_external_grant(role))
+    if not model.evidence_wf(initial) or not model.instance_wf(initial):
+        raise RuntimeError("initial state failed normative well-formedness")
+    wf_checks = 1
+    start_index, start_is_new = representatives.intern(initial)
+    if start_index != 0 or not start_is_new:
+        raise RuntimeError("initial state was not uniquely interned")
+    frontier = [start_index]
+    cursor = 0
+    edge_count = 0
+    while cursor < len(frontier) and cursor < source_limit:
+        source_index = frontier[cursor]
+        source = states[source_index]
+        cursor += 1
+        for edge in model.next_states(source):
+            if not model.evidence_wf(edge.state) or not model.instance_wf(edge.state):
+                raise RuntimeError(
+                    "successor failed normative well-formedness: "
+                    f"source={source_index} action={edge.action_id}"
+                )
+            wf_checks += 1
+            target, target_is_new = representatives.intern(edge.state)
+            if target_is_new:
+                frontier.append(target)
+            edge_count += 1
+    print(
+        "\t".join(
+            (
+                "F0_C4_RUST_WF_PREFIX_V1",
+                role,
+                str(source_limit),
+                str(cursor),
+                str(len(states)),
+                str(edge_count),
+                str(wf_checks),
+            )
+        )
+    )
+
+
 def _emit_trace_point(index: int, state: model.EnvelopeState) -> None:
     state_bytes = behavioral_state_bytes(state)
     outgoing = sorted(
@@ -298,7 +351,13 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "command",
-        choices=("setup-closure", "bounded-prefix", "bounded-stats", "trace"),
+        choices=(
+            "setup-closure",
+            "bounded-prefix",
+            "bounded-stats",
+            "wf-prefix",
+            "trace",
+        ),
     )
     parser.add_argument("--role", choices=("PRODUCER", "CHECKER"), required=True)
     parser.add_argument("--source-limit", type=int)
@@ -314,12 +373,15 @@ def main() -> int:
         if arguments.source_limit is None or arguments.source_limit <= 0:
             parser.error("bounded-prefix requires a positive --source-limit")
         emit_bounded_prefix(arguments.role, arguments.source_limit)
-    elif arguments.command == "bounded-stats":
+    elif arguments.command in {"bounded-stats", "wf-prefix"}:
         if arguments.actions is not None:
-            parser.error("--actions is not valid for bounded-stats")
+            parser.error(f"--actions is not valid for {arguments.command}")
         if arguments.source_limit is None or arguments.source_limit <= 0:
-            parser.error("bounded-stats requires a positive --source-limit")
-        emit_bounded_stats(arguments.role, arguments.source_limit)
+            parser.error(f"{arguments.command} requires a positive --source-limit")
+        if arguments.command == "bounded-stats":
+            emit_bounded_stats(arguments.role, arguments.source_limit)
+        else:
+            emit_wf_prefix(arguments.role, arguments.source_limit)
     elif arguments.command == "trace":
         if arguments.source_limit is not None:
             parser.error("--source-limit is not valid for trace")

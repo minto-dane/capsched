@@ -21,6 +21,18 @@ wider 10,000-source diagnostic matches Python at 52,764 retained states and
 118,552 edges per role, including exact action multiplicities.  It is compact
 diagnostic evidence and does not substitute for exhaustive equality.
 
+`src/model/wf.rs` independently implements the normative grant, receipt,
+ordered evidence-chain, recovery, decision, and complete `InstanceWF`
+predicates.  It contains no Python invocation or generated truth table.  The
+WF-prefix differential checks the initial state and every one of 12,212
+successor candidates per role through 1,000 BFS sources (12,213 checks per
+role).  The all-action trace emitter also applies the independent predicates to
+every intermediate and outgoing state, including the terminal cleanup and
+decision paths.  Focused Rust mutations reject forged grant/receipt, duplicate
+receipt, phase rollback, receipt-free candidate/winner, and premature release
+states.  This closes only the independent-predicate implementation subgate;
+the full 295-case hostile parity gate remains open.
+
 Receipt histories use immutable shared nodes.  The wider index stores only a
 SHA-256 bucket head and collision links; every digest match is resolved by
 rebuilding and comparing the complete canonical behavioral bytes.  A forced
@@ -39,6 +51,6 @@ The crate intentionally has no third-party dependencies.  Its eventual full
 engine must retain full collision equality, deterministic output across worker
 counts, pinned and reproducible builds, the complete hostile-fixture corpus,
 the parent/orchestrator relation, exhaustive child graph and commutation
-analysis, bounded external-memory behavior, and the current authority-disjoint
-capture boundary.  Until those gates and a clean immutable installation are
-closed, G6 retry stays disabled.
+analysis, bounded external-memory behavior, result integration, and the current
+authority-disjoint capture boundary.  Until those gates and a clean immutable
+installation are closed, G6 retry stays disabled.

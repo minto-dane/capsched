@@ -4,6 +4,8 @@ use std::sync::Arc;
 use crate::canonical;
 use crate::sha256;
 
+mod wf;
+
 const SCHEMA: &str = "F0-SPV3-C4";
 pub const EXPECTED_SETUP_STATES: usize = 57;
 pub const EXPECTED_SETUP_EDGES: usize = 58;
@@ -210,7 +212,7 @@ struct ReceiptHistory {
     length: usize,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct ReceiptNode {
     receipt: Receipt,
     previous: Option<Arc<ReceiptNode>>,
@@ -1624,6 +1626,15 @@ struct PrefixStats {
     action_counts: BTreeMap<&'static str, usize>,
 }
 
+struct WfPrefixStats {
+    role: &'static str,
+    source_limit: usize,
+    expanded: usize,
+    state_count: usize,
+    edge_count: usize,
+    wf_checks: usize,
+}
+
 struct ExactBehavioralIndex {
     heads: HashMap<[u8; 32], usize>,
     collision_links: Vec<usize>,
@@ -1794,6 +1805,48 @@ fn bounded_stats(role: &'static str, source_limit: usize) -> PrefixStats {
     }
 }
 
+fn bounded_wf_prefix(role: &'static str, source_limit: usize) -> WfPrefixStats {
+    assert!(source_limit > 0, "source limit must be positive");
+    let start = State::initial(fixture_external_grant(role));
+    assert!(
+        wf::instance_wf(&start),
+        "initial state failed independent WF"
+    );
+    let mut wf_checks = 1_usize;
+    let mut states = Vec::new();
+    let mut representatives = ExactBehavioralIndex::new();
+    let (start_index, start_is_new) = representatives.intern(&mut states, start);
+    assert_eq!((start_index, start_is_new), (0, true));
+    let mut frontier = vec![0_usize];
+    let mut cursor = 0_usize;
+    let mut edge_count = 0_usize;
+    while cursor < frontier.len() && cursor < source_limit {
+        let source = frontier[cursor];
+        cursor += 1;
+        for edge in next_states(&states[source]) {
+            assert!(
+                wf::instance_wf(&edge.state),
+                "successor failed independent WF: source={source} action={}",
+                edge.action_id
+            );
+            wf_checks += 1;
+            let (target, target_is_new) = representatives.intern(&mut states, edge.state);
+            if target_is_new {
+                frontier.push(target);
+            }
+            edge_count += 1;
+        }
+    }
+    WfPrefixStats {
+        role,
+        source_limit,
+        expanded: cursor,
+        state_count: states.len(),
+        edge_count,
+        wf_checks,
+    }
+}
+
 pub fn emit_setup_closure(role: &'static str) {
     let graph = setup_closure(role);
     let keys: Vec<Vec<u8>> = graph.states.iter().map(State::behavioral_bytes).collect();
@@ -1887,7 +1940,31 @@ pub fn emit_bounded_stats(role: &'static str, source_limit: usize) {
     }
 }
 
+pub fn emit_wf_prefix(role: &'static str, source_limit: usize) {
+    let stats = bounded_wf_prefix(role, source_limit);
+    println!(
+        "F0_C4_RUST_WF_PREFIX_V1\t{}\t{}\t{}\t{}\t{}\t{}",
+        stats.role,
+        stats.source_limit,
+        stats.expanded,
+        stats.state_count,
+        stats.edge_count,
+        stats.wf_checks
+    );
+}
+
 fn emit_trace_point(index: usize, state: &State, outgoing: &[Edge]) {
+    assert!(
+        wf::instance_wf(state),
+        "trace state failed independent WF: index={index}"
+    );
+    for edge in outgoing {
+        assert!(
+            wf::instance_wf(&edge.state),
+            "trace successor failed independent WF: index={index} action={}",
+            edge.action_id
+        );
+    }
     let mut edges: Vec<(&str, &str, Vec<u8>)> = outgoing
         .iter()
         .map(|edge| (edge.action_id, edge.actor, edge.state.behavioral_bytes()))

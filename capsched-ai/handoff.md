@@ -390,6 +390,20 @@ reachability/commutation, deterministic multiworker external memory,
 parent/orchestrator refinement, result integration, and clean installation.
 G6 retry therefore remains false and G7 remains blocked.
 
+Analysis 0238 and Validation 0328 close the next narrow Rust refinement
+subgate.  A handwritten, zero-Python-call Rust predicate now independently
+checks grant identity, the ordered authenticated receipt chain, causal and
+generation order, recovery, decision receipts, and complete child
+`InstanceWF`.  The WF differential performs 12,213 checks per role across the
+same 1,000-source prefixes, and every intermediate/outgoing state in the 17
+all-action traces is also checked.  Eight Rust unit tests and 16 structural
+checkpoint mutations pass; the updated 526,584-byte binary is reproducible
+from two roots.  The separate 295-case hostile parity gate is not claimed.
+Six gates remain open: that hostile corpus, exhaustive child
+reachability/commutation, deterministic multiworker external memory,
+parent/orchestrator refinement, result integration, and clean installation.
+G6 retry remains false and G7 remains blocked.
+
 ## Current Git State
 
 Project-control work is isolated on:
@@ -576,8 +590,8 @@ open.
 
 ## Next Order
 
-1. Complete the Rust child well-formedness/evidence predicates and map all 295
-   child hostile cases to exact differential outcomes.
+1. Materialize all 295 child hostile cases as named cross-language fixtures and
+   require exact Rust/Python outcomes without hard-coded positive results.
 2. Add deterministic multiworker layer/batch enumeration and bounded
    disk-backed exact graph storage, then close exhaustive child reachability,
    coaccessibility, and declared commutation against the Python oracle.
@@ -635,11 +649,13 @@ Do not poll a healthy long-running job merely to keep a chat session alive.
 3. `../capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md`
 4. `../capsched-models/plans/0006-final-compositional-model-completion-plan.md`
 5. `../capsched-ai/decisions/ADR-0020-close-f0-before-policy-with-total-actions-batches-and-morphisms.md`
-6. `../capsched-models/analysis/0237-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md`
-7. `../capsched-models/validation/0327-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md`
-8. `../capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
-9. `../capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
-10. `../capsched-models/policy/r11/epoch2/foundation-v5/README.md`
+6. `../capsched-models/analysis/0238-dynamic-residency-f0-c4-rust-independent-wf-refinement.md`
+7. `../capsched-models/validation/0328-dynamic-residency-f0-c4-rust-independent-wf-refinement.md`
+8. `../capsched-models/analysis/0237-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md`
+9. `../capsched-models/validation/0327-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md`
+10. `../capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
+11. `../capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
+12. `../capsched-models/policy/r11/epoch2/foundation-v5/README.md`
 
 Read Analysis 0188 and Validation 0289 as the immediate refinement baseline.
 ROOTSCHED is closed reference context. Finite RESIDENCY is a lower-layer

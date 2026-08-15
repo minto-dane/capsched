@@ -137,7 +137,7 @@ def validate_rust_child_checkpoint(
         checkpoint["artifact_id"]
         == "f0-c4-rust-child-transition-refinement-checkpoint-v1"
         and checkpoint["status"]
-        == "child_transition_bounded_differential_pass_parent_and_exhaustive_gates_open",
+        == "child_transition_and_independent_wf_bounded_differential_pass_parent_and_exhaustive_gates_open",
         "Rust child checkpoint identity drift",
     )
     normative = checkpoint["normative_model"]
@@ -171,7 +171,12 @@ def validate_rust_child_checkpoint(
         and results["bounded_wide_stats"]["producer"]["states"] == 52764
         and results["bounded_wide_stats"]["producer"]["edges"] == 118552
         and results["bounded_wide_stats"]["checker"]["states"] == 52764
-        and results["bounded_wide_stats"]["checker"]["edges"] == 118552,
+        and results["bounded_wide_stats"]["checker"]["edges"] == 118552
+        and results["independent_wf_prefix"]["status"]
+        == "PASS_INDEPENDENT_RUST_INSTANCE_AND_EVIDENCE_WF"
+        and results["independent_wf_prefix"]["expanded_sources"] == 1000
+        and results["independent_wf_prefix"]["producer"]["wf_checks"] == 12213
+        and results["independent_wf_prefix"]["checker"]["wf_checks"] == 12213,
         "Rust bounded differential evidence drift",
     )
     representation = checkpoint["representation"]
@@ -197,7 +202,6 @@ def validate_rust_child_checkpoint(
         "full_295_child_hostile_fixture_parity",
         "parent_orchestrator_transition_and_hostile_refinement",
         "result_schema_and_capture_integration",
-        "rust_instance_wf_and_evidence_wf_independent_checks",
     }
     require(
         set(checkpoint["open_subgates"]) == expected_open
@@ -206,6 +210,9 @@ def validate_rust_child_checkpoint(
     )
     require(
         checkpoint["closed_subgates"]
+        and checkpoint["closed_subgates"].get(
+            "rust_instance_wf_and_evidence_wf_independent_checks"
+        )
         and all(checkpoint["closed_subgates"].values()),
         "Rust checkpoint closed-subgate record drift",
     )
