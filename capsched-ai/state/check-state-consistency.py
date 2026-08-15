@@ -137,7 +137,7 @@ def validate_rust_child_checkpoint(
         checkpoint["artifact_id"]
         == "f0-c4-rust-child-transition-refinement-checkpoint-v1"
         and checkpoint["status"]
-        == "child_transition_and_independent_wf_bounded_differential_pass_parent_and_exhaustive_gates_open",
+        == "child_transition_independent_wf_and_59_hostile_wf_fixture_slice_pass_parent_and_exhaustive_gates_open",
         "Rust child checkpoint identity drift",
     )
     normative = checkpoint["normative_model"]
@@ -176,7 +176,20 @@ def validate_rust_child_checkpoint(
         == "PASS_INDEPENDENT_RUST_INSTANCE_AND_EVIDENCE_WF"
         and results["independent_wf_prefix"]["expanded_sources"] == 1000
         and results["independent_wf_prefix"]["producer"]["wf_checks"] == 12213
-        and results["independent_wf_prefix"]["checker"]["wf_checks"] == 12213,
+        and results["independent_wf_prefix"]["checker"]["wf_checks"] == 12213
+        and results["hostile_wf_fixture_slice"]["status"]
+        == "PASS_BYTE_EXACT_PARTIAL_SLICE"
+        and results["hostile_wf_fixture_slice"]["case_count"] == 59
+        and results["hostile_wf_fixture_slice"]["grant_cases"] == 10
+        and results["hostile_wf_fixture_slice"]["state_cases"] == 49
+        and results["hostile_wf_fixture_slice"]["malformed_fixture_cases"] == 11
+        and results["hostile_wf_fixture_slice"]["remaining_original_case_credits"]
+        == 236
+        and results["hostile_wf_fixture_slice"]["case_count"]
+        + results["hostile_wf_fixture_slice"]["remaining_original_case_credits"]
+        == 295
+        and results["hostile_wf_fixture_slice"]["complete_295_case_parity"]
+        is False,
         "Rust bounded differential evidence drift",
     )
     representation = checkpoint["representation"]
@@ -192,7 +205,10 @@ def validate_rust_child_checkpoint(
     )
     require(
         checkpoint["reproducible_build"]["status"] == "PASS_BYTE_IDENTICAL"
-        and checkpoint["reproducible_build"]["distinct_source_roots"] == 2,
+        and checkpoint["reproducible_build"]["distinct_source_roots"] == 2
+        and checkpoint["reproducible_build"]["binary_bytes"] == 592120
+        and checkpoint["reproducible_build"]["binary_sha256"]
+        == "2fd58730d3bf2884eb436177fc996f4b857d44307427051ca052e22ad8bfbe36",
         "Rust reproducible build boundary drift",
     )
     expected_open = {

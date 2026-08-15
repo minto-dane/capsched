@@ -1,4 +1,5 @@
 mod canonical;
+mod decode;
 mod model;
 mod sha256;
 
@@ -8,7 +9,8 @@ fn usage() -> ! {
          f0-c4-rust-engine bounded-prefix --role PRODUCER|CHECKER --source-limit N\n  \
          f0-c4-rust-engine bounded-stats --role PRODUCER|CHECKER --source-limit N\n  \
          f0-c4-rust-engine wf-prefix --role PRODUCER|CHECKER --source-limit N\n  \
-         f0-c4-rust-engine trace --role PRODUCER|CHECKER --actions ACTION[,ACTION...]"
+         f0-c4-rust-engine trace --role PRODUCER|CHECKER --actions ACTION[,ACTION...]\n  \
+         f0-c4-rust-engine hostile-wf --fixtures PATH"
     );
     std::process::exit(64);
 }
@@ -40,6 +42,11 @@ fn main() {
         {
             let action_ids = parse_actions(actions);
             model::emit_trace(parse_role(role), &action_ids);
+        }
+        [command, fixtures_flag, path]
+            if command == "hostile-wf" && fixtures_flag == "--fixtures" =>
+        {
+            model::emit_hostile_wf_results(path);
         }
         _ => usage(),
     }

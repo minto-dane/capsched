@@ -99,7 +99,7 @@ def validate(repo_root: Path) -> dict[str, object]:
     require(record["schema_version"] == 1, "checkpoint schema version differs")
     require(
         record["status"]
-        == "child_transition_and_independent_wf_bounded_differential_pass_parent_and_exhaustive_gates_open",
+        == "child_transition_independent_wf_and_59_hostile_wf_fixture_slice_pass_parent_and_exhaustive_gates_open",
         "checkpoint status differs",
     )
 
@@ -143,11 +143,24 @@ def validate(repo_root: Path) -> dict[str, object]:
 
     results = record["differential_results"]
     require(isinstance(results, dict), "differential result record differs")
+    require(
+        set(results)
+        == {
+            "setup_closure",
+            "bounded_exact_prefix",
+            "all_action_trace_corpus",
+            "bounded_wide_stats",
+            "independent_wf_prefix",
+            "hostile_wf_fixture_slice",
+        },
+        "differential result set differs",
+    )
     setup = results.get("setup_closure", {})
     prefix = results.get("bounded_exact_prefix", {})
     traces = results.get("all_action_trace_corpus", {})
     wide = results.get("bounded_wide_stats", {})
     independent_wf = results.get("independent_wf_prefix", {})
+    hostile_wf = results.get("hostile_wf_fixture_slice", {})
     require(
         setup.get("status") == "PASS_BYTE_EXACT"
         and setup.get("producer", {}).get("states") == 57
@@ -196,6 +209,24 @@ def validate(repo_root: Path) -> dict[str, object]:
         and independent_wf.get("checker", {}).get("wf_checks") == 12213,
         "independent Rust WF result differs",
     )
+    require(
+        hostile_wf.get("status") == "PASS_BYTE_EXACT_PARTIAL_SLICE"
+        and hostile_wf.get("case_count") == 59
+        and hostile_wf.get("grant_cases") == 10
+        and hostile_wf.get("state_cases") == 49
+        and hostile_wf.get("malformed_fixture_cases") == 11
+        and hostile_wf.get("remaining_original_case_credits") == 236
+        and hostile_wf.get("case_count")
+        + hostile_wf.get("remaining_original_case_credits")
+        == 295
+        and hostile_wf.get("rust_runs") == 2
+        and hostile_wf.get("complete_295_case_parity") is False
+        and hostile_wf.get("fixture_sha256")
+        == "e6b974694d79f210bce7d9d79f598433951b708b377f696ea24d2babdf7edc21"
+        and hostile_wf.get("result_sha256")
+        == "5d8155140245051b6e1d0308d910dbfe1e321490d253530aeefe20600bef7c90",
+        "hostile WF fixture slice differs",
+    )
 
     representation = record["representation"]
     require(
@@ -209,9 +240,9 @@ def validate(repo_root: Path) -> dict[str, object]:
     require(
         build.get("status") == "PASS_BYTE_IDENTICAL"
         and build.get("distinct_source_roots") == 2
-        and build.get("binary_bytes") == 526584
+        and build.get("binary_bytes") == 592120
         and build.get("binary_sha256")
-        == "d1b6c96c209573893cab7fcffd1f166dafd6dbf615af310683056317206e8123",
+        == "2fd58730d3bf2884eb436177fc996f4b857d44307427051ca052e22ad8bfbe36",
         "reproducible build record differs",
     )
     for key in ("binary_sha256", "cargo_sha256", "rustc_sha256"):

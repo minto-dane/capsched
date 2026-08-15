@@ -4,6 +4,7 @@ use std::sync::Arc;
 use crate::canonical;
 use crate::sha256;
 
+mod fixtures;
 mod wf;
 
 const SCHEMA: &str = "F0-SPV3-C4";
@@ -1951,6 +1952,10 @@ pub fn emit_wf_prefix(role: &'static str, source_limit: usize) {
         stats.edge_count,
         stats.wf_checks
     );
+}
+
+pub fn emit_hostile_wf_results(path: &str) {
+    fixtures::emit_results(path);
 }
 
 fn emit_trace_point(index: usize, state: &State, outgoing: &[Edge]) {

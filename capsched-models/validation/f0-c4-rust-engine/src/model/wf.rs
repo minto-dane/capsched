@@ -30,7 +30,7 @@ fn nonempty(values: &[&str]) -> bool {
     values.iter().all(|value| !value.is_empty())
 }
 
-fn grant_wf(grant: &RunGrant) -> bool {
+pub(super) fn grant_wf(grant: &RunGrant) -> bool {
     if !one_of(grant.role, &["PRODUCER", "CHECKER"]) {
         return false;
     }

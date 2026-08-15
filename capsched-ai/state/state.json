@@ -544,7 +544,7 @@
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
       "status": "g6_rust_differential_refinement_required",
-      "text": "The tenth G6 attempt is durably RAW_CAPTURE_INCOMPLETE and positive-ineligible after the behavioral-quotient CPython child used essentially one CPU for its full 43200-second deadline without OOM. The bounded Rust child transition and independent grant/evidence/recovery/decision/InstanceWF slices pass; six full-hostile, exhaustive, multiworker/external-memory, parent, result-integration, and clean-install gates remain open. G6 retry stays false and G7 remains blocked."
+      "text": "The tenth G6 attempt is durably RAW_CAPTURE_INCOMPLETE and positive-ineligible after the behavioral-quotient CPython child used essentially one CPU for its full 43200-second deadline without OOM. The bounded Rust child transition and independent grant/evidence/recovery/decision/InstanceWF slices pass. Exact hostile-WF transport now maps 59/295 credits with 236 edge/effect/commutation/representation credits still open; six full-hostile, exhaustive, multiworker/external-memory, parent, result-integration, and clean-install gates remain open. G6 retry stays false and G7 remains blocked."
     },
     {
       "order": 8,
@@ -619,6 +619,7 @@
     "f0_c4_rust_refinement_analysis": "capsched-models/analysis/0236-dynamic-residency-f0-c4-rust-execution-refinement-boundary.md",
     "f0_c4_rust_child_checkpoint_analysis": "capsched-models/analysis/0237-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md",
     "f0_c4_rust_independent_wf_analysis": "capsched-models/analysis/0238-dynamic-residency-f0-c4-rust-independent-wf-refinement.md",
+    "f0_c4_rust_hostile_wf_analysis": "capsched-models/analysis/0239-dynamic-residency-f0-c4-rust-hostile-wf-fixture-slice.md",
     "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1.json",
     "f0_c4_g6_incomplete_validation": "capsched-models/validation/0324-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md",
     "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-timeout-observation-v1.json",
@@ -635,10 +636,13 @@
     "f0_c4_rust_refinement_validation": "capsched-models/validation/0326-dynamic-residency-f0-c4-rust-execution-refinement-boundary.md",
     "f0_c4_rust_child_checkpoint_validation": "capsched-models/validation/0327-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md",
     "f0_c4_rust_independent_wf_validation": "capsched-models/validation/0328-dynamic-residency-f0-c4-rust-independent-wf-refinement.md",
+    "f0_c4_rust_hostile_wf_validation": "capsched-models/validation/0329-dynamic-residency-f0-c4-rust-hostile-wf-fixture-slice.md",
     "f0_c4_rust_child_checkpoint": "capsched-models/validation/f0-c4-rust-child-transition-refinement-checkpoint-v1.json",
     "f0_c4_rust_child_checkpoint_validator": "capsched-models/validation/validate-f0-c4-rust-child-refinement.py",
     "f0_c4_rust_child_checkpoint_mutations": "capsched-models/validation/test-f0-c4-rust-child-refinement-mutations.py",
     "f0_c4_rust_engine_readme": "capsched-models/validation/f0-c4-rust-engine/README.md",
+    "f0_c4_rust_hostile_wf_fixtures": "capsched-models/validation/f0-c4-rust-engine/hostile_wf_fixtures.py",
+    "f0_c4_rust_hostile_wf_differential": "capsched-models/validation/f0-c4-rust-engine/test_hostile_wf_differential.py",
     "f0_c4_claim_registry": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
     "f0_c4_child_model": "capsched-models/validation/f0_supervisor_lts_v3.py",
     "f0_c4_parent_model": "capsched-models/validation/f0_supervisor_orchestrator_v3.py",
