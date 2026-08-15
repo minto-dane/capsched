@@ -1,6 +1,6 @@
 # AI Handoff
 
-Updated: 2026-08-14
+Updated: 2026-08-15
 
 This file is current-state context only. Detailed chronology is in
 `state/events.jsonl`, `design/compact.md`, focused model notes, and Git history.
@@ -27,8 +27,8 @@ latest durable G6 disposition by `check-current-state.sh`.
 ```json
 {
   "schema_version": 1,
-  "updated": "2026-08-14",
-  "project_phase": "f0_v5_c4_g6_open_retry_eligible",
+  "updated": "2026-08-15",
+  "project_phase": "f0_v5_c4_g6_open_rust_refinement_required",
   "completion": {
     "v1_claim_inventory_complete": true,
     "local_contract_coverage": "substantial_not_exhaustive",
@@ -80,31 +80,21 @@ latest durable G6 disposition by `check-current-state.sh`.
       "installed_source_commit": "536e3e736f1540184616f8e4e87f6e8f57fe6d1a",
       "installed_manifest_sha256": "1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e",
       "current_inputs_installed": true,
-      "readiness_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
-      "readiness_sha256": "86e15508e776a75edb6b5578db6ac1069b51fb35d0d86ae458b82f6756b9e55a"
+      "readiness_record": "capsched-models/validation/f0-c4-g6-rust-refinement-readiness-v1.json",
+      "readiness_sha256": "41034db8cd6f0915cb1ea39285bd11e4395b197209568eeacb3436d6a201018e"
     },
     "g6": {
       "gate_status": "OPEN",
-      "retry_eligible": true,
+      "retry_eligible": false,
       "complete_capture_available": false,
-      "active_attempt": {
-        "run_id": "candidate4-full-20260814T130141Z",
-        "status": "CAPTURE_RUNNING",
-        "launched_at": "2026-08-14T13:01:49Z",
-        "candidate_input_commit": "217e3eab236cfbe47b2b13fe3c3cfe0476a7a708",
-        "installed_source_commit": "536e3e736f1540184616f8e4e87f6e8f57fe6d1a",
-        "installed_manifest_sha256": "1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e",
-        "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
-        "candidate_bytes_executed": true,
-        "evidence_commit_available": false
-      },
+      "active_attempt": null,
       "latest_completed_attempt": {
-        "run_id": "candidate4-full-20260813T223812Z",
+        "run_id": "candidate4-full-20260814T130141Z",
         "status": "RAW_CAPTURE_INCOMPLETE",
         "candidate_bytes_executed": true,
         "evidence_commit_available": true,
-        "observation_record": "capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json",
-        "observation_sha256": "0e26bf127292138a722dfdd6f91ba46b12bf968547d4880014a03431b1da201c"
+        "observation_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-timeout-observation-v1.json",
+        "observation_sha256": "c53841cc27b0a62db7fa081e08bd5cf71f71ba85833485a209413056e86e69b2"
       }
     },
     "g7": {

@@ -70,6 +70,7 @@ assurance_head_rels=(
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-pending-attack-closure-repair-v1.json
 	capsched-models/analysis/0235-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1.json
+	capsched-models/analysis/0236-dynamic-residency-f0-c4-rust-execution-refinement-boundary.md
 	capsched-models/assurance/claims.json
 	capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
 	capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json
@@ -108,6 +109,9 @@ assurance_head_rels=(
 	capsched-models/validation/0325-dynamic-residency-f0-c4-reproducible-tcb-build.md
 	capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json
 	capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json
+	capsched-models/validation/0326-dynamic-residency-f0-c4-rust-execution-refinement-boundary.md
+	capsched-models/validation/f0-c4-g6-behavioral-quotient-timeout-observation-v1.json
+	capsched-models/validation/f0-c4-g6-rust-refinement-readiness-v1.json
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh

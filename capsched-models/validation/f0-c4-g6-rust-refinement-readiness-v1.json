@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-rust-refinement-readiness-v1",
+  "date": "2026-08-15",
+  "status": "G6_RETRY_BLOCKED_PENDING_RUST_DIFFERENTIAL_REFINEMENT",
+  "scope": "candidate4_behavioral_quotient_execution_refinement",
+  "current_inputs": {
+    "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1",
+    "artifact_sha256": "7ff6130991dfc3d82b8ee9ca5a33a52dbdb7de6015cdb807b9a3e60b53100845",
+    "hostile_case_counts": {
+      "child": 295,
+      "parent": 739,
+      "runner": 48,
+      "total": 1082
+    },
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "behavioral_quotient_boundary_cases": 9,
+    "model_memory_policy_cases": 33,
+    "model_storage_equivalence_cases": 2,
+    "reducer_current_input_binding_cases": 3
+  },
+  "clean_install": {
+    "source_commit": "536e3e736f1540184616f8e4e87f6e8f57fe6d1a",
+    "source_worktree_clean": true,
+    "committed_state_check": "PASS",
+    "installed_manifest_sha256": "1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e",
+    "capture_launcher_sha256": "339458c9573ceed04c460be15e80c41f6472c412ee1a31155c6da2390569db2f",
+    "installed_build_install_sha256": "89df19126e9f31dcdd1c400ba5008991af9b11294265e3fa572a95b13075f226",
+    "current_build_install_sha256": "89df19126e9f31dcdd1c400ba5008991af9b11294265e3fa572a95b13075f226",
+    "current_build_reproducibility_test_sha256": "99c543bc8215cdc30830a719ba37775f16d396b8b75db38dcfdcb8ef5b5f4f89",
+    "reproducible_build_repair_installed": true,
+    "current_inputs_installed": true,
+    "reason": "The captured behavioral-quotient inputs remain exactly clean-installed, but a byte-identical replay is prohibited because the authority-disjoint run exhausted its component deadline without OOM or a semantic result."
+  },
+  "failed_capture_observation": {
+    "run_id": "candidate4-full-20260814T130141Z",
+    "artifact_id": "f0-c4-g6-behavioral-quotient-timeout-observation-v1",
+    "artifact_sha256": "c53841cc27b0a62db7fa081e08bd5cf71f71ba85833485a209413056e86e69b2",
+    "capture_status": "RAW_CAPTURE_INCOMPLETE",
+    "failure_class": "PYTHON_SINGLE_PROCESS_TRANSITION_THROUGHPUT_LIMIT",
+    "candidate_bytes_positive_eligible": false
+  },
+  "toolchain": {
+    "format": "erofs",
+    "image_sha256": "b3ed1553c9b40a48a27ce8ad792a0add387f82f49afc0edec7563234f2e78cce",
+    "manifest_sha256": "0db6f68c5e19fba7acd2cab5c536aa8bd17d0d4d5707ca6bbbeb9362527bcd51",
+    "mounted_read_only": true,
+    "reuse_regression_cases": 1
+  },
+  "mechanism_recheck": {
+    "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+    "capture_contract_hostile_cases": 155,
+    "capture_contract_derived_cases": 14,
+    "capture_resource_policy_cases": 17,
+    "external_memory_recovery_cases": 1,
+    "launcher_idle_cases": 1,
+    "reproducible_build_cases": 1,
+    "reproducible_build_status": "PASS",
+    "reducer_current_input_binding_cases": 3,
+    "reducer_boundary_status": "PASS",
+    "reducer_boundary_cases": 3
+  },
+  "required_refinement": {
+    "reference_semantics": "CPYTHON_EXECUTABLE_MODEL",
+    "accelerator_language": "RUST",
+    "python_reference_retained": true,
+    "rust_may_become_normative_specification": false,
+    "child_transition_relation_change_allowed": false,
+    "parent_transition_relation_change_allowed": false,
+    "behavioral_projection_change_allowed": false,
+    "collision_resolution_by_full_equality_required": true,
+    "deterministic_output_required": true,
+    "bounded_state_and_transition_differential_required": true,
+    "hostile_fixture_differential_required": true,
+    "two_build_root_reproducibility_required": true,
+    "pinned_toolchain_identity_required": true,
+    "authority_disjoint_clean_install_required": true,
+    "production_linux_scheduler_hot_path_change_allowed": false,
+    "production_monitor_dispatch_hot_path_change_allowed": false
+  },
+  "source_transfer": {
+    "policy": "clean_git_archive_exact_eight_inputs_to_vm_native_root_owned_read_only_staging",
+    "macos_home_mount": "none",
+    "tcb_install_transfer_policy": "sha256_verified_clean_reviewed_git_bundle_to_vm_native_root_owned_repository",
+    "vm_source_root": "/var/lib/domainlease-f0-c4/sources",
+    "raw_evidence_root": "/var/lib/domainlease-f0-c4/evidence",
+    "separate_from_raw_evidence": true
+  },
+  "disposition": {
+    "g6_gate_status": "OPEN",
+    "g6_retry_eligible": false,
+    "g6_complete_capture_available": false,
+    "g7_gate_status": "BLOCKED",
+    "g7_blocked_reason": "NO_COMPLETE_G6_CAPTURE",
+    "next_action": "IMPLEMENT_AND_DIFFERENTIALLY_VALIDATE_RUST_ACCELERATOR"
+  },
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "ordered_audit_chain_implementation_refinement_proved": false,
+    "protection_claim": false,
+    "performance_or_cost_claim": false,
+    "deployment_claim": false
+  }
+}

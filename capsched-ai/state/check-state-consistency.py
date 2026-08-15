@@ -291,6 +291,10 @@ def validate_semantics(
         observation.get("artifact_id")
         == "f0-c4-g6-exact-history-timeout-observation-v1"
     )
+    behavioral_quotient_runtime_observation = (
+        observation.get("artifact_id")
+        == "f0-c4-g6-behavioral-quotient-timeout-observation-v1"
+    )
     require(
         latest["status"] in {"RAW_CAPTURE_INCOMPLETE", "GUARDIAN_INCOMPLETE_PUBLISHED"},
         "latest G6 result drift",
@@ -305,6 +309,7 @@ def validate_semantics(
         or external_memory_repair_observation
         or pending_attack_closure_observation
         or behavioral_quotient_observation
+        or behavioral_quotient_runtime_observation
     ):
         durable = observation["durable_evidence"]
         conclusion = observation["conclusion"]
@@ -363,6 +368,126 @@ def validate_semantics(
             ]
             is True,
             "capture contract does not isolate component OOM",
+        )
+    elif behavioral_quotient_runtime_observation:
+        failed = observation["failed_component"]
+        diagnosis = observation["diagnosis"]
+        conclusion = observation["conclusion"]
+        require(
+            failed["component_id"] == "child-bundle-producer"
+            and failed["termination"] == "DEADLINE_EXCEEDED"
+            and failed["deadline_seconds"] == 43200
+            and failed["deadline_exceeded"] is True
+            and failed["elapsed_monotonic_ns"] >= 43200 * 1_000_000_000
+            and failed["pids_peak"] == 1
+            and failed["memory_peak_bytes"] < failed["memory_limit_bytes"]
+            and failed["memory_limit_bytes"]
+            == contract["resource_policy"]["memory_max_bytes_per_component"],
+            "behavioral-quotient runtime observation drift",
+        )
+        require(
+            all(
+                failed["memory_events"][key] == 0
+                for key in ("max", "oom", "oom_kill", "oom_group_kill")
+            )
+            and diagnosis["component_oom_observed"] is False
+            and diagnosis["global_oom_observed"] is False
+            and diagnosis["semantic_counterexample_observed"] is False
+            and diagnosis["configured_deadline_reached"] is True
+            and diagnosis["behavioral_audit_quotient_active"] is True
+            and diagnosis["single_candidate_pid_observed"] is True
+            and diagnosis["cpu_time_to_wall_time_ratio"] > 0.99
+            and diagnosis["memory_limit_reached"] is False
+            and diagnosis["external_memory_limit_reached"] is False
+            and conclusion["capacity_failure"] is True
+            and conclusion["capacity_failure_class"]
+            == "PYTHON_SINGLE_PROCESS_TRANSITION_THROUGHPUT_LIMIT",
+            "behavioral-quotient deadline was misclassified",
+        )
+        require(
+            failed["external_memory"]["mode"]
+            == contract["resource_policy"]["external_memory_backing_mode"]
+            and failed["external_memory"]["direct_io"] is True
+            and failed["external_memory"]["visible_entries_after_exit"] == 0
+            and failed["external_memory"]["unmounted"] is True
+            and failed["external_memory"]["loop_detached"] is True
+            and failed["external_memory"]["backing_removed"] is True,
+            "behavioral-quotient run did not retain the external-memory boundary",
+        )
+        require(
+            observation["source"]["captured_child_model_sha256"]
+            == current_input["exact_inputs"]["f0_supervisor_lts_v3.py"],
+            "behavioral-quotient observation is not for the current child bytes",
+        )
+        failed_capture = readiness["failed_capture_observation"]
+        require(
+            failed_capture["run_id"] == latest_id
+            and failed_capture["artifact_id"] == observation["artifact_id"]
+            and failed_capture["artifact_sha256"] == observation["artifact_sha256"]
+            and failed_capture["failure_class"]
+            == conclusion["capacity_failure_class"]
+            and failed_capture["candidate_bytes_positive_eligible"] is False,
+            "Rust-refinement readiness does not bind the failed run",
+        )
+        refinement = readiness["required_refinement"]
+        require(
+            refinement["reference_semantics"] == "CPYTHON_EXECUTABLE_MODEL"
+            and refinement["accelerator_language"] == "RUST"
+            and refinement["python_reference_retained"] is True
+            and refinement["rust_may_become_normative_specification"] is False
+            and refinement["child_transition_relation_change_allowed"] is False
+            and refinement["parent_transition_relation_change_allowed"] is False
+            and refinement["behavioral_projection_change_allowed"] is False
+            and refinement["collision_resolution_by_full_equality_required"]
+            is True
+            and refinement["deterministic_output_required"] is True
+            and refinement["bounded_state_and_transition_differential_required"]
+            is True
+            and refinement["hostile_fixture_differential_required"] is True
+            and refinement["two_build_root_reproducibility_required"] is True
+            and refinement["pinned_toolchain_identity_required"] is True
+            and refinement["authority_disjoint_clean_install_required"] is True
+            and refinement["production_linux_scheduler_hot_path_change_allowed"]
+            is False
+            and refinement["production_monitor_dispatch_hot_path_change_allowed"]
+            is False,
+            "Rust execution refinement weakened or changed the model boundary",
+        )
+        quotient = current_input["behavioral_quotient"]
+        require(
+            quotient["full_fixture_reachability_identity"]
+            == "BEHAVIORAL_AUDIT_REPRESENTATION_QUOTIENT"
+            and quotient["exact_ordered_identity_retained_for_bounded_regression"]
+            is True
+            and quotient["receipt_semantic_facts_and_multiplicity_retained"]
+            is True
+            and quotient["receipt_issuer_and_channel_retained"] is True
+            and quotient["all_operational_state_fields_retained"] is True
+            and quotient["recovery_and_decision_semantics_retained"] is True
+            and quotient["projection_hash_matches_resolved_by_full_equality"]
+            is True
+            and quotient["bounded_projection_congruence_regression_passed"]
+            is True
+            and quotient["audit_chain_implementation_refinement_proved"]
+            is False
+            and quotient["weaker_authority_projection_rejected"] is True
+            and quotient["weaker_projection_conflicts_observed"] > 0
+            and quotient["production_linux_scheduler_hot_path_changed"] is False
+            and quotient["production_monitor_dispatch_hot_path_changed"]
+            is False,
+            "behavioral quotient is weakened, overclaimed, or over-broad",
+        )
+        require(
+            all(
+                current_input["predecessor"][key] is True
+                for key in (
+                    "semantic_pending_attack_repair_retained",
+                    "disk_backed_exact_store_retained",
+                    "packed_exact_history_retained",
+                    "component_oom_isolation_retained",
+                )
+            ),
+            "behavioral quotient dropped predecessor repairs",
         )
     elif behavioral_quotient_observation:
         failed = observation["failed_component"]
@@ -968,6 +1093,7 @@ def validate_semantics(
         or external_memory_repair_observation
         or pending_attack_closure_observation
         or behavioral_quotient_observation
+        or behavioral_quotient_runtime_observation
     ):
         require(
             current_input["repair"][
@@ -1331,30 +1457,63 @@ def validate_semantics(
             install["current_inputs_installed"] is True,
             "passed behavioral-quotient reinstall not marked installed",
         )
-        require(
-            g6["retry_eligible"] is True,
-            "G6 retry not enabled after behavioral-quotient clean reinstall",
-        )
-        require(
-            readiness["status"] == "G6_RETRY_ELIGIBLE",
-            "passed behavioral-quotient install lacks readiness",
-        )
-        expected_input_status = (
-            "behavioral_audit_quotient_clean_installed_g6_retry_eligible"
-        )
-        expected_phase = "f0_v5_c4_g6_open_retry_eligible"
-        expected_capture_status = (
-            "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
-        )
-        expected_track_status = (
-            "open_candidate4_g1_g5_closed_g6_behavioral_quotient_retry_"
-            "eligible_g7_blocked"
-        )
         expected_install_action = (
             "completed_clean_reviewed_install_for_behavioral_audit_quotient_inputs"
         )
-        expected_full_action = "g6_behavioral_audit_quotient_retry_eligible"
         expected_reducer_status = "PASS"
+        if behavioral_quotient_runtime_observation:
+            require(
+                g6["retry_eligible"] is False,
+                "byte-identical G6 replay enabled after the throughput deadline",
+            )
+            require(
+                readiness["status"]
+                == "G6_RETRY_BLOCKED_PENDING_RUST_DIFFERENTIAL_REFINEMENT",
+                "throughput failure lacks a fail-closed Rust refinement gate",
+            )
+            require(
+                readiness["disposition"]["g6_retry_eligible"] is False
+                and readiness["disposition"]["g6_gate_status"] == "OPEN"
+                and readiness["disposition"]["g7_gate_status"] == "BLOCKED"
+                and readiness["disposition"]["g7_blocked_reason"]
+                == "NO_COMPLETE_G6_CAPTURE",
+                "Rust refinement readiness overclaims G6/G7 eligibility",
+            )
+            expected_input_status = (
+                "behavioral_audit_quotient_clean_installed_"
+                "g6_rust_refinement_required"
+            )
+            expected_phase = "f0_v5_c4_g6_open_rust_refinement_required"
+            expected_capture_status = (
+                "local_mechanism_g1_g5_closed_g6_open_"
+                "rust_refinement_required_g7_blocked"
+            )
+            expected_track_status = (
+                "open_candidate4_g1_g5_closed_g6_"
+                "rust_refinement_required_g7_blocked"
+            )
+            expected_full_action = "g6_rust_differential_refinement_required"
+        else:
+            require(
+                g6["retry_eligible"] is True,
+                "G6 retry not enabled after behavioral-quotient clean reinstall",
+            )
+            require(
+                readiness["status"] == "G6_RETRY_ELIGIBLE",
+                "passed behavioral-quotient install lacks readiness",
+            )
+            expected_input_status = (
+                "behavioral_audit_quotient_clean_installed_g6_retry_eligible"
+            )
+            expected_phase = "f0_v5_c4_g6_open_retry_eligible"
+            expected_capture_status = (
+                "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+            )
+            expected_track_status = (
+                "open_candidate4_g1_g5_closed_g6_behavioral_quotient_retry_"
+                "eligible_g7_blocked"
+            )
+            expected_full_action = "g6_behavioral_audit_quotient_retry_eligible"
     else:
         raise ConsistencyError(f"unknown clean-install status: {install['status']}")
 

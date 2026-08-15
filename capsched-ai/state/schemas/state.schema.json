@@ -52,7 +52,8 @@
         "current_phase": {
           "enum": [
             "f0_v5_c4_g6_open_reinstall_required",
-            "f0_v5_c4_g6_open_retry_eligible"
+            "f0_v5_c4_g6_open_retry_eligible",
+            "f0_v5_c4_g6_open_rust_refinement_required"
           ]
         },
         "publication": {
@@ -475,7 +476,8 @@
                 "pending_attack_closure_repaired_g6_retry_requires_clean_install",
                 "pending_attack_closure_repaired_clean_installed_g6_retry_eligible",
                 "behavioral_audit_quotient_validated_locally_g6_retry_requires_clean_install",
-                "behavioral_audit_quotient_clean_installed_g6_retry_eligible"
+                "behavioral_audit_quotient_clean_installed_g6_retry_eligible",
+                "behavioral_audit_quotient_clean_installed_g6_rust_refinement_required"
               ]
             },
             "fast_validator_status": {
@@ -583,7 +585,8 @@
             "status": {
               "enum": [
                 "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
-                "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked"
+                "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
+                "local_mechanism_g1_g5_closed_g6_open_rust_refinement_required_g7_blocked"
               ]
             },
             "hostile_mutation_cases": {

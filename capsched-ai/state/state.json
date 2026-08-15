@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "updated": "2026-08-14",
+  "updated": "2026-08-15",
   "project": {
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
     "purpose": "Build a monitor-backed Linux datacenter OS in which process-through-container Domain escape requires a Domain Monitor or typed service-endpoint break comparable to hypervisor escape.",
-    "current_phase": "f0_v5_c4_g6_open_retry_eligible",
+    "current_phase": "f0_v5_c4_g6_open_rust_refinement_required",
     "publication": {
       "github_visibility": "public_intentional",
       "decision_date": "2026-08-10",
@@ -177,6 +177,8 @@
     "G6 run candidate4-full-20260813T223812Z used disk-backed exact storage without OOM and durably committed RAW_CAPTURE_INCOMPLETE after the exact ordered-audit state identity reached its sealed 43200-second component deadline; no candidate bytes are positive-eligible and G7 remains blocked.",
     "The behavioral audit-representation quotient retains every operational field, receipt semantic fact and multiplicity, issuer/channel, and recovery/decision semantic fact while erasing only audit representation order, sequence, hash/authentication, roots, and representation pointers; projection-hash matches are resolved by full projected equality.",
     "A weaker projection that omitted receipt semantic multiplicity produced authority conflicts and is rejected; the ordered authenticated audit-chain implementation refinement remains an explicit open obligation, and no Linux scheduler or Monitor dispatch hot path changes.",
+    "G6 run candidate4-full-20260814T130141Z durably committed RAW_CAPTURE_INCOMPLETE after the behavioral-quotient child used one PID and essentially one CPU for its full 43200-second deadline; peak memory was 4,659,470,336 bytes, external allocation was 3,963,437,056 bytes, all limit/OOM counters were zero, and cleanup was complete.",
+    "Byte-identical G6 replay is blocked while Python remains the normative executable reference and a pinned, reproducible Rust accelerator must pass deterministic state, transition, projection, hostile, and result differential refinement before clean installation and a fresh capture.",
     "Long-running builds, model checks, and matrices are detached after immutable input capture and reviewed in a later session."
   ],
   "completion": {
@@ -242,7 +244,7 @@
     "current_candidate_inputs": {
       "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1",
       "artifact_sha256": "7ff6130991dfc3d82b8ee9ca5a33a52dbdb7de6015cdb807b9a3e60b53100845",
-      "status": "behavioral_audit_quotient_clean_installed_g6_retry_eligible",
+      "status": "behavioral_audit_quotient_clean_installed_g6_rust_refinement_required",
       "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
       "full_validator_status": "NOT_RUN_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS",
       "hostile_case_counts": {
@@ -268,7 +270,7 @@
       "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
       "canonical_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
       "evidence_level": "EC0",
-      "status": "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
+      "status": "local_mechanism_g1_g5_closed_g6_open_rust_refinement_required_g7_blocked",
       "hostile_mutation_cases": 155,
       "derived_semantic_cases": 14,
       "closed_gates": [
@@ -313,27 +315,17 @@
         "installed_source_commit": "536e3e736f1540184616f8e4e87f6e8f57fe6d1a",
         "installed_manifest_sha256": "1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e",
         "current_inputs_installed": true,
-        "readiness_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
-        "readiness_sha256": "86e15508e776a75edb6b5578db6ac1069b51fb35d0d86ae458b82f6756b9e55a"
+        "readiness_record": "capsched-models/validation/f0-c4-g6-rust-refinement-readiness-v1.json",
+        "readiness_sha256": "41034db8cd6f0915cb1ea39285bd11e4395b197209568eeacb3436d6a201018e"
       },
       "g6": {
         "gate_status": "OPEN",
-        "retry_eligible": true,
+        "retry_eligible": false,
         "complete_capture_available": false,
         "candidate_bytes_positive_eligible": false,
-        "attempt_count": 9,
-        "latest_completed_attempt_run_id": "candidate4-full-20260813T223812Z",
-        "active_attempt": {
-          "run_id": "candidate4-full-20260814T130141Z",
-          "status": "CAPTURE_RUNNING",
-          "launched_at": "2026-08-14T13:01:49Z",
-          "candidate_input_commit": "217e3eab236cfbe47b2b13fe3c3cfe0476a7a708",
-          "installed_source_commit": "536e3e736f1540184616f8e4e87f6e8f57fe6d1a",
-          "installed_manifest_sha256": "1045d361017550965423b301c424f4a4a32ea2223261d355de03d4dc33b8e70e",
-          "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
-          "candidate_bytes_executed": true,
-          "evidence_commit_available": false
-        },
+        "attempt_count": 10,
+        "latest_completed_attempt_run_id": "candidate4-full-20260814T130141Z",
+        "active_attempt": null,
         "attempt_history": [
           {
             "run_id": "candidate4-full-20260811T203907Z",
@@ -404,6 +396,14 @@
             "evidence_commit_available": true,
             "observation_record": "capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json",
             "observation_sha256": "0e26bf127292138a722dfdd6f91ba46b12bf968547d4880014a03431b1da201c"
+          },
+          {
+            "run_id": "candidate4-full-20260814T130141Z",
+            "status": "RAW_CAPTURE_INCOMPLETE",
+            "candidate_bytes_executed": true,
+            "evidence_commit_available": true,
+            "observation_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-timeout-observation-v1.json",
+            "observation_sha256": "c53841cc27b0a62db7fa081e08bd5cf71f71ba85833485a209413056e86e69b2"
           }
         ]
       },
@@ -436,8 +436,8 @@
     {
       "order": 4,
       "id": "RESIDENCY-DYN-001",
-      "status": "open_candidate4_g1_g5_closed_g6_behavioral_quotient_retry_eligible_g7_blocked",
-      "next_artifact": "Run a fresh authority-disjoint G6 capture from the clean-installed behavioral quotient and reduce only a complete committed capture in G7"
+      "status": "open_candidate4_g1_g5_closed_g6_rust_refinement_required_g7_blocked",
+      "next_artifact": "Implement a semantics-preserving Rust accelerator, pass deterministic Python/Rust differential refinement, clean-install it, then run a fresh authority-disjoint G6 capture"
     },
     {
       "order": 5,
@@ -542,8 +542,8 @@
     {
       "order": 7,
       "id": "F0-C4-FULL-LOCAL",
-      "status": "g6_behavioral_audit_quotient_retry_eligible",
-      "text": "The ninth G6 attempt is durably RAW_CAPTURE_INCOMPLETE and positive-ineligible after exact ordered-audit representation exhausted its 43200-second component deadline without OOM. The bounded behavioral quotient now passes local hostile/congruence checks and the complete clean-installed mechanism suite; a fresh G6 retry is eligible while G7 remains blocked."
+      "status": "g6_rust_differential_refinement_required",
+      "text": "The tenth G6 attempt is durably RAW_CAPTURE_INCOMPLETE and positive-ineligible after the behavioral-quotient CPython child used essentially one CPU for its full 43200-second deadline without OOM. Byte-identical replay is blocked until a deterministic Rust accelerator matches the retained Python reference across state, transition, projection, hostile, and result boundaries; G7 remains blocked."
     },
     {
       "order": 8,
@@ -615,10 +615,11 @@
     "f0_c4_external_memory_repair_analysis": "capsched-models/analysis/0233-dynamic-residency-f0-c4-g6-disk-backed-exact-enumerator.md",
     "f0_c4_pending_attack_closure_repair_analysis": "capsched-models/analysis/0234-dynamic-residency-f0-c4-g6-pending-hostile-closure-race.md",
     "f0_c4_behavioral_quotient_analysis": "capsched-models/analysis/0235-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md",
+    "f0_c4_rust_refinement_analysis": "capsched-models/analysis/0236-dynamic-residency-f0-c4-rust-execution-refinement-boundary.md",
     "f0_c4_current_input_contract": "capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1.json",
     "f0_c4_g6_incomplete_validation": "capsched-models/validation/0324-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md",
-    "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json",
-    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json",
+    "f0_c4_g6_incomplete_record": "capsched-models/validation/f0-c4-g6-behavioral-quotient-timeout-observation-v1.json",
+    "f0_c4_g6_retry_readiness": "capsched-models/validation/f0-c4-g6-rust-refinement-readiness-v1.json",
     "f0_c4_effect_repair_validation": "capsched-models/validation/0317-dynamic-residency-f0-c4-g6-counterexample-repair.md",
     "f0_c4_resource_repair_validation": "capsched-models/validation/0318-dynamic-residency-f0-c4-g6-resource-repair.md",
     "f0_c4_frontier_repair_validation": "capsched-models/validation/0319-dynamic-residency-f0-c4-g6-persistent-exact-frontier.md",
@@ -628,6 +629,7 @@
     "f0_c4_pending_attack_closure_repair_validation": "capsched-models/validation/0323-dynamic-residency-f0-c4-g6-pending-hostile-closure-repair.md",
     "f0_c4_behavioral_quotient_validation": "capsched-models/validation/0324-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md",
     "f0_c4_reproducible_build_validation": "capsched-models/validation/0325-dynamic-residency-f0-c4-reproducible-tcb-build.md",
+    "f0_c4_rust_refinement_validation": "capsched-models/validation/0326-dynamic-residency-f0-c4-rust-execution-refinement-boundary.md",
     "f0_c4_claim_registry": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
     "f0_c4_child_model": "capsched-models/validation/f0_supervisor_lts_v3.py",
     "f0_c4_parent_model": "capsched-models/validation/f0_supervisor_orchestrator_v3.py",
