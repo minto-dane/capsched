@@ -367,8 +367,28 @@ complete short suite passes. The ninth attempt
 `candidate4-full-20260813T223812Z` used that successor without OOM but reached
 the exact ordered-audit representation deadline and durably finalized
 incomplete. Its behavioral-quotient successor and reproducible TCB build
-repair are clean-installed, the complete short suite passes, G6 retry is
-enabled, and G7 remains blocked until a complete committed capture exists.
+repair were clean-installed and enabled the tenth attempt
+`candidate4-full-20260814T130141Z`.  That run reduced peak memory to 4.66 GB
+and external allocation to 3.96 GB with zero limit/OOM events, but its one-PID
+CPython child consumed essentially one CPU for the full 43,200-second deadline
+without completing.  It durably finalized `RAW_CAPTURE_INCOMPLETE`; identical
+replay is blocked and G6 retry is disabled.
+
+Analysis 0237 and Validation 0327 record the first bounded Rust child-transition
+refinement checkpoint.  Python remains the sole normative model.  The
+zero-dependency Rust implementation matches both roles byte-for-byte through
+1,000 BFS sources (6,410 states and 12,212 edges), matches all intermediate
+states and outgoing edges on 17 traces covering all 56 child actions, and
+matches 10,000-source cardinalities and action multiplicities.  Immutable
+shared receipt histories plus a collision-chain index reduce the measured
+10,000-source Rust peak from the rejected 1.27 GB form to about 107 MB; every
+digest match still requires full canonical-byte equality.  Two distinct source
+roots produce the same 461,048-byte Rust binary.  The machine checkpoint and
+14 fail-closed mutations bind those facts and keep seven subgates open:
+independent Rust well-formedness, all 295 child hostile cases, exhaustive child
+reachability/commutation, deterministic multiworker external memory,
+parent/orchestrator refinement, result integration, and clean installation.
+G6 retry therefore remains false and G7 remains blocked.
 
 ## Current Git State
 
@@ -556,24 +576,30 @@ open.
 
 ## Next Order
 
-1. Commit the reproducible launcher-build repair and its two-root regression
-   from a clean reviewed tree.
-2. Reconstruct that reviewed commit from the SHA-256-verified bundle inside
-   VM-native root-owned storage, install its TCB manifest, and rerun the
-   complete short mechanism/model suite.
-3. Capture the exact installed Candidate-4 inputs, launch the full bounded
-   child/parent reachability and declared-commutation campaign detached, then
-   independently reduce only a complete committed capture in a later session.
-4. Disposition the full-only local claims without changing any external
+1. Complete the Rust child well-formedness/evidence predicates and map all 295
+   child hostile cases to exact differential outcomes.
+2. Add deterministic multiworker layer/batch enumeration and bounded
+   disk-backed exact graph storage, then close exhaustive child reachability,
+   coaccessibility, and declared commutation against the Python oracle.
+3. Port and differentially close the parent/orchestrator transition relation,
+   its 739 hostile cases, and the final result schema; keep Rust
+   non-authoritative.
+4. Reconstruct the reviewed refinement from a SHA-256-verified bundle in
+   VM-native root-owned storage, install its immutable TCB manifest, and rerun
+   the complete short mechanism/model suite.
+5. Only then capture the exact installed Candidate-4 inputs, launch the full
+   bounded campaign detached, and independently reduce only a complete
+   committed capture in a later session. Disposition full-only local claims
+   without changing any external
    claim. A local pass still does not authorize F0 or external R11 review.
-5. Continue GPT-primary synthesis, contradiction search, and minimality through
+6. Continue GPT-primary synthesis, contradiction search, and minimality through
    F1 claim semantics, F2 platform/threat refinement, and F3 external
    policy/generators/mutations/proof/trust; then obtain an independently rooted
    K0/G0 decision over one immutable F0-F3 source set.
-6. Only after semantic freeze, materialize Formal 0150/D0-D17/W0-W12 and
+7. Only after semantic freeze, materialize Formal 0150/D0-D17/W0-W12 and
    translate the frozen semantics to TLA+/other backends for final
    counterexample/proof validation and claim-specific evidence.
-7. Compose `ENTRY-001 + CODE-001`, then state/service/management, cluster
+8. Compose `ENTRY-001 + CODE-001`, then state/service/management, cluster
    partitions, composition, and the complete-path cost contract.
 
 ## Do Not Do Yet
@@ -609,9 +635,11 @@ Do not poll a healthy long-running job merely to keep a chat session alive.
 3. `../capsched-models/analysis/0185-final-goal-conformance-and-compositional-model-reopen.md`
 4. `../capsched-models/plans/0006-final-compositional-model-completion-plan.md`
 5. `../capsched-ai/decisions/ADR-0020-close-f0-before-policy-with-total-actions-batches-and-morphisms.md`
-6. `../capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
-7. `../capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
-8. `../capsched-models/policy/r11/epoch2/foundation-v5/README.md`
+6. `../capsched-models/analysis/0237-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md`
+7. `../capsched-models/validation/0327-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md`
+8. `../capsched-models/analysis/0226-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
+9. `../capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md`
+10. `../capsched-models/policy/r11/epoch2/foundation-v5/README.md`
 
 Read Analysis 0188 and Validation 0289 as the immediate refinement baseline.
 ROOTSCHED is closed reference context. Finite RESIDENCY is a lower-layer

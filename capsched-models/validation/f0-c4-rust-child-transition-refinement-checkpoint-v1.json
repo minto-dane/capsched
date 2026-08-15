@@ -1,0 +1,135 @@
+{
+  "artifact_id": "f0-c4-rust-child-transition-refinement-checkpoint-v1",
+  "schema_version": 1,
+  "status": "child_transition_bounded_differential_pass_parent_and_exhaustive_gates_open",
+  "normative_model": {
+    "authority": "PYTHON_ONLY",
+    "path": "capsched-models/validation/f0_supervisor_lts_v3.py",
+    "sha256": "033170ef47e877890dfbb9f31f7bc32e0a3a0e0d0277499f81582d2f69c07888"
+  },
+  "rust_refinement": {
+    "path": "capsched-models/validation/f0-c4-rust-engine",
+    "third_party_dependency_count": 0,
+    "wire_schema": "F0-C4-RUST-DIFFERENTIAL-V1",
+    "input_sha256": {
+      "Cargo.lock": "bc9b7947b8da8d6a6f06f0edee0c329c94445faa0471c2eea00f31ae35643773",
+      "Cargo.toml": "289b6dc80065e124785a5c693bfac7512b18173a4abcdfe13c65d4a7702d8d8f",
+      "README.md": "89f9fae0300ecf53fb69bee08f298bac2de642a3768bc679fa88ed8b4fc2cf7f",
+      "python_oracle.py": "7e7c333c2798d2d35c005d030da86342ea1b9162ba5022bb2140430648837a06",
+      "src/canonical.rs": "c4319329aed87aa160bca9ba529ccc57eee860f22395429f0fcd68e94df20831",
+      "src/main.rs": "c64fcc893d59afbd11c07eb881895465ab740aa94a11d0d4bc666b3204480e6b",
+      "src/model.rs": "9119527a97f3972f8cbb1f6f0fcb9f282ce5527b1b074dc9979d7288c7755ea8",
+      "src/sha256.rs": "82f3db5ec229bb4ace9861c531b6942d2729c108e6a7f4bae28478227079d0a0",
+      "test_bounded_differential.py": "f6eb9abb9635b8541dbad7eed29ca2ad56323e18bde05b505a6cc16362fca249",
+      "test_bounded_stats_differential.py": "a280d566434659c7cdd952279c92f8cb0e9b679ba811a2bd1e6c368729db8577",
+      "test_build_reproducibility.py": "5c7c490d6544b5f9dde012e31dd5a2a35eeab141bb012fb0c669faac0b8c8a23",
+      "test_setup_differential.py": "a6ab984513b0cc0d6f70269f29e86e942dbe7409b216e748ef48ec9e07cfb064",
+      "test_trace_differential.py": "3f4f42ca7a739a0b3d9f61ec748e916670a2398e62554e5c982f1a3d6153beb4"
+    }
+  },
+  "differential_results": {
+    "setup_closure": {
+      "checker": {
+        "canonical_bytes": 788093,
+        "canonical_sha256": "6bb8f88ca3aeaa66525e6ffd8ad515c4ab7ea50bc09bb544323b2821c01ce69f",
+        "edges": 58,
+        "states": 57
+      },
+      "producer": {
+        "canonical_bytes": 788554,
+        "canonical_sha256": "62e4a2e757d641e28528e470de49f03d2d421d977aa5193ea9e88afc1069ffca",
+        "edges": 58,
+        "states": 57
+      },
+      "repeated_rust_runs_per_role": 4,
+      "status": "PASS_BYTE_EXACT"
+    },
+    "bounded_exact_prefix": {
+      "checker": {
+        "canonical_bytes": 205812255,
+        "canonical_sha256": "ac92d54c9811b86cc906414f3781abd34a8e5125523daa7b679ea0c71095e9d3",
+        "edges": 12212,
+        "states": 6410
+      },
+      "expanded_sources": 1000,
+      "producer": {
+        "canonical_bytes": 205971532,
+        "canonical_sha256": "aa8e94a96f21fb98c25c271cb0b4fde816d1eb8342cc3eb51aab66baa7e6d3e7",
+        "edges": 12212,
+        "states": 6410
+      },
+      "status": "PASS_BYTE_EXACT"
+    },
+    "all_action_trace_corpus": {
+      "declared_action_count": 56,
+      "observed_action_count": 56,
+      "producer_quota_trace_sha256": "d89a94a6f084727995bf033bcfbbc66610e35f9e4a6f8b0362986731fc497723",
+      "repeated_rust_runs_per_trace": 2,
+      "status": "PASS_BYTE_EXACT",
+      "trace_count": 17
+    },
+    "bounded_wide_stats": {
+      "checker": {
+        "action_count": 44,
+        "canonical_sha256": "47ba323ccbc44f1a22b6c7d57d048d5db154a5dfd07c7998d784fb971cc20372",
+        "edges": 118552,
+        "states": 52764
+      },
+      "expanded_sources": 10000,
+      "producer": {
+        "action_count": 44,
+        "canonical_sha256": "29f62dc1274efcbce9315654be7bfe5adda1bd46459fbc86f6cf62760c9ea77d",
+        "edges": 118552,
+        "states": 52764
+      },
+      "status": "PASS_EXACT_CARDINALITY_AND_ACTION_MULTIPLICITY_DIAGNOSTIC"
+    }
+  },
+  "representation": {
+    "behavioral_identity_hash": "SHA256_CANONICAL_BYTES",
+    "digest_match_resolution": "FULL_CANONICAL_BYTE_EQUALITY_REQUIRED",
+    "forced_same_digest_distinct_state_case": "PASS",
+    "receipt_history": "IMMUTABLE_SHARED_LOSSLESS_NODES",
+    "rust_peak_rss_kib_at_10000_expanded_sources": 107380,
+    "rejected_naive_rust_peak_rss_kib_at_10000_expanded_sources": 1271768
+  },
+  "reproducible_build": {
+    "binary_bytes": 461048,
+    "binary_sha256": "d8065e5a3fa8a359e379fa2161ae1d08e866ab95a0d1992031fe0cdc0604c2e4",
+    "cargo_sha256": "09a38284fe30daa241f07311f284ee74f8ca55010a6a59f821a22c1910588d71",
+    "cargo_version": "cargo 1.75.0",
+    "distinct_source_roots": 2,
+    "rustc_sha256": "eb2a1195d11475d74995a7f04dfcbc3c48987b06bd5687ffcff6e5daa50cc91f",
+    "rustc_version": "rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)",
+    "status": "PASS_BYTE_IDENTICAL"
+  },
+  "closed_subgates": {
+    "all_declared_child_actions_have_exact_witness_edges": true,
+    "bounded_child_state_and_transition_differential": true,
+    "canonical_behavioral_projection_encoding": true,
+    "digest_collisions_resolved_by_full_equality": true,
+    "no_third_party_rust_dependencies": true,
+    "reproducible_rust_binary_from_distinct_roots": true,
+    "shared_receipt_history_preserves_canonical_behavior": true
+  },
+  "open_subgates": {
+    "authority_disjoint_clean_install": true,
+    "child_exhaustive_reachability_and_commutation": true,
+    "deterministic_multiworker_and_external_memory": true,
+    "full_295_child_hostile_fixture_parity": true,
+    "parent_orchestrator_transition_and_hostile_refinement": true,
+    "result_schema_and_capture_integration": true,
+    "rust_instance_wf_and_evidence_wf_independent_checks": true
+  },
+  "disposition": {
+    "claim_credit": false,
+    "f0_local_acceptance": false,
+    "g6_retry_eligible": false,
+    "g6_status": "OPEN",
+    "g7_status": "BLOCKED",
+    "linux_or_monitor_hot_path_changed": false,
+    "production_performance_claim": false,
+    "protection_claim": false,
+    "rust_model_authority": false
+  }
+}

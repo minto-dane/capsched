@@ -71,6 +71,7 @@ assurance_head_rels=(
 	capsched-models/analysis/0235-dynamic-residency-f0-c4-behavioral-audit-representation-quotient.md
 	capsched-models/analysis/dynamic-residency-f0-v5-supervisor-v3-candidate4-behavioral-audit-quotient-v1.json
 	capsched-models/analysis/0236-dynamic-residency-f0-c4-rust-execution-refinement-boundary.md
+	capsched-models/analysis/0237-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md
 	capsched-models/assurance/claims.json
 	capsched-models/validation/0313-dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure.md
 	capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json
@@ -110,8 +111,25 @@ assurance_head_rels=(
 	capsched-models/validation/f0-c4-g6-exact-history-timeout-observation-v1.json
 	capsched-models/validation/f0-c4-g6-behavioral-quotient-retry-readiness-v1.json
 	capsched-models/validation/0326-dynamic-residency-f0-c4-rust-execution-refinement-boundary.md
+	capsched-models/validation/0327-dynamic-residency-f0-c4-rust-child-transition-refinement-checkpoint.md
 	capsched-models/validation/f0-c4-g6-behavioral-quotient-timeout-observation-v1.json
 	capsched-models/validation/f0-c4-g6-rust-refinement-readiness-v1.json
+	capsched-models/validation/f0-c4-rust-child-transition-refinement-checkpoint-v1.json
+	capsched-models/validation/validate-f0-c4-rust-child-refinement.py
+	capsched-models/validation/test-f0-c4-rust-child-refinement-mutations.py
+	capsched-models/validation/f0-c4-rust-engine/Cargo.toml
+	capsched-models/validation/f0-c4-rust-engine/Cargo.lock
+	capsched-models/validation/f0-c4-rust-engine/README.md
+	capsched-models/validation/f0-c4-rust-engine/python_oracle.py
+	capsched-models/validation/f0-c4-rust-engine/src/canonical.rs
+	capsched-models/validation/f0-c4-rust-engine/src/main.rs
+	capsched-models/validation/f0-c4-rust-engine/src/model.rs
+	capsched-models/validation/f0-c4-rust-engine/src/sha256.rs
+	capsched-models/validation/f0-c4-rust-engine/test_bounded_differential.py
+	capsched-models/validation/f0-c4-rust-engine/test_bounded_stats_differential.py
+	capsched-models/validation/f0-c4-rust-engine/test_build_reproducibility.py
+	capsched-models/validation/f0-c4-rust-engine/test_setup_differential.py
+	capsched-models/validation/f0-c4-rust-engine/test_trace_differential.py
 	capsched-models/validation/validate-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/test-f0-c4-authority-disjoint-capture-contract.py
 	capsched-models/validation/f0-c4-capture/build-install.sh
@@ -368,6 +386,23 @@ model_quotient_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
 	"$repo_root/capsched-models/validation/f0-c4-capture/test-model-behavioral-quotient.py")
 [[ $model_quotient_result == *"F0_C4_BEHAVIORAL_QUOTIENT_PASS cases=9 expanded=2000 exact_states=20510 edges=24920 equivalent_expanded_states=669"* ]] || {
 	printf 'error: F0 C4 behavioral-quotient regression failed\n' >&2
+	exit 1
+}
+rust_child_refinement_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
+	"$repo_root/capsched-models/validation/validate-f0-c4-rust-child-refinement.py")
+[[ $rust_child_refinement_result == \
+	*'"artifact_id":"f0-c4-rust-child-refinement-structural-validation-v1"'* &&
+   $rust_child_refinement_result == *'"claim_credit":false'* &&
+   $rust_child_refinement_result == *'"open_subgates":7'* &&
+   $rust_child_refinement_result == *'"status":"pass"'* ]] || {
+	printf 'error: F0 C4 Rust child-refinement checkpoint failed\n' >&2
+	exit 1
+}
+rust_child_mutation_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
+	"$repo_root/capsched-models/validation/test-f0-c4-rust-child-refinement-mutations.py")
+[[ $rust_child_mutation_result == \
+	*"F0_C4_RUST_CHILD_REFINEMENT_MUTATION_PASS cases=14"* ]] || {
+	printf 'error: F0 C4 Rust child-refinement mutation regression failed\n' >&2
 	exit 1
 }
 reducer_binding_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \

@@ -128,6 +128,109 @@ def current_projection(state: dict[str, Any], claims: dict[str, Any]) -> dict[st
     }
 
 
+def validate_rust_child_checkpoint(
+    state: dict[str, Any],
+    current_input: dict[str, Any],
+    checkpoint: dict[str, Any],
+) -> None:
+    require(
+        checkpoint["artifact_id"]
+        == "f0-c4-rust-child-transition-refinement-checkpoint-v1"
+        and checkpoint["status"]
+        == "child_transition_bounded_differential_pass_parent_and_exhaustive_gates_open",
+        "Rust child checkpoint identity drift",
+    )
+    normative = checkpoint["normative_model"]
+    require(
+        normative["authority"] == "PYTHON_ONLY"
+        and normative["path"]
+        == "capsched-models/validation/f0_supervisor_lts_v3.py"
+        and normative["sha256"]
+        == current_input["exact_inputs"]["f0_supervisor_lts_v3.py"],
+        "Rust checkpoint is not bound to the normative child bytes",
+    )
+    rust = checkpoint["rust_refinement"]
+    require(
+        rust["third_party_dependency_count"] == 0
+        and rust["wire_schema"] == "F0-C4-RUST-DIFFERENTIAL-V1",
+        "Rust checkpoint dependency or wire boundary drift",
+    )
+    results = checkpoint["differential_results"]
+    require(
+        results["setup_closure"]["status"] == "PASS_BYTE_EXACT"
+        and results["bounded_exact_prefix"]["status"] == "PASS_BYTE_EXACT"
+        and results["bounded_exact_prefix"]["expanded_sources"] == 1000
+        and results["bounded_exact_prefix"]["producer"]["states"] == 6410
+        and results["bounded_exact_prefix"]["producer"]["edges"] == 12212
+        and results["bounded_exact_prefix"]["checker"]["states"] == 6410
+        and results["bounded_exact_prefix"]["checker"]["edges"] == 12212
+        and results["all_action_trace_corpus"]["status"] == "PASS_BYTE_EXACT"
+        and results["all_action_trace_corpus"]["declared_action_count"] == 56
+        and results["all_action_trace_corpus"]["observed_action_count"] == 56
+        and results["bounded_wide_stats"]["expanded_sources"] == 10000
+        and results["bounded_wide_stats"]["producer"]["states"] == 52764
+        and results["bounded_wide_stats"]["producer"]["edges"] == 118552
+        and results["bounded_wide_stats"]["checker"]["states"] == 52764
+        and results["bounded_wide_stats"]["checker"]["edges"] == 118552,
+        "Rust bounded differential evidence drift",
+    )
+    representation = checkpoint["representation"]
+    require(
+        representation["digest_match_resolution"]
+        == "FULL_CANONICAL_BYTE_EQUALITY_REQUIRED"
+        and representation["forced_same_digest_distinct_state_case"] == "PASS"
+        and representation["receipt_history"]
+        == "IMMUTABLE_SHARED_LOSSLESS_NODES"
+        and representation["rust_peak_rss_kib_at_10000_expanded_sources"]
+        < representation["rejected_naive_rust_peak_rss_kib_at_10000_expanded_sources"],
+        "Rust collision or memory boundary drift",
+    )
+    require(
+        checkpoint["reproducible_build"]["status"] == "PASS_BYTE_IDENTICAL"
+        and checkpoint["reproducible_build"]["distinct_source_roots"] == 2,
+        "Rust reproducible build boundary drift",
+    )
+    expected_open = {
+        "authority_disjoint_clean_install",
+        "child_exhaustive_reachability_and_commutation",
+        "deterministic_multiworker_and_external_memory",
+        "full_295_child_hostile_fixture_parity",
+        "parent_orchestrator_transition_and_hostile_refinement",
+        "result_schema_and_capture_integration",
+        "rust_instance_wf_and_evidence_wf_independent_checks",
+    }
+    require(
+        set(checkpoint["open_subgates"]) == expected_open
+        and all(checkpoint["open_subgates"].values()),
+        "Rust checkpoint hides an open refinement gate",
+    )
+    require(
+        checkpoint["closed_subgates"]
+        and all(checkpoint["closed_subgates"].values()),
+        "Rust checkpoint closed-subgate record drift",
+    )
+    capture = state["evidence"]["authority_capture_contract"]
+    disposition = checkpoint["disposition"]
+    require(
+        disposition["claim_credit"] is False
+        and disposition["rust_model_authority"] is False
+        and disposition["g6_retry_eligible"] is False
+        and disposition["g6_status"] == capture["g6"]["gate_status"] == "OPEN"
+        and disposition["g7_status"] == capture["g7"]["gate_status"] == "BLOCKED"
+        and capture["g6"]["retry_eligible"] is False
+        and disposition["linux_or_monitor_hot_path_changed"] is False
+        and disposition["production_performance_claim"] is False
+        and disposition["protection_claim"] is False,
+        "Rust checkpoint overclaims readiness or authority",
+    )
+    require(
+        state["evidence"]["current_candidate_inputs"]["status"].endswith(
+            "g6_rust_refinement_required"
+        ),
+        "Rust child checkpoint prematurely closes the refinement gate",
+    )
+
+
 def validate_semantics(
     state: dict[str, Any],
     claims: dict[str, Any],
@@ -1655,6 +1758,9 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
     current_path, current_input = canonical_json("f0_c4_current_input_contract")
     observation_path, observation = canonical_json("f0_c4_g6_incomplete_record")
     readiness_path, readiness = canonical_json("f0_c4_g6_retry_readiness")
+    rust_checkpoint_path, rust_checkpoint = canonical_json(
+        "f0_c4_rust_child_checkpoint"
+    )
     current_input["artifact_sha256"] = sha256_file(current_path)
     observation["artifact_sha256"] = sha256_file(observation_path)
     readiness["artifact_sha256"] = sha256_file(readiness_path)
@@ -1802,6 +1908,7 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
                 f"active G6 input commit differs: {name}",
             )
 
+    validate_rust_child_checkpoint(state, current_input, rust_checkpoint)
     validate_semantics(state, claims, contract, current_input, observation, readiness)
 
     handoff_path = repo_root / canonical["handoff"]
@@ -2085,6 +2192,7 @@ def validate_repo(repo_root: Path, *, self_test: bool) -> dict[str, Any]:
         "current_input": str(current_path.relative_to(repo_root)),
         "g6_observation": str(observation_path.relative_to(repo_root)),
         "g6_retry_readiness": str(readiness_path.relative_to(repo_root)),
+        "rust_child_checkpoint": str(rust_checkpoint_path.relative_to(repo_root)),
         "handoff_projection": "exact",
         "hostile_self_test_cases": hostile_cases,
     }
