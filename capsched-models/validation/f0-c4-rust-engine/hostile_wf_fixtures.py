@@ -10,8 +10,12 @@ import f0_supervisor_lts_v3 as model
 from python_oracle import encode
 
 
-FIXTURE_HEADER = "F0_C4_RUST_HOSTILE_WF_FIXTURES_V1"
-RESULT_HEADER = "F0_C4_RUST_HOSTILE_WF_RESULTS_V1"
+FIXTURE_HEADER = "F0_C4_RUST_HOSTILE_WF_FIXTURES_V2"
+RESULT_HEADER = "F0_C4_RUST_HOSTILE_WF_RESULTS_V2"
+ORIGINAL_CASE_TOTAL = 295
+BASE_WF_MAPPED_ORIGINAL_CASE_CREDITS = 59
+MAPPED_ORIGINAL_CASE_CREDITS = 71
+SUPPLEMENTAL_EDGE_CASES = 10
 SETUP = (
     "SUP-001-REQUEST-SCOPE",
     "OBS-002-CONFIGURE-SCOPE-ACK",
@@ -43,6 +47,22 @@ class Fixture:
         if isinstance(self.value, model.EnvelopeState):
             return "S"
         raise TypeError(f"unsupported hostile fixture: {type(self.value).__qualname__}")
+
+
+@dataclass(frozen=True)
+class EdgeFixture:
+    fixture_id: str
+    action_id: str
+    actor: str
+    before: model.EnvelopeState
+    after: model.EnvelopeState
+
+    @property
+    def kind(self) -> str:
+        return "E"
+
+
+FixtureCase = Fixture | EdgeFixture
 
 
 def start(role: str = "PRODUCER") -> model.EnvelopeState:
@@ -130,7 +150,7 @@ def rechain_open_receipts(
     return replace(state, evidence_receipts=tuple(rebuilt))
 
 
-def cases() -> tuple[Fixture, ...]:
+def cases() -> tuple[FixtureCase, ...]:
     producer_grant = model.fixture_external_grant("PRODUCER")
     checker_grant = model.fixture_external_grant("CHECKER")
     fixtures = [
@@ -602,16 +622,17 @@ def cases() -> tuple[Fixture, ...]:
         early_takeover.evidence_receipts[-1],
         payload="phase=RUNNING",
     )
+    false_phase_takeover = rechain_open_receipts(
+        replace(
+            early_takeover,
+            recovery_receipts=(false_phase_recovery,),
+        ),
+        tuple(early_takeover.evidence_receipts[:-1]) + (false_phase_receipt,),
+    )
     fixtures.append(
         Fixture(
             "recovery.reject.false-immediate-phase",
-            rechain_open_receipts(
-                replace(
-                    early_takeover,
-                    recovery_receipts=(false_phase_recovery,),
-                ),
-                tuple(early_takeover.evidence_receipts[:-1]) + (false_phase_receipt,),
-            ),
+            false_phase_takeover,
         )
     )
     post_takeover_scope = model.apply_trace(early_takeover, ("SUP-001-REQUEST-SCOPE",))
@@ -676,6 +697,244 @@ def cases() -> tuple[Fixture, ...]:
             ),
         )
     )
+
+    candidate_a_edge = next(
+        edge
+        for edge in model.next_states(running)
+        if edge.action_id == "OBS-009A-PRODUCER-CANDIDATE-A"
+    )
+    framed_for_effects = candidate_a_edge.state
+    valid_eof_edge = next(
+        edge
+        for edge in model.next_states(framed_for_effects)
+        if edge.action_id == "OBS-013-EOF-VALID"
+    )
+    truncated_eof_edge = next(
+        edge
+        for edge in model.next_states(normal_edge.state)
+        if edge.action_id == "OBS-014-EOF-TRUNCATED"
+    )
+    invalid_eof_edge = next(
+        edge
+        for edge in model.next_states(running)
+        if edge.action_id == "OBS-015-EOF-INVALID"
+    )
+    signal_source = model.apply_trace(
+        running,
+        (
+            "MON-026-QUOTA-ARRIVAL",
+            "ARB-026B-QUOTA-WINS",
+            "SUP-028-REQUEST-TERMINATION",
+        ),
+    )
+    signal_edge = next(
+        edge
+        for edge in model.next_states(signal_source)
+        if edge.action_id == "OBS-030-SIGNAL-EXIT"
+    )
+    abnormal_edge = next(
+        edge
+        for edge in model.next_states(running)
+        if edge.action_id == "OBS-031-ABNORMAL-EXIT"
+    )
+    final_edge = next(
+        edge
+        for edge in model.next_states(before_final)
+        if edge.action_id == "MON-041-FINAL-COUNTERS"
+    )
+
+    positive_edges = (
+        (
+            "edge.accept.immediate-takeover",
+            start(),
+            "GRD-024-TAKEOVER-AFTER-PRIMARY-CRASH",
+            "RECOVERY_GUARDIAN",
+            early_takeover,
+        ),
+        (
+            "edge.accept.guardian-scope-request",
+            early_takeover,
+            "SUP-001-REQUEST-SCOPE",
+            "RECOVERY_GUARDIAN",
+            guardian_scope,
+        ),
+        (
+            "edge.accept.normal-exit",
+            running,
+            normal_edge.action_id,
+            normal_edge.actor,
+            normal_edge.state,
+        ),
+        (
+            "edge.accept.producer-candidate-a",
+            running,
+            candidate_a_edge.action_id,
+            candidate_a_edge.actor,
+            candidate_a_edge.state,
+        ),
+        (
+            "edge.accept.valid-eof",
+            framed_for_effects,
+            valid_eof_edge.action_id,
+            valid_eof_edge.actor,
+            valid_eof_edge.state,
+        ),
+        (
+            "edge.accept.truncated-eof",
+            normal_edge.state,
+            truncated_eof_edge.action_id,
+            truncated_eof_edge.actor,
+            truncated_eof_edge.state,
+        ),
+        (
+            "edge.accept.invalid-eof",
+            running,
+            invalid_eof_edge.action_id,
+            invalid_eof_edge.actor,
+            invalid_eof_edge.state,
+        ),
+        (
+            "edge.accept.signal-exit",
+            signal_source,
+            signal_edge.action_id,
+            signal_edge.actor,
+            signal_edge.state,
+        ),
+        (
+            "edge.accept.abnormal-exit",
+            running,
+            abnormal_edge.action_id,
+            abnormal_edge.actor,
+            abnormal_edge.state,
+        ),
+        (
+            "edge.accept.final-counters",
+            before_final,
+            final_edge.action_id,
+            final_edge.actor,
+            final_edge.state,
+        ),
+    )
+    for fixture_id, before, action_id, actor, after in positive_edges:
+        model._edge(action_id, actor, before, after)
+        fixtures.append(EdgeFixture(fixture_id, action_id, actor, before, after))
+
+    omitted_effects: list[
+        tuple[str, model.EnvelopeState, model.Edge, model.EnvelopeState]
+    ] = []
+    for label, before, edge in (
+        ("valid-eof-writer-closure", framed_for_effects, valid_eof_edge),
+        ("truncated-eof-writer-closure", normal_edge.state, truncated_eof_edge),
+        ("invalid-eof-writer-closure", running, invalid_eof_edge),
+    ):
+        omitted = rechain_open_receipts(
+            replace(edge.state, writer_confinement="CONFINED"),
+            tuple(edge.state.evidence_receipts),
+        )
+        omitted_effects.append((label, before, edge, omitted))
+    for label, before, edge in (
+        ("normal-exit-hidden-work", running, normal_edge),
+        ("signal-exit-hidden-work", signal_source, signal_edge),
+        ("abnormal-exit-hidden-work", running, abnormal_edge),
+    ):
+        omitted = rechain_open_receipts(
+            replace(edge.state, hidden_work="ACTIVE"),
+            tuple(edge.state.evidence_receipts),
+        )
+        omitted_effects.append((label, before, edge, omitted))
+    for label, before, edge, omitted in omitted_effects:
+        if not model.instance_wf(omitted):
+            raise RuntimeError(f"edge fixture {label}: hostile after-state lost WF")
+        if model._action_semantics_wf(edge.action_id, before, omitted):
+            raise RuntimeError(f"edge fixture {label}: omitted effect became valid")
+
+    final_counter_receipts = list(normal_final.evidence_receipts)
+    final_receipt = final_counter_receipts[-1]
+    if final_receipt.kind != "FINAL_COUNTERS":
+        raise RuntimeError("final-counter edge fixture drift")
+    zero_payload = (
+        f"{normal_final.grant.budget_id}:epoch={normal_final.grant.epoch}:value=0"
+    )
+    final_counter_receipts[-1] = coherent_receipt_mutation(
+        final_receipt,
+        payload=zero_payload,
+        payload_digest=model.digest(
+            "RECEIPT_PAYLOAD",
+            final_receipt.kind,
+            zero_payload,
+        ),
+    )
+    zero_final = rechain_open_receipts(
+        replace(normal_final, final_value=0),
+        tuple(final_counter_receipts),
+    )
+    if not model.instance_wf(zero_final) or model._action_semantics_wf(
+        "MON-041-FINAL-COUNTERS", before_final, zero_final
+    ):
+        raise RuntimeError("final-counter hostile edge fixture drift")
+
+    invalid_edges = (
+        (
+            "edge.reject.takeover-false-observed-phase",
+            start(),
+            "GRD-024-TAKEOVER-AFTER-PRIMARY-CRASH",
+            "RECOVERY_GUARDIAN",
+            false_phase_takeover,
+        ),
+        (
+            "edge.reject.stale-controller-after-takeover",
+            early_takeover,
+            "SUP-001-REQUEST-SCOPE",
+            "PRIMARY_SUPERVISOR",
+            guardian_scope,
+        ),
+        (
+            "edge.reject.nonstall-noop",
+            running,
+            "OBS-029-NORMAL-EXIT",
+            "TARGET_LINUX_OBSERVER",
+            running,
+        ),
+        (
+            "edge.reject.normal-relabeled-abnormal",
+            running,
+            "OBS-031-ABNORMAL-EXIT",
+            "TARGET_LINUX_OBSERVER",
+            normal_edge.state,
+        ),
+        (
+            "edge.reject.candidate-a-relabeled-b",
+            running,
+            "OBS-009B-PRODUCER-CANDIDATE-B",
+            "TARGET_LINUX_OBSERVER",
+            candidate_a_edge.state,
+        ),
+    ) + tuple(
+        (
+            f"edge.reject.omitted-{label}",
+            before,
+            edge.action_id,
+            edge.actor,
+            omitted,
+        )
+        for label, before, edge, omitted in omitted_effects
+    ) + (
+        (
+            "edge.reject.final-counters-wrong-measurement",
+            before_final,
+            "MON-041-FINAL-COUNTERS",
+            "MONITOR_OBSERVER",
+            zero_final,
+        ),
+    )
+    for fixture_id, before, action_id, actor, after in invalid_edges:
+        try:
+            model._edge(action_id, actor, before, after)
+        except model.ProtocolReject:
+            pass
+        else:
+            raise RuntimeError(f"edge fixture {fixture_id}: hostile edge accepted")
+        fixtures.append(EdgeFixture(fixture_id, action_id, actor, before, after))
 
     quiescent = quiescent_candidate()
     fixtures.append(
@@ -746,7 +1005,15 @@ def cases() -> tuple[Fixture, ...]:
     )
 
     result = tuple(fixtures)
-    if len(result) != 59 or len({fixture.fixture_id for fixture in result}) != len(result):
+    if (
+        len(result) != 81
+        or len({fixture.fixture_id for fixture in result}) != len(result)
+        or SUPPLEMENTAL_EDGE_CASES != len(positive_edges)
+        or MAPPED_ORIGINAL_CASE_CREDITS
+        != BASE_WF_MAPPED_ORIGINAL_CASE_CREDITS + len(invalid_edges)
+        or len(result)
+        != MAPPED_ORIGINAL_CASE_CREDITS + SUPPLEMENTAL_EDGE_CASES
+    ):
         raise RuntimeError("hostile WF fixture inventory drift")
     return result
 
@@ -761,26 +1028,53 @@ def normalize(value: Any) -> Any:
     return value
 
 
-def fixture_bytes(fixtures: tuple[Fixture, ...]) -> bytes:
+def fixture_bytes(fixtures: tuple[FixtureCase, ...]) -> bytes:
     lines = [f"{FIXTURE_HEADER}\t{len(fixtures)}"]
     for fixture in fixtures:
-        lines.append(
-            "\t".join(
-                (
-                    fixture.kind,
-                    fixture.fixture_id.encode("ascii").hex(),
-                    encode(normalize(fixture.value)).hex(),
+        if isinstance(fixture, EdgeFixture):
+            lines.append(
+                "\t".join(
+                    (
+                        fixture.kind,
+                        fixture.fixture_id.encode("ascii").hex(),
+                        fixture.action_id.encode("ascii").hex(),
+                        fixture.actor.encode("ascii").hex(),
+                        encode(normalize(fixture.before)).hex(),
+                        encode(normalize(fixture.after)).hex(),
+                    )
                 )
             )
-        )
+        else:
+            lines.append(
+                "\t".join(
+                    (
+                        fixture.kind,
+                        fixture.fixture_id.encode("ascii").hex(),
+                        encode(normalize(fixture.value)).hex(),
+                    )
+                )
+            )
     return ("\n".join(lines) + "\n").encode("ascii")
 
 
-def expected_result_bytes(fixtures: tuple[Fixture, ...]) -> bytes:
+def expected_result_bytes(fixtures: tuple[FixtureCase, ...]) -> bytes:
     lines = [f"{RESULT_HEADER}\t{len(fixtures)}"]
     for fixture in fixtures:
         prefix = f"R\t{fixture.fixture_id.encode('ascii').hex()}\t{fixture.kind}"
-        if fixture.kind == "G":
+        if isinstance(fixture, EdgeFixture):
+            try:
+                model._edge(
+                    fixture.action_id,
+                    fixture.actor,
+                    fixture.before,
+                    fixture.after,
+                )
+            except model.ProtocolReject:
+                accepted = False
+            else:
+                accepted = True
+            lines.append(f"{prefix}\t{int(accepted)}")
+        elif fixture.kind == "G":
             lines.append(f"{prefix}\t{int(model.grant_wf(fixture.value))}")
         else:
             lines.append(

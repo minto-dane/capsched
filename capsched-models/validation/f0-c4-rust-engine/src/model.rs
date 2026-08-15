@@ -205,6 +205,24 @@ impl Receipt {
             self.channel.to_owned(),
         ]
     }
+
+    fn exact_canonical(&self) -> Vec<u8> {
+        canonical::tuple(vec![
+            canonical::string(self.schema),
+            canonical::string(&self.run_id),
+            canonical::string(&self.binding_digest),
+            canonical::string(&self.scope_id),
+            canonical::string(&self.subject_id),
+            canonical::integer(self.sequence),
+            canonical::string(self.kind),
+            canonical::string(&self.payload),
+            canonical::string(&self.payload_digest),
+            canonical::string(self.issuer),
+            canonical::string(self.channel),
+            canonical::string(&self.previous_hash),
+            canonical::string(&self.auth_tag),
+        ])
+    }
 }
 
 #[derive(Clone, Debug, Default)]
@@ -301,6 +319,22 @@ impl RecoveryReceipt {
             canonical::string(self.issuer),
         ])
     }
+
+    fn exact_canonical(&self) -> Vec<u8> {
+        canonical::tuple(vec![
+            canonical::string(self.schema),
+            canonical::string(&self.run_id),
+            canonical::string(&self.binding_digest),
+            canonical::integer(self.sequence),
+            canonical::string(self.observed_phase),
+            canonical::string(&self.evidence_prefix_hash),
+            canonical::string(self.reason),
+            canonical::string(self.failed_controller),
+            canonical::integer(self.fence_generation),
+            canonical::string(self.issuer),
+            canonical::string(&self.auth_tag),
+        ])
+    }
 }
 
 #[allow(dead_code)]
@@ -340,6 +374,20 @@ impl DecisionReceipt {
             canonical::string(self.payload_kind),
             canonical::string(&self.payload_digest),
             canonical::string(self.issuer),
+        ])
+    }
+
+    fn exact_canonical(&self) -> Vec<u8> {
+        canonical::tuple(vec![
+            canonical::string(self.schema),
+            canonical::string(&self.run_id),
+            canonical::string(&self.binding_digest),
+            canonical::string(&self.evidence_root),
+            canonical::string(self.decision),
+            canonical::string(self.payload_kind),
+            canonical::string(&self.payload_digest),
+            canonical::string(self.issuer),
+            canonical::string(&self.auth_tag),
         ])
     }
 }
@@ -475,6 +523,74 @@ impl State {
             .last()
             .map(Receipt::receipt_hash)
             .unwrap_or_else(|| self.genesis_hash())
+    }
+
+    fn exact_bytes(&self) -> Vec<u8> {
+        let mut receipts: Vec<&Receipt> = self.evidence_receipts.iter().collect();
+        receipts.reverse();
+        canonical::tuple(vec![
+            self.grant.canonical(),
+            canonical::string(self.phase),
+            canonical::string(self.owner_state),
+            canonical::string(self.primary_state),
+            canonical::string(self.controller),
+            canonical::string(self.scope),
+            canonical::string(self.visible_population),
+            canonical::integer(self.visible_empty_observations),
+            canonical::string(self.task_population),
+            canonical::string(self.attach_authority),
+            canonical::string(self.async_admission),
+            canonical::string(self.execution_authority),
+            canonical::string(self.protection_state),
+            canonical::string(self.leader),
+            canonical::string(self.descendants),
+            canonical::integer(self.descendant_generation),
+            canonical::integer(self.descendant_drained_generation),
+            canonical::string(self.async_refs),
+            canonical::integer(self.async_generation),
+            canonical::integer(self.async_drained_generation),
+            canonical::string(self.hidden_work),
+            canonical::string(self.sandbox),
+            canonical::string(self.payload),
+            canonical::string(self.writer_confinement),
+            canonical::string(self.stream),
+            canonical::string(self.candidate_kind),
+            canonical::string(self.candidate_value),
+            canonical::string(&self.candidate_digest),
+            canonical::string(self.wait),
+            canonical::string(self.resource_event),
+            canonical::integer(self.resource_observed_value),
+            canonical::integer(self.event_clock),
+            canonical::integer(self.completion_arrival_sequence),
+            canonical::integer(self.quota_arrival_sequence),
+            canonical::integer(self.fault_arrival_sequence),
+            canonical::string(self.enforcement),
+            canonical::string(self.winner),
+            canonical::integer(self.winner_sequence),
+            canonical::string(self.counters),
+            canonical::integer(self.baseline_value),
+            canonical::integer(self.final_value),
+            canonical::string(self.fault),
+            canonical::string(self.fault_cause),
+            canonical::integer(self.fault_cause_receipt_sequence),
+            canonical::string(self.pending_attack),
+            canonical::strings(self.attack_attempts.iter().copied()),
+            canonical::strings(self.attack_rejections.iter().copied()),
+            canonical::string(self.breach_kind),
+            canonical::string(self.evidence_ledger),
+            canonical::tuple(receipts.into_iter().map(Receipt::exact_canonical)),
+            canonical::string(&self.evidence_root),
+            canonical::string(self.local_decision),
+            self.decision_receipt
+                .as_ref()
+                .map(DecisionReceipt::exact_canonical)
+                .unwrap_or_else(canonical::none),
+            canonical::tuple(
+                self.recovery_receipts
+                    .iter()
+                    .map(RecoveryReceipt::exact_canonical),
+            ),
+        ])
     }
 
     fn append_receipt(&mut self, issuer: &'static str, kind: &'static str, payload: String) {

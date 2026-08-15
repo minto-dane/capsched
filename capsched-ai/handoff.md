@@ -416,6 +416,21 @@ positive-transition, commutation, and representation credits remain, so the
 full hostile gate and the same other five gates remain open.  G6 retry stays
 false and G7 blocked.
 
+Analysis 0240 and Validation 0330 extend that transport to exact
+`before/action/actor/after` queries.  Every decoded 54-field state must
+round-trip byte-for-byte, and Rust accepts an edge only when its independently
+enumerated successor matches action, actor, and the complete after-state rather
+than the behavioral quotient.  Python/Rust agree on all 81 queries: 10 grant,
+49 state, and 22 edge.  Twelve hostile edges conservatively advance original
+coverage to 71/295; 10 valid edge witnesses are supplemental and are not
+miscounted as original credits.  Fifteen malformed transports, 10 Rust unit
+tests, 23 checkpoint mutations, the unchanged 295-case Python suite, and all
+bounded graph/WF regressions pass.  The 592,120-byte zero-dependency binary is
+reproducible from two roots at SHA-256
+`3d6fabd4683017ae7480209ec6df6e548f3dc83dc31c10746dcfb3190970c309`.
+The remaining 224 credits and the same six gates stay open; G6 retry remains
+false and G7 blocked.
+
 ## Current Git State
 
 Project-control work is isolated on:
@@ -602,8 +617,8 @@ open.
 
 ## Next Order
 
-1. Extend the current 59/295 exact hostile-WF fixtures across the remaining 236
-   action/effect rejection, positive-transition, commutation, and
+1. Extend the current 71/295 exact hostile grant/state/edge mapping across the
+   remaining 224 positive-transition, commutation, and
    representation credits; require exact Rust/Python outcomes without embedded
    oracle verdicts before closing the full hostile gate.
 2. Add deterministic multiworker layer/batch enumeration and bounded

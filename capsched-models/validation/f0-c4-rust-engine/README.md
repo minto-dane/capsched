@@ -33,15 +33,19 @@ receipt, phase rollback, receipt-free candidate/winner, and premature release
 states.  This closes only the independent-predicate implementation subgate;
 the full 295-case hostile parity gate remains open.
 
-The first named hostile-fixture slice transports the complete exact grant or
-child state—including chronological receipts, recovery, seal, and decision
-objects—through a strict length-framed decoder.  Python and Rust independently
-agree on grant, evidence, and InstanceWF results for 59 mapped case credits;
-236 original case credits, especially edge/effect rejection, commutation, and
-representation checks, remain open.  Eleven malformed transport fixtures fail
-closed.  Input bytes, case count, atom sizes, nesting, and tuple cardinalities
-are bounded; the fixture-only atom lifetime does not alter the compact BFS
-state representation.
+The named hostile-fixture transport carries a complete exact grant, all 54
+child-state fields, or an exact `(before, action, actor, after)` query—including
+chronological receipts, recovery, seal, and decision objects—through a strict
+length-framed decoder.  Every decoded grant and state must re-encode to the
+identical byte string, so the transport cannot silently normalize away audit
+representation.  Python and Rust independently agree for 81 queries: 10 grant,
+49 state, and 22 edge cases.  The edge slice contains 10 supplemental positive
+witnesses and conservatively advances original hostile-regression coverage
+from 59 to 71 of 295 credits; 224 credits, especially broad positive-transition,
+commutation, and representation checks, remain open.  Fifteen malformed
+transport fixtures fail closed.  Input bytes, case count, atom sizes, nesting,
+and tuple cardinalities are bounded; the fixture-only atom lifetime does not
+alter the compact BFS state representation.
 
 Receipt histories use immutable shared nodes.  The wider index stores only a
 SHA-256 bucket head and collision links; every digest match is resolved by

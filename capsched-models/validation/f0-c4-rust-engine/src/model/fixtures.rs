@@ -7,17 +7,32 @@ use std::io::Read;
 use crate::canonical;
 use crate::decode::{self, Value};
 
-use super::{wf, DecisionReceipt, Receipt, ReceiptHistory, RecoveryReceipt, RunGrant, State};
+use super::{
+    next_states, wf, DecisionReceipt, Receipt, ReceiptHistory, RecoveryReceipt, RunGrant, State,
+};
 
-const FIXTURE_HEADER: &str = "F0_C4_RUST_HOSTILE_WF_FIXTURES_V1";
-const RESULT_HEADER: &str = "F0_C4_RUST_HOSTILE_WF_RESULTS_V1";
+const FIXTURE_HEADER: &str = "F0_C4_RUST_HOSTILE_WF_FIXTURES_V2";
+const RESULT_HEADER: &str = "F0_C4_RUST_HOSTILE_WF_RESULTS_V2";
 const MAX_FIXTURE_BYTES: u64 = 32 * 1024 * 1024;
 const MAX_CASES: usize = 4_096;
 const MAX_ATOM_BYTES: usize = 256;
 
 enum Fixture {
-    Grant { id_hex: String, grant: RunGrant },
-    State { id_hex: String, state: State },
+    Grant {
+        id_hex: String,
+        grant: RunGrant,
+    },
+    State {
+        id_hex: String,
+        state: State,
+    },
+    Edge {
+        id_hex: String,
+        action: String,
+        actor: String,
+        before: State,
+        after: State,
+    },
 }
 
 pub(super) fn emit_results(path: &str) {
@@ -35,6 +50,20 @@ pub(super) fn emit_results(path: &str) {
                     bit(wf::evidence_wf(&state)),
                     bit(wf::instance_wf(&state))
                 ));
+            }
+            Fixture::Edge {
+                id_hex,
+                action,
+                actor,
+                before,
+                after,
+            } => {
+                let accepted = next_states(&before).into_iter().any(|edge| {
+                    edge.action_id == action
+                        && edge.actor == actor
+                        && edge.state.exact_bytes() == after.exact_bytes()
+                });
+                output.push_str(&format!("R\t{id_hex}\tE\t{}\n", bit(accepted)));
             }
         }
     }
@@ -80,7 +109,12 @@ fn parse_file(path: &str) -> Result<Vec<Fixture>, String> {
     for (offset, line) in lines.enumerate() {
         let line_number = offset + 2;
         let fields: Vec<&str> = line.split('\t').collect();
-        if fields.len() != 3 || !matches!(fields[0], "G" | "S") {
+        let expected_fields = match fields.first().copied() {
+            Some("G" | "S") => 3,
+            Some("E") => 6,
+            _ => 0,
+        };
+        if fields.len() != expected_fields {
             return Err(format!("line {line_number}: fixture record differs"));
         }
         let id = decode_hex(fields[1])?;
@@ -96,23 +130,38 @@ fn parse_file(path: &str) -> Result<Vec<Fixture>, String> {
         if !ids.insert(id) {
             return Err(format!("line {line_number}: duplicate case id"));
         }
-        let encoded = decode_hex(fields[2])?;
-        if canonical::hex(&encoded) != fields[2] {
-            return Err(format!(
-                "line {line_number}: payload hex is not canonical lowercase"
-            ));
-        }
-        let value =
-            decode::exact(&encoded).map_err(|error| format!("line {line_number}: {error}"))?;
         let id_hex = fields[1].to_owned();
         fixtures.push(match fields[0] {
-            "G" => Fixture::Grant {
+            "G" => {
+                let encoded = canonical_payload(fields[2], line_number, "grant")?;
+                let value = decode::exact(&encoded)
+                    .map_err(|error| format!("line {line_number}: {error}"))?;
+                let grant = parse_grant(value, "grant")?;
+                if grant.canonical() != encoded {
+                    return Err(format!(
+                        "line {line_number}: grant exact round-trip differs"
+                    ));
+                }
+                Fixture::Grant { id_hex, grant }
+            }
+            "S" => {
+                let encoded = canonical_payload(fields[2], line_number, "state")?;
+                let value = decode::exact(&encoded)
+                    .map_err(|error| format!("line {line_number}: {error}"))?;
+                let state = parse_state(value)?;
+                if state.exact_bytes() != encoded {
+                    return Err(format!(
+                        "line {line_number}: state exact round-trip differs"
+                    ));
+                }
+                Fixture::State { id_hex, state }
+            }
+            "E" => Fixture::Edge {
                 id_hex,
-                grant: parse_grant(value, "grant")?,
-            },
-            "S" => Fixture::State {
-                id_hex,
-                state: parse_state(value)?,
+                action: bounded_atom(fields[2], line_number, "edge action")?,
+                actor: bounded_atom(fields[3], line_number, "edge actor")?,
+                before: parse_state_payload(fields[4], line_number, "edge before")?,
+                after: parse_state_payload(fields[5], line_number, "edge after")?,
             },
             _ => unreachable!(),
         });
@@ -124,6 +173,37 @@ fn parse_file(path: &str) -> Result<Vec<Fixture>, String> {
         ));
     }
     Ok(fixtures)
+}
+
+fn canonical_payload(value: &str, line_number: usize, context: &str) -> Result<Vec<u8>, String> {
+    let decoded = decode_hex(value)?;
+    if canonical::hex(&decoded) != value {
+        return Err(format!(
+            "line {line_number}: {context} hex is not canonical lowercase"
+        ));
+    }
+    Ok(decoded)
+}
+
+fn bounded_atom(value: &str, line_number: usize, context: &str) -> Result<String, String> {
+    let decoded = canonical_payload(value, line_number, context)?;
+    if decoded.is_empty() || decoded.len() > MAX_ATOM_BYTES || !decoded.is_ascii() {
+        return Err(format!("line {line_number}: invalid bounded {context}"));
+    }
+    String::from_utf8(decoded).map_err(|_| format!("line {line_number}: invalid {context}"))
+}
+
+fn parse_state_payload(value: &str, line_number: usize, context: &str) -> Result<State, String> {
+    let encoded = canonical_payload(value, line_number, context)?;
+    let decoded =
+        decode::exact(&encoded).map_err(|error| format!("line {line_number}: {error}"))?;
+    let state = parse_state(decoded)?;
+    if state.exact_bytes() != encoded {
+        return Err(format!(
+            "line {line_number}: {context} exact round-trip differs"
+        ));
+    }
+    Ok(state)
 }
 
 fn parse_count(value: &str, context: &str) -> Result<usize, String> {
