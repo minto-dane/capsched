@@ -27,7 +27,7 @@ latest durable G6 disposition by `check-current-state.sh`.
 ```json
 {
   "schema_version": 1,
-  "updated": "2026-08-15",
+  "updated": "2026-08-20",
   "project_phase": "f0_v5_c4_g6_open_rust_refinement_required",
   "completion": {
     "v1_claim_inventory_complete": true,
@@ -446,11 +446,11 @@ same six gates stay open; G6 retry remains false and G7 blocked.
 
 ## Current Git State
 
-Project-control work is isolated on:
+Project-control work is integrated on the canonical branch:
 
 ```text
 branch:
-  codex/reasoning-first-model-completion
+  main
 
 semantic baseline before this state update:
   dd20d07bccab4366d85802fb5ae0e03de720cae2
@@ -459,7 +459,7 @@ reviewed prior lineage:
   75e34749b94af52338085caced75c44c70f0a1b4
 
 stable main:
-  4aa3f5427e1d3649d4de1cadcbcb8f268fb932a9
+  cb2d2392c784676b38af935c1bc5a8cdc79c092d
 
 checkpoint commit:
   resolve from the branch or the superproject gitlink; it cannot be embedded
@@ -714,7 +714,7 @@ Preferred public recovery path:
 ```sh
 container machine run --root -n domainlease-dev --workdir / -- \
   git clone --recurse-submodules \
-  --branch codex/reasoning-first-model-completion \
+  --branch main \
   https://github.com/minto-dane/linux-cap.git /opt/domainlease-recovery
 container machine run --root -n domainlease-dev \
   --workdir /opt/domainlease-recovery/capsched -- \

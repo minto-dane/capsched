@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated": "2026-08-15",
+  "updated": "2026-08-20",
   "project": {
     "name": "DomainLease-Linux",
     "legacy_name": "CapSched-Linux",
@@ -13,16 +13,16 @@
       "scope": "The superproject, project-control/models, and Linux patch-queue repositories are intentionally public; no credentials, private keys, tokens, or private operational data may be committed."
     },
     "control_repository": {
-      "branch": "codex/reasoning-first-model-completion",
+      "branch": "main",
       "semantic_baseline_revision": "dd20d07bccab4366d85802fb5ae0e03de720cae2",
       "reviewed_lineage_revision": "75e34749b94af52338085caced75c44c70f0a1b4",
-      "stable_main_revision": "4aa3f5427e1d3649d4de1cadcbcb8f268fb932a9",
+      "stable_main_revision": "cb2d2392c784676b38af935c1bc5a8cdc79c092d",
       "remote": "https://github.com/minto-dane/capsched"
     },
     "superproject": {
       "remote": "https://github.com/minto-dane/linux-cap",
       "checkpoint_resolution": "default_branch_gitlink",
-      "recorded_parent_baseline_revision": "8ae7d4a3d6a7943d4807d3fcf7f1d9f18a1aa51b"
+      "recorded_parent_baseline_revision": "8a874c21c8f20b4216e54ac37da3ba5288d2e74b"
     },
     "linux_source": {
       "repository": "../linux",
