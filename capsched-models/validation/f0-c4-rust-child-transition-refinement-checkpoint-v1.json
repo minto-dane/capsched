@@ -1,7 +1,7 @@
 {
   "artifact_id": "f0-c4-rust-child-transition-refinement-checkpoint-v1",
   "schema_version": 1,
-  "status": "child_transition_independent_wf_and_71_hostile_edge_fixture_slice_pass_parent_and_exhaustive_gates_open",
+  "status": "child_transition_independent_wf_and_98_hostile_successor_fixture_slice_pass_parent_and_exhaustive_gates_open",
   "normative_model": {
     "authority": "PYTHON_ONLY",
     "path": "capsched-models/validation/f0_supervisor_lts_v3.py",
@@ -14,20 +14,20 @@
     "input_sha256": {
       "Cargo.lock": "bc9b7947b8da8d6a6f06f0edee0c329c94445faa0471c2eea00f31ae35643773",
       "Cargo.toml": "289b6dc80065e124785a5c693bfac7512b18173a4abcdfe13c65d4a7702d8d8f",
-      "README.md": "5971466067bc8ab40ec9a21382724fe549ceb7f887ae05575afd410fbdd2f851",
-      "hostile_wf_fixtures.py": "ec133dd83d22b76c50e93825adf7a75d1fc707771616f0737bcb1182a3e2939d",
+      "README.md": "53eac8c28751b1ec3bfdcd2c47d3e3f2958d9605bb2f3a478b99c0f25893efd5",
+      "hostile_wf_fixtures.py": "eefcc92c2094574dae936ac2f8364a0e2e444c31fe727ad25c14e3d0e1d11246",
       "python_oracle.py": "5a5a17ff933566782b70a62bb38746d58829e2c68c818be917afc014fcb3c536",
       "src/canonical.rs": "c4319329aed87aa160bca9ba529ccc57eee860f22395429f0fcd68e94df20831",
       "src/decode.rs": "df4d3362909a347faeebd74dae0d9a5290a1d14aa517f3ab3e7065f1f1d16675",
       "src/main.rs": "d3bc064aab809ee64886532a5d9a77d315614b29bdb3898f4808509fa00b6750",
       "src/model.rs": "561e52b05859c2daa77b37da87fc30bf80c27d60ce00d9af5ad6048380441649",
-      "src/model/fixtures.rs": "bc473f6fded1ea99a6a48007b6f414f630e66974d535f837bf4eeabe4a40f320",
+      "src/model/fixtures.rs": "93cdc5fa847095ee779a8512bbb58222b4ac2ff07aa0c535e6d3c577c68a7353",
       "src/model/wf.rs": "d1517310e07146d605bae018fa95c290641047d2aafc2025c571b719125d4909",
       "src/sha256.rs": "82f3db5ec229bb4ace9861c531b6942d2729c108e6a7f4bae28478227079d0a0",
       "test_bounded_differential.py": "f6eb9abb9635b8541dbad7eed29ca2ad56323e18bde05b505a6cc16362fca249",
       "test_bounded_stats_differential.py": "a280d566434659c7cdd952279c92f8cb0e9b679ba811a2bd1e6c368729db8577",
       "test_build_reproducibility.py": "5c7c490d6544b5f9dde012e31dd5a2a35eeab141bb012fb0c669faac0b8c8a23",
-      "test_hostile_wf_differential.py": "a4a818c3d60a32198b1409e84af6decc0840791d12387b6e5e54e46ef222d44f",
+      "test_hostile_wf_differential.py": "f343b6de45c0e4bfe2d2894f3c62e3f1bbf960fdf64a52f235ef8f28934cc35f",
       "test_setup_differential.py": "a6ab984513b0cc0d6f70269f29e86e942dbe7409b216e748ef48ec9e07cfb064",
       "test_trace_differential.py": "3f4f42ca7a739a0b3d9f61ec748e916670a2398e62554e5c982f1a3d6153beb4",
       "test_wf_differential.py": "64f938fdf7346e48f9e26cfc7d3a488d1b60bf3f4a0a32e4297da3edd9cb08c2"
@@ -108,20 +108,21 @@
       "status": "PASS_INDEPENDENT_RUST_INSTANCE_AND_EVIDENCE_WF"
     },
     "hostile_wf_fixture_slice": {
-      "case_count": 81,
+      "case_count": 108,
       "complete_295_case_parity": false,
       "edge_cases": 22,
       "exact_state_round_trip": true,
-      "fixture_sha256": "ef51241904b19bd01214222c331a41b46db14df2d06a9440b2551290b7c870e6",
+      "fixture_sha256": "5a9efc84e9c4ab10cfcf3a43dd0f67836e11c717de174a3e21a80848776f292c",
       "grant_cases": 10,
-      "malformed_fixture_cases": 15,
-      "mapped_original_case_credits": 71,
-      "remaining_original_case_credits": 224,
-      "result_sha256": "1aefbfbbfaf392feca95202025d3deb5e525e4e684b895175a0bde57e872f387",
+      "malformed_fixture_cases": 18,
+      "mapped_original_case_credits": 98,
+      "next_cases": 27,
+      "remaining_original_case_credits": 197,
+      "result_sha256": "d96367e3f2ae5e16cc7d65d52a4bf36ae40226abf8f5eaeb1500870e7e98cf89",
       "rust_runs": 2,
       "state_cases": 49,
-      "status": "PASS_BYTE_EXACT_PARTIAL_EDGE_SLICE",
-      "supplemental_edge_cases": 10
+      "status": "PASS_BYTE_EXACT_PARTIAL_SUCCESSOR_SLICE",
+      "supplemental_case_count": 10
     }
   },
   "representation": {
@@ -135,7 +136,7 @@
   },
   "reproducible_build": {
     "binary_bytes": 592120,
-    "binary_sha256": "3d6fabd4683017ae7480209ec6df6e548f3dc83dc31c10746dcfb3190970c309",
+    "binary_sha256": "6c1719155bb2321057a3dd0b28a6d5210e3b3b7ad545e56ea232905e386d4aaf",
     "cargo_sha256": "09a38284fe30daa241f07311f284ee74f8ca55010a6a59f821a22c1910588d71",
     "cargo_version": "cargo 1.75.0",
     "distinct_source_roots": 2,

@@ -11,8 +11,8 @@ use super::{
     next_states, wf, DecisionReceipt, Receipt, ReceiptHistory, RecoveryReceipt, RunGrant, State,
 };
 
-const FIXTURE_HEADER: &str = "F0_C4_RUST_HOSTILE_WF_FIXTURES_V2";
-const RESULT_HEADER: &str = "F0_C4_RUST_HOSTILE_WF_RESULTS_V2";
+const FIXTURE_HEADER: &str = "F0_C4_RUST_HOSTILE_WF_FIXTURES_V3";
+const RESULT_HEADER: &str = "F0_C4_RUST_HOSTILE_WF_RESULTS_V3";
 const MAX_FIXTURE_BYTES: u64 = 32 * 1024 * 1024;
 const MAX_CASES: usize = 4_096;
 const MAX_ATOM_BYTES: usize = 256;
@@ -23,6 +23,10 @@ enum Fixture {
         grant: RunGrant,
     },
     State {
+        id_hex: String,
+        state: State,
+    },
+    Next {
         id_hex: String,
         state: State,
     },
@@ -49,6 +53,24 @@ pub(super) fn emit_results(path: &str) {
                     "R\t{id_hex}\tS\t{}\t{}\n",
                     bit(wf::evidence_wf(&state)),
                     bit(wf::instance_wf(&state))
+                ));
+            }
+            Fixture::Next { id_hex, state } => {
+                if !wf::instance_wf(&state) {
+                    output.push_str(&format!("R\t{id_hex}\tN\tX\n"));
+                    continue;
+                }
+                let mut successors: Vec<(&str, &str)> = next_states(&state)
+                    .into_iter()
+                    .map(|edge| (edge.action_id, edge.actor))
+                    .collect();
+                successors.sort();
+                let encoded = canonical::tuple(successors.into_iter().map(|(action, actor)| {
+                    canonical::tuple(vec![canonical::string(action), canonical::string(actor)])
+                }));
+                output.push_str(&format!(
+                    "R\t{id_hex}\tN\tA\t{}\n",
+                    canonical::hex(&encoded)
                 ));
             }
             Fixture::Edge {
@@ -110,7 +132,7 @@ fn parse_file(path: &str) -> Result<Vec<Fixture>, String> {
         let line_number = offset + 2;
         let fields: Vec<&str> = line.split('\t').collect();
         let expected_fields = match fields.first().copied() {
-            Some("G" | "S") => 3,
+            Some("G" | "S" | "N") => 3,
             Some("E") => 6,
             _ => 0,
         };
@@ -156,6 +178,10 @@ fn parse_file(path: &str) -> Result<Vec<Fixture>, String> {
                 }
                 Fixture::State { id_hex, state }
             }
+            "N" => Fixture::Next {
+                id_hex,
+                state: parse_state_payload(fields[2], line_number, "next state")?,
+            },
             "E" => Fixture::Edge {
                 id_hex,
                 action: bounded_atom(fields[2], line_number, "edge action")?,

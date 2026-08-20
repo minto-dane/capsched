@@ -431,6 +431,19 @@ reproducible from two roots at SHA-256
 The remaining 224 credits and the same six gates stay open; G6 retry remains
 false and G7 blocked.
 
+Analysis 0241 and Validation 0331 add a guarded successor query.  For a valid
+exact state, Python and Rust independently emit the sorted action/actor
+multiset; for an invalid state they emit explicit rejection, preserving the
+difference between a valid empty terminal set and a rejected source.  The
+corpus now passes 108 queries (10 grant, 49 state, 22 edge, 27 successor), maps
+98/295 original credits, retains 10 supplemental positive edges, and rejects
+18 malformed transports.  The unchanged Python suite passes 295, 10 Rust unit
+tests and 24 checkpoint mutations pass, and the 592,120-byte zero-dependency
+binary reproduces from two roots at SHA-256
+`6c1719155bb2321057a3dd0b28a6d5210e3b3b7ad545e56ea232905e386d4aaf`.
+The remaining 197 commutation, representation, and transition credits plus the
+same six gates stay open; G6 retry remains false and G7 blocked.
+
 ## Current Git State
 
 Project-control work is isolated on:
@@ -617,8 +630,8 @@ open.
 
 ## Next Order
 
-1. Extend the current 71/295 exact hostile grant/state/edge mapping across the
-   remaining 224 positive-transition, commutation, and
+1. Extend the current 98/295 exact hostile grant/state/edge/successor mapping
+   across the remaining 197 commutation, transition, and
    representation credits; require exact Rust/Python outcomes without embedded
    oracle verdicts before closing the full hostile gate.
 2. Add deterministic multiworker layer/batch enumeration and bounded

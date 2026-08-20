@@ -34,18 +34,19 @@ states.  This closes only the independent-predicate implementation subgate;
 the full 295-case hostile parity gate remains open.
 
 The named hostile-fixture transport carries a complete exact grant, all 54
-child-state fields, or an exact `(before, action, actor, after)` query—including
-chronological receipts, recovery, seal, and decision objects—through a strict
-length-framed decoder.  Every decoded grant and state must re-encode to the
-identical byte string, so the transport cannot silently normalize away audit
-representation.  Python and Rust independently agree for 81 queries: 10 grant,
-49 state, and 22 edge cases.  The edge slice contains 10 supplemental positive
+child-state fields, an exact `(before, action, actor, after)` query, or a
+guarded successor action/actor-multiset query—including chronological receipts,
+recovery, seal, and decision objects—through a strict length-framed decoder.
+Every decoded grant and state must re-encode to the identical byte string, so
+the transport cannot silently normalize away audit representation.  Python
+and Rust independently agree for 108 queries: 10 grant, 49 state, 22 edge, and
+27 successor-set cases.  The slice retains 10 supplemental positive edge
 witnesses and conservatively advances original hostile-regression coverage
-from 59 to 71 of 295 credits; 224 credits, especially broad positive-transition,
-commutation, and representation checks, remain open.  Fifteen malformed
-transport fixtures fail closed.  Input bytes, case count, atom sizes, nesting,
-and tuple cardinalities are bounded; the fixture-only atom lifetime does not
-alter the compact BFS state representation.
+from 59 to 98 of 295 credits; 197 credits, especially commutation and
+representation checks, remain open.  Eighteen malformed transport fixtures
+fail closed.  Input bytes, case count, atom sizes, nesting, and tuple
+cardinalities are bounded; the fixture-only atom lifetime does not alter the
+compact BFS state representation.
 
 Receipt histories use immutable shared nodes.  The wider index stores only a
 SHA-256 bucket head and collision links; every digest match is resolved by

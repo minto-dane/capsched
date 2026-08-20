@@ -137,7 +137,7 @@ def validate_rust_child_checkpoint(
         checkpoint["artifact_id"]
         == "f0-c4-rust-child-transition-refinement-checkpoint-v1"
         and checkpoint["status"]
-        == "child_transition_independent_wf_and_71_hostile_edge_fixture_slice_pass_parent_and_exhaustive_gates_open",
+        == "child_transition_independent_wf_and_98_hostile_successor_fixture_slice_pass_parent_and_exhaustive_gates_open",
         "Rust child checkpoint identity drift",
     )
     normative = checkpoint["normative_model"]
@@ -178,24 +178,25 @@ def validate_rust_child_checkpoint(
         and results["independent_wf_prefix"]["producer"]["wf_checks"] == 12213
         and results["independent_wf_prefix"]["checker"]["wf_checks"] == 12213
         and results["hostile_wf_fixture_slice"]["status"]
-        == "PASS_BYTE_EXACT_PARTIAL_EDGE_SLICE"
-        and results["hostile_wf_fixture_slice"]["case_count"] == 81
+        == "PASS_BYTE_EXACT_PARTIAL_SUCCESSOR_SLICE"
+        and results["hostile_wf_fixture_slice"]["case_count"] == 108
         and results["hostile_wf_fixture_slice"]["grant_cases"] == 10
         and results["hostile_wf_fixture_slice"]["state_cases"] == 49
         and results["hostile_wf_fixture_slice"]["edge_cases"] == 22
-        and results["hostile_wf_fixture_slice"]["supplemental_edge_cases"]
+        and results["hostile_wf_fixture_slice"]["next_cases"] == 27
+        and results["hostile_wf_fixture_slice"]["supplemental_case_count"]
         == 10
         and results["hostile_wf_fixture_slice"]["mapped_original_case_credits"]
-        == 71
-        and results["hostile_wf_fixture_slice"]["malformed_fixture_cases"] == 15
+        == 98
+        and results["hostile_wf_fixture_slice"]["malformed_fixture_cases"] == 18
         and results["hostile_wf_fixture_slice"]["remaining_original_case_credits"]
-        == 224
+        == 197
         and results["hostile_wf_fixture_slice"]["mapped_original_case_credits"]
         + results["hostile_wf_fixture_slice"]["remaining_original_case_credits"]
         == 295
         and results["hostile_wf_fixture_slice"]["case_count"]
         == results["hostile_wf_fixture_slice"]["mapped_original_case_credits"]
-        + results["hostile_wf_fixture_slice"]["supplemental_edge_cases"]
+        + results["hostile_wf_fixture_slice"]["supplemental_case_count"]
         and results["hostile_wf_fixture_slice"]["exact_state_round_trip"]
         is True
         and results["hostile_wf_fixture_slice"]["complete_295_case_parity"]
@@ -219,7 +220,7 @@ def validate_rust_child_checkpoint(
         and checkpoint["reproducible_build"]["distinct_source_roots"] == 2
         and checkpoint["reproducible_build"]["binary_bytes"] == 592120
         and checkpoint["reproducible_build"]["binary_sha256"]
-        == "3d6fabd4683017ae7480209ec6df6e548f3dc83dc31c10746dcfb3190970c309",
+        == "6c1719155bb2321057a3dd0b28a6d5210e3b3b7ad545e56ea232905e386d4aaf",
         "Rust reproducible build boundary drift",
     )
     expected_open = {

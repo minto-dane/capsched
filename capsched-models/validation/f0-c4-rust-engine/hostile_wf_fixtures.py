@@ -10,12 +10,9 @@ import f0_supervisor_lts_v3 as model
 from python_oracle import encode
 
 
-FIXTURE_HEADER = "F0_C4_RUST_HOSTILE_WF_FIXTURES_V2"
-RESULT_HEADER = "F0_C4_RUST_HOSTILE_WF_RESULTS_V2"
+FIXTURE_HEADER = "F0_C4_RUST_HOSTILE_WF_FIXTURES_V3"
+RESULT_HEADER = "F0_C4_RUST_HOSTILE_WF_RESULTS_V3"
 ORIGINAL_CASE_TOTAL = 295
-BASE_WF_MAPPED_ORIGINAL_CASE_CREDITS = 59
-MAPPED_ORIGINAL_CASE_CREDITS = 71
-SUPPLEMENTAL_EDGE_CASES = 10
 SETUP = (
     "SUP-001-REQUEST-SCOPE",
     "OBS-002-CONFIGURE-SCOPE-ACK",
@@ -39,6 +36,7 @@ CLEANUP_AFTER_COMPLETION = (
 class Fixture:
     fixture_id: str
     value: model.RunGrant | model.EnvelopeState
+    original_credit: bool = True
 
     @property
     def kind(self) -> str:
@@ -56,13 +54,25 @@ class EdgeFixture:
     actor: str
     before: model.EnvelopeState
     after: model.EnvelopeState
+    original_credit: bool = True
 
     @property
     def kind(self) -> str:
         return "E"
 
 
-FixtureCase = Fixture | EdgeFixture
+@dataclass(frozen=True)
+class NextFixture:
+    fixture_id: str
+    state: model.EnvelopeState
+    original_credit: bool = True
+
+    @property
+    def kind(self) -> str:
+        return "N"
+
+
+FixtureCase = Fixture | EdgeFixture | NextFixture
 
 
 def start(role: str = "PRODUCER") -> model.EnvelopeState:
@@ -148,6 +158,36 @@ def rechain_open_receipts(
         rebuilt.append(current)
         previous = model.receipt_hash(current)
     return replace(state, evidence_receipts=tuple(rebuilt))
+
+
+def checked_next_fixture(
+    fixture_id: str,
+    state: model.EnvelopeState,
+    *,
+    required: tuple[str, ...] = (),
+    forbidden: tuple[str, ...] = (),
+    allowed: tuple[str, ...] | None = None,
+    terminal: bool = False,
+    rejected: bool = False,
+) -> NextFixture:
+    try:
+        edges = model.next_states(state)
+    except model.ProtocolReject:
+        if not rejected:
+            raise RuntimeError(f"next fixture {fixture_id}: unexpected rejection")
+        return NextFixture(fixture_id, state)
+    if rejected:
+        raise RuntimeError(f"next fixture {fixture_id}: expected rejection")
+    actions = {edge.action_id for edge in edges}
+    if not set(required) <= actions:
+        raise RuntimeError(f"next fixture {fixture_id}: required action drift")
+    if set(forbidden) & actions:
+        raise RuntimeError(f"next fixture {fixture_id}: forbidden action drift")
+    if allowed is not None and not actions <= set(allowed):
+        raise RuntimeError(f"next fixture {fixture_id}: action ceiling drift")
+    if terminal != (not edges):
+        raise RuntimeError(f"next fixture {fixture_id}: terminal boundary drift")
+    return NextFixture(fixture_id, state)
 
 
 def cases() -> tuple[FixtureCase, ...]:
@@ -817,7 +857,16 @@ def cases() -> tuple[FixtureCase, ...]:
     )
     for fixture_id, before, action_id, actor, after in positive_edges:
         model._edge(action_id, actor, before, after)
-        fixtures.append(EdgeFixture(fixture_id, action_id, actor, before, after))
+        fixtures.append(
+            EdgeFixture(
+                fixture_id,
+                action_id,
+                actor,
+                before,
+                after,
+                original_credit=False,
+            )
+        )
 
     omitted_effects: list[
         tuple[str, model.EnvelopeState, model.Edge, model.EnvelopeState]
@@ -1004,18 +1053,209 @@ def cases() -> tuple[FixtureCase, ...]:
         )
     )
 
+    async_cleanup_once = model.apply_trace(
+        redrained,
+        (
+            "OBS-039-RMDIR-ATTACH-CLOSED",
+            "SUP-039B-CLOSE-ASYNC-ADMISSION",
+            "OBS-033-ASYNC-REFS-DRAIN",
+        ),
+    )
+    candidate_trace = clean_candidate_trace(
+        "PRODUCER",
+        "OBS-009A-PRODUCER-CANDIDATE-A",
+    )
+    protection_index = candidate_trace.index("MON-039C-PROTECTION-CLOSED") + 1
+    protection_closed = run("PRODUCER", candidate_trace[:protection_index])
+    quota_stopping = model.apply_trace(quota_arrived, ("ARB-026B-QUOTA-WINS",))
+    unattributed = model.apply_trace(running, ("OBS-027-UNATTRIBUTED-LIMIT",))
+    revoked = model.apply_trace(running, ("EXT-025-REVOKE-RUN",))
+    delayed_attempt = model.apply_trace(
+        running,
+        (
+            "ADV-018-ATTACH-ATTEMPT",
+            "OBS-029-NORMAL-EXIT",
+            "MON-035B-REVOKE-EXECUTION",
+            "OBS-036-LEADER-REAPED",
+            "OBS-037-VISIBLE-EMPTY",
+            "OBS-039-RMDIR-ATTACH-CLOSED",
+            "SUP-039B-CLOSE-ASYNC-ADMISSION",
+        ),
+    )
+    delayed_rejected = model.apply_trace(
+        delayed_attempt,
+        ("OBS-023-REJECT-HOSTILE-ATTEMPT",),
+    )
+    early = model.apply_trace(
+        start(),
+        SETUP
+        + (
+            "OBS-009A-PRODUCER-CANDIDATE-A",
+            "OBS-013-EOF-VALID",
+            "OBS-029-NORMAL-EXIT",
+        ),
+    )
+    unsealed_quiescent = replace(start(), phase="QUIESCENT")
+
+    fixtures.extend(
+        (
+            checked_next_fixture(
+                "next.reacquisition-race",
+                reacquisition,
+                required=(
+                    "ADV-016-FORK-DESCENDANT",
+                    "OBS-039-RMDIR-ATTACH-CLOSED",
+                ),
+            ),
+            checked_next_fixture(
+                "next.reopened-descendant",
+                reopened,
+                forbidden=("OBS-039-RMDIR-ATTACH-CLOSED",),
+            ),
+            checked_next_fixture(
+                "next.async-admission-closed",
+                async_cleanup_once,
+                forbidden=("ADV-017-OPEN-ASYNC-REF",),
+            ),
+            checked_next_fixture(
+                "next.protection-closed",
+                protection_closed,
+                forbidden=(
+                    "ADV-016-FORK-DESCENDANT",
+                    "ADV-017-OPEN-ASYNC-REF",
+                ),
+            ),
+            checked_next_fixture(
+                "next.quota-arrived",
+                quota_arrived,
+                required=(
+                    "ARB-026B-QUOTA-WINS",
+                    "OBS-009A-PRODUCER-CANDIDATE-A",
+                    "ADV-018-ATTACH-ATTEMPT",
+                ),
+            ),
+            checked_next_fixture(
+                "next.quota-stopping",
+                quota_stopping,
+                required=("ADV-018-ATTACH-ATTEMPT", "ADV-047-STALL"),
+            ),
+            checked_next_fixture(
+                "next.unattributed-limit",
+                unattributed,
+                required=("ARB-035-FAULT-WINS",),
+            ),
+            checked_next_fixture(
+                "next.before-final-counters",
+                before_final,
+                required=(
+                    "ARB-034-COMPLETION-WINS",
+                    "MON-041-FINAL-COUNTERS",
+                    "MON-041B-FINAL-OVERLIMIT-QUOTA",
+                ),
+            ),
+            checked_next_fixture(
+                "next.normal-final-counters",
+                normal_final,
+                required=("ARB-034-COMPLETION-WINS",),
+            ),
+            checked_next_fixture(
+                "next.owner-revoked",
+                revoked,
+                required=("ARB-035-FAULT-WINS", "ADV-018-ATTACH-ATTEMPT"),
+            ),
+            checked_next_fixture(
+                "next.runtime-takeover",
+                runtime_takeover,
+                required=("ARB-035-FAULT-WINS",),
+            ),
+            checked_next_fixture(
+                "next.second-hostile-attempt",
+                second_attempt,
+                required=(
+                    "OBS-023-REJECT-HOSTILE-ATTEMPT",
+                    "ADV-023B-SUCCEED-HOSTILE-BYPASS",
+                ),
+            ),
+            checked_next_fixture(
+                "next.delayed-hostile-attempt",
+                delayed_attempt,
+                required=(
+                    "OBS-023-REJECT-HOSTILE-ATTEMPT",
+                    "ADV-023B-SUCCEED-HOSTILE-BYPASS",
+                ),
+                forbidden=("MON-039C-PROTECTION-CLOSED",),
+            ),
+            checked_next_fixture(
+                "next.delayed-hostile-rejected",
+                delayed_rejected,
+                required=("MON-039C-PROTECTION-CLOSED",),
+            ),
+            checked_next_fixture(
+                "next.before-evidence-seal",
+                before_seal_for_order,
+                required=("SUP-045-SEAL-EVIDENCE",),
+                allowed=(
+                    "SUP-045-SEAL-EVIDENCE",
+                    "GRD-024-TAKEOVER-AFTER-PRIMARY-CRASH",
+                    "EXT-025-REVOKE-RUN",
+                ),
+            ),
+            checked_next_fixture(
+                "next.early-no-evidence-seal",
+                early,
+                forbidden=("SUP-045-SEAL-EVIDENCE",),
+            ),
+            checked_next_fixture(
+                "next.reject-unsealed-quiescent",
+                unsealed_quiescent,
+                rejected=True,
+            ),
+        )
+    )
+    for action_id, attack in hostile_actions.items():
+        attempted = model.apply_trace(running, (action_id,))
+        fixtures.append(
+            checked_next_fixture(
+                f"next.hostile-attempt-{attack.lower().replace('_', '-')}",
+                attempted,
+                required=(
+                    "OBS-023-REJECT-HOSTILE-ATTEMPT",
+                    "ADV-023B-SUCCEED-HOSTILE-BYPASS",
+                ),
+            )
+        )
+        breached = model.apply_trace(
+            attempted,
+            ("ADV-023B-SUCCEED-HOSTILE-BYPASS",),
+        )
+        fixtures.append(
+            checked_next_fixture(
+                f"next.breached-terminal-{attack.lower().replace('_', '-')}",
+                breached,
+                terminal=True,
+            )
+        )
+
     result = tuple(fixtures)
+    mapped = sum(int(fixture.original_credit) for fixture in result)
+    supplemental = len(result) - mapped
     if (
-        len(result) != 81
+        len(result) != 108
         or len({fixture.fixture_id for fixture in result}) != len(result)
-        or SUPPLEMENTAL_EDGE_CASES != len(positive_edges)
-        or MAPPED_ORIGINAL_CASE_CREDITS
-        != BASE_WF_MAPPED_ORIGINAL_CASE_CREDITS + len(invalid_edges)
-        or len(result)
-        != MAPPED_ORIGINAL_CASE_CREDITS + SUPPLEMENTAL_EDGE_CASES
+        or mapped != 98
+        or supplemental != len(positive_edges)
+        or supplemental != 10
     ):
         raise RuntimeError("hostile WF fixture inventory drift")
     return result
+
+
+def mapped_original_case_credits(fixtures: tuple[FixtureCase, ...]) -> int:
+    return sum(int(fixture.original_credit) for fixture in fixtures)
+
+
+def supplemental_case_count(fixtures: tuple[FixtureCase, ...]) -> int:
+    return len(fixtures) - mapped_original_case_credits(fixtures)
 
 
 def normalize(value: Any) -> Any:
@@ -1041,6 +1281,16 @@ def fixture_bytes(fixtures: tuple[FixtureCase, ...]) -> bytes:
                         fixture.actor.encode("ascii").hex(),
                         encode(normalize(fixture.before)).hex(),
                         encode(normalize(fixture.after)).hex(),
+                    )
+                )
+            )
+        elif isinstance(fixture, NextFixture):
+            lines.append(
+                "\t".join(
+                    (
+                        fixture.kind,
+                        fixture.fixture_id.encode("ascii").hex(),
+                        encode(normalize(fixture.state)).hex(),
                     )
                 )
             )
@@ -1074,6 +1324,18 @@ def expected_result_bytes(fixtures: tuple[FixtureCase, ...]) -> bytes:
             else:
                 accepted = True
             lines.append(f"{prefix}\t{int(accepted)}")
+        elif isinstance(fixture, NextFixture):
+            try:
+                rows = tuple(
+                    sorted(
+                        (edge.action_id, edge.actor)
+                        for edge in model.next_states(fixture.state)
+                    )
+                )
+            except model.ProtocolReject:
+                lines.append(f"{prefix}\tX")
+            else:
+                lines.append(f"{prefix}\tA\t{encode(rows).hex()}")
         elif fixture.kind == "G":
             lines.append(f"{prefix}\t{int(model.grant_wf(fixture.value))}")
         else:

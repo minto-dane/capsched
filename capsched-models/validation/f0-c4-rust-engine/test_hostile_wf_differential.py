@@ -17,12 +17,12 @@ sys.path.insert(0, str(HERE.parent))
 
 from hostile_wf_fixtures import (  # noqa: E402
     FIXTURE_HEADER,
-    MAPPED_ORIGINAL_CASE_CREDITS,
     ORIGINAL_CASE_TOTAL,
-    SUPPLEMENTAL_EDGE_CASES,
     cases,
     expected_result_bytes,
     fixture_bytes,
+    mapped_original_case_credits,
+    supplemental_case_count,
 )
 
 
@@ -68,6 +68,9 @@ def main() -> int:
         edge_fields = next(line for line in lines[1:] if line.startswith(b"E\t")).split(
             b"\t"
         )
+        next_fields = next(line for line in lines[1:] if line.startswith(b"N\t")).split(
+            b"\t"
+        )
         header = FIXTURE_HEADER.encode("ascii")
 
         def one_record(record: bytes) -> bytes:
@@ -75,7 +78,7 @@ def main() -> int:
 
         malformed = {
             "zero-count": header + b"\t0\n",
-            "leading-zero-count": header + b"\t081\n"
+            "leading-zero-count": header + b"\t0108\n"
             + b"\n".join(lines[1:])
             + b"\n",
             "count-mismatch": header + b"\t1\n",
@@ -113,6 +116,13 @@ def main() -> int:
             "edge-uppercase-before-hex": one_record(
                 b"\t".join((*edge_fields[:4], edge_fields[4].upper(), edge_fields[5]))
             ),
+            "next-missing-state": one_record(b"\t".join(next_fields[:-1])),
+            "next-uppercase-state-hex": one_record(
+                b"\t".join((*next_fields[:2], next_fields[2].upper()))
+            ),
+            "next-odd-state-hex": one_record(
+                b"\t".join((*next_fields[:2], b"0"))
+            ),
             "crlf": encoded.replace(b"\n", b"\r\n"),
             "missing-final-newline": encoded[:-1],
         }
@@ -128,27 +138,33 @@ def main() -> int:
     if second != first:
         raise SystemExit("error: nondeterministic Rust hostile-WF results")
 
-    kind_counts = {"edge": 0, "grant": 0, "state": 0}
+    kind_counts = {"edge": 0, "grant": 0, "next": 0, "state": 0}
     for fixture in fixtures:
-        kind_counts[{"E": "edge", "G": "grant", "S": "state"}[fixture.kind]] += 1
+        kind_counts[
+            {"E": "edge", "G": "grant", "N": "next", "S": "state"}[
+                fixture.kind
+            ]
+        ] += 1
+    mapped = mapped_original_case_credits(fixtures)
+    supplemental = supplemental_case_count(fixtures)
     print(
         json.dumps(
             {
-                "artifact_id": "f0-c4-rust-hostile-wf-differential-v2",
+                "artifact_id": "f0-c4-rust-hostile-wf-differential-v3",
                 "case_count": len(fixtures),
                 "claim_credit": False,
                 "complete_295_case_parity": False,
                 "fixture_sha256": hashlib.sha256(encoded).hexdigest(),
                 "kind_counts": kind_counts,
                 "malformed_fixture_cases": len(malformed),
-                "mapped_original_case_credits": MAPPED_ORIGINAL_CASE_CREDITS,
+                "mapped_original_case_credits": mapped,
                 "remaining_original_case_credits": (
-                    ORIGINAL_CASE_TOTAL - MAPPED_ORIGINAL_CASE_CREDITS
+                    ORIGINAL_CASE_TOTAL - mapped
                 ),
                 "result_sha256": hashlib.sha256(first).hexdigest(),
                 "rust_runs": 2,
                 "status": "pass",
-                "supplemental_edge_cases": SUPPLEMENTAL_EDGE_CASES,
+                "supplemental_case_count": supplemental,
             },
             sort_keys=True,
             separators=(",", ":"),

@@ -412,7 +412,7 @@ rust_child_refinement_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
 rust_child_mutation_result=$(PYTHONDONTWRITEBYTECODE=1 python3 \
 	"$repo_root/capsched-models/validation/test-f0-c4-rust-child-refinement-mutations.py")
 [[ $rust_child_mutation_result == \
-	*"F0_C4_RUST_CHILD_REFINEMENT_MUTATION_PASS cases=23"* ]] || {
+	*"F0_C4_RUST_CHILD_REFINEMENT_MUTATION_PASS cases=24"* ]] || {
 	printf 'error: F0 C4 Rust child-refinement mutation regression failed\n' >&2
 	exit 1
 }

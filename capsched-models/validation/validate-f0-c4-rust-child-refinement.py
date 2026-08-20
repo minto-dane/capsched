@@ -99,7 +99,7 @@ def validate(repo_root: Path) -> dict[str, object]:
     require(record["schema_version"] == 1, "checkpoint schema version differs")
     require(
         record["status"]
-        == "child_transition_independent_wf_and_71_hostile_edge_fixture_slice_pass_parent_and_exhaustive_gates_open",
+        == "child_transition_independent_wf_and_98_hostile_successor_fixture_slice_pass_parent_and_exhaustive_gates_open",
         "checkpoint status differs",
     )
 
@@ -210,28 +210,29 @@ def validate(repo_root: Path) -> dict[str, object]:
         "independent Rust WF result differs",
     )
     require(
-        hostile_wf.get("status") == "PASS_BYTE_EXACT_PARTIAL_EDGE_SLICE"
-        and hostile_wf.get("case_count") == 81
+        hostile_wf.get("status") == "PASS_BYTE_EXACT_PARTIAL_SUCCESSOR_SLICE"
+        and hostile_wf.get("case_count") == 108
         and hostile_wf.get("grant_cases") == 10
         and hostile_wf.get("state_cases") == 49
         and hostile_wf.get("edge_cases") == 22
-        and hostile_wf.get("supplemental_edge_cases") == 10
-        and hostile_wf.get("mapped_original_case_credits") == 71
-        and hostile_wf.get("malformed_fixture_cases") == 15
-        and hostile_wf.get("remaining_original_case_credits") == 224
+        and hostile_wf.get("next_cases") == 27
+        and hostile_wf.get("supplemental_case_count") == 10
+        and hostile_wf.get("mapped_original_case_credits") == 98
+        and hostile_wf.get("malformed_fixture_cases") == 18
+        and hostile_wf.get("remaining_original_case_credits") == 197
         and hostile_wf.get("mapped_original_case_credits")
         + hostile_wf.get("remaining_original_case_credits")
         == 295
         and hostile_wf.get("case_count")
         == hostile_wf.get("mapped_original_case_credits")
-        + hostile_wf.get("supplemental_edge_cases")
+        + hostile_wf.get("supplemental_case_count")
         and hostile_wf.get("exact_state_round_trip") is True
         and hostile_wf.get("rust_runs") == 2
         and hostile_wf.get("complete_295_case_parity") is False
         and hostile_wf.get("fixture_sha256")
-        == "ef51241904b19bd01214222c331a41b46db14df2d06a9440b2551290b7c870e6"
+        == "5a9efc84e9c4ab10cfcf3a43dd0f67836e11c717de174a3e21a80848776f292c"
         and hostile_wf.get("result_sha256")
-        == "1aefbfbbfaf392feca95202025d3deb5e525e4e684b895175a0bde57e872f387",
+        == "d96367e3f2ae5e16cc7d65d52a4bf36ae40226abf8f5eaeb1500870e7e98cf89",
         "hostile WF fixture slice differs",
     )
 
@@ -250,7 +251,7 @@ def validate(repo_root: Path) -> dict[str, object]:
         and build.get("distinct_source_roots") == 2
         and build.get("binary_bytes") == 592120
         and build.get("binary_sha256")
-        == "3d6fabd4683017ae7480209ec6df6e548f3dc83dc31c10746dcfb3190970c309",
+        == "6c1719155bb2321057a3dd0b28a6d5210e3b3b7ad545e56ea232905e386d4aaf",
         "reproducible build record differs",
     )
     for key in ("binary_sha256", "cargo_sha256", "rustc_sha256"):
