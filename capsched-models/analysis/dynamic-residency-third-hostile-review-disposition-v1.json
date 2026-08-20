@@ -1,0 +1,394 @@
+{
+  "schema_version": 2,
+  "id": "dynamic-residency-third-hostile-review-disposition-v1",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-09",
+  "work_record": "N-180",
+  "analysis": "analysis/0193-dynamic-residency-third-hostile-review-and-redesign.md",
+  "reviewed_contract": "analysis/dynamic-admission-recurring-residency-architecture-contract-v1.json",
+  "status": "third_round_rejected_freeze_redesign_integrated_pending_fresh_review_and_formal_refinement",
+  "finding_status_policy": "reviewer_blockers_remain_open_until_revised_bytes_receive_fresh_external_attested_review",
+  "source_reviews": [
+    {
+      "reviewer_id": "curie-security-r3",
+      "role": "security",
+      "independent_session": true,
+      "cryptographic_identity_authenticated": false,
+      "verdict": "FREEZE_NO",
+      "reviewed_prior_scope": "all_44_second_round_reviewer_and_self_findings",
+      "reviewed_prior_count": 44,
+      "finding_ids": [
+        "SEC-R3-01",
+        "SEC-R3-02",
+        "SEC-R3-03",
+        "SEC-R3-04"
+      ]
+    },
+    {
+      "reviewer_id": "noether-formal-r3",
+      "role": "formal",
+      "independent_session": true,
+      "cryptographic_identity_authenticated": false,
+      "verdict": "FREEZE_NO",
+      "reviewed_prior_scope": "18_formal_integration_and_self_findings_named_in_source_review",
+      "reviewed_prior_count": 18,
+      "finding_ids": [
+        "FORM-R3-01",
+        "FORM-R3-02",
+        "FORM-R3-03",
+        "FORM-R3-04",
+        "FORM-R3-05",
+        "FORM-R3-06",
+        "FORM-R3-07"
+      ]
+    },
+    {
+      "reviewer_id": "hopper-scale-r3",
+      "role": "scalability",
+      "independent_session": true,
+      "cryptographic_identity_authenticated": false,
+      "verdict": "FREEZE_NO",
+      "reviewed_prior_scope": "13_scale_formal_integration_and_self_findings_named_in_source_review",
+      "reviewed_prior_count": 13,
+      "finding_ids": [
+        "SCALE-R3-01",
+        "SCALE-R3-02",
+        "SCALE-R3-03"
+      ]
+    },
+    {
+      "reviewer_id": "turing-integration-r3",
+      "role": "integration",
+      "independent_session": true,
+      "cryptographic_identity_authenticated": false,
+      "verdict": "FREEZE_NO",
+      "reviewed_prior_scope": "all_44_second_round_reviewer_and_self_findings",
+      "reviewed_prior_count": 44,
+      "finding_ids": [
+        "INT-R3-01",
+        "INT-R3-02",
+        "INT-R3-03",
+        "INT-R3-04",
+        "INT-R3-05",
+        "INT-R3-06"
+      ]
+    }
+  ],
+  "source_review_provenance": {
+    "raw_review_outputs_retained_as_immutable_signed_artifacts": false,
+    "records_are_unattested_discovery_transcriptions": true,
+    "may_count_as_external_freeze_evidence": false,
+    "fresh_disposition_requires_v2_1_checkpointed_commit_and_reveal": true
+  },
+  "review_finding_count": 20,
+  "findings": [
+    {
+      "id": "SEC-R3-01",
+      "source_finding_id": "CURIE-R3-SEC-01",
+      "review_class": "security",
+      "reviewer_id": "curie-security-r3",
+      "finding": "source_replay_highwater_can_crash_before_authority_fence_and_permanently_lose_real_failure",
+      "candidate_redesign": "recoverable_Unseen_DurablePending_Fenced_ingress_pending_replay_resume_and_restart_execution_gate",
+      "residual_obligation": "DYN_CHURN_and_DYN_RENEW_RESTART_every_pre_and_post_fence_crash_cut",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SEC-R3-02",
+      "source_finding_id": "CURIE-R3-SEC-02",
+      "review_class": "security",
+      "reviewer_id": "curie-security-r3",
+      "finding": "failure_source_freshness_exhaustion_quarantines_input_but_leaves_dependent_authority_executable",
+      "candidate_redesign": "fence_exact_source_availability_scope_unless_preexisting_independent_coverage_remains_valid",
+      "residual_obligation": "DYN_CHURN_source_exhaustion_replacement_and_dependent_use_invalidation",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SEC-R3-03",
+      "source_finding_id": "CURIE-R3-SEC-03",
+      "review_class": "security",
+      "reviewer_id": "curie-security-r3",
+      "finding": "Formal_0148_authority_projection_erases_NodeLeaseID_and_NodeLeaseEpoch",
+      "candidate_redesign": "include_complete_lease_lineage_in_effective_abstract_epoch",
+      "residual_obligation": "DYN_REGRESSION_stale_lease_epoch_property_implication",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SEC-R3-04",
+      "source_finding_id": "CURIE-R3-SEC-04",
+      "review_class": "security",
+      "reviewer_id": "curie-security-r3",
+      "finding": "candidate_author_can_fabricate_all_review_identities_hashes_and_accepting_decision",
+      "candidate_redesign": "external_review_trust_policy_signed_attestations_and_post_review_decision_envelope",
+      "residual_obligation": "external_anchor_positive_fixture_and_fabricated_policy_reviewer_signature_mutations",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "FORM-R3-01",
+      "source_finding_id": "FORM-R3-01",
+      "review_class": "formal",
+      "reviewer_id": "noether-formal-r3",
+      "finding": "Formal_0148_effective_epoch_mapping_omits_NodeLeaseEpoch",
+      "candidate_redesign": "same_complete_lease_lineage_mapping_as_SEC_R3_03",
+      "residual_obligation": "exact_prose_JSON_validator_and_refinement_parity",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "FORM-R3-02",
+      "source_finding_id": "FORM-R3-02",
+      "review_class": "formal",
+      "reviewer_id": "noether-formal-r3",
+      "finding": "failure_cell_audit_phase_and_apply_status_each_have_multiple_declared_writers",
+      "candidate_redesign": "separate_authority_cell_audit_detail_and_lane_owned_apply_settlement_state",
+      "residual_obligation": "single_writer_transition_table_and_crash_interleavings",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "FORM-R3-03",
+      "source_finding_id": "FORM-R3-03",
+      "review_class": "formal",
+      "reviewer_id": "noether-formal-r3",
+      "finding": "one_shot_TerminationOwner_cannot_order_activation_then_later_revoke_stop_and_terminal",
+      "candidate_redesign": "distinct_monotonic_activation_decision_stop_request_and_terminal_settlement_owners",
+      "residual_obligation": "DYN_REQUEST_all_activation_cancel_revoke_expiry_failure_and_cleanup_races",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "FORM-R3-04",
+      "source_finding_id": "FORM-R3-04",
+      "review_class": "formal",
+      "reviewer_id": "noether-formal-r3",
+      "finding": "conflict_intent_omits_noncommuting_reads_and_dependency_relations_are_not_path_typed",
+      "candidate_redesign": "full_conflict_footprint_and_exact_per_path_relation_successor_predicate_table",
+      "residual_obligation": "DYN_ADMIT_read_write_resource_conflict_and_allowed_suffix_commutation",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "FORM-R3-05",
+      "source_finding_id": "FORM-R3-05",
+      "review_class": "formal",
+      "reviewer_id": "noether-formal-r3",
+      "finding": "ClockBridge_mixes_external_hardware_rely_with_internal_control_quota_and_underspecifies_positive_rates_and_conversion",
+      "candidate_redesign": "separate_clock_envelope_control_service_invariant_parent_capacity_and_total_rank_formulae",
+      "residual_obligation": "DYN_SHARD_numeric_clock_and_control_capacity_mutations_plus_TLAPS_arithmetic",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "FORM-R3-06",
+      "source_finding_id": "FORM-R3-06",
+      "review_class": "formal",
+      "reviewer_id": "noether-formal-r3",
+      "finding": "exclusive_migration_has_no_unique_total_calendar_transfer_relation",
+      "candidate_redesign": "exact_boundary_final_inputs_common_turn_unit_checked_formula_and_typed_rejections",
+      "residual_obligation": "DYN_SHARD_and_DYN_REGRESSION_unique_calendar_debt_gap_mapping",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "FORM-R3-07",
+      "source_finding_id": "FORM-R3-07",
+      "review_class": "formal",
+      "reviewer_id": "noether-formal-r3",
+      "finding": "checkpointed_incident_detail_has_no_safe_retire_replay_or_recycle_transition",
+      "candidate_redesign": "authority_retire_receipt_checkpointed_replay_tombstone_and_generation_advanced_recycle_protocol",
+      "residual_obligation": "DYN_RENEW_RESTART_all_detail_recycle_crash_cuts_and_infinite_renewal_premise",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SCALE-R3-01",
+      "source_finding_id": "SCALE-R3-01_CONTROL_SERVICE_RATE_NOT_GLOBALLY_CONSERVED",
+      "review_class": "scalability",
+      "reviewer_id": "hopper-scale-r3",
+      "finding": "independent_shard_control_certificates_can_overbook_one_physical_monitor_executor",
+      "candidate_redesign": "hierarchical_parent_physical_service_capacity_and_child_rate_reservations_bound_into_certificates",
+      "residual_obligation": "two_shard_simultaneous_load_conservation_and_noninterference",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SCALE-R3-02",
+      "source_finding_id": "SCALE-R3-02_SECURITY_INCIDENT_SUMMARY_REINTRODUCES_GLOBAL_UPDATE_POINT",
+      "review_class": "scalability",
+      "reviewer_id": "hopper-scale-r3",
+      "finding": "global_current_incident_summary_root_serializes_failure_authority_and_has_undefined_crash_cost",
+      "candidate_redesign": "shard_local_authority_and_audit_roots_plus_asynchronous_non_authority_checkpoint_aggregate",
+      "residual_obligation": "DYN_CHURN_disjoint_root_updates_and_DYN_RENEW_RESTART_crash_reconciliation",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SCALE-R3-03",
+      "source_finding_id": "SCALE-R3-03_PAIRWISE_CERTIFICATE_CANNOT_JUSTIFY_LINEAR_BOUND",
+      "review_class": "scalability",
+      "reviewer_id": "hopper-scale-r3",
+      "finding": "pairwise_commutation_certificate_is_quadratic_but_contract_claims_linear_verification",
+      "candidate_redesign": "owner_disjoint_local_writes_aggregate_conserved_contributions_and_honest_k_times_depth_bound",
+      "residual_obligation": "certificate_grammar_sufficiency_complexity_and_mixed_apply_prefixes",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "INT-R3-01",
+      "source_finding_id": "INT-R3-01",
+      "review_class": "integration",
+      "reviewer_id": "turing-integration-r3",
+      "finding": "freeze_acceptance_is_self_attestable",
+      "candidate_redesign": "same_external_trust_anchor_repair_as_SEC_R3_04",
+      "residual_obligation": "validator_must_refuse_unanchored_or_candidate_selected_policy",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "INT-R3-02",
+      "source_finding_id": "INT-R3-02",
+      "review_class": "integration",
+      "reviewer_id": "turing-integration-r3",
+      "finding": "review_before_capsule_order_contradicts_digest_bound_review",
+      "candidate_redesign": "candidate_capsule_then_attestations_then_decision_with_no_postseal_candidate_mutation",
+      "residual_obligation": "phase_state_machine_and_postseal_mutation_rejection",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "INT-R3-03",
+      "source_finding_id": "INT-R3-03",
+      "review_class": "integration",
+      "reviewer_id": "turing-integration-r3",
+      "finding": "validator_accepts_hostile_owner_trace_fairness_identity_and_unknown_key_rewrites",
+      "candidate_redesign": "exact_schema_canonical_semantic_projection_witness_values_and_targeted_mutations",
+      "residual_obligation": "nonvacuous_pending_sealed_and_decision_fixtures_with_expected_diagnostics",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "INT-R3-04",
+      "source_finding_id": "INT-R3-04",
+      "review_class": "integration",
+      "reviewer_id": "turing-integration-r3",
+      "finding": "Formal_0148_lease_lineage_mismatch_is_pinned_across_contract_and_validator",
+      "candidate_redesign": "same_exact_parity_repair_as_SEC_R3_03_and_FORM_R3_01",
+      "residual_obligation": "hostile_lease_lineage_omission_mutation",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "INT-R3-05",
+      "source_finding_id": "INT-R3-05",
+      "review_class": "integration",
+      "reviewer_id": "turing-integration-r3",
+      "finding": "FailureSourceEvidence_and_structured_FailureScopeIdentity_are_missing_from_machine_object_parity",
+      "candidate_redesign": "add_exact_machine_object_types_and_field_schemas",
+      "residual_obligation": "human_machine_object_and_identity_parity_mutations",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "INT-R3-06",
+      "source_finding_id": "INT-R3-06",
+      "review_class": "integration",
+      "reviewer_id": "turing-integration-r3",
+      "finding": "review_roles_model_identifiers_root_plan_terms_and_removed_latch_terms_lack_one_alias_policy",
+      "candidate_redesign": "canonical_vocabulary_and_explicit_public_to_TLA_and_historical_alias_map",
+      "residual_obligation": "undeclared_alias_and_obsolete_term_mutations",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    }
+  ],
+  "self_audit_finding_count": 13,
+  "self_audit_findings": [
+    {
+      "id": "SELF-R3-01",
+      "finding": "pure_extension_bound_conflates_O_1_mutation_with_live_frozen_use_memory_retention",
+      "candidate_redesign": "separate_no_traversal_update_cost_from_retained_memory_term",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-02",
+      "finding": "clock_bridge_extension_conflates_O_1_record_publication_with_live_certificate_retention_memory",
+      "candidate_redesign": "separate_no_traversal_update_cost_from_admission_bounded_retained_certificate_memory",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-03",
+      "finding": "control_round_robin_can_scan_all_empty_principal_slots",
+      "candidate_redesign": "protected_sparse_nonempty_principal_index_with_hierarchy_depth_bound",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-04",
+      "finding": "failure_recovery_cleanup_can_scale_with_all_dependent_live_artifacts_even_when_authority_fence_is_local",
+      "candidate_redesign": "admission_bounded_live_uses_per_scope_actual_affected_cleanup_rank_and_protected_quota",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-05",
+      "finding": "failure_ingress_implies_hidden_atomic_source_and_transaction_cross_writer_write",
+      "candidate_redesign": "source_owned_self_contained_DurablePending_then_transaction_owner_builds_exact_precharged_slot",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-06",
+      "finding": "partial_apply_escrow_does_not_cover_maximum_demand_over_every_terminal_status",
+      "candidate_redesign": "immutable_componentwise_maximum_Pending_Applied_FailedFenced_escrow_until_capacity_owner_reclaim",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-07",
+      "finding": "migration_does_not_bind_exact_ordinal_and_due_phase_across_independent_lanes",
+      "candidate_redesign": "immutable_ServiceCalendar_exact_next_ordinal_checked_due_tick_and_unique_destination_cell",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-08",
+      "finding": "stored_migration_phase_can_be_rewritten_or_recovered_inconsistently",
+      "candidate_redesign": "derive_transfer_progress_from_prefix_closed_independently_owned_monotonic_receipt_chain",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-09",
+      "finding": "failure_and_apply_paths_can_both_settle_FailedFenced_or_scope_state",
+      "candidate_redesign": "failure_owner_writes_only_SecurityScopeFence_and_exact_apply_owner_writes_EntryFailClosedFence_and_apply_status",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-10",
+      "finding": "source_health_is_duplicated_in_replay_and_effective_scope_state",
+      "candidate_redesign": "derive_source_health_only_from_EffectiveScope_SourceHealthScope",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-11",
+      "finding": "stale_predecessor_or_partial_preparation_can_occupy_failure_capacity_indefinitely",
+      "candidate_redesign": "bounded_resume_neutral_abort_covered_abort_or_pre_reserved_emergency_permanent_fence_terminal_path",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-12",
+      "finding": "audit_retry_has_no_unique_durable_position_and_can_duplicate_chain_entries",
+      "candidate_redesign": "reserve_exactly_one_recoverable_audit_position_and_reuse_it_on_every_retry",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    },
+    {
+      "id": "SELF-R3-13",
+      "finding": "ordinary_restart_does_not_exclude_unresolved_ingress_and_unmapped_old_boot_fences",
+      "candidate_redesign": "ordinary_mode_gate_requires_closed_pending_consistent_effective_authority_reconciliation_dirty_arm_fresh_lease_and_old_fence_mapping",
+      "status": "open_redesign_integrated_pending_fresh_review_and_formal_refinement"
+    }
+  ],
+  "aggregate_finding_count": 33,
+  "required_next_artifacts": [
+    "revised_0189_human_and_machine_contract",
+    "0195_datacenter_and_composition_boundary_disposition",
+    "revised_0192_preformal_witness",
+    "exact_semantic_validator_and_hostile_mutations",
+    "external_review_trust_policy_and_signature_verifier",
+    "sealed_candidate_capsule_before_review",
+    "fresh_distinct_R4_attestations_bound_to_exact_capsule",
+    "post_review_decision_envelope_without_candidate_mutation"
+  ],
+  "claims": {
+    "all_third_round_review_findings_recorded": true,
+    "all_third_round_self_audit_findings_recorded": true,
+    "candidate_redesign_integrated": true,
+    "findings_closed": false,
+    "architecture_frozen": false,
+    "reviewer_identity_authenticated": false,
+    "tla_written": false,
+    "model_supported": false,
+    "implementation_approved": false,
+    "protection_evidenced": false,
+    "performance_evidenced": false,
+    "cost_evidenced": false,
+    "multi_cluster_evidenced": false,
+    "deployment_ready": false
+  }
+}

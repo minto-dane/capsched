@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r4-e3-six-boot-attempt-1-rejection-v1",
+  "date": "2026-07-17",
+  "status": "rejected_after_arm64_standard_debug_34_of_36",
+  "run_id": "20260717T-p5a-r4-e3-six-boot-r1",
+  "rejected_candidate": {
+    "commit": "f9c737c93ecff48c6f512048b05b1b49f4a54ca5",
+    "tree": "274f7b5d6969dc68e158819191fe598f9587e0ad",
+    "diff_sha256": "c35299bead06a874a21f116b15f4aabfd27c9ca945e9541dfb6dc8c31fa5b781"
+  },
+  "arm64_standard_debug": {
+    "build_completed": true,
+    "build_warning_scan_matches": 0,
+    "build_verification_empty": true,
+    "qemu_exit_code": 0,
+    "suite_pass": 34,
+    "suite_fail": 2,
+    "suite_skip": 0,
+    "suite_total": 36,
+    "failed_cases": [
+      "sched_exec_r4_test_dirty_node_unique_and_bounded",
+      "sched_exec_r4_test_cancel_pending_running_and_requeued"
+    ],
+    "console_sha256": "3e7179423702f445a83b41af975e6ae32b37a60bbbd02941a831f3bce2bb2e78",
+    "ktap_sha256": "4cec066170889e95f8bc90f28e3976cfcc972787ca6fefa8e1642a4d57075c90",
+    "build_log_sha256": "257f238b6f77ccae221f4e27aac6f7d0a55b5598c8182616fa65ceeb6d4c5218",
+    "config_sha256": "4e9ae559b9de405119794a3cce84324170986c556e77064a58138db2ad361fd2"
+  },
+  "cleanup": {
+    "runner_exit_code": 1,
+    "remaining_configurations_started": 0,
+    "matrix_result_created": false,
+    "internal_build_scratch_removed": true,
+    "disposable_worktree_removed": true,
+    "rejected_git_object_retained": true,
+    "diagnostic_artifacts_retained": true
+  },
+  "correction": {
+    "scope": "default_off_same_translation_unit_kunit_harness_only",
+    "fixed_point_drain_round_bound": 136,
+    "quiescence_checks_irq_recovery_dirty_and_notifier_state": true,
+    "drain_exhaustion_is_protocol_error": true,
+    "cancellation_state_snapshotted_before_test_gate_release": true,
+    "corrected_commit": "da9ce9159b3450c28c8faf8dceac671fb7bfeba2",
+    "corrected_tree": "58c6510c6f517004e37107786d006bb8333b79b8",
+    "corrected_diff_sha256": "096d99b527bd1b433ecd07165696830f9316d07cc67484687d95cd2c2a846f08",
+    "parent_commit": "a429fc30252ac6af94c51d96cd4ac24e72d9f83b",
+    "exact_direct_e2_child": true,
+    "exact_two_file_boundary": true,
+    "insertions": 2821,
+    "deletions": 0,
+    "strict_checkpatch": {
+      "errors": 0,
+      "warnings": 0,
+      "checks": 0
+    },
+    "fresh_source_gate_required": true,
+    "prior_source_gate_reusable": false,
+    "prior_closures_reusable": false,
+    "six_boot_matrix_may_restart": false
+  },
+  "safety_flags": {
+    "r4_e3_source_accepted": false,
+    "r4_e3_concurrency_correctness_accepted": false,
+    "runtime_scheduler_hook_approved": false,
+    "runtime_behavior_approved": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

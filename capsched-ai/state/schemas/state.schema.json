@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "capsched-ai-state.schema.json",
-  "title": "CapSched Project State",
+  "$id": "domainlease-ai-state-v2.schema.json",
+  "title": "DomainLease-Linux Compact Current State",
   "type": "object",
   "required": [
     "schema_version",
@@ -11,6 +11,8 @@
     "core_concepts",
     "accepted_invariants",
     "design_boundaries",
+    "completion",
+    "evidence",
     "planned_tracks",
     "open_questions",
     "next_actions",
@@ -18,57 +20,956 @@
   ],
   "properties": {
     "schema_version": {
-      "type": "integer",
-      "minimum": 1
+      "const": 2
     },
     "updated": {
-      "type": "string"
+      "type": "string",
+      "format": "date"
     },
     "project": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "name",
+        "purpose",
+        "current_phase",
+        "publication",
+        "control_repository",
+        "superproject",
+        "linux_source",
+        "linux_patch_queue"
+      ],
+      "properties": {
+        "name": {
+          "const": "DomainLease-Linux"
+        },
+        "legacy_name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "current_phase": {
+          "enum": [
+            "f0_v5_c4_g6_open_reinstall_required",
+            "f0_v5_c4_g6_open_retry_eligible",
+            "f0_v5_c4_g6_open_rust_refinement_required"
+          ]
+        },
+        "publication": {
+          "type": "object",
+          "required": [
+            "github_visibility",
+            "decision_date",
+            "secrets_allowed",
+            "scope"
+          ],
+          "properties": {
+            "github_visibility": {
+              "const": "public_intentional"
+            },
+            "decision_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "secrets_allowed": {
+              "const": false
+            },
+            "scope": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "control_repository": {
+          "$ref": "#/$defs/gitControlRepository"
+        },
+        "superproject": {
+          "type": "object",
+          "required": [
+            "remote",
+            "checkpoint_resolution",
+            "recorded_parent_baseline_revision"
+          ],
+          "properties": {
+            "remote": {
+              "type": "string",
+              "minLength": 1
+            },
+            "checkpoint_resolution": {
+              "const": "default_branch_gitlink"
+            },
+            "recorded_parent_baseline_revision": {
+              "$ref": "#/$defs/gitObject"
+            }
+          },
+          "additionalProperties": false
+        },
+        "linux_source": {
+          "type": "object",
+          "required": [
+            "repository",
+            "branch",
+            "work_revision",
+            "work_tree",
+            "upstream_base_revision",
+            "fetched_upstream_revision",
+            "upstream_ref",
+            "upstream_remote",
+            "status"
+          ],
+          "properties": {
+            "repository": {
+              "type": "string"
+            },
+            "branch": {
+              "type": "string"
+            },
+            "work_revision": {
+              "$ref": "#/$defs/gitObject"
+            },
+            "work_tree": {
+              "$ref": "#/$defs/gitObject"
+            },
+            "upstream_base_revision": {
+              "$ref": "#/$defs/gitObject"
+            },
+            "fetched_upstream_revision": {
+              "$ref": "#/$defs/gitObject"
+            },
+            "upstream_ref": {
+              "type": "string"
+            },
+            "upstream_remote": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "linux_patch_queue": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/gitReference"
+            },
+            {
+              "type": "object",
+              "required": [
+                "repository",
+                "branch",
+                "replay_base_revision",
+                "replay_work_revision",
+                "replay_scope"
+              ],
+              "properties": {
+                "repository": {
+                  "type": "string"
+                },
+                "branch": {
+                  "type": "string"
+                },
+                "replay_base_revision": {
+                  "$ref": "#/$defs/gitObject"
+                },
+                "replay_work_revision": {
+                  "$ref": "#/$defs/gitObject"
+                },
+                "replay_scope": {
+                  "const": "historical_l0_endpoint_not_current_experimental_head"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "architecture_intent": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "threat",
+        "hard_boundary",
+        "granularity",
+        "cluster_shape",
+        "linux_role",
+        "monitor_role"
+      ],
+      "properties": {
+        "threat": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hard_boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "granularity": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "cluster_shape": {
+          "type": "string"
+        },
+        "linux_role": {
+          "type": "string"
+        },
+        "monitor_role": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     },
     "core_concepts": {
       "type": "object"
     },
     "accepted_invariants": {
       "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/idText"
+      }
+    },
+    "design_boundaries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "completion": {
+      "type": "object",
+      "required": [
+        "v1_claim_inventory_complete",
+        "local_contract_coverage",
+        "final_compositional_model_complete",
+        "linux_implementation_complete",
+        "monitor_implementation_complete",
+        "protection_evidenced",
+        "cost_efficiency_evidenced",
+        "deployment_ready"
+      ],
+      "properties": {
+        "v1_claim_inventory_complete": {
+          "const": true
+        },
+        "local_contract_coverage": {
+          "type": "string"
+        },
+        "final_compositional_model_complete": {
+          "const": false
+        },
+        "linux_implementation_complete": {
+          "const": false
+        },
+        "monitor_implementation_complete": {
+          "const": false
+        },
+        "protection_evidenced": {
+          "const": false
+        },
+        "cost_efficiency_evidenced": {
+          "const": false
+        },
+        "deployment_ready": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "policy",
+        "contract_status",
+        "tooling_status",
+        "reviewed_positive_promotion_credit",
+        "reviewed_negative_results",
+        "exact_git_objects",
+        "codex_security_scan_required",
+        "claim_specific_results",
+        "local_candidate_checkpoint",
+        "current_candidate_inputs",
+        "authority_capture_contract"
+      ],
+      "properties": {
+        "policy": {
+          "const": "ADR-0013_validator_owned_immutable_capsules"
+        },
+        "contract_status": {
+          "const": "defined"
+        },
+        "tooling_status": {
+          "enum": [
+            "not_implemented",
+            "partial",
+            "implemented"
+          ]
+        },
+        "reviewed_positive_promotion_credit": {
+          "const": "needs_revalidation"
+        },
+        "reviewed_negative_results": {
+          "const": "blocking_signal_pending_reproduction"
+        },
+        "exact_git_objects": {
+          "const": "retained_reproducible_input"
+        },
+        "codex_security_scan_required": {
+          "const": false
+        },
+        "codex_security_scan_note": {
+          "type": "string"
+        },
+        "claim_specific_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "claim_id",
+              "run_id",
+              "capsule_id",
+              "validator_result_sha256",
+              "decision_sha256",
+              "evidence_level",
+              "allowed_transition"
+            ],
+            "properties": {
+              "claim_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "run_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "capsule_id": {
+                "$ref": "#/$defs/sha256"
+              },
+              "validator_result_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "decision_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "evidence_level": {
+                "enum": [
+                  "EC0",
+                  "EC1",
+                  "EC2",
+                  "EC3"
+                ]
+              },
+              "allowed_transition": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "local_candidate_checkpoint": {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "status",
+            "fast_validator_status_at_checkpoint",
+            "full_validator_status_at_checkpoint",
+            "hostile_case_counts_at_checkpoint",
+            "component_receipt_capture_authority",
+            "authority_disjoint_capture_at_checkpoint",
+            "authorization"
+          ],
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "status": {
+              "const": "pre_full_local_checkpoint"
+            },
+            "fast_validator_status_at_checkpoint": {
+              "const": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY"
+            },
+            "full_validator_status_at_checkpoint": {
+              "const": "NOT_RUN"
+            },
+            "hostile_case_counts_at_checkpoint": {
+              "type": "object",
+              "required": ["child", "parent", "runner", "total"],
+              "properties": {
+                "child": {"type": "integer", "minimum": 1},
+                "parent": {"type": "integer", "minimum": 1},
+                "runner": {"type": "integer", "minimum": 1},
+                "total": {"type": "integer", "minimum": 1}
+              },
+              "additionalProperties": false
+            },
+            "component_receipt_capture_authority": {
+              "const": "candidate_validator_local_process"
+            },
+            "authority_disjoint_capture_at_checkpoint": {
+              "const": false
+            },
+            "authorization": {
+              "type": "object",
+              "required": [
+                "F0_local_acceptance",
+                "external_R11_review",
+                "G0_authorized",
+                "self_authorization",
+                "protection_claim"
+              ],
+              "properties": {
+                "F0_local_acceptance": {"const": false},
+                "external_R11_review": {"const": false},
+                "G0_authorized": {"const": false},
+                "self_authorization": {"const": false},
+                "protection_claim": {"const": false}
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "current_candidate_inputs": {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "artifact_sha256",
+            "status",
+            "fast_validator_status",
+            "full_validator_status",
+            "hostile_case_counts",
+            "counterexample_regression",
+            "authorization"
+          ],
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "status": {
+              "enum": [
+                "counterexample_repaired_locally_g6_retry_requires_clean_install",
+                "counterexample_repaired_clean_installed_g6_retry_eligible",
+                "resource_retention_repaired_g6_retry_requires_clean_install",
+                "resource_retention_repaired_clean_installed_g6_retry_eligible",
+                "persistent_frontier_repaired_g6_retry_requires_clean_install",
+                "persistent_frontier_repaired_clean_installed_g6_retry_eligible",
+                "compact_state_store_and_owner_failure_snapshot_repaired_g6_retry_requires_clean_install",
+                "compact_state_store_and_owner_failure_snapshot_repaired_clean_installed_g6_retry_eligible",
+                "packed_exact_history_repaired_g6_retry_requires_clean_install",
+                "packed_exact_history_repaired_clean_installed_g6_retry_eligible",
+                "disk_backed_exact_store_repaired_g6_retry_requires_clean_install",
+                "disk_backed_exact_store_repaired_clean_installed_g6_retry_eligible",
+                "pending_attack_closure_repaired_g6_retry_requires_clean_install",
+                "pending_attack_closure_repaired_clean_installed_g6_retry_eligible",
+                "behavioral_audit_quotient_validated_locally_g6_retry_requires_clean_install",
+                "behavioral_audit_quotient_clean_installed_g6_retry_eligible",
+                "behavioral_audit_quotient_clean_installed_g6_rust_refinement_required"
+              ]
+            },
+            "fast_validator_status": {
+              "const": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY"
+            },
+            "full_validator_status": {
+              "enum": [
+                "NOT_RUN_FOR_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_RESOURCE_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_STATE_STORE_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+                "NOT_RUN_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS"
+              ]
+            },
+            "hostile_case_counts": {
+              "type": "object",
+              "required": ["child", "parent", "runner", "total"],
+              "properties": {
+                "child": {"type": "integer", "minimum": 1},
+                "parent": {"type": "integer", "minimum": 1},
+                "runner": {"type": "integer", "minimum": 1},
+                "total": {"type": "integer", "minimum": 1}
+              },
+              "additionalProperties": false
+            },
+            "counterexample_regression": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "required": ["action_id", "field", "status"],
+                  "properties": {
+                    "action_id": {"const": "OBS-032-DESCENDANTS-EXIT"},
+                    "field": {"const": "hidden_work"},
+                    "status": {"const": "PASS"}
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "required": ["action_id", "field", "status"],
+                  "properties": {
+                    "action_id": {"const": "MON-039C-PROTECTION-CLOSED"},
+                    "field": {"const": "pending_attack_and_attack_ledger"},
+                    "status": {"const": "PASS"}
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "authorization": {
+              "type": "object",
+              "required": [
+                "F0_local_acceptance",
+                "external_R11_review",
+                "G0_authorized",
+                "self_authorization",
+                "protection_claim"
+              ],
+              "properties": {
+                "F0_local_acceptance": {"const": false},
+                "external_R11_review": {"const": false},
+                "G0_authorized": {"const": false},
+                "self_authorization": {"const": false},
+                "protection_claim": {"const": false}
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "authority_capture_contract": {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "canonical_sha256",
+            "evidence_level",
+            "status",
+            "hostile_mutation_cases",
+            "derived_semantic_cases",
+            "closed_gates",
+            "remaining_gates",
+            "root_supervisor_implemented",
+            "target_platform_probe_passed",
+            "hostile_fault_fixtures_passed",
+            "reduction_boundary_implemented",
+            "immutable_toolchain",
+            "short_regression",
+            "clean_install",
+            "g6",
+            "g7"
+          ],
+          "properties": {
+            "artifact_id": {
+              "const": "f0-c4-authority-disjoint-capture-contract-v1"
+            },
+            "canonical_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "evidence_level": {
+              "const": "EC0"
+            },
+            "status": {
+              "enum": [
+                "local_mechanism_g1_g5_closed_g6_open_reinstall_required_g7_blocked",
+                "local_mechanism_g1_g5_closed_g6_open_retry_eligible_g7_blocked",
+                "local_mechanism_g1_g5_closed_g6_open_rust_refinement_required_g7_blocked"
+              ]
+            },
+            "hostile_mutation_cases": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "derived_semantic_cases": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "closed_gates": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"type": "string", "minLength": 1}
+            },
+            "remaining_gates": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"type": "string", "minLength": 1}
+            },
+            "root_supervisor_implemented": {
+              "const": true
+            },
+            "target_platform_probe_passed": {
+              "const": true
+            },
+            "hostile_fault_fixtures_passed": {
+              "const": true
+            },
+            "reduction_boundary_implemented": {
+              "const": true
+            },
+            "immutable_toolchain": {
+              "type": "object",
+              "required": ["format", "sha256", "mounted_read_only"],
+              "properties": {
+                "format": {"const": "erofs"},
+                "sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "mounted_read_only": {"const": true}
+              },
+              "additionalProperties": false
+            },
+            "short_regression": {
+              "type": "object",
+              "required": [
+                "launcher_basic_cases",
+                "launcher_hostile_cases",
+                "launcher_idle_cases",
+                "snapshot_hostile_cases",
+                "reproducible_build_cases",
+                "behavioral_quotient_boundary_cases",
+                "model_memory_policy_cases",
+                "model_storage_equivalence_cases",
+                "capture_resource_policy_cases",
+                "external_memory_recovery_cases",
+                "reducer_current_input_binding_cases",
+                "toolchain_reuse_cases",
+                "supervisor_components",
+                "guardian_cases",
+                "reducer_cases"
+              ],
+              "properties": {
+                "launcher_basic_cases": {"const": 1},
+                "launcher_hostile_cases": {"const": 10},
+                "launcher_idle_cases": {"const": 1},
+                "snapshot_hostile_cases": {"const": 5},
+                "reproducible_build_cases": {"const": 1},
+                "behavioral_quotient_boundary_cases": {"const": 9},
+                "model_memory_policy_cases": {"const": 33},
+                "model_storage_equivalence_cases": {"const": 2},
+                "capture_resource_policy_cases": {"const": 17},
+                "external_memory_recovery_cases": {"const": 1},
+                "reducer_current_input_binding_cases": {"const": 3},
+                "toolchain_reuse_cases": {"const": 1},
+                "supervisor_components": {"const": 5},
+                "guardian_cases": {"const": 3},
+                "reducer_cases": {"const": 3}
+              },
+              "additionalProperties": false
+            },
+            "clean_install": {
+              "type": "object",
+              "required": [
+                "status",
+                "installed_source_commit",
+                "installed_manifest_sha256",
+                "current_inputs_installed",
+                "readiness_record",
+                "readiness_sha256"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "REINSTALL_REQUIRED_AFTER_INPUT_REPAIR",
+                    "PASSED_FOR_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_RESOURCE_REPAIR",
+                    "PASSED_FOR_RESOURCE_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_FRONTIER_REPAIR",
+                    "PASSED_FOR_FRONTIER_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_STATE_STORE_REPAIR",
+                    "PASSED_FOR_STATE_STORE_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_PACKED_HISTORY_REPAIR",
+                    "PASSED_FOR_PACKED_HISTORY_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_EXTERNAL_MEMORY_REPAIR",
+                    "PASSED_FOR_EXTERNAL_MEMORY_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_PENDING_ATTACK_CLOSURE_REPAIR",
+                    "PASSED_FOR_PENDING_ATTACK_CLOSURE_REPAIRED_INPUTS",
+                    "REINSTALL_REQUIRED_AFTER_BEHAVIORAL_AUDIT_QUOTIENT",
+                    "PASSED_FOR_BEHAVIORAL_AUDIT_QUOTIENT_INPUTS"
+                  ]
+                },
+                "installed_source_commit": {"$ref": "#/$defs/gitObject"},
+                "installed_manifest_sha256": {"$ref": "#/$defs/sha256"},
+                "current_inputs_installed": {"type": "boolean"},
+                "readiness_record": {"type": "string", "minLength": 1},
+                "readiness_sha256": {"$ref": "#/$defs/sha256"}
+              },
+              "additionalProperties": false
+            },
+            "g6": {
+              "type": "object",
+              "required": [
+                "gate_status",
+                "retry_eligible",
+                "complete_capture_available",
+                "candidate_bytes_positive_eligible",
+                "attempt_count",
+                "latest_completed_attempt_run_id",
+                "active_attempt",
+                "attempt_history"
+              ],
+              "properties": {
+                "gate_status": {"const": "OPEN"},
+                "retry_eligible": {"type": "boolean"},
+                "complete_capture_available": {"const": false},
+                "candidate_bytes_positive_eligible": {"const": false},
+                "attempt_count": {"type": "integer", "minimum": 1},
+                "latest_completed_attempt_run_id": {"type": "string", "minLength": 1},
+                "active_attempt": {
+                  "oneOf": [
+                    {"type": "null"},
+                    {
+                      "type": "object",
+                      "required": [
+                        "run_id",
+                        "status",
+                        "launched_at",
+                        "candidate_input_commit",
+                        "installed_source_commit",
+                        "installed_manifest_sha256",
+                        "capture_contract_sha256",
+                        "candidate_bytes_executed",
+                        "evidence_commit_available"
+                      ],
+                      "properties": {
+                        "run_id": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+                        },
+                        "status": {"const": "CAPTURE_RUNNING"},
+                        "launched_at": {"type": "string", "format": "date-time"},
+                        "candidate_input_commit": {"$ref": "#/$defs/gitObject"},
+                        "installed_source_commit": {"$ref": "#/$defs/gitObject"},
+                        "installed_manifest_sha256": {"$ref": "#/$defs/sha256"},
+                        "capture_contract_sha256": {"$ref": "#/$defs/sha256"},
+                        "candidate_bytes_executed": {"type": "boolean"},
+                        "evidence_commit_available": {"const": false}
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "attempt_history": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "run_id",
+                      "status",
+                      "candidate_bytes_executed",
+                      "evidence_commit_available"
+                    ],
+                    "properties": {
+                      "run_id": {"type": "string", "minLength": 1},
+                      "status": {
+                        "enum": [
+                          "START_FAILED_BEFORE_CANDIDATE_LAUNCH",
+                          "RAW_CAPTURE_INCOMPLETE",
+                          "GUARDIAN_INCOMPLETE_PUBLISHED"
+                        ]
+                      },
+                      "candidate_bytes_executed": {"type": "boolean"},
+                      "evidence_commit_available": {"type": "boolean"},
+                      "observation_record": {"type": "string", "minLength": 1},
+                      "observation_sha256": {"$ref": "#/$defs/sha256"}
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "g7": {
+              "type": "object",
+              "required": ["gate_status", "blocked_reason", "real_reduction_run"],
+              "properties": {
+                "gate_status": {"const": "BLOCKED"},
+                "blocked_reason": {"const": "NO_COMPLETE_G6_CAPTURE"},
+                "real_reduction_run": {"const": false}
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "planned_tracks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/orderedWork"
+      }
+    },
+    "open_questions": {
+      "type": "array",
       "items": {
         "type": "object",
         "required": [
           "id",
+          "blocking",
           "text"
         ],
         "properties": {
           "id": {
             "type": "string"
           },
+          "blocking": {
+            "type": "boolean"
+          },
           "text": {
             "type": "string"
           }
+        },
+        "additionalProperties": false
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/orderedWork"
+      }
+    },
+    "canonical_files": {
+      "type": "object",
+      "required": [
+        "state",
+        "state_schema",
+        "state_checker",
+        "state_consistency_checker",
+        "handoff",
+        "event_log",
+        "current_decision",
+        "evidence_decision",
+        "goal_audit",
+        "evidence_contract",
+        "active_plan",
+        "assurance_case",
+        "assurance_register"
+      ],
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitObject": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "gitReference": {
+      "type": "object",
+      "required": [
+        "revision",
+        "remote"
+      ],
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "remote": {
+          "type": "string",
+          "minLength": 1
         }
       }
     },
-    "design_boundaries": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "gitControlRepository": {
+      "type": "object",
+      "required": [
+        "branch",
+        "semantic_baseline_revision",
+        "reviewed_lineage_revision",
+        "stable_main_revision",
+        "remote"
+      ],
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "semantic_baseline_revision": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "reviewed_lineage_revision": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "stable_main_revision": {
+          "$ref": "#/$defs/gitObject"
+        },
+        "remote": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
     },
-    "planned_tracks": {
-      "type": "array"
+    "idText": {
+      "type": "object",
+      "required": [
+        "id",
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
     },
-    "open_questions": {
-      "type": "array"
-    },
-    "next_actions": {
-      "type": "array"
-    },
-    "canonical_files": {
-      "type": "object"
+    "orderedWork": {
+      "type": "object",
+      "required": [
+        "order",
+        "id",
+        "status"
+      ],
+      "properties": {
+        "order": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string"
+        },
+        "next_artifact": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

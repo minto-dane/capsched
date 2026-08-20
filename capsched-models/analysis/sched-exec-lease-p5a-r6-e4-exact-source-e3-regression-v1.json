@@ -1,0 +1,65 @@
+{
+  "id": "sched-exec-lease-p5a-r6-e4-exact-source-e3-regression-v1",
+  "schema_version": 1,
+  "candidate": {
+    "branch": "codex/p5a-r6-e4-local-quantum-measurement",
+    "commit": "d51ebdc657a1040e423735584775e66399f321f9",
+    "parent": "99287291f1c8e0d6c1b3ea86d121508c5547f424",
+    "tree": "0847c408be82e6c9077c2edd2d00f44ccfbe18fc",
+    "diff_sha256": "fcc00bcf8dabf4ee8d921a454b7ee871e907da5accefaab10f320f08ff4283d9",
+    "source_sha256": "688248428ca550bc1c56e8547fa5f601a46f5e031222b89c715be72150a4ab3c",
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ]
+  },
+  "source_gate": {
+    "run_id": "20260729T-p5a-r6-e4-source-gate",
+    "result_sha256": "ab5b33650dafb275ffc281ca7f0828aa3db11d8ca301f82c06980399bc3404e6",
+    "status": "passed_r6_e4_source_build_gate",
+    "e3_shared_helpers_changed": true,
+    "e3_four_profile_regression_required": true
+  },
+  "regression": {
+    "suite": "sched_exec_lease_r6_correctness",
+    "measurement_config": "CONFIG_SCHED_EXEC_LEASE_R6_MEASURE_KUNIT_TEST",
+    "measurement_must_be_disabled": true,
+    "cases_per_profile": 55,
+    "receipts_per_profile": 55,
+    "profiles": [
+      "arm64_standard_debug_lockdep_hotplug_faults",
+      "x86_64_standard_debug_lockdep_hotplug_faults",
+      "arm64_generic_kasan_lockdep",
+      "x86_64_kcsan_lockdep"
+    ],
+    "sequential_fresh_builds": true,
+    "internal_ext_storage": true,
+    "retire_build_after_each_profile": true,
+    "reject_failure_skip_timeout_warning": true,
+    "independent_read_only_closure_required": true
+  },
+  "resource_policy": {
+    "jobs": 6,
+    "minimum_internal_storage_kib": 8388608,
+    "standard_timeout_seconds": 1800,
+    "sanitizer_timeout_seconds": 3600,
+    "progress_refresh_seconds": 30
+  },
+  "claims": {
+    "regression_passed": false,
+    "independent_closure_passed": false,
+    "r6_e4_source_accepted": false,
+    "measurement_authorized": false,
+    "runtime_scheduler_attachment": false,
+    "runtime_denial_correctness": false,
+    "monitor_verified": false,
+    "bare_metal_validated": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

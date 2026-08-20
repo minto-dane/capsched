@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://domainlease.invalid/schema/r11-g0-review-contract-v1.json",
+  "title": "DomainLease R11 G0 external review contract candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "contract_epoch", "status", "gate_id", "meaning", "externality_definition", "artifact_role_layers", "evidence_layer_dag", "capture_contract", "checks", "review_roles", "review_acceptance", "mutation_phases", "acceptance_rule", "allowed_gate_output", "current_disposition", "authorization"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_id": {"const": "domainlease-r11-g0-review-contract-v1"},
+    "contract_epoch": {"const": 1},
+    "status": {"const": "draft_pending_external_acceptance"},
+    "gate_id": {"const": "G0"},
+    "meaning": {"$ref": "#/$defs/nonemptyString"},
+    "externality_definition": {"$ref": "#/$defs/externality"},
+    "artifact_role_layers": {"$ref": "#/$defs/artifactRoleLayers"},
+    "evidence_layer_dag": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/$defs/evidenceLayer"}},
+    "capture_contract": {"$ref": "#/$defs/capture"},
+    "checks": {"type": "array", "minItems": 11, "maxItems": 11, "items": {"$ref": "#/$defs/check"}},
+    "review_roles": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/reviewRole"}},
+    "review_acceptance": {"$ref": "#/$defs/reviewAcceptance"},
+    "mutation_phases": {"$ref": "#/$defs/mutationPhases"},
+    "acceptance_rule": {"$ref": "#/$defs/acceptanceRule"},
+    "allowed_gate_output": {"$ref": "#/$defs/allowedOutput"},
+    "current_disposition": {"$ref": "#/$defs/currentDisposition"},
+    "authorization": {"$ref": "#/$defs/authorization"}
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "uniqueStrings": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "artifactRoleLayers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_bundle", "review_set", "gate_decision", "evidence_capsule"],
+      "properties": {
+        "candidate_bundle": {"type": "array", "minItems": 17, "maxItems": 17, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+        "review_set": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+        "gate_decision": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+        "evidence_capsule": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}}
+      }
+    },
+    "evidenceLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "predecessors", "binds", "output_digest"],
+      "properties": {
+        "id": {"pattern": "^L[0-3]-[A-Z0-9-]+$"},
+        "predecessors": {"type": "array", "uniqueItems": true, "items": {"pattern": "^L[0-3]-[A-Z0-9-]+$"}},
+        "binds": {"$ref": "#/$defs/nonemptyString"},
+        "output_digest": {"pattern": "^[a-z0-9_]+_sha256$"}
+      }
+    },
+    "externality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["separate_directory_is_sufficient", "separate_agent_context_is_sufficient", "required", "local_subagent_reviews_are"],
+      "properties": {
+        "separate_directory_is_sufficient": {"const": false},
+        "separate_agent_context_is_sufficient": {"const": false},
+        "required": {"$ref": "#/$defs/nonemptyString"},
+        "local_subagent_reviews_are": {"const": "role_separated_local_advisory_only"}
+      }
+    },
+    "capture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read_each_input_once", "manifest_fields", "repository_glob_or_discovery", "mutable_branch_reference", "network_import", "candidate_selected_policy_digest", "external_gate_selects_bundle_digest", "post_capture_mutation_reuse", "self_referential_digest_required", "layer_outputs_bind_only_predecessor_bytes"],
+      "properties": {
+        "read_each_input_once": {"const": true},
+        "manifest_fields": {"const": ["path", "role", "media_type", "byte_length", "sha256"]},
+        "repository_glob_or_discovery": {"const": false},
+        "mutable_branch_reference": {"const": false},
+        "network_import": {"const": false},
+        "candidate_selected_policy_digest": {"const": false},
+        "external_gate_selects_bundle_digest": {"const": true},
+        "post_capture_mutation_reuse": {"const": false},
+        "self_referential_digest_required": {"const": false},
+        "layer_outputs_bind_only_predecessor_bytes": {"const": true}
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "class", "requirement"],
+      "properties": {
+        "id": {"pattern": "^(?:HM|CAT)-G0-[0-9]{3}$"},
+        "class": {"enum": ["assurance", "catalog"]},
+        "requirement": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "reviewRole": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "scope", "assigned_checks"],
+      "properties": {
+        "id": {"pattern": "^REVIEW-G0-[A-Z0-9-]+$"},
+        "scope": {"$ref": "#/$defs/uniqueStrings"},
+        "assigned_checks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^CAT-G0-[0-9]{3}$"}}
+      }
+    },
+    "reviewAcceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["author_may_fill_review_role", "one_principal_may_fill_multiple_review_roles", "review_must_bind_final_bundle_sha256", "review_must_dispose_every_assigned_check", "blocking_finding_count", "limitations_may_expand_claim", "post_review_edit_requires_full_rereview", "same_orchestrator_AI_review_completes_externality"],
+      "properties": {
+        "author_may_fill_review_role": {"const": false},
+        "one_principal_may_fill_multiple_review_roles": {"const": false},
+        "review_must_bind_final_bundle_sha256": {"const": true},
+        "review_must_dispose_every_assigned_check": {"const": true},
+        "blocking_finding_count": {"const": 0},
+        "limitations_may_expand_claim": {"const": false},
+        "post_review_edit_requires_full_rereview": {"const": true},
+        "same_orchestrator_AI_review_completes_externality": {"const": false}
+      }
+    },
+    "mutationPhases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["G0", "G2", "G7"],
+      "properties": {"G0":{"$ref":"#/$defs/nonemptyString"},"G2":{"$ref":"#/$defs/nonemptyString"},"G7":{"$ref":"#/$defs/nonemptyString"}}
+    },
+    "acceptanceRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["all_checks_pass_exactly_once", "all_review_roles_accept", "blocking_findings", "missing_duplicate_conflicting_stale_or_unbound_input", "checker_timeout_signal_truncation_or_live_child", "candidate_status_or_authorization_field_is_evidence"],
+      "properties": {
+        "all_checks_pass_exactly_once": {"const": true},
+        "all_review_roles_accept": {"const": true},
+        "blocking_findings": {"const": 0},
+        "missing_duplicate_conflicting_stale_or_unbound_input": {"const": "reject"},
+        "checker_timeout_signal_truncation_or_live_child": {"const": "reject"},
+        "candidate_status_or_authorization_field_is_evidence": {"const": false}
+      }
+    },
+    "allowedOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["r11_machine_source_construction", "semantic_freeze", "proof_complete", "tla_translation", "model_supported", "linux_behavior_change", "protection_claim"],
+      "properties": {
+        "r11_machine_source_construction": {"const": true},
+        "semantic_freeze": {"const": false},
+        "proof_complete": {"const": false},
+        "tla_translation": {"const": false},
+        "model_supported": {"const": false},
+        "linux_behavior_change": {"const": false},
+        "protection_claim": {"const": false}
+      }
+    },
+    "currentDisposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mechanical_consistency", "local_role_separated_advisory_reviews", "exact_external_mutation_campaign", "external_review_receipts", "external_gate_decision", "g0_complete", "r11_machine_source_construction"],
+      "properties": {
+        "mechanical_consistency": {"const": "local_pass"},
+        "local_role_separated_advisory_reviews": {"type": "integer", "minimum": 0},
+        "exact_external_mutation_campaign": {"const": false},
+        "external_review_receipts": {"const": 0},
+        "external_gate_decision": {"const": false},
+        "g0_complete": {"const": false},
+        "r11_machine_source_construction": {"const": false}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_self_accepts", "g0_complete", "r11_machine_source_construction", "semantic_freeze", "tla_translation", "model_supported", "linux_behavior_change", "protection_claim"],
+      "properties": {
+        "contract_self_accepts": {"const": false},
+        "g0_complete": {"const": false},
+        "r11_machine_source_construction": {"const": false},
+        "semantic_freeze": {"const": false},
+        "tla_translation": {"const": false},
+        "model_supported": {"const": false},
+        "linux_behavior_change": {"const": false},
+        "protection_claim": {"const": false}
+      }
+    }
+  }
+}

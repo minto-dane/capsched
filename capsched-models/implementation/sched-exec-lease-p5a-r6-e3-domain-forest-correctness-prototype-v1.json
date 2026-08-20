@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "id": "sched-exec-lease-p5a-r6-e3-domain-forest-correctness-prototype-v1",
+  "date": "2026-07-26",
+  "status": "evidence_closed_awaiting_separate_post_e3_authorization",
+  "source": {
+    "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r6-e3-correctness-prototype",
+    "branch": "codex/p5a-r6-e3-correctness-prototype",
+    "parent_commit": "66e2fd20fc85012d7dc03649fcf4c7af583cbb94",
+    "candidate_commit": "99287291f1c8e0d6c1b3ea86d121508c5547f424",
+    "candidate_tree": "2b863b57dfe3f03609ad1a73c965874f71056e8f",
+    "diff_sha256": "2ed265756c1cee52252bedc6cbfb3d651eed136be9dca98992496ee80ebfb715",
+    "direct_e2_child": true,
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "insertions": 1516,
+    "deletions": 0,
+    "strict_checkpatch": {
+      "errors": 0,
+      "warnings": 0,
+      "checks": 0
+    },
+    "pushed_remote_exact": true
+  },
+  "frozen_boundaries": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "patch_queue_commit": "16bb080da472ffabbbafd2698073eca633fb0602",
+    "r6_e2_parent_commit": "66e2fd20fc85012d7dc03649fcf4c7af583cbb94",
+    "r6_e2_parent_tree": "603762b7a36d7b57e2456b90538c3ba77a1aba16",
+    "r6_e2_private_layout_preserved": true,
+    "ordinary_scheduler_structure_growth_bytes": 0
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_R6_KUNIT_TEST",
+    "default_enabled": false,
+    "depends_on": [
+      "SCHED_EXEC_LEASE_R6_LAYOUT_PROBE",
+      "KUNIT=y"
+    ],
+    "same_translation_unit": "kernel/sched/exec_lease.c",
+    "suite_name": "sched_exec_lease_r6_correctness",
+    "live_scheduler_attachment": false
+  },
+  "synthetic_protocol": {
+    "private_fixed_slot_forest": true,
+    "real_raw_spinlocks": true,
+    "real_cpumasks": true,
+    "real_refcounts": true,
+    "real_rcu_lifetime": true,
+    "independent_plain_oracle": true,
+    "machine_readable_case_receipts": true,
+    "deterministic_case_families": 55,
+    "allocation_fault_sites": 3,
+    "hard_timeout_seconds": 15,
+    "stress_repetitions_per_profile": 4096,
+    "oracle_leaves": 64,
+    "synthetic_scheduler_inputs_only": true
+  },
+  "source_gate": {
+    "run_id": "20260726T-p5a-r6-e3-source-gate-r1",
+    "result_sha256": "88376403879ecc2b0a059791ba59a5bd71addd493e9c8052c2742f877f9e7f25",
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "fresh_modes_per_architecture": 4,
+    "r6_private_values_preserved": 49,
+    "existing_expanded_values_preserved": 51,
+    "disabled_artifacts": 0,
+    "w1_compiler_diagnostics": 0,
+    "passed": true
+  },
+  "four_profile_matrix": {
+    "run_id": "20260726T-p5a-r6-e3-four-profile-r1",
+    "result_sha256": "bede4cbf4c5021eba080d0bd557f9e97529153e21da731ee729340ca8c2691be",
+    "profile_results_sha256": "9142a2a0ff800efbf2e9f5b5231575b6c6c47d26e14ca535265f81221e802b71",
+    "profiles": [
+      "arm64_standard_debug_lockdep_hotplug_faults",
+      "x86_64_standard_debug_lockdep_hotplug_faults",
+      "arm64_generic_kasan_lockdep",
+      "x86_64_kcsan_lockdep"
+    ],
+    "fresh_builds": 4,
+    "qemu_boots": 4,
+    "cases_passed": 220,
+    "receipts": 220,
+    "case_failures": 0,
+    "case_skips": 0,
+    "case_timeouts": 0,
+    "compiler_diagnostics": 0,
+    "clock_skew_warnings": 0,
+    "kernel_warning_reports": 0,
+    "sequential_build_retirement": true,
+    "virtual_synthetic_protocol_only": true,
+    "passed": true
+  },
+  "independent_closure": {
+    "runner_sha256": "5b4176a7b71b246f270a95db520ea7f5410dc25551adb75dfad9b873c387481b",
+    "source_artifact_manifest_sha256": "151c877301d3f59d171fc30bf449044990e46892860c8f9d2eb4f3467b0b4ecc",
+    "source_artifact_count": 60,
+    "source_artifact_bytes": 2659341,
+    "r1_result_sha256": "0dce94b2ddf3448727bf936611704e33637f9114e8668cf1311aa1274775239a",
+    "r2_result_sha256": "964a16b0636d7f02850b851dd1530e9c08cc6c9e0c495c6b6a3ba78a1856a514",
+    "normalized_sha256": "3aebe14122f4b678c56351ee07f6a0ad475f708156c3657032232b9a76c761f7",
+    "passed_twice": true,
+    "content_tamper_rejected": true,
+    "symlink_injection_rejected": true
+  },
+  "authorization": {
+    "separate_post_e3_gate_required": true,
+    "r6_e3_source_accepted": false,
+    "r6_e3_correctness_accepted": false,
+    "r6_e4_plan_may_be_drafted": false,
+    "r6_e4_plan_accepted": false,
+    "r6_e4_source_may_be_created": false,
+    "primary_linux_may_change": false,
+    "patch_queue_may_change": false
+  },
+  "safety_flags": {
+    "live_scheduler_attachment": false,
+    "runtime_scheduler_hook_approved": false,
+    "runtime_behavior_approved": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "async_service_boundary_validated": false,
+    "memoryview_or_tlb_validated": false,
+    "device_dma_iommu_validated": false,
+    "monitor_verified": false,
+    "cluster_authority_validated": false,
+    "bare_metal_validated": false,
+    "bounded_wall_clock_latency_claim": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

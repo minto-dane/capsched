@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-claim-registry",
+  "authority": "repository_claim_catalog_not_candidate_result",
+  "claims": [
+    {
+      "id": "F0-C4-FAST-MUTATION-AND-STATIC-v1",
+      "class": "local_bounded_regression",
+      "fast": {
+        "allowed_statuses": ["PASS", "FAIL"],
+        "evidence": ["bootstrap_source_execution_check", "input_hashes_equal_before_after", "tests", "static_registries"],
+        "status_rule": {"kind": "boolean", "predicate_id": "FAST_MUTATION_STATIC", "true_status": "PASS", "false_status": "FAIL"}
+      },
+      "full": {
+        "allowed_statuses": ["PASS", "FAIL"],
+        "evidence": ["bootstrap_source_execution_check", "input_hashes_equal_before_after", "components.tests", "components.static-registries", "component_execution_receipts.tests", "component_execution_receipts.static-registries"],
+        "status_rule": {"kind": "boolean", "predicate_id": "FAST_MUTATION_STATIC", "true_status": "PASS", "false_status": "FAIL"}
+      }
+    },
+    {
+      "id": "F0-C4-REACH-CHILD-BEHAVIORAL-AUDIT-QUOTIENT-BOUNDED-v1",
+      "class": "local_bounded_behavioral_quotient_reachability",
+      "fast": {"allowed_statuses": ["NOT_RUN"], "evidence": [], "status_rule": {"kind": "fixed", "status": "NOT_RUN"}},
+      "full": {
+        "allowed_statuses": ["PASS", "FAIL"],
+        "evidence": ["components.tests", "components.child-bundle-producer", "components.child-bundle-checker", "component_execution_receipts.tests", "component_execution_receipts.child-bundle-producer", "component_execution_receipts.child-bundle-checker"],
+        "status_rule": {"kind": "boolean", "predicate_id": "CHILD_BEHAVIORAL_AUDIT_QUOTIENT_BOUNDED", "true_status": "PASS", "false_status": "FAIL"}
+      }
+    },
+    {
+      "id": "F0-C4-AUDIT-CHAIN-REPRESENTATION-REFINEMENT-v1",
+      "class": "external_refinement",
+      "fast": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.child#AUDIT-REP-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}},
+      "full": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.child#AUDIT-REP-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}}
+    },
+    {
+      "id": "F0-C4-REACH-PARENT-EXACT-REPETITION-BOUNDED-v1",
+      "class": "local_repetition_bounded_reachability",
+      "fast": {"allowed_statuses": ["NOT_RUN"], "evidence": [], "status_rule": {"kind": "fixed", "status": "NOT_RUN"}},
+      "full": {"allowed_statuses": ["PASS", "FAIL"], "evidence": ["components.orchestrator", "component_execution_receipts.orchestrator"], "status_rule": {"kind": "boolean", "predicate_id": "PARENT_EXACT_REPETITION_BOUNDED", "true_status": "PASS", "false_status": "FAIL"}}
+    },
+    {
+      "id": "F0-C4-DECLARED-LOCAL-EFFECT-COMMUTATION-v1",
+      "class": "local_declared_pair_commutation",
+      "fast": {"allowed_statuses": ["NOT_RUN"], "evidence": [], "status_rule": {"kind": "fixed", "status": "NOT_RUN"}},
+      "full": {
+        "allowed_statuses": ["PASS", "FAIL"],
+        "evidence": ["components.child-bundle-producer.commutation", "components.child-bundle-checker.commutation", "component_execution_receipts.child-bundle-producer", "component_execution_receipts.child-bundle-checker"],
+        "status_rule": {"kind": "boolean", "predicate_id": "DECLARED_LOCAL_EFFECT_COMMUTATION", "true_status": "PASS", "false_status": "FAIL"}
+      }
+    },
+    {
+      "id": "F0-C4-INDEPENDENCE-RELATION-COMPLETE-v1",
+      "class": "external_refinement",
+      "fast": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.child#INDEP-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}},
+      "full": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.child#INDEP-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}}
+    },
+    {
+      "id": "F0-C4-EXTERNAL-AUTHENTICATION-v1",
+      "class": "external_refinement",
+      "fast": {
+        "allowed_statuses": ["OPEN_REFINEMENT"],
+        "evidence": ["open_refinement_obligations.child#EXT-AUTH-001", "open_refinement_obligations.child#MONITOR-001", "open_refinement_obligations.child#MGMT-001", "open_refinement_obligations.orchestrator#ORCH-EXT-001", "open_refinement_obligations.orchestrator#ORCH-REG-001"],
+        "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}
+      },
+      "full": {
+        "allowed_statuses": ["OPEN_REFINEMENT"],
+        "evidence": ["open_refinement_obligations.child#EXT-AUTH-001", "open_refinement_obligations.child#MONITOR-001", "open_refinement_obligations.child#MGMT-001", "open_refinement_obligations.orchestrator#ORCH-EXT-001", "open_refinement_obligations.orchestrator#ORCH-REG-001"],
+        "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}
+      }
+    },
+    {
+      "id": "F0-C4-ATTACK-CONTEXT-KEY-REFINEMENT-v1",
+      "class": "external_refinement",
+      "fast": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.orchestrator#ORCH-ATTACK-CTX-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}},
+      "full": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.orchestrator#ORCH-ATTACK-CTX-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}}
+    },
+    {
+      "id": "F0-C4-UNBOUNDED-REPEATED-ATTACK-HISTORY-v1",
+      "class": "external_refinement",
+      "fast": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.orchestrator#ORCH-ATTACK-CTX-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}},
+      "full": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.orchestrator#ORCH-ATTACK-CTX-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}}
+    },
+    {
+      "id": "F0-C4-DURABLE-STORE-LINEARIZATION-REFINEMENT-v1",
+      "class": "external_refinement",
+      "fast": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.orchestrator#ORCH-STORE-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}},
+      "full": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.orchestrator#ORCH-STORE-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}}
+    },
+    {
+      "id": "F0-C4-PARENT-CHILD-INDEPENDENCE-REFINEMENT-v1",
+      "class": "external_refinement",
+      "fast": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.orchestrator#ORCH-INDEP-001", "open_refinement_obligations.orchestrator#ORCH-CHILD-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}},
+      "full": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["open_refinement_obligations.orchestrator#ORCH-INDEP-001", "open_refinement_obligations.orchestrator#ORCH-CHILD-001"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}}
+    },
+    {
+      "id": "F0-LOCAL-ACCEPTANCE-v1",
+      "class": "external_acceptance_gate",
+      "fast": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["authorization.F0_local_acceptance=false"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}},
+      "full": {"allowed_statuses": ["OPEN_REFINEMENT"], "evidence": ["authorization.F0_local_acceptance=false"], "status_rule": {"kind": "fixed", "status": "OPEN_REFINEMENT"}}
+    }
+  ],
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "protection_claim": false
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "id": "evidence-capsule-trust-boundary-and-migration-v1",
+  "date": "2026-08-08",
+  "status": "contract_defined_with_rootsched_and_residency_ec1_consumers",
+  "decision": "capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md",
+  "analysis": "analysis/0186-evidence-capsule-trust-boundary-and-migration.md",
+  "claim": "EVIDENCE-001",
+  "roles": [
+    "producer",
+    "collector",
+    "validator",
+    "approver"
+  ],
+  "required_order": [
+    "capture_exact_bytes",
+    "seal_and_identify_capsule",
+    "validate_only_captured_bytes",
+    "derive_summaries_from_retained_raw_evidence",
+    "issue_decision_bound_to_capsule_id"
+  ],
+  "evidence_levels": {
+    "EC0": "producer_self_check_no_promotion_authority",
+    "EC1": "validator_owned_capture_and_recomputation",
+    "EC2": "independent_validator_implementation_or_oracle",
+    "EC3": "external_reproduction_on_independent_substrate"
+  },
+  "required_provenance": [
+    "git_commit_tree_parent_and_relevant_blobs",
+    "dirty_and_untracked_state_decision",
+    "patch_or_binary_diff_identity",
+    "configuration_bytes",
+    "tool_helper_bytes_and_versions",
+    "complete_command_and_declared_environment",
+    "validator_owned_capture_resource_limits",
+    "architecture_and_execution_substrate",
+    "kernel_initramfs_module_firmware_identities",
+    "virtualization_or_container_image_identity",
+    "host_cpu_cpuset_affinity_facts",
+    "raw_output_and_test_records",
+    "raw_measurement_rows",
+    "derived_summaries",
+    "validator_implementation_identity"
+  ],
+  "capture_states": [
+    "Empty",
+    "Capturing",
+    "Captured",
+    "Sealed",
+    "Validating",
+    "Valid",
+    "Invalid",
+    "Incomplete"
+  ],
+  "invariants": [
+    "ValidateOnlyCapturedBytes",
+    "NoRequiredObjectMissingAtSeal",
+    "NoObjectDigestChangeAfterSeal",
+    "DecisionBindsExactCapsule",
+    "DerivedOutputNamesExactRawInputs",
+    "NoProducerSummaryAsOracle",
+    "NoPositiveDecisionFromIncompleteCapsule"
+  ],
+  "migration_classes": [
+    "needs_revalidation",
+    "blocking_signal_pending_reproduction",
+    "retained_reproducible_input",
+    "retained_history_no_promotion_credit"
+  ],
+  "reviewed_lineage": {
+    "through_revision": "75e34749b94af52338085caced75c44c70f0a1b4",
+    "exact_git_source_and_models": "retained_reproducible_input",
+    "positive_source_build_test_promotion_credit": "needs_revalidation",
+    "negative_results": "blocking_signal_pending_reproduction",
+    "historical_prose_and_ai_state": "retained_history_no_promotion_credit"
+  },
+  "rollout": [
+    "json_schemas",
+    "fresh_capture_collector",
+    "structural_validator_and_mutation_fixtures",
+    "root_scheduler_formal_run_capsule",
+    "bounded_residency_formal_run_capsule",
+    "selective_r6_revalidation_if_architecturally_relevant",
+    "append_only_remote_store_and_signatures_before_protection_evidence"
+  ],
+  "claims": {
+    "contract_defined": true,
+    "tooling_implemented": true,
+    "tooling_scope": "capture_structural_verification_rootsched_ec1_and_residency_ec1",
+    "claim_specific_validator_implemented": true,
+    "claim_specific_validator_scope": "ROOTSCHED-001_and_RESIDENCY-001",
+    "approval_pipeline_complete": true,
+    "approval_pipeline_scope": "ROOTSCHED-001_and_RESIDENCY-001_EC1_only",
+    "historical_positive_credit_migrated": false,
+    "new_positive_gate_without_capsule_allowed": false,
+    "cryptographic_attestation_complete": false,
+    "independent_reproduction_complete": false,
+    "production_protection": false
+  }
+}

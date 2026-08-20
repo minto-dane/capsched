@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "artifact_id": "domainlease-r11-g0-candidate-bundle-v1",
+  "bundle_epoch": 1,
+  "status": "local_candidate_pending_external_review",
+  "authority": "role_separated_local_candidate_not_external_approval",
+  "review_target": true,
+  "external_adoption_required": true,
+  "capture_contract": {
+    "read_each_artifact_once": true,
+    "repository_discovery": false,
+    "network_import": false,
+    "mutable_ref": false,
+    "follow_symlink": false,
+    "allow_hardlink_alias": false,
+    "manifest_contains_own_digest": false,
+    "digest": "sha256_raw_bytes_lower_hex"
+  },
+  "runtime_requirements": {
+    "python_minimum": "3.11",
+    "python_maximum_exclusive": "3.14",
+    "jsonschema_draft": "2020-12",
+    "promotion_runtime_must_be_captured_separately": true
+  },
+  "semantic_counts": {
+    "semantic_rules": 73,
+    "invariants": 27,
+    "progress_obligations": 8,
+    "provider_contracts": 10,
+    "profiles": 19,
+    "witness_ids": 13,
+    "g0_checks": 11,
+    "review_roles": 3,
+    "g0_exact_mutations": 12,
+    "future_ir_mutation_templates": 24
+  },
+  "artifacts": [
+    {
+      "ordinal": 0,
+      "role": "semantic_policy_schema",
+      "path": "capsched-models/policy/r11/semantic-policy-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 22194,
+      "sha256": "38a5d6a2b0b87966cb4ce41863cc9ef507474dd3e4d1fc78cba81f21c1c76d08"
+    },
+    {
+      "ordinal": 1,
+      "role": "semantic_policy",
+      "path": "capsched-models/policy/r11/semantic-policy-v1.json",
+      "media_type": "application/json",
+      "byte_length": 44824,
+      "sha256": "b1b46ac64be83eec2a5d1c30319d298137f354503ed3b9c2b227274da2e5754d"
+    },
+    {
+      "ordinal": 2,
+      "role": "semantic_rule_registry_schema",
+      "path": "capsched-models/policy/r11/semantic-rule-registry-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 4613,
+      "sha256": "454787855a13049a9c4b064c82b5e7a3e4df7d536ab98160411304d105b95ad3"
+    },
+    {
+      "ordinal": 3,
+      "role": "semantic_rule_registry",
+      "path": "capsched-models/policy/r11/semantic-rule-registry-v1.json",
+      "media_type": "application/json",
+      "byte_length": 41806,
+      "sha256": "145cc701cdcc9ed76628e29ed21a115c4a5977d16a76fdfaa37bc58da729b948"
+    },
+    {
+      "ordinal": 4,
+      "role": "scenario_profile_schema",
+      "path": "capsched-models/policy/r11/scenario-profile-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 14053,
+      "sha256": "7c863ecb8731392d8c4b7a7af83871c2d9eaaf254581b90b8aae5d92f86365a4"
+    },
+    {
+      "ordinal": 5,
+      "role": "scenario_profile",
+      "path": "capsched-models/policy/r11/scenario-profile-v1.json",
+      "media_type": "application/json",
+      "byte_length": 48637,
+      "sha256": "3e3158e1d3aa00bf2a4d96eee6ee86dfadadcbdc4b4eeb937ecbcc0828bc59b0"
+    },
+    {
+      "ordinal": 6,
+      "role": "review_contract_schema",
+      "path": "capsched-models/policy/r11/g0-review-contract-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 9666,
+      "sha256": "be12d17c8e7dc01e91934bb59acc16781aef92c0bda1faa7e1e29bf6ac3a1a6d"
+    },
+    {
+      "ordinal": 7,
+      "role": "review_contract",
+      "path": "capsched-models/policy/r11/g0-review-contract-v1.json",
+      "media_type": "application/json",
+      "byte_length": 7709,
+      "sha256": "8a54586092962fd78219e74b63e6ed5bc720df14a40df10096941f8a12368b1d"
+    },
+    {
+      "ordinal": 8,
+      "role": "exact_mutation_catalog_schema",
+      "path": "capsched-models/policy/r11/g0-mutation-catalog-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 6386,
+      "sha256": "4bddaa039d556e99db8e6b22f849d45dd784c80246ccb322ea68df440c03c5ab"
+    },
+    {
+      "ordinal": 9,
+      "role": "exact_mutation_catalog",
+      "path": "capsched-models/policy/r11/g0-mutation-catalog-v1.json",
+      "media_type": "application/json",
+      "byte_length": 16745,
+      "sha256": "3362aab509a27ad4e3231db4a5ebd6744905a9b2d399219a3dd7963f623db3e0"
+    },
+    {
+      "ordinal": 10,
+      "role": "assurance_claim_catalog",
+      "path": "capsched-models/assurance/claims.json",
+      "media_type": "application/json",
+      "byte_length": 118191,
+      "sha256": "6f2ff8df988db00444c0d995bcb732c3f93df72790e46400ff8eb89d7e257a66"
+    },
+    {
+      "ordinal": 11,
+      "role": "mechanical_checker",
+      "path": "capsched-models/validation/validate-r11-g0-policy-profile.py",
+      "media_type": "text/x-python",
+      "byte_length": 39754,
+      "sha256": "e875d79118f134042142951a9d4c9595f3dc8d7ad5e01e698ff9acefaa01a7a1"
+    },
+    {
+      "ordinal": 12,
+      "role": "exact_mutation_runner",
+      "path": "capsched-models/validation/run-r11-g0-exact-campaign.py",
+      "media_type": "text/x-python",
+      "byte_length": 23466,
+      "sha256": "1dd18238ef24f40fc1c8caa1b9ae4da02bb4c6bc08c653a28eb6096b5dbc0d7a"
+    },
+    {
+      "ordinal": 13,
+      "role": "candidate_bundle_schema",
+      "path": "capsched-models/policy/r11/g0-candidate-bundle-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 6138,
+      "sha256": "a2742ff7af3df8e9c4d3c0b9dd10ed524ebe257559c6aa5196525c31b414db3f"
+    },
+    {
+      "ordinal": 14,
+      "role": "candidate_bundle_verifier",
+      "path": "capsched-models/validation/verify-r11-g0-candidate-bundle.py",
+      "media_type": "text/x-python",
+      "byte_length": 15176,
+      "sha256": "4600bb04ca25e8b527a2eb74a3e5de9b14cc252f678a2aafc195629be9f7fcc0"
+    },
+    {
+      "ordinal": 15,
+      "role": "review_receipt_schema",
+      "path": "capsched-models/policy/r11/g0-review-receipt-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 5608,
+      "sha256": "01cf4532da2cc1af7631ae14f37f6893a36e9d29a209e4ee0ae92ddb1bfc274a"
+    },
+    {
+      "ordinal": 16,
+      "role": "gate_decision_schema",
+      "path": "capsched-models/policy/r11/g0-gate-decision-schema-v1.json",
+      "media_type": "application/json",
+      "byte_length": 5624,
+      "sha256": "2cf700ca3b5ad11c6150dcd40f307171f784984b99f5df927910fe63861d2554"
+    }
+  ],
+  "review_state": {
+    "local_advisory_receipts": 0,
+    "external_review_receipts": 0,
+    "external_gate_decision": false,
+    "g0_complete": false
+  },
+  "authorization": {
+    "manifest_self_accepts": false,
+    "g0_complete": false,
+    "r11_machine_source_construction": false,
+    "semantic_freeze": false,
+    "proof_complete": false,
+    "tla_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  },
+  "nonclaims": [
+    "This manifest is a local candidate review target, not an externally adopted semantic bundle.",
+    "No external review receipt, authority registry, exact external campaign, or gate decision is present.",
+    "A local verifier pass cannot authorize R11 machine-source construction or semantic freeze.",
+    "This bundle provides no Linux behavior, isolation, performance, scalability, or protection claim."
+  ]
+}

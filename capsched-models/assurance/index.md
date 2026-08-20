@@ -1,6 +1,6 @@
 # Assurance Case Index
 
-Updated: 2026-07-01
+Updated: 2026-08-08
 
 ## Purpose
 
@@ -16,6 +16,13 @@ Monitor or an explicitly exposed typed service endpoint.
 ```
 
 Linux-only L0 evidence is useful, but it is not production protection evidence.
+
+ADR-0012 and Analysis 0185 reopen final compositional-model completeness. The
+N-155 result is retained only as v1 claim-inventory, local-contract, and
+overclaim-gate coverage. Root scheduling, bounded residency, privileged entry,
+shared code integrity, mutable-state ownership, service/management compromise,
+partition semantics, model composition, granularity/cost, and evidence
+independence are Open.
 
 ## Files
 
@@ -34,6 +41,10 @@ Open:
 
 Model-supported:
   A small or decomposed formal model supports part of the claim.
+
+Contract-defined:
+  A requirement or acceptance contract exists, but the claimed system behavior
+  is not yet semantically established.
 
 Prototype-evidenced:
   Linux-only code/build/trace evidence supports compatibility or integration,

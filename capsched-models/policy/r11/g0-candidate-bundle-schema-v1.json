@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://domainlease.invalid/schema/r11-g0-candidate-bundle-v1.json",
+  "title": "DomainLease R11 G0 local candidate bundle manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "bundle_epoch",
+    "status",
+    "authority",
+    "review_target",
+    "external_adoption_required",
+    "capture_contract",
+    "runtime_requirements",
+    "semantic_counts",
+    "artifacts",
+    "review_state",
+    "authorization",
+    "nonclaims"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_id": {"const": "domainlease-r11-g0-candidate-bundle-v1"},
+    "bundle_epoch": {"const": 1},
+    "status": {"const": "local_candidate_pending_external_review"},
+    "authority": {"const": "role_separated_local_candidate_not_external_approval"},
+    "review_target": {"const": true},
+    "external_adoption_required": {"const": true},
+    "capture_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "read_each_artifact_once",
+        "repository_discovery",
+        "network_import",
+        "mutable_ref",
+        "follow_symlink",
+        "allow_hardlink_alias",
+        "manifest_contains_own_digest",
+        "digest"
+      ],
+      "properties": {
+        "read_each_artifact_once": {"const": true},
+        "repository_discovery": {"const": false},
+        "network_import": {"const": false},
+        "mutable_ref": {"const": false},
+        "follow_symlink": {"const": false},
+        "allow_hardlink_alias": {"const": false},
+        "manifest_contains_own_digest": {"const": false},
+        "digest": {"const": "sha256_raw_bytes_lower_hex"}
+      }
+    },
+    "runtime_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["python_minimum", "python_maximum_exclusive", "jsonschema_draft", "promotion_runtime_must_be_captured_separately"],
+      "properties": {
+        "python_minimum": {"const": "3.11"},
+        "python_maximum_exclusive": {"const": "3.14"},
+        "jsonschema_draft": {"const": "2020-12"},
+        "promotion_runtime_must_be_captured_separately": {"const": true}
+      }
+    },
+    "semantic_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "semantic_rules",
+        "invariants",
+        "progress_obligations",
+        "provider_contracts",
+        "profiles",
+        "witness_ids",
+        "g0_checks",
+        "review_roles",
+        "g0_exact_mutations",
+        "future_ir_mutation_templates"
+      ],
+      "properties": {
+        "semantic_rules": {"const": 73},
+        "invariants": {"const": 27},
+        "progress_obligations": {"const": 8},
+        "provider_contracts": {"const": 10},
+        "profiles": {"const": 19},
+        "witness_ids": {"const": 13},
+        "g0_checks": {"const": 11},
+        "review_roles": {"const": 3},
+        "g0_exact_mutations": {"const": 12},
+        "future_ir_mutation_templates": {"const": 24}
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 17,
+      "maxItems": 17,
+      "items": {"$ref": "#/$defs/artifact"}
+    },
+    "review_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "local_advisory_receipts",
+        "external_review_receipts",
+        "external_gate_decision",
+        "g0_complete"
+      ],
+      "properties": {
+        "local_advisory_receipts": {"type": "integer", "minimum": 0},
+        "external_review_receipts": {"const": 0},
+        "external_gate_decision": {"const": false},
+        "g0_complete": {"const": false}
+      }
+    },
+    "authorization": {"$ref": "#/$defs/authorization"},
+    "nonclaims": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonemptyString"}
+    }
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "role", "path", "media_type", "byte_length", "sha256"],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 0, "maximum": 16},
+        "role": {
+          "enum": [
+            "semantic_policy_schema",
+            "semantic_policy",
+            "semantic_rule_registry_schema",
+            "semantic_rule_registry",
+            "scenario_profile_schema",
+            "scenario_profile",
+            "review_contract_schema",
+            "review_contract",
+            "exact_mutation_catalog_schema",
+            "exact_mutation_catalog",
+            "assurance_claim_catalog",
+            "mechanical_checker",
+            "exact_mutation_runner",
+            "candidate_bundle_schema",
+            "candidate_bundle_verifier",
+            "review_receipt_schema",
+            "gate_decision_schema"
+          ]
+        },
+        "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+        "media_type": {"enum": ["application/json", "text/x-python"]},
+        "byte_length": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_self_accepts",
+        "g0_complete",
+        "r11_machine_source_construction",
+        "semantic_freeze",
+        "proof_complete",
+        "tla_translation",
+        "model_supported",
+        "linux_behavior_change",
+        "protection_claim"
+      ],
+      "properties": {
+        "manifest_self_accepts": {"const": false},
+        "g0_complete": {"const": false},
+        "r11_machine_source_construction": {"const": false},
+        "semantic_freeze": {"const": false},
+        "proof_complete": {"const": false},
+        "tla_translation": {"const": false},
+        "model_supported": {"const": false},
+        "linux_behavior_change": {"const": false},
+        "protection_claim": {"const": false}
+      }
+    }
+  }
+}

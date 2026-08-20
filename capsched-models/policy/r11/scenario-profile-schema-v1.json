@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://domainlease.invalid/schema/r11-scenario-profile-v1.json",
+  "title": "DomainLease R11 external finite scenario profile candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "profile_epoch",
+    "status",
+    "owner_role",
+    "compatible_policy",
+    "strategy",
+    "mode_catalog",
+    "profile_mode_contract",
+    "dimension_keys",
+    "relation_catalog",
+    "cutpoint_catalog",
+    "cut_generation_policy",
+    "action_class_catalog",
+    "profile_action_contract",
+    "outcome_catalog",
+    "anti_vacuity_rules",
+    "profiles",
+    "suite_coverage",
+    "forbidden_profile_weakening",
+    "authorization"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_id": {"const": "domainlease-r11-scenario-profile-v1"},
+    "profile_epoch": {"const": 1},
+    "status": {"const": "draft_pending_independent_review"},
+    "owner_role": {"const": "external_scenario_profile_authority"},
+    "compatible_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "policy_epoch"],
+      "properties": {
+        "artifact_id": {"const": "domainlease-r11-semantic-policy-v1"},
+        "policy_epoch": {"const": 1}
+      }
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "monolithic_cartesian_product_required", "shared_semantics_required", "composition_obligations_required", "reason"],
+      "properties": {
+        "kind": {"const": "decomposed_finite_projection_suite"},
+        "monolithic_cartesian_product_required": {"const": false},
+        "shared_semantics_required": {"const": true},
+        "composition_obligations_required": {"const": true},
+        "reason": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "mode_catalog": {"$ref": "#/$defs/modeCatalog"},
+    "profile_mode_contract": {"type": "array", "minItems": 19, "maxItems": 19, "items": {"$ref": "#/$defs/modeAssignment"}},
+    "dimension_keys": {
+      "const": ["clusters", "nodes", "cpus", "cpu_incarnations_per_cpu", "boot_roots", "management_domains", "tenant_domains", "service_domains", "domain_granularity_kinds", "subjects", "programs", "authority_accounts", "role_use_ordinals_per_authority", "budget_contexts", "resource_value_levels", "streams", "occurrences_per_stream", "opportunities", "attempts_per_occurrence", "ready_cells", "root_frames", "root_slots", "entry_bindings", "quantum_generations", "provider_receipt_sets", "transaction_slots", "revocation_scopes", "failure_events", "failure_scopes", "dependency_edges", "transfer_records", "namespace_slots", "allocation_requests", "generation_values", "clock_domains", "clock_ticks", "audit_slots", "network_messages"]
+    },
+    "relation_catalog": {"type": "array", "minItems": 19, "maxItems": 19, "items": {"$ref": "#/$defs/idMeaning"}},
+    "cutpoint_catalog": {"type": "array", "minItems": 19, "uniqueItems": true, "items": {"pattern": "^CUT-[A-Z0-9-]+$"}},
+    "cut_generation_policy": {"$ref": "#/$defs/cutGenerationPolicy"},
+    "action_class_catalog": {"type": "array", "minItems": 40, "uniqueItems": true, "items": {"pattern": "^ACTION-[A-Z0-9-]+$"}},
+    "profile_action_contract": {"type": "array", "minItems": 19, "maxItems": 19, "items": {"$ref": "#/$defs/actionAssignment"}},
+    "outcome_catalog": {"type": "array", "minItems": 24, "uniqueItems": true, "items": {"pattern": "^OUT-[A-Z0-9-]+$"}},
+    "anti_vacuity_rules": {"type": "array", "minItems": 16, "items": {"$ref": "#/$defs/antiVacuityRule"}},
+    "profiles": {"type": "array", "minItems": 19, "maxItems": 19, "items": {"$ref": "#/$defs/profile"}},
+    "suite_coverage": {"$ref": "#/$defs/suiteCoverage"},
+    "forbidden_profile_weakening": {"type": "array", "minItems": 18, "items": {"$ref": "#/$defs/weakening"}},
+    "authorization": {"$ref": "#/$defs/authorization"}
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "uniqueStrings": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "profileID": {"type": "string", "pattern": "^PROFILE-W(?:[0-9]|1[0-2])-[A-Z0-9-]+$"},
+    "witnessID": {"type": "string", "pattern": "^W(?:[0-9]|1[0-2])$"},
+    "idMeaning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "meaning"],
+      "properties": {
+        "id": {"pattern": "^REL-[A-Z0-9-]+$"},
+        "meaning": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "modeCatalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["async_mode", "partition_mode", "transfer_mode", "reclaim_mode", "failure_mode", "workload_mode"],
+      "properties": {
+        "async_mode": {"const": ["NONE", "SYNC", "DISTINCT", "ALIASED"]},
+        "partition_mode": {"const": ["LOCAL_ONLY", "CONNECTED_ONLY", "CONTINUE_TO_CONSERVATIVE_EXPIRY", "RECOVERY_ONLY"]},
+        "transfer_mode": {"const": ["NONE", "STRONG_CONTINUITY", "SAFE_GAP", "CONTINUITY_LOST"]},
+        "reclaim_mode": {"const": ["NONE", "NAMESPACE_GC", "RESTART_RECONCILIATION"]},
+        "failure_mode": {"const": ["NONE", "SINGLE", "OVERLAP_AND_DISJOINT"]},
+        "workload_mode": {"const": ["MANAGEMENT", "AUTHORITY_CONTROL", "GUARANTEED", "MIXED", "RECOVERY"]}
+      }
+    },
+    "modeAssignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "async_mode", "partition_mode", "transfer_mode", "reclaim_mode", "failure_mode", "workload_mode"],
+      "properties": {
+        "profile": {"$ref": "#/$defs/profileID"},
+        "async_mode": {"enum": ["NONE", "SYNC", "DISTINCT", "ALIASED"]},
+        "partition_mode": {"enum": ["LOCAL_ONLY", "CONNECTED_ONLY", "CONTINUE_TO_CONSERVATIVE_EXPIRY", "RECOVERY_ONLY"]},
+        "transfer_mode": {"enum": ["NONE", "STRONG_CONTINUITY", "SAFE_GAP", "CONTINUITY_LOST"]},
+        "reclaim_mode": {"enum": ["NONE", "NAMESPACE_GC", "RESTART_RECONCILIATION"]},
+        "failure_mode": {"enum": ["NONE", "SINGLE", "OVERLAP_AND_DISJOINT"]},
+        "workload_mode": {"enum": ["MANAGEMENT", "AUTHORITY_CONTROL", "GUARANTEED", "MIXED", "RECOVERY"]}
+      }
+    },
+    "cutGenerationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "handwritten_total_cut_count_is_authoritative", "required_generated_cuts", "second_crash_required_for", "offline_and_revoke_entry_cuts", "acceptance"],
+      "properties": {
+        "source": {"const": "future_R11_durable_action_and_projection_registry"},
+        "handwritten_total_cut_count_is_authoritative": {"const": false},
+        "required_generated_cuts": {"type": "array", "minItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+        "second_crash_required_for": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+        "offline_and_revoke_entry_cuts": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+        "acceptance": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "actionAssignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "actions"],
+      "properties": {
+        "profile": {"$ref": "#/$defs/profileID"},
+        "actions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^ACTION-[A-Z0-9-]+$"}}
+      }
+    },
+    "antiVacuityRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "stage", "rule"],
+      "properties": {
+        "id": {"pattern": "^AV-[A-Z0-9-]+$"},
+        "stage": {"enum": ["witness", "formal", "suite", "hostile_witness", "witness_and_formal"]},
+        "rule": {"$ref": "#/$defs/nonemptyString"}
+      }
+    },
+    "dimensionValue": {"type": "integer", "minimum": 0, "maximum": 16},
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clusters", "nodes", "cpus", "cpu_incarnations_per_cpu", "boot_roots", "management_domains", "tenant_domains", "service_domains", "domain_granularity_kinds", "subjects", "programs", "authority_accounts", "role_use_ordinals_per_authority", "budget_contexts", "resource_value_levels", "streams", "occurrences_per_stream", "opportunities", "attempts_per_occurrence", "ready_cells", "root_frames", "root_slots", "entry_bindings", "quantum_generations", "provider_receipt_sets", "transaction_slots", "revocation_scopes", "failure_events", "failure_scopes", "dependency_edges", "transfer_records", "namespace_slots", "allocation_requests", "generation_values", "clock_domains", "clock_ticks", "audit_slots", "network_messages"],
+      "properties": {
+        "clusters": {"$ref": "#/$defs/dimensionValue"},
+        "nodes": {"$ref": "#/$defs/dimensionValue"},
+        "cpus": {"$ref": "#/$defs/dimensionValue"},
+        "cpu_incarnations_per_cpu": {"$ref": "#/$defs/dimensionValue"},
+        "boot_roots": {"$ref": "#/$defs/dimensionValue"},
+        "management_domains": {"$ref": "#/$defs/dimensionValue"},
+        "tenant_domains": {"$ref": "#/$defs/dimensionValue"},
+        "service_domains": {"$ref": "#/$defs/dimensionValue"},
+        "domain_granularity_kinds": {"$ref": "#/$defs/dimensionValue"},
+        "subjects": {"$ref": "#/$defs/dimensionValue"},
+        "programs": {"$ref": "#/$defs/dimensionValue"},
+        "authority_accounts": {"$ref": "#/$defs/dimensionValue"},
+        "role_use_ordinals_per_authority": {"$ref": "#/$defs/dimensionValue"},
+        "budget_contexts": {"$ref": "#/$defs/dimensionValue"},
+        "resource_value_levels": {"$ref": "#/$defs/dimensionValue"},
+        "streams": {"$ref": "#/$defs/dimensionValue"},
+        "occurrences_per_stream": {"$ref": "#/$defs/dimensionValue"},
+        "opportunities": {"$ref": "#/$defs/dimensionValue"},
+        "attempts_per_occurrence": {"$ref": "#/$defs/dimensionValue"},
+        "ready_cells": {"$ref": "#/$defs/dimensionValue"},
+        "root_frames": {"$ref": "#/$defs/dimensionValue"},
+        "root_slots": {"$ref": "#/$defs/dimensionValue"},
+        "entry_bindings": {"$ref": "#/$defs/dimensionValue"},
+        "quantum_generations": {"$ref": "#/$defs/dimensionValue"},
+        "provider_receipt_sets": {"$ref": "#/$defs/dimensionValue"},
+        "transaction_slots": {"$ref": "#/$defs/dimensionValue"},
+        "revocation_scopes": {"$ref": "#/$defs/dimensionValue"},
+        "failure_events": {"$ref": "#/$defs/dimensionValue"},
+        "failure_scopes": {"$ref": "#/$defs/dimensionValue"},
+        "dependency_edges": {"$ref": "#/$defs/dimensionValue"},
+        "transfer_records": {"$ref": "#/$defs/dimensionValue"},
+        "namespace_slots": {"$ref": "#/$defs/dimensionValue"},
+        "allocation_requests": {"$ref": "#/$defs/dimensionValue"},
+        "generation_values": {"$ref": "#/$defs/dimensionValue"},
+        "clock_domains": {"$ref": "#/$defs/dimensionValue"},
+        "clock_ticks": {"$ref": "#/$defs/dimensionValue"},
+        "audit_slots": {"$ref": "#/$defs/dimensionValue"},
+        "network_messages": {"$ref": "#/$defs/dimensionValue"}
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "witness", "purpose", "dimensions", "relations", "cutpoints", "outcomes", "dag_nodes"],
+      "properties": {
+        "id": {"$ref": "#/$defs/profileID"},
+        "witness": {"$ref": "#/$defs/witnessID"},
+        "purpose": {"$ref": "#/$defs/nonemptyString"},
+        "dimensions": {"$ref": "#/$defs/dimensions"},
+        "relations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^REL-[A-Z0-9-]+$"}},
+        "cutpoints": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^CUT-[A-Z0-9-]+$"}},
+        "outcomes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^OUT-[A-Z0-9-]+$"}},
+        "dag_nodes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^D(?:[0-9]|1[0-7])$"}}
+      }
+    },
+    "suiteCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_witnesses", "required_dag_nodes", "required_relations", "required_cutpoints", "required_outcomes"],
+      "properties": {
+        "required_witnesses": {"type": "array", "minItems": 13, "maxItems": 13, "uniqueItems": true, "items": {"$ref": "#/$defs/witnessID"}},
+        "required_dag_nodes": {"type": "array", "minItems": 18, "maxItems": 18, "uniqueItems": true, "items": {"pattern": "^D(?:[0-9]|1[0-7])$"}},
+        "required_relations": {"type": "array", "minItems": 19, "maxItems": 19, "uniqueItems": true, "items": {"pattern": "^REL-[A-Z0-9-]+$"}},
+        "required_cutpoints": {"type": "array", "minItems": 19, "uniqueItems": true, "items": {"pattern": "^CUT-[A-Z0-9-]+$"}},
+        "required_outcomes": {"type": "array", "minItems": 24, "uniqueItems": true, "items": {"pattern": "^OUT-[A-Z0-9-]+$"}}
+      }
+    },
+    "weakening": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "expected_reject"],
+      "properties": {
+        "id": {"pattern": "^MUT-PROFILE-[A-Z0-9-]+$"},
+        "expected_reject": {"pattern": "^CAT-PROFILE-[A-Z0-9-]+$"}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_construction_complete", "mechanical_consistency_passed", "independent_review_complete", "g0_complete", "r11_machine_ir_authorized", "semantic_freeze", "tla_translation"],
+      "properties": {
+        "profile_construction_complete": {"type": "boolean"},
+        "mechanical_consistency_passed": {"type": "boolean"},
+        "independent_review_complete": {"type": "boolean"},
+        "g0_complete": {"type": "boolean"},
+        "r11_machine_ir_authorized": {"type": "boolean"},
+        "semantic_freeze": {"type": "boolean"},
+        "tla_translation": {"type": "boolean"}
+      }
+    }
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-r11-g0-v1-rejection-and-epoch2-kernel-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-09",
+  "status": "r11_g0_v1_rejected_epoch2_architecture_authorized",
+  "rejected_candidate": {
+    "manifest_path": "capsched-models/policy/r11/g0-candidate-bundle-v1.json",
+    "manifest_byte_length": 7073,
+    "manifest_sha256": "bcdd6c26c5a651f7630df5d218cbd6fb2f20922e2e03cdf109b68b69a7250037",
+    "artifact_count": 17,
+    "declared_mutations_rejected": 12,
+    "preserve_bytes": true,
+    "external_review_attempted": false,
+    "g0_complete": false
+  },
+  "local_hostile_reviews": [
+    {
+      "axis": "security_and_trust_boundary",
+      "review_session_id": "019fe9b2-a3ed-72d1-b70b-93e1e5d5f2c1",
+      "exact_manifest_digest_verified": true,
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    },
+    {
+      "axis": "formal_encodability_and_proof_closure",
+      "review_session_id": "019fe9b2-a4fa-7a40-97b2-117710b27d78",
+      "exact_manifest_digest_verified": true,
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    },
+    {
+      "axis": "scenario_scale_and_composition",
+      "review_session_id": "019fe9b2-a62b-7f50-b453-244dbd292bf4",
+      "exact_manifest_digest_verified": true,
+      "verdict": "LOCAL_ADVISORY_REJECT",
+      "external_authority": false
+    }
+  ],
+  "normalized_blockers": [
+    {
+      "id": "R11-G0V1-B001",
+      "class": "semantic_signature",
+      "summary": "canonical templates and binding schemas are undefined names rather than typed executable definitions"
+    },
+    {
+      "id": "R11-G0V1-B002",
+      "class": "formula_vacuity",
+      "summary": "provider, invariant, progress, unit, and consistency-domain meaning is carried by unconstrained prose or strings"
+    },
+    {
+      "id": "R11-G0V1-B003",
+      "class": "control_flow",
+      "summary": "D11-D14 predecessor and branch semantics are ambiguous and can make NeverEntered retry contradictory"
+    },
+    {
+      "id": "R11-G0V1-B004",
+      "class": "writer_partition",
+      "summary": "settlement receipt products lack exact authoritative writer and linearization assignments"
+    },
+    {
+      "id": "R11-G0V1-B005",
+      "class": "distributed_authority",
+      "summary": "cross-consistency-domain identities and one-use export consume install refund semantics are not typed"
+    },
+    {
+      "id": "R11-G0V1-B006",
+      "class": "witness_truth",
+      "summary": "required witness mappings can name profiles that do not execute the required lifecycle"
+    },
+    {
+      "id": "R11-G0V1-B007",
+      "class": "profile_vacuity",
+      "summary": "semantically used dimensions can be zeroed and action outcome witness names can be permuted without rejection"
+    },
+    {
+      "id": "R11-G0V1-B008",
+      "class": "composition",
+      "summary": "isolated modes do not establish mandatory cross-feature composition products"
+    },
+    {
+      "id": "R11-G0V1-B009",
+      "class": "cuts_and_reachability",
+      "summary": "cuts and antecedent reachability are prose rather than generated equality and executable traces"
+    },
+    {
+      "id": "R11-G0V1-B010",
+      "class": "mutation_coverage",
+      "summary": "declared semantic weakening classes and real checker or receipt-chain faults are not exhaustively instantiated"
+    },
+    {
+      "id": "R11-G0V1-B011",
+      "class": "promotion_forgery",
+      "summary": "review and gate schemas admit failed duplicate non-independent and blocker-bearing positive decisions"
+    },
+    {
+      "id": "R11-G0V1-B012",
+      "class": "authority",
+      "summary": "local role separation does not establish external policy review or promotion authority"
+    }
+  ],
+  "negative_tests": [
+    {
+      "path": "capsched-models/validation/test-r11-g0-semantic-vacuity.py",
+      "script_sha256": "dc8935f4b6a59229a65f60c68d9d444f0a484731a219b68b3aa52e5f9218f3d7",
+      "output_sha256": "d5f6900e21aaab2175aaed34a2b6e41cf2a928907a6dc0fd53ff737bd9068042",
+      "counterexamples_accepted": 12,
+      "reproduced_byte_identically": true,
+      "disposition": "reject_exact_R11_G0_candidate_before_external_review"
+    },
+    {
+      "path": "capsched-models/validation/test-r11-g0-review-gate-schema-vacuity.py",
+      "script_sha256": "2592662a01c7bf82da273b6f09773ca97d044e1639b003cf9d58d8847787733f",
+      "output_sha256": "0e6c61b1a62252f3c38e1d9167d84c651030bc0002a5ea06cb03c097aba7ec69",
+      "counterexamples_accepted": 5,
+      "reproduced_byte_identically": true,
+      "disposition": "reject_R11_G0_review_and_gate_schema_v1"
+    }
+  ],
+  "epoch2": {
+    "revision_kind": "same_R11_pre_IR_G0_successor_epoch",
+    "namespace": "capsched-models/policy/r11/epoch2",
+    "semantic_layers": [
+      "backend_neutral_many_sorted_logic",
+      "external_typed_signature",
+      "external_executable_template_library",
+      "candidate_state_action_IR_and_total_bindings",
+      "typed_provider_and_writer_products",
+      "typed_scenario_and_cut_generator",
+      "independent_materializer_and_backends",
+      "external_authority_registry_review_set_and_promotion_verifier"
+    ],
+    "formula_contexts": [
+      "STATIC",
+      "STATE",
+      "GUARD",
+      "TRANSITION",
+      "INVARIANT",
+      "RANK",
+      "TEMPORAL"
+    ],
+    "forbidden_semantic_encodings": [
+      "unconstrained_template_name",
+      "free_form_normative_prose",
+      "embedded_backend_source",
+      "candidate_supplied_proof_success",
+      "schema_only_independence_assertion",
+      "witness_label_without_trace",
+      "network_silence_as_quiescence"
+    ],
+    "mandatory_exact_maps": [
+      "template_to_formula_and_typed_holes",
+      "binding_hole_to_candidate_symbol",
+      "state_product_to_owner_CD_writer_linearization_and_failure",
+      "action_to_guard_effect_frame_receipt_and_branch",
+      "settlement_product_to_authoritative_writer",
+      "progress_to_trigger_rank_fair_actions_success_and_bound_unit",
+      "obligation_to_reachable_witness_and_semantic_mutant",
+      "distributed_export_to_destination_consume_install_ack_or_safe_refund"
+    ],
+    "mandatory_interactions": [
+      "async_modes_x_revoke_cancel",
+      "entry_lifecycle_x_offline_provider_failure",
+      "settlement_receipts_x_crash_restart_duplicate_delivery",
+      "transfer_outcomes_x_partition_restart",
+      "namespace_rekey_x_stale_references_late_receipts",
+      "two_lanes_x_shared_pressure_single_lane_failure",
+      "two_clusters_x_partition_clock_fence_import_recovery",
+      "management_bootstrap_x_tenant_admission_management_compromise"
+    ]
+  },
+  "g0_epoch2_exit_conditions": [
+    "externally_pinned_typed_kernel_and_conformance_corpus",
+    "executable_semantics_for_every_normative_policy_and_scenario_item",
+    "total_type_and_context_correct_non_redefining_candidate_bindings",
+    "exact_product_writer_CD_branch_settlement_and_transfer_semantics",
+    "complete_reachable_mandatory_interaction_and_cut generation",
+    "all_declared_semantic_weakenings_and_real_assurance_faults_killed",
+    "fresh_authority_disjoint_final_digest_reviews",
+    "independently_rooted_executable_gate_acceptance"
+  ],
+  "authorization": {
+    "epoch2_architecture_contract": true,
+    "epoch2_local_draft_construction": true,
+    "external_review": false,
+    "g0_complete": false,
+    "r11_machine_source_construction": false,
+    "semantic_freeze": false,
+    "tla_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

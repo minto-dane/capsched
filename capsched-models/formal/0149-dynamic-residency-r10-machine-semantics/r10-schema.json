@@ -1,0 +1,419 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://domainlease.invalid/schema/dynamic-residency-r10-v1.json",
+  "title": "Dynamic Residency R10 normative semantic source",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "model_id",
+    "status",
+    "requirement",
+    "predecessor",
+    "claim_boundary",
+    "bounds",
+    "types",
+    "consistency_domains",
+    "writers",
+    "objects",
+    "variables",
+    "functions",
+    "transaction_kinds",
+    "actions",
+    "provider_formulas",
+    "invariants",
+    "progress_properties",
+    "refinements",
+    "proof_nodes",
+    "mutation_obligations",
+    "imports",
+    "witnesses",
+    "blocker_coverage"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "model_id": {"$ref": "#/$defs/id"},
+    "status": {"const": "draft"},
+    "requirement": {"$ref": "#/$defs/id"},
+    "predecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "validation", "reviewed_sha256"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/id"},
+        "validation": {"$ref": "#/$defs/id"},
+        "reviewed_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "claim_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claims", "nonclaims"],
+      "properties": {
+        "claims": {"$ref": "#/$defs/uniqueStringArray"},
+        "nonclaims": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "bounds": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "integer", "minimum": 1}
+    },
+    "types": {"type": "array", "items": {"$ref": "#/$defs/typeDef"}, "minItems": 1},
+    "consistency_domains": {"type": "array", "items": {"$ref": "#/$defs/cdDef"}, "minItems": 1},
+    "writers": {"type": "array", "items": {"$ref": "#/$defs/writerDef"}, "minItems": 1},
+    "objects": {"type": "array", "items": {"$ref": "#/$defs/objectDef"}, "minItems": 1},
+    "variables": {"type": "array", "items": {"$ref": "#/$defs/variableDef"}, "minItems": 1},
+    "functions": {"type": "array", "items": {"$ref": "#/$defs/functionDef"}, "minItems": 1},
+    "transaction_kinds": {"type": "array", "items": {"$ref": "#/$defs/txnDef"}, "minItems": 1},
+    "actions": {"type": "array", "items": {"$ref": "#/$defs/actionDef"}, "minItems": 1},
+    "provider_formulas": {"type": "array", "items": {"$ref": "#/$defs/providerFormulaDef"}, "minItems": 1},
+    "invariants": {"type": "array", "items": {"$ref": "#/$defs/formulaDef"}, "minItems": 1},
+    "progress_properties": {"type": "array", "items": {"$ref": "#/$defs/progressDef"}, "minItems": 1},
+    "refinements": {"type": "array", "items": {"$ref": "#/$defs/refinementDef"}},
+    "proof_nodes": {"type": "array", "items": {"$ref": "#/$defs/proofDef"}, "minItems": 1},
+    "mutation_obligations": {"type": "array", "items": {"$ref": "#/$defs/mutationDef"}, "minItems": 1},
+    "imports": {"type": "array", "items": {"$ref": "#/$defs/importDef"}},
+    "witnesses": {"type": "array", "items": {"$ref": "#/$defs/witnessDef"}, "minItems": 1},
+    "blocker_coverage": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^R10-[A-Z0-9-]+-01$"},
+      "additionalProperties": {"$ref": "#/$defs/uniqueStringArray"}
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]*$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "uniqueStringArray": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "ast": {
+      "type": "array",
+      "minItems": 1,
+      "items": {}
+    },
+    "paramDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": {"$ref": "#/$defs/id"},
+        "type": {"$ref": "#/$defs/id"}
+      }
+    },
+    "fieldDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": {"$ref": "#/$defs/id"},
+        "type": {"$ref": "#/$defs/id"}
+      }
+    },
+    "variantDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "fields"],
+      "properties": {
+        "tag": {"$ref": "#/$defs/id"},
+        "fields": {"type": "array", "items": {"$ref": "#/$defs/fieldDef"}}
+      }
+    },
+    "typeDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["builtin", "enum", "nominal", "range", "option", "record", "variant", "vector", "set", "tuple"]},
+        "builtin": {"enum": ["Bool", "Int", "String"]},
+        "values": {"$ref": "#/$defs/uniqueStringArray"},
+        "bound": {"$ref": "#/$defs/id"},
+        "minimum": {"type": "integer"},
+        "maximum_ast": {"$ref": "#/$defs/ast"},
+        "element_type": {"$ref": "#/$defs/id"},
+        "length_ast": {"$ref": "#/$defs/ast"},
+        "fields": {"type": "array", "items": {"$ref": "#/$defs/fieldDef"}},
+        "variants": {"type": "array", "items": {"$ref": "#/$defs/variantDef"}},
+        "members": {"type": "array", "items": {"$ref": "#/$defs/id"}, "minItems": 1},
+        "attributes": {"type": "object"}
+      }
+    },
+    "cdDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "index_types"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "index_types": {"type": "array", "items": {"$ref": "#/$defs/id"}}
+      }
+    },
+    "writerDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "class", "index_names", "index_types", "consistency_domain_ast"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "class": {"enum": ["monitor", "cpu_provider", "time_provider", "quorum_provider", "environment"]},
+        "index_names": {"type": "array", "items": {"$ref": "#/$defs/id"}, "uniqueItems": true},
+        "index_types": {"type": "array", "items": {"$ref": "#/$defs/id"}},
+        "consistency_domain_ast": {"$ref": "#/$defs/ast"}
+      }
+    },
+    "edgeDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field_path", "target_type", "class", "strength"],
+      "properties": {
+        "field_path": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*(?:\\[\\])?(?:\\.[A-Za-z][A-Za-z0-9_]*(?:\\[\\])?)*$"},
+        "target_type": {"$ref": "#/$defs/id"},
+        "class": {"$ref": "#/$defs/id"},
+        "strength": {"enum": ["identity", "generation", "liveness", "authorization_horizon", "audit_only"]}
+      }
+    },
+    "objectDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "record_type", "identity_fields", "allocator", "constructor_action", "reference_edges"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "version": {"type": "integer", "minimum": 1},
+        "record_type": {"$ref": "#/$defs/id"},
+        "identity_fields": {"$ref": "#/$defs/uniqueStringArray"},
+        "allocator": {"$ref": "#/$defs/id"},
+        "constructor_action": {"$ref": "#/$defs/id"},
+        "reference_edges": {"type": "array", "items": {"$ref": "#/$defs/edgeDef"}}
+      }
+    },
+    "variableDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "key_names", "key_types", "value_type", "init_ast", "owner_ast", "consistency_domain_ast", "transaction_shard_ast", "storage_class", "authority_relevant"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "key_names": {"type": "array", "items": {"$ref": "#/$defs/id"}, "uniqueItems": true},
+        "key_types": {"type": "array", "items": {"$ref": "#/$defs/id"}},
+        "value_type": {"$ref": "#/$defs/id"},
+        "init_ast": {"$ref": "#/$defs/ast"},
+        "owner_ast": {"$ref": "#/$defs/ast"},
+        "consistency_domain_ast": {"$ref": "#/$defs/ast"},
+        "transaction_shard_ast": {"$ref": "#/$defs/ast"},
+        "storage_class": {"enum": ["protected_authoritative", "provider_authoritative", "provider_immutable_fact", "derived_index", "audit", "untrusted_input"]},
+        "authority_relevant": {"type": "boolean"}
+      }
+    },
+    "functionDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "parameters", "return_type", "body_ast"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "parameters": {"type": "array", "items": {"$ref": "#/$defs/paramDef"}},
+        "return_type": {"$ref": "#/$defs/id"},
+        "body_ast": {"$ref": "#/$defs/ast"}
+      }
+    },
+    "updateDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "value_ast"],
+      "properties": {
+        "target": {"$ref": "#/$defs/ast"},
+        "value_ast": {"$ref": "#/$defs/ast"}
+      }
+    },
+    "projectionDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "target_storage_class", "updates"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "target_storage_class": {"enum": ["derived_index", "audit"]},
+        "updates": {"type": "array", "items": {"$ref": "#/$defs/updateDef"}, "minItems": 1}
+      }
+    },
+    "txnDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "parameters", "instance_scope", "slot_variable", "slot_keys_ast", "expected_slot_generation_ast", "txn_id_ast", "outcome_id_ast", "tombstone_id_ast", "plan_ast", "prepare_guard_ast", "decision_ast", "commit_updates", "abort_reason_ast", "projections", "retire_guard_ast", "reuse_guard_ast", "rank_delta_ast", "blocker_ids"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "parameters": {"type": "array", "items": {"$ref": "#/$defs/paramDef"}},
+        "instance_scope": {"$ref": "#/$defs/instanceScopeDef"},
+        "slot_variable": {"$ref": "#/$defs/id"},
+        "slot_keys_ast": {"type": "array", "items": {"$ref": "#/$defs/ast"}},
+        "expected_slot_generation_ast": {"$ref": "#/$defs/ast"},
+        "txn_id_ast": {"$ref": "#/$defs/ast"},
+        "outcome_id_ast": {"$ref": "#/$defs/ast"},
+        "tombstone_id_ast": {"$ref": "#/$defs/ast"},
+        "plan_ast": {"$ref": "#/$defs/ast"},
+        "prepare_guard_ast": {"$ref": "#/$defs/ast"},
+        "decision_ast": {"$ref": "#/$defs/ast"},
+        "commit_updates": {"type": "array", "items": {"$ref": "#/$defs/updateDef"}, "minItems": 1},
+        "abort_reason_ast": {"$ref": "#/$defs/ast"},
+        "projections": {"type": "array", "items": {"$ref": "#/$defs/projectionDef"}},
+        "retire_guard_ast": {"$ref": "#/$defs/ast"},
+        "reuse_guard_ast": {"$ref": "#/$defs/ast"},
+        "rank_delta_ast": {"$ref": "#/$defs/ast"},
+        "blocker_ids": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "actionDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "parameters", "instance_scope", "semantic_actor", "writer_ast", "guard_ast", "updates", "linearization_ast", "crash_class", "recovery_ast", "refinement", "work_class", "rank_delta_ast", "blocker_ids"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "parameters": {"type": "array", "items": {"$ref": "#/$defs/paramDef"}},
+        "instance_scope": {"$ref": "#/$defs/instanceScopeDef"},
+        "semantic_actor": {"$ref": "#/$defs/id"},
+        "writer_ast": {"$ref": "#/$defs/ast"},
+        "guard_ast": {"$ref": "#/$defs/ast"},
+        "updates": {"type": "array", "items": {"$ref": "#/$defs/updateDef"}, "minItems": 1},
+        "linearization_ast": {"$ref": "#/$defs/ast"},
+        "crash_class": {"enum": ["atomic", "provider_atomic", "environment_input"]},
+        "recovery_ast": {"$ref": "#/$defs/ast"},
+        "refinement": {"$ref": "#/$defs/id"},
+        "work_class": {"$ref": "#/$defs/id"},
+        "rank_delta_ast": {"$ref": "#/$defs/ast"},
+        "blocker_ids": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "instanceScopeDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {"enum": ["full_product", "catalog"]},
+        "catalog_rows": {"type": "array", "items": {"type": "object"}, "minItems": 1},
+        "scope_nonclaim": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {"if": {"properties": {"mode": {"const": "catalog"}}}, "then": {"required": ["catalog_rows", "scope_nonclaim"]}}
+      ]
+    },
+    "providerFormulaDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "provider_writer", "state_formula_ast", "fault_formula_ast", "guarantee_ast", "progress_ast", "fault_bound_ast", "consumers"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "provider_writer": {"$ref": "#/$defs/id"},
+        "state_formula_ast": {"$ref": "#/$defs/ast"},
+        "fault_formula_ast": {"$ref": "#/$defs/ast"},
+        "guarantee_ast": {"$ref": "#/$defs/ast"},
+        "progress_ast": {"$ref": "#/$defs/ast"},
+        "fault_bound_ast": {"$ref": "#/$defs/ast"},
+        "consumers": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "formulaDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "scope", "formula_ast", "preserved_by"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "scope": {"enum": ["state", "history", "trace"]},
+        "formula_ast": {"$ref": "#/$defs/ast"},
+        "preserved_by": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "progressDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "premise_ast", "temporal_formula_ast", "fair_actions", "rank_function", "nonclaim_on_failure"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "premise_ast": {"$ref": "#/$defs/ast"},
+        "temporal_formula_ast": {"$ref": "#/$defs/ast"},
+        "fair_actions": {"$ref": "#/$defs/uniqueStringArray"},
+        "rank_function": {"$ref": "#/$defs/id"},
+        "nonclaim_on_failure": {"type": "string", "minLength": 1}
+      }
+    },
+    "refinementDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "target_import", "state_mapping_ast", "action_mapping", "simulation_ast"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "target_import": {"$ref": "#/$defs/id"},
+        "state_mapping_ast": {"$ref": "#/$defs/ast"},
+        "action_mapping": {"type": "object", "additionalProperties": {"type": "string"}},
+        "simulation_ast": {"$ref": "#/$defs/ast"}
+      }
+    },
+    "proofDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "predecessors", "formula_ids", "action_ids", "claim_ids"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "predecessors": {"$ref": "#/$defs/uniqueStringArray"},
+        "formula_ids": {"$ref": "#/$defs/uniqueStringArray"},
+        "action_ids": {"$ref": "#/$defs/uniqueStringArray"},
+        "claim_ids": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "mutationDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "target_kind", "target_id", "mutation", "expected_reject_ids"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "target_kind": {"enum": ["status", "schema", "function", "init", "owner", "writer_cd", "shard", "action_guard", "action_effect", "frame", "recovery", "transaction_identity", "edge", "allocator", "instance_scope", "provider_fact", "invariant", "rank", "proof", "claim", "witness", "validator"]},
+        "target_id": {"$ref": "#/$defs/id"},
+        "mutation": {"type": "string", "minLength": 1},
+        "expected_reject_ids": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "importDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "raw_sha256", "module", "formula", "raw_slice_text", "raw_slice_sha256", "canonical_ast_sha256", "free_variable_map", "constant_map", "type_map", "formula_ast"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "path": {"type": "string", "minLength": 1},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "module": {"$ref": "#/$defs/id"},
+        "formula": {"$ref": "#/$defs/id"},
+        "raw_slice_text": {"type": "string", "minLength": 1},
+        "raw_slice_sha256": {"$ref": "#/$defs/sha256"},
+        "canonical_ast_sha256": {"$ref": "#/$defs/sha256"},
+        "free_variable_map": {"type": "object", "additionalProperties": {"type": "string"}},
+        "constant_map": {"type": "object", "additionalProperties": {"type": "string"}},
+        "type_map": {"type": "object", "additionalProperties": {"type": "string"}},
+        "formula_ast": {"$ref": "#/$defs/ast"}
+      }
+    },
+    "witnessDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "purpose", "initial_overrides", "steps", "invariant_scope", "final_formula_ast", "nonclaims"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "purpose": {"type": "string", "minLength": 1},
+        "initial_overrides": {"type": "array", "items": {"$ref": "#/$defs/updateDef"}},
+        "steps": {"type": "array", "items": {"$ref": "#/$defs/witnessStepDef"}, "minItems": 1},
+        "invariant_scope": {"const": "all_state_invariants"},
+        "final_formula_ast": {"$ref": "#/$defs/ast"},
+        "nonclaims": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "witnessStepDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["template_id", "parameters"],
+      "properties": {
+        "template_id": {"$ref": "#/$defs/id"},
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {"type": ["string", "integer", "boolean"]}
+        }
+      }
+    }
+  }
+}

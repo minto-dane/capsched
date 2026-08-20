@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-frontier-repair-v1",
+  "date": "2026-08-12",
+  "status": "persistent_frontier_repaired_clean_installed_g6_retry_eligible",
+  "scope": "offline_finite_model_and_authority_disjoint_capture_control_plane_only",
+  "predecessor": {
+    "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-resource-repair-v1",
+    "artifact_sha256": "9ae02353497e24c89127f348d59432e27f4b4561e3e84b8f4a9cf0cd1aed04c2",
+    "transition_relation_retained": true,
+    "component_oom_isolation_retained": true
+  },
+  "failed_capture_observation": {
+    "artifact_id": "f0-c4-g6-second-oom-incomplete-observation-v1",
+    "artifact_sha256": "2985c4ec870b156c075b9c8d3b273264067a17d3c376aacfa93990d76be6a76e",
+    "run_id": "candidate4-full-20260812T134610Z",
+    "capture_status": "RAW_CAPTURE_INCOMPLETE",
+    "failed_component": "child-bundle-producer",
+    "memory_peak_bytes": 8053063680,
+    "candidate_bytes_positive_eligible": false,
+    "reduction_performed": false
+  },
+  "claim_registry": {
+    "path": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
+    "sha256": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
+    "claim_count": 11
+  },
+  "exact_inputs": {
+    "f0_supervisor_lts_v3.py": "f11e93c2094bd272f257df031fcdbbc6f52b16ae2097b7bad811aaed83ebf812",
+    "f0_supervisor_orchestrator_v3.py": "798364f42dcf8d073d7be13ca2ebd788f25cea6625ffbf49f4486366c0d98779",
+    "test-f0-supervisor-lts-v3-mutations.py": "354cd28449490ab3740afec8c258877090f2251ae217c74366d69e98aff76a8c",
+    "test-f0-supervisor-orchestrator-v3-mutations.py": "bdd7b736603f670cee18296c73cd89fb58151159405a37d219cbf86ac0a57a0f",
+    "test-run-f0-supervisor-v3-full.sh": "124947b2622811b60a20f753e6cfa6eae0a704afb11c95bb0fe1b80a11e78ec9",
+    "validate-f0-supervisor-lts-v3.py": "83408bbcc7e1bf3abcf7165e7e32d2c34a1be55a8ddd78d212c77d6d95452e5c",
+    "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba"
+  },
+  "repair": {
+    "counterexample_trace_added_to_fast_regression": true,
+    "semantic_change": false,
+    "exact_state_identity_changed": false,
+    "transition_relation_changed": false,
+    "reachable_state_set_intentionally_changed": false,
+    "ordered_evidence_history_quotiented": false,
+    "persistent_child_receipt_history": true,
+    "persistent_parent_receipt_history": true,
+    "shared_child_parent_persistent_sequence_implementation": true,
+    "persistent_history_cached_structural_hash": true,
+    "persistent_history_collision_uses_full_sequence_equality": true,
+    "compact_exact_state_index": true,
+    "state_index_hash_width_bits": 64,
+    "state_index_value_width_bits": 32,
+    "state_index_collision_uses_full_state_equality": true,
+    "python_dict_frontier_index_removed": true,
+    "fixed_width_csr_retained": true,
+    "finite_pure_cache_policy_retained": true,
+    "post_run_reducer_current_input_binding_repaired": true,
+    "future_reducer_input_and_semantic_registry_drift_mechanically_rejected": true,
+    "zero_swap_policy_retained": true,
+    "production_linux_scheduler_hot_path_changed": false,
+    "production_monitor_dispatch_hot_path_changed": false
+  },
+  "local_regression": {
+    "child_hostile_cases": 275,
+    "parent_hostile_cases": 715,
+    "runner_hostile_cases": 44,
+    "total_hostile_cases": 1034,
+    "model_memory_policy_cases": 19,
+    "capture_resource_policy_cases": 7,
+    "reducer_current_input_binding_cases": 3,
+    "capture_contract_hostile_cases": 155,
+    "capture_contract_derived_cases": 14,
+    "input_root_sha256": "6b2f130d59be97c28f73cceebd13b6d7d4f0d23967b3c8c1b6787ff6e5e5351e",
+    "semantic_registry_sha256": "be5e95640d31ad19ff81f4fe313a7ab29d44fae18c0fff56cfdb99bd86d8b789",
+    "semantic_registry_unchanged": true,
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "full_validator_status": "NOT_RUN_FOR_FRONTIER_REPAIRED_INPUTS"
+  },
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "model_complete": false,
+    "linux_behavior_change": false,
+    "protection_claim": false,
+    "cost_efficiency_claim": false
+  },
+  "next_gate": "repeat_authority_disjoint_full_run_capture_then_reduce_only_complete_committed_bytes"
+}

@@ -1,0 +1,164 @@
+{
+  "id": "sched-exec-lease-p5a-r6-e4-local-quantum-source-gate-v1",
+  "schema_version": 1,
+  "status": "r6_e4_pre_measurement_source_build_gate",
+  "plan": {
+    "document_sha256": "e4c10f61e97a98ca76567ba0df23ca3542462187070384d8ce27cd578e3be2f7",
+    "contract_sha256": "8c3838e38568c780fb1e02c6ffc839de66b121af564bea47d45c289858667dc3",
+    "validation_note_sha256": "d93b5b8308baf00250014ec87a21eb44ebf6e94d32fd52e1d5c856ca3da93f1c",
+    "canonical_r2_sha256": "b2a689abc6e936b06c65958c775e7d1b3bcfee8fb0768d7d5b03abcb6de0d1e6",
+    "canonical_r3_sha256": "58984d7f4c9c58ee6dbde90abdd5c4de35b4422f0f36c9fafe7c7677646e092a",
+    "canonical_normalized_sha256": "4490f9cc3898bb1a662c537cd99706675cbcb07b2fc2a52cb95898cdc0784f3d",
+    "threat_model_sha256": "262f609a04b1da7b87562b48e42e9674e91151ed8ccdaaef3bc88596795e997d",
+    "exact_disposable_source_draft_authorized": true,
+    "measurement_already_authorized": false
+  },
+  "candidate": {
+    "branch": "codex/p5a-r6-e4-local-quantum-measurement",
+    "worktree": "build/DomainLeaseLinux.volume/worktrees/p5a-r6-e4-local-quantum-measurement",
+    "parent_commit": "99287291f1c8e0d6c1b3ea86d121508c5547f424",
+    "commit": "d51ebdc657a1040e423735584775e66399f321f9",
+    "tree": "0847c408be82e6c9077c2edd2d00f44ccfbe18fc",
+    "binary_diff_sha256": "fcc00bcf8dabf4ee8d921a454b7ee871e907da5accefaab10f320f08ff4283d9",
+    "source_sha256": "688248428ca550bc1c56e8547fa5f601a46f5e031222b89c715be72150a4ab3c",
+    "kconfig_block_sha256": "33da3e2cf8ddd79112cc42ef426828eb40c05f63892e6e71bc97a65f45f182ac",
+    "signed_off": true,
+    "direct_child_required": true,
+    "allowed_files": [
+      "init/Kconfig",
+      "kernel/sched/exec_lease.c"
+    ],
+    "additions": 1994,
+    "deletions": 38,
+    "primary_linux_change_allowed": false,
+    "patch_queue_change_allowed": false
+  },
+  "configuration": {
+    "name": "SCHED_EXEC_LEASE_R6_MEASURE_KUNIT_TEST",
+    "default_enabled": false,
+    "depends_on": [
+      "SCHED_EXEC_LEASE_R6_KUNIT_TEST",
+      "KUNIT=y"
+    ],
+    "suite": "sched_exec_lease_r6_measure",
+    "same_translation_unit": "kernel/sched/exec_lease.c",
+    "selected_by_ordinary_lease": false,
+    "selected_by_layout_probe": false,
+    "selected_by_e3_test": false,
+    "selected_by_kunit_all_tests": false,
+    "disabled_artifacts": 0
+  },
+  "matrix": {
+    "families": {
+      "descriptor_publication": 135,
+      "leaf_six_ancestors": 80,
+      "aggregate_127": 45,
+      "candidate_127": 180,
+      "complete_query_254": 45,
+      "mask_reconcile_64": 120,
+      "slot_local_handoff_final_task_check": 96,
+      "revoked_current_request_observation": 54,
+      "offline_visibility_and_drain": 100
+    },
+    "total_cells": 855,
+    "warmup_pairs_per_cell": 256,
+    "measured_pairs_per_cell": 10000,
+    "total_measured_pairs": 8550000,
+    "exact_raw_rows_required": true,
+    "raw_columns": [
+      "control_ns",
+      "treatment_ns",
+      "additional_ns",
+      "availability_ns"
+    ],
+    "additional_formula": "max(treatment_ns-control_ns,0)",
+    "nearest_rank_statistics": [
+      "minimum",
+      "p50",
+      "p95",
+      "p99",
+      "p999",
+      "maximum"
+    ]
+  },
+  "operation_boundary": {
+    "shared_e3_helpers_required": true,
+    "shared_e3_helpers_changed": true,
+    "full_e3_four_profile_regression_required": true,
+    "e3_cases_required": 55,
+    "e3_receipts_required": 220,
+    "e3_stress_repetitions": 4096,
+    "ordinary_eevdf_inside_additional_interval": false,
+    "ordinary_eevdf_unchanged_baseline": true,
+    "cheaper_timing_substitute_allowed": false,
+    "control_operation_count": 0,
+    "same_lock_irq_timestamp_barrier_shell": true
+  },
+  "thresholds": {
+    "ordinary_p99_ns": 5000,
+    "ordinary_p999_ns": 25000,
+    "ordinary_max_ns": 50000,
+    "offline_p99_ns": 25000,
+    "offline_p999_ns": 40000,
+    "offline_max_ns": 50000,
+    "base_slice_rejection_ns": 700000,
+    "availability_p99_ns": 10000000,
+    "availability_max_ns": 100000000,
+    "availability_is_runtime_slo": false
+  },
+  "build_matrix": {
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "modes": [
+      "e3_on_e4_off",
+      "e4_on",
+      "release_normal"
+    ],
+    "fresh_builds": 6,
+    "w1_diagnostics_allowed": 0,
+    "strict_checkpatch_errors": 0,
+    "strict_checkpatch_warnings": 0,
+    "strict_checkpatch_checks": 0,
+    "ordinary_structure_growth_bytes": 0
+  },
+  "upstream": {
+    "previous_commit": "f5098b6bae761e346ebcd9da7f95622c04733cff",
+    "current_commit": "fc02acf6ac0ccde0c805c2daa9148683cdd01ba8",
+    "advance_commits": 48,
+    "candidate_path_changes": [],
+    "merge_base": "4edcdefd4083ae04b1a5656f4be6cd83ae919ef4",
+    "global_freshness_claim": false
+  },
+  "forbidden_added_patterns": [
+    "EXPORT_SYMBOL",
+    "pick_eevdf(",
+    "cpuhp_setup_state",
+    "debugfs_create",
+    "proc_create",
+    "sysfs_create",
+    "tracepoint_probe_register",
+    "resched_curr(",
+    "securityfs_create",
+    "netlink_kernel_create"
+  ],
+  "claims": {
+    "source_build_gate_passed": false,
+    "e3_regression_passed_for_e4_source": false,
+    "r6_e4_source_accepted": false,
+    "measurement_authorized": false,
+    "runtime_scheduler_attachment": false,
+    "runtime_denial_correctness": false,
+    "runtime_coverage": false,
+    "monitor_verified": false,
+    "bare_metal_validated": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

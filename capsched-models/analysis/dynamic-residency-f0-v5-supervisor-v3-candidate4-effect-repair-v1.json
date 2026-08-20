@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-effect-repair-v1",
+  "date": "2026-08-11",
+  "status": "counterexample_repaired_locally_g6_retry_required",
+  "scope": "offline_finite_model_and_local_assurance_runner_only",
+  "predecessor": {
+    "artifact_id": "dynamic-residency-f0-v5-supervisor-v3-candidate4-pre-full-local-closure",
+    "child_hostile_cases": 274,
+    "g6_observation": "capsched-models/validation/f0-c4-g6-incomplete-observation-v1.json"
+  },
+  "claim_registry": {
+    "path": "capsched-models/validation/f0-supervisor-c4-claim-registry-v1.json",
+    "sha256": "c5496505a337c7c305115531b6a9169cb19f972024f8b3bd0805d4e2a7d2df7e",
+    "claim_count": 11,
+    "fast_pass_count": 1,
+    "full_not_run_count": 3,
+    "open_refinement_count": 7
+  },
+  "exact_inputs": {
+    "f0_supervisor_lts_v3.py": "0af68395e37958fd5f75a2f06d886c7a5c0bc77ad1cd6546234b645273303278",
+    "f0_supervisor_orchestrator_v3.py": "cb75d720ae8f36b5a440e3480f5053fc75b47a2a7b652b679ea53257f57eeff6",
+    "test-f0-supervisor-lts-v3-mutations.py": "354cd28449490ab3740afec8c258877090f2251ae217c74366d69e98aff76a8c",
+    "test-f0-supervisor-orchestrator-v3-mutations.py": "bdd7b736603f670cee18296c73cd89fb58151159405a37d219cbf86ac0a57a0f",
+    "test-run-f0-supervisor-v3-full.sh": "124947b2622811b60a20f753e6cfa6eae0a704afb11c95bb0fe1b80a11e78ec9",
+    "validate-f0-supervisor-lts-v3.py": "f8c724cece29031b49744e4322671b6bd9fd204e4e53c1982e132816ba592f3b",
+    "run-f0-supervisor-v3-full.sh": "2f27d0b6f57927f08186cf4635ed0474de084656385b2e0c1ae7a092cadd06ba"
+  },
+  "repair": {
+    "action_id": "OBS-032-DESCENDANTS-EXIT",
+    "field": "hidden_work",
+    "semantic_change": false,
+    "effect_policy_change": "declare the already-required ACTIVE-to-PENDING write",
+    "counterexample_trace_added_to_fast_regression": true,
+    "bounded_full_prefix_smoke_seconds": 20,
+    "bounded_full_prefix_protocol_reject_observed": false
+  },
+  "local_regression": {
+    "child_hostile_cases": 275,
+    "parent_hostile_cases": 715,
+    "runner_hostile_cases": 44,
+    "total_hostile_cases": 1034,
+    "fast_validator_status": "COMPLETE_LOCAL_C4_FAST_REGRESSION_ONLY",
+    "full_validator_status": "NOT_RUN_FOR_REPAIRED_INPUTS"
+  },
+  "authorization": {
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "self_authorization": false,
+    "model_complete": false,
+    "linux_behavior_change": false,
+    "protection_claim": false,
+    "cost_efficiency_claim": false
+  },
+  "next_gate": "repeat_authority_disjoint_full_run_capture_with_repaired_exact_inputs"
+}

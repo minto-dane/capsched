@@ -4,6 +4,15 @@ Status: Active
 
 Date: 2026-06-26
 
+Updated: 2026-08-09
+
+## Current Scope Notice
+
+ADR-0012 and Analysis 0185 reopen final compositional-model completeness. The
+earlier N-155 result remains historical evidence that the v1 claim inventory,
+local contracts, and overclaim gates were covered. It is not evidence that the
+component models compose into this top-level claim.
+
 ## Top-Level Production Claim
 
 ```text
@@ -69,23 +78,36 @@ Required children:
 ```text
 ACT-001    Non-forgeable Domain activation
 EXEC-001   No CPU execution without runnable authority
+ROOTSCHED-001 Monitor-owned root scheduling and guaranteed-Domain progress
+RESIDENCY-001 Finite pre-admitted bounded-residency reference
+RESIDENCY-DYN-001 Dynamic admission and recurring residency service
 BUDGET-001 CPU and service execution cannot exceed root budget
 ENDP-001   Resource access requires typed endpoint authority
 ASYNC-001  Async work preserves caller provenance and authority
 MEM-001    Other Domain memory and mutable kernel state are unmapped
 TLB-001    No stale direct-map or TLB translation crosses activation/revoke
+ENTRY-001  Privileged entry/return preserves Domain and MemoryView authority
+CODE-001   Shared executable code is sealed, W^X, and versioned
+STATE-001  Every privileged mutable page has one explicit owner/class
+SVC-001    Compromised service Domains remain endpoint-bounded
+MGMT-001   Management, signing, recovery, and node-root trust are separated
 PCACHE-001 Mutable page-cache state is per-Domain or service-mediated
 DEV-001    Queue submit, DMA, IRQ, and rate/budget revoke as one lease
 REVOKE-001 Epoch revoke invalidates all active and delayed authority
 CLUSTER-001 Cluster leases compile into node-local authority before use
+CLUSTER-PART-001 Partition, clock, fencing, and migration semantics are safe
 COMPAT-001 Linux ABI and existing policy substrates remain compatible
 TCB-001    Service domains and monitor remain smaller than VM/VMM attack area
 SIDE-001   Co-tenancy and side-channel policy is explicit
 EVAL-001   Claims are tested against exploit and cost baselines
+GRANULARITY-001 Process-through-container granularity has a cost envelope
+COMPOSE-001 Component contracts compose into the hostile-kernel system claim
+EVIDENCE-001 Positive gates consume validator-owned immutable evidence
 ```
 
-The top-level claim is blocked until at least ACT, EXEC, BUDGET, ENDP, ASYNC,
-MEM, TLB, DEV, REVOKE, TCB, and EVAL have production evidence.
+The top-level claim is blocked until every hard-boundary child has composed
+semantic support and then production evidence. A checked local component model
+does not discharge a successor composition claim.
 
 ## Claim Details
 
@@ -642,7 +664,7 @@ shared Linux plus monitor-backed Domains improves or preserves attack surface
 while reducing cost.
 ```
 
-Current status: Model-supported
+Current status: Contract-defined; local gate checked
 
 Current evidence:
 
@@ -667,7 +689,7 @@ CPU core, SMT, cache, NUMA, device, and queue co-tenancy decisions are explicit
 Domain policy and do not accidentally weaken hard boundaries.
 ```
 
-Current status: Model-supported
+Current status: Contract-defined; local gate checked
 
 Current evidence:
 
@@ -692,7 +714,7 @@ CapSched-H provides cross-Domain protection comparable to VM boundaries and
 better cost efficiency for selected datacenter workloads.
 ```
 
-Current status: Model-supported
+Current status: Contract-defined; no evaluation executed
 
 Current evidence:
 
@@ -713,7 +735,8 @@ Open gaps:
 Current status:
 
 ```text
-model-only goal: complete
+v1 claim-inventory/local-contract coverage: historically complete
+final compositional model: reopened and incomplete
 production protection: not complete
 ```
 
@@ -722,7 +745,7 @@ Current evidence:
 - `formal/0087-final-model-completeness-ledger-model/`
 - `validation/0126-final-model-completeness-ledger-tlc.md`
 
-The final ledger records:
+The historical ledger records:
 
 ```text
 14 top-level children are model-supported.
@@ -730,10 +753,150 @@ The final ledger records:
 0 model-only blockers remain open.
 ```
 
-This closes the current modeling goal. It does not close `TOP-001` as a
-production protection claim, because implementation, monitor verification,
-runtime coverage, exploit-containment tests, and cost/performance evaluation
-remain future work.
+That result closes only the rule declared by N-155. Analysis 0185 identifies
+system obligations that were absent from the inventory, and ADR-0012 prohibits
+using the ledger as a system-composition proof. It does not close `TOP-001` as
+a semantic or production claim.
+
+## Reopened System Claims
+
+All claims in this section remain Open except `ROOTSCHED-001` and
+`RESIDENCY-001`, which are Model-supported by Validations 0288 and 0289.
+`E-GOAL-CONFORMANCE-001` is gap evidence, not evidence that another reopened
+system claim is satisfied.
+
+### ROOTSCHED-001: Monitor-Owned Root Scheduling
+
+Linux may propose candidates and schedule within an active Domain, but cannot
+extend, suppress, or forge root leases. The Monitor must stop expired or
+revoked execution and eventually select another eligible guaranteed Domain
+without trusting Linux scheduler state.
+
+Current status: Model-supported at EC1
+
+Current evidence:
+
+- `analysis/0187-monitor-owned-root-scheduling-reference-contract.md`
+- `formal/0147-monitor-root-scheduler-model/`
+- `validation/0288-monitor-root-scheduler-reference-contract-ec1.md`
+
+The accepted semantic reference uses Monitor-owned reserved service
+opportunities, explicit Monitor/hardware fairness, and no Linux fairness.
+Production server selection, wall-clock bounds, multi-CPU refinement,
+implementation, and protection remain open.
+
+### RESIDENCY-001: Finite Bounded Residency Reference
+
+For a fixed finite Monitor-pre-admitted population, global Domain cardinality
+is not bounded by R6's 64 slots. A bounded per-CPU resident slot maps by
+generation to an exact Monitor-owned DomainID and epoch. One-shot residency,
+eviction, reuse, migration, hotplug, and revoke must not alias authority,
+duplicate an exclusive placement, or starve a modeled guaranteed request.
+
+Current status: Model-supported at EC1
+
+Current evidence:
+
+- `analysis/0188-global-domain-identity-and-bounded-residency-reference-contract.md`
+- `formal/0148-bounded-domain-residency-model/`
+- `validation/0289-bounded-domain-residency-reference-contract-ec1.md`
+
+The accepted finite reference separates stable global identity, Monitor-owned
+per-CPU bindings, slot generations, and exact activation authority. It permits
+ordinary multi-CPU replicas, constrains explicit exclusive migration, keeps
+management recovery independent, and gives admitted guaranteed one-shot
+requests progress without Linux fairness. Production residency, safe rekey,
+physical backing, implementation, wall-clock bounds, and protection remain
+open.
+
+### RESIDENCY-DYN-001: Dynamic and Recurring Residency
+
+Dynamic Domain join/leave and guarantee-class changes require Monitor-owned
+feasibility admission and rejection. Recurring requests need stable request
+identity, cancellation, coalescing, bounded churn work, overflow policy, and a
+safe generation-saturation/rekey protocol. These transitions must preserve the
+finite reference safety properties and feasible guaranteed service without
+using Linux hints, popularity, or queue state as authority.
+
+Current status: Open
+
+Validation 0289 is gap evidence for this claim, not supporting evidence. It
+explicitly assumes the pre-admitted set and does not model recurring service,
+dynamic admission/rejection, production replacement, or safe rekey.
+
+### ENTRY-001: Privileged Entry and Return Integrity
+
+Syscall, exception, IRQ, NMI-class, nested entry, and return transitions use the
+correct Domain, MemoryView, epoch, stack, and per-CPU state. A stale view or
+return context cannot cross a Domain boundary.
+
+### CODE-001: Shared Executable Integrity
+
+Shared kernel executable pages are Monitor-verified, read-only, W^X, and
+versioned. Modules, livepatch, alternatives/static keys, ftrace/kprobe,
+text-poke, and JIT paths cannot give a Domain writable executable authority
+over another Domain.
+
+### STATE-001: Exhaustive Mutable-State Ownership
+
+Every mutable privileged page is Domain-private, typed-service-owned,
+Monitor-owned, or an explicitly shared typed buffer. Unknown ownership is not
+mapped into a Domain view.
+
+### SVC-001: Service Compromise Containment
+
+Arbitrary kernel-context compromise of one service Domain is bounded by typed
+endpoint operations, caller-frozen authority intersection, explicit buffers,
+service-local objects, budgets, and Monitor receipts.
+
+### MGMT-001: Management and Recovery Trust Split
+
+Offline signing roots, online management, node Monitors, management Domains,
+key rotation, and recovery authority have explicit compromise and recovery
+semantics rather than one ambient root trust assumption.
+
+### CLUSTER-PART-001: Partition-Aware Cluster Authority
+
+Node-local leases remain safe under partitions, local clock assumptions,
+delayed/reordered/duplicated messages, restart, fencing, migration, and
+namespace recovery. The maximum stale-authority window is explicit.
+
+### COMPOSE-001: Component Contract Composition
+
+Scheduler, Monitor, memory, entry, async, service, device, revoke, and cluster
+models publish compatible assumptions, guarantees, state ownership, visible
+actions, and refinement mappings. No component assumption is silently treated
+as another component's guarantee.
+
+### GRANULARITY-001: Security and Cost Envelope
+
+Process-through-container Domain granularity is evaluated on the complete
+activation, MemoryView, TLB, service, async, and device path against matched
+container, KVM, and microVM security envelopes.
+
+### EVIDENCE-001: Validator-Owned Positive Evidence
+
+Positive promotion decisions consume immutable bytes captured by the validator
+with transitive source/config/tool/command/image/raw-output provenance. A
+producer-authored summary is not a validation oracle.
+
+Current status: Contract-defined; structural tooling and two claim-specific
+EC1 pipelines implemented; migration remains open
+
+Current evidence:
+
+- `capsched-ai/decisions/ADR-0013-validator-owned-immutable-evidence-capsules.md`
+- `analysis/0186-evidence-capsule-trust-boundary-and-migration.md`
+- `validation/0287-evidence-capsule-v1-bootstrap-structural-validation.md`
+- `validation/0288-monitor-root-scheduler-reference-contract-ec1.md`
+- `validation/0289-bounded-domain-residency-reference-contract-ec1.md`
+
+Open gaps:
+
+- only ROOTSCHED-001 and RESIDENCY-001 have claim-specific Validators and
+  capsule-bound decisions
+- no historical positive-gate migration ledger
+- no EC2/EC3 independent reproduction
 
 ## Evidence Index
 
@@ -774,6 +937,10 @@ remain future work.
 | E-EVAL-CONTRACT-001 | TLA validation | `validation/0125-evaluation-contract-gate-tlc.md` | EVAL |
 | E-FINAL-MODEL-COMPLETION-001 | TLA validation | `validation/0126-final-model-completeness-ledger-tlc.md` | model-only goal, no production subclaim |
 | E-MAP-001 | Analysis | `analysis/0018-protection-claim-evidence-map.md` | TOP mapping |
+| E-GOAL-CONFORMANCE-001 | Architecture gap audit | `analysis/0185-final-goal-conformance-and-compositional-model-reopen.md` | Reopens ROOTSCHED, RESIDENCY, ENTRY, CODE, STATE, SVC, MGMT, CLUSTER-PART, COMPOSE, GRANULARITY, EVIDENCE |
+| E-EVIDENCE-CAPSULE-001 | Assurance contract | `analysis/0186-evidence-capsule-trust-boundary-and-migration.md` | Defines EVIDENCE contract; structural tooling and ROOTSCHED/RESIDENCY EC1 uses are recorded separately |
+| E-ROOTSCHED-001 | EC1 evidence-capsule formal validation | `validation/0288-monitor-root-scheduler-reference-contract-ec1.md` | ROOTSCHED model support; demonstrates first EVIDENCE claim-specific pipeline |
+| E-RESIDENCY-001 | EC1 evidence-capsule formal validation | `validation/0289-bounded-domain-residency-reference-contract-ec1.md` | RESIDENCY finite-reference model support; demonstrates the second EVIDENCE claim-specific pipeline |
 
 ## Counterexample and Negative Evidence Log
 
@@ -788,6 +955,8 @@ remain future work.
 | CEX-SCHED-COVERAGE-001 | `validation/0109` | Missing current, missing donor, missing proxy relation, missing server coverage, missing evidence class, sched_stat_runtime authority, remote tick proxy coverage, trace protection claim, server lifecycle-only coverage, and class runtime root evidence are rejected. |
 | CEX-MONITOR-TIMER-001 | `validation/0110` | Running without monitor timer, running without root budget, Linux timer as root authority, overrun after expiry, Linux charge as monitor charge, unsealed activation, run after epoch revoke, run after monitor interrupt, NO_HZ stopping monitor timer, and protection claim without implementation are rejected. |
 | CEX-MONITOR-TIMER-ARCH-001 | `validation/0115` | Missing or wrong monitor architecture substrate, Linux hrtimer/sched_tick roots, KVM VMX guest timer and hrtimer fallback roots, arm64 KVM arch timer and soft hrtimer roots, pKVM stage-2-as-timer, missing binding tuple, Linux/KVM/guest deadline retiming, NO_HZ control, Linux-minted receipts, and protection overclaims are rejected. |
+| CEX-ROOTSCHED-001 | `validation/0288` | Linux-gated readiness, skipped/stolen reservations, stale epochs, Linux lease extension/minting, run after expiry, terminal stop after expiry, management revoke, and missing Monitor timer are rejected. |
+| CEX-RESIDENCY-001 | `validation/0289` | Linux-gated/skipped admission, absent quiescence, unsafe eviction/reuse, stale or Linux-owned authority, recovery loss, migration duplication, hotplug incarnation reuse, and activation during revoke are rejected. |
 | CEX-SCHED-F1-FREEZE-001 | `validation/0113` | TASK_WAKING, wake_list, and enqueue before freeze; incomplete frozen tuple; raw cap after publication; heavy post-publication lookup; late lost-wakeup denial; placement/current/fork authority minting; and protection overclaims are rejected. |
 | CEX-SCHED-INTEGRATION-001 | `validation/0114` | Publication without frozen tuple; run without frozen tuple, selected settlement, server authority, deadline compatibility, or monitor root; Linux runtime/server runtime/deadline compatibility/placement authority; raw cap/heavy lookup after publication; fail-closed running; and protection overclaims are rejected. |
 | CEX-SCHED-PLACEMENT-INTEGRATION-001 | `validation/0116` | Running without grant provenance, frozen placement, fresh placement epoch, current Linux mask, active CPU, monitor CPU binding, MemoryView CPU binding, or no-pending-migration state; selected CPU, class selection, sched_ext, core scheduling, sched_exec, fallback, force affinity, cpuset fallback, migrate-disable, per-cpu kthread exception, and protection overclaims are rejected. |
@@ -991,17 +1160,8 @@ cost, tail latency, throughput, and density measurement
 
 ## Next Decision
 
-The next Linux-facing choice is not enforcement. It is one of:
-
-```text
-Slice 0C:
-  trace-only Domain shadow identity and transition observation
-
-or
-
-source-analysis gate:
-  wakeup/enqueue/runnable-state coverage map before any trace patch
-```
-
-The safer default is the source-analysis gate if any scheduler path coverage
-question remains unclear.
+Behavior-changing Linux work remains paused. The next semantic decision is
+`RESIDENCY-DYN-001`: dynamic admission/rejection, recurring request identity,
+bounded churn/overflow work, and generation-saturation/rekey while preserving
+the accepted finite residency safety boundary. `ENTRY-001 + CODE-001` follows
+that closure.

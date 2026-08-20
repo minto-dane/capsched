@@ -1,9 +1,28 @@
 # DomainLease Models and Engineering Work
 
-Updated: 2026-07-02
+Updated: 2026-08-11
 
 This directory contains the modeling and engineering work products for
 DomainLease-Linux, formerly CapSched-Linux during the private modeling phase.
+
+Current critical path: `plans/0006-final-compositional-model-completion-plan.md`.
+N-155 is historical v1 inventory/local-contract coverage; Analysis 0185 and
+ADR-0012 reopen final system composition without discarding prior models.
+ADR-0019 and Analysis 0216 require the R11 epoch-2 K0 foundation to close as F0
+typed calculus, F1 claim semantics, F2 platform/threat refinement, and F3
+external policy/assurance before any candidate IR or final TLA+ translation.
+ADR-0020 and Analysis 0217 retain the first F0 v4 as rejected and make the
+three-part F0 v5 machine/proof package the current work item. Analysis 0218
+retains the first F0 v5 machine draft as a parity rejection. Analysis 0219 and
+Validation 0308 locally close only canonical source static checking and
+immutable link construction. Analysis 0220 through 0225 then advance checked
+evaluation and supervisor semantics through several locally rejected designs.
+Analysis 0226 and Validation 0313 preserve the historical Candidate-4 pre-full
+checkpoint at 274 child, 715 parent, and 44 runner hostile regressions.
+Analysis 0228 and Validations 0316-0317 record the first durable G6
+counterexample and its successor repair. Volatile campaign status is
+intentionally not duplicated in this index; read the mechanically checked
+projection in `../capsched-ai/handoff.md`.
 
 ## Subdirectories
 
@@ -26,6 +45,11 @@ DomainLease-Linux, formerly CapSched-Linux during the private modeling phase.
 `assurance/`
 : Claim trees, evidence registers, forbidden-claim lists, and gate criteria
   that tie models and patches to the final security and efficiency goals.
+
+`policy/`
+: Candidate-external semantic policies, finite scenario profiles, mutation
+  oracles, review contracts, and gate schemas. These artifacts constrain model
+  sources and cannot self-authorize their acceptance.
 
 `traceability/`
 : Cross-reference policy, schemas, and future ledgers tying N-series work

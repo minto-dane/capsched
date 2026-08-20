@@ -1,6 +1,6 @@
 # AI Operating Protocol
 
-Updated: 2026-06-30
+Updated: 2026-08-08
 
 This file defines how AI sessions should maintain project continuity.
 
@@ -28,9 +28,30 @@ Prefer short recovery files:
 - `capsched/capsched-ai/handoff.md` for AI resume context
 - `capsched/capsched-ai/design/compact.md` for human-readable compact context
 
-Do not overload these files with long reasoning. Put deep reasoning into focused
-notes under `capsched/capsched-ai/design/` or the relevant `capsched/capsched-models/`
-subdirectory.
+`design/compact.md` is now retained as historical detailed chronology and is
+not part of default recovery. Do not append new result narratives there.
+
+Do not overload current recovery files with long reasoning or chronological
+result dumps. Put deep reasoning into focused notes under
+`capsched/capsched-ai/design/` or the relevant `capsched/capsched-models/`
+subdirectory, and put chronology in `events.jsonl`.
+
+After a semantic state change, update `state.json`, `handoff.md`, and
+`events.jsonl` in the same commit and run:
+
+```sh
+./capsched-ai/state/check-current-state.sh
+```
+
+Use `--allow-draft` only before the state commit exists.
+
+Do not copy volatile campaign status into README, model indexes, or plans.
+Record durable attempts as typed outcomes in `state.json`; retain historical
+results in numbered analysis/validation records. The structured projection in
+`handoff.md` is the only duplicated current view, and
+`check-current-state.sh` compares it exactly while deriving gate, claim,
+install, G6/G7, and digest relationships through the integrated semantic
+consistency checker.
 
 ## Decision Discipline
 
@@ -111,6 +132,11 @@ Separate:
 - performance evidence
 - formal safety/liveness properties
 - negative tests and counterexamples
+
+Positive promotion evidence must follow ADR-0013: the validator captures and
+seals exact inputs before reading them, validates only captured bytes,
+recomputes summaries from retained raw evidence, and binds the decision to the
+capsule id. Producer self-checks are diagnostic, not promotion authority.
 
 ## Git Discipline
 

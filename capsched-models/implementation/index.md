@@ -1,6 +1,6 @@
 # Implementation Index
 
-Updated: 2026-07-17
+Updated: 2026-07-19
 
 No behavior-changing implementation patch points are accepted yet.
 
@@ -448,6 +448,44 @@ Current SchedExecLease L0 readiness:
     values, emit no disabled R4 artifacts, keep ordinary growth zero, and
     measure 49,664 bytes/rq below the 65,536-byte bound. E3 planning only is
     authorized.
+- `0048-sched-exec-lease-p5a-r4-e3-concurrency-prototype.md`
+  - Status: exact direct-R4-E2-child, two-file, default-off synthetic KUnit
+    candidate is committed. Corrected N-134 source gate/closures and the full
+    r4 six-build/six-boot matrix pass. Two independent read-only closures
+    reproduce all 133 retained artifacts and complete N-135 virtual evidence.
+    Analysis/0175 and validation/0256 then accept the exact source and
+    concurrency semantics only for this disposable virtual synthetic scope and
+    authorize drafting a source-free R4-E4 measurement plan.
+  - Candidate commit/tree:
+    `da9ce9159b3450c28c8faf8dceac671fb7bfeba2` /
+    `58c6510c6f517004e37107786d006bb8333b79b8`.
+  - JSON: `sched-exec-lease-p5a-r4-e3-concurrency-prototype-v1.json`.
+  - Rule: exact 36-case/six-fault synthetic protocol, independent plain oracle,
+    hard-IRQ dispatch bridge, 15-second waits, and 2,048 stress iterations must
+    pass fresh arm64/x86_64 E2/off/layout-on/E3-on builds with 58 private and 51
+    expanded values preserved and zero disabled artifacts before six diagnostic
+    boots. R4-E4 plan acceptance/source, primary/patch changes, live scheduler
+    behavior, and every bare-metal, runtime, or production claim remain
+    unapproved.
+- `0049-sched-exec-lease-p5a-r4-e4-local-quantum-measurement.md`
+  - Status: arm64 timing attempt 1 correctly failed closed on a real 2,064-byte
+    frame warning before boot. The notifier measurement cell is now
+    KUnit-allocated in a replacement exact direct-R4-E3-child. Arm64 and
+    x86_64 W=1 object smokes pass, but fresh six-object/six-profile evidence and
+    independent double closure are required before another timing launch.
+  - Candidate commit/tree:
+    `5857720dedc49f89d2367442f8fdb1a806ffa1cc` /
+    `ee6e329106327a302bf63c78f2ed4fe3ddea7865`.
+  - JSON: `sched-exec-lease-p5a-r4-e4-local-quantum-measurement-v1.json`.
+  - Rule: exactly 682 virtual synthetic local-quantum cells use 256 warmup and
+    10,000 alternating treatment/control pairs under default-off
+    `CONFIG_SCHED_EXEC_LEASE_R4_MEASURE_KUNIT_TEST`. Six fresh source objects,
+    all six preserved E3 profiles, 216/216 cases and receipts, and an
+    independent source closure must pass before timing; that boundary must be
+    reproduced for the replacement identity. Arm64 timing and a later
+    independent timing-evidence closure remain pending. No live scheduler,
+    bare-metal, performance, production,
+    deployment, multi-cluster, or datacenter claim is approved.
 - `0025-sched-exec-lease-p5-test-only-denial-readiness-gate.md`
   - Status: draft readiness gate; P5 implementation not approved and out of
     current scope. Post-P4 refresh is recorded in analysis/0129,
@@ -985,4 +1023,19 @@ Current monitor timer architecture substrate gate:
   tracepoint ABI, x86 VMX-root implementation, arm64 EL2 implementation, KVM or
   pKVM modification, behavior change, runtime coverage, monitor verification,
   or production protection is approved.
+
+Current R6-E2 disposable layout candidate:
+  implementation/0050 and the R6-E2 candidate JSON bind signed-off direct
+  primary child `66e2fd20fc85` on `codex/p5a-r6-e2-layout`. Its 208 added
+  lines change only `init/Kconfig` and `kernel/sched/exec_lease.c`, define a
+  default-off 64-slot/127-node private layout probe, and add no function,
+  callsite, allocation, hook, callback, ABI, or behavior. Arm64 preflight
+  is superseded by complete arm64/x86_64 four-mode result
+  `6164a7a9913e...b2890a4` and read-only closure
+  `e937c252819d...6b0c7b8`. Both architectures preserve all 51 existing
+  values, emit the exact 49 private symbols only when enabled, keep ordinary
+  hot-object growth at zero, and pass the 74,688-byte conservative private
+  envelope under the 98,304-byte hard limit. The x86_64 slot is exactly at
+  its 1,024-byte ceiling. Only source-free R6-E3 planning may start; all
+  runtime and production claims remain false.
 ```

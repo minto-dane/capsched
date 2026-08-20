@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "domainlease-evidence-capsule-v1-decision.schema.json",
+  "title": "DomainLease Evidence Capsule v1 Approval Decision",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "capsule_id",
+    "decision_id",
+    "evidence_level",
+    "validator_result_sha256",
+    "allowed_claim_transitions",
+    "forbidden_claim_transitions",
+    "approver_identity",
+    "superseded_decision_ids"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "capsule_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "decision_id": {
+      "$ref": "#/$defs/token"
+    },
+    "evidence_level": {
+      "enum": [
+        "EC0",
+        "EC1",
+        "EC2",
+        "EC3"
+      ]
+    },
+    "validator_result_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "allowed_claim_transitions": {
+      "$ref": "#/$defs/tokenArray"
+    },
+    "forbidden_claim_transitions": {
+      "$ref": "#/$defs/tokenArray"
+    },
+    "approver_identity": {
+      "$ref": "#/$defs/token"
+    },
+    "superseded_decision_ids": {
+      "$ref": "#/$defs/tokenArray"
+    }
+  },
+  "$defs": {
+    "token": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "tokenArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/token"
+      }
+    }
+  },
+  "additionalProperties": false
+}

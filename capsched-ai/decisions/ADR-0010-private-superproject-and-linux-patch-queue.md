@@ -1,6 +1,7 @@
 # ADR-0010: Private Superproject and Linux Patch Queue
 
-Status: Accepted
+Status: Accepted for topology and patch-queue boundaries; private-visibility
+decision superseded by ADR-0023
 
 Date: 2026-07-01
 
@@ -127,4 +128,3 @@ Linux patch queue:
 This is a repository-management decision only. It does not approve Linux code,
 behavior changes, ABI, monitor verification, runtime coverage, or production
 protection.
-

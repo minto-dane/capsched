@@ -1,0 +1,653 @@
+{
+  "schema_version": 1,
+  "artifact_id": "domainlease-r11-semantic-policy-v1",
+  "policy_epoch": 1,
+  "status": "draft_pending_independent_review",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "applies_to_model_revision": "R11",
+  "owner_role": "external_semantic_policy_authority",
+  "predecessor_disposition": {
+    "model": "DynamicResidencyR10",
+    "status": "rejected_self_attested_semantics",
+    "decision": "ADR-0016",
+    "analysis": "0213"
+  },
+  "claim_boundary": {
+    "assurance_claims": [
+      "ACT-001",
+      "EXEC-001",
+      "ROOTSCHED-001",
+      "RESIDENCY-001",
+      "RESIDENCY-DYN-001",
+      "BUDGET-001",
+      "ASYNC-001",
+      "REVOKE-001",
+      "MGMT-001",
+      "CLUSTER-001",
+      "CLUSTER-PART-001",
+      "COMPOSE-001",
+      "EVIDENCE-001"
+    ],
+    "policy_claims": [
+      "POL-R11-NO-AMBIENT-EXECUTION",
+      "POL-R11-AUTHORITY-CONSERVATION",
+      "POL-R11-PROVIDER-ROOTED-ENTRY",
+      "POL-R11-BOUNDED-CPU-USE",
+      "POL-R11-REVOCATION-CUT",
+      "POL-R11-ASYNC-PROVENANCE",
+      "POL-R11-DISJOINT-PROGRESS",
+      "POL-R11-FAILURE-CLOSURE",
+      "POL-R11-TRANSFER-NONDUPLICATION",
+      "POL-R11-SAFE-NAMESPACE-REUSE"
+    ],
+    "nonclaims": [
+      "arbitrary_domain_monitor_compromise_is_contained",
+      "entry_code_memory_state_device_or_service_isolation_is_proved",
+      "instantaneous_global_revocation_during_partition",
+      "unrestricted_partition_availability",
+      "linux_only_prototype_has_hypervisor_grade_protection",
+      "implementation_compatibility_or_performance_is_established",
+      "this_policy_or_a_local_validator_is_promotion_evidence"
+    ]
+  },
+  "threat_model": {
+    "adversarial_principals": [
+      {
+        "id": "ACTOR-LINUX",
+        "power": "arbitrary_kernel_context_execution_within_the_current_isolation_domain_plus_all_linux_visible_state",
+        "may_control_scheduling_policy": true,
+        "fairness_assumed": false
+      },
+      {
+        "id": "ACTOR-TENANT",
+        "power": "all_userspace_and_reachable_kernel_bugs_within_one_domain",
+        "may_control_scheduling_policy": false,
+        "fairness_assumed": false
+      },
+      {
+        "id": "ACTOR-SERVICE",
+        "power": "arbitrary_kernel_context_execution_within_one_service_domain",
+        "may_control_scheduling_policy": false,
+        "fairness_assumed": false
+      },
+      {
+        "id": "ACTOR-NETWORK",
+        "power": "drop_delay_duplicate_reorder_replay_or_corrupt_unauthenticated_messages_and_partition_clusters",
+        "may_control_scheduling_policy": false,
+        "fairness_assumed": false
+      }
+    ],
+    "trusted_assumptions": [
+      "domain_monitor_code_and_protected_state_follow_the_model",
+      "named_hardware_providers_enforce_their_structured_contracts",
+      "cryptographic_authentication_and_antirollback_roots_hold",
+      "cluster_issuer_or_quorum_inputs_are_authentic_within_their_declared_epoch",
+      "admission_accepts_only_finite_precharged_work_and_feasible_service"
+    ],
+    "explicitly_untrusted_inputs": [
+      "linux_task_rq_cgroup_namespace_cred_and_clock_shadows",
+      "linux_completion_observation_and_worker_current_context",
+      "network_silence_transport_success_and_unsigned_remote_state",
+      "candidate_authored_claim_status_proof_status_or_mutation_expectation"
+    ]
+  },
+  "trust_roles": [
+    {
+      "id": "ROLE-BOOT-ROOT",
+      "class": "sealed_genesis",
+      "may_write_state_classes": ["sealed_genesis"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-DOMAIN-MONITOR",
+      "class": "protected_monitor",
+      "may_write_state_classes": ["monitor_authoritative", "monitor_immutable_receipt", "derived_cache", "audit_evidence"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-CPU-ENTRY-PROVIDER",
+      "class": "protected_provider",
+      "may_write_state_classes": ["provider_authoritative", "provider_immutable_receipt", "audit_evidence"],
+      "may_make_current_executable": true,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-TIME-PROVIDER",
+      "class": "protected_provider",
+      "may_write_state_classes": ["provider_authoritative", "provider_immutable_receipt", "audit_evidence"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-MEMORY-PROVIDER",
+      "class": "protected_provider",
+      "may_write_state_classes": ["provider_authoritative", "provider_immutable_receipt", "audit_evidence"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-CODE-PROVIDER",
+      "class": "protected_provider",
+      "may_write_state_classes": ["provider_authoritative", "provider_immutable_receipt", "audit_evidence"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-ENTRY-STATE-PROVIDER",
+      "class": "protected_provider",
+      "may_write_state_classes": ["provider_authoritative", "provider_immutable_receipt", "audit_evidence"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-DEVICE-PROVIDER",
+      "class": "protected_provider",
+      "may_write_state_classes": ["provider_authoritative", "provider_immutable_receipt", "audit_evidence"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-STOP-PROVIDER",
+      "class": "protected_provider",
+      "may_write_state_classes": ["provider_authoritative", "provider_immutable_receipt", "audit_evidence"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-CLUSTER-ISSUER",
+      "class": "authenticated_external_authority",
+      "may_write_state_classes": ["provider_immutable_receipt"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": false
+    },
+    {
+      "id": "ROLE-MANAGEMENT-DOMAIN",
+      "class": "ordinary_domain_policy_client",
+      "may_write_state_classes": ["untrusted_proposal"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": true
+    },
+    {
+      "id": "ROLE-LINUX",
+      "class": "untrusted_proposer",
+      "may_write_state_classes": ["untrusted_proposal", "derived_cache", "audit_evidence"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": true
+    },
+    {
+      "id": "ROLE-TENANT-DOMAIN",
+      "class": "untrusted_domain",
+      "may_write_state_classes": ["untrusted_proposal"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": true
+    },
+    {
+      "id": "ROLE-SERVICE-DOMAIN",
+      "class": "untrusted_service_domain",
+      "may_write_state_classes": ["untrusted_proposal"],
+      "may_make_current_executable": false,
+      "compromise_in_scope": true
+    }
+  ],
+  "state_classes": [
+    {
+      "id": "sealed_genesis",
+      "authoritative": true,
+      "runtime_mutable": false,
+      "allowed_writer_roles": ["ROLE-BOOT-ROOT"]
+    },
+    {
+      "id": "monitor_authoritative",
+      "authoritative": true,
+      "runtime_mutable": true,
+      "allowed_writer_roles": ["ROLE-DOMAIN-MONITOR"]
+    },
+    {
+      "id": "provider_authoritative",
+      "authoritative": true,
+      "runtime_mutable": true,
+      "allowed_writer_roles": [
+        "ROLE-CPU-ENTRY-PROVIDER",
+        "ROLE-TIME-PROVIDER",
+        "ROLE-MEMORY-PROVIDER",
+        "ROLE-CODE-PROVIDER",
+        "ROLE-ENTRY-STATE-PROVIDER",
+        "ROLE-DEVICE-PROVIDER",
+        "ROLE-STOP-PROVIDER"
+      ]
+    },
+    {
+      "id": "monitor_immutable_receipt",
+      "authoritative": true,
+      "runtime_mutable": false,
+      "allowed_writer_roles": ["ROLE-DOMAIN-MONITOR"]
+    },
+    {
+      "id": "provider_immutable_receipt",
+      "authoritative": true,
+      "runtime_mutable": false,
+      "allowed_writer_roles": [
+        "ROLE-CPU-ENTRY-PROVIDER",
+        "ROLE-TIME-PROVIDER",
+        "ROLE-MEMORY-PROVIDER",
+        "ROLE-CODE-PROVIDER",
+        "ROLE-ENTRY-STATE-PROVIDER",
+        "ROLE-DEVICE-PROVIDER",
+        "ROLE-STOP-PROVIDER",
+        "ROLE-CLUSTER-ISSUER"
+      ]
+    },
+    {
+      "id": "derived_cache",
+      "authoritative": false,
+      "runtime_mutable": true,
+      "allowed_writer_roles": ["ROLE-DOMAIN-MONITOR", "ROLE-LINUX"]
+    },
+    {
+      "id": "audit_evidence",
+      "authoritative": false,
+      "runtime_mutable": true,
+      "allowed_writer_roles": [
+        "ROLE-DOMAIN-MONITOR",
+        "ROLE-CPU-ENTRY-PROVIDER",
+        "ROLE-TIME-PROVIDER",
+        "ROLE-MEMORY-PROVIDER",
+        "ROLE-CODE-PROVIDER",
+        "ROLE-ENTRY-STATE-PROVIDER",
+        "ROLE-DEVICE-PROVIDER",
+        "ROLE-STOP-PROVIDER",
+        "ROLE-LINUX"
+      ]
+    },
+    {
+      "id": "untrusted_proposal",
+      "authoritative": false,
+      "runtime_mutable": true,
+      "allowed_writer_roles": [
+        "ROLE-LINUX",
+        "ROLE-MANAGEMENT-DOMAIN",
+        "ROLE-TENANT-DOMAIN",
+        "ROLE-SERVICE-DOMAIN"
+      ]
+    }
+  ],
+  "consistency_domains": [
+    {"id": "CD-NODE-MONITOR-SHARD", "axes": ["NodeID", "MonitorShardID"]},
+    {"id": "CD-CPU-INCARNATION", "axes": ["NodeID", "CpuID", "CpuIncarnation"]},
+    {"id": "CD-AUTHORITY-ACCOUNT", "axes": ["NodeID", "AuthorityID", "AuthorityGeneration"]},
+    {"id": "CD-REVOCATION-SCOPE", "axes": ["NodeID", "RevocationScopeID", "ScopeGeneration"]},
+    {"id": "CD-SERVICE-STREAM", "axes": ["NodeID", "StreamID", "StreamIncarnation"]},
+    {"id": "CD-OPPORTUNITY", "axes": ["NodeID", "OpportunityID", "OpportunityOrdinal"]},
+    {"id": "CD-ATTEMPT", "axes": ["NodeID", "AttemptID", "AttemptGeneration"]},
+    {"id": "CD-SETTLEMENT", "axes": ["NodeID", "SettlementID", "SettlementGeneration"]},
+    {"id": "CD-FAILURE-SCOPE", "axes": ["ClusterID", "FailureScopeID", "FailureGeneration"]},
+    {"id": "CD-TRANSFER", "axes": ["ClusterID", "TransferID", "TransferGeneration"]},
+    {"id": "CD-NAMESPACE-ROOT", "axes": ["ClusterID", "NamespaceID", "NamespaceEpoch"]},
+    {"id": "CD-CLUSTER-ISSUER", "axes": ["ClusterID", "IssuerIncarnation", "QuorumEpoch"]}
+  ],
+  "authority_kinds": [
+    {"id": "AUTH-EXECUTION-GRANT", "permits": ["submit_one_execution_use"], "forbids": ["mint", "change_budget", "change_priority", "change_placement", "spawn", "suspend", "terminate", "resource_io"]},
+    {"id": "AUTH-CPU-BUDGET-CONTEXT", "permits": ["reserve_cpu_time", "bind_period_and_hard_horizon"], "forbids": ["submit_execution", "mint", "spawn", "terminate"]},
+    {"id": "AUTH-SCHED-CONTROL", "permits": ["narrow_priority_ceiling", "narrow_placement", "narrow_cotenancy"], "forbids": ["submit_execution", "increase_parent_limit", "mint"]},
+    {"id": "AUTH-PLACEMENT", "permits": ["reserve_allowed_cpu_and_node_use"], "forbids": ["submit_execution", "extend_horizon", "duplicate_global_owner"]},
+    {"id": "AUTH-CHARGE", "permits": ["select_fixed_ledger_plan", "apply_one_settlement"], "forbids": ["submit_execution", "change_measured_runtime", "double_apply"]},
+    {"id": "AUTH-ASYNC-CALLER", "permits": ["reserve_caller_role_use"], "forbids": ["impersonate_service", "overwrite_pending_carrier", "mint"]},
+    {"id": "AUTH-ASYNC-SERVICE", "permits": ["reserve_service_role_use"], "forbids": ["impersonate_caller", "expand_caller_authority", "mint"]},
+    {"id": "AUTH-ENDPOINT", "permits": ["invoke_typed_resource_operation"], "forbids": ["submit_execution", "raw_resource_access_outside_endpoint"]},
+    {"id": "AUTH-SPAWN", "permits": ["create_child_with_explicit_allowlist"], "forbids": ["ambient_inheritance", "increase_parent_authority", "submit_execution"]},
+    {"id": "AUTH-THREAD-CONTROL", "permits": ["suspend", "resume", "terminate", "inspect_as_authorized"], "forbids": ["submit_execution", "mint", "change_budget"]},
+    {"id": "AUTH-ADMISSION", "permits": ["request_feasibility_checked_admission"], "forbids": ["bypass_feasibility", "open_tenant_gate", "mint"]},
+    {"id": "AUTH-ISSUE", "permits": ["request_attenuated_quota_transfer"], "forbids": ["copy_quota", "bypass_parent_conservation", "self_authorize"]},
+    {"id": "AUTH-TRANSFER", "permits": ["fence_source_and_install_one_destination_use"], "forbids": ["dual_execution", "silence_as_quiescence", "extend_source_horizon"]},
+    {"id": "AUTH-RECOVERY", "permits": ["execute_precharged_fail_closed_recovery"], "forbids": ["restore_stale_authority", "skip_reconciliation", "mint"]},
+    {"id": "AUTH-MANAGEMENT-BOOTSTRAP", "permits": ["bootstrap_ordinary_management_domain_through_normal_entry_path"], "forbids": ["be_executable_genesis", "open_tenant_gate_before_settlement", "bypass_provider_entry"]}
+  ],
+  "authority_separation_rules": [
+    {"id": "SEP-EXECUTION-NOT-CONTROL", "rule": "AUTH-EXECUTION-GRANT_never_implies_AUTH-THREAD-CONTROL_AUTH-SPAWN_AUTH-SCHED-CONTROL_or_AUTH-ISSUE"},
+    {"id": "SEP-BUDGET-NOT-SUBMISSION", "rule": "AUTH-CPU-BUDGET-CONTEXT_never_implies_AUTH-EXECUTION-GRANT"},
+    {"id": "SEP-ENDPOINT-NOT-RUN", "rule": "AUTH-ENDPOINT_never_implies_execution_or_scheduler_control"},
+    {"id": "SEP-MANAGEMENT-ORDINARY-PATH", "rule": "management_uses_the_same_activation_entry_stop_and_settlement_DAG_as_tenants"},
+    {"id": "SEP-HOLDER-BOUND", "rule": "authority_on_hostile_transport_is_holder_generation_and_domain_bound_not_an_unbound_bearer"},
+    {"id": "SEP-DELEGATION-ATTENUATES", "rule": "delegation_is_componentwise_rights_constraint_and_horizon_attenuation_plus_quota_transfer"},
+    {"id": "SEP-NO-AMBIENT-FORK-EXEC", "rule": "fork_clone_exec_and_async_paths_never_create_unlisted_authority"}
+  ],
+  "resource_algebra": {
+    "value_domain": "bounded_natural_numbers",
+    "comparison": "componentwise_less_than_or_equal",
+    "addition": "componentwise_checked_addition",
+    "subtraction": "componentwise_guarded_subtraction_rejecting_underflow",
+    "components": [
+      {"id": "RES-EXECUTION-USE", "unit": "one_entry_attempt", "burn_allowed": false},
+      {"id": "RES-CPU-TIME", "unit": "nanosecond", "burn_allowed": false},
+      {"id": "RES-ROOT-CELL", "unit": "one_root_calendar_cell", "burn_allowed": false},
+      {"id": "RES-ROLE-USE", "unit": "one_typed_role_use_ordinal", "burn_allowed": false},
+      {"id": "RES-CONTROL-WORK", "unit": "one_bounded_control_step", "burn_allowed": false},
+      {"id": "RES-CLEANUP-WORK", "unit": "one_bounded_cleanup_step", "burn_allowed": false},
+      {"id": "RES-FAILURE-WORK", "unit": "one_bounded_failure_closure_step", "burn_allowed": false},
+      {"id": "RES-NAMESPACE-SLOT", "unit": "one_identity_slot", "burn_allowed": true},
+      {"id": "RES-PUBLICATION-WEAR", "unit": "one_durable_publication", "burn_allowed": true},
+      {"id": "RES-REVERSE-EDGE", "unit": "one_failure_dependency_edge", "burn_allowed": false},
+      {"id": "RES-RECEIPT-SLOT", "unit": "one_immutable_receipt", "burn_allowed": true},
+      {"id": "RES-AUDIT-ENTRY", "unit": "one_audit_record", "burn_allowed": true},
+      {"id": "RES-TRANSFER-WORK", "unit": "one_transfer_or_fence_step", "burn_allowed": false},
+      {"id": "RES-RETRY-USE", "unit": "one_fresh_retry_attempt", "burn_allowed": false}
+    ],
+    "disjoint_buckets": [
+      "available",
+      "delegated_child",
+      "prepared_transaction",
+      "reserved_role_use",
+      "reserved_runtime_escrow",
+      "active_use",
+      "retiring",
+      "failure_escrow",
+      "fenced_export",
+      "settled_consumption",
+      "authorized_burn"
+    ],
+    "conservation_equation": {
+      "left": ["sealed_genesis_supply", "authenticated_imported_supply"],
+      "right": [
+        "available",
+        "delegated_child",
+        "prepared_transaction",
+        "reserved_role_use",
+        "reserved_runtime_escrow",
+        "active_use",
+        "retiring",
+        "failure_escrow",
+        "fenced_export",
+        "settled_consumption",
+        "authorized_burn"
+      ],
+      "operator": "componentwise_equality"
+    },
+    "burn_policy": "only_a_named_recovery_action_may_irreversibly_quarantine_a_burn_allowed_component_and_it_must_emit_an_immutable_audit_receipt",
+    "issue_policy": "issue_moves_quota_between_disjoint_buckets_and_never_copies_supply",
+    "accounting_policy": "every_state_that_can_enable_future_work_or_reuse_is_in_exactly_one_bucket"
+  },
+  "identity_policy": {
+    "identity_spaces": [
+      "ClusterIssuerIncarnation",
+      "DomainKey",
+      "DomainEpoch",
+      "NodeID",
+      "NodeIncarnation",
+      "CpuID",
+      "CpuIncarnation",
+      "AuthorityID",
+      "AuthorityGeneration",
+      "SubjectID",
+      "SubjectGeneration",
+      "ProcessGeneration",
+      "StreamID",
+      "StreamIncarnation",
+      "OpportunityOrdinal",
+      "AttemptID",
+      "AttemptGeneration",
+      "RootFrameID",
+      "RootSlotID",
+      "EntryID",
+      "StopID",
+      "QuantumID",
+      "SettlementID",
+      "ReceiptID",
+      "RevocationScopeID",
+      "ScopeGeneration",
+      "TransferID",
+      "TransferGeneration",
+      "NamespaceEpoch",
+      "TransactionID",
+      "TransactionGeneration"
+    ],
+    "reuse_rule": "an_identity_tuple_is_not_reused_while_any_authorizing_authenticating_liveness_or_horizon_reference_can_exist",
+    "generation_rule": "reuse_requires_a_strictly_new_nonrollback_generation_and_a_tombstone_or_checkpoint_proving_the_old_reference_horizon_closed",
+    "overflow_rule": "saturation_blocks_allocation_then_rekeys_to_a_new_parent_epoch_or_quarantines_the_namespace",
+    "alias_rule": "nominal_ID_equality_without_complete_generation_and_parent_epoch_equality_never_implies_object_identity"
+  },
+  "semantic_dag": [
+    {"id": "D0", "predecessors": [], "meaning": "finite_types_bounds_resource_algebra_writers_partitions_stores_allocators"},
+    {"id": "D1", "predecessors": ["D0"], "meaning": "sealed_nonexecutable_boot_root_and_protected_bootstrap_work"},
+    {"id": "D2", "predecessors": ["D1"], "meaning": "ordinary_management_identity_authority_context_admission_residency_and_closed_tenant_gate"},
+    {"id": "D3", "predecessors": ["D2"], "meaning": "authority_issue_role_reservation_return_burn_and_revocation"},
+    {"id": "D4", "predecessors": ["D3"], "meaning": "activation_request_from_sync_async_distinct_or_async_alias"},
+    {"id": "D5", "predecessors": ["D2", "D4"], "meaning": "stream_opportunity_ready_and_root_calendar_release"},
+    {"id": "D6", "predecessors": ["D3", "D5"], "meaning": "fresh_attempt_escrow_and_preclaim_frozen_snapshot"},
+    {"id": "D7", "predecessors": ["D6"], "meaning": "inert_context_install_and_write_once_receipt"},
+    {"id": "D8", "predecessors": ["D7"], "meaning": "eligibility_seal_and_ready_eligible"},
+    {"id": "D9", "predecessors": ["D5", "D8"], "meaning": "atomic_ready_and_root_slot_claim"},
+    {"id": "D10", "predecessors": ["D9"], "meaning": "postclaim_physical_entry_binding_and_fresh_entry_stop_quantum_identities"},
+    {"id": "D11", "predecessors": ["D10"], "meaning": "provider_prepare_then_atomic_entered_or_never_entered"},
+    {"id": "D12", "predecessors": ["D11"], "meaning": "protected_observation_and_entered_receipt_derived_ready_consumed"},
+    {"id": "D13", "predecessors": ["D11"], "meaning": "boundary_stop_offline_settlement_root_and_idempotent_ledger_apply"},
+    {"id": "D14", "predecessors": ["D12", "D13"], "meaning": "terminal_result_fresh_retry_or_next_stream_ordinal"},
+    {"id": "D15", "predecessors": ["D13", "D14"], "meaning": "revoke_close_offline_failure_fixed_point_and_late_fact_successor"},
+    {"id": "D16", "predecessors": ["D14", "D15"], "meaning": "source_fence_quiescence_no_reissue_and_one_use_destination_install"},
+    {"id": "D17", "predecessors": ["D15", "D16"], "meaning": "checkpoint_reference_horizon_tombstone_gc_rekey_quarantine"}
+  ],
+  "bootstrap_policy": {
+    "initial_executable_count": 0,
+    "boot_root_is_domain": false,
+    "boot_root_is_executable": false,
+    "management_path_must_include": ["authority", "activation", "context", "eligibility", "root_claim", "provider_entry", "stop", "settlement"],
+    "tenant_gate_opens_after": "ordinary_management_entry_has_stopped_and_settled_with_a_valid_management_admission_receipt"
+  },
+  "async_policy": {
+    "distinct_authorities": "reserve_one_fresh_caller_role_ordinal_and_one_fresh_service_role_ordinal",
+    "aliased_authority": "reserve_two_distinct_role_ordinals_from_one_account_in_one_aggregate_account_write",
+    "single_use_role_fusion": "forbidden",
+    "budget_accounting": "selected_by_fixed_ledger_plan_independently_of_role_aliasing",
+    "effective_endpoint_authority": "intersection_of_service_authority_and_frozen_caller_authority",
+    "worker_current_is_authority": false,
+    "carrier_rule": "domain_derived_async_work_uses_an_immutable_typed_carrier_or_a_policy_defined_lossless_aggregate",
+    "coalescing_rule": "a_pending_work_coalesce_must_atomically_preserve_each_use_or_reject_and_refund_it_and_must_never_overwrite_authority_or_budget",
+    "terminal_rule": "every_reserved_role_and_budget_use_reaches_exactly_one_commit_refund_or_authorized_burn_terminal"
+  },
+  "transaction_policy": {
+    "atomicity_scope": "one_declared_consistency_domain",
+    "cross_domain_rule": "transactions_cross_consistency_domains_only_by_prepare_commit_receipt_fence_or_compensating_protocol",
+    "cross_domain_protocol": {
+      "source_step": "source_owner_reserves_once_and_emits_an_immutable_export_receipt",
+      "in_transit_bucket": "fenced_export",
+      "destination_step": "destination_owner_idempotently_consumes_the_exact_export_receipt",
+      "duplicate_consume": "same_idempotency_key_returns_the_original_apply_receipt_without_new_effect",
+      "abort_or_expiry": "source_owner_refunds_only_after_nonconsumption_is_proved_or_the_destination_horizon_is_closed",
+      "remote_atomic_write": false
+    },
+    "maximum_atomic_locations": 16,
+    "required_phases": ["Vacant", "Prepared", "CommitDecided", "AbortDecided", "Applying", "Terminal", "Retired"],
+    "crash_rule": "every_durable_cut_has_one_deterministic_idempotent_recovery_successor",
+    "projection_rule": "audit_and_derived_projections_never_authorize_or_linearize_security_state",
+    "publication_rule": "authority_or_eligibility_is_not_visible_before_all_required_reverse_links_reservations_and_seals_are_durable"
+  },
+  "physical_entry_policy": {
+    "current_executable_writer": "ROLE-CPU-ENTRY-PROVIDER",
+    "only_success_action_class": "PROVIDER-COMMIT-ENTRY",
+    "initial_entry_authority": "fresh_one_use_EntryPermit",
+    "continuation_token_input_to_initial_entry": false,
+    "legacy_RunToken_interpretation": "bare_RunToken_is_forbidden_R11_uses_the_discriminated_EntryPermit_or_ContinuationToken_variant",
+    "required_inputs": [
+      "ExecutionGrantUse",
+      "CPUBudgetEscrow",
+      "PlacementUse",
+      "ChargeGrantUse",
+      "complete_revocation_path",
+      "ContextInstalledReceipt",
+      "EligibilitySeal",
+      "ReadyRootClaim",
+      "MemoryViewInstallReceipt",
+      "CodeIntegrityReceipt",
+      "EntryStateInstallReceipt",
+      "MutableStateBindingReceipt",
+      "DeviceIsolationReceipt",
+      "StopEnforcementReceipt",
+      "TimePartitionReceipt",
+      "fresh_CPU_Domain_subject_program_aggregate_attempt_entry_stop_quantum_generations"
+    ],
+    "success_receipt": "EnteredReceipt",
+    "failure_receipt": "NeverEnteredReceipt",
+    "continuation_token_issuer": "ROLE-CPU-ENTRY-PROVIDER",
+    "continuation_token_condition": "only_after_successful_CommitEntry_and_bound_to_the_same_entry_quantum_CPU_incarnation_and_hard_horizon",
+    "ready_consumed_truth_source": "matching_EnteredReceipt_only",
+    "observation_is_authority": false,
+    "root_claim_is_execution": false,
+    "prepare_is_execution": false,
+    "resume_rule": "resume_requires_the_same_live_entry_and_quantum_generation_or_a_fresh_full_entry"
+  },
+  "revocation_and_offline_policy": {
+    "request_effect": "block_all_new_or_resumed_entry_for_the_covered_generation",
+    "active_entry_bound": "already_armed_hard_stop_or_earlier_provider_fail_stop",
+    "effective_condition": "all_covered_entries_have_terminal_provider_stop_receipts_and_no_new_entry_can_commit",
+    "reuse_condition": "effective_condition_plus_exact_settlement_plus_authenticating_reference_horizon_closed",
+    "cpu_offline": "atomically_disable_execution_gate_and_timer_increment_CPU_incarnation_emit_terminal_receipt_and_force_reconciliation",
+    "failure_close": "publication_gates_close_before_reverse_edge_highwater_scan_and_a_completed_failure_epoch_is_immutable",
+    "late_fact": "install_only_in_a_fresh_successor_failure_epoch_never_mutate_a_completed_epoch"
+  },
+  "settlement_policy": {
+    "root_identity": "one_SettlementRoot_per_service_occurrence_and_activation_generation",
+    "required_receipt_set": ["EnteredReceipt_or_NeverEnteredReceipt", "BoundaryReceipt", "StopReceipt", "OverheadReceipt", "ChargeMeasurementReceipt"],
+    "ledger_plan": "fixed_before_entry_and_bound_into_the_EntryPermit_and_EnteredReceipt",
+    "apply_key": "SettlementRootID_ledger_destination_component_and_generation",
+    "apply_rule": "each_destination_owner_idempotently_applies_its_typed_delta_once_and_emits_an_ApplyReceipt",
+    "completion_rule": "settled_only_after_the_exact_required_receipt_set_and_every_required_ApplyReceipt_exist",
+    "refund_rule": "refund_is_forbidden_while_any_physical_effect_or_destination_apply_can_still_occur",
+    "cross_domain_atomic_apply": false,
+    "role_alias_changes_ledger_plan": false
+  },
+  "transfer_policy": {
+    "source_first": "fence_source_against_new_issue_entry_and_transfer",
+    "strong_path": "destination_requires_authenticated_source_quiescence_and_complete_settlement_prefix",
+    "safe_gap_path": "destination_not_before_is_strictly_after_source_maximum_execution_residual_effect_stop_and_clock_uncertainty_horizons",
+    "continuity_loss_path": "allocate_a_new_stream_incarnation_and_record_explicit_nonservice_for_the_ambiguous_suffix",
+    "network_silence_is_quiescence": false,
+    "destination_install_count": 1,
+    "dual_source_destination_active_authority": false,
+    "remote_atomic_mutable_state": false
+  },
+  "provider_contracts": [
+    {"id": "PC-CONTEXT-INSTALL", "writer_role": "ROLE-DOMAIN-MONITOR", "receipt_state_class": "monitor_immutable_receipt", "trigger": "valid_frozen_preclaim_snapshot", "prestate": "ContextReceipt_Vacant_and_attempt_PreClaimed", "success_relation": "receipt_binds_exact_snapshot_context_generation_and_attempt", "success_receipt": "ContextInstalledReceipt", "fault_partition": "invalid_stale_revoked_exhausted_or_internal_fault", "failure_successor": "NeverEntered", "bound_class": "protected_control_work", "fairness_class": "monitor_precharged_work", "consumer_obligations": ["INV-ENTRY-RECEIPT-CAUSAL-CHAIN"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-MEMORY-VIEW", "writer_role": "ROLE-MEMORY-PROVIDER", "receipt_state_class": "provider_immutable_receipt", "trigger": "exact_physical_entry_binding", "prestate": "MemoryViewReceipt_Vacant_and_target_CPU_not_executable", "success_relation": "receipt_binds_view_owner_translation_epoch_and_no_stale_predecessor_mapping", "success_receipt": "MemoryViewInstallReceipt", "fault_partition": "invalid_owner_stale_epoch_install_fault_or_timeout", "failure_successor": "NeverEntered", "bound_class": "provider_WCET", "fairness_class": "provider_bounded_response", "consumer_obligations": ["INV-CURRENT-EXECUTABLE-COMPLETE"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-CODE-INTEGRITY", "writer_role": "ROLE-CODE-PROVIDER", "receipt_state_class": "provider_immutable_receipt", "trigger": "exact_physical_entry_binding", "prestate": "CodeReceipt_Vacant_and_executable_root_sealed", "success_relation": "receipt_binds_code_epoch_WX_and_no_domain_writable_executable_alias", "success_receipt": "CodeIntegrityReceipt", "fault_partition": "unsealed_writable_stale_or_verification_fault", "failure_successor": "NeverEntered", "bound_class": "provider_WCET", "fairness_class": "provider_bounded_response", "consumer_obligations": ["INV-CURRENT-EXECUTABLE-COMPLETE"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-ENTRY-STATE", "writer_role": "ROLE-ENTRY-STATE-PROVIDER", "receipt_state_class": "provider_immutable_receipt", "trigger": "exact_physical_entry_binding", "prestate": "EntryStateReceipt_Vacant_and_predecessor_entry_quiescent", "success_relation": "receipt_binds_domain_stack_nested_entry_return_and_per_CPU_state_generations", "success_receipt": "EntryStateInstallReceipt", "fault_partition": "stale_stack_live_predecessor_or_install_fault", "failure_successor": "NeverEntered", "bound_class": "provider_WCET", "fairness_class": "provider_bounded_response", "consumer_obligations": ["INV-CURRENT-EXECUTABLE-COMPLETE"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-MUTABLE-STATE", "writer_role": "ROLE-MEMORY-PROVIDER", "receipt_state_class": "provider_immutable_receipt", "trigger": "exact_physical_entry_binding", "prestate": "MutableStateReceipt_Vacant", "success_relation": "receipt_binds_domain_private_state_and_complete_typed_shared_buffer_set", "success_receipt": "MutableStateBindingReceipt", "fault_partition": "unknown_owner_shared_mutable_alias_or_install_fault", "failure_successor": "NeverEntered", "bound_class": "provider_WCET", "fairness_class": "provider_bounded_response", "consumer_obligations": ["INV-CURRENT-EXECUTABLE-COMPLETE"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-DEVICE-ISOLATION", "writer_role": "ROLE-DEVICE-PROVIDER", "receipt_state_class": "provider_immutable_receipt", "trigger": "exact_physical_entry_binding_and_device_profile", "prestate": "DeviceReceipt_Vacant_and_predecessor_DMA_fenced", "success_relation": "receipt_binds_queue_IOMMU_interrupt_DMA_view_and_reset_generations_or_protected_absence", "success_receipt": "DeviceIsolationReceipt", "fault_partition": "live_predecessor_DMA_stale_IOMMU_queue_or_install_fault", "failure_successor": "NeverEntered", "bound_class": "provider_WCET", "fairness_class": "provider_bounded_response", "consumer_obligations": ["INV-CURRENT-EXECUTABLE-COMPLETE"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-STOP-ENFORCEMENT", "writer_role": "ROLE-STOP-PROVIDER", "receipt_state_class": "provider_immutable_receipt", "trigger": "exact_budget_horizon_and_physical_entry_binding", "prestate": "StopReceipt_Vacant_and_gate_disabled", "success_relation": "receipt_binds_armed_independent_timer_budget_cell_hard_horizon_and_fail_closed_target", "success_receipt": "StopEnforcementReceipt", "fault_partition": "cannot_arm_invalid_horizon_timer_fault_or_CPU_offline", "failure_successor": "provider_fail_stop", "bound_class": "hard_time_and_overrun_bound", "fairness_class": "hardware_enforced_boundary", "consumer_obligations": ["INV-ARMED-UPPER-WITHIN-ESCROWS-HORIZONS", "INV-REVOCATION-EFFECTIVE-AFTER-STOP"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-TIME-PARTITION", "writer_role": "ROLE-TIME-PROVIDER", "receipt_state_class": "provider_immutable_receipt", "trigger": "root_calendar_release_and_exact_CPU_incarnation", "prestate": "TimePartitionReceipt_Vacant_and_root_slot_Open", "success_relation": "receipt_binds_clock_epoch_half_open_interval_root_frame_slot_and_CPU_incarnation", "success_receipt": "TimePartitionReceipt", "fault_partition": "expired_closed_stale_clock_or_provider_fault", "failure_successor": "root_slot_closed", "bound_class": "trusted_clock_bound", "fairness_class": "hardware_root_calendar", "consumer_obligations": ["INV-ONE-PHYSICAL-OWNER-PER-CPU"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-PHYSICAL-ENTRY", "writer_role": "ROLE-CPU-ENTRY-PROVIDER", "receipt_state_class": "provider_immutable_receipt", "trigger": "all_physical_entry_policy_required_inputs_match", "prestate": "EnteredReceipt_Vacant_gate_disabled_and_no_current_CPU_owner", "success_relation": "atomic_gate_enable_CurrentExecutable_and_EnteredReceipt_bind_the_complete_entry_product", "success_receipt": "EnteredReceipt", "fault_partition": "any_input_mismatch_revoke_offline_expiry_provider_fault_or_timeout", "failure_successor": "NeverEnteredReceipt", "bound_class": "entry_WCET_and_armed_stop", "fairness_class": "provider_bounded_response", "consumer_obligations": ["INV-ENTRY-RECEIPT-CAUSAL-CHAIN", "INV-CURRENT-EXECUTABLE-COMPLETE", "INV-ONE-PHYSICAL-OWNER-PER-CPU"], "receipt_initial": "Vacant", "write_once": true},
+    {"id": "PC-PLACEMENT-FENCE", "writer_role": "ROLE-CLUSTER-ISSUER", "receipt_state_class": "provider_immutable_receipt", "trigger": "authenticated_no_fork_epoch_or_source_quiescence", "prestate": "PlacementFenceReceipt_Vacant_and_destination_closed", "success_relation": "receipt_binds_source_fence_destination_no_fork_epoch_and_conservative_activation_not_before", "success_receipt": "PlacementFenceReceipt", "fault_partition": "missing_quorum_fork_stale_epoch_unknown_suffix_or_clock_fault", "failure_successor": "destination_closed", "bound_class": "finite_lease_horizon", "fairness_class": "no_network_fairness_required", "consumer_obligations": ["INV-TRANSFER-SOURCE-DESTINATION-DISJOINT", "INV-PARTITION-TIME-CONSERVATIVE"], "receipt_initial": "Vacant", "write_once": true}
+  ],
+  "invariant_obligations": [
+    {"id": "INV-WELL-FORMED-BOUNDED", "class": "generated_structural", "witnesses": ["W0", "W12"]},
+    {"id": "INV-NO-EXECUTABLE-INIT", "class": "generated_safety", "witnesses": ["W0"]},
+    {"id": "INV-EXACT-WRITER-PARTITION", "class": "generated_safety", "witnesses": ["W0", "W8", "W12"]},
+    {"id": "INV-IDENTITY-GENERATION-NONALIAS", "class": "generated_safety", "witnesses": ["W6", "W11", "W12"]},
+    {"id": "INV-RESOURCE-VECTOR-CONSERVATION", "class": "generated_equation", "witnesses": ["W1", "W3", "W7", "W11"]},
+    {"id": "INV-AUTHORITY-ATTENUATION", "class": "generated_equation", "witnesses": ["W1"]},
+    {"id": "INV-NO-AMBIENT-ACTIVATION", "class": "formal_safety", "witnesses": ["W0", "W2", "W4"]},
+    {"id": "INV-ASYNC-ROLE-USE-CONSERVATION", "class": "generated_equation", "witnesses": ["W2", "W3"]},
+    {"id": "INV-PUBLICATION-SEAL-BEFORE-VISIBILITY", "class": "formal_safety", "witnesses": ["W1", "W10"]},
+    {"id": "INV-ADMISSION-SEAL-BEFORE-USE", "class": "formal_safety", "witnesses": ["W0", "W9"]},
+    {"id": "INV-ENTRY-RECEIPT-CAUSAL-CHAIN", "class": "formal_safety", "witnesses": ["W4", "W8"]},
+    {"id": "INV-READY-CONSUMED-ONLY-BY-ENTERED", "class": "formal_safety", "witnesses": ["W4", "W5", "W6"]},
+    {"id": "INV-CURRENT-EXECUTABLE-COMPLETE", "class": "formal_safety", "witnesses": ["W4", "W8"]},
+    {"id": "INV-ONE-PHYSICAL-OWNER-PER-CPU", "class": "formal_safety", "witnesses": ["W8", "W9"]},
+    {"id": "INV-ONE-ENTERED-ATTEMPT-PER-OCCURRENCE", "class": "formal_safety", "witnesses": ["W6", "W7"]},
+    {"id": "INV-ARMED-UPPER-WITHIN-ESCROWS-HORIZONS", "class": "generated_equation", "witnesses": ["W7", "W8", "W11"]},
+    {"id": "INV-ONE-RECEIPT-ONE-SETTLEMENT-ONE-APPLY", "class": "formal_safety", "witnesses": ["W7", "W10"]},
+    {"id": "INV-REVOCATION-EFFECTIVE-AFTER-STOP", "class": "formal_safety", "witnesses": ["W8"]},
+    {"id": "INV-OFFLINE-INCARNATION-INVALIDATES-OLD-ENTRY", "class": "formal_safety", "witnesses": ["W8"]},
+    {"id": "INV-CLOSE-FAILURE-ACTIVE-USE-CUT", "class": "formal_safety", "witnesses": ["W10"]},
+    {"id": "INV-COMPLETED-FAILURE-EPOCH-IMMUTABLE", "class": "formal_safety", "witnesses": ["W10"]},
+    {"id": "INV-TRANSFER-SOURCE-DESTINATION-DISJOINT", "class": "formal_safety", "witnesses": ["W11"]},
+    {"id": "INV-PARTITION-TIME-CONSERVATIVE", "class": "formal_safety", "witnesses": ["W11", "W12"]},
+    {"id": "INV-TWO-LANE-NO-DISJOINT-WAIT", "class": "noninterference", "witnesses": ["W9"]},
+    {"id": "INV-MANAGEMENT-BEFORE-TENANT-ADMISSION", "class": "formal_safety", "witnesses": ["W0"]},
+    {"id": "INV-NO-RECLAIM-WITH-AUTHENTICATING-REFERENCE", "class": "formal_safety", "witnesses": ["W10", "W12"]},
+    {"id": "INV-LINUX-CANNOT-WRITE-OR-MINT-AUTHORITY", "class": "noninterference", "witnesses": ["W0", "W2", "W4", "W12"]}
+  ],
+  "progress_obligations": [
+    {"id": "PROG-MANAGEMENT-BOOTSTRAP", "rely": "protected_boot_work_and_named_provider_fairness", "success": "management_entry_stopped_settled_and_tenant_gate_open", "witnesses": ["W0"]},
+    {"id": "PROG-GUARANTEED-OCCURRENCE", "rely": "feasible_admission_finite_external_horizons_and_protected_root_service", "success": "entered_and_settled_by_deadline_or_policy_authorized_external_withdrawal", "witnesses": ["W4", "W7"]},
+    {"id": "PROG-ASYNC-TERMINAL", "rely": "accepted_carrier_has_precharged_protected_work", "success": "every_role_and_budget_reservation_commits_refunds_or_authorized_burns", "witnesses": ["W2", "W3"]},
+    {"id": "PROG-REVOCATION-DRAIN", "rely": "armed_hard_stop_and_precharged_cleanup", "success": "revocation_effective_and_old_generation_nonreusable_until_settled", "witnesses": ["W8"]},
+    {"id": "PROG-DISJOINT-LANE", "rely": "lane_has_its_own_precharged_work_and_root_allocation", "success": "unrelated_lane_activity_cannot_permanently_block_it", "witnesses": ["W9"]},
+    {"id": "PROG-FAILURE-CLOSURE", "rely": "bounded_reverse_edges_and_precharged_failure_work", "success": "least_fixed_point_closes_or_named_failstop_occurs_before_authority_reuse", "witnesses": ["W10"]},
+    {"id": "PROG-TRANSFER-TERMINAL", "rely": "finite_lease_horizons_and_precharged_transfer_work", "success": "strong_safe_gap_or_continuity_loss_terminal_state", "witnesses": ["W11"]},
+    {"id": "PROG-GC-OR-QUARANTINE", "rely": "finite_reference_horizon_and_precharged_cleanup", "success": "safe_reuse_rekey_or_permanent_quarantine", "witnesses": ["W12"]}
+  ],
+  "formalization_rules": {
+    "candidate_proof_nodes_are_obligations_not_results": true,
+    "candidate_preserved_by_lists_are_evidence": false,
+    "simultaneous_invariant_required": true,
+    "generated_obligations": [
+      "Init_implies_each_invariant",
+      "simultaneous_invariant_and_each_concrete_action_implies_simultaneous_invariant_prime",
+      "every_resource_component_conservation_equation",
+      "every_writer_and_consistency_domain_exclusivity_equation",
+      "every_identity_allocator_nonalias_equation",
+      "every_progress_rank_and_fairness_obligation"
+    ],
+    "free_formula_rule": "a_free_formula_is_only_a_reviewed_obligation_until_an_external_formal_backend_receipt_discharges_it",
+    "imports_rule": "imported_semantics_are_parsed_translated_or_bound_to_a_separately_discharged_assume_guarantee_contract_never_treated_as_prose",
+    "tla_order": "translation_only_after_architecture_and_machine_semantics_freeze"
+  },
+  "mutation_oracle": {
+    "g0_policy_profile_templates": [
+      {"id": "MUT-G0-UNKNOWN-FIELD", "target": "policy_or_profile", "operation": "insert_an_unknown_exact_key", "expected_reject": "CAT-G0-SCHEMA"},
+      {"id": "MUT-G0-DUPLICATE-KEY", "target": "policy_or_profile_raw_bytes", "operation": "insert_a_duplicate_JSON_object_key", "expected_reject": "CAT-G0-DUPLICATE-KEY"},
+      {"id": "MUT-G0-SELF-AUTHORIZE", "target": "policy_or_profile", "operation": "set_any_authorization_field_true", "expected_reject": "CAT-G0-SELF-AUTHORIZATION"},
+      {"id": "MUT-G0-DELETE-CATALOG-ITEM", "target": "policy_or_profile", "operation": "delete_one_required_ID_from_a_catalog", "expected_reject": "CAT-G0-CATALOG-COVERAGE"},
+      {"id": "MUT-G0-REFERENCE-UNKNOWN", "target": "policy_or_profile", "operation": "replace_one_reference_with_an_unknown_ID", "expected_reject": "CAT-G0-REFERENCE"},
+      {"id": "MUT-G0-LINUX-AUTHORITY", "target": "policy", "operation": "grant_Linux_an_authoritative_writer_or_entry_role", "expected_reject": "CAT-G0-TRUST"},
+      {"id": "MUT-G0-PROVIDER-GENESIS", "target": "policy", "operation": "allow_a_runtime_provider_receipt_to_start_nonVacant", "expected_reject": "CAT-G0-PROVIDER"},
+      {"id": "MUT-G0-PROFILE-COLLAPSE", "target": "profile", "operation": "collapse_a_required_distinct_identity_or_cardinality", "expected_reject": "CAT-G0-PROFILE"},
+      {"id": "MUT-G0-PROFILE-SKIP", "target": "profile", "operation": "remove_a_required_witness_relation_cut_or_outcome", "expected_reject": "CAT-G0-PROFILE-COVERAGE"},
+      {"id": "MUT-G0-ORACLE-FORGERY", "target": "policy_or_profile", "operation": "change_the_expected_reject_to_match_a_weakened_checker", "expected_reject": "HM-G0-ORACLE-DIGEST"},
+      {"id": "MUT-G0-CHECKER-SKIP", "target": "checker", "operation": "disable_one_required_check", "expected_reject": "HM-G0-CHECK-COVERAGE"},
+      {"id": "MUT-G0-STALE-REVIEW", "target": "review_manifest", "operation": "reuse_a_review_for_different_policy_or_profile_bytes", "expected_reject": "HM-G0-REVIEW-DIGEST"}
+    ],
+    "future_ir_mutation_templates": [
+    {"id": "MUT-POL-TRUE-INVARIANT", "weakening": "replace_any_required_invariant_with_true", "expected_reject": "CAT-INVARIANT-MEANING"},
+    {"id": "MUT-POL-DELETE-OBLIGATION", "weakening": "delete_any_required_invariant_or_progress_obligation", "expected_reject": "CAT-OBLIGATION-COVERAGE"},
+    {"id": "MUT-POL-FABRICATE-CLAIM", "weakening": "replace_or_add_an_unknown_claim", "expected_reject": "CAT-CLAIM-CATALOG"},
+    {"id": "MUT-POL-PROOF-SUCCESS", "weakening": "candidate_marks_an_obligation_as_proved_or_passed", "expected_reject": "CAT-PROOF-AUTHORITY"},
+    {"id": "MUT-POL-VACUOUS-PROVIDER", "weakening": "provider_contract_has_true_or_empty_trigger_guarantee_failure_or_bound", "expected_reject": "CAT-PROVIDER-CONTRACT"},
+    {"id": "MUT-POL-LINUX-WRITER", "weakening": "linux_writes_authoritative_state_or_receipt", "expected_reject": "CAT-WRITER-TRUST"},
+    {"id": "MUT-POL-EXEC-WRITER", "weakening": "non_CPU_entry_provider_makes_current_executable", "expected_reject": "CAT-ENTRY-ROOT"},
+    {"id": "MUT-POL-READY-OBSERVATION", "weakening": "ready_consumed_comes_from_attempt_or_observation_instead_of_entered_receipt", "expected_reject": "CAT-ENTRY-CAUSALITY"},
+    {"id": "MUT-POL-EXECUTABLE-INIT", "weakening": "init_contains_any_executable_activation_ready_root_claim_or_entry", "expected_reject": "CAT-BOOTSTRAP"},
+    {"id": "MUT-POL-MGMT-BYPASS", "weakening": "management_or_tenant_bypasses_the_ordinary_entry_DAG", "expected_reject": "CAT-BOOTSTRAP"},
+    {"id": "MUT-POL-RESOURCE-BUCKET-HOLE", "weakening": "omit_or_overlap_a_conservation_bucket", "expected_reject": "CAT-RESOURCE-ALGEBRA"},
+    {"id": "MUT-POL-ISSUE-COPIES", "weakening": "authority_issue_increases_parent_plus_child_supply", "expected_reject": "CAT-AUTHORITY-CONSERVATION"},
+    {"id": "MUT-POL-AUTHORITY-FUSION", "weakening": "execution_implies_control_spawn_mint_endpoint_or_budget", "expected_reject": "CAT-AUTHORITY-SEPARATION"},
+    {"id": "MUT-POL-ASYNC-ONE-USE-ALIAS", "weakening": "aliased_async_reserves_only_one_role_use", "expected_reject": "CAT-ASYNC-ALIAS"},
+    {"id": "MUT-POL-ASYNC-OVERWRITE", "weakening": "coalescing_overwrites_a_pending_carrier_budget_or_authority", "expected_reject": "CAT-ASYNC-COALESCE"},
+    {"id": "MUT-POL-ALIAS-DOUBLE-CHARGE", "weakening": "role_alias_count_implicitly_multiplies_all_budget_debits", "expected_reject": "CAT-LEDGER-PLAN"},
+    {"id": "MUT-POL-PARTITION-COLLAPSE", "weakening": "collapse_required_writer_or_consistency_domain_axes", "expected_reject": "CAT-PARTITION"},
+    {"id": "MUT-POL-SILENCE-QUIESCENCE", "weakening": "network_silence_authorizes_destination", "expected_reject": "CAT-TRANSFER-FENCE"},
+    {"id": "MUT-POL-FAILURE-EPOCH-MUTATION", "weakening": "late_fact_mutates_a_completed_failure_epoch", "expected_reject": "CAT-FAILURE-CLOSURE"},
+    {"id": "MUT-POL-UNSAFE-REUSE", "weakening": "identity_reused_before_all_authenticating_references_expire", "expected_reject": "CAT-IDENTITY-REUSE"},
+    {"id": "MUT-POL-UNBOUNDED-WORK", "weakening": "accepted_tenant_input_can_force_unbounded_control_cleanup_failure_transfer_or_GC_work", "expected_reject": "CAT-WORK-BOUND"},
+    {"id": "MUT-POL-LINUX-FAIRNESS", "weakening": "liveness_relies_on_hostile_linux_progress", "expected_reject": "CAT-FAIRNESS"},
+    {"id": "MUT-POL-FAILSTOP-SUCCESS", "weakening": "unexplained_internal_failstop_satisfies_guaranteed_service", "expected_reject": "CAT-LIVENESS"},
+    {"id": "MUT-POL-CANDIDATE-ORACLE", "weakening": "candidate_supplies_claim_formula_blocker_profile_or_expected_mutation_result", "expected_reject": "CAT-SELF-ATTESTATION"}
+    ],
+    "exact_g0_campaign_materialized": false,
+    "future_ir_campaign_materialized": false
+  },
+  "authorization": {
+    "policy_construction_complete": false,
+    "independent_review_complete": false,
+    "scenario_profile_accepted": false,
+    "g0_complete": false,
+    "r11_machine_ir_authorized": false,
+    "semantic_freeze": false,
+    "tla_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

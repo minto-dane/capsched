@@ -1,0 +1,701 @@
+{
+  "schema_version": 2,
+  "artifact_id": "dynamic-residency-f0-v5-supervised-evaluation-protocol-v2",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "pre_normative_candidate_local_machine_validation_passed_requires_fresh_hostile_review",
+  "predecessor": {
+    "artifact_id": "dynamic-residency-f0-v5-supervised-evaluation-protocol-v1",
+    "artifact_sha256": "35d2f6c711a54a96841076882d97177b78a81e90dc16ff6e852e83d568d6f5f5",
+    "disposition_id": "dynamic-residency-f0-v5-supervisor-v1-hostile-rejection-v1",
+    "disposition": "LOCAL_ADVISORY_REJECT"
+  },
+  "role_separation": {
+    "guardian": [
+      "ISSUE_FRESH_RUN_ID",
+      "OWN_AGGREGATE_ADMISSION",
+      "OWN_EXECUTION_SCOPE_LIFETIME",
+      "CLEAN_ON_SUPERVISOR_DEATH",
+      "ATOMICALLY_PUBLISH_OR_ABANDON"
+    ],
+    "transport_supervisor": [
+      "HANDLE_FIXED_METADATA",
+      "HASH_AND_SEAL_BOUNDED_OPAQUE_BYTES",
+      "OWN_LIVE_KERNEL_HANDLES",
+      "ARBITRATE_QUOTAS",
+      "DRAIN_FIXED_FRAME_TRANSPORT",
+      "CLEAN_SCOPE",
+      "SEAL_EVIDENCE_LEDGER",
+      "APPLY_PURE_CLASSIFIER"
+    ],
+    "bounded_worker": [
+      "PARSE_REQUESTER_BYTES",
+      "WIRE_STATIC_LINK_OCCURRENCE_CHECK",
+      "DECODE_FINITE_INPUTS",
+      "EVALUATE",
+      "CONSTRUCT_AND_SERIALIZE_RESULT"
+    ],
+    "independent_checker": [
+      "VALIDATE_TYPED_RESULT_OR_PROOF_CERTIFICATE",
+      "ISSUE_CHECKED_CANDIDATE_RECEIPT"
+    ]
+  },
+  "trust_boundary": {
+    "requester_bytes_interpreted_by_transport_supervisor": false,
+    "result_json_interpreted_by_transport_supervisor": false,
+    "transport_valid_frame_is_semantic_evidence": false,
+    "reference_evaluator_is_trusted_proof_producer": false,
+    "positive_semantic_credit_requires_independent_checked_proof_or_certificate": true,
+    "host_kernel_is_supervisor_tcb": true,
+    "host_kernel_compromise_covered": false
+  },
+  "run_binding": {
+    "run_id_fresh_non_reusable": true,
+    "common_fields": [
+      "RUN_ID",
+      "SUPERVISOR_EPOCH",
+      "GUARDIAN_ID",
+      "REQUEST_RAW_SHA256",
+      "OPTIONAL_PARSED_REQUEST_ID",
+      "VALIDATION_CONTEXT_CANDIDATE_ID",
+      "PRODUCER_EXECUTABLE_CLOSURE_ID",
+      "OUTCOME_CHECKER_EXECUTABLE_CLOSURE_ID",
+      "OPERATOR_ENVELOPE_ID",
+      "SUPERVISOR_POLICY_ID",
+      "SUPPORT_MATRIX_ID",
+      "TAXONOMY_ID"
+    ],
+    "ledger_fields": [
+      "ISSUER_ROLE",
+      "SEQUENCE",
+      "PREVIOUS_RECEIPT_SHA256",
+      "EVENT_KIND",
+      "EVENT_PAYLOAD_SHA256"
+    ],
+    "sequence_strictly_increasing": true,
+    "ledger_append_only": true,
+    "ledger_sealed_before_classification": true
+  },
+  "state_domains": {
+    "stage": [
+      "NEW",
+      "GENESIS_BOUND",
+      "SCOPE_READY",
+      "LAUNCHER_CHARGED",
+      "SANDBOX_READY",
+      "RUNNING",
+      "STOPPING",
+      "OBSERVATIONS_CLOSED",
+      "QUIESCENT",
+      "DECIDED",
+      "PUBLISHED",
+      "ABANDONED"
+    ],
+    "worker": [
+      "ABSENT",
+      "CHARGED_NOT_RELEASED",
+      "RUNNING",
+      "STOP_REQUESTED",
+      "LEADER_EXITED",
+      "LEADER_REAPED"
+    ],
+    "stream": [
+      "UNOPENED",
+      "OPEN_EMPTY",
+      "OPEN_PARTIAL",
+      "CANDIDATE_AWAIT_EOF",
+      "EOF_VALID",
+      "EOF_ABSENT_OR_TRUNCATED",
+      "EOF_INVALID_OR_TRAILING"
+    ],
+    "wait": [
+      "NONE",
+      "NORMAL_ZERO",
+      "ATTRIBUTED_QUOTA_STOP",
+      "ABNORMAL_OR_UNKNOWN",
+      "NO_WORKER"
+    ],
+    "quota": [
+      "NONE",
+      "ATTRIBUTED_SEMANTIC",
+      "AMBIGUOUS_OR_ENVIRONMENT"
+    ],
+    "fault": [
+      "CLEAN",
+      "PROTOCOL",
+      "CONTAINMENT",
+      "IDENTITY",
+      "SUPERVISOR"
+    ],
+    "scope": [
+      "UNCREATED",
+      "CONFIGURED_EMPTY",
+      "POPULATED",
+      "STOPPING",
+      "EMPTY",
+      "ESCAPED_OR_UNKNOWN"
+    ],
+    "counters": [
+      "BASELINE_ONLY",
+      "FINAL_MATCH",
+      "MISSING_OR_DRIFT"
+    ],
+    "decision": [
+      "NONE",
+      "SUCCESS",
+      "REJECT",
+      "INCONCLUSIVE_RESOURCE",
+      "INCONCLUSIVE_UNSUPPORTED",
+      "INTERNAL_FAILURE"
+    ],
+    "publication": [
+      "NONE",
+      "PUBLISHED",
+      "ABANDONED"
+    ]
+  },
+  "initial_state": {
+    "stage": "NEW",
+    "worker": "ABSENT",
+    "stream": "UNOPENED",
+    "wait": "NONE",
+    "quota": "NONE",
+    "fault": "CLEAN",
+    "scope": "UNCREATED",
+    "counters": "BASELINE_ONLY",
+    "decision": "NONE",
+    "publication": "NONE"
+  },
+  "monotonicity": {
+    "receipt_sequence": "STRICTLY_INCREASES",
+    "receipt_ledger": "APPEND_ONLY",
+    "stream_terminal_states": [
+      "EOF_VALID",
+      "EOF_ABSENT_OR_TRUNCATED",
+      "EOF_INVALID_OR_TRAILING"
+    ],
+    "wait_single_assignment_after_none": true,
+    "quota_single_assignment_after_none": true,
+    "fault_clean_to_sticky_fault_only": true,
+    "decision_single_assignment_after_none": true,
+    "publication_single_assignment_after_none": true,
+    "partial_stream_is_not_fault": true
+  },
+  "receipt_types": [
+    "RUN_GENESIS",
+    "SCOPE_CONFIGURATION",
+    "CHARGED_LAUNCH",
+    "SANDBOX_READY",
+    "REQUEST_RELEASE",
+    "STREAM_EOF",
+    "WAIT_STATUS",
+    "QUOTA_ARBITRATION",
+    "PROTOCOL_OR_CONTAINMENT_FAULT",
+    "SCOPE_STOP_REQUEST",
+    "LEADER_REAP",
+    "GROUP_EMPTY",
+    "FINAL_COUNTERS",
+    "OUTCOME_CHECKER_VERDICT",
+    "LEDGER_SEAL",
+    "CLASSIFICATION_RULE",
+    "ATOMIC_PUBLICATION",
+    "GUARDIAN_ABORT"
+  ],
+  "resource_roles": {
+    "semantic_budget": [
+      "INGRESS_BYTES",
+      "REQUESTER_LEDGER",
+      "OPERATOR_LEDGER",
+      "TOTAL_CPU_CONTRACT",
+      "WALL_DEADLINE",
+      "EXACT_MEMORY_CHARGE_CONTRACT",
+      "RESULT_BODY_CONSTRUCTION"
+    ],
+    "containment": [
+      "TRANSPORT_FRAME_LIMIT",
+      "DUPLICATE_OR_TRAILING_FRAME",
+      "FD_MANIFEST",
+      "FORK_CLONE_EXEC",
+      "SECCOMP_OR_AUTHORITY_VIOLATION",
+      "CORE_DUMP",
+      "SCOPE_ESCAPE"
+    ],
+    "environment": [
+      "HOST_OOM_AMBIGUITY",
+      "EXTERNAL_SIGNAL",
+      "MISSING_KERNEL_OBSERVATION",
+      "SUPERVISOR_DEATH",
+      "GUARDIAN_FAILURE"
+    ],
+    "only_semantic_budget_may_issue_resource": true
+  },
+  "transitions": [
+    {
+      "id": "SV2-001",
+      "name": "BIND_RUN_GENESIS",
+      "from_stage": ["NEW"],
+      "to_stage": "GENESIS_BOUND",
+      "receipt": "RUN_GENESIS"
+    },
+    {
+      "id": "SV2-002",
+      "name": "CONFIGURE_FRESH_EXCLUSIVE_SCOPE",
+      "from_stage": ["GENESIS_BOUND"],
+      "to_stage": "SCOPE_READY",
+      "receipt": "SCOPE_CONFIGURATION"
+    },
+    {
+      "id": "SV2-003",
+      "name": "CREATE_CHARGED_STERILE_LAUNCHER",
+      "from_stage": ["SCOPE_READY"],
+      "to_stage": "LAUNCHER_CHARGED",
+      "receipt": "CHARGED_LAUNCH"
+    },
+    {
+      "id": "SV2-004",
+      "name": "VERIFY_SANDBOX_READY",
+      "from_stage": ["LAUNCHER_CHARGED"],
+      "to_stage": "SANDBOX_READY",
+      "receipt": "SANDBOX_READY"
+    },
+    {
+      "id": "SV2-005",
+      "name": "RELEASE_REQUESTER_BYTES",
+      "from_stage": ["SANDBOX_READY"],
+      "to_stage": "RUNNING",
+      "receipt": "REQUEST_RELEASE"
+    },
+    {
+      "id": "SV2-006",
+      "name": "ACCUMULATE_PARTIAL_STREAM",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "SAME",
+      "receipt": "NONE"
+    },
+    {
+      "id": "SV2-007",
+      "name": "RECORD_CANDIDATE_AWAIT_EOF",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "SAME",
+      "receipt": "NONE"
+    },
+    {
+      "id": "SV2-008",
+      "name": "RECORD_STREAM_EOF_CLASS",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "SAME",
+      "receipt": "STREAM_EOF"
+    },
+    {
+      "id": "SV2-009",
+      "name": "RECORD_WAIT_STATUS",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "SAME",
+      "receipt": "WAIT_STATUS"
+    },
+    {
+      "id": "SV2-010",
+      "name": "ARBITRATE_SEMANTIC_QUOTA",
+      "from_stage": ["GENESIS_BOUND", "RUNNING", "STOPPING"],
+      "to_stage": "STOPPING",
+      "receipt": "QUOTA_ARBITRATION"
+    },
+    {
+      "id": "SV2-011",
+      "name": "RECORD_AMBIGUOUS_LIMIT_OR_FAULT",
+      "from_stage": ["GENESIS_BOUND", "RUNNING", "STOPPING"],
+      "to_stage": "STOPPING",
+      "receipt": "PROTOCOL_OR_CONTAINMENT_FAULT"
+    },
+    {
+      "id": "SV2-012",
+      "name": "REQUEST_SCOPE_STOP",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "STOPPING",
+      "receipt": "SCOPE_STOP_REQUEST"
+    },
+    {
+      "id": "SV2-013",
+      "name": "REAP_LEADER",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "STOPPING",
+      "receipt": "LEADER_REAP"
+    },
+    {
+      "id": "SV2-014",
+      "name": "OBSERVE_GROUP_EMPTY",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "STOPPING",
+      "receipt": "GROUP_EMPTY"
+    },
+    {
+      "id": "SV2-015",
+      "name": "CAPTURE_FINAL_COUNTERS",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "STOPPING",
+      "receipt": "FINAL_COUNTERS"
+    },
+    {
+      "id": "SV2-016",
+      "name": "RECORD_BOUNDED_OUTCOME_CHECKER_VERDICT",
+      "from_stage": ["RUNNING", "STOPPING"],
+      "to_stage": "SAME",
+      "receipt": "OUTCOME_CHECKER_VERDICT"
+    },
+    {
+      "id": "SV2-017",
+      "name": "CLOSE_OBSERVATIONS",
+      "from_stage": ["RUNNING", "STOPPING", "GENESIS_BOUND"],
+      "to_stage": "OBSERVATIONS_CLOSED",
+      "receipt": "LEDGER_SEAL"
+    },
+    {
+      "id": "SV2-018",
+      "name": "ENTER_QUIESCENT",
+      "from_stage": ["OBSERVATIONS_CLOSED"],
+      "to_stage": "QUIESCENT",
+      "receipt": "LEDGER_SEAL"
+    },
+    {
+      "id": "SV2-019",
+      "name": "APPLY_PURE_CLASSIFIER",
+      "from_stage": ["QUIESCENT"],
+      "to_stage": "DECIDED",
+      "receipt": "CLASSIFICATION_RULE"
+    },
+    {
+      "id": "SV2-020",
+      "name": "ATOMICALLY_PUBLISH_TERMINAL_CAPSULE",
+      "from_stage": ["DECIDED"],
+      "to_stage": "PUBLISHED",
+      "receipt": "ATOMIC_PUBLICATION"
+    },
+    {
+      "id": "SV2-021",
+      "name": "GUARDIAN_ABORT_UNPUBLISHED_RUN",
+      "from_stage": [
+        "NEW",
+        "GENESIS_BOUND",
+        "SCOPE_READY",
+        "LAUNCHER_CHARGED",
+        "SANDBOX_READY",
+        "RUNNING",
+        "STOPPING",
+        "OBSERVATIONS_CLOSED",
+        "QUIESCENT",
+        "DECIDED"
+      ],
+      "to_stage": "ABANDONED",
+      "receipt": "GUARDIAN_ABORT"
+    }
+  ],
+  "quiescence_requirements": [
+    "LEADER_REAPED_OR_RECORDED_NO_WORKER_PATH",
+    "EXECUTION_SCOPE_EMPTY_AND_CLOSED_TO_NEW_TASKS",
+    "ALL_OUTPUT_WRITERS_GONE",
+    "STREAM_EOF_CLASSIFIED",
+    "QUOTA_AND_DEADLINE_ARBITRATION_FINAL",
+    "FINAL_COUNTERS_BOUND_TO_BASELINE",
+    "IDENTITY_AND_POLICY_GENERATIONS_MATCH",
+    "CLEANUP_COMPLETE",
+    "EVIDENCE_LEDGER_SEALED"
+  ],
+  "finalization_domains": {
+    "quiescent": [false, true],
+    "binding": ["MATCH", "MISMATCH"],
+    "fault": ["CLEAN", "PRESENT"],
+    "quota": ["NONE", "ATTRIBUTED_SEMANTIC", "AMBIGUOUS_OR_ENVIRONMENT"],
+    "stream": ["EOF_VALID", "EOF_ABSENT_OR_TRUNCATED", "EOF_INVALID_OR_TRAILING"],
+    "wait": ["NORMAL_ZERO", "ATTRIBUTED_QUOTA_STOP", "ABNORMAL_OR_UNKNOWN", "NO_WORKER"],
+    "scope": ["EMPTY", "NONEMPTY_OR_ESCAPED"],
+    "counters": ["FINAL_MATCH", "MISSING_OR_DRIFT"],
+    "frame_claim": ["SUCCESS", "REJECT", "RESOURCE_METER", "UNSUPPORTED", "INTERNAL", "NONE_OR_UNKNOWN"],
+    "typed_receipt": ["VALID", "NONE_OR_INVALID"],
+    "checkpoint": ["NOT_REACHED", "WF_SUPPORTED", "WF_UNSUPPORTED", "REJECTED", "METERED", "CONFLICT"]
+  },
+  "classification_semantics": {
+    "mode": "FIRST_MATCH_POSITIVE_ELSE_INTERNAL_AFTER_QUIESCENCE",
+    "nonquiescent_outcome": "NONE",
+    "fallback_outcome": "INTERNAL_FAILURE",
+    "positive_rules": [
+      {
+        "id": "SV2-CF-001",
+        "outcome": "SUCCESS",
+        "conditions": {
+          "quiescent": [true],
+          "binding": ["MATCH"],
+          "fault": ["CLEAN"],
+          "quota": ["NONE"],
+          "stream": ["EOF_VALID"],
+          "wait": ["NORMAL_ZERO"],
+          "scope": ["EMPTY"],
+          "counters": ["FINAL_MATCH"],
+          "frame_claim": ["SUCCESS"],
+          "typed_receipt": ["VALID"],
+          "checkpoint": ["WF_SUPPORTED"]
+        }
+      },
+      {
+        "id": "SV2-CF-002",
+        "outcome": "REJECT",
+        "conditions": {
+          "quiescent": [true],
+          "binding": ["MATCH"],
+          "fault": ["CLEAN"],
+          "quota": ["NONE"],
+          "stream": ["EOF_VALID"],
+          "wait": ["NORMAL_ZERO"],
+          "scope": ["EMPTY"],
+          "counters": ["FINAL_MATCH"],
+          "frame_claim": ["REJECT"],
+          "typed_receipt": ["VALID"],
+          "checkpoint": ["REJECTED"]
+        }
+      },
+      {
+        "id": "SV2-CF-003",
+        "outcome": "INCONCLUSIVE_RESOURCE",
+        "conditions": {
+          "quiescent": [true],
+          "binding": ["MATCH"],
+          "fault": ["CLEAN"],
+          "quota": ["NONE"],
+          "stream": ["EOF_VALID"],
+          "wait": ["NORMAL_ZERO"],
+          "scope": ["EMPTY"],
+          "counters": ["FINAL_MATCH"],
+          "frame_claim": ["RESOURCE_METER"],
+          "typed_receipt": ["VALID"],
+          "checkpoint": ["METERED"]
+        }
+      },
+      {
+        "id": "SV2-CF-004",
+        "outcome": "INCONCLUSIVE_UNSUPPORTED",
+        "conditions": {
+          "quiescent": [true],
+          "binding": ["MATCH"],
+          "fault": ["CLEAN"],
+          "quota": ["NONE"],
+          "stream": ["EOF_VALID"],
+          "wait": ["NORMAL_ZERO"],
+          "scope": ["EMPTY"],
+          "counters": ["FINAL_MATCH"],
+          "frame_claim": ["UNSUPPORTED"],
+          "typed_receipt": ["VALID"],
+          "checkpoint": ["WF_UNSUPPORTED"]
+        }
+      },
+      {
+        "id": "SV2-CF-005",
+        "outcome": "INCONCLUSIVE_RESOURCE",
+        "conditions": {
+          "quiescent": [true],
+          "binding": ["MATCH"],
+          "fault": ["CLEAN"],
+          "quota": ["ATTRIBUTED_SEMANTIC"],
+          "stream": ["EOF_VALID"],
+          "wait": ["ATTRIBUTED_QUOTA_STOP"],
+          "scope": ["EMPTY"],
+          "counters": ["FINAL_MATCH"],
+          "frame_claim": ["SUCCESS", "REJECT", "RESOURCE_METER", "UNSUPPORTED", "INTERNAL"],
+          "typed_receipt": ["VALID"],
+          "checkpoint": ["NOT_REACHED", "WF_SUPPORTED", "WF_UNSUPPORTED", "REJECTED", "METERED"]
+        }
+      },
+      {
+        "id": "SV2-CF-006",
+        "outcome": "INCONCLUSIVE_RESOURCE",
+        "conditions": {
+          "quiescent": [true],
+          "binding": ["MATCH"],
+          "fault": ["CLEAN"],
+          "quota": ["ATTRIBUTED_SEMANTIC"],
+          "stream": ["EOF_ABSENT_OR_TRUNCATED"],
+          "wait": ["ATTRIBUTED_QUOTA_STOP"],
+          "scope": ["EMPTY"],
+          "counters": ["FINAL_MATCH"],
+          "frame_claim": ["NONE_OR_UNKNOWN"],
+          "typed_receipt": ["NONE_OR_INVALID"],
+          "checkpoint": ["NOT_REACHED", "WF_SUPPORTED", "WF_UNSUPPORTED", "REJECTED", "METERED"]
+        }
+      },
+      {
+        "id": "SV2-CF-007",
+        "outcome": "INCONCLUSIVE_RESOURCE",
+        "conditions": {
+          "quiescent": [true],
+          "binding": ["MATCH"],
+          "fault": ["CLEAN"],
+          "quota": ["ATTRIBUTED_SEMANTIC"],
+          "stream": ["EOF_ABSENT_OR_TRUNCATED"],
+          "wait": ["NO_WORKER"],
+          "scope": ["EMPTY"],
+          "counters": ["FINAL_MATCH"],
+          "frame_claim": ["NONE_OR_UNKNOWN"],
+          "typed_receipt": ["NONE_OR_INVALID"],
+          "checkpoint": ["NOT_REACHED"]
+        }
+      }
+    ]
+  },
+  "required_scenarios": [
+    {
+      "id": "CLEAN_SUCCESS",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"SUCCESS","typed_receipt":"VALID","checkpoint":"WF_SUPPORTED"},
+      "expected_outcome": "SUCCESS"
+    },
+    {
+      "id": "CLEAN_REJECT",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"REJECT","typed_receipt":"VALID","checkpoint":"REJECTED"},
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "CLEAN_REQUESTER_METER",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"RESOURCE_METER","typed_receipt":"VALID","checkpoint":"METERED"},
+      "expected_outcome": "INCONCLUSIVE_RESOURCE"
+    },
+    {
+      "id": "CLEAN_UNSUPPORTED",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"UNSUPPORTED","typed_receipt":"VALID","checkpoint":"WF_UNSUPPORTED"},
+      "expected_outcome": "INCONCLUSIVE_UNSUPPORTED"
+    },
+    {
+      "id": "WORKER_INTERNAL",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"INTERNAL","typed_receipt":"VALID","checkpoint":"WF_SUPPORTED"},
+      "expected_outcome": "INTERNAL_FAILURE"
+    },
+    {
+      "id": "QUOTA_TRUNCATES_FRAME",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"ATTRIBUTED_SEMANTIC","stream":"EOF_ABSENT_OR_TRUNCATED","wait":"ATTRIBUTED_QUOTA_STOP","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"NONE_OR_UNKNOWN","typed_receipt":"NONE_OR_INVALID","checkpoint":"NOT_REACHED"},
+      "expected_outcome": "INCONCLUSIVE_RESOURCE"
+    },
+    {
+      "id": "VALID_FRAME_THEN_QUOTA",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"ATTRIBUTED_SEMANTIC","stream":"EOF_VALID","wait":"ATTRIBUTED_QUOTA_STOP","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"SUCCESS","typed_receipt":"VALID","checkpoint":"WF_SUPPORTED"},
+      "expected_outcome": "INCONCLUSIVE_RESOURCE"
+    },
+    {
+      "id": "PROTOCOL_FAULT_THEN_QUOTA",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"PRESENT","quota":"ATTRIBUTED_SEMANTIC","stream":"EOF_INVALID_OR_TRAILING","wait":"ATTRIBUTED_QUOTA_STOP","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"NONE_OR_UNKNOWN","typed_receipt":"NONE_OR_INVALID","checkpoint":"NOT_REACHED"},
+      "expected_outcome": "INTERNAL_FAILURE"
+    },
+    {
+      "id": "NORMAL_EXIT_WITHOUT_FRAME",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_ABSENT_OR_TRUNCATED","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"NONE_OR_UNKNOWN","typed_receipt":"NONE_OR_INVALID","checkpoint":"WF_SUPPORTED"},
+      "expected_outcome": "INTERNAL_FAILURE"
+    },
+    {
+      "id": "CROSS_RUN_BINDING_MISMATCH",
+      "state": {"quiescent":true,"binding":"MISMATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"SUCCESS","typed_receipt":"VALID","checkpoint":"WF_SUPPORTED"},
+      "expected_outcome": "INTERNAL_FAILURE"
+    },
+    {
+      "id": "AMBIGUOUS_OOM",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"AMBIGUOUS_OR_ENVIRONMENT","stream":"EOF_ABSENT_OR_TRUNCATED","wait":"ABNORMAL_OR_UNKNOWN","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"NONE_OR_UNKNOWN","typed_receipt":"NONE_OR_INVALID","checkpoint":"NOT_REACHED"},
+      "expected_outcome": "INTERNAL_FAILURE"
+    },
+    {
+      "id": "DESCENDANT_OR_SCOPE_REMAINS",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"NONEMPTY_OR_ESCAPED","counters":"FINAL_MATCH","frame_claim":"SUCCESS","typed_receipt":"VALID","checkpoint":"WF_SUPPORTED"},
+      "expected_outcome": "INTERNAL_FAILURE"
+    },
+    {
+      "id": "INGRESS_LIMIT_NO_WORKER",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"ATTRIBUTED_SEMANTIC","stream":"EOF_ABSENT_OR_TRUNCATED","wait":"NO_WORKER","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"NONE_OR_UNKNOWN","typed_receipt":"NONE_OR_INVALID","checkpoint":"NOT_REACHED"},
+      "expected_outcome": "INCONCLUSIVE_RESOURCE"
+    },
+    {
+      "id": "NOT_YET_QUIESCENT",
+      "state": {"quiescent":false,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"SUCCESS","typed_receipt":"VALID","checkpoint":"WF_SUPPORTED"},
+      "expected_outcome": "NONE"
+    },
+    {
+      "id": "TRAILING_BYTE_AFTER_SUCCESS",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"PRESENT","quota":"NONE","stream":"EOF_INVALID_OR_TRAILING","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"SUCCESS","typed_receipt":"NONE_OR_INVALID","checkpoint":"WF_SUPPORTED"},
+      "expected_outcome": "INTERNAL_FAILURE"
+    },
+    {
+      "id": "CONFLICTING_CHECKPOINT",
+      "state": {"quiescent":true,"binding":"MATCH","fault":"CLEAN","quota":"NONE","stream":"EOF_VALID","wait":"NORMAL_ZERO","scope":"EMPTY","counters":"FINAL_MATCH","frame_claim":"SUCCESS","typed_receipt":"VALID","checkpoint":"CONFLICT"},
+      "expected_outcome": "INTERNAL_FAILURE"
+    }
+  ],
+  "observation_order_pairs": [
+    {
+      "id": "FRAME_EXIT_EOF_COMMUTE",
+      "order_a": ["FRAME_CANDIDATE", "NORMAL_EXIT", "STREAM_EOF", "LEADER_REAP", "GROUP_EMPTY", "FINAL_COUNTERS"],
+      "order_b": ["NORMAL_EXIT", "LEADER_REAP", "FRAME_CANDIDATE", "FINAL_COUNTERS", "GROUP_EMPTY", "STREAM_EOF"],
+      "expected_outcome": "SUCCESS"
+    },
+    {
+      "id": "QUOTA_PARTIAL_EXIT_COMMUTE",
+      "order_a": ["OPEN_PARTIAL", "QUOTA_ATTRIBUTED", "ATTRIBUTED_EXIT", "STREAM_EOF", "LEADER_REAP", "GROUP_EMPTY", "FINAL_COUNTERS"],
+      "order_b": ["QUOTA_ATTRIBUTED", "ATTRIBUTED_EXIT", "LEADER_REAP", "OPEN_PARTIAL", "GROUP_EMPTY", "FINAL_COUNTERS", "STREAM_EOF"],
+      "expected_outcome": "INCONCLUSIVE_RESOURCE"
+    },
+    {
+      "id": "FAULT_QUOTA_COMMUTE",
+      "order_a": ["PROTOCOL_FAULT", "QUOTA_ATTRIBUTED", "ATTRIBUTED_EXIT", "STREAM_EOF", "LEADER_REAP", "GROUP_EMPTY", "FINAL_COUNTERS"],
+      "order_b": ["QUOTA_ATTRIBUTED", "PROTOCOL_FAULT", "ATTRIBUTED_EXIT", "GROUP_EMPTY", "FINAL_COUNTERS", "LEADER_REAP", "STREAM_EOF"],
+      "expected_outcome": "INTERNAL_FAILURE"
+    }
+  ],
+  "proof_obligations": [
+    "INIT_TYPEOK_AND_REACHABLE_WF",
+    "NO_REQUESTER_INTERPRETATION_BEFORE_CHARGED_SANDBOX_READY",
+    "MONOTONE_OBSERVATION_COORDINATES",
+    "NO_DECISION_BEFORE_QUIESCENCE",
+    "NO_PUBLICATION_BEFORE_DECISION",
+    "POSITIVE_CLASSIFICATION_GUARDS_PAIRWISE_DISJOINT",
+    "QUIESCENT_CLASSIFICATION_TOTAL_WITH_INTERNAL_FALLBACK",
+    "FRAME_EXIT_QUOTA_OBSERVATION_ORDER_COMMUTATIVITY",
+    "RECEIPT_FRESHNESS_APPEND_ONLY_SINGLE_USE_AND_CROSS_RUN_ISOLATION",
+    "PROTOCOL_AND_CONTAINMENT_FAULT_PRECEDENCE_OVER_RESOURCE",
+    "LEADER_REAP_SCOPE_EMPTY_WRITER_EOF_AND_FINAL_COUNTER_SAFETY",
+    "CONDITIONAL_LIVENESS_UNDER_EXPLICIT_KERNEL_AND_GUARDIAN_FAIRNESS",
+    "GUARDIAN_ABORT_CANNOT_PUBLISH_TERMINAL_RESULT",
+    "SELECTED_LINUX_MECHANISM_REFINES_EACH_ABSTRACT_OPERATION"
+  ],
+  "linux_refinement_candidates": {
+    "charged_launch": ["CLONE_INTO_FRESH_CGROUP_WITH_STERILE_LAUNCHER"],
+    "live_identity": ["PIDFD_FOR_LEADER", "CGROUPFD_FOR_EXECUTION_SCOPE"],
+    "cleanup": ["CGROUP_KILL", "CGROUP_EVENTS_POPULATED_ZERO", "LEADER_REAP"],
+    "stream": ["NONBLOCKING_EPOLL_DRAIN_TO_LIMIT_PLUS_ONE_AND_EOF"],
+    "authority": ["EXACT_FD_MANIFEST", "EMPTY_CAPABILITIES", "NO_NEW_PRIVS", "NONDUMPABLE", "ARCH_SPECIFIC_SECCOMP_ALLOWLIST"],
+    "status": "CANDIDATES_ONLY_NOT_SELECTED_OR_PROVED"
+  },
+  "open_decisions": [
+    "EXACT_GUARDIAN_AND_SUPERVISOR_EXECUTABLE_CLOSURE",
+    "EXACT_RACE_FREE_CHARGED_LAUNCH",
+    "CUMULATIVE_CPU_AND_MEMORY_CAUSALITY",
+    "FIXED_BINARY_FRAME_AND_RECEIPT_ENCODING",
+    "STATIC_EXECUTABLE_OR_CAPTURED_INTERPRETER_CLOSURE",
+    "INDEPENDENT_RESULT_AND_PROOF_CHECKER_COMPOSITION",
+    "ATOMIC_PUBLICATION_AND_CRASH_RECOVERY",
+    "KERNEL_VERSION_SPECIFIC_REFINEMENT_PROOF"
+  ],
+  "authorization": {
+    "predecessor_rejection_addressed_in_candidate": true,
+    "machine_validator_implemented": true,
+    "machine_exploration_passed": true,
+    "fresh_hostile_review_complete": false,
+    "protocol_normative": false,
+    "supervisor_implemented": false,
+    "executed_artifact_bound": false,
+    "external_process_supervisor_bound": false,
+    "result_taxonomy_closed": false,
+    "ValidationContextDigest_issued": false,
+    "evaluation_validated": false,
+    "CoreSyntaxWF": false,
+    "InstanceWF": false,
+    "F0_local_acceptance": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

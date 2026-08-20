@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-f0-v5-machine-draft1-parity-rejection-v1",
+  "project": "DomainLease-Linux",
+  "requirement": "RESIDENCY-DYN-001",
+  "date": "2026-08-10",
+  "status": "F0_v5_machine_draft1_structurally_valid_semantically_rejected",
+  "exact_draft": {
+    "grammar_sha256": "e8a8436845a6a0c97fae9be37883babaf565a8ecde4a94f5c7be61247d4899b6",
+    "meta_schema_sha256": "8bcf8f2d9361c7a90cced188756c0b3fc6aae0ed20e63e83a0290b56b9999508",
+    "checker_sha256": "bb1975251c1329f786275da22e697e4655919f0a6044127df1fdca71611d0373",
+    "checker_output_sha256": "f8c47329bd8d75f6ca05d2d2c05050848091e66e31add59c102e0f26b71d1166",
+    "mutation_runner_sha256": "99e06a9294a939ae59f06b88b7dbc89831d79d9a7a8f57601b7fb3fa32f99402",
+    "mutation_output_sha256": "41ebb1ddf832c286304edfa5ffb2b910ee0a1accfac2c944274e45d74a455551",
+    "mutations_total": 38,
+    "mutations_rejected_at_expected_id": 38,
+    "semantic_disposition": "rejected"
+  },
+  "local_reviews": [
+    {
+      "axis": "grammar_meta_schema_self_description",
+      "session_id": "019fea0f-eebf-7a20-98a3-5b840126bbc6",
+      "external_authority": false,
+      "verdict": "LOCAL_ADVISORY_REJECT"
+    },
+    {
+      "axis": "markdown_AST_semantic_parity",
+      "session_id": "019fea10-0337-7742-aecf-5a2fb4107656",
+      "external_authority": false,
+      "verdict": "LOCAL_ADVISORY_REJECT"
+    },
+    {
+      "axis": "validator_and_mutation_oracle",
+      "session_id": "019fea10-1c3d-7703-b0f4-085ec5766d2e",
+      "external_authority": false,
+      "verdict": "LOCAL_ADVISORY_REJECT"
+    }
+  ],
+  "blocking_findings": [
+    "missing_action_parameter_binder",
+    "missing_checked_common_term_result_sort",
+    "missing_Qty_arithmetic_result_binding",
+    "incomplete_Atom_class_and_cardinality_premises",
+    "exact_scope_incorrectly_narrowed_to_finite_profile",
+    "missing_finite_runtime_replay_carriers",
+    "missing_recursive_semantic_rule_tables",
+    "missing_claim_morphism_theorem_proof_and_checker_AST",
+    "missing_primitive_wire_and_per_collection_canonicalization",
+    "same_identity_permits_signature_drift"
+  ],
+  "authorization": {
+    "retain_draft1_as_rejected_evidence": true,
+    "construct_successor_under_ADR_0021": true,
+    "F0_local_acceptance": false,
+    "F1_design": false,
+    "F2_design": false,
+    "F3_completion": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "semantic_freeze": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

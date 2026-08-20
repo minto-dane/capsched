@@ -1,6 +1,6 @@
 # Formal Models Index
 
-Updated: 2026-07-17
+Updated: 2026-08-09
 
 ## Current Formal Records
 
@@ -143,6 +143,18 @@ Updated: 2026-07-17
 | 0135 | Checked with 16/15/depth-15 safe pass, notifier restart inside the 2*A bound, two stable-window liveness properties, and 47 expected unsafe counterexamples | P5A-R4 Generation-Fenced Coalesced Pull Recovery Model |
 | 0136 | Checked with 21/20/depth-20 safe pass, irq-to-work dispatch, notifier restart, ordered offline drain, three liveness properties, and 60 expected unsafe counterexamples | P5A-R4 E1 Dispatch and Lifetime Evidence Plan Model |
 | 0137 | Reproduced with 30/29/depth-29 safe pass, final-empty insertion/self-requeue, generation and membership restart, late admission, separate current observation, ordered drain, four liveness properties, and 76 expected unsafe counterexamples | P5A-R4 E3 Concurrency and Diagnostic Evidence Plan Model |
+| 0138 | Checked twice with 5/4/depth-4 safe pass and 15 expected missing-evidence or overclaim counterexamples | P5A-R4 Post-N135 Authorization Gate Model |
+| 0139 | Checked twice with 5/4/depth-4 safe pass and 43 expected prerequisite, measurement-contract, premature-authorization, or overclaim counterexamples | P5A-R4 E4 Local-Quantum Measurement Plan Model |
+| 0140 | Checked with 16/16/depth-16 safe pass, exact receipt/install safety, separate current stop, two stable-window liveness properties, and 49 expected unsafe counterexamples | P5A-R5 Generation-Sealed Immutable Projection Model |
+| 0141 | Checked with 3/3/depth-3 safe fail-closed pass, expected stale-trust safety counterexample, and expected allowed-progress liveness counterexample | P5A-R5 E1 EEVDF Selector-Coherence Model |
+| 0142 | Checked with 5/5/depth-5 safe pass, two liveness properties, 13 architecture-safety counterexamples, and 2 progress counterexamples | P5A-R6 Sealed Masked Domain Forest Model |
+| 0143 | Checked with 10/10/depth-10 safe pass, two liveness properties, 50 plan-safety counterexamples, and 2 progress counterexamples | P5A-R6 E1 Domain-Forest Evidence Plan Model |
+| 0144 | Reproduced with 14/14/depth-14 safe pass, bounded selector/reconcile, neutral migration, separate current observation, ordered RCU drain, three liveness properties, 79 safety counterexamples, and 3 liveness counterexamples | P5A-R6 E3 Correctness and Concurrency Evidence Plan Model |
+| 0145 | Reproduced with 5/4/depth-4 safe pass and 24 expected authorization counterexamples | P5A-R6 Post-E3 Authorization and Threat Boundary Model |
+| 0146 | Reproduced with 14/14/depth-14 safe pass, two liveness properties, 82 safety counterexamples, and 2 liveness counterexamples | P5A-R6 E4 Local-Quantum Measurement Plan Model |
+| 0147 | EC1 capsule and validator replay pass: steady 155817/1920/depth-21, revoke 853049/10400/depth-21, four liveness properties, and 10 expected safety/liveness counterexamples | Monitor Root Scheduler Model |
+| 0148 | Finite pre-admitted EC1 capsule replay passes: admission 190271/2660/depth-21, migration 39761/560/depth-8, hotplug 34791/490/depth-7, revoke 70071/980/depth-8, and 22 expected counterexamples; dynamic recurring residency remains open | Bounded Domain Residency Model |
+| 0149 | Retained rejected R10 typed machine artifact; structural tooling is negative regression evidence, while semantic self-certification and vacuity forbid freeze, TLA+ authorization, or model support | Dynamic Residency R10 Machine Semantics |
 
 ## Planned
 

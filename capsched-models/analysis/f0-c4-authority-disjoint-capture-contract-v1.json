@@ -1,0 +1,580 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-authority-disjoint-capture-contract-v1",
+  "status": "ARCHITECTURE_CONTRACT_PRE_IMPLEMENTATION",
+  "reasoning_profile": {
+    "engine": "gpt-5.6-sol",
+    "effort": "max",
+    "roles": [
+      "architecture_synthesis",
+      "hostile_contradiction_search",
+      "minimality_analysis"
+    ],
+    "approval_authority": false,
+    "tla_role": "terminal_post_freeze_validation_only"
+  },
+  "claim_boundary": {
+    "capture_may_support_only": [
+      "F0-C4-FAST-MUTATION-AND-STATIC-v1",
+      "F0-C4-REACH-CHILD-EXACT-FIXTURE-BOUNDED-v1",
+      "F0-C4-REACH-PARENT-EXACT-REPETITION-BOUNDED-v1",
+      "F0-C4-DECLARED-LOCAL-EFFECT-COMMUTATION-v1"
+    ],
+    "must_remain_open": [
+      "F0-C4-INDEPENDENCE-RELATION-COMPLETE-v1",
+      "F0-C4-EXTERNAL-AUTHENTICATION-v1",
+      "F0-C4-ATTACK-CONTEXT-KEY-REFINEMENT-v1",
+      "F0-C4-UNBOUNDED-REPEATED-ATTACK-HISTORY-v1",
+      "F0-C4-DURABLE-STORE-LINEARIZATION-REFINEMENT-v1",
+      "F0-C4-PARENT-CHILD-INDEPENDENCE-REFINEMENT-v1",
+      "F0-LOCAL-ACCEPTANCE-v1"
+    ],
+    "maximum_local_disposition": "AUTHORITY_DISJOINT_CAPTURED_LOCAL_CANDIDATE_ONLY",
+    "product_hostile_kernel_boundary_proved": false,
+    "external_review_performed": false
+  },
+  "trust_boundary": {
+    "trusted": [
+      "capture_host_linux_kernel",
+      "root_service_manager_and_guardian",
+      "root_owned_capture_supervisor_binary_and_policy",
+      "cgroup_v2_and_pidfd_kernel_implementation",
+      "root_owned_snapshot_and_evidence_filesystem",
+      "content_addressed_read_only_candidate_toolchain_image",
+      "sha256_and_canonical_json_implementations"
+    ],
+    "untrusted": [
+      "candidate_source_and_scripts_before_capture",
+      "candidate_component_uid_and_all_descendants",
+      "candidate_stdout_stderr_and_result_json",
+      "candidate_validator_aggregate_and_self_reported_receipts",
+      "candidate_environment_working_directory_and_temporary_files",
+      "network_and_wall_clock"
+    ],
+    "outside_local_claim": [
+      "hostile_capture_host_kernel",
+      "malicious_root_or_service_manager",
+      "physical_storage_or_firmware_attack",
+      "external_reviewer_identity_and_signature_authority",
+      "production_domain_monitor_or_linux_refinement"
+    ],
+    "capture_host_kernel_compromise_in_scope": false,
+    "same_uid_mode_bits_are_a_security_boundary": false
+  },
+  "platform_requirements": [
+    {
+      "id": "PLAT-CGROUP2-UNIFIED",
+      "requirement": "A unified cgroup v2 hierarchy is mounted and controlled by the trusted root supervisor.",
+      "evidence": "captured mountinfo and cgroup.stat bytes",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-CGROUP-KILL",
+      "requirement": "Every candidate component cgroup exposes cgroup.kill; process-group-only cleanup is forbidden.",
+      "evidence": "opened cgroup.kill descriptor and post-kill receipt",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-CGROUP-EVENTS",
+      "requirement": "Every candidate component cgroup exposes cgroup.events and reaches populated 0 before UID reuse or finalization.",
+      "evidence": "captured populated transition and final cgroup.events bytes",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-PIDFD-WAITID",
+      "requirement": "The supervisor obtains a pidfd at creation and observes leader termination with waitid P_PIDFD.",
+      "evidence": "pidfd creation and wait receipt",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-CLONE-INTO-CGROUP",
+      "requirement": "The component leader is born into its final cgroup with clone3 CLONE_INTO_CGROUP and CLONE_PIDFD; attach-after-exec is forbidden.",
+      "evidence": "captured clone3 feature probe and cgroup identity before exec release",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-DEDICATED-CAPTURE-VM",
+      "requirement": "Capture runs only in the pinned dedicated VM identity with no unrelated non-root workload, no package update during a run, and a root-reserved candidate UID range.",
+      "evidence": "root-owned VM policy, machine-id, boot-id, package-manager lock state, login inventory, and reserved-range receipt",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-DEDICATED-UID",
+      "requirement": "Candidate execution uses one VM-policy-reserved, run-locked non-root UID with no supplementary groups, capabilities, login, user-namespace allocation, or concurrent reuse.",
+      "evidence": "trusted pre-exec status bytes, host-wide process scan, reserved-range policy, and allocation lock receipt",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-MOUNT-NAMESPACE",
+      "requirement": "Each component receives a private mount namespace with a read-only root view, read-only input snapshot, private temporary storage, a direct-I/O sparse loop-backed ext4 work mount capped independently of the host filesystem, and no candidate-writable evidence path.",
+      "evidence": "captured mountinfo from the pre-exec stub and supervisor path audit",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-NETWORK-DISABLED",
+      "requirement": "Candidate components run in a private network namespace with no configured interfaces except loopback kept down.",
+      "evidence": "captured namespace identity and interface inventory",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-ROOT-OWNED-STORAGE",
+      "requirement": "Snapshots, intents, raw receipts, commit markers, reducer inputs, and final records use fixed root-owned paths on the VM-native filesystem outside candidate traversal and write authority; host-shared mounts are source-only.",
+      "evidence": "fixed-root descriptor-relative ownership, mode, link-count, mount-id, filesystem-type, and free-space receipts",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-IMMUTABLE-TOOLCHAIN",
+      "requirement": "Every component mounts the same content-addressed read-only candidate toolchain image; a live /usr tree or selected-file digest is insufficient.",
+      "evidence": "toolchain image SHA-256, read-only mount identity, complete image manifest, and post-run mount identity",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-MONOTONIC-DEADLINE",
+      "requirement": "Deadlines and cleanup bounds use CLOCK_MONOTONIC or CLOCK_BOOTTIME, never candidate or wall-clock time.",
+      "evidence": "timerfd configuration and monotonic timestamp receipts",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-ATOMIC-DURABILITY",
+      "requirement": "The evidence filesystem supports fsync on files and directories, atomic no-replace rename, and a durable commit marker written only after publication and parent-directory fsync.",
+      "evidence": "startup feature probe, publication receipt, parent-fsync receipt, and commit-marker digest",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-SUPERVISOR-GUARDIAN",
+      "requirement": "A root service manager owns the supervisor lifecycle and kills the complete delegated supervisor subtree if the supervisor exits unexpectedly; a component-local cgroup OOM terminates that candidate component without automatically killing the trusted supervisor.",
+      "evidence": "unit properties including OOMPolicy=continue, component memory.oom.group, cgroup path, guardian identity, and fault-injection receipt",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-BOOT-RECONCILIATION",
+      "requirement": "A durable pre-launch run intent binds boot identity; boot reconciliation converts every uncommitted prior-boot intent to a drained BOOT_INTERRUPTED incomplete disposition.",
+      "evidence": "durable intent, boot-id comparison, boot reconciler identity, and incomplete commit marker",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-PREEXEC-ATTESTATION",
+      "requirement": "Before release to candidate code, the trusted stub captures its exact fd table, Uid/Gid/Groups, CapInh/CapPrm/CapEff/CapBnd/CapAmb, NoNewPrivs, Seccomp, mountinfo, namespace IDs, cgroup identity, and interface inventory.",
+      "evidence": "root-pipe-captured pre-exec observation bytes and digest",
+      "fail_closed": true
+    },
+    {
+      "id": "PLAT-CAPACITY-RESERVE",
+      "requirement": "The sealed component memory maximum plus guardian reserve does not exceed probed VM memory, and VM-native evidence free space exceeds the sealed raw bound plus reserve.",
+      "evidence": "MemTotal, component memory.max, supervisor memory.low, guardian reserve, filesystem free bytes, and derived inequality receipt",
+      "fail_closed": true
+    }
+  ],
+  "roles": [
+    {"id": "CANDIDATE_SOURCE", "uid_class": "untrusted_repository_source", "trusted": false, "may_launch_candidate": false, "may_launch_reducer": false, "may_write_cgroup": false, "may_issue_claim_decision": false},
+    {"id": "CAPTURE_INSTALLER", "uid_class": "root_offline_reviewed_commit_installer", "trusted": true, "may_launch_candidate": false, "may_launch_reducer": false, "may_write_cgroup": false, "may_issue_claim_decision": false},
+    {"id": "ROOT_GUARDIAN", "uid_class": "root_service_manager", "trusted": true, "may_launch_candidate": false, "may_launch_reducer": false, "may_write_cgroup": true, "may_issue_claim_decision": false},
+    {"id": "CAPTURE_SUPERVISOR", "uid_class": "root_locked_service", "trusted": true, "may_launch_candidate": true, "may_launch_reducer": false, "may_write_cgroup": true, "may_issue_claim_decision": false},
+    {"id": "CANDIDATE_COMPONENT", "uid_class": "dedicated_reserved_nonroot", "trusted": false, "may_launch_candidate": false, "may_launch_reducer": false, "may_write_cgroup": false, "may_issue_claim_decision": false},
+    {"id": "REDUCTION_SUPERVISOR", "uid_class": "root_locked_service_distinct_from_capture", "trusted": true, "may_launch_candidate": false, "may_launch_reducer": true, "may_write_cgroup": false, "may_issue_claim_decision": false},
+    {"id": "POST_RUN_REDUCER", "uid_class": "dedicated_nonroot_validator_distinct_from_candidate", "trusted": true, "may_launch_candidate": false, "may_launch_reducer": false, "may_write_cgroup": false, "may_issue_claim_decision": false},
+    {"id": "EXTERNAL_APPROVER", "uid_class": "outside_local_capture_system", "trusted": false, "may_launch_candidate": false, "may_launch_reducer": false, "may_write_cgroup": false, "may_issue_claim_decision": false}
+  ],
+  "object_authority": {
+    "actions": ["read", "byte_produce", "create", "append", "finalize"],
+    "objects": [
+      {"id": "CANDIDATE_SOURCE_OBJECT", "read_roles": ["CAPTURE_SUPERVISOR"], "byte_producer_roles": ["CANDIDATE_SOURCE"], "create_roles": ["CANDIDATE_SOURCE"], "append_roles": ["CANDIDATE_SOURCE"], "finalize_roles": []},
+      {"id": "TRUSTED_CAPTURE_ARTIFACT", "read_roles": ["CAPTURE_INSTALLER", "ROOT_GUARDIAN", "CAPTURE_SUPERVISOR", "REDUCTION_SUPERVISOR"], "byte_producer_roles": ["CAPTURE_INSTALLER"], "create_roles": ["CAPTURE_INSTALLER"], "append_roles": [], "finalize_roles": ["CAPTURE_INSTALLER"]},
+      {"id": "TOOLCHAIN_IMAGE", "read_roles": ["CAPTURE_INSTALLER", "CAPTURE_SUPERVISOR", "CANDIDATE_COMPONENT", "REDUCTION_SUPERVISOR", "POST_RUN_REDUCER"], "byte_producer_roles": ["CAPTURE_INSTALLER"], "create_roles": ["CAPTURE_INSTALLER"], "append_roles": [], "finalize_roles": ["CAPTURE_INSTALLER"]},
+      {"id": "INPUT_SNAPSHOT", "read_roles": ["CAPTURE_SUPERVISOR", "CANDIDATE_COMPONENT"], "byte_producer_roles": ["CAPTURE_SUPERVISOR"], "create_roles": ["CAPTURE_SUPERVISOR"], "append_roles": ["CAPTURE_SUPERVISOR"], "finalize_roles": ["CAPTURE_SUPERVISOR"]},
+      {"id": "RUN_INTENT", "read_roles": ["ROOT_GUARDIAN", "CAPTURE_SUPERVISOR"], "byte_producer_roles": ["ROOT_GUARDIAN"], "create_roles": ["ROOT_GUARDIAN"], "append_roles": [], "finalize_roles": ["ROOT_GUARDIAN"]},
+      {"id": "RAW_STREAM", "read_roles": ["CAPTURE_SUPERVISOR", "REDUCTION_SUPERVISOR"], "byte_producer_roles": ["CANDIDATE_COMPONENT"], "create_roles": ["CAPTURE_SUPERVISOR"], "append_roles": ["CAPTURE_SUPERVISOR"], "finalize_roles": ["CAPTURE_SUPERVISOR"]},
+      {"id": "PREEXEC_OBSERVATION", "read_roles": ["CAPTURE_SUPERVISOR", "REDUCTION_SUPERVISOR"], "byte_producer_roles": ["CAPTURE_SUPERVISOR"], "create_roles": ["CAPTURE_SUPERVISOR"], "append_roles": ["CAPTURE_SUPERVISOR"], "finalize_roles": ["CAPTURE_SUPERVISOR"]},
+      {"id": "LIFECYCLE_RECEIPT", "read_roles": ["CAPTURE_SUPERVISOR", "REDUCTION_SUPERVISOR"], "byte_producer_roles": ["CAPTURE_SUPERVISOR"], "create_roles": ["CAPTURE_SUPERVISOR"], "append_roles": [], "finalize_roles": ["CAPTURE_SUPERVISOR"]},
+      {"id": "GUARDIAN_FAILURE_RECEIPT", "read_roles": ["ROOT_GUARDIAN", "REDUCTION_SUPERVISOR"], "byte_producer_roles": ["ROOT_GUARDIAN"], "create_roles": ["ROOT_GUARDIAN"], "append_roles": [], "finalize_roles": ["ROOT_GUARDIAN"]},
+      {"id": "RAW_MANIFEST", "read_roles": ["CAPTURE_SUPERVISOR", "ROOT_GUARDIAN", "REDUCTION_SUPERVISOR"], "byte_producer_roles": ["CAPTURE_SUPERVISOR"], "create_roles": ["CAPTURE_SUPERVISOR"], "append_roles": [], "finalize_roles": ["CAPTURE_SUPERVISOR"]},
+      {"id": "RAW_COMMIT_MARKER", "read_roles": ["ROOT_GUARDIAN", "CAPTURE_SUPERVISOR", "REDUCTION_SUPERVISOR"], "byte_producer_roles": ["ROOT_GUARDIAN", "CAPTURE_SUPERVISOR"], "create_roles": ["ROOT_GUARDIAN", "CAPTURE_SUPERVISOR"], "append_roles": [], "finalize_roles": ["ROOT_GUARDIAN", "CAPTURE_SUPERVISOR"]},
+      {"id": "REDUCER_INPUT_VIEW", "read_roles": ["REDUCTION_SUPERVISOR", "POST_RUN_REDUCER"], "byte_producer_roles": ["REDUCTION_SUPERVISOR"], "create_roles": ["REDUCTION_SUPERVISOR"], "append_roles": [], "finalize_roles": ["REDUCTION_SUPERVISOR"]},
+      {"id": "REDUCER_OUTPUT", "read_roles": ["REDUCTION_SUPERVISOR"], "byte_producer_roles": ["POST_RUN_REDUCER"], "create_roles": ["REDUCTION_SUPERVISOR"], "append_roles": ["REDUCTION_SUPERVISOR"], "finalize_roles": ["REDUCTION_SUPERVISOR"]}
+    ],
+    "candidate_roles_with_evidence_create_append_or_finalize": [],
+    "local_roles_with_claim_decision_authority": []
+  },
+  "input_snapshot": {
+    "required_candidate_objects": [
+      "f0-supervisor-c4-claim-registry-v1.json",
+      "f0_supervisor_lts_v3.py",
+      "f0_supervisor_orchestrator_v3.py",
+      "test-f0-supervisor-lts-v3-mutations.py",
+      "test-f0-supervisor-orchestrator-v3-mutations.py",
+      "test-run-f0-supervisor-v3-full.sh",
+      "validate-f0-supervisor-lts-v3.py",
+      "run-f0-supervisor-v3-full.sh"
+    ],
+    "capture_authority": "CAPTURE_SUPERVISOR",
+    "source_resolution": "descriptor_relative_beneath_no_symlink_no_magiclink",
+    "source_open_flags": "O_RDONLY|O_CLOEXEC|O_NOFOLLOW|O_NONBLOCK",
+    "source_type_requirement": "regular_file_and_st_nlink_equals_1_before_read",
+    "reject_hardlink_aliases": true,
+    "single_open_copy_and_hash": true,
+    "root_owned_staging_mode": "0700",
+    "sealed_directory_mode": "0555",
+    "sealed_file_mode": "0444_or_0555_by_executable_policy",
+    "candidate_mount_access": "read_only_bind_mount",
+    "candidate_write_prevention": [
+      "disjoint_uid_and_no_capabilities",
+      "read_only_bind_mount",
+      "no_writable_alias_or_open_descriptor",
+      "root_owned_parent_not_traversable",
+      "pre_and_post_descriptor_metadata_and_digest_check"
+    ],
+    "toolchain_identity": [
+      "/usr/bin/python3",
+      "/bin/bash",
+      "/usr/bin/env",
+      "/usr/bin/sha256sum",
+      "dynamic_loader_and_loaded_shared_objects",
+      "kernel_release_and_boot_identity",
+      "complete_candidate_toolchain_image_sha256_and_manifest"
+    ],
+    "toolchain_externally_authenticated": false
+  },
+  "component_plan": {
+    "plan_authority": "root_owned_policy_selected_before_candidate_execution",
+    "candidate_may_add_remove_or_reorder_components": false,
+    "parallel_execution": false,
+    "execution_order": [
+      "static-registries",
+      "tests",
+      "child-bundle-producer",
+      "child-bundle-checker",
+      "orchestrator"
+    ],
+    "components": [
+      {
+        "id": "static-registries",
+        "role": "FAST_REGISTRY_CHECK",
+        "max_wall_seconds": 1800,
+        "argv_suffix": ["--component", "static-registries"]
+      },
+      {
+        "id": "tests",
+        "role": "FAST_HOSTILE_REGRESSION",
+        "max_wall_seconds": 3600,
+        "argv_suffix": ["--component", "tests"]
+      },
+      {
+        "id": "child-bundle-producer",
+        "role": "FULL_CHILD_PRODUCER",
+        "max_wall_seconds": 43200,
+        "argv_suffix": ["--component", "child-bundle-producer"]
+      },
+      {
+        "id": "child-bundle-checker",
+        "role": "FULL_CHILD_CHECKER",
+        "max_wall_seconds": 43200,
+        "argv_suffix": ["--component", "child-bundle-checker"]
+      },
+      {
+        "id": "orchestrator",
+        "role": "FULL_PARENT_ORCHESTRATOR",
+        "max_wall_seconds": 43200,
+        "argv_suffix": ["--component", "orchestrator"]
+      }
+    ],
+    "argv_prefix": [
+      "/usr/bin/python3",
+      "-S",
+      "-B",
+      "INPUT/validate-f0-supervisor-lts-v3.py"
+    ],
+    "environment": {
+      "F0_C4_EXACT_STORE_DIR": "/WORK",
+      "PATH": "/usr/bin:/bin",
+      "PYTHONPATH": "INPUT",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONHASHSEED": "0"
+    },
+    "result_protocol": {
+      "stdout_lines": 1,
+      "required_prefix": "RESULT_JSON=",
+      "stderr_must_be_empty": true,
+      "returncode_must_equal": 0,
+      "strict_json_duplicate_keys_rejected": true,
+      "nonfinite_numbers_rejected": true
+    }
+  },
+  "containment": {
+    "hierarchy": "root_guardian_cgroup/capture_supervisor_cgroup/run_cgroup/component_cgroup",
+    "delegated_to_supervisor": true,
+    "delegated_to_candidate": false,
+    "leader_placement": "clone3_CLONE_INTO_CGROUP_and_CLONE_PIDFD_before_exec",
+    "attach_after_exec_allowed": false,
+    "descendant_rule": "all descendants inherit the component cgroup and cannot write cgroupfs",
+    "cleanup_signal": "cgroup.kill",
+    "cleanup_complete_predicate": "cgroup.events populated equals 0",
+    "process_group_is_containment_boundary": false,
+    "namespaces": ["mount", "pid", "ipc", "uts", "network", "cgroup"],
+    "capability_sets": "empty_effective_permitted_inheritable_ambient",
+    "no_new_privileges": true,
+    "seccomp_profile_selected_by_root_policy": true,
+    "candidate_cannot_reuse_uid_until_drained": true,
+    "supervisor_failure_action": "root_guardian_kills_complete_supervisor_subtree_and_marks_run_incomplete"
+  },
+  "observation": {
+    "lifecycle_authority": "CAPTURE_SUPERVISOR",
+    "leader_observation": "pidfd_plus_waitid_P_PIDFD",
+    "descendant_observation": "once_opened_component_cgroup_dirfd_events_and_resource_files",
+    "stdout_capture": "root_opened_pipe_read_by_supervisor",
+    "stderr_capture": "root_opened_pipe_read_by_supervisor",
+    "preexec_capture": "trusted_stub_bytes_over_root_opened_status_pipe_before_candidate_release",
+    "stdin_source": "read_only_dev_null",
+    "candidate_output_file_access": "none",
+    "raw_receipt_fields": [
+      "component_id",
+      "sealed_plan_sha256",
+      "input_root_sha256",
+      "argv",
+      "environment_sha256",
+      "preexec_observation_size_sha256_and_bytes",
+      "cgroup_path_and_id",
+      "leader_pid_and_pidfd_identity",
+      "started_monotonic_ns",
+      "finished_monotonic_ns",
+      "waitid_status",
+      "deadline_classification",
+      "stdout_size_sha256_and_bytes",
+      "stderr_size_sha256_and_bytes",
+      "result_payload_sha256",
+      "resource_counters",
+      "external_memory_boundary",
+      "cgroup_kill_used",
+      "populated_zero_observed",
+      "toolchain_identity"
+    ],
+    "preexec_observation_required_fields": [
+      "fd_table",
+      "uid_gid_groups",
+      "capability_sets",
+      "no_new_privileges",
+      "seccomp_mode",
+      "mountinfo",
+      "namespace_ids",
+      "cgroup_identity",
+      "interface_inventory"
+    ],
+    "candidate_validator_receipts_authoritative": false,
+    "root_receipts_externally_attested": false
+  },
+  "finalization": {
+    "fixed_native_root": "/var/lib/domainlease-f0-c4",
+    "durable_intent_before_launch": true,
+    "staging_owner": "root",
+    "candidate_can_traverse_staging": false,
+    "raw_bytes_hashed_while_reading": true,
+    "files_fsynced_before_manifest": true,
+    "manifest_canonical_json": true,
+    "manifest_binds_all_raw_and_platform_receipts": true,
+    "manifest_fsynced_before_publish": true,
+    "publication": "renameat2_RENAME_NOREPLACE_then_parent_fsync",
+    "commit_marker": "root_owned_no_replace_marker_after_parent_fsync",
+    "uncommitted_published_directory_is_complete": false,
+    "guardian_failure_record_distinct_from_raw_evidence": true,
+    "boot_reconciler_required": true,
+    "published_owner": "root",
+    "published_file_mode": "0444",
+    "published_directory_mode": "0555",
+    "candidate_can_modify_published_bytes": false,
+    "root_or_physical_storage_immutability_proved": false,
+    "post_run_reducer_reads_only_published_bytes": true,
+    "reduction_mutates_capture": false
+  },
+  "state_machines": {
+    "raw_capture": {
+      "initial": "RAW_DECLARED",
+      "states": ["RAW_DECLARED", "SNAPSHOTTING", "SEALED", "LAUNCHING", "RUNNING", "DRAINING", "RAW_CAPTURED", "RAW_COMPLETE_FINALIZING", "RAW_INCOMPLETE_FINALIZING", "RAW_CAPTURE_COMPLETE", "RAW_CAPTURE_INCOMPLETE"],
+      "terminal": ["RAW_CAPTURE_COMPLETE", "RAW_CAPTURE_INCOMPLETE"],
+      "transitions": [
+        {"id": "RAW-T01", "from": "RAW_DECLARED", "to": "SNAPSHOTTING", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T02", "from": "SNAPSHOTTING", "to": "SEALED", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T03", "from": "SNAPSHOTTING", "to": "RAW_INCOMPLETE_FINALIZING", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T04", "from": "SEALED", "to": "LAUNCHING", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T05", "from": "LAUNCHING", "to": "RUNNING", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T06", "from": "LAUNCHING", "to": "DRAINING", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T07", "from": "RUNNING", "to": "DRAINING", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T08", "from": "DRAINING", "to": "RAW_CAPTURED", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T09", "from": "RAW_CAPTURED", "to": "RAW_COMPLETE_FINALIZING", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T10", "from": "RAW_CAPTURED", "to": "RAW_INCOMPLETE_FINALIZING", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T11", "from": "RAW_COMPLETE_FINALIZING", "to": "RAW_CAPTURE_COMPLETE", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T12", "from": "RAW_INCOMPLETE_FINALIZING", "to": "RAW_CAPTURE_INCOMPLETE", "authority": "CAPTURE_SUPERVISOR"},
+        {"id": "RAW-T13", "from": "RAW_COMPLETE_FINALIZING", "to": "RAW_INCOMPLETE_FINALIZING", "authority": "CAPTURE_SUPERVISOR"}
+      ]
+    },
+    "guardian_recovery": {
+      "initial": "GUARD_ARMED",
+      "states": ["GUARD_ARMED", "GUARD_DRAINING", "GUARD_FINALIZING", "GUARDIAN_INCOMPLETE_PUBLISHED", "GUARD_DISARMED"],
+      "terminal": ["GUARDIAN_INCOMPLETE_PUBLISHED", "GUARD_DISARMED"],
+      "transitions": [
+        {"id": "GUARD-T01", "from": "GUARD_ARMED", "to": "GUARD_DRAINING", "authority": "ROOT_GUARDIAN"},
+        {"id": "GUARD-T02", "from": "GUARD_DRAINING", "to": "GUARD_FINALIZING", "authority": "ROOT_GUARDIAN"},
+        {"id": "GUARD-T03", "from": "GUARD_FINALIZING", "to": "GUARDIAN_INCOMPLETE_PUBLISHED", "authority": "ROOT_GUARDIAN"},
+        {"id": "GUARD-T04", "from": "GUARD_ARMED", "to": "GUARD_DISARMED", "authority": "ROOT_GUARDIAN"}
+      ]
+    },
+    "reduction": {
+      "initial": "REDUCTION_DECLARED",
+      "states": ["REDUCTION_DECLARED", "VERIFYING_RAW_COMMIT", "PARSING_STRICT_RESULTS", "REDUCING", "REDUCTION_PASS_FINALIZING", "REDUCTION_NONPASS_FINALIZING", "REDUCTION_PASS", "REDUCTION_REJECT", "REDUCTION_INCOMPLETE"],
+      "terminal": ["REDUCTION_PASS", "REDUCTION_REJECT", "REDUCTION_INCOMPLETE"],
+      "transitions": [
+        {"id": "REDUCE-T01", "from": "REDUCTION_DECLARED", "to": "VERIFYING_RAW_COMMIT", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T02", "from": "VERIFYING_RAW_COMMIT", "to": "PARSING_STRICT_RESULTS", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T03", "from": "VERIFYING_RAW_COMMIT", "to": "REDUCTION_NONPASS_FINALIZING", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T04", "from": "PARSING_STRICT_RESULTS", "to": "REDUCING", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T05", "from": "PARSING_STRICT_RESULTS", "to": "REDUCTION_NONPASS_FINALIZING", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T06", "from": "REDUCING", "to": "REDUCTION_PASS_FINALIZING", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T07", "from": "REDUCING", "to": "REDUCTION_NONPASS_FINALIZING", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T08", "from": "REDUCTION_PASS_FINALIZING", "to": "REDUCTION_PASS", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T09", "from": "REDUCTION_NONPASS_FINALIZING", "to": "REDUCTION_REJECT", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T10", "from": "REDUCTION_NONPASS_FINALIZING", "to": "REDUCTION_INCOMPLETE", "authority": "REDUCTION_SUPERVISOR"},
+        {"id": "REDUCE-T11", "from": "REDUCTION_PASS_FINALIZING", "to": "REDUCTION_NONPASS_FINALIZING", "authority": "REDUCTION_SUPERVISOR"}
+      ]
+    }
+  },
+  "failure_taxonomy": [
+    {"id": "PRECONDITION_REJECTED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": false},
+    {"id": "LAUNCH_FAILED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "EXITED_NONZERO", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "DEADLINE_EXCEEDED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "OUTPUT_LIMIT_EXCEEDED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "SUPERVISOR_DIED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "CONTAINMENT_DRAIN_FAILED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "INPUT_STABILITY_FAILED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "TOOLCHAIN_IDENTITY_FAILED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "FINALIZATION_FAILED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": false},
+    {"id": "BOOT_INTERRUPTED", "class": "INCOMPLETE", "positive_eligible": false, "requires_drain_if_launched": false},
+    {"id": "RAW_CAPTURE_COMPLETE", "class": "COMPLETE_RAW_ONLY", "positive_eligible": false, "requires_drain_if_launched": true},
+    {"id": "STRICT_RESULT_INVALID", "class": "COMPLETE_REJECT", "positive_eligible": false, "requires_drain_if_launched": false},
+    {"id": "REDUCER_REJECTED", "class": "COMPLETE_REJECT", "positive_eligible": false, "requires_drain_if_launched": false},
+    {"id": "COMPLETE_REDUCTION", "class": "LOCAL_REDUCTION_ELIGIBLE", "positive_eligible": true, "requires_drain_if_launched": false}
+  ],
+  "resource_policy": {
+    "policy_values_sealed_before_execution": true,
+    "run_max_wall_seconds": 136800,
+    "supervisor_overhead_max_seconds": 1650,
+    "kill_to_drain_max_seconds": 30,
+    "pids_max_per_component": 512,
+    "memory_max_bytes_per_component": 8053063680,
+    "supervisor_memory_low_bytes": 536870912,
+    "guardian_and_host_reserve_min_bytes": 2147483648,
+    "required_vm_memory_min_bytes": 10200547328,
+    "memory_swap_max_bytes_per_component": 0,
+    "candidate_component_oom_isolated_from_supervisor": true,
+    "external_memory_directory": "/WORK",
+    "external_memory_host_root": "/var/lib/domainlease-f0-c4/work",
+    "external_memory_filesystem": "vm_native_ext4",
+    "external_memory_backing_mode": "per_component_sparse_loop_ext4",
+    "external_memory_max_bytes_per_component": 137438953472,
+    "external_memory_free_space_reserve_bytes": 10737418240,
+    "external_memory_direct_io_required": true,
+    "external_memory_unlinked_temporary_only": true,
+    "stdout_max_bytes_per_component": 268435456,
+    "stderr_max_bytes_per_component": 16777216,
+    "preexec_observation_max_bytes_per_component": 1048576,
+    "receipt_max_bytes_per_component": 1048576,
+    "finalization_metadata_max_bytes": 16777216,
+    "raw_total_max_bytes": 1610612736,
+    "evidence_free_space_reserve_bytes": 10737418240,
+    "resource_exhaustion_is_positive": false,
+    "audit_allocation_unbounded": false
+  },
+  "invariants": [
+    {"id": "CAP-INV-001", "statement": "The candidate UID is disjoint from every snapshot, capture, reducer, and finalization authority UID.", "enforced_by": ["PLAT-DEDICATED-UID", "roles"]},
+    {"id": "CAP-INV-002", "statement": "The candidate has no writable path, inherited descriptor, alias, or mount to captured inputs or evidence; fd 0 is read-only /dev/null and all other inherited descriptors are enumerated.", "enforced_by": ["PLAT-MOUNT-NAMESPACE", "PLAT-ROOT-OWNED-STORAGE", "PLAT-PREEXEC-ATTESTATION", "input_snapshot"]},
+    {"id": "CAP-INV-003", "statement": "Every component leader is in its final cgroup before any candidate instruction executes.", "enforced_by": ["PLAT-CLONE-INTO-CGROUP", "containment"]},
+    {"id": "CAP-INV-004", "statement": "All descendants remain in the component cgroup because candidate cgroup delegation and cgroupfs writes are absent.", "enforced_by": ["PLAT-CGROUP2-UNIFIED", "containment"]},
+    {"id": "CAP-INV-005", "statement": "A process group, session, leader PID, or candidate receipt is never used as the descendant containment oracle.", "enforced_by": ["PLAT-CGROUP-EVENTS", "PLAT-CGROUP-KILL", "containment"]},
+    {"id": "CAP-INV-006", "statement": "Leader lifecycle is observed through a supervisor-owned pidfd and waitid rather than candidate output.", "enforced_by": ["PLAT-PIDFD-WAITID", "observation"]},
+    {"id": "CAP-INV-007", "statement": "Timeout, signal, leader exit with descendants, output overflow, or supervisor failure initiates cgroup kill and bounded drain.", "enforced_by": ["PLAT-CGROUP-KILL", "PLAT-SUPERVISOR-GUARDIAN", "failure_taxonomy"]},
+    {"id": "CAP-INV-008", "statement": "No candidate UID is reused and no final disposition is published before populated equals zero for every launched component cgroup.", "enforced_by": ["PLAT-CGROUP-EVENTS", "containment"]},
+    {"id": "CAP-INV-009", "statement": "The root supervisor captures raw stdout and stderr bytes directly from pipes it opened.", "enforced_by": ["observation"]},
+    {"id": "CAP-INV-010", "statement": "Candidate-authored aggregate receipts are untrusted data and cannot replace root-captured component receipts.", "enforced_by": ["observation", "positive_eligibility"]},
+    {"id": "CAP-INV-011", "statement": "The component set, order, argv, environment, timeouts, and limits come from a sealed root-owned plan and cannot be narrowed by the candidate.", "enforced_by": ["component_plan", "resource_policy"]},
+    {"id": "CAP-INV-012", "statement": "Every required source object is opened nonblocking and no-follow, rejected unless regular and single-link before read, captured once through that descriptor, and bound into one input-root digest before launch.", "enforced_by": ["input_snapshot"]},
+    {"id": "CAP-INV-013", "statement": "Input write prevention is enforced by authority separation and read-only mounts, not inferred only from equal pre/post hashes.", "enforced_by": ["PLAT-DEDICATED-UID", "PLAT-MOUNT-NAMESPACE", "input_snapshot"]},
+    {"id": "CAP-INV-014", "statement": "Network silence, process-group emptiness, or leader exit is never treated as cgroup drain or source quiescence.", "enforced_by": ["PLAT-CGROUP-EVENTS", "containment"]},
+    {"id": "CAP-INV-015", "statement": "Output limit, timeout, RAM exhaustion, bounded external-memory exhaustion, unknown termination, or missing raw bytes cannot produce a positive local disposition.", "enforced_by": ["failure_taxonomy", "resource_policy", "positive_eligibility"]},
+    {"id": "CAP-INV-016", "statement": "Every raw receipt binds component identity, plan, inputs, exact pre-exec observation, environment, lifecycle, bytes, RAM counters, bounded external-memory setup and cleanup, and drain evidence.", "enforced_by": ["observation", "finalization"]},
+    {"id": "CAP-INV-017", "statement": "The post-run reducer reads only finalized root-captured bytes and never reopens the producer workspace.", "enforced_by": ["finalization"]},
+    {"id": "CAP-INV-018", "statement": "Reducer output cannot mutate the capture manifest or raw receipts and receives a distinct digest and identity.", "enforced_by": ["finalization"]},
+    {"id": "CAP-INV-019", "statement": "Publication is no-replace, file-and-directory-fsynced, content-addressed, inaccessible for candidate mutation, and incomplete until a later durable commit marker binds it.", "enforced_by": ["PLAT-ATOMIC-DURABILITY", "finalization"]},
+    {"id": "CAP-INV-020", "statement": "Toolchain identity is recorded exactly but is not called externally authenticated without an independent root.", "enforced_by": ["input_snapshot", "authorization"]},
+    {"id": "CAP-INV-021", "statement": "Only the four registered local bounded claims may change from NOT_RUN or diagnostic status after a separately completed strict reduction; raw capture alone changes none.", "enforced_by": ["claim_boundary", "positive_eligibility", "state_machines"]},
+    {"id": "CAP-INV-022", "statement": "All external refinement, F0, R11, K0/G0, Linux, Monitor, protection, performance, cost, and deployment claims remain false or open.", "enforced_by": ["claim_boundary", "authorization"]},
+    {"id": "CAP-INV-023", "statement": "TLA+ is not an input to this capture architecture and remains a post-freeze validation backend.", "enforced_by": ["reasoning_profile", "authorization"]},
+    {"id": "CAP-INV-024", "statement": "The guardian disarms only after observing a valid durable raw commit marker; supervisor failure cannot leave a candidate descendant executing without a separately authorized guardian-owned incomplete record after populated-zero drain.", "enforced_by": ["PLAT-SUPERVISOR-GUARDIAN", "roles", "state_machines", "containment", "finalization"]},
+    {"id": "CAP-INV-025", "statement": "A local capture never claims safety against a malicious capture-host kernel or root service.", "enforced_by": ["trust_boundary", "authorization"]},
+    {"id": "CAP-INV-026", "statement": "The run deadline is at least the sum of component deadlines, all per-component drain bounds, and sealed supervisor overhead, and systemd enforces that same bound.", "enforced_by": ["resource_policy", "PLAT-MONOTONIC-DEADLINE"]},
+    {"id": "CAP-INV-027", "statement": "Component memory.max plus the guardian/host reserve never exceeds probed VM memory; supervisor memory.low is contained within that reserve; exact-state spill is capped by a per-component loop filesystem with a host free-space reserve; RAM or disk exhaustion cannot make the trusted supervisor commit a complete receipt.", "enforced_by": ["resource_policy", "PLAT-CAPACITY-RESERVE", "PLAT-SUPERVISOR-GUARDIAN", "PLAT-MOUNT-NAMESPACE"]},
+    {"id": "CAP-INV-028", "statement": "Every candidate component uses one immutable toolchain image digest for the entire run; live host /usr is not an admissible production capture input.", "enforced_by": ["PLAT-IMMUTABLE-TOOLCHAIN", "input_snapshot"]},
+    {"id": "CAP-INV-029", "statement": "A prior-boot durable run intent without a valid commit marker can produce only BOOT_INTERRUPTED and a guardian incomplete disposition.", "enforced_by": ["PLAT-BOOT-RECONCILIATION", "finalization", "state_machines"]},
+    {"id": "CAP-INV-030", "statement": "Offline capture controls add no instruction, field, allocation, lock, hash, JSON parse, global scan, or synchronous trace to the production Linux scheduler or Monitor hot path.", "enforced_by": ["performance_boundary", "authorization"]}
+  ],
+  "positive_eligibility": {
+    "required_terminal_class": "COMPLETE_REDUCTION",
+    "raw_capture_terminal_is_never_positive": true,
+    "durable_raw_commit_marker_valid": true,
+    "all_platform_requirements_satisfied": true,
+    "exact_input_snapshot_sealed": true,
+    "exact_component_plan_completed": true,
+    "all_components_exited_zero": true,
+    "all_component_stderr_empty": true,
+    "all_result_protocols_valid": true,
+    "strict_result_json_parsed_after_capture": true,
+    "strict_result_schema_and_component_semantics_validated": true,
+    "all_cgroups_populated_zero": true,
+    "no_output_or_resource_limit_hit": true,
+    "input_and_toolchain_identity_stable": true,
+    "raw_capture_finalized_before_reduction": true,
+    "reducer_uses_only_finalized_capture": true,
+    "claim_statuses_derived_from_fixed_registry_predicates": true,
+    "candidate_summary_is_not_an_oracle": true,
+    "external_authorization_change_allowed": false
+  },
+  "performance_boundary": {
+    "path_class": "offline_validation_control_plane_only",
+    "production_linux_scheduler_hot_path_touched": false,
+    "production_monitor_dispatch_hot_path_touched": false,
+    "per_candidate_component_setup_cost_allowed": ["namespace_creation", "cgroup_creation", "seccomp_install", "preexec_attestation"],
+    "post_component_cost_allowed": ["sha256", "canonical_json", "fsync", "atomic_publish", "bounded_terminal_receipts"],
+    "forbidden_in_future_production_hot_path": ["cryptographic_hash", "json_parse_or_serialize", "global_process_or_domain_scan", "unbounded_iteration", "sleeping_allocation", "filesystem_io", "synchronous_verbose_trace"],
+    "future_security_fast_path_rule": "precompute_at_admission_or_transition_then_consume_O1_cached_state",
+    "zero_overhead_claim_from_architecture_only": false,
+    "performance_claim_requires_measurement": true
+  },
+  "implementation_gates": [
+    {"order": 1, "id": "C4CAP-G1-CONTRACT", "requirement": "Strict contract validation and canonical digest", "status": "REQUIRED"},
+    {"order": 2, "id": "C4CAP-G2-HOSTILE", "requirement": "Hostile semantic mutation and contradiction corpus", "status": "REQUIRED"},
+    {"order": 3, "id": "C4CAP-G3-SUPERVISOR", "requirement": "Small root supervisor implementation with pinned syscall and service-manager boundary", "status": "REQUIRED"},
+    {"order": 4, "id": "C4CAP-G4-PLATFORM", "requirement": "Root-owned target-host feature and authority probe", "status": "REQUIRED"},
+    {"order": 5, "id": "C4CAP-G5-FAULTS", "requirement": "Escape, daemonize, fork-bomb, timeout, output-flood, supervisor-crash, and storage mutation fixtures", "status": "REQUIRED"},
+    {"order": 6, "id": "C4CAP-G6-CAPTURE", "requirement": "Exact Candidate-4 snapshot and detached full capture launch", "status": "REQUIRED"},
+    {"order": 7, "id": "C4CAP-G7-REDUCTION", "requirement": "Later-session reduction from finalized root-captured bytes", "status": "REQUIRED"}
+  ],
+  "authorization": {
+    "authority_disjoint_contract_accepted": false,
+    "authority_disjoint_launcher_implemented": false,
+    "full_campaign_authorized": false,
+    "F0_local_acceptance": false,
+    "external_R11_review": false,
+    "G0_authorized": false,
+    "semantic_freeze": false,
+    "TLA_translation": false,
+    "linux_behavior_change": false,
+    "monitor_implementation": false,
+    "protection_claim": false,
+    "performance_or_cost_claim": false,
+    "deployment_claim": false
+  },
+  "nonclaims": [
+    "This contract is not a root supervisor implementation.",
+    "This contract is not evidence that Candidate-4 full reachability or commutation passed.",
+    "This contract does not authenticate the toolchain through an external authority.",
+    "This contract does not protect evidence from a malicious root, kernel, firmware, or physical storage adversary.",
+    "This contract does not establish F0, R11, K0/G0, Linux, Monitor, protection, performance, cost, cluster, or deployment correctness."
+  ]
+}

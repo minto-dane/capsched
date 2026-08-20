@@ -1,0 +1,691 @@
+{
+  "schema_version": 2,
+  "protocol_revision": "2.1.2-noncyclic-terminal-map-redesign",
+  "id": "architecture-freeze-external-assurance-protocol-v2",
+  "requirement": "RESIDENCY-DYN-001",
+  "status": "v2_1_architecture_selected_real_verifier_and_campaign_pending",
+  "evidence_state": "no_current_artifact_satisfies_real_mode",
+  "ordering": [
+    "externally_pinned_trust_root",
+    "threshold_signed_campaign_policy",
+    "externally_witnessed_policy_publication_checkpoint",
+    "immutable_candidate_capsule_and_checkpointed_predecessor_chain",
+    "externally_attested_object_retention",
+    "author_and_independent_custodian_seal",
+    "policy_pinned_hermetic_semantic_validation_quorum",
+    "externally_signed_reviewer_roster",
+    "one_signed_review_commitment_per_assignment",
+    "all_commitments_external_checkpoint",
+    "one_signed_review_reveal_per_assignment_bound_only_to_past_checkpoint_and_preallocated_map_key",
+    "terminal_event_replay_and_authenticated_map_checkpoint_including_all_reveals",
+    "deterministic_aggregate_decision",
+    "threshold_signed_decision_authorization_bound_to_terminal_checkpoint",
+    "derived_preformal_freeze_and_tla_start_authorization_without_candidate_mutation",
+    "tla_plus_formalization"
+  ],
+  "canonicalization": {
+    "json": "RFC_8785_JCS_integer_only_I_JSON_subset",
+    "text": "UTF_8_NFC",
+    "floats_allowed": false,
+    "duplicate_or_unknown_keys_allowed": false,
+    "artifact_hashes_cover_raw_bytes": true,
+    "digest_format": "sha256_colon_64_lowercase_hex",
+    "signature_algorithm": "ed25519",
+    "signature_context": "LINUX_CAP_ARCHFREEZE_V2_NUL_then_u64be_length_delimited_payload_type_and_JCS_payload",
+    "hash_transcript_encoding": "ASCII_domain_with_NUL_then_each_component_as_u64be_length_and_exact_bytes",
+    "finding_id_grammar": "uppercase_hyphenated_catalog_id_separate_from_lowercase_protocol_object_id"
+  },
+  "trust_chain": {
+    "objects": [
+      "TrustRoot",
+      "CampaignPolicy",
+      "Principal",
+      "TransparencyCheckpoint",
+      "ConsistencyProof",
+      "InclusionProof",
+      "CandidateCapsule",
+      "PredecessorPublicationProof",
+      "RetentionAttestation",
+      "CandidateSeal",
+      "SemanticValidationReceipt",
+      "ReviewRoster",
+      "ReviewCommitment",
+      "CampaignSubmissionAdmission",
+      "CommitmentCheckpoint",
+      "SignedReviewReveal",
+      "CampaignEventReplay",
+      "CampaignTerminalMap",
+      "TerminalCheckpoint",
+      "AggregateDecision",
+      "DecisionAuthorization",
+      "FreezeRecord"
+    ],
+    "trust_root_digest_must_be_external_cli_input": true,
+    "policy_digest_must_be_external_cli_input": true,
+    "policy_checkpoint_digest_must_be_external_cli_input": true,
+    "terminal_checkpoint_digest_must_be_external_cli_input": true,
+    "repository_trust_discovery_or_TOFU_allowed": false,
+    "candidate_supplied_verifier_runtime_test_key_or_log_head_allowed_in_real_mode": false,
+    "candidate_bytes_change_after_capsule_seal": false,
+    "freeze_status_stored_in_candidate": false,
+    "freeze_record_is_valid_without_revalidating_complete_chain": false
+  },
+  "campaign_log": {
+    "construction": "campaign_specific_append_only_Merkle_log_with_monotonic_tree_size_domain_separated_leaf_hash_and_complete_index_replay",
+    "checkpoint_authority": "3_of_4_policy_pinned_independent_checkpoint_witnesses",
+    "checkpoint_witness_parameters": {
+      "N": 4,
+      "t": 3,
+      "f": 1,
+      "minimum_two_quorum_intersection": 2,
+      "intersection_formula": "2*t-N",
+      "required_safety_inequality": "2*t-N>f",
+      "instantiated_safety_inequality": "2>1",
+      "honest_witness_rule": "one_checkpoint_per_campaign_checkpoint_kind_and_sequence_after_full_deterministic_replay",
+      "claim_boundary": "safety_requires_at_most_f_byzantine_witnesses_and_unbroken_hash_and_signature_assumptions"
+    },
+    "minimum_independent_checkpoint_witnesses": 3,
+    "policy_checkpoint_precedes_candidate_by_verified_tree_size_and_consistency_proof": true,
+    "terminal_checkpoint_extends_policy_and_commitment_checkpoints_by_verified_consistency_proofs": true,
+    "every_campaign_object_has_inclusion_proof_in_terminal_checkpoint": true,
+    "all_event_indices_zero_through_terminal_tree_size_minus_one_are_supplied_and_replayed": true,
+    "valid_campaign_submission_requires_object_signature_and_3_of_4_event_index_admission": true,
+    "every_admission_quorum_intersects_every_terminal_quorum_beyond_f": true,
+    "honest_witness_refuses_terminal_checkpoint_not_extending_its_highest_admitted_event_index": true,
+    "terminal_map_key": "sha256_of_domain_separated_length_delimited_campaign_id_and_assignment_id",
+    "one_terminal_submission_per_assignment": true,
+    "signed_rejection_is_absorbing": true,
+    "accept_sibling_can_hide_logged_rejection": false,
+    "timestamp_alone_proves_precedence_or_completeness": false,
+    "no_equivocation_claim_boundary": "checkpoint_witness_3_of_4_threshold_with_at_most_1_Byzantine_witness_and_hash_signature_assumptions"
+  },
+  "hash_transcripts": {
+    "SignedEnvelope": {
+      "domain_ascii_hex": "4c494e55582d4341502d41524348465245455a452d563200",
+      "components": [
+        "UTF8_payload_type",
+        "JCS_payload"
+      ],
+      "encoding": "domain_then_each_component_as_u64be_length_and_bytes"
+    },
+    "TerminalMapKey": {
+      "domain_ascii": "LINUX-CAP-ARCHFREEZE-V2/terminal-map-key\\0",
+      "components": [
+        "UTF8_campaign_id",
+        "UTF8_assignment_id"
+      ],
+      "result": "sha256_digest"
+    },
+    "ReviewCommitmentValue": {
+      "domain_ascii": "LINUX-CAP-ARCHFREEZE-V2/review-commitment\\0",
+      "components": [
+        "UTF8_campaign_id",
+        "ASCII_capsule_digest",
+        "UTF8_assignment_id",
+        "ASCII_terminal_map_key",
+        "JCS_review_payload",
+        "raw_32_byte_random_nonce"
+      ],
+      "result": "sha256_digest"
+    },
+    "CampaignEventLeaf": {
+      "encoding": "0x02_then_u64be_event_index_then_u64be_length_of_JCS_event_then_JCS_event",
+      "result": "raw_SHA256_32_bytes"
+    },
+    "CampaignEventNode": {
+      "encoding": "0x03_then_raw_left_32_bytes_then_raw_right_32_bytes",
+      "result": "raw_SHA256_32_bytes",
+      "tree_algorithm": "empty_is_SHA256_0x04_single_is_leaf_otherwise_split_at_largest_power_of_two_strictly_less_than_n_and_hash_node_recursive_left_right"
+    },
+    "TerminalMapLeaf": {
+      "encoding": "0x00_then_u64be_length_of_JCS_entry_then_JCS_entry",
+      "result": "raw_SHA256_32_bytes"
+    },
+    "TerminalMapNode": {
+      "encoding": "0x01_then_raw_left_32_bytes_then_raw_right_32_bytes",
+      "result": "raw_SHA256_32_bytes",
+      "four_entry_tree": "node(node(leaf0,leaf1),node(leaf2,leaf3))_after_lexicographic_terminal_map_key_sort"
+    }
+  },
+  "exact_object_schemas": {
+    "SignedEnvelope": {
+      "schema": "linux-cap.archfreeze.v2.signed-envelope",
+      "exact_keys": [
+        "payload_b64",
+        "payload_type",
+        "schema",
+        "signatures"
+      ],
+      "signature_exact_keys": [
+        "algorithm",
+        "key_id",
+        "signature_b64"
+      ]
+    },
+    "ReviewCommitmentPayload": {
+      "schema": "linux-cap.archfreeze.v2.review-commitment",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_value",
+        "schema",
+        "terminal_map_key"
+      ],
+      "signed_by": "exact_reviewer_assignment_key"
+    },
+    "CampaignEvent": {
+      "schema": "linux-cap.archfreeze.v2.campaign-event",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "event_index",
+        "object_class",
+        "object_digest",
+        "schema"
+      ],
+      "index_rule": "event_index_is_zero_based_contiguous_and_equals_leaf_position"
+    },
+    "CampaignSubmissionAdmissionPayload": {
+      "schema": "linux-cap.archfreeze.v2.campaign-submission-admission",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "event_index",
+        "event_log_root_digest_after_append",
+        "event_tree_size_after_append",
+        "object_class",
+        "object_digest",
+        "post_assignment_state_digest",
+        "prior_assignment_state_digest",
+        "schema"
+      ],
+      "fixed_relation": "event_tree_size_after_append_equals_event_index_plus_1",
+      "checkpoint_signatures": "exact_3_of_4_checkpoint_witnesses_after_append_and_assignment_state_transition"
+    },
+    "SignedReviewRevealPayload": {
+      "schema": "linux-cap.archfreeze.v2.signed-review-reveal",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_checkpoint_digest",
+        "commitment_digest",
+        "nonce_b64",
+        "review_payload_b64",
+        "schema",
+        "terminal_map_key"
+      ],
+      "forbidden_keys": [
+        "terminal_checkpoint_digest",
+        "future_checkpoint_digest"
+      ],
+      "signed_by": "same_exact_reviewer_assignment_key_as_commitment"
+    },
+    "CommitmentCheckpointPayload": {
+      "schema": "linux-cap.archfreeze.v2.commitment-checkpoint",
+      "exact_keys": [
+        "assignment_set_digest",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_digest_set",
+        "event_log_root_digest",
+        "event_tree_size",
+        "policy_checkpoint_digest",
+        "reveal_count",
+        "schema"
+      ],
+      "fixed_values": {
+        "commitment_digest_set_length": 4,
+        "reveal_count": 0
+      },
+      "checkpoint_signatures": "exact_3_of_4_checkpoint_witnesses"
+    },
+    "CampaignTerminalMapEntry": {
+      "schema": "linux-cap.archfreeze.v2.terminal-map-entry",
+      "exact_keys": [
+        "assignment_id",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_digest",
+        "commitment_submission_count",
+        "conflict_detected",
+        "reveal_digest",
+        "reveal_submission_count",
+        "review_verdict",
+        "schema",
+        "terminal_map_key",
+        "terminal_state"
+      ]
+    },
+    "CampaignEventReplay": {
+      "schema": "linux-cap.archfreeze.v2.campaign-event-replay",
+      "exact_keys": [
+        "admission_digests",
+        "campaign_id",
+        "capsule_digest",
+        "commitment_checkpoint_digest",
+        "event_count",
+        "event_log_root_digest",
+        "events",
+        "schema",
+        "terminal_map_digest",
+        "terminal_map_root_digest"
+      ],
+      "exact_relations": [
+        "event_count_equals_events_length_equals_admission_digests_length",
+        "events_are_contiguous_and_zero_based",
+        "each_admission_matches_same_position_event_object_and_post_append_root",
+        "replaying_all_events_produces_exact_terminal_map_digest_and_root"
+      ]
+    },
+    "CampaignTerminalMap": {
+      "schema": "linux-cap.archfreeze.v2.campaign-terminal-map",
+      "exact_keys": [
+        "assignment_set_digest",
+        "campaign_id",
+        "capsule_digest",
+        "entries",
+        "entry_count",
+        "root_digest",
+        "schema"
+      ],
+      "fixed_values": {
+        "entry_count": 4
+      }
+    },
+    "TerminalCheckpointPayload": {
+      "schema": "linux-cap.archfreeze.v2.terminal-checkpoint",
+      "exact_keys": [
+        "assignment_set_digest",
+        "campaign_id",
+        "capsule_digest",
+        "closure_state",
+        "commitment_checkpoint_digest",
+        "event_log_root_digest",
+        "event_replay_digest",
+        "event_tree_size",
+        "policy_checkpoint_digest",
+        "schema",
+        "terminal_map_entry_count",
+        "terminal_map_root_digest"
+      ],
+      "fixed_values": {
+        "closure_state": "closed",
+        "terminal_map_entry_count": 4
+      },
+      "checkpoint_signatures": "exact_3_of_4_checkpoint_witnesses_after_complete_event_replay"
+    },
+    "DecisionAuthorizationPayload": {
+      "schema": "linux-cap.archfreeze.v2.decision-authorization",
+      "exact_keys": [
+        "aggregate_decision_digest",
+        "campaign_id",
+        "capsule_digest",
+        "claims_denied",
+        "claims_granted",
+        "decision",
+        "policy_digest",
+        "schema",
+        "terminal_checkpoint_digest",
+        "terminal_map_root_digest"
+      ],
+      "signed_by": "exact_2_of_3_policy_pinned_independent_decision_authorities"
+    }
+  },
+  "review_commit_reveal": {
+    "roles": [
+      "security",
+      "formal",
+      "scalability",
+      "integration"
+    ],
+    "commitment": "ReviewCommitmentValue_hash_transcript_defined_above",
+    "all_four_commitments_checkpointed_before_any_reveal": true,
+    "exactly_one_commitment_and_one_matching_reveal_per_assignment": true,
+    "commitment_or_reveal_replacement_requires_new_campaign_capsule_roster_and_all_reviews": true,
+    "reveal_signature_binds_exact_fields": [
+      "campaign_id",
+      "capsule_digest",
+      "assignment_id",
+      "commitment_digest",
+      "commitment_checkpoint_digest",
+      "terminal_map_key",
+      "review_payload_b64",
+      "nonce_b64"
+    ],
+    "reveal_signature_binds_future_terminal_checkpoint": false,
+    "terminal_checkpoint_later_includes_every_reveal": true,
+    "decision_authorization_signs_terminal_checkpoint_digest": true,
+    "every_reveal_including_reject_must_appear_in_terminal_map_and_aggregate": true,
+    "reviewer_can_observe_peer_review_before_irrevocable_commitment": false,
+    "blind_claim_is_limited_to_peer_review_contents_until_commitment_checkpoint": true
+  },
+  "terminal_map_state_machine": {
+    "assignment_universe": "exact_four_assignments_in_checkpointed_ReviewRoster",
+    "key_derivation": "TerminalMapKey_transcript",
+    "initial_state": "UNSET",
+    "transitions": [
+      "UNSET_plus_first_valid_commitment_to_COMMITTED",
+      "COMMITTED_plus_one_matching_accept_reveal_to_ACCEPTED",
+      "COMMITTED_plus_one_matching_reject_reveal_to_REJECTED",
+      "UNSET_or_COMMITTED_at_close_to_REJECTED_INCOMPLETE",
+      "any_duplicate_conflicting_or_extra_commitment_or_reveal_before_close_to_REJECTED_CONFLICT",
+      "ACCEPTED_plus_any_additional_submission_before_close_to_REJECTED_CONFLICT",
+      "REJECTED_or_REJECTED_INCOMPLETE_or_REJECTED_CONFLICT_remains_absorbing",
+      "any_submission_after_CLOSED_is_invalid_and_cannot_create_a_new_valid_campaign_object"
+    ],
+    "acceptance_predicate": "exactly_four_unique_roster_keys_each_ACCEPTED_with_commitment_submission_count_1_reveal_submission_count_1_conflict_false_and_review_verdict_accept",
+    "rejection_predicate": "any_non_ACCEPTED_entry_any_reject_verdict_any_conflict_any_count_not_1_or_any_missing_roster_key",
+    "completeness_proof": [
+      "require_a_3_of_4_CampaignSubmissionAdmission_for_every_object_treated_as_a_valid_campaign_submission",
+      "supply_every_campaign_event_at_each_index_0_through_terminal_event_tree_size_minus_1",
+      "recompute_event_log_root_and_commitment_checkpoint_prefix",
+      "deterministically_replay_every_event_into_the_four_key_state_machine",
+      "recompute_sorted_four_leaf_terminal_map_root",
+      "verify_exact_roster_assignment_set_digest_and_entry_count_4",
+      "verify_terminal_checkpoint_exact_3_of_4_witness_signatures",
+      "verify_terminal_event_tree_size_exceeds_every_admitted_event_index",
+      "verify_DecisionAuthorization_exact_2_of_3_signatures_over_terminal_checkpoint_digest"
+    ],
+    "hidden_sibling_result": "an_admitted_preclosure_sibling_must_be_in_any_valid_terminal_extension_and_forces_reject_a_raw_signed_but_unadmitted_object_is_not_a_protocol_submission_and_a_postclosure_object_is_invalid",
+    "external_assumption": "at_most_1_of_4_checkpoint_witnesses_is_Byzantine_and_honest_witnesses_append_before_admission_track_their_highest_admitted_index_and_replay_all_events_before_one_terminal_signature"
+  },
+  "candidate_storage": {
+    "manifest": "sorted_unique_safe_relative_paths_raw_digest_size_media_type",
+    "read_each_regular_artifact_once_with_no_follow_and_descriptor_recheck": true,
+    "local_mode_bit_read_only_is_WORM_or_publication_evidence": false,
+    "RetentionAttestation_fields": [
+      "store_authority_and_store_incarnation",
+      "capsule_manifest_and_object_set_digests",
+      "object_lock_mode_and_retention_not_before_policy_minimum",
+      "immutable_version_or_generation_ids",
+      "attestation_sequence_and_external_checkpoint_inclusion"
+    ],
+    "real_freeze_requires_external_retention_attestation": true,
+    "candidate_predecessor_metadata_without_publication_proof_is_history": false
+  },
+  "semantic_validation": {
+    "real_mode_executes_repository_or_candidate_supplied_program": false,
+    "policy_fixed_execution_profiles": [
+      "static_native_image_in_measured_no_network_sandbox",
+      "deterministic_wasm_component_in_policy_pinned_runtime"
+    ],
+    "validator_image_runtime_image_and_sandbox_policy_digests_fixed_at_policy_checkpoint": true,
+    "startup_environment_network_clock_randomness_dynamic_loader_and_unpinned_plugins_available": false,
+    "input_is_exact_retained_capsule_object_set": true,
+    "resource_bounds": [
+      "wall_and_CPU_time",
+      "address_space_and_file_size",
+      "stdout_stderr_and_result_bytes",
+      "process_thread_and_file_descriptor_count",
+      "read_only_filesystem_namespace",
+      "no_network_namespace",
+      "whole_execution_group_kill_and_descendant_reap"
+    ],
+    "SemanticValidationReceipt_fields": [
+      "runner_principal_runtime_measurement_and_execution_profile",
+      "trust_root_policy_policy_checkpoint_and_capsule_digests",
+      "validator_runtime_and_sandbox_policy_digests",
+      "resource_limit_vector",
+      "exit_status_result_digest_stdout_stderr_digests_and_sizes",
+      "executed_check_inventory_digest_and_terminal_execution_nonce"
+    ],
+    "required_matching_receipts": "2_of_3_independent_hermetic_runner_authorities",
+    "receipts_must_match_every_deterministic_result_and_check_inventory_field": true,
+    "real_mode_without_receipt_quorum": "reject_before_review_aggregation"
+  },
+  "predecessor_history": {
+    "real_campaign_requires_every_claimed_predecessor_checkpointed": true,
+    "each_link_binds_predecessor_capsule_digest_and_prior_terminal_checkpoint": true,
+    "consistency_and_inclusion_proofs_form_bounded_nonforking_chain": true,
+    "uncheckpointed_previous_capsule_digest_semantics": "present_time_content_commitment_only_not_publication_history",
+    "maximum_predecessor_links": 64
+  },
+  "independence": {
+    "roles": [
+      "security",
+      "formal",
+      "scalability",
+      "integration"
+    ],
+    "exactly_one_externally_assigned_reviewer_per_role": true,
+    "distinct_key_person_organization_and_independence_group": true,
+    "reviewer_may_overlap_author_custodian_runner_log_witness_or_decision_authority": false,
+    "every_assignment_including_rejection_must_appear_in_decision": true,
+    "each_accept_reviews_every_known_finding_and_has_no_blocker_or_freeze_blocking_limitation": true,
+    "decision_signature_threshold": "2_of_3_independent_decision_authorities",
+    "metadata_truth_or_noncollusion_is_cryptographically_proved": false
+  },
+  "validation_order": [
+    "bind_all_external_digest_epoch_project_requirement_and_checkpoint_inputs",
+    "verify_trust_root_policy_threshold_signatures_and_separate_object_and_finding_id_grammars",
+    "verify_policy_checkpoint_inclusion_3_of_4_witness_threshold_and_precedence",
+    "verify_candidate_predecessor_publication_chain_and_policy_to_candidate_consistency",
+    "strictly_parse_digest_and_single_read_the_retained_candidate_capsule",
+    "verify_external_retention_attestation_and_candidate_seal",
+    "verify_matching_hermetic_semantic_validation_receipt_quorum",
+    "verify_roster_and_exact_four_review_commitments_in_commitment_checkpoint",
+    "verify_3_of_4_submission_admission_for_each_commitment_and_reveal",
+    "verify_commitment_checkpoint_has_zero_reveals_and_precedes_every_reveal",
+    "verify_each_reveal_exact_noncyclic_signature_payload_and_commitment_opening",
+    "replay_every_campaign_event_and_derive_absorbing_four_key_terminal_map",
+    "verify_terminal_checkpoint_map_root_event_root_consistency_and_exact_3_of_4_witnesses",
+    "enforce_all_independence_dimensions",
+    "recompute_aggregate_and_verify_DecisionAuthorization_signs_terminal_checkpoint_digest",
+    "derive_freeze_for_exact_capsule_without_candidate_mutation"
+  ],
+  "result_provenance": {
+    "required_output_digests": [
+      "trust_root",
+      "policy_envelope",
+      "policy_checkpoint",
+      "candidate_capsule_and_manifest",
+      "predecessor_publication_chain",
+      "retention_attestation",
+      "candidate_seal",
+      "validator_runtime_and_sandbox_policy",
+      "semantic_validation_receipt_set",
+      "review_roster",
+      "review_commitment_set_and_checkpoint",
+      "review_reveal_set",
+      "campaign_event_replay",
+      "terminal_checkpoint_and_terminal_map",
+      "aggregate_decision",
+      "decision_authorization",
+      "freeze_record"
+    ],
+    "downstream_consumer_must_exactly_pin_complete_tuple": true,
+    "accepted_preformal_freeze_sets_tla_authorized_for_exact_capsule_only": true,
+    "accepted_preformal_freeze_sets_tla_written_model_checked_or_tla_proved": false
+  },
+  "machine_test_vectors": {
+    "quorum_intersection_v1": {
+      "N": 4,
+      "t": 3,
+      "f": 1,
+      "expected_minimum_intersection": 2,
+      "expected_intersection_exceeds_f": true
+    },
+    "terminal_map_key_v1": {
+      "campaign_id": "campaign-example-001",
+      "assignment_id": "assignment-security-001",
+      "expected_digest": "sha256:e35fc54ba49392735a0c59d49a0907cb65171b6f92d52aa3cf1d7cc2aa8839fb"
+    },
+    "review_commitment_v1": {
+      "campaign_id": "campaign-example-001",
+      "capsule_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "assignment_id": "assignment-security-001",
+      "terminal_map_key": "sha256:e35fc54ba49392735a0c59d49a0907cb65171b6f92d52aa3cf1d7cc2aa8839fb",
+      "review_payload": {
+        "finding_catalog_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "schema": "linux-cap.archfreeze.v2.review-payload",
+        "verdict": "accept"
+      },
+      "nonce_b64": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+      "expected_digest": "sha256:9b74fb11e218f4a96af54e26d50ebc43012bce9c173590d6280bbdcdb0530aea"
+    },
+    "campaign_event_leaf_v1": {
+      "event": {
+        "assignment_id": "assignment-security-001",
+        "campaign_id": "campaign-example-001",
+        "capsule_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "event_index": 7,
+        "object_class": "signed_review_reveal",
+        "object_digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+        "schema": "linux-cap.archfreeze.v2.campaign-event"
+      },
+      "expected_leaf_digest": "sha256:48b5af17ccda84ce002c78de5e23c03d0176c17de3b14cbd76bf4a26ad3aa014",
+      "expected_empty_tree_digest": "sha256:e52d9c508c502347344d8c07ad91cbd6068afc75ff6292f062a09ca381c89e71"
+    },
+    "signed_reveal_v1": {
+      "payload": {
+        "assignment_id": "assignment-security-001",
+        "campaign_id": "campaign-example-001",
+        "capsule_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "commitment_checkpoint_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "commitment_digest": "sha256:9b74fb11e218f4a96af54e26d50ebc43012bce9c173590d6280bbdcdb0530aea",
+        "nonce_b64": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+        "review_payload_b64": "eyJmaW5kaW5nX2NhdGFsb2dfZGlnZXN0Ijoic2hhMjU2OjQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQiLCJzY2hlbWEiOiJsaW51eC1jYXAuYXJjaGZyZWV6ZS52Mi5yZXZpZXctcGF5bG9hZCIsInZlcmRpY3QiOiJhY2NlcHQifQ==",
+        "schema": "linux-cap.archfreeze.v2.signed-review-reveal",
+        "terminal_map_key": "sha256:e35fc54ba49392735a0c59d49a0907cb65171b6f92d52aa3cf1d7cc2aa8839fb"
+      },
+      "expected_payload_digest": "sha256:67886850135bafd3d7dd400eff17abbf3461887b477004ede607a8d392d48c43",
+      "expected_signature_message_digest": "sha256:4814735a01e5aeb97c741a1e52da375807d1971f5b63576f82a3856671fc86b2"
+    },
+    "terminal_map_root_v1": {
+      "entries": [
+        {
+          "assignment_id": "assignment-formal-001",
+          "campaign_id": "campaign-example-001",
+          "capsule_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "commitment_digest": "sha256:0101010101010101010101010101010101010101010101010101010101010101",
+          "commitment_submission_count": 1,
+          "conflict_detected": false,
+          "reveal_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "reveal_submission_count": 1,
+          "review_verdict": "accept",
+          "schema": "linux-cap.archfreeze.v2.terminal-map-entry",
+          "terminal_map_key": "sha256:16c27cb7201da538d3b1f284d090f777a1c85cd900f5f6813e62a221145ac3b4",
+          "terminal_state": "accepted"
+        },
+        {
+          "assignment_id": "assignment-scalability-001",
+          "campaign_id": "campaign-example-001",
+          "capsule_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "commitment_digest": "sha256:0303030303030303030303030303030303030303030303030303030303030303",
+          "commitment_submission_count": 1,
+          "conflict_detected": false,
+          "reveal_digest": "sha256:1313131313131313131313131313131313131313131313131313131313131313",
+          "reveal_submission_count": 1,
+          "review_verdict": "accept",
+          "schema": "linux-cap.archfreeze.v2.terminal-map-entry",
+          "terminal_map_key": "sha256:3feaefe36f3ddbf049b88c7c76722e29fbb8b26af6df24cf53783cdb6c39dfa7",
+          "terminal_state": "accepted"
+        },
+        {
+          "assignment_id": "assignment-integration-001",
+          "campaign_id": "campaign-example-001",
+          "capsule_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "commitment_digest": "sha256:0202020202020202020202020202020202020202020202020202020202020202",
+          "commitment_submission_count": 1,
+          "conflict_detected": false,
+          "reveal_digest": "sha256:1212121212121212121212121212121212121212121212121212121212121212",
+          "reveal_submission_count": 1,
+          "review_verdict": "accept",
+          "schema": "linux-cap.archfreeze.v2.terminal-map-entry",
+          "terminal_map_key": "sha256:74aa54c0089ca7415eaccb4e8b8781a7c4e29c543345018d2207985c4179b49f",
+          "terminal_state": "accepted"
+        },
+        {
+          "assignment_id": "assignment-security-001",
+          "campaign_id": "campaign-example-001",
+          "capsule_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "commitment_digest": "sha256:0404040404040404040404040404040404040404040404040404040404040404",
+          "commitment_submission_count": 1,
+          "conflict_detected": false,
+          "reveal_digest": "sha256:1414141414141414141414141414141414141414141414141414141414141414",
+          "reveal_submission_count": 1,
+          "review_verdict": "accept",
+          "schema": "linux-cap.archfreeze.v2.terminal-map-entry",
+          "terminal_map_key": "sha256:e35fc54ba49392735a0c59d49a0907cb65171b6f92d52aa3cf1d7cc2aa8839fb",
+          "terminal_state": "accepted"
+        }
+      ],
+      "expected_leaf_digests": [
+        "sha256:891c6d7c7e0949f765c7abf4db807be4ac2da20f46d29b7fbb40fffea4986d39",
+        "sha256:7dd326b47728bc109aeb053aae9380ecc12840d74bd43278d773ed6404173390",
+        "sha256:0eff0a4146e72069f8d758ce0ebc967afd6bb7470e03feb05beb0d393cef6c8e",
+        "sha256:dcc42613304ec4141c0fa1fd2a0b5195b5f8845b7e2e705da234b244de53c361"
+      ],
+      "expected_root_digest": "sha256:3a9d44b4386c346cb27186f9f32b11f6648fff416f413e93505dceaa759ab2a0"
+    }
+  },
+  "fixture": {
+    "exact_schema_and_signature_prefix": "linux-cap.archfreeze.fixture.v2",
+    "separate_test_only_trust_root": true,
+    "mechanics_profile_digest": "sha256:07fab4a40996788aa7cf225a679ba02f1bd4aff7ded287febc6212c7aee32a3f",
+    "output_exact_keys": [
+      "architecture_frozen",
+      "campaign_decision",
+      "evidence_class",
+      "evidence_valid",
+      "freeze_authorized",
+      "mechanics_profile_digest",
+      "tla_authorized"
+    ],
+    "valid_accept_result": {
+      "architecture_frozen": false,
+      "campaign_decision": "accept",
+      "evidence_class": "fixture",
+      "evidence_valid": true,
+      "freeze_authorized": false,
+      "mechanics_profile_digest": "sha256:07fab4a40996788aa7cf225a679ba02f1bd4aff7ded287febc6212c7aee32a3f",
+      "tla_authorized": false
+    },
+    "valid_reject_result": {
+      "architecture_frozen": false,
+      "campaign_decision": "reject",
+      "evidence_class": "fixture",
+      "evidence_valid": true,
+      "freeze_authorized": false,
+      "mechanics_profile_digest": "sha256:07fab4a40996788aa7cf225a679ba02f1bd4aff7ded287febc6212c7aee32a3f",
+      "tla_authorized": false
+    },
+    "real_verifier_file": "validation/verify-architecture-freeze-assurance-v2-real.py",
+    "real_verifier_behavior": "unconditional_AFV2_REAL_UNIMPLEMENTED_before_argument_or_evidence_parsing",
+    "real_private_keys_in_repository_workspace_or_CI": false,
+    "fixture_can_be_presented_as_real_evidence": false
+  },
+  "claims": {
+    "protocol_written": true,
+    "protocol_implemented": false,
+    "fixture_verifier_implemented": true,
+    "real_verifier_implemented": false,
+    "real_trust_root_pinned": false,
+    "real_policy_checkpoint_verified": false,
+    "real_candidate_sealed": false,
+    "real_retention_attested": false,
+    "real_semantic_validation_quorum_verified": false,
+    "real_independent_reviews_verified": false,
+    "real_terminal_checkpoint_verified": false,
+    "architecture_frozen": false,
+    "tla_authorized": false,
+    "protection_evidenced": false
+  },
+  "residual_external_risks": [
+    "checkpoint_witness_threshold_collusion_or_compromise",
+    "reviewer_runner_or_decision_authority_threshold_collusion",
+    "stolen_authorized_private_keys",
+    "dishonest_person_organization_or_independence_metadata",
+    "superficial_human_review",
+    "retention_store_false_attestation_or_later_policy_violation",
+    "hermetic_runner_or_measured_runtime_compromise",
+    "host_hardware_firmware_or_kernel_outside_the_measured_runner_boundary",
+    "trust_root_compromise",
+    "SHA_256_or_Ed25519_failure"
+  ],
+  "analysis": "analysis/0194-architecture-freeze-external-assurance-protocol-v2.md"
+}

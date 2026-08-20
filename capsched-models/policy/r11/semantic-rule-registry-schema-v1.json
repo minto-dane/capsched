@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://domainlease.invalid/schema/r11-semantic-rule-registry-v1.json",
+  "title": "DomainLease R11 external semantic rule registry candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "registry_epoch", "status", "owner_role", "compatible_policy", "rule_shape", "family_counts", "rules", "authorization"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_id": {"const": "domainlease-r11-semantic-rule-registry-v1"},
+    "registry_epoch": {"const": 1},
+    "status": {"const": "draft_pending_independent_review"},
+    "owner_role": {"const": "external_semantic_policy_authority"},
+    "compatible_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "policy_epoch"],
+      "properties": {
+        "artifact_id": {"const": "domainlease-r11-semantic-policy-v1"},
+        "policy_epoch": {"const": 1}
+      }
+    },
+    "rule_shape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_may_change_rule_meaning", "candidate_supplies_only_typed_bindings", "proof_backend_may_change_rule_meaning", "external_review_selects_final_digest"],
+      "properties": {
+        "candidate_may_change_rule_meaning": {"const": false},
+        "candidate_supplies_only_typed_bindings": {"const": true},
+        "proof_backend_may_change_rule_meaning": {"const": false},
+        "external_review_selects_final_digest": {"const": true}
+      }
+    },
+    "family_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["SEM-AUTH", "SEM-RES", "SEM-TRUST", "SEM-WRITE", "SEM-REV", "SEM-ASYNC", "SEM-ENTRY", "SEM-SET", "SEM-PROV", "SEM-CROSS"],
+      "properties": {
+        "SEM-AUTH": {"const": 8},
+        "SEM-RES": {"const": 8},
+        "SEM-TRUST": {"const": 4},
+        "SEM-WRITE": {"const": 7},
+        "SEM-REV": {"const": 8},
+        "SEM-ASYNC": {"const": 7},
+        "SEM-ENTRY": {"const": 9},
+        "SEM-SET": {"const": 8},
+        "SEM-PROV": {"const": 8},
+        "SEM-CROSS": {"const": 6}
+      }
+    },
+    "rules": {"type": "array", "minItems": 73, "maxItems": 73, "items": {"$ref": "#/$defs/rule"}},
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registry_construction_complete", "independent_review_complete", "g0_complete", "r11_machine_ir_authorized", "semantic_freeze", "tla_translation"],
+      "properties": {
+        "registry_construction_complete": {"type": "boolean"},
+        "independent_review_complete": {"type": "boolean"},
+        "g0_complete": {"type": "boolean"},
+        "r11_machine_ir_authorized": {"type": "boolean"},
+        "semantic_freeze": {"type": "boolean"},
+        "tla_translation": {"type": "boolean"}
+      }
+    }
+  },
+  "$defs": {
+    "nonemptyString": {"type": "string", "minLength": 1},
+    "uniqueStrings": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonemptyString"}},
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "normative_kind", "applies_to", "typed_parameters", "canonical_template", "policy_pointers", "candidate_binding_schema", "generated_obligation_ids", "required_witnesses", "required_mutation_ids", "claim_ids"],
+      "properties": {
+        "id": {"pattern": "^SEM-(?:AUTH|RES|TRUST|WRITE|REV|ASYNC|ENTRY|SET|PROV|CROSS)-[0-9]{3}$"},
+        "normative_kind": {"enum": ["safety", "conservation", "protocol", "noninterference", "trust", "linearizability", "boundedness", "progress", "contract", "refinement", "claim", "proof_obligation"]},
+        "applies_to": {"$ref": "#/$defs/uniqueStrings"},
+        "typed_parameters": {"$ref": "#/$defs/uniqueStrings"},
+        "canonical_template": {"pattern": "^[A-Za-z][A-Za-z0-9_]*$"},
+        "policy_pointers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^/(?:[A-Za-z0-9_~-]+)(?:/[A-Za-z0-9_~-]+)*$"}},
+        "candidate_binding_schema": {"pattern": "^BIND-[A-Z0-9-]+$"},
+        "generated_obligation_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^(?:INV|PROG)-[A-Z0-9-]+$"}},
+        "required_witnesses": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^W(?:[0-9]|1[0-2])$"}},
+        "required_mutation_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^MUT-POL-[A-Z0-9-]+$"}},
+        "claim_ids": {"$ref": "#/$defs/uniqueStrings"}
+      }
+    }
+  }
+}

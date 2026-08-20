@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "id": "ROOTSCHED-001-TLC-v1",
+  "target_claim": "ROOTSCHED-001",
+  "evidence_level": "EC1",
+  "origin_model": {
+    "commit": "345efd04052d2d78c135914a7fd62ebbb3b0904f",
+    "tree": "89131d49fe4e553801dc1e908a0748f7b4cb085d",
+    "model_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootScheduler.tla"
+  },
+  "tool": {
+    "name": "tla2tools.jar",
+    "sha256": "936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88",
+    "maximum_run_seconds": 120,
+    "workers": 2
+  },
+  "static_inputs": [
+    {
+      "run_path": "inputs/model/MonitorRootScheduler.tla",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootScheduler.tla",
+      "sha256": "491d02fb75317fec31868c7a7e57a7f85512f10d7a1ba12eba8f48fab565a3b1"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerSafeRevoke.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerSafeRevoke.cfg",
+      "sha256": "397134958f13ae23e5b9bcb441a68ec4502930ca915a2909dff2bb9c49f2de18"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerSafeSteady.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerSafeSteady.cfg",
+      "sha256": "b6d870732d13ea1f5ac9f2f8255c3225d203848b2709de052659b82e24981ec5"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeExpiryStillRunning.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeExpiryStillRunning.cfg",
+      "sha256": "aeb6be9c7924f76b443ca0e824eaca9ec325305eaa90c887d9c1c2a2d8c59135"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeLinuxExtend.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeLinuxExtend.cfg",
+      "sha256": "fa49887c4e336f8967e7fd55986c3d830f272fc2aa51218ed89a786db81adcbf"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeLinuxMint.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeLinuxMint.cfg",
+      "sha256": "56c6db921b7ab3a3a964e2a4d247fefe5c7dc6aa243f072e77f5fc29f066ad38"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeNoTimer.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeNoTimer.cfg",
+      "sha256": "fcba5c619e8ca54edfa969467d63bf142c0f8b0189f5583c307cccb5f0e0a775"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeRevokeManagement.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeRevokeManagement.cfg",
+      "sha256": "0199a30951f370cf4b35cae7e4b63c4b989c183f73bf52c20891d3a16f6ce4e3"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeSkipReserved.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeSkipReserved.cfg",
+      "sha256": "464ffda33e8a71db92b46fca9c021fad594e02511ac44d063c97d61688456523"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeStaleEpoch.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeStaleEpoch.cfg",
+      "sha256": "d81741f55ab74a90aabd356362cbfd39a51d7cdec545f5125e4ed553f4c8f124"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeStealReserved.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeStealReserved.cfg",
+      "sha256": "2cf02fcaa6b95f66a8d2adbe7ad1f68b231e32f559395b0b4514885fdd0fdf9b"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeStopAfterExpiry.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeStopAfterExpiry.cfg",
+      "sha256": "2da10e460886cf49606448e2b08d3fb2d113beed27a48ba2fb8aed6d8d8681de"
+    },
+    {
+      "run_path": "inputs/model/MonitorRootSchedulerUnsafeWaitForLinuxHint.cfg",
+      "repository_path": "capsched-models/formal/0147-monitor-root-scheduler-model/MonitorRootSchedulerUnsafeWaitForLinuxHint.cfg",
+      "sha256": "322b9d6daf5bb3501a391607716074adef5eaf890d5b21c8357ffb19675e3beb"
+    }
+  ],
+  "expected_runs": [
+    {
+      "id": "safe-steady",
+      "config": "MonitorRootSchedulerSafeSteady.cfg",
+      "expected_exit_codes": [0],
+      "expected_marker": "Model checking completed. No error has been found.",
+      "expected_generated_states": 155817,
+      "expected_distinct_states": 1920,
+      "expected_depth": 21
+    },
+    {
+      "id": "safe-revoke",
+      "config": "MonitorRootSchedulerSafeRevoke.cfg",
+      "expected_exit_codes": [0],
+      "expected_marker": "Model checking completed. No error has been found.",
+      "expected_generated_states": 853049,
+      "expected_distinct_states": 10400,
+      "expected_depth": 21
+    },
+    {
+      "id": "unsafe-wait-for-linux-hint",
+      "config": "MonitorRootSchedulerUnsafeWaitForLinuxHint.cfg",
+      "expected_exit_codes": [13],
+      "expected_marker": "Error: Temporal properties were violated.",
+      "expected_violation": "GuaranteedRecurringService"
+    },
+    {
+      "id": "unsafe-skip-reserved",
+      "config": "MonitorRootSchedulerUnsafeSkipReserved.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Invariant BoundedGuaranteedWait is violated.",
+      "expected_violation": "BoundedGuaranteedWait"
+    },
+    {
+      "id": "unsafe-steal-reserved",
+      "config": "MonitorRootSchedulerUnsafeStealReserved.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Invariant ReservedSlotIntegrity is violated.",
+      "expected_violation": "ReservedSlotIntegrity"
+    },
+    {
+      "id": "unsafe-stale-epoch",
+      "config": "MonitorRootSchedulerUnsafeStaleEpoch.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Invariant CurrentEpochOnly is violated.",
+      "expected_violation": "CurrentEpochOnly"
+    },
+    {
+      "id": "unsafe-linux-extend",
+      "config": "MonitorRootSchedulerUnsafeLinuxExtend.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Invariant LinuxCannotExtendRootLease is violated.",
+      "expected_violation": "LinuxCannotExtendRootLease"
+    },
+    {
+      "id": "unsafe-expiry-still-running",
+      "config": "MonitorRootSchedulerUnsafeExpiryStillRunning.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Invariant NoRootBudgetOverrun is violated.",
+      "expected_violation": "NoRootBudgetOverrun"
+    },
+    {
+      "id": "unsafe-stop-after-expiry",
+      "config": "MonitorRootSchedulerUnsafeStopAfterExpiry.cfg",
+      "expected_exit_codes": [13],
+      "expected_marker": "Error: Temporal properties were violated.",
+      "expected_violation": "TrustedHandoffProgress"
+    },
+    {
+      "id": "unsafe-revoke-management",
+      "config": "MonitorRootSchedulerUnsafeRevokeManagement.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Invariant ManagementAlwaysAdmitted is violated.",
+      "expected_violation": "ManagementAlwaysAdmitted"
+    },
+    {
+      "id": "unsafe-no-timer",
+      "config": "MonitorRootSchedulerUnsafeNoTimer.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Invariant NoRootRunWithoutLease is violated.",
+      "expected_violation": "NoRootRunWithoutLease"
+    },
+    {
+      "id": "unsafe-linux-mint",
+      "config": "MonitorRootSchedulerUnsafeLinuxMint.cfg",
+      "expected_exit_codes": [12],
+      "expected_marker": "Invariant LinuxCannotMintRootAuthority is violated.",
+      "expected_violation": "LinuxCannotMintRootAuthority"
+    }
+  ],
+  "capture_objects": [
+    {"source_path":"inputs/contract.json","capsule_path":"inputs/contract.json","role":"experiment_contract","media_type":"application/json","required":true},
+    {"source_path":"inputs/model/MonitorRootScheduler.tla","capsule_path":"inputs/model/MonitorRootScheduler.tla","role":"formal_model","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerSafeRevoke.cfg","capsule_path":"inputs/model/MonitorRootSchedulerSafeRevoke.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerSafeSteady.cfg","capsule_path":"inputs/model/MonitorRootSchedulerSafeSteady.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeExpiryStillRunning.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeExpiryStillRunning.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeLinuxExtend.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeLinuxExtend.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeLinuxMint.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeLinuxMint.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeNoTimer.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeNoTimer.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeRevokeManagement.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeRevokeManagement.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeSkipReserved.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeSkipReserved.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeStaleEpoch.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeStaleEpoch.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeStealReserved.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeStealReserved.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeStopAfterExpiry.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeStopAfterExpiry.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/model/MonitorRootSchedulerUnsafeWaitForLinuxHint.cfg","capsule_path":"inputs/model/MonitorRootSchedulerUnsafeWaitForLinuxHint.cfg","role":"tlc_configuration","media_type":"text/plain","required":true},
+    {"source_path":"inputs/tools/tla2tools.jar","capsule_path":"inputs/tools/tla2tools.jar","role":"formal_tool","media_type":"application/java-archive","required":true},
+    {"source_path":"inputs/producer-runner.sh","capsule_path":"inputs/producer-runner.sh","role":"producer_implementation","media_type":"text/x-shellscript","required":true},
+    {"source_path":"inputs/claim-validator.py","capsule_path":"inputs/claim-validator.py","role":"validator_implementation","media_type":"text/x-python","required":true},
+    {"source_path":"inputs/environment.json","capsule_path":"inputs/environment.json","role":"execution_environment","media_type":"application/json","required":true},
+    {"source_path":"inputs/commands.json","capsule_path":"inputs/commands.json","role":"command_manifest","media_type":"application/json","required":true},
+    {"source_path":"raw/tlc/safe-steady.log","capsule_path":"raw/tlc/safe-steady.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/safe-steady.status","capsule_path":"raw/tlc/safe-steady.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/safe-revoke.log","capsule_path":"raw/tlc/safe-revoke.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/safe-revoke.status","capsule_path":"raw/tlc/safe-revoke.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-wait-for-linux-hint.log","capsule_path":"raw/tlc/unsafe-wait-for-linux-hint.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-wait-for-linux-hint.status","capsule_path":"raw/tlc/unsafe-wait-for-linux-hint.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-skip-reserved.log","capsule_path":"raw/tlc/unsafe-skip-reserved.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-skip-reserved.status","capsule_path":"raw/tlc/unsafe-skip-reserved.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-steal-reserved.log","capsule_path":"raw/tlc/unsafe-steal-reserved.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-steal-reserved.status","capsule_path":"raw/tlc/unsafe-steal-reserved.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-stale-epoch.log","capsule_path":"raw/tlc/unsafe-stale-epoch.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-stale-epoch.status","capsule_path":"raw/tlc/unsafe-stale-epoch.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-linux-extend.log","capsule_path":"raw/tlc/unsafe-linux-extend.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-linux-extend.status","capsule_path":"raw/tlc/unsafe-linux-extend.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-expiry-still-running.log","capsule_path":"raw/tlc/unsafe-expiry-still-running.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-expiry-still-running.status","capsule_path":"raw/tlc/unsafe-expiry-still-running.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-stop-after-expiry.log","capsule_path":"raw/tlc/unsafe-stop-after-expiry.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-stop-after-expiry.status","capsule_path":"raw/tlc/unsafe-stop-after-expiry.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-revoke-management.log","capsule_path":"raw/tlc/unsafe-revoke-management.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-revoke-management.status","capsule_path":"raw/tlc/unsafe-revoke-management.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-no-timer.log","capsule_path":"raw/tlc/unsafe-no-timer.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-no-timer.status","capsule_path":"raw/tlc/unsafe-no-timer.status","role":"raw_exit_status","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-linux-mint.log","capsule_path":"raw/tlc/unsafe-linux-mint.log","role":"raw_tlc_log","media_type":"text/plain","required":true},
+    {"source_path":"raw/tlc/unsafe-linux-mint.status","capsule_path":"raw/tlc/unsafe-linux-mint.status","role":"raw_exit_status","media_type":"text/plain","required":true}
+  ],
+  "forbidden_inputs": [
+    "producer_summary_as_oracle",
+    "mutable_worktree_model",
+    "uncaptured_configuration",
+    "linux_fairness_assumption",
+    "uncaptured_tlc_tool"
+  ],
+  "claim_boundary": {
+    "allowed": "ROOTSCHED-001_open_to_model_supported",
+    "forbidden": [
+      "ROOTSCHED-001_to_protection_evidenced",
+      "TOP-001_promotion",
+      "monitor_implementation_claim",
+      "linux_behavior_claim",
+      "wall_clock_bound_claim",
+      "performance_or_cost_claim",
+      "datacenter_deployment_claim"
+    ]
+  }
+}

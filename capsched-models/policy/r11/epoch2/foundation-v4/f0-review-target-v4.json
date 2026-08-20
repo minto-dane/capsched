@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "artifact_id": "domainlease-r11-epoch2-f0-review-target-v4",
+  "date": "2026-08-10",
+  "status": "local_exact_hostile_review_in_progress",
+  "authority": "non_normative_identity_index_only",
+  "normative_source": {
+    "path": "capsched-models/policy/r11/epoch2/foundation-v4/f0-core-calculus-v4.md",
+    "sha256": "177ae3e0a860b808fd49a5bd93d03adc74d5b56f9950d1d257fa63e8fb6c7d9c",
+    "bytes": 24915,
+    "language_id": "DL-F0-Core-4"
+  },
+  "predecessor_disposition": {
+    "v3_spec_sha256": "9fbb5fd5c5e2d4da8246114b2eb136b8795bb3c20a44801d5947cb8cf1fe1734",
+    "v3_schema_sha256": "4880f50071f4299bc0e88b9cf1072e551bd36a9a9894e17a33e8e945fa2585ae",
+    "v3_contract_sha256": "d38891c32bd9449df60777f2e421c98549b01e56409d1bff92a6cef37fda93b4",
+    "v3_status": "rejected",
+    "decision": "ADR-0019",
+    "analysis": "Analysis-0216",
+    "validation": "Validation-0305"
+  },
+  "normative_clause_ids": [
+    "F0-DEN-001",
+    "F0-DEN-002",
+    "F0-DEN-003",
+    "F0-DEN-004",
+    "F0-DEN-005",
+    "F0-DEN-006",
+    "F0-DEN-007",
+    "F0-DEN-008",
+    "F0-DEN-009",
+    "F0-DEN-010",
+    "F0-DEN-011",
+    "F0-DEN-012",
+    "F0-DEN-013",
+    "F0-DEN-014",
+    "F0-DEN-015",
+    "F0-DEN-016",
+    "F0-DEN-017",
+    "F0-DEN-018"
+  ],
+  "included_scope": [
+    "signature_and_interpretation",
+    "state_location_cell_and_event_carriers",
+    "provenance_indexed_terms",
+    "generated_action_branch_and_frame_relations",
+    "base_execution_reachability_and_safety",
+    "mandatory_nonvacuity",
+    "finite_and_general_claim_quantification",
+    "metatheory_and_extension_interfaces"
+  ],
+  "excluded_scope": [
+    "F1_progress_time_durability_distribution_composition_relational_claims",
+    "F2_platform_refinement_and_threat_overapproximation",
+    "F3_external_policy_generators_mutations_proof_and_assurance",
+    "K0_external_adoption",
+    "K1_candidate_architecture_IR",
+    "TLA_translation",
+    "linux_or_monitor_implementation"
+  ],
+  "local_review_assignments": [
+    {
+      "axis": "type_theory_and_metatheory",
+      "session_id": "019fe9ef-b8e2-72e0-a807-923b3e9ecdf1",
+      "external_authority": false
+    },
+    {
+      "axis": "action_frame_and_security_semantics",
+      "session_id": "019fe9ef-d8d8-7990-bd03-ecc2b1aed28b",
+      "external_authority": false
+    },
+    {
+      "axis": "safety_nonvacuity_scope_and_backend",
+      "session_id": "019fe9f0-041f-7141-b872-e518f5f5e576",
+      "external_authority": false
+    },
+    {
+      "axis": "extension_interface_and_expressive_adequacy",
+      "session_id": "019fe9f0-244b-7a82-83c2-e59032f5cda0",
+      "external_authority": false
+    }
+  ],
+  "authorization": {
+    "local_exact_review": true,
+    "F0_local_acceptance": false,
+    "F1_design": false,
+    "F2_design": false,
+    "F3_completion": false,
+    "K0_G0_complete": false,
+    "candidate_IR": false,
+    "semantic_freeze": false,
+    "TLA_translation": false,
+    "model_supported": false,
+    "linux_behavior_change": false,
+    "protection_claim": false
+  }
+}

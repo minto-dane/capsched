@@ -1,0 +1,221 @@
+{
+  "schema_version": 3,
+  "id": "architecture-freeze-assurance-v2-hostile-review-v1",
+  "date": "2026-08-09",
+  "work_record": "N-184",
+  "requirement": "RESIDENCY-DYN-001",
+  "analysis": "analysis/0197-architecture-freeze-assurance-v2-hostile-review.md",
+  "reviewed_protocol": "analysis/architecture-freeze-external-assurance-protocol-v2.json",
+  "reviewed_fixture_verifier": "validation/validate-architecture-freeze-assurance-v2.py",
+  "reviewed_real_stub": "validation/verify-architecture-freeze-assurance-v2-real.py",
+  "review_provenance": {
+    "evidence_class": "unauthenticated_internal_discovery_only",
+    "reviewer_identity_authenticated": false,
+    "source_locator": "internal_subagent_notification_019fe7a8-4003-7f40-b775-fa9bb7a82955",
+    "source_material_retained_as_external_immutable_object": false,
+    "source_snapshot_digests_complete_and_reproducible": false,
+    "usable_as_external_freeze_evidence": false,
+    "usable_as_finding_discovery_input": true
+  },
+  "source_verdict": "FREEZE_NO",
+  "status": "redesign_integrated_fixture_hardened_real_implementation_and_fresh_external_review_pending",
+  "finding_count": 20,
+  "finding_ids": [
+    "ASSURE-R4-01",
+    "ASSURE-R4-02",
+    "ASSURE-R4-03",
+    "ASSURE-R4-04",
+    "ASSURE-R4-05",
+    "ASSURE-R4-06",
+    "ASSURE-R4-07",
+    "ASSURE-R4-08",
+    "ASSURE-R4-09",
+    "ASSURE-R4-10",
+    "ASSURE-R4-11",
+    "ASSURE-R5-01",
+    "ASSURE-R5-02",
+    "ASSURE-R5-03",
+    "ASSURE-R5-04",
+    "ASSURE-R5-05",
+    "ASSURE-R5-06",
+    "ASSURE-R5-07",
+    "ASSURE-R5-08",
+    "ASSURE-R5-09"
+  ],
+  "findings": [
+    {
+      "id": "ASSURE-R4-01",
+      "severity": "high",
+      "finding": "pinned_semantic_validator_bytes_are_path_executed_without_execution_FD_runtime_or_sandbox_binding",
+      "candidate_response": "real_verifier_executes_no_candidate_program_and_requires_matching_policy_pinned_hermetic_runner_receipts",
+      "residual_obligation": "implement_and_independently_review_receipt_schema_threshold_and_runtime_attestation_validation",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-02",
+      "severity": "high",
+      "finding": "review_submissions_and_candidate_heads_can_equivocate_or_hide_a_signed_reject_sibling",
+      "candidate_response": "3_of_4_event_index_admission_full_campaign_event_replay_authenticated_four_key_terminal_map_absorbing_rejection_and_3_of_4_terminal_checkpoint",
+      "residual_obligation": "implement_and_independently_attack_admission_event_log_replay_map_transition_and_checkpoint_verification",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-03",
+      "severity": "medium",
+      "finding": "blind_review_is_only_a_signed_assertion",
+      "candidate_response": "signed_commit_then_reveal_with_all_commitment_checkpoint_before_any_reveal_and_narrow_blind_claim",
+      "residual_obligation": "implement_commitment_nonce_reveal_log_order_and_replacement_mutations",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-04",
+      "severity": "medium",
+      "finding": "predecessor_capsules_are_metadata_only_and_can_be_invented_after_the_fact",
+      "candidate_response": "every_real_predecessor_requires_prior_terminal_checkpoint_inclusion_and_consistency_chain",
+      "residual_obligation": "implement_bounded_publication_chain_verification_and_present_time_only_fallback",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-05",
+      "severity": "medium",
+      "finding": "semantic_validator_output_and_process_descendants_are_not_resource_bounded",
+      "candidate_response": "real_execution_moves_to_hermetic_runners_and_fixture_execution_remains_explicitly_nonhermetic_but_resource_bounded",
+      "residual_obligation": "implement_real_runner_receipts_and_do_not_treat_fixture_host_process_limits_as_a_security_boundary",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-06",
+      "severity": "medium",
+      "finding": "mode_bit_read_only_CAS_is_not_WORM_or_durable_audit_evidence",
+      "candidate_response": "externally_signed_checkpointed_RetentionAttestation_binds_object_lock_store_incarnation_versions_and_horizon",
+      "residual_obligation": "implement_retention_authority_keys_schema_sequence_and_checkpoint_validation",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-07",
+      "severity": "medium",
+      "finding": "real_mode_output_omits_complete_trust_tool_CAS_and_decision_provenance",
+      "candidate_response": "result_requires_complete_digest_tuple_and_downstream_exact_pin",
+      "residual_obligation": "implement_exact_real_result_schema_and_omission_substitution_mutations",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-08",
+      "severity": "low",
+      "finding": "preformal_freeze_grant_contradicts_permanent_tla_authorized_denial",
+      "candidate_response": "future_accepted_real_preformal_freeze_sets_tla_authorized_for_exact_capsule_while_later_formal_claims_remain_false",
+      "residual_obligation": "implement_exact_claim_ceiling_and_capsule_binding_mutations_in_real_verifier",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-09",
+      "severity": "low",
+      "finding": "fixture_namespace_names_differ_across_human_machine_and_code",
+      "candidate_response": "human_machine_fixture_verifier_and_test_use_exact_prefix_linux_cap_archfreeze_fixture_v2",
+      "residual_obligation": "retain_exact_prefix_and_mechanics_profile_digest_checks",
+      "status": "open_candidate_fix_implemented_pending_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-10",
+      "severity": "medium",
+      "finding": "policy_precedence_is_a_signed_boolean_not_temporal_evidence",
+      "candidate_response": "policy_inclusion_checkpoint_tree_size_and_consistency_proof_must_precede_candidate_commitment_and_terminal_heads",
+      "residual_obligation": "implement_log_order_consistency_and_timestamp_non_authority_mutations",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R4-11",
+      "severity": "medium",
+      "finding": "protocol_object_ID_grammar_excludes_existing_uppercase_finding_IDs",
+      "candidate_response": "separate_uppercase_hyphenated_finding_ID_grammar_is_used_by_catalog_and_reviews",
+      "residual_obligation": "real_verifier_accepts_pinned_finding_shapes_and_rejects_cross_namespace_aliases",
+      "status": "open_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R5-01",
+      "severity": "blocker",
+      "finding": "reveal_signature_binding_to_a_future_terminal_checkpoint_is_cyclic_or_ambiguous",
+      "candidate_response": "reveal_exactly_binds_campaign_capsule_assignment_commitment_checkpoint_commitment_preallocated_map_key_review_and_nonce_terminal_checkpoint_later_includes_reveal_decision_authorization_then_signs_terminal_digest",
+      "residual_obligation": "implement_exact_real_schemas_signatures_and_noncyclic_end_to_end_vectors_then_independently_review",
+      "status": "open_protocol_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R5-02",
+      "severity": "blocker",
+      "finding": "append_only_Merkle_log_alone_does_not_prove_assignment_uniqueness_completeness_or_absence_of_hidden_reject_siblings",
+      "candidate_response": "3_of_4_submission_admission_full_index_event_replay_authenticated_exact_four_key_terminal_map_absorbing_rejection_and_N4_t3_f1_witnessed_terminal_checkpoint",
+      "residual_obligation": "implement_admission_complete_event_replay_map_proofs_checkpoint_quorum_and_hidden_sibling_fork_mutations",
+      "status": "open_protocol_redesign_integrated_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R5-03",
+      "severity": "high",
+      "finding": "fixture_verifier_real_mode_guard_hides_unreachable_obsolete_real_success_code",
+      "candidate_response": "remove_real_mode_REAL_ACCEPT_GRANTS_and_all_real_success_code_from_fixture_verifier_and_create_separate_unconditional_real_reject_stub",
+      "residual_obligation": "freshly_review_fixture_real_structural_separation_and_require_new_separate_review_for_any_future_real_implementation",
+      "status": "open_candidate_fix_implemented_pending_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R5-04",
+      "severity": "high",
+      "finding": "dynamic_architecture_witness_interpreter_accepts_multiple_malformed_or_unsafe_witness_states",
+      "candidate_response": "record_as_cross_component_dependency_without_modifying_dynamic_model_owned_files_in_this_assurance_change",
+      "residual_obligation": "dynamic_model_owner_must_add_strict_types_sets_cross_references_and_hostile_mutations_before_capsule_freeze",
+      "status": "open_outside_assurance_owned_files_forwarded_to_dynamic_model_owner"
+    },
+    {
+      "id": "ASSURE-R5-05",
+      "severity": "high",
+      "finding": "semantic_validation_receipt_and_complete_result_provenance_are_specified_but_not_yet_verifiable",
+      "candidate_response": "retain_real_protocol_implemented_false_and_fail_closed_real_stub_while_exact_real_receipt_and_output_schemas_remain_pending",
+      "residual_obligation": "implement_nonce_separated_receipts_matching_projection_complete_result_tuple_and_mutations",
+      "status": "open_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R5-06",
+      "severity": "medium",
+      "finding": "fixture_process_group_limits_are_not_a_hermetic_sandbox_or_complete_descendant_reaper",
+      "candidate_response": "label_fixture_execution_nonhermetic_and_forbid_its_use_as_real_evidence",
+      "residual_obligation": "real_mode_must_use_policy_pinned_measured_isolation_or_deterministic_WASM_and_never_reuse_fixture_runner",
+      "status": "open_boundary_clarified_pending_real_implementation_and_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R5-07",
+      "severity": "medium",
+      "finding": "fixture_output_collapses_valid_ACCEPT_and_valid_REJECT_into_the_same_success_result",
+      "candidate_response": "output_campaign_decision_evidence_valid_freeze_authorized_false_mechanics_profile_digest_and_tla_authorized_false",
+      "residual_obligation": "freshly_review_exact_output_and_downstream_non_authorization_behavior",
+      "status": "open_candidate_fix_implemented_pending_fresh_external_review"
+    },
+    {
+      "id": "ASSURE-R5-08",
+      "severity": "medium",
+      "finding": "dynamic_contract_validator_reopens_paths_between_parse_and_digest_and_can_observe_different_bytes",
+      "candidate_response": "record_as_cross_component_dependency_without_modifying_dynamic_validator_owned_files_in_this_assurance_change",
+      "residual_obligation": "dynamic_validator_owner_must_single_read_cache_parse_and_hash_identical_bytes_and_bind_result_to_capsule_digest",
+      "status": "open_outside_assurance_owned_files_forwarded_to_dynamic_validator_owner"
+    },
+    {
+      "id": "ASSURE-R5-09",
+      "severity": "medium",
+      "finding": "mutation_tests_accept_any_nonzero_exit_and_dead_validation_paths_can_mask_missing_controls",
+      "candidate_response": "fixture_mutations_now_assert_stable_intended_error_class_and_reason_marker_and_fixture_real_dead_code_is_removed",
+      "residual_obligation": "dynamic_validator_owner_must_remove_legacy_dead_validator_and_add_required_check_coverage_manifest",
+      "status": "open_assurance_fixture_fix_implemented_dynamic_dependency_pending_and_fresh_external_review"
+    }
+  ],
+  "claims": {
+    "fresh_review_recorded_as_discovery_only": true,
+    "fresh_review_is_external_freeze_evidence": false,
+    "v2_1_2_protocol_redesign_integrated": true,
+    "fixture_verifier_real_success_paths_removed": true,
+    "separate_real_stub_unconditionally_rejects": true,
+    "fixture_accept_and_reject_outputs_distinguished": true,
+    "fixture_mutations_have_stable_rejection_contracts": true,
+    "real_mode_assurance_implemented": false,
+    "real_mode_assurance_validated": false,
+    "findings_closed": false,
+    "architecture_frozen": false,
+    "tla_authorized": false
+  }
+}

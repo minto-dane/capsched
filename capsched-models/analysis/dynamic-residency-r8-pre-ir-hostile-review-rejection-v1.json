@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "dynamic-residency-r8-pre-ir-hostile-review-rejection-v1",
+  "date": "2026-08-09",
+  "work_record": "N-193",
+  "analysis": "0205-dynamic-residency-r8-pre-ir-hostile-review-rejection.md",
+  "requirement": "RESIDENCY-DYN-001",
+  "reviewed_human_raw_sha256": "6d08ec4371c8832ff413626fcbb804eb157e3ebc555d7d4ef7d79fe45a97e8ec",
+  "review_roles": ["authority_activation", "distributed_failure_transfer", "formal_IR_readiness", "system_goal_composition"],
+  "role_verdicts": ["FREEZE_NO", "FREEZE_NO", "FREEZE_NO", "FREEZE_NO"],
+  "verdict": "FREEZE_NO",
+  "finding_groups": {
+    "authority_activation": ["R8-STAGING-01", "R8-INPUT-01", "R8-RECEIPT-01", "R8-MUTABLE-01", "R8-ENTRY-01", "R8-STOP-01", "R8-TERMINAL-01", "R8-PREPARED-EXPIRY-01", "R8-ATTEMPT-01", "R8-ENTRY-REVOKE-01", "R8-SERVICE-01", "R8-CRASH-01"],
+    "publication_failure": ["R8-ENROLL-SEAL-01", "R8-COMMIT-VISIBILITY-01", "R8-CLOSURE-TERMINAL-01", "R8-FAIL-ROOT-CAS-01", "R8-FIXEDPOINT-GENERATION-01", "R8-FAIL-LOCALITY-01", "R8-DISCOVERY-POTENTIAL-01", "R8-RESTART-GC-01"],
+    "time_transfer_connectivity": ["R8-LOST-EFFECT-01", "R8-STRONG-QCUT-01", "R8-SAFE-GAP-FACT-01", "R8-TRANSFER-STOP-01", "R8-TYPED-TIME-01", "R8-CONNECTIVITY-CELL-01", "R8-TRANSFER-OWNER-01"],
+    "progress_scale_cost": ["R8-EVIDENCE-WORK-01", "R8-RANK-FAMILIES-01", "R8-BOUNDED-SUFFIX-01", "R8-GRANULARITY-TYPES-01", "R8-HOTPATH-01", "R8-CALENDAR-DESCRIPTOR-01"],
+    "formal_IR": ["R8-CLEAN-SCOPE-01", "R8-TYPE-INIT-01", "R8-ACTION-NEXT-01", "R8-EXTERNAL-INTERFACE-01", "R8-PROTECTED-PULSE-01", "R8-WELLFORMED-ABS-01", "R8-PROOF-CLAIM-01", "R8-MUTATION-META-01"]
+  },
+  "finding_count": 41,
+  "fixed_R8_choices": {
+    "strong_continuity_effect_rule": "replicated_entry_fence_before_physical_execution_gate",
+    "local_only_source_loss_rule": "new_incarnation_ContinuityLost_only",
+    "entry_linearization": "constant_size_physical_EntryOutcomeCell",
+    "runtime_stop_authority": "single_RuntimeStopCell_generation",
+    "static_dynamic_context_split": true,
+    "failure_work_scope": "canonical_component_precharged_reverse_edges_only",
+    "history_shape": "ClosedPrefix_plus_K_bounded_live_uncertain_suffix",
+    "implicit_internal_stutter_on_pending_protected_pulse": false
+  },
+  "claims": {
+    "R7_IR_encoding_ready": false,
+    "R7_architecture_frozen": false,
+    "R8_architecture_written": false,
+    "tla_authorized": false,
+    "model_supported": false,
+    "protection_evidenced": false,
+    "cost_efficiency_evidenced": false,
+    "deployment_ready": false
+  }
+}

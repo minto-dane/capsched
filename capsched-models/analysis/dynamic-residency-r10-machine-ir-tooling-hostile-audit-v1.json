@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-r10-machine-ir-tooling-hostile-audit-v1",
+  "model": "DynamicResidencyR10",
+  "review_mode": "concurrent-read-only-negative-evidence",
+  "exact_snapshot_review": false,
+  "reason_not_exact": "r10-source.json changed while the reviewer was reading it; this audit can reject readiness but cannot authorize a later snapshot",
+  "verdict": {
+    "closure": "NO",
+    "machine_ir_ready": "NO",
+    "freeze": "NO"
+  },
+  "findings": [
+    {"id": "R10-TOOL-001", "severity": "critical", "summary": "source-controlled status can counterfeit promotion", "disposition": "PARTIAL", "remaining": "draft is now schema-locked; external content-addressed review manifest and promotion verifier remain required"},
+    {"id": "R10-TOOL-002", "severity": "critical", "summary": "function calls hide transitive cross-shard reads", "disposition": "FIXED-UNVALIDATED", "remaining": "add an executable hostile mutation proving transitive read expansion"},
+    {"id": "R10-TOOL-003", "severity": "critical", "summary": "transaction instances can alias slot and recovery identity", "disposition": "FIXED-UNVALIDATED", "remaining": "add collision and slot-generation reuse mutations"},
+    {"id": "R10-TOOL-004", "severity": "high", "summary": "ASTs lack context classes and safe variant-field discipline", "disposition": "PARTIAL", "remaining": "context classes and function-cycle rejection exist; variant-field dominance remains open"},
+    {"id": "R10-TOOL-005", "severity": "high", "summary": "concrete duplicate writes and out-of-write linearization are accepted", "disposition": "FIXED-UNVALIDATED", "remaining": "add executable concrete-alias and linearization mutations"},
+    {"id": "R10-TOOL-006", "severity": "high", "summary": "authority_relevant is an attacker-controlled cross-shard exemption", "disposition": "FIXED-UNVALIDATED", "remaining": "authority relevance is derived and every read participates in CD/shard closure; add mutation"},
+    {"id": "R10-TOOL-007", "severity": "high", "summary": "proof, invariant, mutation, and witness coverage are self-attested", "disposition": "PARTIAL", "remaining": "per-invariant action matrix and claim resolution exist; executable witness and mutation interpreters remain open"},
+    {"id": "R10-TOOL-008", "severity": "high", "summary": "imports and refinements are not derived from pinned source text", "disposition": "OPEN", "remaining": "pinned parser, complete symbol maps, and target-action correspondence are required"},
+    {"id": "R10-TOOL-009", "severity": "high", "summary": "owner, consistency domain, shard type, and writer class are not structurally fixed", "disposition": "FIXED-UNVALIDATED", "remaining": "add hostile metadata and writer/CD mismatch mutations"},
+    {"id": "R10-TOOL-010", "severity": "high", "summary": "object edges and allocator contracts are superficial", "disposition": "PARTIAL", "remaining": "full path leaf typing exists; allocator/object-store atomic construction and reference-field equality remain open"},
+    {"id": "R10-TOOL-011", "severity": "high", "summary": "declared action instance universe can silently omit cases", "disposition": "OPEN", "remaining": "bounded generated instance scope and equality with expanded instances are required"},
+    {"id": "R10-TOOL-012", "severity": "high", "summary": "provider, recovery, and rank obligations are not semantically checked", "disposition": "PARTIAL", "remaining": "typed exact atomic recovery exists; provider fault partition and rank-decrease obligations remain open"},
+    {"id": "R10-TOOL-013", "severity": "high", "summary": "input hashing and multi-output publication permit TOCTOU and torn bundles", "disposition": "FIXED-UNVALIDATED", "remaining": "inputs are hashed from consumed bytes and lock is manifest-last; add race/readback test"},
+    {"id": "R10-TOOL-014", "severity": "medium", "summary": "expanded artifact is not a standalone machine IR", "disposition": "FIXED-UNVALIDATED", "remaining": "expanded v2 now includes all registries, concrete frames, witnesses, mutations, imports, and generator version; add independent schema check"}
+  ],
+  "authorization": {
+    "semantic_freeze": false,
+    "tla_translation": false,
+    "model_supported_claim": false,
+    "next_gate": "all OPEN/PARTIAL items closed by executable hostile mutations followed by a fresh exact read-only review"
+  }
+}

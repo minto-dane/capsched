@@ -2,9 +2,19 @@
   "schema_version": 1,
   "id": "final-model-completeness-ledger-v1",
   "analysis": "analysis/0109-final-model-completeness-ledger.md",
-  "status": "model_goal_complete_production_unclaimed",
+  "status": "historical_v1_inventory_complete_final_composition_reopened",
   "date": "2026-07-02",
-  "purpose": "Determine whether the model-only goal may be marked complete after TCB-001, SIDE-001, and EVAL-001 were closed at model level, while preserving non-claims for implementation and production protection.",
+  "purpose": "Historical determination that the v1 declared claim inventory and local overclaim gates were complete after TCB-001, SIDE-001, and EVAL-001 were classified at model level. ADR-0012 and Analysis 0185 prohibit interpreting this result as final system composition.",
+  "scope_correction": {
+    "date": "2026-08-08",
+    "decision": "capsched-ai/decisions/ADR-0012-distinguish-local-model-coverage-from-system-completion.md",
+    "audit": "analysis/0185-final-goal-conformance-and-compositional-model-reopen.md",
+    "historical_result_retained": true,
+    "historical_scope": "v1_claim_inventory_local_contract_and_overclaim_gate_coverage",
+    "final_compositional_model_complete": false,
+    "final_compositional_model_reopened": true,
+    "ids_or_results_renamed": false
+  },
   "top_level_child_audit": {
     "total": 15,
     "model_supported": [
@@ -52,10 +62,11 @@
     }
   ],
   "completion_decision": {
-    "model_only_goal_complete": true,
+    "historical_v1_inventory_goal_complete": true,
+    "final_compositional_model_complete": false,
     "production_goal_complete": false,
     "top_production_claim_complete": false,
-    "reason": "All known model-only blockers are closed, compatibility/prototype evidence is classified, and forbidden production/implementation/cost claim boundaries remain recorded."
+    "reason": "All blockers in the v1 declared inventory were classified and forbidden production/implementation/cost claim boundaries were recorded. Successor system-composition obligations were not part of that ledger and are open in Analysis 0185."
   },
   "completion_rule": [
     "all_top_level_children_model_supported_or_explicitly_classified",
@@ -85,7 +96,8 @@
     "UnsafeTopProductionCompleteClaim"
   ],
   "safety_flags": {
-    "model_goal_complete": true,
+    "historical_v1_inventory_goal_complete": true,
+    "final_compositional_model_complete": false,
     "linux_patch_approved": false,
     "behavior_change_approved": false,
     "runtime_coverage_claim": false,

@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-24",
+  "status": "rejected_r5_generation_sealed_immutable_selector_before_source",
+  "prerequisite": {
+    "analysis": "analysis/0177-sched-exec-lease-p5a-r5-generation-sealed-immutable-projection.md",
+    "validation": "validation/0273-sched-exec-lease-p5a-r5-generation-sealed-immutable-projection.md",
+    "result": "build/source-check/sched-exec-lease-p5a-r5-generation-sealed-immutable-projection/20260724T-p5a-r5-generation-sealed-immutable-projection-r1/result.json",
+    "result_sha256": "ceb595322a92886c2296cbcafd3c2fd08b220753a250ac2c4a7222a54a64bf9b",
+    "r5_source_free_only": true,
+    "eevdf_representation_deferred_to_e1": true,
+    "r5_layout_or_source_approved": false
+  },
+  "source_basis": {
+    "primary_linux_commit": "5e1ca3037e34823d1ba0cdd1dc04161fac170280",
+    "primary_linux_tree": "54f685aad94f28f0027cbba18cf5e29aadce234a"
+  },
+  "eevdf_contract": {
+    "tree": "cfs_rq.tasks_timeline",
+    "tree_order": "deadline",
+    "subtree_augmentation": "sched_entity.min_vruntime",
+    "eligibility_aggregates": ["cfs_rq.sum_w_vruntime", "cfs_rq.sum_weight", "cfs_rq.zero_vruntime", "cfs_rq.curr"],
+    "live_entity_fields": ["run_node", "deadline", "min_vruntime", "vruntime", "slice", "on_rq", "sched_delayed"],
+    "pick_complexity_depends_on_live_augmentation": true,
+    "ordinary_update_curr_changes_selector_state": true,
+    "enqueue_dequeue_change_selector_state": true,
+    "current_tree_transitions_change_selector_state": true,
+    "authority_stability_implies_selector_stability": false
+  },
+  "r5_contradiction": {
+    "immutable_selector_view": true,
+    "ordinary_dynamic_eevdf_mutation": true,
+    "variable_picker_scan_allowed": false,
+    "mutable_post_install_selector_maintenance_allowed": false,
+    "stale_view_trusted": false,
+    "safe_result_after_dynamic_mutation": "Blocked",
+    "allowed_runnable_eventually_selected": false,
+    "stable_authority_window_sufficient_for_availability": false,
+    "r5_e1_feasible": false
+  },
+  "experimental_negative_evidence": {
+    "final_pickable_predicate_part_of_min_vruntime_augmentation": false,
+    "fallback_function": "sched_exec_cfs_pickable_scan",
+    "fallback_walks_complete_tasks_timeline": true,
+    "fallback_complexity": "O(n)",
+    "fallback_accepted": false
+  },
+  "source_anchors": [
+    {"id":"R5E1SRC-001","path":"linux/kernel/sched/sched.h","pattern":"struct cfs_rq {"},
+    {"id":"R5E1SRC-002","path":"linux/kernel/sched/sched.h","pattern":"s64\t\t\tsum_w_vruntime;"},
+    {"id":"R5E1SRC-003","path":"linux/kernel/sched/sched.h","pattern":"struct rb_root_cached\ttasks_timeline;"},
+    {"id":"R5E1SRC-004","path":"linux/include/linux/sched.h","pattern":"struct sched_entity {"},
+    {"id":"R5E1SRC-005","path":"linux/include/linux/sched.h","pattern":"struct rb_node\t\t\trun_node;"},
+    {"id":"R5E1SRC-006","path":"linux/include/linux/sched.h","pattern":"u64\t\t\t\tmin_vruntime;"},
+    {"id":"R5E1SRC-007","path":"linux/kernel/sched/fair.c","pattern":"RB_DECLARE_CALLBACKS(static, min_vruntime_cb"},
+    {"id":"R5E1SRC-008","path":"linux/kernel/sched/fair.c","pattern":"rb_add_augmented_cached(&se->run_node, &cfs_rq->tasks_timeline,"},
+    {"id":"R5E1SRC-009","path":"linux/kernel/sched/fair.c","pattern":"rb_erase_augmented_cached(&se->run_node, &cfs_rq->tasks_timeline,"},
+    {"id":"R5E1SRC-010","path":"linux/kernel/sched/fair.c","pattern":"u64 avg_vruntime(struct cfs_rq *cfs_rq)"},
+    {"id":"R5E1SRC-011","path":"linux/kernel/sched/fair.c","pattern":"static void update_curr(struct cfs_rq *cfs_rq)"},
+    {"id":"R5E1SRC-012","path":"linux/kernel/sched/fair.c","pattern":"enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)"},
+    {"id":"R5E1SRC-013","path":"linux/kernel/sched/fair.c","pattern":"dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)"},
+    {"id":"R5E1SRC-014","path":"linux/kernel/sched/fair.c","pattern":"pick_eevdf(struct cfs_rq *cfs_rq, bool protect,"},
+    {"id":"R5E1SRC-015","path":"linux/kernel/sched/fair.c","pattern":"Eligible entities in left subtree are always better"},
+    {"id":"R5E1SRC-016","path":"linux/kernel/sched/fair.c","pattern":"sched_exec_cfs_pickable_scan(struct cfs_rq *cfs_rq"},
+    {"id":"R5E1SRC-017","path":"linux/kernel/sched/fair.c","pattern":"for (node = rb_first_cached(&cfs_rq->tasks_timeline); node;"},
+    {"id":"R5E1SRC-018","path":"linux/kernel/sched/fair.c","pattern":"best = sched_exec_cfs_pickable_fallback(cfs_rq, curr,"}
+  ],
+  "formal": {
+    "model_dir": "capsched-models/formal/0141-p5a-r5-e1-eevdf-selector-coherence-model",
+    "model": "P5AR5E1EEVDFSelectorCoherence.tla",
+    "safe_cfg": "P5AR5E1EEVDFSelectorCoherenceSafe.cfg",
+    "unsafe_cfg": "P5AR5E1EEVDFSelectorCoherenceUnsafeTrustStale.cfg",
+    "availability_cfg": "P5AR5E1EEVDFSelectorCoherenceAvailability.cfg",
+    "safe_fail_closed_expected": true,
+    "unsafe_stale_trust_counterexample_expected": true,
+    "safe_availability_counterexample_expected": true
+  },
+  "decision": {
+    "r5_rejected_before_layout": true,
+    "r5_rejected_before_source": true,
+    "r5_repair_authorized": false,
+    "successor_selected": false,
+    "successor_analysis_may_start": true
+  },
+  "claims": {
+    "r5_source_approved": false,
+    "r6_source_approved": false,
+    "real_scheduler_attachment": false,
+    "runtime_behavior_approved": false,
+    "bare_metal_validated": false,
+    "performance_claim": false,
+    "cost_claim": false,
+    "monitor_verified": false,
+    "production_protection": false,
+    "deployment_ready": false,
+    "multi_node_ready": false,
+    "multi_cluster_ready": false,
+    "datacenter_ready": false
+  }
+}

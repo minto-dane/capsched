@@ -7,6 +7,10 @@
 # TLA+ TLC generated state checkpoints.
 /capsched-models/formal/**/states/
 
+# Python validator bytecode is reproducible and carries no evidence credit.
+__pycache__/
+*.py[cod]
+
 # Editor and OS noise.
 *~
 *.swp

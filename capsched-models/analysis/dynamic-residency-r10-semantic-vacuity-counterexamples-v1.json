@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "artifact_id": "dynamic-residency-r10-semantic-vacuity-counterexamples-v1",
+  "model_id": "DynamicResidencyR10",
+  "baseline": {
+    "r10-source.json": "ad463ae92004e962cbe8719073453aba4f60345e0c8099683a2b858268ef6f97",
+    "r10-schema.json": "9764d711c14f41de07185a359814522ddca563b0e52593f3c6b4334e75fcfadf",
+    "materialize-r10.py": "a6c5a541259ef6eb29f0f16da222d065f126f6311de22edae9f4c6577c836e7e",
+    "r9-rejection-disposition.json": "509378203b8dc4009054487585da1ae82a38bde713f3bd539545120e8a4b8d5c"
+  },
+  "verdict": {
+    "accepted_counterexamples": 13,
+    "semantic_closure": false,
+    "architecture_freeze": false,
+    "tla_authorized": false
+  },
+  "counterexamples": [
+    {"id": "VACUITY-INVARIANT-TRUE", "mutation": "replace INV-AUTHORITY-USE-CONSERVATION formula with literal TRUE", "actual": "accepted", "closure_layer": ["ir_nonvacuity", "external_obligation_catalog", "formal_counterexample"]},
+    {"id": "VACUITY-PROOF-EMPTY", "mutation": "clear formula_ids and action_ids on a claim-bearing proof node", "actual": "accepted", "closure_layer": ["ir_obligation_support", "external_claim_catalog"]},
+    {"id": "VACUITY-CLAIM-FABRICATED", "mutation": "add a new candidate claim and attach it to an existing proof node", "actual": "accepted", "closure_layer": ["external_claim_catalog", "proof_receipt"]},
+    {"id": "VACUITY-PROVIDER-INIT", "mutation": "initialize cpu_receipt to ContextInstalled instead of Vacant", "actual": "accepted", "closure_layer": ["ir_provider_init_policy"]},
+    {"id": "VACUITY-PROVIDER-CONTRACT", "mutation": "replace all provider state, fault, guarantee, and progress formulas with true formulas", "actual": "accepted", "closure_layer": ["ir_provider_dependency", "external_obligation_catalog", "formal_counterexample"]},
+    {"id": "VACUITY-PROGRESS", "mutation": "replace progress premise and temporal formula with TRUE and always TRUE", "actual": "accepted", "closure_layer": ["ir_progress_nonvacuity", "formal_liveness_check"]},
+    {"id": "VACUITY-BLOCKER-FAKE", "mutation": "replace one blocker coverage value with FABRICATED-NODE", "actual": "accepted", "closure_layer": ["derived_semantic_coverage"]},
+    {"id": "VACUITY-ACTION-BLOCKERS-EMPTY", "mutation": "clear blocker_ids on ACT-MONITOR-CRASH", "actual": "accepted", "closure_layer": ["derived_semantic_coverage"]},
+    {"id": "VACUITY-MUTATION-PROSE", "mutation": "make candidate mutation prose contradict the executable mutation", "actual": "accepted", "closure_layer": ["remove_candidate_expectation_authority"]},
+    {"id": "VACUITY-DOMAIN-SHRINK", "mutation": "shrink ShardID to S0", "actual": "accepted", "closure_layer": ["external_minimum_model_profile"]},
+    {"id": "VACUITY-ATOMICITY-INFLATION", "mutation": "set MaxTxnLocations to 1000000", "actual": "accepted", "closure_layer": ["derived_footprint", "external_atomicity_cap"]},
+    {"id": "VACUITY-CD-COLLAPSE", "mutation": "collapse CPU writer consistency domain to CD-NODE-SHARD", "actual": "accepted", "closure_layer": ["external_writer_cd_policy", "refinement_review"]},
+    {"id": "VACUITY-AUTHORITY-DEMOTION", "mutation": "reclassify authority_account as derived_index and non-authority-relevant", "actual": "accepted", "closure_layer": ["derived_authority_role_policy"]}
+  ],
+  "nonclaims": [
+    "A syntactic nonvacuity check proves the formula's meaning.",
+    "The current proof graph contains machine proofs.",
+    "The current provider or progress contracts are closed.",
+    "The current finite bounds establish the required multi-lane model profile."
+  ]
+}

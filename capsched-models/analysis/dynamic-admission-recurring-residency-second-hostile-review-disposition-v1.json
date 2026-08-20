@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "id": "dynamic-admission-recurring-residency-second-hostile-review-disposition-v1",
+  "date": "2026-08-09",
+  "work_record": "N-178",
+  "requirement": "RESIDENCY-DYN-001",
+  "analysis": "analysis/0191-dynamic-residency-second-hostile-review-and-redesign.md",
+  "reviewed_contract": "analysis/dynamic-admission-recurring-residency-architecture-contract-v1.json",
+  "status": "second_round_blockers_redesigned_third_round_rereview_required",
+  "finding_status_policy": "candidate_author_records_redesign_only_fresh_distinct_reviewers_close_reopen_or_freeze",
+  "source_reviews": [
+    {
+      "reviewer_id": "harvey-security-r2",
+      "role": "security_authority",
+      "independent_of_candidate_author": true,
+      "verdict": "FREEZE_NO",
+      "finding_ids": ["SEC-R2-01", "SEC-R2-02", "SEC-R2-03", "SEC-R2-04", "SEC-R2-05", "SEC-R2-06", "SEC-R2-07", "SEC-R2-08"]
+    },
+    {
+      "reviewer_id": "herschel-formal-r2",
+      "role": "formal_temporal",
+      "independent_of_candidate_author": true,
+      "verdict": "FREEZE_NO",
+      "finding_ids": ["FORM-R2-01", "FORM-R2-02", "FORM-R2-03", "FORM-R2-04", "FORM-R2-05", "FORM-R2-06", "FORM-R2-07", "FORM-R2-08", "FORM-R2-09", "FORM-R2-10", "FORM-R2-11"]
+    },
+    {
+      "reviewer_id": "boyle-scale-r2",
+      "role": "datacenter_scalability",
+      "independent_of_candidate_author": true,
+      "verdict": "FREEZE_NO",
+      "finding_ids": ["SCALE-R2-01", "SCALE-R2-02", "SCALE-R2-03", "SCALE-R2-04", "SCALE-R2-05"]
+    },
+    {
+      "reviewer_id": "archimedes-integration-r2",
+      "role": "integration_consistency",
+      "independent_of_candidate_author": true,
+      "verdict": "FREEZE_NO",
+      "finding_ids": ["INT-R2-01", "INT-R2-02", "INT-R2-03", "INT-R2-04", "INT-R2-05", "INT-R2-06", "INT-R2-07", "INT-R2-08", "INT-R2-09", "INT-R2-10", "INT-R2-11", "INT-R2-12"]
+    }
+  ],
+  "review_finding_count": 36,
+  "findings": [
+    {"id":"SEC-R2-01","review_class":"security","reviewer_id":"harvey-security-r2","finding":"failure_receipt_replay_identity_depended_on_internal_event_allocation","resolution":"authenticate_and_replay_fence_source_owned_SourceFailureReceiptID_before_one_to_one_internal_FailureEventID_allocation","mechanical_gate":"source_identity_fields_mapping_and_preallocation_order","residual_obligation":"DYN_CHURN_replay_before_during_after_detail_gc","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SEC-R2-02","review_class":"security","reviewer_id":"harvey-security-r2","finding":"delegation_future_effect_horizon_was_untyped","resolution":"bind_exact_LeaseClockEpoch_notBefore_commitNotAfter_effectNotAfter_ticks_and_numeric_bridge_proof","mechanical_gate":"exact_delegation_horizon_and_negative_mutation","residual_obligation":"DYN_ADMIT_delayed_apply_never_outlives_authorization","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SEC-R2-03","review_class":"security","reviewer_id":"harvey-security-r2","finding":"released_opportunity_froze_a_retirement_fence_generation_that_cutover_must_advance","resolution":"retain_release_observed_generation_as_history_only_activation_checks_live_monotonic_fence_and_token_binds_current_generation","mechanical_gate":"opportunity_fence_history_live_activation_and_token_fields","residual_obligation":"DYN_COMPOSE_cutover_activation_token_races","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SEC-R2-04","review_class":"security","reviewer_id":"harvey-security-r2","finding":"scoped_ControlOpID_and_WorkID_omitted_the_complete_owner_root","resolution":"all_scoped_operation_ids_bind_full_ScopedNamespaceRoot_owner_tuple_epoch_and_sequence","mechanical_gate":"registry_and_exact_identity_field_checks","residual_obligation":"DYN_RENEW_RESTART_cross_owner_alias_mutations","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SEC-R2-05","review_class":"security","reviewer_id":"harvey-security-r2","finding":"incident_latch_log_and_crash_state_were_absent_or_inconsistent_in_restart_contract","resolution":"persist_bounded_SecurityIncidentCells_idempotent_summary_audit_shard_heads_source_highwaters_and_log_fault_state_in_exact_reconciliation_snapshot","mechanical_gate":"restart_snapshot_crash_cut_and_ReconciliationRequired_parity","residual_obligation":"DYN_RENEW_RESTART_every_cell_log_checkpoint_crash_cut","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SEC-R2-06","review_class":"security","reviewer_id":"harvey-security-r2","finding":"review_record_could_self_assert_acceptance_or_omit_finding_coverage_and_hashes","resolution":"require_distinct_attested_reviewer_roles_exact_finding_disposition_and_complete_hashed_evidence_capsule_before_freeze","mechanical_gate":"strict_review_schema_identity_uniqueness_coverage_and_hash_manifest","residual_obligation":"fresh_third_round_reviews_and_mutation_tests","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SEC-R2-07","review_class":"security","reviewer_id":"harvey-security-r2","finding":"protected_latch_generation_sat_outside_the_total_namespace_algebra","resolution":"remove_independent_latch_generation_and_use_preallocated_per_scope_incident_cells_with_existing_scope_and_log_namespaces","mechanical_gate":"object_inventory_and_66_space_exact_registry","residual_obligation":"DYN_CHURN_cell_capacity_and_scope_quarantine","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SEC-R2-08","review_class":"security","reviewer_id":"harvey-security-r2","finding":"freeze_order_required_executable_DYN_SHARD_before_TLA_was_permitted","resolution":"preformal_two_lane_architecture_witness_precedes_freeze_executable_DYN_SHARD_follows_freeze_and_precedes_requirement_closure","mechanical_gate":"two_lane_witness_schema_and_phase_order","residual_obligation":"build_DYN_SHARD_only_after_fresh_freeze_acceptance","status":"redesigned_pending_fresh_rereview"},
+
+    {"id":"FORM-R2-01","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"FrozenLeaseUse_and_token_omitted_LeaseClockEpoch_ABA_identity","resolution":"bind_exact_LeaseClockEpoch_in_FrozenLeaseUse_opportunity_activation_and_token_and_require_old_epoch_quiescence_or_permanent_fence","mechanical_gate":"lease_use_field_and_registry_parent_checks","residual_obligation":"DYN_RENEW_RESTART_clock_epoch_replacement_mutations","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-02","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"exclusive_migration_could_fence_a_source_with_an_open_opportunity","resolution":"source_fence_receipt_requires_CurrentOpportunity_None_after_due_release_settlement_or_precommitted_skip","mechanical_gate":"migration_phase_guard_and_negative_case","residual_obligation":"DYN_SHARD_open_opportunity_migration_traces","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-03","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"local_asynchronous_apply_failure_had_no_total_semantics","resolution":"each_committed_apply_entry_terminates_Applied_or_FailedFenced_with_capacity_and_failure_cleanup_owner_retained","mechanical_gate":"apply_status_set_total_effect_table_and_mixed_prefix_certificate","residual_obligation":"DYN_ADMIT_and_DYN_SHARD_all_apply_failure_orders","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-04","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"CommittedPending_root_capacity_had_no_owner","resolution":"add_CommittedPendingPlanRootReservation_and_exact_candidate_pending_current_retiring_transfer_equation","mechanical_gate":"root_reservation_equation_and_owner_inventory","residual_obligation":"DYN_ADMIT_reject_commit_apply_failure_conservation","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-05","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"failure_source_replay_was_circular","resolution":"same_source_owned_identity_and_preallocation_fence_as_SEC_R2_01","mechanical_gate":"same_as_SEC_R2_01","residual_obligation":"same_as_SEC_R2_01","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-06","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"first_release_could_equal_or_precede_membership_effective_boundary","resolution":"require_initialFirstReleaseTurn_at_least_effectiveTurn_plus_one_and_any_stronger_preparation_lead","mechanical_gate":"strict_first_release_guard_and_negative_case","residual_obligation":"DYN_ADMIT_boundary_order_mutations","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-07","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"clock_certificate_fields_lacked_exact_arithmetic","resolution":"define_nonnegative_deltas_lease_upper_bound_control_quota_validity_interval_and_total_monotone_rank_conversion_operators","mechanical_gate":"exact_16_field_certificate_and_inequality_strings","residual_obligation":"DYN_RENEW_RESTART_numeric_overflow_quota_and_violation_traces","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-08","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"rank_had_no_lane_control_lease_service_bridge","resolution":"define_ControlTurnsFor_RankToLaneTurns_LeaseTicksForRank_over_exact_three_clock_certificate","mechanical_gate":"operator_inventory_and_monotone_bound_contract","residual_obligation":"DYN_COMPOSE_and_liveness_theorem_conversion_proofs","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-09","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"cancellation_response_table_was_not_total_against_revoke_expiry_failure_cleanup_and_settlement","resolution":"one_TerminationOwner_CAS_and_phase_total_response_table_for_all_terminal_causes","mechanical_gate":"termination_owner_and_total_phase_matrix","residual_obligation":"DYN_REQUEST_and_DYN_CHURN_all_race_pairs","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-10","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"single_lane_composition_could_hide_cross_lane_scheduler_work_interference","resolution":"require_DYN_MULTILANE_COMPOSE_with_two_recurring_lanes_shared_protected_frame_failure_retirement_and_transfer","mechanical_gate":"formal_decomposition_and_two_lane_witness","residual_obligation":"executable_multilane_composition_after_freeze","status":"redesigned_pending_fresh_rereview"},
+    {"id":"FORM-R2-11","review_class":"formal","reviewer_id":"herschel-formal-r2","finding":"machine_contract_weakened_NonConflictingControlProgress","resolution":"selected_authorized_feasible_operation_with_exact_guards_and_valid_suffixes_must_commit_not_merely_terminate","mechanical_gate":"exact_progress_string_and_ConflictIntentReservation","residual_obligation":"DYN_ADMIT_peer_churn_and_normal_recurrence_nonstaling","status":"redesigned_pending_fresh_rereview"},
+
+    {"id":"SCALE-R2-01","review_class":"scalability","reviewer_id":"boyle-scale-r2","finding":"SecurityUseVector_and_PlanMembership_identity_omitted_complete_enclosing_scope_consistency","resolution":"bind_full_FailureScopeIdentity_and_one_canonical_PlanMembershipID_tuple_everywhere","mechanical_gate":"identity_field_exactness_and_cross_artifact_parity","residual_obligation":"DYN_SHARD_cross_scope_alias_and_membership_mutations","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SCALE-R2-02","review_class":"scalability","reviewer_id":"boyle-scale-r2","finding":"partial_apply_proof_required_exponential_or_unbounded_prefix_enumeration","resolution":"bound_MaxTransitionShards_and_use_fixed_per_shard_pairwise_commutation_and_aggregate_capacity_certificate_grammar_O_k_plus_depth","mechanical_gate":"fixed_compositional_grammar_and_no_all_prefix_boolean","residual_obligation":"DYN_SHARD_small_model_exhaustive_prefix_conformance_to_grammar","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SCALE-R2-03","review_class":"scalability","reviewer_id":"boyle-scale-r2","finding":"namespace_wear_was_not_sponsor_conserved_and_best_effort_could_force_shared_renewal","resolution":"add_NamespacePublicationReservation_nonrefundable_wear_equation_sponsor_attribution_and_peer_maintenance_witness","mechanical_gate":"publication_equation_and_best_effort_headroom_isolation","residual_obligation":"DYN_CHURN_namespace_flood_and_peer_renewal_mutations","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SCALE-R2-04","review_class":"scalability","reviewer_id":"boyle-scale-r2","finding":"failure_fence_authority_point_materialized_O_N_affected_contracts_and_shared_latch_write","resolution":"touch_at_most_MaxFailureScopesPerEvent_preallocated_cells_and_no_dependent_contract_population_summary_is_idempotent_not_execution_authority","mechanical_gate":"scale_bound_and_failure_step_fields","residual_obligation":"DYN_CHURN_and_DYN_SHARD_failure_locality","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SCALE-R2-05","review_class":"scalability","reviewer_id":"boyle-scale-r2","finding":"authorized_conflicting_peer_churn_could_starve_guaranteed_control","resolution":"selected_operation_gets_bounded_logical_ConflictIntentReservation_over_exact_footprint_without_holding_physical_locks","mechanical_gate":"intent_object_progress_predicate_and_round_robin_slot","residual_obligation":"DYN_ADMIT_adversarial_overlapping_peer_churn","status":"redesigned_pending_fresh_rereview"},
+
+    {"id":"INT-R2-01","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"clock_control_lease_binding_and_arithmetic_were_not_exact_across_artifacts","resolution":"one_exact_three_clock_certificate_schema_and_inequalities_shared_by_markdown_json_and_future_models","mechanical_gate":"field_arithmetic_and_parity_checks","residual_obligation":"numeric_TLA_and_mutations","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-02","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"failure_replay_identity_was_not_source_owned","resolution":"same_as_SEC_R2_01","mechanical_gate":"same_as_SEC_R2_01","residual_obligation":"same_as_SEC_R2_01","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-03","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"BestEffortAuthorityUseID_was_absent","resolution":"define_exact_sponsor_request_owner_roots_request_id_consumer_digest_and_FrozenLeaseUse_identity","mechanical_gate":"logical_physical_identity_and_object_inventory","residual_obligation":"DYN_REQUEST_alias_and_retirement_mutations","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-04","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"machine_parent_graph_omitted_ClusterIssuerIncarnation","resolution":"add_external_nonrollback_issuer_root_parenting_GlobalAuthorityEpoch_and_NodeLeaseID","mechanical_gate":"66_space_total_DAG_and_exact_parent_checks","residual_obligation":"DYN_RENEW_RESTART_old_issuer_artifact_rejection","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-05","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"issuer_DomainEpoch_NodeLeaseEpoch_and_monitor_local_revoke_ownership_conflicted_with_old_models","resolution":"split_issuer_epochs_from_LocalAuthorityGeneration_and_LocalLeaseFenceGeneration_and_map_old_globalEpoch_to_effective_tuple","mechanical_gate":"registry_allocator_classes_and_formal_0148_mapping","residual_obligation":"refinement_proof_and_local_revoke_no_mint_mutation","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-06","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"partial_apply_failure_contract_was_incomplete","resolution":"same_total_Applied_or_FailedFenced_semantics_as_FORM_R2_03","mechanical_gate":"same_as_FORM_R2_03","residual_obligation":"same_as_FORM_R2_03","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-07","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"migration_calendar_could_be_frozen_before_source_fence_and_final_boundary","resolution":"prevalidation_only_bounds_then_source_quiescence_receipt_seals_boundary_final_calendar_debt_and_destination_derives_only_from_receipt","mechanical_gate":"PlacementTransferRecord_phase_and_source_receipt_fields","residual_obligation":"DYN_SHARD_calendar_race_and_debt_preservation","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-08","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"finite_global_audit_state_contradicted_unbounded_unrelated_failure_liveness","resolution":"partition_audit_shards_require_AuditHeadroomWindow_and_use_authenticated_checkpoint_renewal_induction_for_long_recurrence","mechanical_gate":"headroom_rely_and_no_infinite_finite_log_claim","residual_obligation":"DYN_RENEW_RESTART_checkpoint_renewal_and_liveness_theorem_rely","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-09","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"freeze_review_validator_was_incomplete","resolution":"same_strict_distinct_reviewer_finding_coverage_and_hash_capsule_gate_as_SEC_R2_06","mechanical_gate":"review_validator_and_mutations","residual_obligation":"fresh_review_record_only_after_acceptance","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-10","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"JSON_progress_contract_was_weaker_than_markdown","resolution":"machine_safety_negative_and_progress_vocabularies_are_exactly_parity_checked","mechanical_gate":"markdown_block_to_JSON_exact_order_checks","residual_obligation":"future_model_property_manifest_parity","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-11","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"Formal_0147_restriction_omitted_failure_lease_and_clock_premises","resolution":"restrict_to_operational_target_no_withdrawal_revoke_maintenance_or_target_failure_valid_bridge_timely_extension_and_no_outer_exhaustion","mechanical_gate":"exact_refinement_restriction_fields","residual_obligation":"DYN_LIVENESS_THEOREM_explicit_property_implication","status":"redesigned_pending_fresh_rereview"},
+    {"id":"INT-R2-12","review_class":"integration","reviewer_id":"archimedes-integration-r2","finding":"freeze_order_was_cyclic","resolution":"same_two_lane_preformal_then_freeze_then_executable_order_as_SEC_R2_08","mechanical_gate":"plan_and_contract_phase_order_parity","residual_obligation":"fresh_review_confirms_no_executable_assumption_hidden_in_witness","status":"redesigned_pending_fresh_rereview"}
+  ],
+  "self_audit_finding_count": 8,
+  "self_audit_findings": [
+    {"id":"SELF-R2-01","finding":"AdmissionSnapshot_needed_immutable_SecurityDependencyCertificate_not_only_live_vector","resolution":"certificate_freezes_exact_topology_ownership_closure_and_scope_changing_transition_fences_old_uses_before_new_graph_effect","mechanical_gate":"snapshot_fields_security_vector_equality_and_topology_negative","residual_obligation":"DYN_ADMIT_and_DYN_CHURN_scope_graph_change","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SELF-R2-02","finding":"retiring_released_opportunity_could_lose_root_service_after_plan_cutover","resolution":"RetiringOpportunityReservation_preserves_exact_old_obligation_root_service_until_terminal","mechanical_gate":"root_capacity_equation_and_retiring_service_invariants","residual_obligation":"DYN_COMPOSE_and_multilane_cutover_trace","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SELF-R2-03","finding":"service_only_update_snapshot_wording_could_imply_new_binding_authority","resolution":"service_only_successor_preserves_binding_projection_and_cannot_mint_AuthorityUseID_or_binding_key","mechanical_gate":"BindingAuthorityKey_projection_and_service_only_negative","residual_obligation":"DYN_ADMIT_service_only_update_refinement","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SELF-R2-04","finding":"exact_hot_StreamLedger_equality_would_stale_every_control_commit","resolution":"CommitDeltaTemplate_uses_typed_ExactGuard_MonotoneSuffix_and_RecomputeAtCommit_relations","mechanical_gate":"typed_dependency_relation_inventory_no_caller_comparator","residual_obligation":"DYN_ADMIT_normal_recurrence_during_prepare","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SELF-R2-05","finding":"transition_shard_footprint_was_not_admission_bounded","resolution":"MaxTransitionShards_is_fixed_and_feasibility_reserves_fixed_compositional_proof_capacity","mechanical_gate":"feasibility_scale_and_negative_fields","residual_obligation":"DYN_SHARD_bound_exhaustion","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SELF-R2-06","finding":"unrelated_NodeSecurityEpoch_checkpoint_could_stale_control_commit","resolution":"checkpoint_is_audit_metadata_outside_exact_guard_unless_its_certified_scope_intersects_footprint","mechanical_gate":"CommitDependencyVector_scope_and_UnrelatedAuditCheckpointCannotStaleCommit","residual_obligation":"DYN_ADMIT_unrelated_checkpoint_commutation","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SELF-R2-07","finding":"failure_and_restart_state_needed_source_evidence_and_per_shard_checkpoint_ownership","resolution":"add_FailureSourceEvidence_SourceFailureReceipt_mapping_incident_cells_summary_audit_shards_and_snapshot_roots","mechanical_gate":"object_registry_restart_and_failure_schema","residual_obligation":"DYN_RENEW_RESTART_all_crash_and_GC_cuts","status":"redesigned_pending_fresh_rereview"},
+    {"id":"SELF-R2-08","finding":"hot_recurring_liveness_could_ignore_audit_renewal_exhaustion","resolution":"StableWindow_carries_AuditHeadroomWindow_and_infinite_claim_requires_authenticated_checkpoint_renewal_induction","mechanical_gate":"external_rely_scale_contract_and_no_unrenewed_infinite_claim","residual_obligation":"DYN_LIVENESS_THEOREM_audit_renewal_assumption_visibility","status":"redesigned_pending_fresh_rereview"}
+  ],
+  "aggregate_finding_count": 44,
+  "rereview_required_roles": ["security_authority", "formal_temporal", "datacenter_scalability", "integration_consistency"],
+  "required_next_artifacts": [
+    "preformal_two_lane_architecture_witness",
+    "strengthened_architecture_validator_and_mutation_suite",
+    "fresh_distinct_third_round_review_disposition",
+    "complete_hash_bound_architecture_freeze_evidence_capsule"
+  ],
+  "claims": {
+    "all_second_round_review_findings_recorded": true,
+    "all_second_round_self_audit_findings_recorded": true,
+    "candidate_redesigns_present": true,
+    "findings_closed": false,
+    "architecture_frozen": false,
+    "tla_written": false,
+    "model_supported": false,
+    "implementation_approved": false,
+    "protection_evidenced": false,
+    "performance_evidenced": false,
+    "cost_evidenced": false,
+    "deployment_ready": false
+  }
+}

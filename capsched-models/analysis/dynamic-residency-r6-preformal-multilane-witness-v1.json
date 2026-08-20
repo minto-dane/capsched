@@ -1,0 +1,372 @@
+{
+  "schema_version": 1,
+  "id": "dynamic-residency-r6-preformal-multilane-witness-v1",
+  "status": "rejected_incomplete_witness_draft_for_rejected_R6_v2_contract",
+  "date": "2026-08-09",
+  "work_record": "N-190",
+  "requirement": "RESIDENCY-DYN-001",
+  "analysis": "analysis/0202-dynamic-residency-r6-executable-witness.md",
+  "kind": "bounded_executable_preformal_counterexample_witness",
+  "architecture_contract": {
+    "path": "analysis/dynamic-admission-recurring-residency-architecture-contract-v2.json",
+    "raw_sha256": "24887ac27772dc131b91a7f87ff57203ab71cf883ff2769fc0df40bb941fa62d"
+  },
+  "semantic_overlay": {
+    "path": "analysis/dynamic-residency-r6-successor-semantic-overlay-v1.json",
+    "raw_sha256": "468cd739f64a44b1887c6f40eebb6bf8f466542d498e72457254e8dbe753bda1"
+  },
+  "legacy_witness": {
+    "path": "analysis/dynamic-residency-preformal-two-lane-witness-v1.json",
+    "raw_sha256": "0bce593650398bd117c4a9430bbac1e06590ef65536fd5f3e34dc9090d426ef8",
+    "disposition": "immutable_non_normative_regression_source_not_semantically_inherited_where_R6_replaced_authority_activation_transfer_failure_liveness_or_assurance_rules"
+  },
+  "rejection": {
+    "analysis": "analysis/0203-dynamic-residency-r7-hostile-review-rejection.md",
+    "contract_raw_sha256": "24887ac27772dc131b91a7f87ff57203ab71cf883ff2769fc0df40bb941fa62d",
+    "witness_validator_was_never_written": true,
+    "usable_as_positive_evidence": false,
+    "retained_as_counterexample_and_successor_input": true
+  },
+  "execution_semantics": {
+    "integer_domain": "bounded_nonnegative_checked_integers_without_wrap",
+    "intervals": "half_open",
+    "state_updates": "explicit_guarded_single_writer_monotonic_transitions",
+    "identity_subset": "RFC8949_deterministic_CBOR_for_bounded_unsigned_integer_boolean_byte_string_NFC_UTF8_array_and_schema_ordered_map_values",
+    "scenario_pass": "all_machine_checks_execute_over_structured_values_and_all_named_negative_variants_reject_at_the_expected_gate",
+    "narrative_labels_are_evidence": false,
+    "finite_witness_is_proof_or_freeze": false
+  },
+  "bounds": {
+    "max_activation_attempts": 3,
+    "max_failure_scopes": 6,
+    "max_failure_edges": 8,
+    "max_publications_per_scope": 4,
+    "max_clock_relations_per_transfer": 1,
+    "max_uncertain_suffix": 3,
+    "protected_frame_length": 9,
+    "proof_component_count": 16,
+    "scenario_count": 16
+  },
+  "scenarios": [
+    {
+      "id": "WIT-R6-PREENTRY-TOKEN-CYCLE",
+      "machine": "authority_dag_and_entry_bundle",
+      "claim_ids": ["R6-AUTH-01", "R6-AUTH-02"],
+      "input": {
+        "construction_order": ["OpportunityReservation", "ActivationDecisionCell", "CurrentOpportunity", "ActivationAttemptID", "ExecutionCellLeaseCore", "AuthoritySourceCores", "NormalizedAuthorityHorizonVector", "ExecutionCellLease", "ExecutionCellUseCell", "ActivationIntent", "ExecutionContextCore", "RequiredActivationReceiptSet", "ExecutionContextKey", "ActivationAttemptRecord", "PreEntryPermit", "EntryCommitRecord", "ActivationID", "ActivationCommitReceipt", "DeliverySettlementCell", "RunToken", "ExecutionDeliveryReceipt", "OpportunityTerminalCell"],
+        "pre_entry_authority": ["initial_entry_gate"],
+        "pre_entry_forbidden_authority": ["ordinary_execution", "interrupt_return", "resume", "migration"],
+        "atomic_entry_publication": ["EntryCommitRecord", "ActivationID", "ActivationCommitReceipt", "DeliverySettlementCell", "RunToken"],
+        "receipt_binds_future_token_digest": false,
+        "settlement_binds_future_token_digest": false,
+        "token_binds_existing_receipt_and_settlement": true
+      },
+      "expected": {
+        "authority_graph_acyclic": true,
+        "complete_entry_bundle_visible_atomically": true,
+        "token_exists_before_entry_commit": false
+      },
+      "negative_variants": ["RunToken_to_ActivationCommitReceipt_back_edge", "RunToken_to_DeliverySettlementCell_back_edge", "PreEntryPermit_authorizes_resume", "partial_entry_bundle_visibility"]
+    },
+    {
+      "id": "WIT-R6-DECISION-SHADOW-RETRY-CANCEL",
+      "machine": "opportunity_decision_state_machine",
+      "claim_ids": ["R6-ACT-01", "R6-ACT-02"],
+      "input": {
+        "current_opportunity_id": "opp-A-41",
+        "decision_key": "opp-A-41",
+        "stable_writer": "activation-shard-2",
+        "max_attempts": 3,
+        "attempts": [
+          {"ordinal": 0, "writer": "activation-shard-2", "event": "prepare_validation_failed", "before": "Open", "after": "Open"},
+          {"ordinal": 1, "writer": "activation-shard-2", "event": "prepare_inert", "before": "Open", "after": "PreparedInert"},
+          {"ordinal": 1, "writer": "activation-shard-2", "event": "cancel_after_prepare", "before": "PreparedInert", "after": "StopPending"}
+        ],
+        "independent_pre_entry_branch": {"event": "cancel_before_prepare", "before": "Open", "after": "SuppressedBeforeEntry"},
+        "shadow_decision_cells": 0,
+        "next_attempt_ordinal": 2
+      },
+      "expected": {
+        "one_decision_cell_per_opportunity": true,
+        "retry_is_append_not_rollback": true,
+        "prepared_cancel_never_refines_to_suppressed_before_entry": true
+      },
+      "negative_variants": ["attempt_writer_changes_with_CPU", "attempt_scoped_shadow_decision", "ordinal_reuse", "PreparedInert_to_SuppressedBeforeEntry"]
+    },
+    {
+      "id": "WIT-R6-DELEGATION-REPLAY-WRONG-HOLDER",
+      "machine": "holder_bound_delegation",
+      "claim_ids": ["R6-DELEG-01"],
+      "input": {
+        "grant": {"grant_id": "grant-7", "grantor": "domain-root", "grantee": "domain-A", "audience": "control-op-91", "rights": ["admit", "narrow"], "not_after": 180, "max_depth": 2, "revocation_generation": 9, "challenge_generation": 22},
+        "parent": {"rights": ["admit", "narrow", "revoke"], "not_after": 200, "max_depth": 3},
+        "proofs": [
+          {"holder": "domain-A", "audience": "control-op-91", "challenge_generation": 22, "proof_generation": 1, "accepted": true},
+          {"holder": "domain-B", "audience": "control-op-91", "challenge_generation": 22, "proof_generation": 1, "accepted": false},
+          {"holder": "domain-A", "audience": "control-op-92", "challenge_generation": 22, "proof_generation": 2, "accepted": false},
+          {"holder": "domain-A", "audience": "control-op-91", "challenge_generation": 21, "proof_generation": 3, "accepted": false},
+          {"holder": "domain-A", "audience": "control-op-91", "challenge_generation": 22, "proof_generation": 1, "accepted": false}
+        ]
+      },
+      "expected": {"copied_grant_is_not_bearer_authority": true, "attenuation_preserved": true, "holder_proof_one_use": true},
+      "negative_variants": ["wrong_holder", "wrong_audience", "stale_challenge", "proof_replay", "rights_amplification", "horizon_extension", "depth_extension"]
+    },
+    {
+      "id": "WIT-R6-LEASE-VECTOR-ACYCLICITY",
+      "machine": "lease_horizon_construction",
+      "claim_ids": ["R6-AUTH-02"],
+      "input": {
+        "lease_core": {"id": "lease-core-A0", "cell_start": 100, "cell_end": 120, "attempt": "opp-A-41:0"},
+        "authority_sources": [{"id": "node-lease", "not_after": 150}, {"id": "placement", "not_after": 140}, {"id": "binding", "not_after": 135}, {"id": "connectivity", "not_after": 118}, {"id": "lease-core-A0", "not_after": 120}],
+        "normalized_vector_not_after": 118,
+        "final_lease": {"id": "lease-A0", "core": "lease-core-A0", "vector_not_after": 118},
+        "final_lease_is_vector_source": false
+      },
+      "expected": {"minimum_horizon": 118, "lease_end_not_extended": true, "dependency_cycle": false},
+      "negative_variants": ["final_lease_added_as_vector_source", "vector_not_after_119", "source_omitted", "raw_cross_clock_minimum"]
+    },
+    {
+      "id": "WIT-R6-RECEIPT-STALE-OR-FAKE-NOT-APPLICABLE",
+      "machine": "activation_receipt_set",
+      "claim_ids": ["R6-BOUNDARY-01"],
+      "input": {
+        "context_core_id": "context-core-A0",
+        "attempt_id": "opp-A-41:0",
+        "physical_context": "cpu0/incarnation-5",
+        "entry_tick": 110,
+        "required_core_classes": ["MemoryViewInstallReceipt", "CodeIntegrityReceipt", "EntryStateInstallReceipt", "MutableStateBindingReceipt", "DeviceIsolationReceipt", "StopEnforcementReceipt"],
+        "optional_extension_classes": ["AcceleratorTelemetryReceipt"],
+        "receipts": [
+          {"class": "MemoryViewInstallReceipt", "subject": "context-core-A0", "context": "cpu0/incarnation-5", "sequence": 11, "not_after": 130, "variant": "PRESENT"},
+          {"class": "CodeIntegrityReceipt", "subject": "context-core-A0", "context": "cpu0/incarnation-5", "sequence": 12, "not_after": 130, "variant": "PRESENT"},
+          {"class": "EntryStateInstallReceipt", "subject": "context-core-A0", "context": "cpu0/incarnation-5", "sequence": 13, "not_after": 130, "variant": "PRESENT"},
+          {"class": "MutableStateBindingReceipt", "subject": "context-core-A0", "context": "cpu0/incarnation-5", "sequence": 14, "not_after": 130, "variant": "PRESENT"},
+          {"class": "DeviceIsolationReceipt", "subject": "context-core-A0", "context": "cpu0/incarnation-5", "sequence": 15, "not_after": 130, "variant": "ABSENT_PROTECTED_INVENTORY_EMPTY"},
+          {"class": "StopEnforcementReceipt", "subject": "context-core-A0", "context": "cpu0/incarnation-5", "sequence": 16, "not_after": 120, "variant": "PRESENT"},
+          {"class": "NotApplicableReceipt", "subject": "context-core-A0", "context": "cpu0/incarnation-5", "sequence": 17, "not_after": 120, "variant": "AcceleratorTelemetryReceipt_EMPTY_DEPENDENCY_SET"}
+        ]
+      },
+      "expected": {"complete_exact_core_set": true, "final_context_key_derived_after_receipts": true, "effective_not_after": 120},
+      "negative_variants": ["core_class_NotApplicable", "Linux_boolean_device_absence", "stale_receipt", "wrong_context_core", "duplicate_core_class", "unlisted_optional_extension"]
+    },
+    {
+      "id": "WIT-R6-CROSS-EPOCH-TOTAL-TRANSFER",
+      "machine": "direct_clock_transfer_totality",
+      "claim_ids": ["R6-XFER-01"],
+      "input": {
+        "transfer_id": "transfer-8",
+        "source_time": {"id": "calendar-A", "epoch": 4},
+        "target_time": {"id": "lease-clock-B", "epoch": 9},
+        "certificate": {"transfer_id": "transfer-8", "source": "calendar-A/4", "target": "lease-clock-B/9", "source_interval": [100, 141], "target_interval": [200, 286], "valid_not_after": 150, "mapping": {"100": [200, 202], "120": [240, 243], "140": [280, 283]}},
+        "queries": [
+          {"source_tick": 100, "now_source": 110, "certificate_present": true, "expected": "Ok_[200,202)"},
+          {"source_tick": 120, "now_source": 151, "certificate_present": true, "expected": "RejectExpiredClockRelation"},
+          {"source_tick": 140, "now_source": 141, "certificate_present": false, "expected": "RejectMissingClockRelation"},
+          {"source_tick": 121, "now_source": 121, "certificate_present": true, "expected": "RejectUnmappedSourceTick"}
+        ],
+        "relation_chain_length": 1
+      },
+      "expected": {"all_queries_typed_total": true, "inferred_transitive_mapping_used": false},
+      "negative_variants": ["raw_integer_cross_epoch", "two_certificate_chain", "wrong_transfer_binding", "expired_relation_accept"]
+    },
+    {
+      "id": "WIT-R6-QUORUM-BOUNDARY-STRONG-SAFE-GAP-LOSS",
+      "machine": "calendar_boundary_variants",
+      "claim_ids": ["R6-XFER-02"],
+      "input": {
+        "cases": [
+          {"variant": "SourceQuiesced", "predecessor_owned": [0, 1, 2, 3], "q_cut": 4, "unknown_suffix": [], "closure_complete": true, "successor_incarnation": 7, "accepted": true},
+          {"variant": "QuorumSupersededStrongContinuity", "predecessor_owned": [0, 1, 2, 3], "q_cut": 4, "unknown_suffix": [], "closure_complete": true, "successor_incarnation": 7, "accepted": true},
+          {"variant": "QuorumSupersededSafeGap", "predecessor_owned": [0, 1, 2, 3], "q_cut": 7, "unknown_suffix": [4, 5, 6], "nonservice_dispositions": [4, 5, 6], "closure_complete": false, "successor_incarnation": 7, "accepted": true},
+          {"variant": "ContinuityLost", "predecessor_owned": [0, 1, 2, 3], "q_cut": 0, "unknown_suffix": [4, 5], "closure_complete": false, "predecessor_incarnation": 7, "successor_incarnation": 8, "accepted": true}
+        ]
+      },
+      "expected": {"ordinal_ownership_never_overlaps": true, "strong_continuity_has_empty_unknown_suffix": true, "safe_gap_accounts_every_skipped_ordinal": true},
+      "negative_variants": ["strong_with_unknown_suffix", "safe_gap_without_disposition", "successor_below_q_cut", "continuity_loss_reuses_incarnation"]
+    },
+    {
+      "id": "WIT-R6-FAILURE-FRONTIER-CONCURRENT-PUBLICATION",
+      "machine": "publication_close_drain_fixed_point",
+      "claim_ids": ["R6-FAIL-01"],
+      "input": {
+        "scopes": ["scope-A", "scope-B", "scope-C", "tenant-A", "node-root"],
+        "dependency_edges": [["use-0", "scope-A"], ["use-0", "scope-B"], ["scope-A", "tenant-A"], ["scope-B", "tenant-A"], ["tenant-A", "node-root"], ["use-1", "scope-C"]],
+        "publications": [
+          {"id": "pub-0", "scopes": ["scope-A", "scope-B"], "commit_sequence": 4, "state_at_close": "Committed", "result": "Include"},
+          {"id": "pub-1", "scopes": ["scope-A"], "commit_sequence": 5, "state_at_close": "Preparing", "result": "Abort"},
+          {"id": "pub-2", "scopes": ["scope-C"], "commit_sequence": 6, "state_at_close": "Committed", "result": "DisjointContinues"}
+        ],
+        "close": {"failure_id": "fail-3", "initial_scope": "scope-A", "scope_highwater": {"scope-A": 5, "scope-B": 4, "tenant-A": 4, "node-root": 4}},
+        "closure_passes": [["scope-A", "scope-B"], ["tenant-A"], ["node-root"], []],
+        "expected_closed_scopes": ["scope-A", "scope-B", "tenant-A", "node-root"]
+      },
+      "expected": {"partial_publication_never_executable": true, "closure_is_least_fixed_point": true, "disjoint_scope_progresses": true},
+      "negative_variants": ["commit_after_close_without_preclose_membership", "omit_committed_preclose_publication", "stop_before_empty_pass", "global_publication_fence", "include_partial_reverse_link"]
+    },
+    {
+      "id": "WIT-R6-INTERNAL-FAILSTOP-NONDISCHARGE",
+      "machine": "liveness_outcome_classifier",
+      "claim_ids": ["R6-LIVE-01"],
+      "input": {
+        "deadline": 200,
+        "traces": [
+          {"id": "served", "delivery_tick": 190, "external_withdrawal_start": null, "internal_failstop_tick": null, "expected": "SatisfiedByService"},
+          {"id": "external", "delivery_tick": null, "external_withdrawal_start": 180, "external_receipt_valid": true, "internal_failstop_tick": null, "expected": "ExcludedByAuthorizedExternalWithdrawal"},
+          {"id": "late_external", "delivery_tick": null, "external_withdrawal_start": 201, "external_receipt_valid": true, "internal_failstop_tick": null, "expected": "LivenessCounterexample"},
+          {"id": "internal", "delivery_tick": null, "external_withdrawal_start": null, "internal_failstop_tick": 180, "expected": "LivenessCounterexample"}
+        ],
+        "exogenous_window_fields": ["hardware_progress", "external_clock_progress", "issuer_availability", "bounded_external_fault_count"]
+      },
+      "expected": {"internal_failstop_never_discharges_service": true, "external_withdrawal_must_start_before_deadline": true},
+      "negative_variants": ["service_or_failstop", "internal_operational_in_exogenous_window", "late_external_withdrawal_credit"]
+    },
+    {
+      "id": "WIT-R6-VALID-DUE-ENTRY-PRIORITY-AND-RETRY-RANK",
+      "machine": "due_entry_priority_and_rank",
+      "claim_ids": ["R6-LIVE-02"],
+      "input": {
+        "max_attempts": 3,
+        "initial_rank": [3, 2, 1],
+        "steps": [
+          {"attempt": 0, "event": "prepare_validation_failed", "rank_before": [3, 2, 1], "rank_after": [2, 2, 1], "external_cause": false},
+          {"attempt": 1, "event": "valid_entry_and_expiry_simultaneously_enabled", "rank_before": [2, 2, 1], "rank_after": [1, 1, 1], "selected": "valid_entry", "external_cause": false},
+          {"attempt": 1, "event": "qualifying_delivery", "rank_before": [1, 1, 1], "rank_after": [0, 0, 0], "external_cause": false}
+        ],
+        "exhaustion_without_external_cause": "InternalGuaranteeViolation"
+      },
+      "expected": {"all_internal_rank_steps_strictly_decrease": true, "valid_entry_wins_over_expiry": true, "attempts_are_bounded": true},
+      "negative_variants": ["expiry_wins_valid_due_race", "rank_stutter", "ordinal_at_or_above_max_attempts_retries", "internal_exhaustion_as_external_expiry"]
+    },
+    {
+      "id": "WIT-R6-SAME-LANE-COLLISION-REJECT",
+      "machine": "guaranteed_calendar_injectivity",
+      "claim_ids": ["R6-CALENDAR-01"],
+      "input": {
+        "reservations": [
+          {"id": "occ-A0", "lane": "lane-A", "lane_epoch": 4, "turn": 20, "cell_ordinal": 0, "release_cell": "release-A0", "execution_cells": ["cpu0-100"]},
+          {"id": "occ-A1", "lane": "lane-A", "lane_epoch": 4, "turn": 20, "cell_ordinal": 1, "release_cell": "release-A1", "execution_cells": ["cpu1-100"]},
+          {"id": "occ-B0", "lane": "lane-B", "lane_epoch": 4, "turn": 20, "cell_ordinal": 0, "release_cell": "release-B0", "execution_cells": ["cpu2-100"]}
+        ],
+        "collision_candidate": {"id": "occ-A2", "lane": "lane-A", "lane_epoch": 4, "turn": 20, "cell_ordinal": 1, "release_cell": "release-A2", "execution_cells": ["cpu3-100"]}
+      },
+      "expected": {"base_reservations_injective": true, "collision_candidate_result": "RejectBeforeAuthority", "same_nominal_time_distinct_cells_allowed": true},
+      "negative_variants": ["same_lane_tuple_multiowner", "release_cell_alias", "attempt_execution_cell_alias"]
+    },
+    {
+      "id": "WIT-R6-CONNECTIVITY-REPLAY-AND-EXPIRY",
+      "machine": "connectivity_certificate_one_use",
+      "claim_ids": ["R6-CONN-01"],
+      "input": {
+        "now": 118,
+        "certificates": [
+          {"id": "conn-10", "session": "session-4", "challenge": "challenge-91", "sequence": 10, "not_after": 120, "bound_use": "activation-use-A0", "consumed": false},
+          {"id": "conn-9", "session": "session-4", "challenge": "challenge-80", "sequence": 9, "not_after": 117, "bound_use": "activation-use-A0", "consumed": false},
+          {"id": "conn-11", "session": "session-5", "challenge": "challenge-92", "sequence": 11, "not_after": 130, "bound_use": "activation-use-A1", "consumed": false}
+        ],
+        "uses": [
+          {"certificate": "conn-10", "use": "activation-use-A0", "at": 118, "expected": "AcceptAndConsume"},
+          {"certificate": "conn-10", "use": "activation-use-A0", "at": 119, "expected": "RejectConsumedReplay"},
+          {"certificate": "conn-9", "use": "activation-use-A0", "at": 118, "expected": "RejectExpired"},
+          {"certificate": "conn-11", "use": "activation-use-A0", "at": 118, "expected": "RejectWrongUse"}
+        ]
+      },
+      "expected": {"one_current_certificate_one_use": true, "expiry_enters_authority_horizon": 120, "network_transport_success_alone_authorizes": false},
+      "negative_variants": ["certificate_replay", "expired_certificate", "wrong_use_binding", "boolean_connectivity_authority"]
+    },
+    {
+      "id": "WIT-R6-PROTECTED-FRAME-PARITY-AND-CAPACITY",
+      "machine": "protected_frame",
+      "claim_ids": ["R6-SVC-01"],
+      "input": {
+        "frame_generation": 2,
+        "slots": [["PW0", "SafetyCleanup"], ["PW1", "ManagementRecovery"], ["PW2", "GuaranteedResidency"], ["PW3", "GuaranteedCleanup"], ["PW4", "ProjectionRenewal"], ["PW5", "AdmissionControl"], ["PW6", "GuaranteedResidency"], ["PW7", "BestEffortCleanup"], ["PW8", "Slack"]],
+        "parent_capacity": 9,
+        "reserved_occurrences": 9,
+        "expected_maximum_cyclic_gap": {"SafetyCleanup": 9, "ManagementRecovery": 9, "GuaranteedResidency": 5, "GuaranteedCleanup": 9, "ProjectionRenewal": 9, "AdmissionControl": 9, "BestEffortCleanup": 9, "Slack": 9},
+        "empty_slot_donation": {"class": "Slack", "reclaim_before_next_slot": true, "future_debt": 0}
+      },
+      "expected": {"exact_contract_parity": true, "capacity_conserved": true, "guaranteed_residency_gap": 5},
+      "negative_variants": ["rejected_prose_slot6_class", "missing_slot", "duplicate_slot_id", "donation_future_debt", "scalar_frequency_as_rank_proof"]
+    },
+    {
+      "id": "WIT-R6-TOTAL-LIFECYCLE-REFINEMENT",
+      "machine": "lifecycle_refinement",
+      "claim_ids": ["R6-REFINE-01"],
+      "input": {
+        "products": [
+          {"id": "invalid", "valid": false, "terminal": false, "settling": false, "stop": false, "activated": false, "served": false, "prepared": false, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "InternalGuaranteeViolation"},
+          {"id": "terminal", "valid": true, "terminal": true, "settling": false, "stop": false, "activated": true, "served": true, "prepared": true, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "Terminal"},
+          {"id": "settling", "valid": true, "terminal": false, "settling": true, "stop": false, "activated": true, "served": false, "prepared": true, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "Settling"},
+          {"id": "stop", "valid": true, "terminal": false, "settling": false, "stop": true, "activated": true, "served": false, "prepared": true, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "StopPending"},
+          {"id": "served", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": true, "served": true, "prepared": true, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "Served"},
+          {"id": "entered", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": true, "served": false, "prepared": true, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "EnteredUnserved"},
+          {"id": "prepared", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": false, "served": false, "prepared": true, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "PreparedInert"},
+          {"id": "suppressed", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": false, "served": false, "prepared": false, "suppressed": true, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "SuppressedBeforeEntry"},
+          {"id": "expired", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": false, "served": false, "prepared": false, "suppressed": false, "external_expired": true, "attempt_pending": false, "held": false, "preparing": false, "expected": "ExternalExpiredBeforeEntry"},
+          {"id": "attempt", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": false, "served": false, "prepared": false, "suppressed": false, "external_expired": false, "attempt_pending": true, "held": false, "preparing": false, "expected": "ActivationPending"},
+          {"id": "held", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": false, "served": false, "prepared": false, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": true, "preparing": false, "expected": "HeldReady"},
+          {"id": "preparing", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": false, "served": false, "prepared": false, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": true, "expected": "Preparing"},
+          {"id": "released", "valid": true, "terminal": false, "settling": false, "stop": false, "activated": false, "served": false, "prepared": false, "suppressed": false, "external_expired": false, "attempt_pending": false, "held": false, "preparing": false, "expected": "Released"}
+        ]
+      },
+      "expected": {"mapping_total_for_witness_domain": true, "activated_and_served_bits_monotonic": true, "invalid_product_never_receives_service_or_external_credit": true},
+      "negative_variants": ["invalid_to_served", "served_without_activated", "activated_bit_rollback", "PreparedInert_hidden_as_ActivationPending"]
+    },
+    {
+      "id": "WIT-R6-CANONICAL-ID-ALIAS-REJECT",
+      "machine": "canonical_identity",
+      "claim_ids": ["R6-ID-01"],
+      "input": {
+        "schema_version": 1,
+        "object_type": "ActivationAttemptID",
+        "schema_fields": ["CurrentOpportunityID", "AttemptOrdinal"],
+        "schema_type_tags": {"CurrentOpportunityID": "text", "AttemptOrdinal": "uint"},
+        "values": {"CurrentOpportunityID": "opp-A-41", "AttemptOrdinal": 2},
+        "payload_schema_fields": ["result", "generation"],
+        "payload_type_tags": {"result": "text", "generation": "uint"},
+        "payload": {"result": "PreparedInert", "generation": 9},
+        "expected_cid": "lcid1:gwFzQWN0aXZhdGlvbkF0dGVtcHRJRIKDdEN1cnJlbnRPcHBvcnR1bml0eUlEZHRleHRob3BwLUEtNDGDbkF0dGVtcHRPcmRpbmFsZHVpbnQC",
+        "expected_payload_digest": "sha256:a1e2a869a1254bd1419cacc19f50e680182c9aa83111297c607ab93560f172f7",
+        "equivocation_payload": {"result": "EnteredUnserved", "generation": 9},
+        "different_key_values": {"CurrentOpportunityID": "opp-A-41", "AttemptOrdinal": 3}
+      },
+      "expected": {"decode_reencode_identical": true, "field_input_order_does_not_change_schema_ordered_key": true, "hash_injectivity_claimed": false},
+      "negative_variants": ["missing_field", "extra_field", "duplicate_field", "padded_base64url", "same_CID_different_digest_equivocation", "same_digest_different_CID_cryptographic_fault_not_equality"]
+    },
+    {
+      "id": "WIT-R6-PROOF-DAG-PROVIDER-CLOSURE",
+      "machine": "proof_provider_closure",
+      "claim_ids": ["R6-FORMAL-01"],
+      "input": {
+        "expected_component_order": ["ENV_CRYPTO_CANONICAL_SEAL", "ENV_HARDWARE_TIME_ROOT", "ENV_CLUSTER_ISSUER_QUORUM_TIME", "ENV_ENTRY_CODE_STATE_DEVICE_INTERFACE", "RESOURCE_HIERARCHY_SET_ALGEBRA", "DYN_ADMIT", "DYN_REQUEST", "DYN_CHURN", "DYN_RENEW_RESTART", "DYN_SHARD", "DYN_COMPOSE", "DYN_MULTILANE_COMPOSE", "OPERATIONAL_PRESERVATION_THEOREM", "PER_OPPORTUNITY_RANK_THEOREM", "DYN_LIVENESS_THEOREM", "DYN_REGRESSION"],
+        "mandatory_node_fields": ["component_ID_and_node_class", "owned_state_variable_IDs", "read_state_variable_IDs", "action_IDs_and_exact_read_write_sets", "formula_IDs", "external_assume_formula_IDs", "internal_predecessor_provider_component_formula_and_action_set_refs", "guarantee_formula_IDs", "provider_and_refinement_mapping", "stuttering_and_failure_actions", "finite_rank_and_bound_units", "consumer_component_IDs", "structural_cost_bound", "claim_and_nonclaim_IDs", "discharge_state"],
+        "rank_predecessor": "OPERATIONAL_PRESERVATION_THEOREM",
+        "external_root_prefix": "ENV_"
+      },
+      "expected": {"dependency_graph_acyclic": true, "all_internal_predecessors_resolve_to_earlier_guarantees": true, "no_duplicate_mutable_owner": true, "no_internal_operational_external_assumption": true},
+      "negative_variants": ["unknown_provider_formula", "forward_or_self_dependency", "duplicate_mutable_owner", "internal_Operational_as_external_rely", "rank_bypasses_operational_preservation", "missing_action_read_write_set"]
+    }
+  ],
+  "coverage": {
+    "required_R6_scenarios": ["WIT-R6-PREENTRY-TOKEN-CYCLE", "WIT-R6-DECISION-SHADOW-RETRY-CANCEL", "WIT-R6-DELEGATION-REPLAY-WRONG-HOLDER", "WIT-R6-LEASE-VECTOR-ACYCLICITY", "WIT-R6-RECEIPT-STALE-OR-FAKE-NOT-APPLICABLE", "WIT-R6-CROSS-EPOCH-TOTAL-TRANSFER", "WIT-R6-QUORUM-BOUNDARY-STRONG-SAFE-GAP-LOSS", "WIT-R6-FAILURE-FRONTIER-CONCURRENT-PUBLICATION", "WIT-R6-INTERNAL-FAILSTOP-NONDISCHARGE", "WIT-R6-VALID-DUE-ENTRY-PRIORITY-AND-RETRY-RANK", "WIT-R6-SAME-LANE-COLLISION-REJECT", "WIT-R6-CONNECTIVITY-REPLAY-AND-EXPIRY", "WIT-R6-PROTECTED-FRAME-PARITY-AND-CAPACITY", "WIT-R6-TOTAL-LIFECYCLE-REFINEMENT", "WIT-R6-CANONICAL-ID-ALIAS-REJECT", "WIT-R6-PROOF-DAG-PROVIDER-CLOSURE"],
+    "all_required_scenarios_present_once": true,
+    "all_negative_variants_must_be_mutated_and_rejected": true,
+    "legacy_20_scenario_suite_remains_separate_regression_input": true
+  },
+  "claims": {
+    "r6_witness_written": true,
+    "r6_witness_accepted": false,
+    "r6_witness_validator_written": false,
+    "all_negative_variants_executed": false,
+    "r6_findings_closed": false,
+    "architecture_frozen": false,
+    "tla_authorized": false,
+    "tla_written": false,
+    "model_checked": false,
+    "residency_dynamic_model_supported": false,
+    "protection_evidenced": false,
+    "performance_evidenced": false,
+    "cost_efficiency_evidenced": false,
+    "deployment_ready": false
+  }
+}

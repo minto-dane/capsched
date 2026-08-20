@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "artifact_id": "f0-c4-g6-pending-attack-incomplete-observation-v1",
+  "date": "2026-08-13",
+  "record_class": "public_safe_observation_of_root_owned_fail_closed_capture",
+  "run_id": "candidate4-full-20260813T071653Z",
+  "status": "RAW_CAPTURE_INCOMPLETE_SEMANTIC_COUNTEREXAMPLE",
+  "source": {
+    "candidate_input_commit": "1d562546fce0fe58d9701a08b75edf114f3e433c",
+    "installed_tcb_source_commit": "65d9827916f669363f2a82118b90dee2a7ff664c",
+    "installed_manifest_sha256": "1c688a1017b59a0763fd0fec29b55b6f4f0a23ea0decffc149072215fe56eb7d",
+    "capture_contract_sha256": "d5a1b44fc61d3f52542c1596dfe01ed510201486be8b2768ccb4a8901e72effe",
+    "input_root_sha256": "4fb77f43f8ec9239fa4784a74fc7086fed1081af7888588ca58270840c5025a0",
+    "captured_child_model_sha256": "387399ae11c7bdad635c4b0425888f3ae01b23070b54afdb06eaa795b9787452",
+    "toolchain_identity_sha256": "dc9debd57b5763fb400771fbc22e997f0ba8c643b463ba985b1839da58755cf9"
+  },
+  "durable_evidence": {
+    "root_evidence_location": "domainlease-dev:/var/lib/domainlease-f0-c4/evidence/candidate4-full-20260813T071653Z",
+    "raw_commit_sha256": "b22ab6d6e0b03f3c8b98c420073badfe7a47b86b72bef5d8d51cfbfad182be94",
+    "capture_manifest_sha256": "4898099a0ac33f32293be9d3d2d4e6dabc3eab42c16153e15f974c164f11b29c",
+    "sealed_plan_sha256": "1e8cf444af178a6652aba9f8459ab892090aee647e1061cebdb8506156416682",
+    "failed_component_receipt_sha256": "6b054d0daa38ce16cfa2ccd4b0d5e04847eae417ae49a7a2e11d81ed9a0521da",
+    "failed_component_stderr_sha256": "7ba5d2f18ee15b5a82b630d11f64252b0dce1a263480181264765b2ae5fe9d4e",
+    "capture_status": "RAW_CAPTURE_INCOMPLETE",
+    "candidate_bytes_positive_eligible": false,
+    "reduction_performed": false,
+    "component_count": 3,
+    "raw_total_bytes": 29366
+  },
+  "systemd_disposition": {
+    "capture_unit_result": "success",
+    "capture_unit_exec_main_status": 0,
+    "service_exit_is_not_capture_success": true,
+    "capture_status_is_bound_by_raw_commit": true,
+    "trusted_supervisor_survived": true,
+    "incomplete_lifecycle_receipt_committed": true,
+    "guardian_preserved_final_commit": true
+  },
+  "failed_component": {
+    "component_id": "child-bundle-producer",
+    "role": "FULL_CHILD_PRODUCER",
+    "termination": "EXITED_NONZERO",
+    "exit_code": 1,
+    "launcher_returncode": 1,
+    "elapsed_monotonic_ns": 41029516563519,
+    "cpu_usage_usec": 41017641086,
+    "user_cpu_usec": 40865410433,
+    "system_cpu_usec": 152230653,
+    "memory_peak_bytes": 8053063680,
+    "pids_peak": 1,
+    "memory_events": {
+      "low": 0,
+      "high": 0,
+      "max": 39191,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0
+    },
+    "stdout_bytes": 0,
+    "stderr_bytes": 990,
+    "result_protocol_framing_valid": false,
+    "result_protocol_semantics_validated": false,
+    "populated_zero_observed": true,
+    "cgroup_kill_used": true,
+    "external_memory": {
+      "mode": "per_component_sparse_loop_ext4",
+      "backing_allocated_bytes_after_exit": 12220313600,
+      "direct_io": true,
+      "visible_entries_after_exit": 0,
+      "unmounted": true,
+      "loop_detached": true,
+      "backing_removed": true
+    }
+  },
+  "counterexample": {
+    "reject_code": "F05-SPV3-EFFECT-WF",
+    "action_id": "ADV-023B-SUCCEED-HOSTILE-BYPASS",
+    "failure_class": "protection_closure_preceded_pending_hostile_attempt_disposition",
+    "minimized_trace_length": 17,
+    "minimized_trace": [
+      "SUP-001-REQUEST-SCOPE",
+      "OBS-002-CONFIGURE-SCOPE-ACK",
+      "SUP-003-REQUEST-CHARGED-BOOTSTRAP",
+      "OBS-004-CHARGED-BOOTSTRAP-ACK",
+      "MON-004B-ACTIVATE-EXECUTION",
+      "SUP-005-REQUEST-SANDBOX",
+      "OBS-006-SANDBOX-PROFILE-ACK",
+      "MON-007-BASELINE-COUNTERS",
+      "SUP-008-RELEASE-HOSTILE-PAYLOAD",
+      "ADV-018-ATTACH-ATTEMPT",
+      "OBS-029-NORMAL-EXIT",
+      "MON-035B-REVOKE-EXECUTION",
+      "OBS-036-LEADER-REAPED",
+      "OBS-037-VISIBLE-EMPTY",
+      "OBS-039-RMDIR-ATTACH-CLOSED",
+      "SUP-039B-CLOSE-ASYNC-ADMISSION",
+      "MON-039C-PROTECTION-CLOSED"
+    ],
+    "pre_bypass_state": {
+      "phase": "STOPPING",
+      "pending_attack": "ATTACH",
+      "protection_state": "CLOSED",
+      "scope": "ATTACH_CLOSED",
+      "fault": "CLEAN"
+    },
+    "root_cause": "MON-039C allowed a protection-closed receipt while one observed hostile attempt still lacked either rejection or explicit breach disposition."
+  },
+  "conclusion": {
+    "external_memory_repair_effective": true,
+    "component_oom_observed": false,
+    "capacity_failure": false,
+    "semantic_counterexample": true,
+    "fail_closed_capture_effective": true,
+    "g6_complete": false,
+    "g7_allowed": false,
+    "replay_same_bytes_without_semantic_repair_allowed": false
+  },
+  "retention": {
+    "raw_evidence_copied_to_public_repository": false,
+    "reason": "Retain root-owned operational evidence on VM-native ext4; publish only hashes, bounded resource facts, the minimized semantic trace, and fail-closed disposition."
+  }
+}
